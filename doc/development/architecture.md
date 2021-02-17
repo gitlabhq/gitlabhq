@@ -224,17 +224,7 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-Table description links:
-
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
-- [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit)
-- [GitLab chart](https://docs.gitlab.com/charts/)
-- [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings)
-- [GitLab.com](https://gitlab.com)
-- [Source](../install/installation.md)
-- [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-
-| Component                                             | Description                                                          | Omnibus GitLab | GitLab Environment Toolkit (GET) | GitLab chart | Minikube Minimal | GitLab.com | Source | GDK |  CE/EE  |
+| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |

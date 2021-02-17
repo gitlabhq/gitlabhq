@@ -1,0 +1,19 @@
+---
+key_path: counts.projects_with_error_tracking_enabled
+description: Count of projects that have enabled Error tracking via Sentry
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: error_tracking
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

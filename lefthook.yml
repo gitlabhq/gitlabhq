@@ -7,7 +7,7 @@ pre-push:
       tags: frontend style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "*.{js,vue}"
-      run: yarn eslint --cache --max-warnings 0 --report-unused-disable-directives {files}
+      run: yarn run internal:eslint {files}
     haml-lint:
       tags: view haml style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
@@ -24,6 +24,11 @@ pre-push:
       glob: "*.scss{,.css}"
       exclude: "app/assets/stylesheets/pages/emojis.scss"
       run: bundle exec scss-lint --config .scss-lint.yml {files}
+    prettier:
+      tags: frontend style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.{js,vue,graphql}"
+      run: yarn run prettier --check {files}
     rubocop:
       tags: backend style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD

@@ -14,7 +14,7 @@ In addition to the style guidelines set by Airbnb, we also have a few specific r
 listed below.
 
 NOTE:
-You can run ESLint locally by running `yarn eslint`
+You can run ESLint locally by running `yarn run lint:eslint`
 
 ## Avoid forEach
 

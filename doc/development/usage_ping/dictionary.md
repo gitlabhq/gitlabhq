@@ -39,13 +39,488 @@ This is named the instance_user_count in the Versions application.
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.analytics_unique_visits_for_any_target`
+
+Visits to any of the pages listed above per week
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.analytics_unique_visits_for_any_target`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.analytics_unique_visits_for_any_target_monthly`
+
+Visits to any of the pages listed above per month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.analytics_unique_visits_for_any_target_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_contribution`
+
+Visits to /groups/:group/-/contribution_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_contribution`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_insights`
+
+Visits to /groups/:group/-/insights
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_insights`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_issues`
+
+Visits to /groups/:group/-/issues_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_issues`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_merge_request`
+
+Visits to /groups/:group/-/analytics/merge_request_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_productivity`
+
+Visits to /groups/:group/-/analytics/productivity_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_productivity`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.g_analytics_valuestream`
+
+Visits to /groups/:group/-/analytics/value_stream_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.g_analytics_valuestream`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.i_analytics_cohorts`
+
+Visits to /-/instance_statistics/cohorts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.i_analytics_cohorts`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.i_analytics_dev_ops_score`
+
+Visits to /-/instance_statistics/dev_ops_score
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.i_analytics_dev_ops_score`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.i_analytics_instance_statistics`
+
+Visit to /admin/instance_statistics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.i_analytics_instance_statistics`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_code_reviews`
+
+Visits to /:group/:project/-/analytics/code_reviews
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_code_reviews`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_insights`
+
+Visits to /:group/:project/insights
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_insights`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_issues`
+
+Visits to /:group/:project/-/analytics/issues_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_issues`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_merge_request`
+
+Visits to /:group/:project/-/analytics/merge_request_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_pipelines`
+
+Visits to /:group/:project/pipelines/charts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_pipelines`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_repo`
+
+Visits to /:group/:project/-/graphs/master/charts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_repo`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `analytics_unique_visits.p_analytics_valuestream`
+
+Visits to /:group/:project/-/value_stream_analytics
+
+| field | value |
+| --- | --- |
+| `key_path` | **`analytics_unique_visits.p_analytics_valuestream`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.a_compliance_audit_events_api`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.a_compliance_audit_events_api`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.compliance_unique_visits_for_any_target`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.compliance_unique_visits_for_any_target`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.compliance_unique_visits_for_any_target_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.compliance_unique_visits_for_any_target_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.g_compliance_audit_events`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.g_compliance_audit_events`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.g_compliance_dashboard`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.g_compliance_dashboard`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.i_compliance_audit_events`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.i_compliance_audit_events`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `compliance_unique_visits.i_compliance_credential_inventory`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`compliance_unique_visits.i_compliance_credential_inventory`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
 | `skip_validation` | true |
 
 ## `container_registry_enabled`
@@ -58,11 +533,866 @@ Whether container registry is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `container_registry_server.vendor`
+
+Identifies if a user is using an external container registry and what type
+
+| field | value |
+| --- | --- |
+| `key_path` | **`container_registry_server.vendor`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `container_registry_server.version`
+
+Identifies the version of the external registry being used
+
+| field | value |
+| --- | --- |
+| `key_path` | **`container_registry_server.version`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.alert_bot_incident_issues`
+
+Count of issues created by the alert bot automatically
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.alert_bot_incident_issues`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.all_searches`
+
+Total Searches for All Basic Search and Advanced Search in self-managed and SaaS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.all_searches`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.api_fuzzing_dnd_jobs`
+
+Count of API Fuzzing `docker-in-docker` jobs run by job name
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.api_fuzzing_dnd_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.api_fuzzing_jobs`
+
+Count of API Fuzzing jobs run by job name
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.api_fuzzing_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.assignee_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.assignee_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.auto_devops_disabled`
+
+Projects with Auto DevOps template disabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.auto_devops_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `auto_devops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.auto_devops_enabled`
+
+Projects with Auto DevOps template enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.auto_devops_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `auto_devops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.boards`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.boards`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_builds`
+
+Unique builds in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_builds`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_external_pipelines`
+
+Total pipelines in external repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_external_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_internal_pipelines`
+
+Total pipelines in GitLab repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_internal_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_pipeline_config_auto_devops`
+
+Total pipelines from an Auto DevOps template
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_pipeline_config_auto_devops`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_pipeline_config_repository`
+
+Total Pipelines from templates in repository
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_pipeline_config_repository`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_pipeline_schedules`
+
+Pipeline schedules in GitLab
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_pipeline_schedules`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_runners`
+
+Total configured Runners in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_runners`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.ci_triggers`
+
+Total configured Triggers in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ci_triggers`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.clusters`
+
+Total GitLab Managed clusters both enabled and disabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_cert_managers`
+
+Total GitLab Managed clusters with GitLab Managed App:Cert Manager installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_cert_managers`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_cilium`
+
+Total GitLab Managed clusters with GitLab Managed App:Cilium installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_cilium`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_crossplane`
+
+Total GitLab Managed clusters with GitLab Managed App:Crossplane installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_crossplane`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_elastic_stack`
+
+Total GitLab Managed clusters with GitLab Managed App:Elastic Stack installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_elastic_stack`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_helm`
+
+Total GitLab Managed clusters with GitLab Managed App:Helm enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_helm`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_ingress`
+
+Total GitLab Managed clusters with GitLab Managed App:Ingress installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_ingress`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_jupyter`
+
+Total GitLab Managed clusters with GitLab Managed App:Jupyter installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_jupyter`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_knative`
+
+Total GitLab Managed clusters with GitLab Managed App:Knative installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_knative`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_prometheus`
+
+Total GitLab Managed clusters with GitLab Managed App:Prometheus installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_prometheus`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_applications_runner`
+
+Total GitLab Managed clusters with GitLab Managed App:Runner installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_applications_runner`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_disabled`
+
+Total GitLab Managed disabled clusters
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_enabled`
+
+Total GitLab Managed clusters currently enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_management_project`
+
+Total GitLab Managed clusters with defined cluster management project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_management_project`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_platforms_eks`
+
+Total GitLab Managed clusters provisioned with GitLab on AWS EKS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_platforms_eks`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_platforms_gke`
+
+Total GitLab Managed clusters provisioned with GitLab on GCE GKE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_platforms_gke`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.clusters_platforms_user`
+
+Total GitLab Managed clusters that are user provisioned
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.clusters_platforms_user`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.commit_comment`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.commit_comment`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.confidential_epics`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.confidential_epics`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::portfolio management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.container_scanning_jobs`
+
+Count of Container Scanning jobs run
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.container_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.coverage_fuzzing_jobs`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.coverage_fuzzing_jobs`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.cycle_analytics_views`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.cycle_analytics_views`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.dast_jobs`
+
+Count of DAST jobs run
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.dast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::dynamic analysis` |
+| `product_category` | `dynamic_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.dast_on_demand_pipelines`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.dast_on_demand_pipelines`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.dependency_list_usages_total`
+
+Count to Dependency List page views
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.dependency_list_usages_total`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.dependency_scanning_jobs`
+
+Count of Dependency Scanning jobs run
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.dependency_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.deploy_keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.deploy_keys`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
 | `distribution` |  |
 | `tier` |  |
 | `skip_validation` | true |
@@ -86,6 +1416,196 @@ Total deployments count
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 
+## `counts.design_management_designs_create`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.design_management_designs_create`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `design_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.design_management_designs_delete`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.design_management_designs_delete`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `design_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.design_management_designs_update`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.design_management_designs_update`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `design_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.environments`
+
+Total available and stopped environments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.environments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.epic_issues`
+
+Count of issues that are assigned to an epic
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.epic_issues`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::portfolio management` |
+| `product_category` | `epics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.epics`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.epics`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::portfolio management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.epics_deepest_relationship_level`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.epics_deepest_relationship_level`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::portfolio management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.failed_deployments`
+
+Total failed deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.failed_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.feature_flags`
+
+Number of feature flag toggles
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.feature_flags`** |
+| `product_section` | ops |
+| `product_stage` | release |
+| `product_group` | `group::progressive delivery` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.geo_event_log_max_id`
+
+Number of replication events on a Geo primary
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.geo_event_log_max_id`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::geo` |
+| `product_category` | `disaster_recovery` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
 ## `counts.geo_nodes`
 
 Total number of sites in a Geo deployment
@@ -96,7 +1616,7 @@ Total number of sites in a Geo deployment
 | `product_section` | enablement |
 | `product_stage` | enablement |
 | `product_group` | `group::geo` |
-| `product_category` | disaster_recovery |
+| `product_category` | `disaster_recovery` |
 | `value_type` | integer |
 | `status` | data_available |
 | `milestone` | 11.2 |
@@ -104,6 +1624,2894 @@ Total number of sites in a Geo deployment
 | `data_source` | Database |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
+
+## `counts.grafana_integrated_projects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.grafana_integrated_projects`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.group_clusters_disabled`
+
+Total GitLab Managed disabled clusters previously attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.group_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.group_clusters_enabled`
+
+Total GitLab Managed clusters attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.group_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups`
+
+Total count of groups as of usage ping snapshot
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` | `subgroups` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_asana_active`
+
+Count of groups with active integrations for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_assembla_active`
+
+Count of groups with active integrations for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_bamboo_active`
+
+Count of groups with active integrations for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_bugzilla_active`
+
+Count of groups with active integrations for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_buildkite_active`
+
+Count of groups with active integrations for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_campfire_active`
+
+Count of groups with active integrations for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_confluence_active`
+
+Count of groups with active integrations for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_custom_issue_tracker_active`
+
+Count of groups with active integrations for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_discord_active`
+
+Count of groups with active integrations for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_drone_ci_active`
+
+Count of groups with active integrations for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_emails_on_push_active`
+
+Count of groups with active integrations for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_external_wiki_active`
+
+Count of groups with active integrations for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_flowdock_active`
+
+Count of groups with active integrations for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_github_active`
+
+Count of groups with active integrations for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_hangouts_chat_active`
+
+Count of groups with active integrations for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_hipchat_active`
+
+Count of groups with active integrations for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_asana_active`
+
+Count of active groups inheriting integrations for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_assembla_active`
+
+Count of active groups inheriting integrations for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_bamboo_active`
+
+Count of active groups inheriting integrations for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_bugzilla_active`
+
+Count of active groups inheriting integrations for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_buildkite_active`
+
+Count of active groups inheriting integrations for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_campfire_active`
+
+Count of active groups inheriting integrations for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_confluence_active`
+
+Count of active groups inheriting integrations for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_custom_issue_tracker_active`
+
+Count of active groups inheriting integrations for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_discord_active`
+
+Count of active groups inheriting integrations for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_drone_ci_active`
+
+Count of active groups inheriting integrations for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_emails_on_push_active`
+
+Count of active groups inheriting integrations for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_external_wiki_active`
+
+Count of active groups inheriting integrations for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_flowdock_active`
+
+Count of active groups inheriting integrations for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_github_active`
+
+Count of active groups inheriting integrations for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_hangouts_chat_active`
+
+Count of active groups inheriting integrations for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_hipchat_active`
+
+Count of active groups inheriting integrations for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_irker_active`
+
+Count of active groups inheriting integrations for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_jenkins_active`
+
+Count of active groups inheriting integrations for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_jira_active`
+
+Count of active groups inheriting integrations for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_mattermost_active`
+
+Count of active groups inheriting integrations for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_mattermost_slash_commands_active`
+
+Count of active groups inheriting integrations for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_microsoft_teams_active`
+
+Count of active groups inheriting integrations for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_packagist_active`
+
+Count of active groups inheriting integrations for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_pipelines_email_active`
+
+Count of active groups inheriting integrations for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_pivotaltracker_active`
+
+Count of active groups inheriting integrations for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_prometheus_active`
+
+Count of active groups inheriting integrations for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_pushover_active`
+
+Count of active groups inheriting integrations for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_redmine_active`
+
+Count of active groups inheriting integrations for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_slack_active`
+
+Count of active groups inheriting integrations for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_slack_slash_commands_active`
+
+Count of active groups inheriting integrations for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_teamcity_active`
+
+Count of active groups inheriting integrations for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_unify_circuit_active`
+
+Count of active groups inheriting integrations for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_webex_teams_active`
+
+Count of active groups inheriting integrations for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_inheriting_youtrack_active`
+
+Count of active groups inheriting integrations for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_inheriting_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_irker_active`
+
+Count of groups with active integrations for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_jenkins_active`
+
+Count of groups with active integrations for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_jira_active`
+
+Count of groups with active integrations for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_mattermost_active`
+
+Count of groups with active integrations for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_mattermost_slash_commands_active`
+
+Count of groups with active integrations for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_microsoft_teams_active`
+
+Count of groups with active integrations for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.groups_packagist_active`
+
+Count of groups with active integrations for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_pipelines_email_active`
+
+Count of groups with active integrations for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_pivotaltracker_active`
+
+Count of groups with active integrations for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_prometheus_active`
+
+Count of groups with active integrations for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_pushover_active`
+
+Count of groups with active integrations for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_redmine_active`
+
+Count of groups with active integrations for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_slack_active`
+
+Count of groups with active integrations for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_slack_slash_commands_active`
+
+Count of groups with active integrations for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_teamcity_active`
+
+Count of groups with active integrations for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_unify_circuit_active`
+
+Count of groups with active integrations for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_webex_teams_active`
+
+Count of groups with active integrations for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.groups_youtrack_active`
+
+Count of groups with active integrations for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.groups_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.in_review_folder`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.in_review_folder`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.incident_issues`
+
+Count of incidents (issues where issue_type=incident)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.incident_issues`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.incident_labeled_issues`
+
+Count of all issues with the label=incident
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.incident_labeled_issues`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_blocking`
+
+Whether or not ModSecurity is set to blocking mode
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_blocking`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_disabled`
+
+Whether or not ModSecurity is disabled within Ingress
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_disabled`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_logging`
+
+Whether or not ModSecurity is set to logging mode
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_logging`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_not_installed`
+
+Whether or not ModSecurity has not been installed into the cluster
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_not_installed`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_packets_anomalous`
+
+Cumulative count of packets identified as anomalous by ModSecurity since Usage Ping was last reported
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_packets_anomalous`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_packets_processed`
+
+Cumulative count of packets processed by ModSecurity since Usage Ping was last reported
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_packets_processed`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ingress_modsecurity_statistics_unavailable`
+
+Whether or not ModSecurity statistics are unavailable
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ingress_modsecurity_statistics_unavailable`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.instance_clusters_disabled`
+
+Total GitLab Managed disabled clusters previously attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instance_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instance_clusters_enabled`
+
+Total GitLab Managed clusters attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instance_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_asana_active`
+
+Count of active instance-level integrations for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_assembla_active`
+
+Count of active instance-level integrations for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_bamboo_active`
+
+Count of active instance-level integrations for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_bugzilla_active`
+
+Count of active instance-level integrations for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_buildkite_active`
+
+Count of active instance-level integrations for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_campfire_active`
+
+Count of active instance-level integrations for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_confluence_active`
+
+Count of active instance-level integrations for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_custom_issue_tracker_active`
+
+Count of active instance-level integrations for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.instances_discord_active`
+
+Count of active instance-level integrations for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_drone_ci_active`
+
+Count of active instance-level integrations for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_emails_on_push_active`
+
+Count of active instance-level integrations for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.instances_external_wiki_active`
+
+Count of active instance-level integrations for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_flowdock_active`
+
+Count of active instance-level integrations for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_github_active`
+
+Count of active instance-level integrations for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_hangouts_chat_active`
+
+Count of active instance-level integrations for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_hipchat_active`
+
+Count of active instance-level integrations for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_irker_active`
+
+Count of active instance-level integrations for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_jenkins_active`
+
+Count of active instance-level integrations for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_jira_active`
+
+Count of active instance-level integrations for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_mattermost_active`
+
+Count of active instance-level integrations for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_mattermost_slash_commands_active`
+
+Count of active instance-level integrations for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_microsoft_teams_active`
+
+Count of active instance-level integrations for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.instances_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.instances_packagist_active`
+
+Count of active instance-level integrations for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_pipelines_email_active`
+
+Count of active instance-level integrations for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_pivotaltracker_active`
+
+Count of active instance-level integrations for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_prometheus_active`
+
+Count of active instance-level integrations for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_pushover_active`
+
+Count of active instance-level integrations for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_redmine_active`
+
+Count of active instance-level integrations for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_slack_active`
+
+Count of active instance-level integrations for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_slack_slash_commands_active`
+
+Count of active instance-level integrations for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_teamcity_active`
+
+Count of active instance-level integrations for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_unify_circuit_active`
+
+Count of active instance-level integrations for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_webex_teams_active`
+
+Count of active instance-level integrations for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.instances_youtrack_active`
+
+Count of active instance-level integrations for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.instances_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues`
+
+Count of Issues created
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_created_from_alerts`
+
+Count of issues created automatically on alerts from GitLab-Managed Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_created_from_alerts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_created_from_gitlab_error_tracking_ui`
+
+Count of issues manually created from the GitLab UI on Sentry errors
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_created_from_gitlab_error_tracking_ui`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `error_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.issues_created_gitlab_alerts`
+
+Count of all issues created from GitLab alerts (bot and non-bot)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_created_gitlab_alerts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_created_manually_from_alerts`
+
+Count of issues created manually by non-bot users from GitLab alerts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_created_manually_from_alerts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_using_zoom_quick_actions`
+
+Count of issues where a user have added AND removed a zoom meeting using slash commands
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_using_zoom_quick_actions`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_with_associated_zoom_link`
+
+Count of issues where a user has linked a Zoom meeting
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_with_associated_zoom_link`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_with_embedded_grafana_charts_approx`
+
+Count of issues where a user has embedded a Grafana chart
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_with_embedded_grafana_charts_approx`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.issues_with_health_status`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.issues_with_health_status`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::portfolio management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.jira_imports_projects_count`
+
+Count of Projects that imported Issues from Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.jira_imports_projects_count`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `jira_importer` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.jira_imports_total_imported_count`
+
+Count of Issues imported from Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.jira_imports_total_imported_count`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `jira_importer` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.jira_imports_total_imported_issues_count`
+
+Count of Jira imports run
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.jira_imports_total_imported_issues_count`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `jira_importer` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.keys`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` | `authentication_and_authorization` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.kubernetes_agent_gitops_sync`
+
+Count of GitOps Sync events
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.kubernetes_agent_gitops_sync`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.kubernetes_agents`
+
+Count of Kubernetes agents
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.kubernetes_agents`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.kubernetes_agents_with_token`
+
+Count of Kubernetes agents with at least one token
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.kubernetes_agents_with_token`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.label_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.label_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.labels`
+
+Count of Labels
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.labels`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ldap_group_links`
+
+Number of groups that are synced via LDAP group sync `https://docs.gitlab.com/ee/user/group/index.html#manage-group-memberships-via-ldap-starter-only`
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ldap_group_links`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::access` |
+| `product_category` | `authentication_and_authorization` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ldap_keys`
+
+Number of keys synced as part of LDAP `https://docs.gitlab.com/ee/administration/auth/ldap/#ldap-sync-configuration-settings-starter-only`
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ldap_keys`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::access` |
+| `product_category` | `authentication_and_authorization` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.ldap_users`
+
+Number of users that are linked to LDAP
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.ldap_users`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::access` |
+| `product_category` | `authentication_and_authorization` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.lfs_objects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.lfs_objects`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
 
 ## `counts.license_management_jobs`
 
@@ -115,13 +4523,5162 @@ Name on the GitLab license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` |  |
 | `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.licenses_list_views`
+
+Count to License List page views
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.licenses_list_views`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `license_compliance` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.merge_request_comment`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.merge_request_comment`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.merge_request_create`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.merge_request_create`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.merge_requests`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.merge_requests`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.merged_merge_requests_using_approval_rules`
+
+Count of merge requests merged using approval rules
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.merged_merge_requests_using_approval_rules`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::compliance` |
+| `product_category` | `compliance_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.milestone_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.milestone_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.milestones`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.milestones`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.navbar_searches`
+
+Total Searches for All Basic Search and Advanced Search in self-managed and SaaS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.navbar_searches`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.network_policy_drops`
+
+Cumulative count of packets dropped by Cilium (Container Network Security) since Usage Ping was last reported
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.network_policy_drops`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_network_security` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.network_policy_forwards`
+
+Cumulative count of packets forwarded by Cilium (Container Network Security) since Usage Ping was last reported
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.network_policy_forwards`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_network_security` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.notes`
+
+Count of Notes across all objects that use them
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.notes`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.operations_dashboard_default_dashboard`
+
+Active users with enabled operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.operations_dashboard_default_dashboard`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.operations_dashboard_users_with_projects_added`
+
+Active users with projects on operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.operations_dashboard_users_with_projects_added`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_composer_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_composer_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_composer_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_composer_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_composer_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_composer_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_conan_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_conan_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_conan_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_conan_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_conan_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_conan_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_container_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_container_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_container_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_container_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_container_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_container_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_debian_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_debian_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_debian_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_debian_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_debian_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_debian_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_delete_package_by_deploy_token`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_delete_package_by_deploy_token`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_delete_package_by_guest`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_delete_package_by_guest`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_delete_package_by_user`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_delete_package_by_user`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_generic_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_generic_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_generic_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_generic_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_generic_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_generic_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_golang_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_golang_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_golang_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_golang_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_golang_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_golang_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_maven_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_maven_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_maven_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_maven_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_maven_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_maven_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_npm_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_npm_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_npm_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_npm_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_npm_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_npm_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_nuget_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_nuget_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_nuget_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_nuget_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_nuget_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_nuget_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pull_package_by_deploy_token`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pull_package_by_deploy_token`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pull_package_by_guest`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pull_package_by_guest`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pull_package_by_user`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pull_package_by_user`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_push_package_by_deploy_token`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_push_package_by_deploy_token`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_push_package_by_guest`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_push_package_by_guest`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_push_package_by_user`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_push_package_by_user`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pypi_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pypi_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pypi_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pypi_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_pypi_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_pypi_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_tag_delete_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_tag_delete_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_tag_pull_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_tag_pull_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.package_events_i_package_tag_push_package`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.package_events_i_package_tag_push_package`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.packages`
+
+Number of packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.packages`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.pages_domains`
+
+Total GitLab Pages domains
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.pages_domains`** |
+| `product_section` | ops |
+| `product_stage` | release |
+| `product_group` | `group::release management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.personal_snippets`
+
+Count of Personal Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.personal_snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.pod_logs_usages_total`
+
+Count the total number of log views
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.pod_logs_usages_total`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::apm` |
+| `product_category` | `logging` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce |
+| `tier` | free |
+| `skip_validation` | true |
+
+## `counts.pool_repositories`
+
+Count of unique object pool repositories for fork deduplication
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.pool_repositories`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::gitaly` |
+| `product_category` | `gitaly` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.productivity_analytics_views`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.productivity_analytics_views`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.project_clusters_disabled`
+
+Total GitLab Managed disabled clusters previously attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.project_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.project_clusters_enabled`
+
+Total GitLab Managed clusters attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.project_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.project_snippets`
+
+Count of Project Snippetss
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.project_snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects`
+
+Count of Projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `projects` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_asana_active`
+
+Count of projects with active integrations for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_assembla_active`
+
+Count of projects with active integrations for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_bamboo_active`
+
+Count of projects with active integrations for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_bugzilla_active`
+
+Count of projects with active integrations for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_buildkite_active`
+
+Count of projects with active integrations for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_campfire_active`
+
+Count of projects with active integrations for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_confluence_active`
+
+Count of projects with active integrations for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_creating_incidents`
+
+Counts of Projects that have created incidents
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_creating_incidents`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_custom_issue_tracker_active`
+
+Count of projects with active integrations for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_discord_active`
+
+Count of projects with active integrations for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_drone_ci_active`
+
+Count of projects with active integrations for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_emails_on_push_active`
+
+Count of projects with active integrations for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_external_wiki_active`
+
+Count of projects with active integrations for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_flowdock_active`
+
+Count of projects with active integrations for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_github_active`
+
+Count of projects with active integrations for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_hangouts_chat_active`
+
+Count of projects with active integrations for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_hipchat_active`
+
+Count of projects with active integrations for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_imported_from_github`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_imported_from_github`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_asana_active`
+
+Count of active projects inheriting integrations for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_assembla_active`
+
+Count of active projects inheriting integrations for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_bamboo_active`
+
+Count of active projects inheriting integrations for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_bugzilla_active`
+
+Count of active projects inheriting integrations for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_buildkite_active`
+
+Count of active projects inheriting integrations for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_campfire_active`
+
+Count of active projects inheriting integrations for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_confluence_active`
+
+Count of active projects inheriting integrations for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_custom_issue_tracker_active`
+
+Count of active projects inheriting integrations for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_discord_active`
+
+Count of active projects inheriting integrations for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_drone_ci_active`
+
+Count of active projects inheriting integrations for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_emails_on_push_active`
+
+Count of active projects inheriting integrations for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_external_wiki_active`
+
+Count of active projects inheriting integrations for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_flowdock_active`
+
+Count of active projects inheriting integrations for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_github_active`
+
+Count of active projects inheriting integrations for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_hangouts_chat_active`
+
+Count of active projects inheriting integrations for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_hipchat_active`
+
+Count of active projects inheriting integrations for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_irker_active`
+
+Count of active projects inheriting integrations for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_jenkins_active`
+
+Count of active projects inheriting integrations for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_jira_active`
+
+Count of active projects inheriting integrations for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_mattermost_active`
+
+Count of active projects inheriting integrations for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_mattermost_slash_commands_active`
+
+Count of active projects inheriting integrations for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_microsoft_teams_active`
+
+Count of active projects inheriting integrations for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_packagist_active`
+
+Count of active projects inheriting integrations for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_pipelines_email_active`
+
+Count of active projects inheriting integrations for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_pivotaltracker_active`
+
+Count of active projects inheriting integrations for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_prometheus_active`
+
+Count of active projects inheriting integrations for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_pushover_active`
+
+Count of active projects inheriting integrations for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_redmine_active`
+
+Count of active projects inheriting integrations for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_slack_active`
+
+Count of active projects inheriting integrations for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_slack_slash_commands_active`
+
+Count of active projects inheriting integrations for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_teamcity_active`
+
+Count of active projects inheriting integrations for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_unify_circuit_active`
+
+Count of active projects inheriting integrations for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_webex_teams_active`
+
+Count of active projects inheriting integrations for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_inheriting_youtrack_active`
+
+Count of active projects inheriting integrations for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_inheriting_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_irker_active`
+
+Count of projects with active integrations for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jenkins_active`
+
+Count of projects with active integrations for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_active`
+
+Count of projects with active integrations for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_cloud_active`
+
+Count of active integrations with Jira Cloud (Saas)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_cloud_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_dvcs_cloud_active`
+
+Count of active integrations with Jira Cloud (DVCS Connector)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_dvcs_cloud_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_dvcs_server_active`
+
+Count of active integrations with Jira Software (DVCS connector)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_dvcs_server_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_issuelist_active`
+
+Total Jira Issue feature enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_issuelist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_jira_server_active`
+
+Count of active integrations with Jira Software (server)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_jira_server_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_mattermost_active`
+
+Count of projects with active integrations for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_mattermost_slash_commands_active`
+
+Count of projects with active integrations for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_microsoft_teams_active`
+
+Count of projects with active integrations for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_mirrored_with_pipelines_enabled`
+
+Projects with repository mirroring enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_mirrored_with_pipelines_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_packagist_active`
+
+Count of projects with active integrations for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_pipelines_email_active`
+
+Count of projects with active integrations for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_pivotaltracker_active`
+
+Count of projects with active integrations for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_prometheus_active`
+
+Count of projects with active integrations for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_pushover_active`
+
+Count of projects with active integrations for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_redmine_active`
+
+Count of projects with active integrations for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_reporting_ci_cd_back_to_github`
+
+Projects with a GitHub service pipeline enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_reporting_ci_cd_back_to_github`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::verify` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_slack_active`
+
+Count of projects with active integrations for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_slack_slash_commands_active`
+
+Count of projects with active integrations for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_teamcity_active`
+
+Count of projects with active integrations for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_unify_circuit_active`
+
+Count of projects with active integrations for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_webex_teams_active`
+
+Count of projects with active integrations for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_with_alerts_created`
+
+Count of projects with alerts created in given time period
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_alerts_created`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `alert_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_alerts_service_enabled`
+
+Count of projects that have enabled the Alerts service
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_alerts_service_enabled`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_with_enabled_alert_integrations`
+
+Count of projects with at least 1 enabled integration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_enabled_alert_integrations`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_error_tracking_enabled`
+
+Count of projects that have enabled Error tracking via Sentry
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_error_tracking_enabled`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `error_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_disabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_disabled`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_14d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_cadence_set_to_14d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1month`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1month`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_3month`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_cadence_set_to_3month`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_7d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_cadence_set_to_7d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_1`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_1`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_10`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_10`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_100`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_100`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_25`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_25`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_5`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_5`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_50`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_50`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_keep_n_unset`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_keep_n_unset`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_14d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_older_than_set_to_14d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_30d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_older_than_set_to_30d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_7d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_older_than_set_to_7d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_90d`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_older_than_set_to_90d`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_expiration_policy_enabled_with_older_than_unset`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_expiration_policy_enabled_with_older_than_unset`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_packages`
+
+Projects with package registry configured
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_packages`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free |
+| `skip_validation` | true |
+
+## `counts.projects_with_prometheus_alerts`
+
+Projects with Prometheus alerting enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_prometheus_alerts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::apm` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_repositories_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_repositories_enabled`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_terraform_reports`
+
+Count of projects with Terraform MR reports
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_terraform_reports`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `infrastructure_as_code` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_terraform_states`
+
+Count of projects with GitLab Managed Terraform State
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_terraform_states`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `infrastructure_as_code` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_with_tracing_enabled`
+
+Projects with tracing enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_with_tracing_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `tracing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.projects_youtrack_active`
+
+Count of projects with active integrations for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.projects_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.protected_branches`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.protected_branches`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.protected_branches_except_default`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.protected_branches_except_default`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.releases`
+
+Unique release tags
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.releases`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.remote_mirrors`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.remote_mirrors`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.requirement_test_reports_ci`
+
+Count of requirement test reports created from CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.requirement_test_reports_ci`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `requirements_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.requirement_test_reports_manual`
+
+Count of requirement test reports created manually
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.requirement_test_reports_manual`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `requirements_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.requirements_created`
+
+Count of requirements created
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.requirements_created`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `requirements_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.requirements_with_test_report`
+
+Count of requirements having a test report
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.requirements_with_test_report`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `requirements_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.sast_jobs`
+
+Count of SAST CI jobs for the month. Job names ending in '-sast'
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.sast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `static_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.secret_detection_jobs`
+
+Count of 'secret-detection' CI jobs fro the month.
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.secret_detection_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `secret_detection` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.service_desk_enabled_projects`
+
+Count of service desk enabled projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.service_desk_enabled_projects`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `service_desk` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.service_desk_issues`
+
+Count of service desk issues
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.service_desk_issues`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::certify` |
+| `product_category` | `service_desk` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.snippet_comment`
+
+Count of comments on Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.snippet_comment`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.snippet_create`
+
+Count of newly created Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.snippet_create`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.snippet_update`
+
+Count of updates to existing Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.snippet_update`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.snippets`
+
+Count of all Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.source_code_pushes`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.source_code_pushes`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.static_site_editor_commits`
+
+Count of commits created via Static Site Editor
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.static_site_editor_commits`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `static_site_editor` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.static_site_editor_merge_requests`
+
+Count of merge requests created via Static Site Editor
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.static_site_editor_merge_requests`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `static_site_editor` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.static_site_editor_views`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.static_site_editor_views`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `static_site_editor` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.status_page_incident_publishes`
+
+Cumulative count of usages of publish operation
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.status_page_incident_publishes`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.status_page_incident_unpublishes`
+
+Cumulative count of usages of unpublish operation
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.status_page_incident_unpublishes`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.status_page_issues`
+
+Issues published to a Status Page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.status_page_issues`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.status_page_projects`
+
+Projects with status page enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.status_page_projects`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.successful_deployments`
+
+Total successful deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.successful_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.suggestions`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.suggestions`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.template_repositories`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.template_repositories`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.templates_asana_active`
+
+Count of active service templates for Asana
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_asana_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_assembla_active`
+
+Count of active service templates for Assembla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_assembla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_bamboo_active`
+
+Count of active service templates for Bamboo CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_bamboo_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_bugzilla_active`
+
+Count of active service templates for Bugzilla
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_bugzilla_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_buildkite_active`
+
+Count of active service templates for Buildkite
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_buildkite_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_campfire_active`
+
+Count of active service templates for Campfire
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_campfire_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_confluence_active`
+
+Count of active service templates for Confluence
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_confluence_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_custom_issue_tracker_active`
+
+Count of active service templates for a Custom Issue Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_custom_issue_tracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_datadog_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_datadog_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.templates_discord_active`
+
+Count of active service templates for Discord
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_discord_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_drone_ci_active`
+
+Count of active service templates for Drone CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_drone_ci_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_emails_on_push_active`
+
+Count of active service templates for Emails on Push
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_emails_on_push_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_ewm_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_ewm_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.templates_external_wiki_active`
+
+Count of active service templates for External Wiki
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_external_wiki_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_flowdock_active`
+
+Count of active service templates for Flowdock
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_flowdock_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_github_active`
+
+Count of active service templates for GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_github_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_hangouts_chat_active`
+
+Count of active service templates for Hangouts Chat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_hangouts_chat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_hipchat_active`
+
+Count of active service templates for HipChat
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_hipchat_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_irker_active`
+
+Count of active service templates for Irker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_irker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_jenkins_active`
+
+Count of active service templates for Jenkins
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_jenkins_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_jira_active`
+
+Count of active service templates for Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_jira_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_mattermost_active`
+
+Count of active service templates for Mattermost
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_mattermost_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_mattermost_slash_commands_active`
+
+Count of active service templates for Mattermost (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_mattermost_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_microsoft_teams_active`
+
+Count of active service templates for Microsoft Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_microsoft_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_mock_ci_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_mock_ci_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.templates_mock_monitoring_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_mock_monitoring_active`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.templates_packagist_active`
+
+Count of active service templates for Packagist
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_packagist_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_pipelines_email_active`
+
+Count of active service templates for Pipeline Emails
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_pipelines_email_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_pivotaltracker_active`
+
+Count of active service templates for Pivotal Tracker
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_pivotaltracker_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_prometheus_active`
+
+Count of active service templates for Prometheus
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_prometheus_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_pushover_active`
+
+Count of active service templates for Pushover
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_pushover_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_redmine_active`
+
+Count of active service templates for Redmine
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_redmine_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_slack_active`
+
+Count of active service templates for Slack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_slack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_slack_slash_commands_active`
+
+Count of active service templates for Slack (slash commands)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_slack_slash_commands_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_teamcity_active`
+
+Count of active service templates for Teamcity CI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_teamcity_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_unify_circuit_active`
+
+Count of active service templates for Unifiy Circuit
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_unify_circuit_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_webex_teams_active`
+
+Count of active service templates for Webex Teams
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_webex_teams_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.templates_youtrack_active`
+
+Count of active service templates for YouTrack
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.templates_youtrack_active`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` | `integrations` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.terraform_reports`
+
+Count of Terraform MR reports generated
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.terraform_reports`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `infrastructure_as_code` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.terraform_states`
+
+Count of GitLab Managed Terraform States used
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.terraform_states`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `infrastructure_as_code` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.todos`
+
+Count of ToDos
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.todos`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.uploads`
+
+Count of Uploads via Notes and Descriptions
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.uploads`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.user_preferences_group_overview_details`
+
+Count of users who set personal preference to see Details on Group overview page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.user_preferences_group_overview_details`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::threat insights` |
+| `product_category` | `vulnerability_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.user_preferences_group_overview_security_dashboard`
+
+Count of users who set personal preference to see Security Dashboard on Group overview page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.user_preferences_group_overview_security_dashboard`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::threat insights` |
+| `product_category` | `vulnerability_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `counts.user_preferences_user_gitpod_enabled`
+
+Count all users with their GitPod setting enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.user_preferences_user_gitpod_enabled`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `editor_extension` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_hooks`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_hooks`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::ecosystem` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.web_ide_commits`
+
+Count of Commits made from Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_commits`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_ide_merge_requests`
+
+Count of Merge Requests created from Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_merge_requests`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_ide_pipelines`
+
+Count of Pipeline tab views in Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_pipelines`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_ide_previews`
+
+Count of Live Preview tab views in Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_previews`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_ide_terminals`
+
+Count of Web Terminal Tab views in Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_terminals`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.web_ide_views`
+
+Count of Views of the Web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.web_ide_views`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts.wiki_pages_create`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.wiki_pages_create`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `wiki` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.wiki_pages_delete`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.wiki_pages_delete`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `wiki` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.wiki_pages_update`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.wiki_pages_update`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `wiki` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts.wiki_pages_view`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts.wiki_pages_view`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.compliance_features_track_unique_visits_union`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.compliance_features_track_unique_visits_union`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.i_testing_paid_monthly_active_user_total`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.incident_management_alerts_total_unique_counts`
+
+Count of unique users per month to take an action on an alert
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.incident_management_alerts_total_unique_counts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.incident_management_incidents_total_unique_counts`
+
+Count of unique users per month to take an action on an incident
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.incident_management_incidents_total_unique_counts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.aggregated_metrics.product_analytics_test_metrics_union`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.aggregated_metrics.product_analytics_test_metrics_union`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
 | `skip_validation` | true |
 
 ## `counts_monthly.deployments`
@@ -144,6 +9701,253 @@ Total deployments count for recent 28 days
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 
+## `counts_monthly.failed_deployments`
+
+Total failed deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.failed_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.packages`
+
+Monthly count of Packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.packages`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` | ce |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.personal_snippets`
+
+Monthly count of Personal Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.personal_snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts_monthly.project_snippets`
+
+Monthly count of Project Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.project_snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts_monthly.projects_with_alerts_created`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.projects_with_alerts_created`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_monthly.snippets`
+
+Monthly count of All Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `counts_monthly.successful_deployments`
+
+Total successful deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_monthly.successful_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Database |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.compliance_features_track_unique_visits_union`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.compliance_features_track_unique_visits_union`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.i_testing_paid_monthly_active_user_total`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.incident_management_alerts_total_unique_counts`
+
+Count of unique users per week to take an action on an alert
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.incident_management_alerts_total_unique_counts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts`
+
+Count of unique users per week to take an action on an incident
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `counts_weekly.aggregated_metrics.product_analytics_test_metrics_union`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`counts_weekly.aggregated_metrics.product_analytics_test_metrics_union`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Database |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
 ## `database.adapter`
 
 This metric only returns a value of PostgreSQL in supported versions of GitLab. It could be removed from the usage ping. Historically MySQL was also supported.
@@ -154,13 +9958,51 @@ This metric only returns a value of PostgreSQL in supported versions of GitLab. 
 | `product_section` | enablement |
 | `product_stage` | enablement |
 | `product_group` | `group::enablement distribution` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` | Database |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
+
+## `database.pg_system_id`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`database.pg_system_id`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `database.version`
+
+The version of the PostgreSQL database.
+
+| field | value |
+| --- | --- |
+| `key_path` | **`database.version`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `collection` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
 
 ## `dependency_proxy_enabled`
 
@@ -172,13 +10014,32 @@ Whether dependency proxy is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` |  |
 | `tier` |  |
+| `skip_validation` | true |
+
+## `edition`
+
+Edition of GitLab such as EE, CE, Bronze, Silver, Gold
+
+| field | value |
+| --- | --- |
+| `key_path` | **`edition`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `collection` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 | `skip_validation` | true |
 
 ## `elasticsearch_enabled`
@@ -191,8 +10052,46 @@ Whether Elasticsearch is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `geo_enabled`
+
+Is Geo enabled?
+
+| field | value |
+| --- | --- |
+| `key_path` | **`geo_enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::geo` |
+| `product_category` | `collection` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `git.version`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`git.version`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
@@ -210,7 +10109,26 @@ Total GitLab Managed clusters both enabled and disabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `gitaly.filesystems`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitaly.filesystems`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
@@ -229,7 +10147,7 @@ Total Gitalty Servers
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
@@ -248,7 +10166,7 @@ Version of Gitaly
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -267,7 +10185,7 @@ Whether GitLab Pages is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -286,7 +10204,7 @@ The version number of GitLab Pages
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -305,13 +10223,32 @@ Whether shared runners is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` |  |
 | `tier` |  |
+| `skip_validation` | true |
+
+## `gitpod_enabled`
+
+Whether gitpod is enabled in the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`gitpod_enabled`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `integrations` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 | `skip_validation` | true |
 
 ## `grafana_link_enabled`
@@ -324,7 +10261,7 @@ Whether Grafana is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -343,7 +10280,7 @@ Whether gravatar is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -362,7 +10299,7 @@ The maximum active user count. Active is defined in UsersStatistics model.
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -381,7 +10318,45 @@ Host name of GitLab instance
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `ingress_modsecurity_enabled`
+
+Whether or not ModSecurity is enabled within Ingress
+
+| field | value |
+| --- | --- |
+| `key_path` | **`ingress_modsecurity_enabled`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `web_firewall` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `installation_type`
+
+The installation method used to install GitLab (Omnibus, Helm, etc)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`installation_type`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -400,7 +10375,7 @@ Whether auto DevOps is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -419,7 +10394,7 @@ Whether LDAP is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -438,7 +10413,7 @@ The date the license ends
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -457,7 +10432,7 @@ The ID of the license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -476,7 +10451,7 @@ The license key of the GitLab instance
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -495,7 +10470,7 @@ The plan of the GitLab license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -514,7 +10489,7 @@ The date the license starts
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -533,7 +10508,7 @@ Licese zuora_subscription_id
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -552,7 +10527,7 @@ Whether this is a trial license or not
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -571,7 +10546,7 @@ Date the license ends on
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -590,7 +10565,7 @@ The number of users included in the license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -609,7 +10584,7 @@ Company on the GitLab license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -628,7 +10603,7 @@ Email on the GitLab license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -647,13 +10622,32 @@ Name on the GitLab license
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `mail.smtp_server`
+
+The value of the SMTP server that is used
+
+| field | value |
+| --- | --- |
+| `key_path` | **`mail.smtp_server`** |
+| `product_section` | growth |
+| `product_stage` |  |
+| `product_group` | `group::acquisition` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 | `skip_validation` | true |
 
 ## `mattermost_enabled`
@@ -666,13 +10660,488 @@ Whether Mattermost is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` |  |
 | `tier` |  |
+| `skip_validation` | true |
+
+## `object_store.artifacts.enabled`
+
+Whether Object Storage is enabled for Artifacts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.artifacts.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.artifacts.object_store.background_upload`
+
+Whether Background Upload for Object Storage is enabled for Artifacts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.artifacts.object_store.background_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.artifacts.object_store.direct_upload`
+
+Whether Direct Upload for Object Storage is enabled for Artifacts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.artifacts.object_store.direct_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.artifacts.object_store.enabled`
+
+Whether Object Storage is enabled for Artifacts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.artifacts.object_store.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.artifacts.object_store.provider`
+
+What Object Storage provider has been configured for Artifacts
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.artifacts.object_store.provider`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.external_diffs.enabled`
+
+Whether Object Storage is enabled for External Diffs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.external_diffs.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.external_diffs.object_store.background_upload`
+
+Whether Background Upload for Object Storage is enabled for External Diffs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.external_diffs.object_store.background_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.external_diffs.object_store.direct_upload`
+
+Whether Direct Upload for Object Storage is enabled for External Diffs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.external_diffs.object_store.direct_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.external_diffs.object_store.enabled`
+
+Whether Object Storage is enabled for External Diffs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.external_diffs.object_store.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.external_diffs.object_store.provider`
+
+What Object Storage provider has been configured for External Diffs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.external_diffs.object_store.provider`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.lfs.enabled`
+
+Whether Object Storage is enabled for LFS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.lfs.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.lfs.object_store.background_upload`
+
+Whether Background Upload for Object Storage is enabled for LFS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.lfs.object_store.background_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.lfs.object_store.direct_upload`
+
+Whether Direct Upload for Object Storage is enabled for LFS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.lfs.object_store.direct_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.lfs.object_store.enabled`
+
+Whether Object Storage is enabled for LFS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.lfs.object_store.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.lfs.object_store.provider`
+
+What Object Storage provider has been configured for LFS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.lfs.object_store.provider`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.packages.enabled`
+
+Whether Object Storage is enabled for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.packages.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.packages.object_store.background_upload`
+
+Whether Background Upload for Object Storage is enabled for Packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.packages.object_store.background_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.packages.object_store.direct_upload`
+
+Whether Direct Upload for Object Storage is enabled for Packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.packages.object_store.direct_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.packages.object_store.enabled`
+
+Whether Object Storage is enabled for Packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.packages.object_store.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.packages.object_store.provider`
+
+What Object Storage provider has been configured for Packages
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.packages.object_store.provider`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.uploads.enabled`
+
+Whether Object Storage is enabled for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.uploads.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.uploads.object_store.background_upload`
+
+Whether Background Upload for Object Storage is enabled for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.uploads.object_store.background_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.uploads.object_store.direct_upload`
+
+Whether Direct Upload for Object Storage is enabled for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.uploads.object_store.direct_upload`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.uploads.object_store.enabled`
+
+Whether Object Storage is enabled for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.uploads.object_store.enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `object_store.uploads.object_store.provider`
+
+What Object Storage provider has been configured for Uploads
+
+| field | value |
+| --- | --- |
+| `key_path` | **`object_store.uploads.object_store.provider`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` | `operational_metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 | `skip_validation` | true |
 
 ## `omniauth_enabled`
@@ -685,7 +11154,7 @@ Whether OmniAuth is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -704,7 +11173,7 @@ Whether the bundled Prometheus is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -723,7 +11192,7 @@ Whether Prometheus Metrics endpoint is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
@@ -742,7 +11211,7 @@ When the Usage Ping computation was started
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `milestone` | 8.1 |
@@ -762,7 +11231,7 @@ When the core features were computed
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
@@ -781,12 +11250,5389 @@ When the EE-specific features were computed
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.analytics_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.analytics_total_unique_counts_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.analytics_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.analytics_total_unique_counts_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_contribution_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_contribution_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_contribution_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_contribution_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_insights_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_insights_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_insights_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_insights_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_issues_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_issues_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_issues_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_issues_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_merge_request_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_merge_request_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_merge_request_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_merge_request_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_productivity_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_productivity_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_productivity_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_productivity_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_valuestream_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_valuestream_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.g_analytics_valuestream_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.g_analytics_valuestream_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_cohorts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_cohorts_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_cohorts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_cohorts_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_dev_ops_score_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_dev_ops_score_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_dev_ops_score_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_dev_ops_score_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_instance_statistics_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_instance_statistics_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.i_analytics_instance_statistics_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.i_analytics_instance_statistics_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_code_reviews_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_code_reviews_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_code_reviews_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_code_reviews_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_insights_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_insights_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_insights_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_insights_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_issues_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_issues_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_issues_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_issues_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_merge_request_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_merge_request_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_merge_request_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_merge_request_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_pipelines_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_pipelines_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_pipelines_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_pipelines_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_repo_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_repo_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_repo_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_repo_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_valuestream_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_valuestream_monthly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.analytics.p_analytics_valuestream_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.analytics.p_analytics_valuestream_weekly`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::analytics` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_auto_devops_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_security_sast_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_security_sast_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_security_sast_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_security_sast_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.code_review_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.code_review_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.code_review_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.code_review_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_edit_mr_desc_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_edit_mr_desc_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_edit_mr_desc_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_edit_mr_desc_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_edit_mr_title_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_edit_mr_title_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_edit_mr_title_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_edit_mr_title_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_mr_diffs_monthly`
+
+Count of unique merge requests per week|month with diffs viewed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_mr_diffs_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_mr_diffs_weekly`
+
+Count of unique merge requests per week|month with diffs viewed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_mr_diffs_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly`
+
+Count of unique merge requests per week|month with diffs viewed file by file
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_weekly`
+
+Count of unique merge requests per week|month with diffs viewed file by file
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`
+
+Count of unique users per month who added a suggestion
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_add_suggestion_weekly`
+
+Count of unique users per week who added a suggestion
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_add_suggestion_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_monthly`
+
+Count of unique users per month who applied a suggestion
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_apply_suggestion_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_weekly`
+
+Count of unique users per week who applied a suggestion
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_apply_suggestion_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_added_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_added_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_approve_mr_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_approve_mr_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_assigned_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_assigned_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_assigned_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_assigned_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_close_mr_monthly`
+
+Count of unique users per week|month who closed a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_close_mr_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_close_mr_weekly`
+
+Count of unique users per week|month who closed a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_close_mr_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_monthly`
+
+Count of unique users per week|month who commented on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_comment_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_weekly`
+
+Count of unique users per week|month who commented on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_comment_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_monthly`
+
+Count of unique users per week|month who created a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_mr_weekly`
+
+Count of unique users per week|month who created a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_mr_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_review_note_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_review_note_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_create_review_note_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_create_review_note_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly`
+
+Count of unique users per week|month who edited a comment on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly`
+
+Count of unique users per week|month who edited a comment on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_marked_as_draft_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_merge_mr_monthly`
+
+Count of unique users per week|month who merged a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_merge_mr_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_merge_mr_weekly`
+
+Count of unique users per week|month who merged a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_merge_mr_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_publish_review_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_publish_review_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_publish_review_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_publish_review_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_monthly`
+
+Count of unique users per week|month who removed a comment on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_weekly`
+
+Count of unique users per week|month who removed a comment on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_reopen_mr_monthly`
+
+Count of unique users per week|month who reopened a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_reopen_mr_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_reopen_mr_weekly`
+
+Count of unique users per week|month who reopened a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_reopen_mr_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_resolve_thread_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_resolve_thread_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_resolve_thread_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_resolve_thread_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_review_requested_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_review_requested_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_review_requested_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_review_requested_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_monthly`
+
+Count of unique users per week|month with diffs viewed file by file
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_single_file_diffs_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_weekly`
+
+Count of unique users per week|month with diffs viewed file by file
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_single_file_diffs_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unapprove_mr_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unapprove_mr_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unresolve_thread_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_unresolve_thread_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.a_compliance_audit_events_api_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.a_compliance_audit_events_api_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.a_compliance_audit_events_api_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.a_compliance_audit_events_api_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.compliance_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.compliance_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.compliance_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.compliance_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.g_compliance_audit_events_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.g_compliance_audit_events_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.g_compliance_audit_events_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.g_compliance_audit_events_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.g_compliance_dashboard_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.g_compliance_dashboard_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.g_compliance_dashboard_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.g_compliance_dashboard_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.i_compliance_audit_events_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.i_compliance_audit_events_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.i_compliance_audit_events_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.i_compliance_audit_events_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.i_compliance_credential_inventory_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.i_compliance_credential_inventory_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.compliance.i_compliance_credential_inventory_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.compliance.i_compliance_credential_inventory_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.ecosystem_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.ecosystem_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_sfe_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_sfe_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_snippet_ide_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_snippet_ide_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_snippet_ide_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_snippet_ide_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_sse_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_sse_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_sse_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_sse_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_web_ide_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_web_ide_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.g_edit_by_web_ide_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.g_edit_by_web_ide_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.ide_edit_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.ide_edit_total_unique_counts_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.ide_edit.ide_edit_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.ide_edit.ide_edit_total_unique_counts_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_assigned_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_assigned_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_status_changed_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_status_changed_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_todo_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_todo_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_alert_todo_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_alert_todo_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_assigned_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_assigned_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_assigned_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_assigned_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_change_confidential_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_change_confidential_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_closed_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_closed_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_closed_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_closed_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_comment_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_comment_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_comment_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_comment_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_created_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_created_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_created_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_created_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_published_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_published_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_published_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_published_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_relate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_relate_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_relate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_relate_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_reopened_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_reopened_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_reopened_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_reopened_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_todo_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_todo_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_todo_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_todo_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management.incident_management_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management.incident_management_total_unique_counts_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly`
+
+Count of unique users per month to create an incident corresponding to an alert
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_weekly`
+
+Count of unique users per week to create an incident corresponding to an alert
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_weekly`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_monthly`
+
+Count of MAU adding an issue to an epic
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_weekly`
+
+Count of WAU adding an issue to an epic
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_monthly`
+
+Count of MAU changing issue assignees
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_weekly`
+
+Count of WAU changing issue assignees
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_monthly`
+
+Count of MAU changing the epic on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_weekly`
+
+Count of WAU changing the epic on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_closed_monthly`
+
+Count of MAU closing an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_closed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_closed_weekly`
+
+Count of WAU closing an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_closed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_monthly`
+
+Count of MAU commenting on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_added_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_weekly`
+
+Count of WAU commenting on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_added_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly`
+
+Count of MAU editing a comment on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly`
+
+Count of WAU editing a comment on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_monthly`
+
+Count of MAU deleting a comment from an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_weekly`
+
+Count of WAU deleting a comment from an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_created_monthly`
+
+Count of MAU creating new issues
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_created_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_created_weekly`
+
+Count of WAU creating issues
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_created_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_monthly`
+
+Count of MAU referencing an issue from somewhere else
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_weekly`
+
+Count of WAU referncing an issue from somewhere else
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_monthly`
+
+Count of MAU editing an issue description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_description_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_weekly`
+
+Count of WAU editing an issue description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_description_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly`
+
+Count of MAU adding a design to an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly`
+
+Count of WAU adding a design to an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly`
+
+Count of MAU modifying a design on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly`
+
+Count of WAU modifying a design on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly`
+
+Count of MAU removing a design from an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly`
+
+Count of WAU removing a design from an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_monthly`
+
+Count of MAU changing an issue due date
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_weekly`
+
+Count of WAU changing an issue due date
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_monthly`
+
+Count of MAU changing the health status on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_weekly`
+
+Count of WAU changing the health status on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_monthly`
+
+Count of MAU changing an issue's iteration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_weekly`
+
+Count of WAU changing an issue's iteration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_monthly`
+
+Count of MAU changing an issue's label
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_label_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_weekly`
+
+Count of WAU changing an issue's label
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_label_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_locked_monthly`
+
+Count of MAU locking an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_locked_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_locked_weekly`
+
+Count of WAU locking an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_locked_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_monthly`
+
+Count of MAU making an issue confidential
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_weekly`
+
+Count of WAU making an issue confidential
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_monthly`
+
+Count of MAU making an issue not confidential
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_made_visible_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_weekly`
+
+Count of WAU making an issue not confidential
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_made_visible_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_monthly`
+
+Count of MAU marking an issue as a duplicate
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_weekly`
+
+Count of WAU marking an issue as a duplicate
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_monthly`
+
+Count of MAU changing an issue's milestone
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_weekly`
+
+Count of WAU changing an issue's milestone
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_moved_monthly`
+
+Count of MAU moving an issue to another project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_moved_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_moved_weekly`
+
+Count of WAU moving an issue to another project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_moved_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_related_monthly`
+
+Count of MAU relating an issue to another issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_related_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_related_weekly`
+
+Count of WAU relating an issue to another issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_related_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_monthly`
+
+Count of MAU removing an issue from an epic
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_reopened_monthly`
+
+Count of MAU re-opening a closed issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_reopened_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_reopened_weekly`
+
+Count of WAU re-opening a closed issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_reopened_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_monthly`
+
+Count of MAU changing an issue time estimate
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_weekly`
+
+Count of WAU changing an issue time estimate
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_monthly`
+
+Count of MAU recording time spent on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_weekly`
+
+Count of WAU recording time spent on an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_monthly`
+
+Count of MAU editing an issue title
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_title_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
 | `tier` |  |
 | `skip_validation` | true |
 
@@ -799,7 +16645,7 @@ Distinct users count that changed issue title in a group for last recent week
 | `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly`** |
 | `product_stage` | plan |
 | `product_group` | `group::project management` |
-| `product_category` | issue_tracking |
+| `product_category` | `issue_tracking` |
 | `value_type` | number |
 | `status` | data_available |
 | `milestone` | 13.6 |
@@ -808,6 +16654,3958 @@ Distinct users count that changed issue title in a group for last recent week
 | `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_unlocked_monthly`
+
+Count of MAU marking an issue as blocked or blocked by
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_unlocked_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_unlocked_weekly`
+
+Count of WAU marking an issue as blocked or blocked by
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_unlocked_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_monthly`
+
+Count of MAU unrelating an issue to another issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_unrelated_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_weekly`
+
+Count of WAU unrelating an issue to another issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_unrelated_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_monthly`
+
+Count of MAU changing an issue's weight
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_weekly`
+
+Count of WAU changing an issue's weight
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly`
+
+Count of MAU taking an action related to an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly`
+
+Count of WAU taking an action related to an issue
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` | `issue_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_approve_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_approve_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_approve_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_approve_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_multiple_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_multiple_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_multiple_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_multiple_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_reviewer_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_reviewer_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_self_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_self_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_self_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_self_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_single_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_single_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_assign_single_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_assign_single_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_award_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_award_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_award_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_award_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_board_move_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_board_move_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_board_move_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_board_move_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_child_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_child_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_child_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_child_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_clear_weight_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_clear_weight_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_clear_weight_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_clear_weight_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_clone_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_clone_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_clone_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_clone_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_close_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_close_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_close_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_close_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_confidential_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_confidential_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_confidential_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_confidential_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_create_merge_request_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_create_merge_request_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_create_merge_request_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_create_merge_request_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_done_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_done_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_done_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_done_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_draft_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_draft_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_draft_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_draft_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_due_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_due_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_due_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_due_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_duplicate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_duplicate_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_duplicate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_duplicate_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_estimate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_estimate_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_estimate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_estimate_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_iteration_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_iteration_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_iteration_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_iteration_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_label_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_label_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_label_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_label_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_lock_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_lock_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_lock_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_lock_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_merge_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_merge_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_merge_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_merge_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_milestone_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_milestone_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_milestone_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_milestone_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_move_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_move_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_move_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_move_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_parent_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_parent_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_parent_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_parent_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_promote_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_promote_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_promote_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_promote_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_publish_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_publish_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_publish_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_publish_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reassign_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reassign_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reassign_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reassign_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_rebase_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_rebase_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_rebase_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_rebase_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_relabel_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_relabel_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_relabel_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_relabel_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_relate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_relate_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_relate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_relate_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_child_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_child_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_due_date_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_due_date_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_due_date_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_due_date_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_estimate_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_estimate_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_estimate_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_estimate_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_iteration_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_iteration_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_iteration_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_iteration_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_milestone_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_milestone_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_milestone_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_milestone_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_time_spent_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_time_spent_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_zoom_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_zoom_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_remove_zoom_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_remove_zoom_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reopen_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reopen_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_reopen_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_reopen_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_shrug_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_shrug_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_shrug_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_shrug_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_spend_add_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_spend_add_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_spend_add_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_spend_add_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_spend_subtract_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_spend_subtract_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_spend_subtract_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_spend_subtract_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_submit_review_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_submit_review_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_submit_review_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_submit_review_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_subscribe_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_subscribe_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_subscribe_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_subscribe_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_tableflip_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_tableflip_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_tableflip_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_tableflip_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_tag_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_tag_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_tag_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_tag_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_target_branch_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_target_branch_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_target_branch_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_target_branch_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_title_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_title_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_title_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_title_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_todo_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_todo_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_todo_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_todo_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_all_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_all_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_all_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_all_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_specific_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_specific_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unassign_specific_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unassign_specific_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlabel_all_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlabel_all_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlabel_all_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlabel_all_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlabel_specific_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlabel_specific_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlock_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlock_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unlock_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unlock_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unsubscribe_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unsubscribe_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_unsubscribe_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_unsubscribe_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_weight_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_weight_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_weight_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_weight_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_wip_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_wip_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_wip_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_wip_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_zoom_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_zoom_monthly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.i_quickactions_zoom_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.i_quickactions_zoom_weekly`** |
+| `product_section` | dev |
+| `product_stage` | plan |
+| `product_group` | `group::project management` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.quickactions_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.quickactions_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.quickactions.quickactions_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.quickactions.quickactions_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_advanced_monthly`
+
+Caluated unique users to visit Global Search with AGS enabled by month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_advanced_monthly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_advanced_weekly`
+
+Caluated unique users to visit Global Search with AGS enabled by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_advanced_weekly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_paid_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_paid_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_paid_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_paid_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_total_monthly`
+
+Caluated unique users to visit Global Search by month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_total_monthly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.i_search_total_weekly`
+
+Caluated unique users to visit Global Search by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.i_search_total_weekly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee, ce |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.search_total_unique_counts_monthly`
+
+Caluated unique users to visit Global Search by month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.search_total_unique_counts_monthly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.search.search_total_unique_counts_weekly`
+
+Caluated unique users to visit Global Search by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.search.search_total_unique_counts_weekly`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee, ce |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.snippets.i_snippets_show_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.snippets.i_snippets_show_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.snippets.i_snippets_show_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.snippets.i_snippets_show_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.design_action_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.design_action_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.design_action_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.design_action_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.git_write_action_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.git_write_action_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.git_write_action_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.git_write_action_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.i_source_code_code_intelligence_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.i_source_code_code_intelligence_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.i_source_code_code_intelligence_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.i_source_code_code_intelligence_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.merge_request_action_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.merge_request_action_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.merge_request_action_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.merge_request_action_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.project_action_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.project_action_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.project_action_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.project_action_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.wiki_action_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.wiki_action_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.source_code.wiki_action_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.source_code.wiki_action_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.terraform.p_terraform_state_api_unique_users_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.terraform.p_terraform_state_api_unique_users_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_full_code_quality_report_total_monthly`
+
+Count of unique users per week|month who visit the full code quality report
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_full_code_quality_report_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_quality` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_full_code_quality_report_total_weekly`
+
+Count of unique users per week|month who visit the full code quality report
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_full_code_quality_report_total_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_quality` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_monthly`
+
+Count of unique users per week|month who click on a project link in the group code coverage table
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_analytics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_monthly`
+
+Count of unique users per week|month who visited the group code coverage page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_weekly`
+
+Count of unique users per week|month who visited the group code coverage page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_load_performance_widget_total_monthly`
+
+Count of unique users per week|month who expanded the load performance report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_load_performance_widget_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `load_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_load_performance_widget_total_weekly`
+
+Count of unique users per week|month who expanded the load performance report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_load_performance_widget_total_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `load_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_monthly`
+
+Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_weekly`
+
+Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee, ce |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_metrics_report_widget_total_monthly`
+
+Count of unique users per week|month who expanded the metrics report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_metrics_report_widget_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_metrics_report_widget_total_weekly`
+
+Count of unique users per week|month who expanded the metrics report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_metrics_report_widget_total_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_test_case_parsed_monthly`
+
+Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_test_case_parsed_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_test_case_parsed_weekly`
+
+Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_test_case_parsed_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `code_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee, ce |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_web_performance_widget_total_monthly`
+
+Count of unique users per week|month who expanded the browser performance report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_web_performance_widget_total_monthly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `web_performance` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.i_testing_web_performance_widget_total_weekly`
+
+Count of unique users per week|month who expanded the browser performance report MR widget
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.i_testing_web_performance_widget_total_weekly`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::testing` |
+| `product_category` | `web_performance` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.testing_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.testing_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.testing.testing_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.testing.testing_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_composer_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_composer_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_composer_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_composer_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_conan_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_conan_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_conan_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_conan_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_container_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_container_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_container_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_container_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_debian_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_debian_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_debian_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_debian_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_generic_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_generic_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_generic_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_generic_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_golang_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_golang_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_golang_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_golang_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_maven_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_maven_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_maven_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_maven_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_npm_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_npm_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_npm_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_npm_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_nuget_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_nuget_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_nuget_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_nuget_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_pypi_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_pypi_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_pypi_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_pypi_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_tag_user_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_tag_user_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.i_package_tag_user_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.i_package_tag_user_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` | Redis |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` | Redis |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
 
 ## `reply_by_email_enabled`
 
@@ -819,13 +20617,127 @@ Whether incoming email is setup
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` |  |
 | `tier` |  |
+| `skip_validation` | true |
+
+## `search_unique_visits.i_search_advanced`
+
+Caluated unique users to visit Global Search with AGS enabled by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`search_unique_visits.i_search_advanced`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `search_unique_visits.i_search_paid`
+
+Caluated unique users to visit Global Search from users with available paid license enabled by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`search_unique_visits.i_search_paid`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `search_unique_visits.i_search_total`
+
+Caluated unique users to visit Global Search by week 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`search_unique_visits.i_search_total`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `search_unique_visits.search_unique_visits_for_any_target_monthly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`search_unique_visits.search_unique_visits_for_any_target_monthly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `search_unique_visits.search_unique_visits_for_any_target_weekly`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`search_unique_visits.search_unique_visits_for_any_target_weekly`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 7d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `settings.ldap_encrypted_secrets_enabled`
+
+Is encrypted LDAP secrets configured?
+
+| field | value |
+| --- | --- |
+| `key_path` | **`settings.ldap_encrypted_secrets_enabled`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `global_search` |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 | `skip_validation` | true |
 
 ## `signup_enabled`
@@ -838,13 +20750,6074 @@ Whether public signup is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` |  |
 | `tier` |  |
+| `skip_validation` | true |
+
+## `topology.duration_s`
+
+Time it took to collect topology data
+
+| field | value |
+| --- | --- |
+| `key_path` | **`topology.duration_s`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Prometheus |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `topology.failures`
+
+Contains information about failed queries
+
+| field | value |
+| --- | --- |
+| `key_path` | **`topology.failures`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::memory` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` | Prometheus |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_applications_cert_managers`
+
+Total GitLab Managed clusters with GitLab Managed App:Cert Manager installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_applications_cert_managers`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_applications_helm`
+
+Total GitLab Managed clusters with GitLab Managed App:Helm enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_applications_helm`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_applications_ingress`
+
+Total GitLab Managed clusters with GitLab Managed App:Ingress installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_applications_ingress`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_applications_knative`
+
+Total GitLab Managed clusters with GitLab Managed App:Knative installed
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_applications_knative`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_disabled`
+
+Total GitLab Managed disabled clusters
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_enabled`
+
+Total GitLab Managed clusters currently enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_management_project`
+
+Total GitLab Managed clusters with defined cluster management project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_management_project`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_platforms_eks`
+
+Total GitLab Managed clusters provisioned with GitLab on AWS EKS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_platforms_eks`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_platforms_gke`
+
+Total GitLab Managed clusters provisioned with GitLab on GCE GKE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_platforms_gke`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.clusters_platforms_user`
+
+Total GitLab Managed clusters that are user provisioned
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.clusters_platforms_user`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.group_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.group_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.group_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.group_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.instance_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.instance_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.instance_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.instance_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.project_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.project_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.project_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.project_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.projects_slack_notifications_active`
+
+Unique projects with Slack webhook enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.projects_slack_notifications_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `chatops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.projects_slack_slash_active`
+
+Unique projects with Slack ‘/’ commands enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.projects_slack_slash_active`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `chatops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.configure.projects_with_prometheus_alerts`
+
+Projects with Prometheus alerting enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.configure.projects_with_prometheus_alerts`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.approval_project_rules`
+
+Number of project approval rules
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.approval_project_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.approval_project_rules_with_exact_required_approvers`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.approval_project_rules_with_exact_required_approvers`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.approval_project_rules_with_less_approvers_than_required`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.approval_project_rules_with_less_approvers_than_required`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.approval_project_rules_with_more_approvers_than_required`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.approval_project_rules_with_more_approvers_than_required`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.approval_project_rules_with_target_branch`
+
+Number of project approval rules with not default target branch
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.approval_project_rules_with_target_branch`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.deploy_keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.deploy_keys`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.keys`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.merge_requests`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.merge_requests`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.merge_requests_with_added_rules`
+
+Merge Requests with added rules
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.merge_requests_with_added_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.merge_requests_with_optional_codeowners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.merge_requests_with_optional_codeowners`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.merge_requests_with_overridden_project_rules`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.merge_requests_with_overridden_project_rules`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.merge_requests_with_required_codeowners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.merge_requests_with_required_codeowners`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_enforcing_code_owner_approval`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_enforcing_code_owner_approval`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_imported_from_github`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_imported_from_github`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_with_disable_overriding_approvers_per_merge_request`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_with_disable_overriding_approvers_per_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_with_repositories_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_with_repositories_enabled`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_with_sectional_code_owner_rules`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_with_sectional_code_owner_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.projects_without_disable_overriding_approvers_per_merge_request`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.projects_without_disable_overriding_approvers_per_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.protected_branches`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.protected_branches`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.remote_mirrors`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.remote_mirrors`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.snippets`
+
+Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.suggestions`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.suggestions`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.total_number_of_locked_files`
+
+The total number of exclusive file locks (through the CLI)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.total_number_of_locked_files`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.total_number_of_path_locks`
+
+The total number of default branch locks done through the GitLab UI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.total_number_of_path_locks`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.users_using_lfs_locks`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.users_using_lfs_locks`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.create.users_using_path_locks`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.create.users_using_path_locks`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.bulk_imports.gitlab`
+
+Distinct count of users that triggered an import using the Group Migration tool
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.bulk_imports.gitlab`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.bulk_imports.gitlab_v1`
+
+Count of imports using GitLab Migration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.bulk_imports.gitlab_v1`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.events`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.events`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.group_imports.gitlab_migration`
+
+Count of groups imported using GitLab Migration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.group_imports.gitlab_migration`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.group_imports.group_import`
+
+Count of group imports using Group Import/Export
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.group_imports.group_import`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.group_saml_enabled`
+
+Has the instance enabled Group SAML SSO `https://docs.gitlab.com/ee/user/group/saml_sso/` on at least 1 group?
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.group_saml_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.groups`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.groups`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.groups_imported`
+
+Distinct count of users that imported groups using Group Import
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.groups_imported`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issue_imports.csv`
+
+Count of (attempted) imports from csv files
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issue_imports.csv`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issue_imports.fogbugz`
+
+Count of projects imported from fogbugz
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issue_imports.fogbugz`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issue_imports.jira`
+
+Count of projects imported from Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issue_imports.jira`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issue_imports.phabricator`
+
+Count of projects imported from phabricator
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issue_imports.phabricator`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issues_imported.csv`
+
+Distinct count of users that imported issues into projects using CSV upload
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issues_imported.csv`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issues_imported.fogbugz`
+
+Distinct count of users that imported issues into projects using FogBugz 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issues_imported.fogbugz`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issues_imported.jira`
+
+Distinct count of users that imported issues into projects using Jira
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issues_imported.jira`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.issues_imported.phabricator`
+
+Distinct count of users that imported issues into projects using Phabricator
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.issues_imported.phabricator`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.ldap_admin_sync_enabled`
+
+Has the instance configured LDAP Admin Sync `https://docs.gitlab.com/ee/administration/auth/ldap/#administrator-sync-starter-only`?
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.ldap_admin_sync_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.ldap_group_sync_enabled`
+
+Has the instance configured LDAP Group Sync `https://docs.gitlab.com/ee/administration/auth/ldap/#group-sync-starter-only`?
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.ldap_group_sync_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.ldap_keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.ldap_keys`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.ldap_servers`
+
+Number of LDAP servers configured for the instance `https://docs.gitlab.com/ee/administration/auth/ldap/#multiple-ldap-servers-starter-only`
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.ldap_servers`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.ldap_users`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.ldap_users`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.omniauth_providers`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.omniauth_providers`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.bitbucket`
+
+Count of projects imported from Bitbucket
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.bitbucket`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.bitbucket_server`
+
+Count of projects imported from Bitbucket Server
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.bitbucket_server`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.git`
+
+Count of projects imported by URL
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.git`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.gitea`
+
+Count of projects imported from Gitea
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.gitea`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.github`
+
+Count of projects imported from GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.github`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.gitlab`
+
+Count of projects imported from GitLab.com
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.gitlab`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.gitlab_migration`
+
+Count of projects imported using GitLab Migration
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.gitlab_migration`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.gitlab_project`
+
+Count of projects imported using Project Import/Export
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.gitlab_project`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.project_imports.manifest`
+
+Count of projects imported using manifst file
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.project_imports.manifest`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.bitbucket`
+
+Distinct count of users that imported projects from Bitbucket Cloud 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.bitbucket`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.bitbucket_server`
+
+Distinct count of users that imported projects from Bitbucket Server 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.bitbucket_server`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.git`
+
+Distinct count of users that imported projects using Import by URL 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.git`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.gitea`
+
+Distinct count of users that imported projects from Gitea 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.gitea`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.github`
+
+Distinct count of users that imported projects from GitHub
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.github`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.gitlab`
+
+Distinct count of users that imported projects from GitLab.com 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.gitlab`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.gitlab_project`
+
+Distinct count of users that imported projects using Project Import/Export 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.gitlab_project`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.manifest`
+
+Distinct count of users that imported projects using Manifest file 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.manifest`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_imported.total`
+
+Total count of all projects imported with import_source NOT NULL
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_imported.total`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.projects_with_compliance_framework`
+
+Number of projects labeled with a compliance framework label [see](https://gitlab.com/gitlab-org/gitlab/-/issues/118671)
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.projects_with_compliance_framework`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.unique_users_all_imports`
+
+Distinct count of users that triggered any kind of import
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.unique_users_all_imports`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.user_auth_by_provider.standard`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.user_auth_by_provider.standard`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.user_auth_by_provider.two-factor`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-u2f-device`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-u2f-device`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-webauthn-device`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-webauthn-device`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.users_created`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.users_created`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.manage.value_stream_management_customized_group_stages`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.manage.value_stream_management_customized_group_stages`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.clusters`
+
+Total GitLab Managed clusters both enabled and disabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.clusters`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.clusters_applications_prometheus`
+
+Total GitLab Managed clusters with Prometheus enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.clusters_applications_prometheus`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.operations_dashboard_default_dashboard`
+
+Active users with enabled operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.operations_dashboard_default_dashboard`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.operations_dashboard_users_with_projects_added`
+
+Active users with projects on operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.operations_dashboard_users_with_projects_added`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.projects_incident_sla_enabled`
+
+Projects where Incident SLA is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.projects_incident_sla_enabled`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `error_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.projects_with_alert_incidents`
+
+Count of unique projects with an incident from an alert
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.projects_with_alert_incidents`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.projects_with_error_tracking_enabled`
+
+Projects where error tracking is enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.projects_with_error_tracking_enabled`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `error_tracking` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.projects_with_incidents`
+
+Count of unique projects with an incident
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.projects_with_incidents`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.monitor.projects_with_tracing_enabled`
+
+Projects with tracing enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.monitor.projects_with_tracing_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `tracing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.package.projects_with_packages`
+
+Projects with package registry configured
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.package.projects_with_packages`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.assignee_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.assignee_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.epics`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.epics`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.issues`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.issues`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.label_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.label_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.milestone_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.milestone_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.notes`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.notes`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.projects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.projects`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.projects_jira_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.projects_jira_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.projects_jira_dvcs_cloud_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.projects_jira_dvcs_cloud_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.projects_jira_dvcs_server_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.projects_jira_dvcs_server_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.service_desk_enabled_projects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.service_desk_enabled_projects`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.service_desk_issues`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.service_desk_issues`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.plan.todos`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.plan.todos`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.release.deployments`
+
+Unique users triggering deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.release.deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.release.failed_deployments`
+
+Total failed deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.release.failed_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.release.projects_mirrored_with_pipelines_enabled`
+
+Projects with repository mirroring enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.release.projects_mirrored_with_pipelines_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.release.releases`
+
+Unique users creating release tags
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.release.releases`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.release.successful_deployments`
+
+Total successful deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.release.successful_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.api_fuzzing_scans`
+
+Counts API fuzzing jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.api_fuzzing_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.container_scanning_scans`
+
+Counts container scanning jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.container_scanning_scans`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.coverage_fuzzing_scans`
+
+Counts fuzzing jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.coverage_fuzzing_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.dast_scans`
+
+Counts dast jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.dast_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.dependency_scanning_scans`
+
+Counts dependency scanning jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.dependency_scanning_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.sast_scans`
+
+Counts sast jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.sast_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.secret_detection_scans`
+
+Counts secret detection jobs 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.secret_detection_scans`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_api_fuzzing_dnd_jobs`
+
+Count of API Fuzzing `docker-in-docker` jobs by job name
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_api_fuzzing_dnd_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_api_fuzzing_jobs`
+
+Count of API Fuzzing jobs by job name
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_api_fuzzing_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_container_scanning_jobs`
+
+no idea, Count of Container Scanning jobs run, it implies user but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_container_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_coverage_fuzzing_jobs`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_coverage_fuzzing_jobs`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_dast_jobs`
+
+Count of DAST jobs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_dast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::dynamic analysis` |
+| `product_category` | `dynamic_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_dependency_scanning_jobs`
+
+no idea, Count of Dependency Scanning jobs run, it implies user but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_dependency_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_license_management_jobs`
+
+no idea, Count of License Scanning jobs run, it implies user but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_license_management_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `license_compliance` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_preferences_group_overview_security_dashboard`
+
+Users who set personal preference to see Details on Group overview page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_preferences_group_overview_security_dashboard`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::threat insights` |
+| `product_category` | `vulnerability_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_sast_jobs`
+
+Count of SAST jobs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_sast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `static_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_secret_detection_jobs`
+
+Count of Secret Detection Jobs
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_secret_detection_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `secret_detection` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.secure.user_unique_users_all_secure_scanners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.secure.user_unique_users_all_secure_scanners`** |
+| `product_section` | sec |
+| `product_stage` |  |
+| `product_group` | `group::secure` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_builds`
+
+Unique builds in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_builds`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_external_pipelines`
+
+Total pipelines in external repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_external_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_internal_pipelines`
+
+Total pipelines in GitLab repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_internal_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_pipeline_config_auto_devops`
+
+Total pipelines from an Auto DevOps template
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_pipeline_config_auto_devops`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_pipeline_config_repository`
+
+Total Pipelines from templates in repository
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_pipeline_config_repository`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_pipeline_schedules`
+
+Pipeline schedules in GitLab
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_pipeline_schedules`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_pipelines`
+
+Distinct Users triggering Total pipelines
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.ci_triggers`
+
+Total configured Triggers in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.ci_triggers`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.clusters_applications_runner`
+
+Total GitLab Managed clusters with Runner enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.clusters_applications_runner`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::runner` |
+| `product_category` | `runner` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage.verify.projects_reporting_ci_cd_back_to_github`
+
+Projects with a GitHub service pipeline enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage.verify.projects_reporting_ci_cd_back_to_github`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | all |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_applications_cert_managers`
+
+Total GitLab Managed clusters with Cert Manager enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_applications_cert_managers`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_applications_helm`
+
+Total GitLab Managed clusters with Helm enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_applications_helm`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_applications_ingress`
+
+Total GitLab Managed clusters with Ingress enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_applications_ingress`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_applications_knative`
+
+Total GitLab Managed clusters with Knative enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_applications_knative`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_disabled`
+
+Total GitLab Managed disabled clusters
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_enabled`
+
+Total GitLab Managed clusters currently enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_management_project`
+
+Total GitLab Managed clusters with defined cluster management project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_management_project`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_platforms_eks`
+
+Total GitLab Managed clusters provisioned with GitLab on AWS EKS
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_platforms_eks`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_platforms_gke`
+
+Total GitLab Managed clusters provisioned with GitLab on GCE GKE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_platforms_gke`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.clusters_platforms_user`
+
+Total GitLab Managed clusters that are user provisioned
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.clusters_platforms_user`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.group_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.group_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.group_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to groups
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.group_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.instance_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.instance_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.instance_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to the instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.instance_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.project_clusters_disabled`
+
+Total GitLab Managed disabled clusters attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.project_clusters_disabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.project_clusters_enabled`
+
+Total GitLab Managed enabled clusters attached to projects
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.project_clusters_enabled`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `kubernetes_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.projects_slack_notifications_active`
+
+Unique projects with Slack webhook enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.projects_slack_notifications_active`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `chatops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.projects_slack_slash_active`
+
+Unique projects with Slack ‘/’ commands enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.projects_slack_slash_active`** |
+| `product_section` | ops |
+| `product_stage` | configure |
+| `product_group` | `group::configure` |
+| `product_category` | `chatops` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.configure.projects_with_prometheus_alerts`
+
+Projects with Prometheus alerting enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.configure.projects_with_prometheus_alerts`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `design_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_git_write`
+
+Aggregated value for wiki, design and project repo actions
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_git_write`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit`
+
+Count unique edit actions when users used an IDE, no matter which one
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit`
+
+Count unique edit actions using the single file editor
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_snippet_editor_edit`
+
+Count unique edit actions using the snippet editor
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_snippet_editor_edit`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_sse_edit`
+
+Count unique edit actions using the static site editor
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_sse_edit`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_web_ide_edit`
+
+Count unique edit actions using the web IDE
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_web_ide_edit`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `web_ide` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.action_monthly_active_users_wiki_repo`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.action_monthly_active_users_wiki_repo`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::knowledge` |
+| `product_category` | `wiki` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.approval_project_rules`
+
+Number of project approval rules
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.approval_project_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.approval_project_rules_with_exact_required_approvers`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.approval_project_rules_with_exact_required_approvers`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.approval_project_rules_with_less_approvers_than_required`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.approval_project_rules_with_less_approvers_than_required`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.approval_project_rules_with_more_approvers_than_required`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.approval_project_rules_with_more_approvers_than_required`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.approval_project_rules_with_target_branch`
+
+Number of project approval rules with not default target branch
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.approval_project_rules_with_target_branch`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.deploy_keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.deploy_keys`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.keys`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests_users`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests_users`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests_with_added_rules`
+
+Merge Requests with added rules
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests_with_added_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests_with_optional_codeowners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests_with_optional_codeowners`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests_with_overridden_project_rules`
+
+Number of merge requests that have local rules that have overwritten a project rule
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests_with_overridden_project_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.merge_requests_with_required_codeowners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.merge_requests_with_required_codeowners`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_enforcing_code_owner_approval`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_enforcing_code_owner_approval`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_imported_from_github`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_imported_from_github`** |
+| `product_section` | dev |
+| `product_stage` | manage |
+| `product_group` | `group::import` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_with_disable_overriding_approvers_per_merge_request`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_with_disable_overriding_approvers_per_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_with_repositories_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_with_repositories_enabled`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_with_sectional_code_owner_rules`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_with_sectional_code_owner_rules`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.projects_without_disable_overriding_approvers_per_merge_request`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.projects_without_disable_overriding_approvers_per_merge_request`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.protected_branches`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.protected_branches`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.remote_mirrors`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.remote_mirrors`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.snippets`
+
+Monthly Snippets
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.snippets`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::editor` |
+| `product_category` | `snippets` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.suggestions`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.suggestions`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.total_number_of_locked_files`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.total_number_of_locked_files`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.total_number_of_path_locks`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.total_number_of_path_locks`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.users_using_lfs_locks`
+
+Number of users that have used default branch locks through the UI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.users_using_lfs_locks`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.create.users_using_path_locks`
+
+Number of users that have used exclusive file locks through the CLI
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.create.users_using_path_locks`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::source code` |
+| `product_category` | `source_code_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.bulk_imports.gitlab`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.bulk_imports.gitlab`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.bulk_imports.gitlab_v1`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.bulk_imports.gitlab_v1`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.events`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.events`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.group_imports.gitlab_migration`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.group_imports.gitlab_migration`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.group_imports.group_import`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.group_imports.group_import`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.group_saml_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.group_saml_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.groups`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.groups`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.groups_imported`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.groups_imported`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issue_imports.csv`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issue_imports.csv`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issue_imports.fogbugz`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issue_imports.fogbugz`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issue_imports.jira`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issue_imports.jira`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issue_imports.phabricator`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issue_imports.phabricator`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issues_imported.csv`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issues_imported.csv`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issues_imported.fogbugz`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issues_imported.fogbugz`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issues_imported.jira`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issues_imported.jira`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.issues_imported.phabricator`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.issues_imported.phabricator`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.ldap_admin_sync_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.ldap_admin_sync_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.ldap_group_sync_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.ldap_group_sync_enabled`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | boolean |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.ldap_keys`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.ldap_keys`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.ldap_servers`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.ldap_servers`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.ldap_users`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.ldap_users`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.omniauth_providers`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.omniauth_providers`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.bitbucket`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.bitbucket`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.bitbucket_server`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.bitbucket_server`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.git`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.git`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.gitea`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.gitea`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.github`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.github`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.gitlab`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.gitlab`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.gitlab_migration`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.gitlab_migration`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.gitlab_project`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.gitlab_project`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.project_imports.manifest`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.project_imports.manifest`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.bitbucket`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket_server`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.bitbucket_server`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.git`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.git`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.gitea`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.gitea`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.github`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.github`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.gitlab`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.gitlab`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.gitlab_project`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.gitlab_project`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.manifest`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.manifest`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_imported.total`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_imported.total`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.projects_with_compliance_framework`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.projects_with_compliance_framework`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.unique_users_all_imports`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.unique_users_all_imports`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.google_oauth2`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.user_auth_by_provider.google_oauth2`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.standard`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.user_auth_by_provider.standard`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-u2f-device`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-u2f-device`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-webauthn-device`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-webauthn-device`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.users_created`
+
+Number of users created in the month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.users_created`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.manage.value_stream_management_customized_group_stages`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.manage.value_stream_management_customized_group_stages`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::manage` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.clusters`
+
+Total GitLab Managed clusters both enabled and disabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.clusters`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.clusters_applications_prometheus`
+
+Total GitLab Managed clusters with Prometheus enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.clusters_applications_prometheus`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` | `metrics` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.operations_dashboard_default_dashboard`
+
+Active users with enabled operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.operations_dashboard_default_dashboard`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.operations_dashboard_users_with_projects_added`
+
+Active users with projects on operations dashboard
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.operations_dashboard_users_with_projects_added`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.projects_incident_sla_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.projects_incident_sla_enabled`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents`
+
+Count of unique projects with an incident from an alert created in the last month 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.projects_with_incidents`
+
+Count of unique projects with an incident created in the last month 
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.projects_with_incidents`** |
+| `product_section` | ops |
+| `product_stage` | monitor |
+| `product_group` | `group::health` |
+| `product_category` | `incident_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.monitor.projects_with_tracing_enabled`
+
+Projects with tracing enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.monitor.projects_with_tracing_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::monitor` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.package.projects_with_packages`
+
+Incident confidential status changed event
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.package.projects_with_packages`** |
+| `product_section` | ops |
+| `product_stage` | package |
+| `product_group` | `group::package` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.assignee_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.assignee_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.epics`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.epics`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.issues`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.issues`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.label_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.label_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.milestone_lists`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.milestone_lists`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.notes`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.notes`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.projects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.projects`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.projects_jira_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.projects_jira_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.projects_jira_dvcs_cloud_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.projects_jira_dvcs_cloud_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.projects_jira_dvcs_server_active`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.projects_jira_dvcs_server_active`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.service_desk_enabled_projects`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.service_desk_enabled_projects`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.service_desk_issues`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.service_desk_issues`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.plan.todos`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.plan.todos`** |
+| `product_section` | dev |
+| `product_stage` |  |
+| `product_group` | `group::plan` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.release.deployments`
+
+Unique users triggering deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.release.deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.release.failed_deployments`
+
+Total failed deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.release.failed_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.release.projects_mirrored_with_pipelines_enabled`
+
+Projects with repository mirroring enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.release.projects_mirrored_with_pipelines_enabled`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.release.releases`
+
+Unique users creating release tags
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.release.releases`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.release.successful_deployments`
+
+Total successful deployments
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.release.successful_deployments`** |
+| `product_section` | ops |
+| `product_stage` |  |
+| `product_group` | `group::release` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.api_fuzzing_pipeline`
+
+Counts of Pipelines that have at least 1 API Fuzzing Testing job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.api_fuzzing_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` | `fuzz-testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.api_fuzzing_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.api_fuzzing_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.container_scanning_pipeline`
+
+no idea, what is this when did it get added? guess pipelines containing a CS job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.container_scanning_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.container_scanning_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.container_scanning_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.coverage_fuzzing_pipeline`
+
+Counts of Pipelines that have at least 1 coverage-guided Fuzz Testing job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.coverage_fuzzing_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` | `fuzz-testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.coverage_fuzzing_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.coverage_fuzzing_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.dast_pipeline`
+
+Count of pipelines that have at least 1 DAST job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.dast_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::dynamic analysis` |
+| `product_category` | `dynamic_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.dast_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.dast_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.dependency_scanning_pipeline`
+
+no idea, what is this when did it get added? guess pipelines containing a DS job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.dependency_scanning_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.dependency_scanning_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.dependency_scanning_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.sast_pipeline`
+
+Counts of Pipelines that have at least 1 SAST job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.sast_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `static_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.sast_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.sast_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.secret_detection_pipeline`
+
+Counts of Pipelines that have at least 1 Secret Detection job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.secret_detection_pipeline`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `secret_detection` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.secret_detection_scans`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.secret_detection_scans`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_api_fuzzing_dnd_jobs`
+
+Count of API Fuzzing `docker-in-docker` jobs by job names
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_api_fuzzing_dnd_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_api_fuzzing_jobs`
+
+Count of API Fuzzing jobs by job name
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_api_fuzzing_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::fuzz testing` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_container_scanning_jobs`
+
+no idea, Count of Container Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_container_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | protect |
+| `product_group` | `group::container security` |
+| `product_category` | `container_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_coverage_fuzzing_jobs`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_coverage_fuzzing_jobs`** |
+| `product_section` |  |
+| `product_stage` |  |
+| `product_group` |  |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_dast_jobs`
+
+Users who run a DAST job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_dast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::dynamic analysis` |
+| `product_category` | `dynamic_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_dependency_scanning_jobs`
+
+no idea, Count of Dependency Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_dependency_scanning_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `dependency_scanning` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_license_management_jobs`
+
+no idea, Count of License Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_license_management_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::composition analysis` |
+| `product_category` | `license_compliance` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_preferences_group_overview_security_dashboard`
+
+Users who set personal preference to see Security Dashboard on Group overview page
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_preferences_group_overview_security_dashboard`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::threat insights` |
+| `product_category` | `vulnerability_management` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_sast_jobs`
+
+Users who run a SAST job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_sast_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `static_application_security_testing` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_secret_detection_jobs`
+
+Users who run a Secret Detection job
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_secret_detection_jobs`** |
+| `product_section` | sec |
+| `product_stage` | secure |
+| `product_group` | `group::static analysis` |
+| `product_category` | `secret_detection` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.secure.user_unique_users_all_secure_scanners`
+
+Missing description
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.secure.user_unique_users_all_secure_scanners`** |
+| `product_section` | sec |
+| `product_stage` |  |
+| `product_group` | `group::secure` |
+| `product_category` |  |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_builds`
+
+Unique builds in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_builds`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_external_pipelines`
+
+Total pipelines in external repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_external_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_internal_pipelines`
+
+Total pipelines in GitLab repositories
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_internal_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops`
+
+Total pipelines from an Auto DevOps template
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_pipeline_config_repository`
+
+Total Pipelines from templates in repository
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_pipeline_config_repository`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_pipeline_schedules`
+
+Pipeline schedules in GitLab
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_pipeline_schedules`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` |  |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_pipelines`
+
+ Distinct users triggering pipelines in a month
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_pipelines`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` |  |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.ci_triggers`
+
+Total configured Triggers in project
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.ci_triggers`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.clusters_applications_runner`
+
+Total GitLab Managed clusters with Runner enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.clusters_applications_runner`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::runner` |
+| `product_category` | `runner` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
+
+## `usage_activity_by_stage_monthly.verify.projects_reporting_ci_cd_back_to_github`
+
+Projects with a GitHub service pipeline enabled
+
+| field | value |
+| --- | --- |
+| `key_path` | **`usage_activity_by_stage_monthly.verify.projects_reporting_ci_cd_back_to_github`** |
+| `product_section` | ops |
+| `product_stage` | verify |
+| `product_group` | `group::continuous integration` |
+| `product_category` | `continuous_integration` |
+| `value_type` | number |
+| `status` | data_available |
+| `time_frame` | 28d |
+| `data_source` |  |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
 | `skip_validation` | true |
 
 ## `uuid`
@@ -857,7 +26830,7 @@ GitLab instance unique identifier
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
 | `milestone` | 9.1 |
@@ -866,6 +26839,25 @@ GitLab instance unique identifier
 | `data_source` | Database |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
+
+## `version`
+
+Version of GitLab instance
+
+| field | value |
+| --- | --- |
+| `key_path` | **`version`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `collection` |
+| `value_type` | string |
+| `status` | data_available |
+| `time_frame` | none |
+| `data_source` |  |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+| `skip_validation` | true |
 
 ## `web_ide_clientside_preview_enabled`
 
@@ -877,7 +26869,7 @@ Whether web ide clientside preview is enabled
 | `product_section` | growth |
 | `product_stage` | growth |
 | `product_group` | `group::product intelligence` |
-| `product_category` | collection |
+| `product_category` | `collection` |
 | `value_type` | boolean |
 | `status` | data_available |
 | `time_frame` | none |

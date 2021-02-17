@@ -1,0 +1,19 @@
+---
+key_path: version
+description: Version of GitLab instance
+product_section: enablement
+product_stage: enablement
+product_group: group::distribution
+product_category: collection
+value_type: string
+status: data_available
+time_frame: none
+data_source:
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

@@ -56,7 +56,7 @@ The current Lefthook configuration can be found in [`lefthook.yml`](https://gitl
 Before you push your changes, Lefthook automatically runs the following checks:
 
 - Danger: Runs a subset of checks that `danger-review` runs on your merge requests.
-- ES lint: Run `yarn eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) configuration) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
+- ES lint: Run `yarn run internal:eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) configuration) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
 - HAML lint: Run `bundle exec haml-lint` checks (with the [`.haml-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.haml-lint.yml) configuration) on the modified `*.html.haml` files. Tags: `view`, `haml`, `style`.
 - Markdown lint: Run `yarn markdownlint` checks on the modified `*.md` files. Tags: `documentation`, `style`.
 - SCSS lint: Run `bundle exec scss-lint` checks (with the [`.scss-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.scss-lint.yml) configuration) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.

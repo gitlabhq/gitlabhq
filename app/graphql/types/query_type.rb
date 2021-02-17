@@ -78,7 +78,7 @@ module Types
 
     field :issue, Types::IssueType,
           null: true,
-          description: 'Find an issue.' do
+          description: 'Find an Issue.' do
             argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the Issue.'
           end
 

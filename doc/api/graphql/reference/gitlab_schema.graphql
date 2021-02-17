@@ -21475,7 +21475,7 @@ type Query {
   """
   ciConfig(
     """
-    Contents of '.gitlab-ci.yml'.
+    Contents of `.gitlab-ci.yml`.
     """
     content: String!
 
@@ -21560,7 +21560,7 @@ type Query {
   """
   group(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
+    The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`.
     """
     fullPath: ID!
   ): Group
@@ -21611,7 +21611,7 @@ type Query {
   ): InstanceStatisticsMeasurementConnection
 
   """
-  Find an issue.
+  Find an Issue.
   """
   issue(
     """
@@ -21650,7 +21650,7 @@ type Query {
   """
   namespace(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
+    The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`.
     """
     fullPath: ID!
   ): Namespace
@@ -21670,7 +21670,7 @@ type Query {
   """
   project(
     """
-    The full path of the project, group or namespace, e.g., "gitlab-org/gitlab-foss".
+    The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`.
     """
     fullPath: ID!
   ): Project

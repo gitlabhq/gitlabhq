@@ -21,6 +21,24 @@
 \
 
 :plain
+  ## Queries
+
+  Queries are used to get the resources, filter or query them.
+
+  For more information, visit [Queries and Mutations](https://graphql.org/learn/queries/).
+\
+
+- sorted_by_name(queries).each do |query|
+
+  = render_name_and_description(query)
+  - unless query[:arguments].empty?
+    ~ "| Name | Description | Type |"
+    ~ "| ----- | ---- | ----------- |"
+    - sorted_by_name(query[:arguments]).each do |argument|
+      = render_argument(argument)
+    \
+
+:plain
   ## Object types
 
   Object types represent the resources that the GitLab GraphQL API can return.

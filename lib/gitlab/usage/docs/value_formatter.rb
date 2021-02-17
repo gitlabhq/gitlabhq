@@ -5,12 +5,14 @@ module Gitlab
     module Docs
       class ValueFormatter
         def self.format(key, value)
+          return '' unless value.present?
+
           case key
           when :key_path
             "**`#{value}`**"
           when :data_source
             value.to_s.capitalize
-          when :product_group
+          when :product_group, :product_category
             "`#{value}`"
           when :introduced_by_url
             "[Introduced by](#{value})"

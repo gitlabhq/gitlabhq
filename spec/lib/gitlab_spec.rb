@@ -363,8 +363,13 @@ RSpec.describe Gitlab do
       expect(described_class.maintenance_mode?).to eq(false)
     end
 
-    it 'returns false when maintenance mode feature flag is disabled' do
-      stub_feature_flags(maintenance_mode: false)
+    it 'returns false when maintenance mode column is not present' do
+      stub_maintenance_mode_setting(true)
+
+      allow(::Gitlab::CurrentSettings.current_application_settings)
+        .to receive(:respond_to?)
+        .with(:maintenance_mode, false)
+        .and_return(false)
 
       expect(described_class.maintenance_mode?).to eq(false)
     end

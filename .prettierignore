@@ -1,4 +1,5 @@
 /app/assets/javascripts/locale/**/app.js
+/fixtures/lib/gitlab/graphql/
 /node_modules/
 /public/
 /vendor/

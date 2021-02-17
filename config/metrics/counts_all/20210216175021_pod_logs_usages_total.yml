@@ -1,0 +1,16 @@
+---
+key_path: counts.pod_logs_usages_total
+description: Count the total number of log views
+product_section: ops
+product_stage: monitor
+product_group: group::apm
+product_category: logging
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

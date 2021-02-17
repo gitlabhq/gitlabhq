@@ -641,8 +641,8 @@ request to add a new user to a project through API will not be possible.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.1.
 
 NOTE:
-IP Access Restrictions are currently not functioning as expected on GitLab.com. Some users
-may experience blocked Git operations or have difficulties accessing projects. Please
+IP Access Restrictions are currently not functioning as expected on GitLab.com. If enabled,
+users cannot perform Git operations through SSH, or access projects via the UI. Please
 review the [following bug report](https://gitlab.com/gitlab-org/gitlab/-/issues/271673) for
 more information.
 

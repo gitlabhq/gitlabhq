@@ -1,0 +1,14 @@
+---
+key_path: counts.keys
+description:
+product_section: dev
+product_stage:
+product_group: group::manage
+product_category: authentication_and_authorization
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution: []
+tier: []
+skip_validation: true

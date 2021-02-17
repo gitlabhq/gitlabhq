@@ -5,21 +5,25 @@ require 'spec_helper'
 RSpec.describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do
     # Returns a Schema that uses the given `type`
-    def mock_schema(type)
+    def mock_schema(type, field_description)
       query_type = Class.new(Types::BaseObject) do
-        graphql_name 'QueryType'
+        graphql_name 'Query'
 
-        field :foo, type, null: true
+        field :foo, type, null: true do
+          description field_description
+          argument :id, GraphQL::ID_TYPE, required: false, description: 'ID of the object.'
+        end
       end
 
       GraphQL::Schema.define(query: query_type)
     end
 
     let_it_be(:template) { Rails.root.join('lib/gitlab/graphql/docs/templates/', 'default.md.haml') }
+    let(:field_description) { 'List of objects.' }
 
     subject(:contents) do
       described_class.new(
-        mock_schema(type).graphql_definition,
+        mock_schema(type, field_description).graphql_definition,
         output_dir: nil,
         template: template
       ).contents
@@ -44,6 +48,32 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         DOC
 
         is_expected.to include(expectation)
+      end
+
+      context 'query generation' do
+        let(:expectation) do
+          <<~DOC
+            ### Foo
+
+            List of objects.
+
+            | Name | Description | Type |
+            | ----- | ---- | ----------- |
+            | `id` | ID of the object. | ID |
+          DOC
+        end
+
+        it 'generates the query with arguments' do
+          expect(subject).to include(expectation)
+        end
+
+        context 'when description does not end with `.`' do
+          let(:field_description) { 'List of objects' }
+
+          it 'adds the `.` to the end' do
+            expect(subject).to include(expectation)
+          end
+        end
       end
     end
 

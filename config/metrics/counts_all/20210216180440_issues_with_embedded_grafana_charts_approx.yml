@@ -1,0 +1,19 @@
+---
+key_path: counts.issues_with_embedded_grafana_charts_approx
+description: Count of issues where a user has embedded a Grafana chart
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true
