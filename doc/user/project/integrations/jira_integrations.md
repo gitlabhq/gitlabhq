@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jira integrations
+# Jira integrations **(FREE)**
 
 GitLab can be integrated with [Jira](https://www.atlassian.com/software/jira).
 

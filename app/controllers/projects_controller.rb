@@ -329,6 +329,8 @@ class ProjectsController < Projects::ApplicationController
     if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 
+      experiment(:empty_repo_upload, project: @project).track(:view_project_show) if @project.can_current_user_push_to_default_branch?
+
       if @project.empty_repo?
         record_experiment_user(:invite_members_empty_project_version_a)
 

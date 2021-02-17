@@ -9,7 +9,6 @@ describe('Pipelines Table Row', () => {
     mount(PipelinesTableRowComponent, {
       propsData: {
         pipeline,
-        autoDevopsHelpPath: 'foo',
         viewType: 'root',
       },
     });

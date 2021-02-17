@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jenkins CI (deprecated) service
+# Jenkins CI (deprecated) service **(FREE)**
 
 NOTE:
 In GitLab 8.3, Jenkins integration using the

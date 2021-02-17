@@ -24,10 +24,13 @@ organization.
 
 If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your running web applications
 for known vulnerabilities using Dynamic Application Security Testing (DAST).
-You can take advantage of DAST by either [including the CI job](#configuration) in
-your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto DAST](../../../topics/autodevops/stages.md#auto-dast),
-provided by [Auto DevOps](../../../topics/autodevops/index.md).
+You can take advantage of DAST by either:
+
+- [Including the CI job](#configuration) in
+  your existing `.gitlab-ci.yml` file.
+- Implicitly using
+  [Auto DAST](../../../topics/autodevops/stages.md#auto-dast),
+  provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the DAST report, compares the found vulnerabilities between the source and target
 branches, and shows the information on the merge request.

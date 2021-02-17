@@ -19,6 +19,9 @@ Code Intelligence is built into GitLab and powered by [LSIF](https://lsif.dev/)
 (Language Server Index Format), a file format for precomputed code
 intelligence data.
 
+NOTE:
+You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/index.md).
+
 ## Configuration
 
 Enable code intelligence for a project by adding a GitLab CI/CD job to the project's

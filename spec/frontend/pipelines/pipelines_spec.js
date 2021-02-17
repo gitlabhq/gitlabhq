@@ -34,7 +34,6 @@ describe('Pipelines', () => {
   let origWindowLocation;
 
   const paths = {
-    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
     helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
@@ -45,7 +44,6 @@ describe('Pipelines', () => {
   };
 
   const noPermissions = {
-    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
     helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',

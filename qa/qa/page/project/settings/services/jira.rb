@@ -10,7 +10,12 @@ module QA
               element :service_url_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
               element :service_username_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
               element :service_password_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
-              element :service_jira_issue_transition_id_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
+            end
+
+            view 'app/assets/javascripts/integrations/edit/components/jira_trigger_fields.vue' do
+              element :service_issue_transition_mode_auto, ':data-qa-selector="`service_issue_transition_mode_${issueTransitionOption.value}`"' # rubocop:disable QA/ElementWithPattern
+              element :service_issue_transition_mode_custom, ':data-qa-selector="`service_issue_transition_mode_${issueTransitionOption.value}`"' # rubocop:disable QA/ElementWithPattern
+              element :service_jira_issue_transition_id_field
             end
 
             view 'app/assets/javascripts/integrations/edit/components/integration_form.vue' do
@@ -23,7 +28,9 @@ module QA
               set_jira_server_url(url)
               set_username(Runtime::Env.jira_admin_username)
               set_password(Runtime::Env.jira_admin_password)
-              set_transaction_ids('11,21,31,41')
+
+              use_custom_transitions
+              set_transition_ids('11,21,31,41')
 
               click_save_changes_button
               wait_until(reload: false) do
@@ -45,8 +52,16 @@ module QA
               fill_element(:service_password_field, password)
             end
 
-            def set_transaction_ids(transaction_ids)
-              fill_element(:service_jira_issue_transition_id_field, transaction_ids)
+            def use_automatic_transitions
+              click_element :service_issue_transition_mode_auto
+            end
+
+            def use_custom_transitions
+              click_element :service_issue_transition_mode_custom
+            end
+
+            def set_transition_ids(transition_ids)
+              fill_element(:service_jira_issue_transition_id_field, transition_ids)
             end
 
             def click_save_changes_button

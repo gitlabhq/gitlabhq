@@ -40,11 +40,11 @@ class Packages::Package < ApplicationRecord
   validate :unique_debian_package_name, if: :debian_package?
 
   validate :valid_conan_package_recipe, if: :conan?
-  validate :valid_npm_package_name, if: :npm?
   validate :valid_composer_global_name, if: :composer?
   validate :package_already_taken, if: :npm?
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
+  validates :name, format: { with: Gitlab::Regex.npm_package_name_regex }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
   validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
@@ -244,14 +244,6 @@ class Packages::Package < ApplicationRecord
     # See https://github.com/rails/rails/pull/35186
     if Packages::Package.default_scoped.composer.with_name(name).where.not(project_id: project_id).exists?
       errors.add(:name, 'is already taken by another project')
-    end
-  end
-
-  def valid_npm_package_name
-    return unless project&.root_namespace
-
-    unless name =~ %r{\A@#{project.root_namespace.path}/[^/]+\z}
-      errors.add(:name, 'is not valid')
     end
   end
 

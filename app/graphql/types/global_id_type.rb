@@ -67,7 +67,10 @@ module Types
         end
 
         self.define_singleton_method(:suitable?) do |gid|
-          gid&.model_class&.ancestors&.include?(model_class)
+          next false if gid.nil?
+
+          gid.model_name.safe_constantize.present? &&
+            gid.model_class.ancestors.include?(model_class)
         end
 
         self.define_singleton_method(:coerce_input) do |string, ctx|

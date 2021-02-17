@@ -1,5 +1,5 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- default_branch_name = @project.default_branch || "master"
+- default_branch_name = @project.default_branch_or_master
 - @skip_current_level_breadcrumb = true
 
 = content_for :invite_members_sidebar do
@@ -77,3 +77,6 @@
             %span><
               git push -u origin --all
               git push -u origin --tags
+
+- if @project.empty_repo_upload_experiment?
+  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, default_branch_name), ref: default_branch_name, method: :post

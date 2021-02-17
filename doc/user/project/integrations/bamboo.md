@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Atlassian Bamboo CI Service
+# Atlassian Bamboo CI Service **(FREE)**
 
 GitLab provides integration with Atlassian Bamboo for continuous integration.
 When configured, pushes to a project trigger a build in Bamboo automatically.

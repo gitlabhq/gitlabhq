@@ -47,8 +47,8 @@ found in
 
 ## Development environment
 
-Configuring [GDK for Auto
-DevOps](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md).
+See the [Simple way to develop/test Kubernetes workflows with a local cluster](https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/1064)
+issue for discussion around setting up Auto DevOps development environments.
 
 ## Monitoring on GitLab.com
 

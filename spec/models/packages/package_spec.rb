@@ -162,6 +162,18 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('../../../my_package').for(:name) }
         it { is_expected.not_to allow_value('%2e%2e%2fmy_package').for(:name) }
       end
+
+      context 'npm package' do
+        subject { build_stubbed(:npm_package) }
+
+        it { is_expected.to allow_value("@group-1/package").for(:name) }
+        it { is_expected.to allow_value("@any-scope/package").for(:name) }
+        it { is_expected.to allow_value("unscoped-package").for(:name) }
+        it { is_expected.not_to allow_value("@inv@lid-scope/package").for(:name) }
+        it { is_expected.not_to allow_value("@scope/../../package").for(:name) }
+        it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
+        it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
+      end
     end
 
     describe '#version' do
@@ -342,16 +354,6 @@ RSpec.describe Packages::Package, type: :model do
     end
 
     describe '#package_already_taken' do
-      context 'npm package' do
-        let!(:package) { create(:npm_package) }
-
-        it 'will not allow a package of the same name' do
-          new_package = build(:npm_package, project: create(:project), name: package.name)
-
-          expect(new_package).not_to be_valid
-        end
-      end
-
       context 'maven package' do
         let!(:package) { create(:maven_package) }
 

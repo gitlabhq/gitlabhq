@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Webex Teams service
+# Webex Teams service **(FREE)**
 
 You can configure GitLab to send notifications to a Webex Teams space.
 

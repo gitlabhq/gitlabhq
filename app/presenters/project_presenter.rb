@@ -10,10 +10,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include BlobHelper
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
+  include Gitlab::Experiment::Dsl
 
   presents :project
 
-  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon, :itemprop)
+  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon, :itemprop, :data)
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
@@ -33,6 +34,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_buttons(show_auto_devops_callout:)
     [
+      upload_anchor_data,
       readme_anchor_data,
       license_anchor_data,
       changelog_anchor_data,
@@ -49,6 +51,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def empty_repo_statistics_buttons
     [
+      upload_anchor_data,
       new_file_anchor_data,
       readme_anchor_data,
       license_anchor_data,
@@ -154,6 +157,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_current_user_push_to_branch?(branch)
+    return false unless current_user
+
     user_access(project).can_push_to_branch?(branch)
   end
 
@@ -232,19 +237,47 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    empty_repo? ? nil : project_tags_path(project))
   end
 
+  def upload_anchor_data
+    strong_memoize(:upload_anchor_data) do
+      next unless can_current_user_push_to_default_branch?
+
+      experiment(:empty_repo_upload, project: project) do |e|
+        e.use {}
+        e.try do
+          AnchorData.new(false,
+                         statistic_icon('upload') + _('Upload file'),
+                         '#modal-upload-blob',
+                         'js-upload-file-experiment-trigger',
+                         nil,
+                         nil,
+                         {
+                           'toggle' => 'modal',
+                           'target' => '#modal-upload-blob'
+                         }
+                        )
+        end
+        e.run
+      end
+    end
+  end
+
+  def empty_repo_upload_experiment?
+    upload_anchor_data.present?
+  end
+
   def new_file_anchor_data
-    if current_user && can_current_user_push_to_default_branch?
+    if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_master) : project_new_blob_path(project, default_branch_or_master)
 
       AnchorData.new(false,
                      statistic_icon + _('New file'),
                      new_file_path,
-                     'dashed')
+                     'btn-dashed')
     end
   end
 
   def readme_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && readme_path.nil?
+    if can_current_user_push_to_default_branch? && readme_path.nil?
       AnchorData.new(false,
                      statistic_icon + _('Add README'),
                      empty_repo? ? add_readme_ide_path : add_readme_path)
@@ -252,13 +285,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('README'),
                      default_view != 'readme' ? readme_path : '#readme',
-                    'default',
+                    'btn-default',
                     'doc-text')
     end
   end
 
   def changelog_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
+    if can_current_user_push_to_default_branch? && repository.changelog.blank?
       AnchorData.new(false,
                      statistic_icon + _('Add CHANGELOG'),
                      empty_repo? ? add_changelog_ide_path : add_changelog_path)
@@ -266,7 +299,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CHANGELOG'),
                      changelog_path,
-                    'default')
+                    'btn-default')
     end
   end
 
@@ -277,11 +310,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      icon + content_tag(:span, license_short_name, class: 'project-stat-value'),
                      license_path,
-                     'default',
+                     'btn-default',
                      nil,
                      'license')
     else
-      if current_user && can_current_user_push_to_default_branch?
+      if can_current_user_push_to_default_branch?
         AnchorData.new(false,
                        content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
                        empty_repo? ? add_license_ide_path : add_license_path)
@@ -294,7 +327,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def contribution_guide_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
+    if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
       AnchorData.new(false,
                      statistic_icon + _('Add CONTRIBUTING'),
                      empty_repo? ? add_contribution_guide_ide_path : add_contribution_guide_path)
@@ -302,7 +335,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CONTRIBUTING'),
                      contribution_guide_path,
-                     'default')
+                     'btn-default')
     end
   end
 
@@ -312,7 +345,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         AnchorData.new(false,
                        statistic_icon('settings') + _('Auto DevOps enabled'),
                        project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
-                       'default')
+                       'btn-default')
       else
         AnchorData.new(false,
                        statistic_icon + _('Enable Auto DevOps'),
@@ -337,7 +370,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         AnchorData.new(false,
                        _('Kubernetes'),
                        cluster_link,
-                      'default')
+                      'btn-default')
       end
     end
   end
@@ -351,7 +384,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CI/CD configuration'),
                      ci_configuration_path,
-                    'default')
+                    'btn-default')
     end
   end
 

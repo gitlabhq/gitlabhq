@@ -34,7 +34,6 @@ export default () => {
               helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
               emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
               errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-              autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
             },
           });
         },

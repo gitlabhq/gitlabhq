@@ -16,6 +16,10 @@ of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use
 without any need to access Kubernetes.
 
+NOTE:
+If you have a Kubernetes cluster, you can Auto Deploy applications to production
+environments by using [Auto DevOps](../../topics/autodevops/index.md).
+
 ## Overview
 
 With Deploy Boards you can gain more insight into deploys with benefits such as:

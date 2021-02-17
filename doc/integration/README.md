@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# GitLab integrations
+# GitLab integrations **(FREE)**
 
 GitLab can be integrated with external services for enhanced functionality.
 

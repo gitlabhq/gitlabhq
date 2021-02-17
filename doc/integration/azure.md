@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Microsoft Azure OAuth2 OmniAuth Provider
+# Microsoft Azure OAuth2 OmniAuth Provider **(FREE)**
 
 NOTE:
 Per Microsoft, this provider uses the [older Azure Active Directory v1.0 endpoint](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-protocols-oauth-code).

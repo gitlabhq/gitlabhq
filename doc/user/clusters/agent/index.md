@@ -21,6 +21,7 @@ tasks in a secure and cloud-native way. It enables:
 - Pull-based GitOps deployments by leveraging the
   [GitOps Engine](https://github.com/argoproj/gitops-engine).
 - Real-time access to API endpoints in a cluster.
+- Alert generation based on [Container network policy](../../application_security/threat_monitoring/index.md#container-network-policy).
 
 Many more features are planned. Please review [our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329)
 and [our development documentation](../../../development/agent/index.md).
@@ -444,6 +445,51 @@ The following example projects can help you get started with the Kubernetes Agen
 
 You can use the Kubernetes Agent to
 [deploy GitLab Runner in a Kubernetes cluster](http://docs.gitlab.com/runner/install/kubernetes-agent.html).
+
+## Kubernetes Network Security Alerts
+
+The GitLab Agent also provides an integration with Cilium. This integration provides a simple way to
+generate network policy-related alerts and to surface those alerts in GitLab.
+
+There are several components that work in concert for the Agent to generate the alerts:
+
+- A working Kubernetes cluster.
+- Cilium integration through either of these options:
+  - Installation through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd).
+  - Enablement of [hubble-relay](https://docs.cilium.io/en/v1.8/concepts/overview/#hubble) on an
+    existing installation.
+- One or more network policies through any of these options:
+  - Use the [Container Network Policy editor](../../application_security/threat_monitoring/index.md#container-network-policy-editor) to create and manage policies.
+  - Use an [AutoDevOps](../../application_security/threat_monitoring/index.md#container-network-policy-management) configuration.
+  - Add the required labels and annotations to existing network policies. 
+- Use a configuration repository to inform the Agent through a `config.yaml` file, which
+  repositories can synchronize with. This repository might be the same, or a separate GitLab
+  project.
+
+The setup process follows the same steps as [GitOps](#get-started-with-gitops-and-the-gitlab-agent),
+with the following differences:
+
+- When you define a configuration repository, you must do so with [Cilium settings](#define-a-configuration-repository-with-cilium-settings).
+- You do not need to create a `manifest.yaml`.
+
+### Define a configuration repository with Cilium settings
+
+You need a GitLab repository to contain your Agent configuration. The minimal repository layout
+looks like this:
+
+```plaintext
+.gitlab/agents/<agent-name>/config.yaml
+```
+
+Your `config.yaml` file must specify the `host` and `port` of your Hubble Relay service. If your
+Cilium integration was performed through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd),
+you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80`:
+
+```yaml
+cilium:
+  hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
+  ...
+```
 
 ## Management interfaces
 

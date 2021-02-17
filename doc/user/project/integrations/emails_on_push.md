@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Enabling emails on push
+# Enabling emails on push **(FREE)**
 
 By enabling this service, you receive email notifications for every change
 that is pushed to your project.

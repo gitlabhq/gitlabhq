@@ -364,7 +364,6 @@ export default class MergeRequestTabs {
             helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
             emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
             errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-            autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
             canCreatePipelineInTargetProject: Boolean(
               mrWidgetData?.can_create_pipeline_in_target_project,
             ),

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira integration
+# GitLab Jira integration **(FREE)**
 
 You can use Jira to track work implemented in GitLab. The Jira integration with GitLab makes the
 process of working across these systems more efficient.
@@ -106,8 +106,6 @@ To enable the Jira integration in a project:
 1. To include a comment on the Jira issue when the above reference is made in GitLab, select
    **Enable comments**.
 
-   1. Select the **Comment detail**: **Standard** or **All details**.
-
 1. Enter the further details on the page as described in the following table.
 
    | Field | Description |
@@ -116,7 +114,6 @@ To enable the Jira integration in a project:
    | `Jira API URL` | The base URL to the Jira instance API. Web URL value is used if not set. For example, `https://jira-api.example.com`. Leave this field blank (or use the same value of `Web URL`) if using **Jira on Atlassian cloud**. |
    | `Username or Email` | Created in [configure Jira](#configure-jira) step. Use `username` for **Jira Server** or `email` for **Jira on Atlassian cloud**. |
    | `Password/API token` | Created in [configure Jira](#configure-jira) step. Use `password` for **Jira Server** or `API token` for **Jira on Atlassian cloud**. |
-   | `Jira workflow transition IDs` | Required for closing Jira issues via commits or merge requests. These are the IDs of transitions in Jira that move issues to a particular state. (See [Obtaining a transition ID](#obtaining-a-transition-id).) If you insert multiple transition IDs separated by `,` or `;`, the issue is moved to each state, one after another, using the given order. In GitLab 13.6 and earlier, field was called `Transition ID`. |
 
 1. To enable users to view Jira issues inside the GitLab project, select **Enable Jira issues** and
    enter a Jira project key. **(PREMIUM)**
@@ -138,10 +135,19 @@ To enable the Jira integration in a project:
 Your GitLab project can now interact with all Jira projects in your instance and the project now
 displays a Jira link that opens the Jira project.
 
-#### Obtaining a transition ID
+#### Automatic issue transitions
 
-In the most recent Jira user interface, you can no longer see transition IDs in the workflow
-administration UI. You can get the ID you need in either of the following ways:
+When you [close a Jira issues with a trigger word](../issues/managing_issues.md#closing-issues-automatically),
+GitLab by default transitions the issue to the next available status with a category of "Done".
+
+#### Custom issue transitions
+
+For advanced workflows you can specify custom Jira transition IDs. If you insert multiple transition IDs separated by `,` or `;`, the issue is moved to each state, one after another, using the given order.
+
+To see the transition IDs on Jira Cloud, edit a workflow in the **Text** view.
+The transition IDs display in the **Transitions** column.
+
+On Jira Server you can get the transition IDs in either of the following ways:
 
 1. By using the API, with a request like `https://yourcompany.atlassian.net/rest/api/2/issue/ISSUE-123/transitions`
    using an issue that is in the appropriate "open" state

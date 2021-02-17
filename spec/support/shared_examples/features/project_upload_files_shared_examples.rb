@@ -3,7 +3,13 @@
 RSpec.shared_examples 'it uploads and commit a new text file' do
   it 'uploads and commit a new text file', :js do
     find('.add-to-tree').click
-    click_link('Upload file')
+
+    page.within('.dropdown-menu') do
+      click_link('Upload file')
+
+      wait_for_requests
+    end
+
     drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
     page.within('#modal-upload-blob') do
@@ -29,7 +35,13 @@ end
 RSpec.shared_examples 'it uploads and commit a new image file' do
   it 'uploads and commit a new image file', :js do
     find('.add-to-tree').click
-    click_link('Upload file')
+
+    page.within('.dropdown-menu') do
+      click_link('Upload file')
+
+      wait_for_requests
+    end
+
     drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'))
 
     page.within('#modal-upload-blob') do

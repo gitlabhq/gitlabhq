@@ -224,8 +224,7 @@ module QA
         end
 
         def merge!
-          wait_until_ready_to_merge
-          click_element(:merge_button)
+          try_to_merge!
           finished_loading?
 
           raise "Merge did not appear to be successful" unless merged?
@@ -237,7 +236,11 @@ module QA
         end
 
         def merged?
-          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 60)
+          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
+          # To remove page refresh logic if possible
+          retry_until(max_attempts: 3, reload: true) do
+            has_element?(:merged_status_content, text: 'The changes were merged into', wait: 20)
+          end
         end
 
         # Check if the MR is able to be merged
@@ -280,7 +283,10 @@ module QA
         end
 
         def try_to_merge!
+          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
+          # To remove page refresh logic if possible
           wait_until_ready_to_merge
+          wait_until { !find_element(:merge_button).has_text?("when pipeline succeeds") }
 
           click_element(:merge_button)
         end

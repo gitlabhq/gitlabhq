@@ -149,7 +149,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To configure SAST for a project you can:
 
-- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast) provided by
+- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 - [Configure SAST manually](#configure-sast-manually).
 - [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).

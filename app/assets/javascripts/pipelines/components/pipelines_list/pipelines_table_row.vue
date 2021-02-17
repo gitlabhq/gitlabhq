@@ -47,10 +47,6 @@ export default {
       required: false,
       default: false,
     },
-    autoDevopsHelpPath: {
-      type: String,
-      required: true,
-    },
     viewType: {
       type: String,
       required: true,
@@ -194,11 +190,7 @@ export default {
       </div>
     </div>
 
-    <pipeline-url
-      :pipeline="pipeline"
-      :pipeline-schedule-url="pipelineScheduleUrl"
-      :auto-devops-help-path="autoDevopsHelpPath"
-    />
+    <pipeline-url :pipeline="pipeline" :pipeline-schedule-url="pipelineScheduleUrl" />
     <pipeline-triggerer :pipeline="pipeline" />
 
     <div class="table-section section-wrap section-20">

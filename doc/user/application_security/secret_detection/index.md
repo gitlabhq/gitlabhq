@@ -112,7 +112,7 @@ For example, `https://username:$password@example.com/path/to/repo` isn't detecte
 
 NOTE:
 You don't have to configure Secret Detection manually as shown in this section if you're using
-[Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
+[Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection),
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 To enable Secret Detection for GitLab 13.1 and later, you must include the

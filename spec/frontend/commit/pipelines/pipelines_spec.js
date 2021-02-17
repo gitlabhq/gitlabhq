@@ -16,7 +16,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
     helpPagePath: 'foo',
     emptyStateSvgPath: 'foo',
     errorStateSvgPath: 'foo',
-    autoDevopsHelpPath: 'foo',
   };
 
   preloadFixtures(jsonFixtureName);
