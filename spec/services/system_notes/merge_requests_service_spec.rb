@@ -167,18 +167,38 @@ RSpec.describe ::SystemNotes::MergeRequestsService do
   end
 
   describe '.change_branch' do
-    subject { service.change_branch('target', old_branch, new_branch) }
-
     let(:old_branch) { 'old_branch'}
     let(:new_branch) { 'new_branch'}
 
     it_behaves_like 'a system note' do
       let(:action) { 'branch' }
+
+      subject { service.change_branch('target', 'update', old_branch, new_branch) }
     end
 
     context 'when target branch name changed' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "changed target branch from `#{old_branch}` to `#{new_branch}`"
+      context 'on update' do
+        subject { service.change_branch('target', 'update', old_branch, new_branch) }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed target branch from `#{old_branch}` to `#{new_branch}`"
+        end
+      end
+
+      context 'on delete' do
+        subject { service.change_branch('target', 'delete', old_branch, new_branch) }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed automatically target branch to `#{new_branch}` because `#{old_branch}` was deleted"
+        end
+      end
+
+      context 'for invalid event_type' do
+        subject { service.change_branch('target', 'invalid', old_branch, new_branch) }
+
+        it 'raises exception' do
+          expect { subject }.to raise_error /invalid value for event_type/
+        end
       end
     end
   end

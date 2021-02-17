@@ -168,16 +168,19 @@ module SystemNoteService
   # project     - Project owning noteable
   # author      - User performing the change
   # branch_type - 'source' or 'target'
+  # event_type  - the source of event: 'update' or 'delete'
   # old_branch  - old branch name
   # new_branch  - new branch name
   #
-  # Example Note text:
+  # Example Note text is based on event_type:
   #
-  #   "changed target branch from `Old` to `New`"
+  #   update: "changed target branch from `Old` to `New`"
+  #   delete: "changed automatically target branch to `New` because `Old` was deleted"
   #
   # Returns the created Note object
-  def change_branch(noteable, project, author, branch_type, old_branch, new_branch)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).change_branch(branch_type, old_branch, new_branch)
+  def change_branch(noteable, project, author, branch_type, event_type, old_branch, new_branch)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author)
+      .change_branch(branch_type, event_type, old_branch, new_branch)
   end
 
   # Called when a branch in Noteable is added or deleted

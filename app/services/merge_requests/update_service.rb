@@ -4,6 +4,12 @@ module MergeRequests
   class UpdateService < MergeRequests::BaseService
     extend ::Gitlab::Utils::Override
 
+    def initialize(project, user = nil, params = {})
+      super
+
+      @target_branch_was_deleted = @params.delete(:target_branch_was_deleted)
+    end
+
     def execute(merge_request)
       # We don't allow change of source/target projects and source branch
       # after merge request was created
@@ -36,7 +42,9 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('target_branch')
-        create_branch_change_note(merge_request, 'target',
+        create_branch_change_note(merge_request,
+                                  'target',
+                                  target_branch_was_deleted ? 'delete' : 'update',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
 
@@ -130,6 +138,8 @@ module MergeRequests
 
     private
 
+    attr_reader :target_branch_was_deleted
+
     def handle_milestone_change(merge_request)
       return if skip_milestone_email
 
@@ -162,9 +172,9 @@ module MergeRequests
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
     end
 
-    def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
+    def create_branch_change_note(issuable, branch_type, event_type, old_branch, new_branch)
       SystemNoteService.change_branch(
-        issuable, issuable.project, current_user, branch_type,
+        issuable, issuable.project, current_user, branch_type, event_type,
         old_branch, new_branch)
     end
 

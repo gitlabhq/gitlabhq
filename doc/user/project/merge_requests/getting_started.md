@@ -194,6 +194,33 @@ is set for deletion, the merge request widget displays the
 
 ![Delete source branch status](img/remove_source_branch_status.png)
 
+### Branch retargeting on merge **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-branch-retargeting-on-merge).
+
+In specific circumstances, GitLab can retarget the destination branch of
+open merge request, if the destination branch merges while the merge request is
+open. Merge requests are often chained in this manner, with one merge request
+depending on another:
+
+- **Merge request 1**: merge `feature-alpha` into `master`.
+- **Merge request 2**: merge `feature-beta` into `feature-alpha`.
+
+These merge requests are usually handled in one of these ways:
+
+- Merge request 1 is merged into `master` first. Merge request 2 is then
+  retargeted to `master`.
+- Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
+  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `master`.
+
+GitLab retargets up to four merge requests when their target branch is merged into
+`master`, so you don't need to perform this operation manually. Merge requests from
+forks are not retargeted.
+
 ## Recommendations and best practices for Merge Requests
 
 - When working locally in your branch, add multiple commits and only push when
@@ -229,4 +256,23 @@ To disable it:
 Feature.disable(:reviewer_approval_rules)
 # For a single project
 Feature.disable(:reviewer_approval_rules, Project.find(<project id>))
+```
+
+### Enable or disable branch retargeting on merge **(FREE SELF)**
+
+Automatically retargeting merge requests is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:retarget_merge_requests)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:retarget_merge_requests)
 ```

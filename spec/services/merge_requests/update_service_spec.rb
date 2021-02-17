@@ -913,6 +913,33 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
     end
 
+    context 'updating `target_branch`' do
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'mr-b',
+               target_branch: 'mr-a')
+      end
+
+      it 'updates to master' do
+        expect(SystemNoteService).to receive(:change_branch).with(
+          merge_request, project, user, 'target', 'update', 'mr-a', 'master'
+        )
+
+        expect { update_merge_request(target_branch: 'master') }
+          .to change { merge_request.reload.target_branch }.from('mr-a').to('master')
+      end
+
+      it 'updates to master because of branch deletion' do
+        expect(SystemNoteService).to receive(:change_branch).with(
+          merge_request, project, user, 'target', 'delete', 'mr-a', 'master'
+        )
+
+        expect { update_merge_request(target_branch: 'master', target_branch_was_deleted: true) }
+          .to change { merge_request.reload.target_branch }.from('mr-a').to('master')
+      end
+    end
+
     it_behaves_like 'issuable record that supports quick actions' do
       let(:existing_merge_request) { create(:merge_request, source_project: project) }
       let(:issuable) { described_class.new(project, user, params).execute(existing_merge_request) }

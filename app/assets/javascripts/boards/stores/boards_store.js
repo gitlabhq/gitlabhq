@@ -724,6 +724,10 @@ const boardsStore = {
     }
   },
 
+  setIssueAssignees(issue, assignees) {
+    issue.assignees = [...assignees];
+  },
+
   removeIssueLabels(issue, labels) {
     labels.forEach(issue.removeLabel.bind(issue));
   },

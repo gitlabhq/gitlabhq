@@ -633,31 +633,37 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'merge request metrics' do
-      let(:issue) { create :issue, project: @project }
-      let(:commit_author) { create :user }
+      let(:user) { create(:user) }
+      let(:project) { create(:project, :repository) }
+      let(:issue) { create(:issue, project: project) }
       let(:commit) { project.commit }
 
       before do
-        project.add_developer(commit_author)
         project.add_developer(user)
 
         allow(commit).to receive_messages(
           safe_message: "Closes #{issue.to_reference}",
           references: [issue],
-          author_name: commit_author.name,
-          author_email: commit_author.email,
+          author_name: user.name,
+          author_email: user.email,
           committed_date: Time.current
         )
-
-        allow_any_instance_of(MergeRequest).to receive(:commits).and_return(CommitCollection.new(@project, [commit], 'feature'))
       end
 
       context 'when the merge request is sourced from the same project' do
         it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
-          merge_request = create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: @project)
-          refresh_service = service.new(@project, @user)
+          allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
+            CommitCollection.new(project, [commit], 'close-by-commit')
+          )
+
+          merge_request = create(:merge_request,
+                                 target_branch: 'master',
+                                 source_branch: 'close-by-commit',
+                                 source_project: project)
+
+          refresh_service = service.new(project, user)
           allow(refresh_service).to receive(:execute_hooks)
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
           issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
           expect(issue_ids).to eq([issue.id])
@@ -666,16 +672,21 @@ RSpec.describe MergeRequests::RefreshService do
 
       context 'when the merge request is sourced from a different project' do
         it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
-          forked_project = fork_project(@project, @user, repository: true)
+          forked_project = fork_project(project, user, repository: true)
+
+          allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
+            CommitCollection.new(forked_project, [commit], 'close-by-commit')
+          )
 
           merge_request = create(:merge_request,
                                  target_branch: 'master',
-                                 source_branch: 'feature',
-                                 target_project: @project,
+                                 target_project: project,
+                                 source_branch: 'close-by-commit',
                                  source_project: forked_project)
-          refresh_service = service.new(@project, @user)
+
+          refresh_service = service.new(forked_project, user)
           allow(refresh_service).to receive(:execute_hooks)
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
           issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
           expect(issue_ids).to eq([issue.id])

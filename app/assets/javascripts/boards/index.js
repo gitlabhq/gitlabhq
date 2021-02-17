@@ -86,7 +86,7 @@ export default () => {
       groupId: Number($boardApp.dataset.groupId),
       rootPath: $boardApp.dataset.rootPath,
       currentUserId: gon.current_user_id || null,
-      canUpdate: $boardApp.dataset.canUpdate,
+      canUpdate: parseBoolean($boardApp.dataset.canUpdate),
       labelsFetchPath: $boardApp.dataset.labelsFetchPath,
       labelsManagePath: $boardApp.dataset.labelsManagePath,
       labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,

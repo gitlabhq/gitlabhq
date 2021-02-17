@@ -107,17 +107,20 @@ RSpec.describe 'Issue Boards', :js do
       click_card(card)
 
       page.within('.assignee') do
-        click_link 'Edit'
+        click_button('Edit')
 
         wait_for_requests
 
-        page.within('.dropdown-menu-user') do
-          click_link user.name
+        assignee = first('.gl-avatar-labeled').find('.gl-avatar-labeled-label').text
 
-          wait_for_requests
+        page.within('.dropdown-menu-user') do
+          first('.gl-avatar-labeled').click
         end
 
-        expect(page).to have_content(user.name)
+        click_button('Edit')
+        wait_for_requests
+
+        expect(page).to have_content(assignee)
       end
 
       expect(card).to have_selector('.avatar')
@@ -128,15 +131,15 @@ RSpec.describe 'Issue Boards', :js do
       click_card(card_two)
 
       page.within('.assignee') do
-        click_link 'Edit'
+        click_button('Edit')
 
         wait_for_requests
 
         page.within('.dropdown-menu-user') do
-          click_link 'Unassigned'
+          find('[data-testid="unassign"]').click
         end
 
-        close_dropdown_menu_if_visible
+        click_button('Edit')
         wait_for_requests
 
         expect(page).to have_content('None')
@@ -165,17 +168,20 @@ RSpec.describe 'Issue Boards', :js do
       click_card(card)
 
       page.within('.assignee') do
-        click_link 'Edit'
+        click_button('Edit')
 
         wait_for_requests
 
-        page.within('.dropdown-menu-user') do
-          click_link user.name
+        assignee = first('.gl-avatar-labeled').find('.gl-avatar-labeled-label').text
 
-          wait_for_requests
+        page.within('.dropdown-menu-user') do
+          first('.gl-avatar-labeled').click
         end
 
-        expect(page).to have_content(user.name)
+        click_button('Edit')
+        wait_for_requests
+
+        expect(page).to have_content(assignee)
       end
 
       page.within(find('.board:nth-child(2)')) do
@@ -183,9 +189,9 @@ RSpec.describe 'Issue Boards', :js do
       end
 
       page.within('.assignee') do
-        click_link 'Edit'
+        click_button('Edit')
 
-        expect(find('.dropdown-menu')).to have_selector('.is-active')
+        expect(find('.dropdown-menu')).to have_selector('.gl-new-dropdown-item-check-icon')
       end
     end
   end

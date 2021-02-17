@@ -44,6 +44,11 @@ export default {
       type: String,
       required: true,
     },
+    assigneeAvailabilityStatus: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -101,6 +106,13 @@ export default {
           return new Flash(__('Error occurred when saving assignees'));
         });
     },
+    exposeAvailabilityStatus(users) {
+      return users.map(({ username, ...rest }) => ({
+        ...rest,
+        username,
+        availability: this.assigneeAvailabilityStatus[username] || '',
+      }));
+    },
   },
 };
 </script>
@@ -123,7 +135,7 @@ export default {
     <assignees
       v-if="!store.isFetching.assignees"
       :root-path="relativeUrlRoot"
-      :users="store.assignees"
+      :users="exposeAvailabilityStatus(store.assignees)"
       :editable="store.editable"
       :issuable-type="issuableType"
       class="value"

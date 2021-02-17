@@ -30,6 +30,28 @@ function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-op
   return JSON.parse(sidebarOptEl.innerHTML);
 }
 
+/**
+ * Extracts the list of assignees with availability information from a hidden input
+ * field and converts to a key:value pair for use in the sidebar assignees component.
+ * The assignee username is used as the key and their busy status is the value
+ *
+ * e.g { root: 'busy', admin: '' }
+ *
+ * @returns {Object}
+ */
+function getSidebarAssigneeAvailabilityData() {
+  const sidebarAssigneeEl = document.querySelectorAll('.js-sidebar-assignee-data input');
+  return Array.from(sidebarAssigneeEl)
+    .map((el) => el.dataset)
+    .reduce(
+      (acc, { username, availability = '' }) => ({
+        ...acc,
+        [username]: availability,
+      }),
+      {},
+    );
+}
+
 function mountAssigneesComponent(mediator) {
   const el = document.getElementById('js-vue-sidebar-assignees');
   const apolloProvider = new VueApollo({
@@ -39,6 +61,7 @@ function mountAssigneesComponent(mediator) {
   if (!el) return;
 
   const { iid, fullPath } = getSidebarOptions();
+  const assigneeAvailabilityStatus = getSidebarAssigneeAvailabilityData();
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -56,6 +79,7 @@ function mountAssigneesComponent(mediator) {
           signedIn: el.hasAttribute('data-signed-in'),
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage() ? 'issue' : 'merge_request',
+          assigneeAvailabilityStatus,
         },
       }),
   });

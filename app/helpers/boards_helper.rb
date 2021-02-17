@@ -100,23 +100,6 @@ module BoardsHelper
     }
   end
 
-  def board_sidebar_user_data
-    dropdown_options = assignees_dropdown_options('issue')
-
-    {
-      toggle: 'dropdown',
-      field_name: 'issue[assignee_ids][]',
-      first_user: current_user&.username,
-      current_user: 'true',
-      project_id: @project&.id,
-      group_id: @group&.id,
-      null_user: 'true',
-      multi_select: 'true',
-      'dropdown-header': dropdown_options[:data][:'dropdown-header'],
-      'max-select': dropdown_options[:data][:'max-select']
-    }
-  end
-
   def boards_link_text
     if current_board_parent.multiple_issue_boards_available?
       s_("IssueBoards|Boards")

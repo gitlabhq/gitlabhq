@@ -7,7 +7,6 @@ import { GlLabel } from '@gitlab/ui';
 import $ from 'jquery';
 import Vue from 'vue';
 import DueDateSelectors from '~/due_date_select';
-import { deprecatedCreateFlash as Flash } from '~/flash';
 import IssuableContext from '~/issuable_context';
 import LabelsSelect from '~/labels_select';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -16,6 +15,7 @@ import MilestoneSelect from '~/milestone_select';
 import Sidebar from '~/right_sidebar';
 import AssigneeTitle from '~/sidebar/components/assignees/assignee_title.vue';
 import Assignees from '~/sidebar/components/assignees/assignees.vue';
+import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import eventHub from '~/sidebar/event_hub';
@@ -32,6 +32,7 @@ export default Vue.extend({
     RemoveBtn,
     Subscriptions,
     TimeTracker,
+    SidebarAssigneesWidget,
   },
   props: {
     currentUser: {
@@ -78,12 +79,6 @@ export default Vue.extend({
     detail: {
       handler() {
         if (this.issue.id !== this.detail.issue.id) {
-          $('.block.assignee')
-            .find('input:not(.js-vue)[name="issue[assignee_ids][]"]')
-            .each((i, el) => {
-              $(el).remove();
-            });
-
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
             $(el).data('deprecatedJQueryDropdown').clearMenu();
           });
@@ -96,18 +91,9 @@ export default Vue.extend({
     },
   },
   created() {
-    // Get events from deprecatedJQueryDropdown
-    eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
-    eventHub.$on('sidebar.addAssignee', this.addAssignee);
-    eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);
-    eventHub.$on('sidebar.saveAssignees', this.saveAssignees);
     eventHub.$on('sidebar.closeAll', this.closeSidebar);
   },
   beforeDestroy() {
-    eventHub.$off('sidebar.removeAssignee', this.removeAssignee);
-    eventHub.$off('sidebar.addAssignee', this.addAssignee);
-    eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
-    eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
     eventHub.$off('sidebar.closeAll', this.closeSidebar);
   },
   mounted() {
@@ -121,34 +107,8 @@ export default Vue.extend({
     closeSidebar() {
       this.detail.issue = {};
     },
-    assignSelf() {
-      // Notify gl dropdown that we are now assigning to current user
-      this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
-
-      this.addAssignee(this.currentUser);
-      this.saveAssignees();
-    },
-    removeAssignee(a) {
-      boardsStore.detail.issue.removeAssignee(a);
-    },
-    addAssignee(a) {
-      boardsStore.detail.issue.addAssignee(a);
-    },
-    removeAllAssignees() {
-      boardsStore.detail.issue.removeAllAssignees();
-    },
-    saveAssignees() {
-      this.loadingAssignees = true;
-
-      boardsStore.detail.issue
-        .update()
-        .then(() => {
-          this.loadingAssignees = false;
-        })
-        .catch(() => {
-          this.loadingAssignees = false;
-          Flash(__('An error occurred while saving assignees'));
-        });
+    setAssignees(data) {
+      boardsStore.detail.issue.setAssignees(data.issueSetAssignees.issue.assignees.nodes);
     },
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);

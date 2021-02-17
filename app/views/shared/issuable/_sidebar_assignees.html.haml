@@ -5,7 +5,7 @@
     = _('Assignee')
     = loading_icon(css_class: 'gl-vertical-align-text-bottom')
 
-.selectbox.hide-collapsed
+.js-sidebar-assignee-data.selectbox.hide-collapsed
   - if assignees.none?
     = hidden_field_tag "#{issuable_type}[assignee_ids][]", 0, id: nil
   - else

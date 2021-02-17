@@ -59,7 +59,7 @@ export default {
 
     <div class="value hide-collapsed">
       <template v-if="hasNoUsers">
-        <span class="assign-yourself no-value qa-assign-yourself">
+        <span class="assign-yourself no-value">
           {{ __('None') }}
         </span>
       </template>

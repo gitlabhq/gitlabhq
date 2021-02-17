@@ -1,13 +1,9 @@
 import { pick } from 'lodash';
-
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import { BoardType, ListType, inactiveId, flashAnimationDuration } from '~/boards/constants';
-import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
-import updateAssigneesMutation from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import {
   formatBoardLists,
   formatListIssues,
@@ -333,34 +329,11 @@ export default {
   },
 
   setAssignees: ({ commit, getters }, assigneeUsernames) => {
-    commit(types.SET_ASSIGNEE_LOADING, true);
-
-    return gqlClient
-      .mutate({
-        mutation: updateAssigneesMutation,
-        variables: {
-          iid: getters.activeIssue.iid,
-          projectPath: getters.activeIssue.referencePath.split('#')[0],
-          assigneeUsernames,
-        },
-      })
-      .then(({ data }) => {
-        const { nodes } = data.issueSetAssignees?.issue?.assignees || [];
-
-        commit('UPDATE_ISSUE_BY_ID', {
-          issueId: getters.activeIssue.id,
-          prop: 'assignees',
-          value: nodes,
-        });
-
-        return nodes;
-      })
-      .catch(() => {
-        createFlash({ message: __('An error occurred while updating assignees.') });
-      })
-      .finally(() => {
-        commit(types.SET_ASSIGNEE_LOADING, false);
-      });
+    commit('UPDATE_ISSUE_BY_ID', {
+      issueId: getters.activeIssue.id,
+      prop: 'assignees',
+      value: assigneeUsernames,
+    });
   },
 
   setActiveIssueMilestone: async ({ commit, getters }, input) => {

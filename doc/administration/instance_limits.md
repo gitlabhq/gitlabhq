@@ -626,3 +626,11 @@ Set the limit to `0` to allow any file size.
 ### Package versions returned
 
 When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 versions.
+
+## Branch retargeting on merge **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
+
+If a branch is merged while open merge requests still point to it, GitLab can
+retarget merge requests pointing to the now-merged branch. To learn more, read
+[Branch retargeting on merge](../user/project/merge_requests/getting_started.md#branch-retargeting-on-merge).

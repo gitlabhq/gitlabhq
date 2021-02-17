@@ -141,12 +141,12 @@ reports are available to download. To download a report, click on the
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
 
 Each security vulnerability in the merge request report or the
-[Security Dashboard](security_dashboard/index.md) is actionable. Click an entry to view detailed
+[Vulnerability Report](vulnerability_report/index.md) is actionable. Click an entry to view detailed
 information with several options:
 
 - [Dismiss vulnerability](#dismissing-a-vulnerability): Dismissing a vulnerability styles it in
   strikethrough.
-- [Create issue](#creating-an-issue-for-a-vulnerability): Create a new issue with the title and
+- [Create issue](vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability): Create a new issue with the title and
   description pre-populated with information from the vulnerability report. By default, such issues
   are [confidential](../project/issues/confidential_issues.md).
 - [Automatic Remediation](#automatic-remediation-for-vulnerabilities): For some vulnerabilities,
@@ -265,29 +265,18 @@ Pressing the "Dismiss Selected" button dismisses all the selected vulnerabilitie
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
 
-### Creating an issue for a vulnerability
+### Create an issue for a vulnerability
 
-You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
-**Create issue**, which you can find in the **Related issues** section.
-
-![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
-
-This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
-vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
-report. After the issue is created, you are redirected to it so you can edit, assign, or comment on
-it.
-
-Upon returning to the group security dashboard, the vulnerability now has an associated issue next
-to the name.
-
-![Linked issue in the group security dashboard](img/issue.png)
+You can create a GitLab issue, or a Jira issue (if it's enabled) for a vulnerability. For more
+details, see [Vulnerability Pages](vulnerabilities/index.md).
 
 ### Automatic remediation for vulnerabilities
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5656) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.7.
 
-Some vulnerabilities can be fixed by applying the solution that GitLab
-automatically generates. Although the feature name is Automatic Remediation, this feature is also commonly called Auto-Remediation, Auto Remediation, or Suggested Solutions. The following scanners are supported:
+Some vulnerabilities can be fixed by applying the solution that GitLab automatically generates.
+Although the feature name is Automatic Remediation, this feature is also commonly called
+Auto-Remediation, Auto Remediation, or Suggested Solutions. The following scanners are supported:
 
 - [Dependency Scanning](dependency_scanning/index.md):
   Automatic Patch creation is only available for Node.js projects managed with

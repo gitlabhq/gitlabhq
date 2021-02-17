@@ -3295,6 +3295,9 @@ msgstr ""
 msgid "An error occurred while fetching markdown preview"
 msgstr ""
 
+msgid "An error occurred while fetching participants."
+msgstr ""
+
 msgid "An error occurred while fetching pending comments"
 msgstr ""
 
@@ -3463,7 +3466,7 @@ msgstr ""
 msgid "An error occurred while retrieving projects."
 msgstr ""
 
-msgid "An error occurred while saving assignees"
+msgid "An error occurred while searching users."
 msgstr ""
 
 msgid "An error occurred while subscribing to notifications."
@@ -26205,6 +26208,9 @@ msgid "SecurityReports|Download Report"
 msgstr ""
 
 msgid "SecurityReports|Download results"
+msgstr ""
+
+msgid "SecurityReports|Download scanned resources"
 msgstr ""
 
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."

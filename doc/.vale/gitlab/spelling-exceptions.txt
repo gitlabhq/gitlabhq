@@ -488,6 +488,10 @@ resync
 resynced
 resyncing
 resyncs
+retarget
+retargeted
+retargeting
+retargets
 reusability
 reverified
 reverifies

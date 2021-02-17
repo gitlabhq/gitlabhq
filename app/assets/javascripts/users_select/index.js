@@ -9,6 +9,7 @@ import {
   AJAX_USERS_SELECT_PARAMS_MAP,
 } from 'ee_else_ce/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
 import ModalStore from '../boards/stores/modal_store';
 import axios from '../lib/utils/axios_utils';
@@ -795,13 +796,17 @@ UsersSelect.prototype.renderRow = function (
     ? `data-container="body" data-placement="left" data-title="${tooltip}"`
     : '';
 
+  const name =
+    user?.availability && isUserBusy(user.availability)
+      ? sprintf(__('%{name} (Busy)'), { name: user.name })
+      : user.name;
   return `
     <li data-user-id=${user.id}>
       <a href="#" class="dropdown-menu-user-link d-flex align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="d-flex flex-column overflow-hidden">
           <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
-            ${escape(user.name)}
+            ${escape(name)}
           </strong>
           ${
             username

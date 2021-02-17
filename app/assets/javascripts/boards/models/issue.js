@@ -53,6 +53,10 @@ class ListIssue {
     return boardsStore.findIssueAssignee(this, findAssignee);
   }
 
+  setAssignees(assignees) {
+    boardsStore.setIssueAssignees(this, assignees);
+  }
+
   removeAssignee(removeAssignee) {
     boardsStore.removeIssueAssignee(this, removeAssignee);
   }

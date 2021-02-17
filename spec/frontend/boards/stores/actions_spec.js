@@ -11,8 +11,6 @@ import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql'
 import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
-import createFlash from '~/flash';
-import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import {
   mockLists,
   mockListsById,
@@ -726,63 +724,25 @@ describe('moveIssue', () => {
 
 describe('setAssignees', () => {
   const node = { username: 'name' };
-  const name = 'username';
   const projectPath = 'h/h';
   const refPath = `${projectPath}#3`;
   const iid = '1';
 
   describe('when succeeds', () => {
-    beforeEach(() => {
-      jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
-        data: { issueSetAssignees: { issue: { assignees: { nodes: [{ ...node }] } } } },
-      });
-    });
-
-    it('calls mutate with the correct values', async () => {
-      await actions.setAssignees(
-        { commit: () => {}, getters: { activeIssue: { iid, referencePath: refPath } } },
-        [name],
-      );
-
-      expect(gqlClient.mutate).toHaveBeenCalledWith({
-        mutation: updateAssignees,
-        variables: { iid, assigneeUsernames: [name], projectPath },
-      });
-    });
-
     it('calls the correct mutation with the correct values', (done) => {
       testAction(
         actions.setAssignees,
-        {},
+        [node],
         { activeIssue: { iid, referencePath: refPath }, commit: () => {} },
         [
-          { type: types.SET_ASSIGNEE_LOADING, payload: true },
           {
             type: 'UPDATE_ISSUE_BY_ID',
             payload: { prop: 'assignees', issueId: undefined, value: [node] },
           },
-          { type: types.SET_ASSIGNEE_LOADING, payload: false },
         ],
         [],
         done,
       );
-    });
-  });
-
-  describe('when fails', () => {
-    beforeEach(() => {
-      jest.spyOn(gqlClient, 'mutate').mockRejectedValue();
-    });
-
-    it('calls createFlash', async () => {
-      await actions.setAssignees({
-        commit: () => {},
-        getters: { activeIssue: { iid, referencePath: refPath } },
-      });
-
-      expect(createFlash).toHaveBeenCalledWith({
-        message: 'An error occurred while updating assignees.',
-      });
     });
   });
 });
