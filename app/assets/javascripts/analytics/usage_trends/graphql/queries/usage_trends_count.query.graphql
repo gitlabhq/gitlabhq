@@ -1,0 +1,34 @@
+#import "../fragments/count.fragment.graphql"
+
+query getInstanceCounts {
+  projects: usageTrendsMeasurements(identifier: PROJECTS, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+  groups: usageTrendsMeasurements(identifier: GROUPS, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+  users: usageTrendsMeasurements(identifier: USERS, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+  issues: usageTrendsMeasurements(identifier: ISSUES, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+  mergeRequests: usageTrendsMeasurements(identifier: MERGE_REQUESTS, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+  pipelines: usageTrendsMeasurements(identifier: PIPELINES, first: 1) {
+    nodes {
+      ...Count
+    }
+  }
+}

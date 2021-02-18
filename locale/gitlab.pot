@@ -8391,10 +8391,10 @@ msgstr ""
 msgid "Could not find iteration"
 msgstr ""
 
-msgid "Could not load instance counts. Please refresh the page to try again."
+msgid "Could not load the user chart. Please refresh the page to try again."
 msgstr ""
 
-msgid "Could not load the user chart. Please refresh the page to try again."
+msgid "Could not load usage counts. Please refresh the page to try again."
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -16016,96 +16016,6 @@ msgid "Instance administrators group already exists"
 msgstr ""
 
 msgid "Instance overview"
-msgstr ""
-
-msgid "InstanceStatistics|Could not load the issues and merge requests chart. Please refresh the page to try again."
-msgstr ""
-
-msgid "InstanceStatistics|Could not load the pipelines chart. Please refresh the page to try again."
-msgstr ""
-
-msgid "InstanceStatistics|Could not load the projects and groups chart. Please refresh the page to try again."
-msgstr ""
-
-msgid "InstanceStatistics|Groups"
-msgstr ""
-
-msgid "InstanceStatistics|Issues"
-msgstr ""
-
-msgid "InstanceStatistics|Issues & Merge Requests"
-msgstr ""
-
-msgid "InstanceStatistics|Items"
-msgstr ""
-
-msgid "InstanceStatistics|Merge Requests"
-msgstr ""
-
-msgid "InstanceStatistics|Month"
-msgstr ""
-
-msgid "InstanceStatistics|No data available."
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines canceled"
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines failed"
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines skipped"
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines succeeded"
-msgstr ""
-
-msgid "InstanceStatistics|Pipelines total"
-msgstr ""
-
-msgid "InstanceStatistics|Projects"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the cancelled pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the failed pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the issues"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the merge requests"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the skipped pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the successful pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error fetching the total pipelines"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error while loading the groups"
-msgstr ""
-
-msgid "InstanceStatistics|There was an error while loading the projects"
-msgstr ""
-
-msgid "InstanceStatistics|Total groups"
-msgstr ""
-
-msgid "InstanceStatistics|Total projects"
-msgstr ""
-
-msgid "InstanceStatistics|Total projects & groups"
-msgstr ""
-
-msgid "InstanceStatistics|Users"
 msgstr ""
 
 msgid "Integration"
@@ -32038,6 +31948,96 @@ msgid "UsageQuota|Your purchased storage is running low. To avoid locked project
 msgstr ""
 
 msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
+msgstr ""
+
+msgid "UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "UsageTrends|Could not load the pipelines chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "UsageTrends|Could not load the projects and groups chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "UsageTrends|Groups"
+msgstr ""
+
+msgid "UsageTrends|Issues"
+msgstr ""
+
+msgid "UsageTrends|Issues & Merge Requests"
+msgstr ""
+
+msgid "UsageTrends|Items"
+msgstr ""
+
+msgid "UsageTrends|Merge Requests"
+msgstr ""
+
+msgid "UsageTrends|Month"
+msgstr ""
+
+msgid "UsageTrends|No data available."
+msgstr ""
+
+msgid "UsageTrends|Pipelines"
+msgstr ""
+
+msgid "UsageTrends|Pipelines canceled"
+msgstr ""
+
+msgid "UsageTrends|Pipelines failed"
+msgstr ""
+
+msgid "UsageTrends|Pipelines skipped"
+msgstr ""
+
+msgid "UsageTrends|Pipelines succeeded"
+msgstr ""
+
+msgid "UsageTrends|Pipelines total"
+msgstr ""
+
+msgid "UsageTrends|Projects"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the cancelled pipelines"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the failed pipelines"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the issues"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the merge requests"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the skipped pipelines"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the successful pipelines"
+msgstr ""
+
+msgid "UsageTrends|There was an error fetching the total pipelines"
+msgstr ""
+
+msgid "UsageTrends|There was an error while loading the groups"
+msgstr ""
+
+msgid "UsageTrends|There was an error while loading the projects"
+msgstr ""
+
+msgid "UsageTrends|Total groups"
+msgstr ""
+
+msgid "UsageTrends|Total projects"
+msgstr ""
+
+msgid "UsageTrends|Total projects & groups"
+msgstr ""
+
+msgid "UsageTrends|Users"
 msgstr ""
 
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"

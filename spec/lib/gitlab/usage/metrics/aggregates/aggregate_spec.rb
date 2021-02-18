@@ -223,7 +223,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
     end
 
     it 'allows for YAML aliases in aggregated metrics configs' do
-      expect(YAML).to receive(:safe_load).with(kind_of(String), aliases: true)
+      expect(YAML).to receive(:safe_load).with(kind_of(String), aliases: true).at_least(:once)
 
       described_class.new(recorded_at)
     end

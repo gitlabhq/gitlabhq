@@ -18,7 +18,9 @@ RSpec.describe 'Project noteable notes' do
       login_as(user)
     end
 
-    it 'does not set a Gitlab::EtagCaching ETag' do
+    it 'does not set a Gitlab::EtagCaching ETag if there is a note' do
+      create(:note_on_merge_request, noteable: merge_request, project: merge_request.project)
+
       get notes_path
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -26,6 +28,13 @@ RSpec.describe 'Project noteable notes' do
       # Rack::ETag will set an etag based on the body digest, but that doesn't
       # interfere with notes pagination
       expect(response_etag).not_to eq(stored_etag)
+    end
+
+    it 'sets a Gitlab::EtagCaching ETag if there is no note' do
+      get notes_path
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response_etag).to eq(stored_etag)
     end
   end
 end

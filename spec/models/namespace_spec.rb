@@ -1449,4 +1449,24 @@ RSpec.describe Namespace do
       end
     end
   end
+
+  describe '#recent?' do
+    subject { namespace.recent? }
+
+    context 'when created more than 90 days ago' do
+      before do
+        namespace.update_attribute(:created_at, 91.days.ago)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when created less than 90 days ago' do
+      before do
+        namespace.update_attribute(:created_at, 89.days.ago)
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
 end

@@ -13062,61 +13062,6 @@ type InstanceSecurityDashboard {
 }
 
 """
-Represents a recorded measurement (object count) for the Admins
-"""
-type InstanceStatisticsMeasurement {
-  """
-  Object count.
-  """
-  count: Int!
-
-  """
-  The type of objects being measured.
-  """
-  identifier: MeasurementIdentifier!
-
-  """
-  The time the measurement was recorded.
-  """
-  recordedAt: Time
-}
-
-"""
-The connection type for InstanceStatisticsMeasurement.
-"""
-type InstanceStatisticsMeasurementConnection {
-  """
-  A list of edges.
-  """
-  edges: [InstanceStatisticsMeasurementEdge]
-
-  """
-  A list of nodes.
-  """
-  nodes: [InstanceStatisticsMeasurement]
-
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-}
-
-"""
-An edge in a connection.
-"""
-type InstanceStatisticsMeasurementEdge {
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-
-  """
-  The item at the end of the edge.
-  """
-  node: InstanceStatisticsMeasurement
-}
-
-"""
 Incident severity
 """
 enum IssuableSeverity {
@@ -21681,7 +21626,8 @@ type Query {
   instanceSecurityDashboard: InstanceSecurityDashboard
 
   """
-  Get statistics on the instance.
+  Get statistics on the instance. Deprecated in 13.10: This field was renamed.
+  Use the `usageTrendsMeasurements` field instead..
   """
   instanceStatisticsMeasurements(
     """
@@ -21718,7 +21664,7 @@ type Query {
     Measurement recorded before this date.
     """
     recordedBefore: Time
-  ): InstanceStatisticsMeasurementConnection
+  ): UsageTrendsMeasurementConnection @deprecated(reason: "This field was renamed. Use the `usageTrendsMeasurements` field instead.. Deprecated in 13.10.")
 
   """
   Find an Issue.
@@ -21939,6 +21885,46 @@ type Query {
     """
     visibility: VisibilityScopesEnum
   ): SnippetConnection
+
+  """
+  Get statistics on the instance.
+  """
+  usageTrendsMeasurements(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    The type of measurement/statistics to retrieve.
+    """
+    identifier: MeasurementIdentifier!
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Measurement recorded after this date.
+    """
+    recordedAfter: Time
+
+    """
+    Measurement recorded before this date.
+    """
+    recordedBefore: Time
+  ): UsageTrendsMeasurementConnection
 
   """
   Find a user.
@@ -27348,6 +27334,61 @@ type UpdateSnippetPayload {
 }
 
 scalar Upload
+
+"""
+Represents a recorded measurement (object count) for the Admins
+"""
+type UsageTrendsMeasurement {
+  """
+  Object count.
+  """
+  count: Int!
+
+  """
+  The type of objects being measured.
+  """
+  identifier: MeasurementIdentifier!
+
+  """
+  The time the measurement was recorded.
+  """
+  recordedAt: Time
+}
+
+"""
+The connection type for UsageTrendsMeasurement.
+"""
+type UsageTrendsMeasurementConnection {
+  """
+  A list of edges.
+  """
+  edges: [UsageTrendsMeasurementEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [UsageTrendsMeasurement]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type UsageTrendsMeasurementEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: UsageTrendsMeasurement
+}
 
 type User {
   """

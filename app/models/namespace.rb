@@ -400,6 +400,10 @@ class Namespace < ApplicationRecord
     !has_parent?
   end
 
+  def recent?
+    created_at >= 90.days.ago
+  end
+
   private
 
   def all_projects_with_pages

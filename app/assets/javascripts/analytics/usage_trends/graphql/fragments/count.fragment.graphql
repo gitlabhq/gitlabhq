@@ -1,0 +1,4 @@
+fragment Count on UsageTrendsMeasurement {
+  count
+  recordedAt
+}

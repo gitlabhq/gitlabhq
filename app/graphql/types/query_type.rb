@@ -82,10 +82,16 @@ module Types
             argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the Issue.'
           end
 
-    field :instance_statistics_measurements, Types::Admin::Analytics::InstanceStatistics::MeasurementType.connection_type,
+    field :instance_statistics_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
           null: true,
           description: 'Get statistics on the instance.',
-          resolver: Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsResolver
+          deprecated: { reason: 'This field was renamed. Use the `usageTrendsMeasurements` field instead.', milestone: '13.10' },
+          resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver
+
+    field :usage_trends_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
+          null: true,
+          description: 'Get statistics on the instance.',
+          resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver
 
     field :ci_application_settings, Types::Ci::ApplicationSettingType,
           null: true,
