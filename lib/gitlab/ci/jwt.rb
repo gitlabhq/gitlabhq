@@ -60,7 +60,7 @@ module Gitlab
           ref_protected: build.protected.to_s
         }
 
-        if include_environment_claims?
+        if environment.present?
           fields.merge!(
             environment: environment.name,
             environment_protected: environment_protected?.to_s
@@ -118,10 +118,6 @@ module Gitlab
 
       def environment_protected?
         false # Overridden in EE
-      end
-
-      def include_environment_claims?
-        Feature.enabled?(:ci_jwt_include_environment) && environment.present?
       end
     end
   end

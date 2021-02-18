@@ -132,7 +132,7 @@ To request it, open the **Reviewers** drop-down box to search for the user you w
 
 #### Approval Rule information for Reviewers **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8. For this version only, GitLab administrators can opt to [enable it](#enable-or-disable-approval-rule-information).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
@@ -230,33 +230,6 @@ forks are not retargeted.
 - Take one thing at a time and ship the smallest changes possible. By doing so,
   reviews are faster and your changes are less prone to errors.
 - Do not use capital letters nor special chars in branch names.
-
-## Enable or disable Approval Rule information **(PREMIUM SELF)**
-
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
-
-Merge Request Reviewers is under development and ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:reviewer_approval_rules)
-# For a single project
-Feature.enable(:reviewer_approval_rules, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:reviewer_approval_rules)
-# For a single project
-Feature.disable(:reviewer_approval_rules, Project.find(<project id>))
-```
 
 ### Enable or disable branch retargeting on merge **(FREE SELF)**
 

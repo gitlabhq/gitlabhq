@@ -2,7 +2,7 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { __ } from '~/locale';
-import { DEFAULT, LOAD_FAILURE } from '../../constants';
+import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import PipelineGraph from './graph_component.vue';
 import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
 
@@ -29,6 +29,7 @@ export default {
     };
   },
   errorTexts: {
+    [DRAW_FAILURE]: __('An error ocurred while drawing job relationship links.'),
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this pipeline.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
@@ -53,6 +54,11 @@ export default {
   computed: {
     alert() {
       switch (this.alertType) {
+        case DRAW_FAILURE:
+          return {
+            text: this.$options.errorTexts[DRAW_FAILURE],
+            variant: 'danger',
+          };
         case LOAD_FAILURE:
           return {
             text: this.$options.errorTexts[LOAD_FAILURE],
@@ -88,8 +94,8 @@ export default {
     },
     reportFailure(type) {
       this.showAlert = true;
-      this.failureType = type;
-      reportToSentry(this.$options.name, this.failureType);
+      this.alertType = type;
+      reportToSentry(this.$options.name, this.alertType);
     },
   },
 };

@@ -2,6 +2,7 @@
 import { isEmpty } from 'lodash';
 import { DRAW_FAILURE } from '../../constants';
 import { createJobsHash, generateJobNeedsDict } from '../../utils';
+import { reportToSentry } from '../graph/utils';
 import { parseData } from '../parsing_utils';
 import { generateLinksData } from './drawing_utils';
 
@@ -87,6 +88,9 @@ export default {
       this.$emit('highlightedJobsChange', jobs);
     },
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
+  },
   mounted() {
     if (!isEmpty(this.pipelineData)) {
       this.prepareLinkData();
@@ -101,8 +105,9 @@ export default {
         const arrayOfJobs = this.pipelineData.flatMap(({ groups }) => groups);
         const parsedData = parseData(arrayOfJobs);
         this.links = generateLinksData(parsedData, this.containerId, `-${this.pipelineId}`);
-      } catch {
+      } catch (err) {
         this.$emit('error', DRAW_FAILURE);
+        reportToSentry(this.$options.name, err);
       }
     },
     getLinkClasses(link) {

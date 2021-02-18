@@ -9,6 +9,7 @@ module Gitlab
 
         IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
         DB_COUNTERS = %i{db_count db_write_count db_cached_count}.freeze
+        SQL_COMMANDS_WITH_COMMENTS_REGEX = /\A(\/\*.*\*\/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$/i.freeze
 
         def sql(event)
           # Mark this thread as requiring a database connection. This is used
@@ -37,7 +38,7 @@ module Gitlab
         private
 
         def select_sql_command?(payload)
-          payload[:sql].match(/\A((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$/i)
+          payload[:sql].match(SQL_COMMANDS_WITH_COMMENTS_REGEX)
         end
 
         def increment_db_counters(payload)

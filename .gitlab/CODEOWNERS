@@ -101,6 +101,7 @@
 /doc/api/repository_files.md @aqualls
 /doc/api/repository_submodules.md @aqualls
 /doc/api/search.md @aqualls
+/doc/api/services.md @aqualls
 /doc/api/snippets.md @aqualls
 /doc/api/suggestions.md @aqualls
 /doc/api/tags.md @aqualls
@@ -110,6 +111,7 @@
 /doc/topics/gitlab_flow.md @aqualls
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
 /doc/user/admin_area/settings/instance_template_repository.md @aqualls
+/doc/user/admin_area/settings/project_integration_management.md @aqualls
 /doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
 /doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
 /doc/user/asciidoc.md @aqualls

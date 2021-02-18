@@ -34,7 +34,6 @@ This section contains the following topics:
 - [Merge conflicts](topics/merge_conflicts.md).
 - [Rollback commits](topics/rollback_commits.md).
 - [Subtree](topics/subtree.md).
-- [Tags](topics/tags.md).
 - [Unstage](topics/unstage.md).
 
 ## Additional Resources

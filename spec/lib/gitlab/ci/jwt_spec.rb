@@ -114,17 +114,6 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:environment]).to eq('production')
         expect(payload[:environment_protected]).to eq('false')
       end
-
-      context ':ci_jwt_include_environment feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_jwt_include_environment: false)
-        end
-
-        it 'does not include environment attributes' do
-          expect(payload).not_to have_key(:environment)
-          expect(payload).not_to have_key(:environment_protected)
-        end
-      end
     end
   end
 

@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { reportToSentry } from '../graph/utils';
 import LinksInner from './links_inner.vue';
 
 export default {
@@ -49,6 +50,9 @@ export default {
         !this.containerZero && (this.showLinksOverride || this.numGroups < this.$options.MAX_GROUPS)
       );
     },
+  },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
     dismissAlert() {
