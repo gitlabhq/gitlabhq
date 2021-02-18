@@ -1,5 +1,13 @@
 import { omitBy, isUndefined } from 'lodash';
 
+export const STANDARD_CONTEXT = {
+  schema: 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-3',
+  data: {
+    environment: process.env.NODE_ENV,
+    source: 'gitlab-javascript',
+  },
+};
+
 const DEFAULT_SNOWPLOW_OPTIONS = {
   namespace: 'gl',
   hostname: window.location.hostname,
@@ -67,8 +75,13 @@ export default class Tracking {
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (!category) throw new Error('Tracking: no category provided for tracking.');
 
-    const { label, property, value, context } = data;
-    const contexts = context ? [context] : undefined;
+    const { label, property, value } = data;
+    const contexts = [STANDARD_CONTEXT];
+
+    if (data.context) {
+      contexts.push(data.context);
+    }
+
     return window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
   }
 
@@ -134,7 +147,8 @@ export function initDefaultTrackers() {
   if (!Tracking.enabled()) return;
 
   window.snowplow('enableActivityTracking', 30, 30);
-  window.snowplow('trackPageView'); // must be after enableActivityTracking
+  // must be after enableActivityTracking
+  window.snowplow('trackPageView', null, [STANDARD_CONTEXT]);
 
   if (window.snowplowOptions.formTracking) window.snowplow('enableFormTracking');
   if (window.snowplowOptions.linkClickTracking) window.snowplow('enableLinkClickTracking');

@@ -69,21 +69,21 @@ export default {
     <gl-button category="primary" variant="success" class="gl-ml-3" @click="onSubmit">
       {{ s__('CompareRevisions|Compare') }}
     </gl-button>
-    <a
+    <gl-button
       v-if="projectMergeRequestPath"
       :href="projectMergeRequestPath"
       data-testid="projectMrButton"
       class="btn btn-default gl-button gl-ml-3"
     >
       {{ s__('CompareRevisions|View open merge request') }}
-    </a>
-    <a
+    </gl-button>
+    <gl-button
       v-else-if="createMrPath"
       :href="createMrPath"
       data-testid="createMrButton"
       class="btn btn-default gl-button gl-ml-3"
     >
       {{ s__('CompareRevisions|Create merge request') }}
-    </a>
+    </gl-button>
   </form>
 </template>

@@ -138,6 +138,22 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
   };
 };
 
+export const mockProjectPipeline = {
+  pipeline: {
+    commitPath: '/-/commit/aabbccdd',
+    id: 'gid://gitlab/Ci::Pipeline/118',
+    iid: '28',
+    shortSha: mockCommitSha,
+    status: 'SUCCESS',
+    detailedStatus: {
+      detailsPath: '/root/sample-ci-project/-/pipelines/118"',
+      group: 'success',
+      icon: 'status_success',
+      text: 'passed',
+    },
+  },
+};
+
 export const mockLintResponse = {
   valid: true,
   mergedYaml: mockCiYml,

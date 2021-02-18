@@ -7,7 +7,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
   let(:webhook_url) { 'https://example.gitlab.com' }
 
   def execute_with_options(options)
-    receive(:new).with(webhook_url, options.merge(http_client: SlackService::Notifier::HTTPClient))
+    receive(:new).with(webhook_url, options.merge(http_client: SlackMattermost::Notifier::HTTPClient))
      .and_return(double(:slack_service).as_null_object)
   end
 

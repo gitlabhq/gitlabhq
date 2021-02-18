@@ -635,6 +635,21 @@ type AlertManagementHttpIntegration implements AlertManagementIntegration {
   name: String
 
   """
+  Extract alert fields from payload example for custom mapping.
+  """
+  payloadAlertFields: [AlertManagementPayloadAlertField!]
+
+  """
+  The custom mapping of GitLab alert attributes to fields from the payload_example.
+  """
+  payloadAttributeMappings: [AlertManagementPayloadAlertMappingField!]
+
+  """
+  The example of an alert payload.
+  """
+  payloadExample: JsonString
+
+  """
   Token used to authenticate alert notification requests.
   """
   token: String
@@ -648,6 +663,41 @@ type AlertManagementHttpIntegration implements AlertManagementIntegration {
   Endpoint which accepts alert notifications.
   """
   url: String
+}
+
+"""
+The connection type for AlertManagementHttpIntegration.
+"""
+type AlertManagementHttpIntegrationConnection {
+  """
+  A list of edges.
+  """
+  edges: [AlertManagementHttpIntegrationEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [AlertManagementHttpIntegration]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type AlertManagementHttpIntegrationEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: AlertManagementHttpIntegration
 }
 
 """
@@ -860,6 +910,31 @@ enum AlertManagementPayloadAlertFieldType {
   String field type
   """
   STRING
+}
+
+"""
+Parsed field (with its name) from an alert used for custom mappings
+"""
+type AlertManagementPayloadAlertMappingField {
+  """
+  A GitLab alert field name.
+  """
+  fieldName: AlertManagementPayloadAlertFieldName
+
+  """
+  Human-readable label of the payload path.
+  """
+  label: String
+
+  """
+  Path to value inside payload JSON.
+  """
+  path: [String!]
+
+  """
+  Type of the parsed value.
+  """
+  type: AlertManagementPayloadAlertFieldType
 }
 
 """
@@ -19030,6 +19105,31 @@ type Project {
     """
     statuses: [AlertManagementStatus!]
   ): AlertManagementAlertConnection
+
+  """
+  HTTP Integrations which can receive alerts for the project.
+  """
+  alertManagementHttpIntegrations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): AlertManagementHttpIntegrationConnection
 
   """
   Integrations which can receive alerts for the project.

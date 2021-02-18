@@ -25,10 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
     errorStateSvgPath: {
       type: String,
       required: true,

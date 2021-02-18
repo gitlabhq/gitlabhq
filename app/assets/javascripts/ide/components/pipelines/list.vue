@@ -32,7 +32,7 @@ export default {
     SafeHtml,
   },
   computed: {
-    ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
+    ...mapState(['pipelinesEmptyStateSvgPath']),
     ...mapGetters(['currentProject']),
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages', 'pipelineFailed']),
     ...mapState('pipelines', [
@@ -85,7 +85,6 @@ export default {
       </header>
       <empty-state
         v-if="!latestPipeline"
-        :help-page-path="links.ciHelpPagePath"
         :empty-state-svg-path="pipelinesEmptyStateSvgPath"
         :can-set-ci="true"
         class="mb-auto mt-auto"

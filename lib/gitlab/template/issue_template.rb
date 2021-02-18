@@ -25,6 +25,10 @@ module Gitlab
           # follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300279
           project.repository.issue_template_names_by_category
         end
+
+        def by_category(category, project = nil, empty_category_title: nil)
+          super(category, project, empty_category_title: _('Project Templates'))
+        end
       end
     end
   end

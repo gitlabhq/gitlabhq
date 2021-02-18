@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Service Desk Setting', :js do
+RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache do
   let(:project) { create(:project_empty_repo, :private, service_desk_enabled: false) }
   let(:presenter) { project.present(current_user: user) }
   let(:user) { create(:user) }
@@ -65,6 +65,49 @@ RSpec.describe 'Service Desk Setting', :js do
       wait_for_requests
 
       expect(find('[data-testid="incoming-email"]').value).to eq('address-suffix@example.com')
+    end
+
+    context 'issue description templates' do
+      let_it_be(:issuable_project_template_files) do
+        {
+          '.gitlab/issue_templates/project-issue-bar.md' => 'Project Issue Template Bar',
+          '.gitlab/issue_templates/project-issue-foo.md' => 'Project Issue Template Foo'
+        }
+      end
+
+      let_it_be(:issuable_group_template_files) do
+        {
+          '.gitlab/issue_templates/group-issue-bar.md' => 'Group Issue Template Bar',
+          '.gitlab/issue_templates/group-issue-foo.md' => 'Group Issue Template Foo'
+        }
+      end
+
+      let_it_be_with_reload(:group) { create(:group)}
+      let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: issuable_project_template_files) }
+      let_it_be(:group_template_repo) { create(:project, :custom_repo, group: group, files: issuable_group_template_files) }
+
+      before do
+        stub_licensed_features(custom_file_templates_for_namespace: false, custom_file_templates: false)
+        group.update_columns(file_template_project_id: group_template_repo.id)
+      end
+
+      context 'when inherited_issuable_templates enabled' do
+        before do
+          stub_feature_flags(inherited_issuable_templates: true)
+          visit edit_project_path(project)
+        end
+
+        it_behaves_like 'issue description templates from current project only'
+      end
+
+      context 'when inherited_issuable_templates disabled' do
+        before do
+          stub_feature_flags(inherited_issuable_templates: false)
+          visit edit_project_path(project)
+        end
+
+        it_behaves_like 'issue description templates from current project only'
+      end
     end
   end
 end

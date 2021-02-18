@@ -23,7 +23,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
   const {
     endpoint,
     pipelineScheduleUrl,
-    helpPagePath,
     emptyStateSvgPath,
     errorStateSvgPath,
     noPipelinesSvgPath,
@@ -55,7 +54,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           store: this.store,
           endpoint,
           pipelineScheduleUrl,
-          helpPagePath,
           emptyStateSvgPath,
           errorStateSvgPath,
           noPipelinesSvgPath,

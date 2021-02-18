@@ -53,7 +53,6 @@ export function initIde(el, options = {}) {
         promotionSvgPath: el.dataset.promotionSvgPath,
       });
       this.setLinks({
-        ciHelpPagePath: el.dataset.ciHelpPagePath,
         webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
       });
       this.setInitialData({
