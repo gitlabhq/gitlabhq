@@ -8,11 +8,11 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/projects/edit.html.haml' do
-            element :save_merge_request_changes
+            element :save_merge_request_changes_button
           end
 
           view 'app/views/projects/_merge_request_merge_method_settings.html.haml' do
-            element :radio_button_merge_ff
+            element :merge_ff_radio_button
           end
 
           view 'app/views/projects/_merge_request_merge_checks_settings.html.haml' do
@@ -20,11 +20,11 @@ module QA
           end
 
           def click_save_changes
-            click_element :save_merge_request_changes
+            click_element :save_merge_request_changes_button
           end
 
           def enable_ff_only
-            click_element :radio_button_merge_ff
+            click_element :merge_ff_radio_button
             click_save_changes
           end
 

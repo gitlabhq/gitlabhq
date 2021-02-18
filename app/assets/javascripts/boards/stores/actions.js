@@ -79,7 +79,11 @@ export default {
     }
   },
 
-  fetchLists: ({ commit, state, dispatch }) => {
+  fetchLists: ({ dispatch }) => {
+    dispatch('fetchIssueLists');
+  },
+
+  fetchIssueLists: ({ commit, state, dispatch }) => {
     const { boardType, filterParams, fullPath, boardId } = state;
 
     const variables = {
@@ -253,8 +257,8 @@ export default {
       });
   },
 
-  fetchIssuesForList: ({ state, commit }, { listId, fetchNext = false }) => {
-    commit(types.REQUEST_ISSUES_FOR_LIST, { listId, fetchNext });
+  fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, boardId, boardType, filterParams } = state;
 
@@ -281,9 +285,9 @@ export default {
         const { lists } = data[boardType]?.board;
         const listIssues = formatListIssues(lists);
         const listPageInfo = formatListsPageInfo(lists);
-        commit(types.RECEIVE_ISSUES_FOR_LIST_SUCCESS, { listIssues, listPageInfo, listId });
+        commit(types.RECEIVE_ITEMS_FOR_LIST_SUCCESS, { listIssues, listPageInfo, listId });
       })
-      .catch(() => commit(types.RECEIVE_ISSUES_FOR_LIST_FAILURE, listId));
+      .catch(() => commit(types.RECEIVE_ITEMS_FOR_LIST_FAILURE, listId));
   },
 
   resetIssues: ({ commit }) => {

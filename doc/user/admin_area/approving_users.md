@@ -7,30 +7,49 @@ type: howto
 
 # Users pending approval
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
+A user in _pending approval_ state requires action by an administrator. A user sign up can be in a
+pending approval state because an administrator has enabled either, or both, of the following
+options:
 
-When [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) is enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state.
+- [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
+- [User cap](settings/sign_up_restrictions.md#user-cap).
 
-A user pending approval is functionally identical to a [blocked](blocking_unblocking_users.md) user.
+When a user registers for an account while this setting is enabled:
+
+- The user is placed in a **Pending approval** state.
+- The user sees a message telling them their account is awaiting approval by an administrator.
 
 A user pending approval:
 
-- Will not be able to sign in.
-- Cannot access Git repositories or the API.
-- Will not receive any notifications from GitLab.
+- Is functionally identical to a [blocked](blocking_unblocking_users.md) user.
+- Cannot sign in.
+- Cannot access Git repositories or the GitLab API.
+- Does not receive any notifications from GitLab.
 - Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
-## Approving a user
+An administrator must [approve their sign up](#approve-or-reject-a-user-sign-up) to allow them to
+sign in.
 
-A user that is pending approval can be approved from the Admin Area. To do this:
+## View user sign ups pending approval
 
-1. Navigate to  **Admin Area > Overview > Users**.
-1. Click on the **Pending approval** tab.
-1. Select a user.
-1. Under the **Account** tab, click **Approve user**.
+To view user sign ups pending approval:
+
+1. Go to **Admin Area > Overview > Users**.
+1. Select the **Pending approval** tab.
+
+## Approve or reject a user sign up
+
+A user sign up pending approval can be approved or rejected from the Admin Area.
+
+To approve or reject a user sign up:
+
+1. Go to  **Admin Area > Overview > Users**.
+1. Select the **Pending approval** tab.
+1. In the user's row select settings (**{settings}**).
+1. Select **Approve** or **Reject**.
 
 Approving a user:
 
-1. Activates their account.
-1. Changes the user's state to active and it consumes a
-[seat](../../subscriptions/self_managed/index.md#billable-users).
+- Activates their account.
+- Changes the user's state to active.
+- Consumes a subscription [seat](../../subscriptions/self_managed/index.md#billable-users).

@@ -11,7 +11,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 const actions = {
-  fetchIssuesForList: jest.fn(),
+  fetchItemsForList: jest.fn(),
 };
 
 const createStore = (state = defaultState) => {
@@ -170,7 +170,7 @@ describe('Board list component', () => {
     it('loads more issues after scrolling', () => {
       wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
-      expect(actions.fetchIssuesForList).toHaveBeenCalled();
+      expect(actions.fetchItemsForList).toHaveBeenCalled();
     });
 
     it('does not load issues if already loading', () => {
@@ -179,7 +179,7 @@ describe('Board list component', () => {
       });
       wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
-      expect(actions.fetchIssuesForList).not.toHaveBeenCalled();
+      expect(actions.fetchItemsForList).not.toHaveBeenCalled();
     });
 
     it('shows loading more spinner', async () => {

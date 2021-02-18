@@ -112,7 +112,7 @@ As you go through the Microsoft procedure, keep the following in mind:
 - If you have multiple instances of Azure Active Directory, you can switch to the desired tenant.
 - You're setting up a Web application.
 - The redirect URI requires the URL of the Azure OAuth callback of your GitLab
-  installation. For example, `https://gitlab.example.com/users/auth/azure_oauth2/callback`.
+  installation. For example, `https://gitlab.example.com/users/auth/azure_activedirectory_v2/callback`.
   The type dropdown should be set to **Web**.
 - The `client ID` and `client secret` are terms associated with OAuth 2. In some Microsoft documentation,
   the terms may be listed as `Application ID` and `Application Secret`.

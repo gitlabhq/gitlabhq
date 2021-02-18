@@ -153,7 +153,7 @@ Job grouping is evaluated with an improved regular expression to group jobs by n
 The new implementation removes one or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences
 from the **end** of job names only.
 
-Matching substrings occuring at the beginning or in the middle of build names are
+Matching substrings occurring at the beginning or in the middle of build names are
 no longer removed.
 
 ## Specifying variables when running manual jobs

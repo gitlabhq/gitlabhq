@@ -576,95 +576,55 @@ describe('GfmAutoComplete', () => {
     });
   });
 
-  describe('GfmAutoComplete.Members', () => {
-    const member = {
-      name: 'Marge Simpson',
-      username: 'msimpson',
-      search: 'MargeSimpson msimpson',
-    };
-
-    describe('templateFunction', () => {
-      it('should return html with avatarTag and username', () => {
-        expect(
-          GfmAutoComplete.Members.templateFunction({
-            avatarTag: 'IMG',
-            username: 'my-group',
-            title: '',
-            icon: '',
-            availabilityStatus: '',
-          }),
-        ).toBe('<li>IMG my-group <small></small> </li>');
-      });
-
-      it('should add icon if icon is set', () => {
-        expect(
-          GfmAutoComplete.Members.templateFunction({
-            avatarTag: 'IMG',
-            username: 'my-group',
-            title: '',
-            icon: '<i class="icon"/>',
-            availabilityStatus: '',
-          }),
-        ).toBe('<li>IMG my-group <small></small> <i class="icon"/></li>');
-      });
-
-      it('should add escaped title if title is set', () => {
-        expect(
-          GfmAutoComplete.Members.templateFunction({
-            avatarTag: 'IMG',
-            username: 'my-group',
-            title: 'MyGroup+',
-            icon: '<i class="icon"/>',
-            availabilityStatus: '',
-          }),
-        ).toBe('<li>IMG my-group <small>MyGroup+</small> <i class="icon"/></li>');
-      });
-
-      it('should add user availability status if availabilityStatus is set', () => {
-        expect(
-          GfmAutoComplete.Members.templateFunction({
-            avatarTag: 'IMG',
-            username: 'my-group',
-            title: '',
-            icon: '<i class="icon"/>',
-            availabilityStatus: '<span class="gl-text-gray-500"> (Busy)</span>',
-          }),
-        ).toBe(
-          '<li>IMG my-group <small><span class="gl-text-gray-500"> (Busy)</span></small> <i class="icon"/></li>',
-        );
-      });
+  describe('Members.templateFunction', () => {
+    it('should return html with avatarTag and username', () => {
+      expect(
+        GfmAutoComplete.Members.templateFunction({
+          avatarTag: 'IMG',
+          username: 'my-group',
+          title: '',
+          icon: '',
+          availabilityStatus: '',
+        }),
+      ).toBe('<li>IMG my-group <small></small> </li>');
     });
 
-    describe('nameOrUsernameStartsWith', () => {
-      it.each`
-        query             | result
-        ${'mar'}          | ${true}
-        ${'msi'}          | ${true}
-        ${'margesimpson'} | ${true}
-        ${'msimpson'}     | ${true}
-        ${'arge'}         | ${false}
-        ${'rgesimp'}      | ${false}
-        ${'maria'}        | ${false}
-        ${'homer'}        | ${false}
-      `('returns $result for $query', ({ query, result }) => {
-        expect(GfmAutoComplete.Members.nameOrUsernameStartsWith(member, query)).toBe(result);
-      });
+    it('should add icon if icon is set', () => {
+      expect(
+        GfmAutoComplete.Members.templateFunction({
+          avatarTag: 'IMG',
+          username: 'my-group',
+          title: '',
+          icon: '<i class="icon"/>',
+          availabilityStatus: '',
+        }),
+      ).toBe('<li>IMG my-group <small></small> <i class="icon"/></li>');
     });
 
-    describe('nameOrUsernameIncludes', () => {
-      it.each`
-        query             | result
-        ${'mar'}          | ${true}
-        ${'msi'}          | ${true}
-        ${'margesimpson'} | ${true}
-        ${'msimpson'}     | ${true}
-        ${'arge'}         | ${true}
-        ${'rgesimp'}      | ${true}
-        ${'maria'}        | ${false}
-        ${'homer'}        | ${false}
-      `('returns $result for $query', ({ query, result }) => {
-        expect(GfmAutoComplete.Members.nameOrUsernameIncludes(member, query)).toBe(result);
-      });
+    it('should add escaped title if title is set', () => {
+      expect(
+        GfmAutoComplete.Members.templateFunction({
+          avatarTag: 'IMG',
+          username: 'my-group',
+          title: 'MyGroup+',
+          icon: '<i class="icon"/>',
+          availabilityStatus: '',
+        }),
+      ).toBe('<li>IMG my-group <small>MyGroup+</small> <i class="icon"/></li>');
+    });
+
+    it('should add user availability status if availabilityStatus is set', () => {
+      expect(
+        GfmAutoComplete.Members.templateFunction({
+          avatarTag: 'IMG',
+          username: 'my-group',
+          title: '',
+          icon: '<i class="icon"/>',
+          availabilityStatus: '<span class="gl-text-gray-500"> (Busy)</span>',
+        }),
+      ).toBe(
+        '<li>IMG my-group <small><span class="gl-text-gray-500"> (Busy)</span></small> <i class="icon"/></li>',
+      );
     });
   });
 

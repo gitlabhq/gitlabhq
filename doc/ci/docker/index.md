@@ -8,11 +8,18 @@ type: index
 
 # Docker integration
 
-GitLab CI/CD can be combined with [Docker](https://www.docker.com) to enable
-integration between the two.
+There are two primary ways to incorporate [Docker](https://www.docker.com) in your CI/CD workflow.
 
-The following documentation is available for using GitLab CI/CD with Docker:
+- **[Run your CI/CD jobs](using_docker_images.md) in Docker containers.**
 
-- [Building Docker images with GitLab CI/CD](using_docker_build.md).
-- [Using Docker images](using_docker_images.md).
-- [Building images with kaniko and GitLab CI/CD](using_kaniko.md).
+  You can create CI/CD jobs to do things like test, build, or publish
+  an application. These jobs can run in Docker containers.
+
+  For example, you can tell GitLab CI/CD to use a Node image that's hosted on Docker Hub
+  or in the GitLab Container Registry. Your job then runs in a container that's based on the image.
+  The container has all the Node dependencies you need to build your app.
+
+- **Use [Docker](using_docker_build.md) or [kaniko](using_kaniko.md) to build Docker images.**
+
+  You can create CI/CD jobs to build Docker images and publish
+  them to a container registry.

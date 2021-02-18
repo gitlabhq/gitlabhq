@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Building Docker images with GitLab CI/CD
+# Use Docker to build Docker images
 
 You can use GitLab CI/CD with Docker Engine to build and test Docker-based projects.
 

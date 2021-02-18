@@ -64,6 +64,12 @@ Examples of both configurations can be found here:
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/har)
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-api-fuzzing-example)
 
+WARNING:
+GitLab 14.0 will require that you place API fuzzing configuration files (for example,
+`gitlab-api-fuzzing-config.yml`) in your repository's `.gitlab` directory instead of your
+repository's root. You can continue using your existing configuration files as they are, but
+starting in GitLab 14.0, GitLab will not check your repository's root for configuration files.
+
 ### OpenAPI Specification
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an
@@ -585,7 +591,7 @@ repository's root as `.gitlab-api-fuzzing.yml`.
 
 ### Overrides
 
-API Fuzzing provides a method to add or overide specific items in your request, for example: 
+API Fuzzing provides a method to add or override specific items in your request, for example:
 
 - Headers
 - Cookies
@@ -609,19 +615,19 @@ Overrides use a JSON document, where each type of override is represented by a J
     "cookie1": "value",
     "cookie2": "value"
   },
-  "query":      { 
+  "query":      {
     "query-string1": "value",
     "query-string2": "value"
   },
-  "body-form":  { 
+  "body-form":  {
     "form-param1": "value",
     "form-param1": "value",
   },
-  "body-json":  { 
+  "body-json":  {
     "json-path1": "value",
     "json-path2": "value",
   },
-  "body-xml" :  { 
+  "body-xml" :  {
     "xpath1":    "value",
     "xpath2":    "value",
   }
@@ -655,7 +661,7 @@ Example usage for setting a `body-form` override:
 
 ```json
 {
-  "body-form":  { 
+  "body-form":  {
     "username": "john.doe"
   }
 }
@@ -667,7 +673,7 @@ Example usage for setting a `body-json` override:
 
 ```json
 {
-  "body-json":  { 
+  "body-json":  {
     "$.credentials.access-token": "iddqd!42.$"
   }
 }
@@ -705,7 +711,7 @@ the second entry overrides an XML element:
 
 ```json
 {
-  "body-xml" :  { 
+  "body-xml" :  {
     "/credentials/@isEnabled": "true",
     "/credentials/access-token/text()" : "iddqd!42.$"
   }

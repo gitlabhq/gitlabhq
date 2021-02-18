@@ -112,7 +112,7 @@ export default {
     this.listRef.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    ...mapActions(['fetchIssuesForList', 'moveIssue']),
+    ...mapActions(['fetchItemsForList', 'moveIssue']),
     listHeight() {
       return this.listRef.getBoundingClientRect().height;
     },
@@ -126,7 +126,7 @@ export default {
       this.listRef.scrollTop = 0;
     },
     loadNextPage() {
-      this.fetchIssuesForList({ listId: this.list.id, fetchNext: true });
+      this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
     },
     toggleForm() {
       this.showIssueForm = !this.showIssueForm;

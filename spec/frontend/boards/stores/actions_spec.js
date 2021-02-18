@@ -112,6 +112,15 @@ describe('setActiveId', () => {
 });
 
 describe('fetchLists', () => {
+  it('should dispatch fetchIssueLists action', () => {
+    testAction({
+      action: actions.fetchLists,
+      expectedActions: [{ type: 'fetchIssueLists' }],
+    });
+  });
+});
+
+describe('fetchIssueLists', () => {
   const state = {
     fullPath: 'gitlab-org',
     boardId: '1',
@@ -138,13 +147,30 @@ describe('fetchLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchLists,
+      actions.fetchIssueLists,
       {},
       state,
       [
         {
           type: types.RECEIVE_BOARD_LISTS_SUCCESS,
           payload: formattedLists,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('should commit mutations RECEIVE_BOARD_LISTS_FAILURE on failure', (done) => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
+
+    testAction(
+      actions.fetchIssueLists,
+      {},
+      state,
+      [
+        {
+          type: types.RECEIVE_BOARD_LISTS_FAILURE,
         },
       ],
       [],
@@ -168,7 +194,7 @@ describe('fetchLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchLists,
+      actions.fetchIssueLists,
       {},
       state,
       [
@@ -490,7 +516,7 @@ describe('removeList', () => {
   });
 });
 
-describe('fetchIssuesForList', () => {
+describe('fetchItemsForList', () => {
   const listId = mockLists[0].id;
 
   const state = {
@@ -533,20 +559,20 @@ describe('fetchIssuesForList', () => {
     [listId]: pageInfo,
   };
 
-  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_SUCCESS on success', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchIssuesForList,
+      actions.fetchItemsForList,
       { listId },
       state,
       [
         {
-          type: types.REQUEST_ISSUES_FOR_LIST,
+          type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
         {
-          type: types.RECEIVE_ISSUES_FOR_LIST_SUCCESS,
+          type: types.RECEIVE_ITEMS_FOR_LIST_SUCCESS,
           payload: { listIssues: formattedIssues, listPageInfo, listId },
         },
       ],
@@ -555,19 +581,19 @@ describe('fetchIssuesForList', () => {
     );
   });
 
-  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_FAILURE on failure', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_FAILURE on failure', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
     testAction(
-      actions.fetchIssuesForList,
+      actions.fetchItemsForList,
       { listId },
       state,
       [
         {
-          type: types.REQUEST_ISSUES_FOR_LIST,
+          type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
-        { type: types.RECEIVE_ISSUES_FOR_LIST_FAILURE, payload: listId },
+        { type: types.RECEIVE_ITEMS_FOR_LIST_FAILURE, payload: listId },
       ],
       [],
       done,

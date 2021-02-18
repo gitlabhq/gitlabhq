@@ -263,14 +263,14 @@ and what `bundle audit` writes to the standard output.
 If the command line fails, then it should be logged with the `error` log level;
 this makes it possible to debug the problem without having to change the log level to `debug` and rerun the scanning job.
 
-#### common logutil package
+#### common `logutil` package
 
 If you are using [go](https://golang.org/) and
 [common](https://gitlab.com/gitlab-org/security-products/analyzers/common),
-then it is suggested that you use [logrus](https://github.com/Sirupsen/logrus)
-and [common's logutil package](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil)
-to configure the formatter for [logrus](https://github.com/Sirupsen/logrus).
-See the [logutil README.md](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil/README.md)
+then it is suggested that you use [Logrus](https://github.com/Sirupsen/logrus)
+and [common's `logutil` package](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil)
+to configure the formatter for [Logrus](https://github.com/Sirupsen/logrus).
+See the [`logutil` README](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil/README.md)
 
 ## Report
 
