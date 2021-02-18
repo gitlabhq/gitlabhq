@@ -123,6 +123,16 @@ module Gitlab
   def self.maintenance_mode?
     return false unless ::Gitlab::CurrentSettings.current_application_settings?
 
+    # `maintenance_mode` column was added to the `current_settings` table in 13.2
+    # When upgrading from < 13.2 to >=13.8 `maintenance_mode` will not be
+    # found in settings.
+    # `Gitlab::CurrentSettings#uncached_application_settings` in
+    # lib/gitlab/current_settings.rb is expected to handle such cases, and use
+    # the default value for the setting instead, but in this case, it doesn't,
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/321836
+    # As a work around, we check if the setting method is available
+    return false unless ::Gitlab::CurrentSettings.respond_to?(:maintenance_mode)
+
     ::Gitlab::CurrentSettings.maintenance_mode
   end
 end
