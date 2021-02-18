@@ -172,6 +172,11 @@ Dangerfile @gl-quality/eng-prod
 /scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
+[Backend Static Code Analysis]
+.rubocop*.yml @dstull @splattael @gl-quality/eng-prod 
+/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+
 [End-to-end]
 /qa/ @gl-quality
 

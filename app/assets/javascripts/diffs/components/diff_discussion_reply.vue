@@ -35,8 +35,9 @@ export default {
       <slot v-if="hasForm" name="form"></slot>
       <template v-else-if="renderReplyPlaceholder">
         <reply-placeholder
-          :button-text="__('Start a new discussion...')"
-          @onClick="$emit('showNewDiscussionForm')"
+          :placeholder-text="__('Start a new discussion…')"
+          :label-text="__('New discussion')"
+          @focus="$emit('showNewDiscussionForm')"
         />
       </template>
     </template>

@@ -93,7 +93,7 @@ describe('Design discussions component', () => {
     });
 
     it('does not render a checkbox in reply form', () => {
-      findReplyPlaceholder().vm.$emit('onClick');
+      findReplyPlaceholder().vm.$emit('focus');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findResolveCheckbox().exists()).toBe(false);
@@ -124,7 +124,7 @@ describe('Design discussions component', () => {
     });
 
     it('renders a checkbox with Resolve thread text in reply form', () => {
-      findReplyPlaceholder().vm.$emit('onClick');
+      findReplyPlaceholder().vm.$emit('focus');
       wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -193,7 +193,7 @@ describe('Design discussions component', () => {
       });
 
       it('renders a checkbox with Unresolve thread text in reply form', () => {
-        findReplyPlaceholder().vm.$emit('onClick');
+        findReplyPlaceholder().vm.$emit('focus');
         wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
         return wrapper.vm.$nextTick().then(() => {
@@ -205,7 +205,7 @@ describe('Design discussions component', () => {
 
   it('hides reply placeholder and opens form on placeholder click', () => {
     createComponent();
-    findReplyPlaceholder().vm.$emit('onClick');
+    findReplyPlaceholder().vm.$emit('focus');
     wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
     return wrapper.vm.$nextTick().then(() => {
@@ -307,7 +307,7 @@ describe('Design discussions component', () => {
 
   it('emits openForm event on opening the form', () => {
     createComponent();
-    findReplyPlaceholder().vm.$emit('onClick');
+    findReplyPlaceholder().vm.$emit('focus');
 
     expect(wrapper.emitted('open-form')).toBeTruthy();
   });

@@ -29,9 +29,16 @@ RSpec.describe 'factories' do
   # and reuse them in other factories.
   #
   # However, for some factories we cannot use FactoryDefault because the
-  # associations must be unique and cannot be reused.
+  # associations must be unique and cannot be reused, or the factory default
+  # is being mutated.
   skip_factory_defaults = %i[
     fork_network_member
+    group_member
+    import_state
+    namespace
+    project_broken_repo
+    users_star_project
+    wiki_page
   ].to_set.freeze
 
   # Some factories and their corresponding models are based on
@@ -46,9 +53,9 @@ RSpec.describe 'factories' do
     .partition { |factory| skip_factory_defaults.include?(factory.name) }
 
   context 'with factory defaults', factory_default: :keep do
-    let_it_be(:namespace) { create_default(:namespace) }
-    let_it_be(:project) { create_default(:project, :repository) }
-    let_it_be(:user) { create_default(:user) }
+    let_it_be(:namespace) { create_default(:namespace).freeze }
+    let_it_be(:project) { create_default(:project, :repository).freeze }
+    let_it_be(:user) { create_default(:user).freeze }
 
     before do
       factories_based_on_view.each do |factory|

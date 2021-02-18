@@ -65,7 +65,7 @@ describe('noteable_discussion component', () => {
       expect(wrapper.vm.isReplying).toEqual(false);
 
       const replyPlaceholder = wrapper.find(ReplyPlaceholder);
-      replyPlaceholder.vm.$emit('onClick');
+      replyPlaceholder.vm.$emit('focus');
       await nextTick();
 
       expect(wrapper.vm.isReplying).toEqual(true);

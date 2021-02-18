@@ -451,7 +451,7 @@ GEM
     gitlab-pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    gitlab-sidekiq-fetcher (0.5.2)
+    gitlab-sidekiq-fetcher (0.5.3)
       sidekiq (~> 5)
     gitlab-styles (6.0.0)
       rubocop (~> 0.91.1)
@@ -1381,7 +1381,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.7.1)
   gitlab-net-dns (~> 0.9.1)
   gitlab-pry-byebug
-  gitlab-sidekiq-fetcher (= 0.5.2)
+  gitlab-sidekiq-fetcher (= 0.5.3)
   gitlab-styles (~> 6.0.0)
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.1.1)

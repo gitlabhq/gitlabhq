@@ -8,8 +8,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   include Ci::SourcePipelineHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create_default(:namespace) }
-  let_it_be(:project) { create_default(:project, :repository) }
+  let_it_be(:namespace) { create_default(:namespace).freeze }
+  let_it_be(:project) { create_default(:project, :repository).freeze }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -3785,17 +3785,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#default_branch?' do
-    let(:default_branch) { 'master'}
-
     subject { pipeline.default_branch? }
-
-    before do
-      allow(project).to receive(:default_branch).and_return(default_branch)
-    end
 
     context 'when pipeline ref is the default branch of the project' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, status: :created, project: project, ref: default_branch)
+        build(:ci_empty_pipeline, status: :created, project: project, ref: project.default_branch)
       end
 
       it "returns true" do

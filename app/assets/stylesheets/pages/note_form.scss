@@ -302,8 +302,20 @@ table {
       width: 100%;
     }
   }
+}
 
-  .btn-text-field {
+.discussion-reply-holder {
+  .reply-placeholder-text-field {
+    font-family: $monospace-font;
+    font-size: $gl-font-size-monospace;
+    border-radius: $gl-border-radius-base;
+    width: 100%;
+    resize: none;
+    padding: $gl-padding-8 $gl-padding-12;
+    line-height: 1;
+    border-color: $border-color;
+    background-color: $white;
+
     @include media-breakpoint-down(xs) {
       margin-bottom: $gl-padding-8;
     }

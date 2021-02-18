@@ -27,7 +27,7 @@ class MigrationSchemaValidator
   private
 
   def validate_schema_on_rollback!
-    committed_migrations.each do |filename|
+    committed_migrations.reverse_each do |filename|
       version = find_migration_version(filename)
 
       run("bin/rails db:migrate:down VERSION=#{version}")
