@@ -1,10 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
+redirect_to: 'index.md'
 ---
 
-# Legal
+This document was moved to [another location](index.md).
 
-Please read through the [GitLab License Agreement](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md).
+<!-- This redirect file can be deleted after 2021-05-11. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

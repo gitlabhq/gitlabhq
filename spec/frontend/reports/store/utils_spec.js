@@ -1,4 +1,3 @@
-import * as utils from '~/reports/store/utils';
 import {
   STATUS_FAILED,
   STATUS_SUCCESS,
@@ -6,6 +5,7 @@ import {
   ICON_SUCCESS,
   ICON_NOTFOUND,
 } from '~/reports/constants';
+import * as utils from '~/reports/store/utils';
 
 describe('Reports store utils', () => {
   describe('summaryTextbuilder', () => {

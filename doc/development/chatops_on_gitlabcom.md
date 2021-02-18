@@ -35,14 +35,12 @@ To request access to ChatOps on GitLab.com:
    in the `#chat-ops-test` Slack channel, replacing `<username>` with your username:
    `/chatops run member add <username> gitlab-com/chatops --ops`
 
-   <!-- vale gitlab.FirstPerson = NO -->
-
-    > Hi `__BUDDY_HANDLE__` and `__MANAGER_HANDLE__`, could you please add me to
-    > the ChatOps project in Ops by running this command:
-    > `/chatops run member add <username> gitlab-com/chatops --ops` in the
-    > `#chat-ops-test` Slack channel? Thanks in advance.
-
-   <!-- vale gitlab.FirstPerson = YES -->
+   ```plaintext
+   Hi <__BUDDY_HANDLE__> and <__MANAGER_HANDLE__>, could you please add me to
+   the ChatOps project in Ops by running this command:
+   `/chatops run member add <username> gitlab-com/chatops --ops` in the
+   `#chat-ops-test` Slack channel? Thanks in advance.
+   ```
 
 1. Ensure you've set up two-factor authentication.
 1. After you're added to the ChatOps project, run this command to check your user
@@ -61,6 +59,6 @@ To request access to ChatOps on GitLab.com:
 
 ## See also
 
-- [ChatOps Usage](../ci/chatops/README.md)
+- [ChatOps Usage](../ci/chatops/index.md)
 - [Understanding EXPLAIN plans](understanding_explain_plans.md)
 - [Feature Groups](feature_flags/development.md#feature-groups)

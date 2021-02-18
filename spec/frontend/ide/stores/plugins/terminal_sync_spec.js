@@ -1,9 +1,9 @@
+import eventHub from '~/ide/eventhub';
+import { createStore } from '~/ide/stores';
+import { RUNNING, STOPPING } from '~/ide/stores/modules/terminal/constants';
+import { SET_SESSION_STATUS } from '~/ide/stores/modules/terminal/mutation_types';
 import createTerminalPlugin from '~/ide/stores/plugins/terminal';
 import createTerminalSyncPlugin from '~/ide/stores/plugins/terminal_sync';
-import { SET_SESSION_STATUS } from '~/ide/stores/modules/terminal/mutation_types';
-import { RUNNING, STOPPING } from '~/ide/stores/modules/terminal/constants';
-import { createStore } from '~/ide/stores';
-import eventHub from '~/ide/eventhub';
 import { createTriggerUpdatePayload } from '../../helpers';
 
 jest.mock('~/ide/lib/mirror');

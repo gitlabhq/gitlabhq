@@ -29,11 +29,12 @@ per 1,000 users:
 
 - API: 20 RPS
 - Web: 2 RPS
-- Git: 2 RPS
+- Git (Pull): 2 RPS
+- Git (Push): 0.4 RPS (rounded to nearest integer)
 
 For GitLab instances with less than 2,000 users, it's recommended that you use
 the [default setup](#automated-backups) by
-[installing GitLab](../../install/README.md) on a single machine to minimize
+[installing GitLab](../../install/index.md) on a single machine to minimize
 maintenance and resource costs.
 
 If your organization has more than 2,000 users, the recommendation is to scale the
@@ -91,7 +92,7 @@ Also, not implementing extra servers for GitLab doesn't necessarily mean that yo
 more downtime. Depending on your needs and experience level, single servers can
 have more actual perceived uptime for your users.
 
-### Automated backups **(CORE ONLY)**
+### Automated backups **(FREE SELF)**
 
 > - Level of complexity: **Low**
 > - Required domain knowledge: PostgreSQL, GitLab configurations, Git
@@ -102,7 +103,7 @@ this can be an optimal solution if you don't have strict requirements.
 [Automated backups](../../raketasks/backup_restore.md#configuring-cron-to-make-daily-backups)
 is the least complex to setup. This provides a point-in-time recovery of a predetermined schedule.
 
-### Traffic load balancer **(STARTER ONLY)**
+### Traffic load balancer **(PREMIUM SELF)**
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: HAProxy, shared storage, distributed systems
@@ -124,7 +125,7 @@ to the default installation:
 For more details on how to configure a traffic load balancer with GitLab, you can refer
 to any of the [available reference architectures](#available-reference-architectures) with more than 1,000 users.
 
-### Zero downtime updates **(STARTER ONLY)**
+### Zero downtime updates **(PREMIUM SELF)**
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
@@ -134,7 +135,7 @@ Single GitLab nodes can be updated with only a [few minutes of downtime](https:/
 To avoid this, we recommend to separate GitLab into several application nodes.
 As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 
-### Automated database failover **(PREMIUM ONLY)**
+### Automated database failover **(PREMIUM SELF)**
 
 > - Level of complexity: **High**
 > - Required domain knowledge: PgBouncer, Repmgr or Patroni, shared storage, distributed systems
@@ -145,7 +146,7 @@ cluster management and failover policies.
 [PgBouncer in conjunction with Repmgr or Patroni](../postgresql/replication_and_failover.md)
 is recommended.
 
-### Instance level replication with GitLab Geo **(PREMIUM ONLY)**
+### Instance level replication with GitLab Geo **(PREMIUM SELF)**
 
 > - Level of complexity: **Very High**
 > - Required domain knowledge: Storage replication

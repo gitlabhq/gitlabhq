@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import TextField from '~/monitoring/components/variables/text_field.vue';
 
 describe('Text variable component', () => {

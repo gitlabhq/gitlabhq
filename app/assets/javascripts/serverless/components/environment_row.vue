@@ -1,6 +1,6 @@
 <script>
-import FunctionRow from './function_row.vue';
 import ItemCaret from '~/groups/components/item_caret.vue';
+import FunctionRow from './function_row.vue';
 
 export default {
   components: {

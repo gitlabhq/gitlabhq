@@ -14,13 +14,15 @@ $mailer-line-cell-bg-color: #6b4fbb;
 $mailer-wrapper-cell-bg-color: #fff;
 $mailer-wrapper-cell-border-color: #ededed;
 $mailer-header-footer-text-color: #5c5c5c;
+$full-width: 640px;
+$half-width: 320px;
 
 body {
   margin: 0 !important;
   background-color: $mailer-bg-color;
   padding: 0;
   text-align: center;
-  min-width: 640px;
+  min-width: $full-width;
   width: 100%;
   height: 100%;
   font-family: $mailer-font;
@@ -31,7 +33,7 @@ table#body {
   margin: 0;
   padding: 0;
   text-align: center;
-  min-width: 640px;
+  min-width: $full-width;
   width: 100%;
 }
 
@@ -42,6 +44,11 @@ a {
   &.muted {
     color: $mailer-link-muted-color;
   }
+}
+
+.mail-avatar {
+  border-radius: 50%;
+  display: block;
 }
 
 .highlight {
@@ -77,8 +84,16 @@ a {
   margin-left: 4px;
 }
 
+.half-width {
+  min-width: $half-width;
+}
+
 tr td {
   font-family: $mailer-font;
+}
+
+tr.border-top td {
+  border-top: 2px solid $gray-100;
 }
 
 tr.line td {
@@ -100,7 +115,7 @@ td.footer-message {
 }
 
 table.wrapper {
-  width: 640px;
+  width: $full-width;
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0;
@@ -149,7 +164,7 @@ tr.footer td {
   }
 
   .gitlab-info-text {
-    max-width: 640px;
+    max-width: $full-width;
     margin: 0 auto;
     text-align: center;
     color: $gray-400;

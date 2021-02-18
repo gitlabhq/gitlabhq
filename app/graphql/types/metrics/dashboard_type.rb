@@ -8,13 +8,13 @@ module Types
       graphql_name 'MetricsDashboard'
 
       field :path, GraphQL::STRING_TYPE, null: true,
-            description: 'Path to a file with the dashboard definition'
+            description: 'Path to a file with the dashboard definition.'
 
       field :schema_validation_warnings, [GraphQL::STRING_TYPE], null: true,
-            description: 'Dashboard schema validation warnings'
+            description: 'Dashboard schema validation warnings.'
 
       field :annotations, Types::Metrics::Dashboards::AnnotationType.connection_type, null: true,
-            description: 'Annotations added to the dashboard',
+            description: 'Annotations added to the dashboard.',
             resolver: Resolvers::Metrics::Dashboards::AnnotationResolver
 
       # In order to maintain backward compatibility we need to return NULL when there are no warnings

@@ -259,6 +259,10 @@ class Note < ApplicationRecord
     noteable_type == 'AlertManagement::Alert'
   end
 
+  def for_project_snippet?
+    noteable.is_a?(ProjectSnippet)
+  end
+
   def for_personal_snippet?
     noteable.is_a?(PersonalSnippet)
   end
@@ -542,7 +546,7 @@ class Note < ApplicationRecord
   end
 
   def skip_notification?
-    review.present?
+    review.present? || author.blocked? || author.ghost?
   end
 
   private

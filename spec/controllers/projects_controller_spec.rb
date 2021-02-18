@@ -5,6 +5,7 @@ require('spec_helper')
 RSpec.describe ProjectsController do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project, service_desk_enabled: false) }
   let_it_be(:public_project) { create(:project, :public) }
@@ -324,14 +325,39 @@ RSpec.describe ProjectsController do
       end
     end
 
-    context "redirection from http://someproject.git" do
-      it 'redirects to project page (format.html)' do
-        project = create(:project, :public)
+    context 'redirection from http://someproject.git' do
+      where(:user_type, :project_visibility, :expected_redirect) do
+        :anonymous | :public   | :redirect_to_project
+        :anonymous | :internal | :redirect_to_signup
+        :anonymous | :private  | :redirect_to_signup
 
-        get :show, params: { namespace_id: project.namespace, id: project }, format: :git
+        :signed_in | :public   | :redirect_to_project
+        :signed_in | :internal | :redirect_to_project
+        :signed_in | :private  | nil
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_path)
+        :member | :public   | :redirect_to_project
+        :member | :internal | :redirect_to_project
+        :member | :private  | :redirect_to_project
+      end
+
+      with_them do
+        let(:redirect_to_signup) { new_user_session_path }
+        let(:redirect_to_project) { project_path(project) }
+
+        let(:expected_status) { expected_redirect ? :found : :not_found }
+
+        before do
+          project.update!(visibility: project_visibility.to_s)
+          project.team.add_user(user, :guest) if user_type == :member
+          sign_in(user) unless user_type == :anonymous
+        end
+
+        it 'returns the expected status' do
+          get :show, params: { namespace_id: project.namespace, id: project }, format: :git
+
+          expect(response).to have_gitlab_http_status(expected_status)
+          expect(response).to redirect_to(send(expected_redirect)) if expected_status == :found
+        end
       end
     end
 
@@ -381,6 +407,29 @@ RSpec.describe ProjectsController do
           }
 
       expect(assigns(:badge_api_endpoint)).not_to be_nil
+    end
+  end
+
+  describe 'POST create' do
+    let!(:project_params) do
+      {
+        path: 'foo',
+        description: 'bar',
+        namespace_id: user.namespace.id,
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+      }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    it 'tracks a created event for the new_project_readme experiment', :experiment do
+      expect(experiment(:new_project_readme)).to track(:created, property: 'blank').on_any_instance.with_context(
+        actor: user
+      )
+
+      post :create, params: { project: project_params }
     end
   end
 

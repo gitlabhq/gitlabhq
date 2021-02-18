@@ -1,7 +1,7 @@
-import { shallowMount, mount } from '@vue/test-utils';
-import timezoneMock from 'timezone-mock';
-import { cloneDeep } from 'lodash';
 import { GlStackedColumnChart, GlChartLegend } from '@gitlab/ui/dist/charts';
+import { shallowMount, mount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
+import timezoneMock from 'timezone-mock';
 import StackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
 import { stackedColumnGraphData } from '../../graph_data';
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file contains environment settings for gitaly when it's running
 # as part of the gitlab-ce/ee test suite.
 #
@@ -52,7 +54,7 @@ module GitalyTest
 
     if ENV['CI']
       bundle_path = File.expand_path('../vendor/gitaly-ruby', __dir__)
-      env_hash['BUNDLE_FLAGS'] << " --path=#{bundle_path}"
+      env_hash['BUNDLE_FLAGS'] += " --path=#{bundle_path}"
     end
 
     env_hash

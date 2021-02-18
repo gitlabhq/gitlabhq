@@ -1,7 +1,7 @@
 <script>
+import actionCable from '~/actioncable_consumer';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
-import actionCable from '~/actioncable_consumer';
 
 export default {
   subscription: null,

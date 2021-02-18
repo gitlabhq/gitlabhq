@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import SidebarJobDetailsContainer from '~/jobs/components/sidebar_job_details_container.vue';
 import DetailRow from '~/jobs/components/sidebar_detail_row.vue';
+import SidebarJobDetailsContainer from '~/jobs/components/sidebar_job_details_container.vue';
 import createStore from '~/jobs/store';
 import job from '../mock_data';
 
@@ -115,15 +115,6 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { metadata });
 
       expect(findJobTimeout().exists()).toBe(false);
-    });
-
-    it('should pass the help URL', async () => {
-      const helpUrl = 'fakeUrl';
-      const props = { runnerHelpUrl: helpUrl };
-      createWrapper({ props });
-      await store.dispatch('receiveJobSuccess', { metadata: { timeout_human_readable } });
-
-      expect(findJobTimeout().props('helpUrl')).toBe(helpUrl);
     });
   });
 });

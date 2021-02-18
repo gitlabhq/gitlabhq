@@ -47,5 +47,13 @@ module Gitlab
     def self.kill
       Process.kill("KILL", Process.pid)
     end
+
+    def self.run_gc
+      # Tenure any live objects from young-gen to old-gen
+      4.times { GC.start(full_mark: false) }
+      # Run a full mark-and-sweep collection
+      GC.start
+      GC.stat
+    end
   end
 end

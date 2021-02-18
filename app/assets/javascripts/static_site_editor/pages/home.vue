@@ -2,16 +2,16 @@
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Tracking from '~/tracking';
 
-import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
 import EditMetaModal from '../components/edit_meta_modal.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
+import SkeletonLoader from '../components/skeleton_loader.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
-import appDataQuery from '../graphql/queries/app_data.query.graphql';
-import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+import { LOAD_CONTENT_ERROR, TRACKING_ACTION_INITIALIZE_EDITOR } from '../constants';
 import hasSubmittedChangesMutation from '../graphql/mutations/has_submitted_changes.mutation.graphql';
 import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
-import { LOAD_CONTENT_ERROR, TRACKING_ACTION_INITIALIZE_EDITOR } from '../constants';
+import appDataQuery from '../graphql/queries/app_data.query.graphql';
+import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
 import { SUCCESS_ROUTE } from '../router/constants';
 
 export default {

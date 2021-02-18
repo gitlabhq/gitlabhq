@@ -93,22 +93,10 @@ module Ci
     end
 
     def refspec_for_persistent_ref
-      #
-      # End-to-end test coverage for CI fetching seems to not be strong, so we
-      # are using a feature flag here to close the confidence gap. My (JV)
-      # confidence about the change is very high but if something is wrong
-      # with it after all, this would cause all CI jobs on gitlab.com to fail.
-      #
-      # The roll-out will be tracked in
+      # Use persistent_ref.sha because it sometimes causes 'git fetch' to do
+      # less work. See
       # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746.
-      #
-      if Feature.enabled?(:scalability_ci_fetch_sha, type: :ops)
-        # Use persistent_ref.sha because it causes 'git fetch' to do less work.
-        # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746.
-        "+#{pipeline.persistent_ref.sha}:#{pipeline.persistent_ref.path}"
-      else
-        "+#{pipeline.persistent_ref.path}:#{pipeline.persistent_ref.path}"
-      end
+      "+#{pipeline.persistent_ref.sha}:#{pipeline.persistent_ref.path}"
     end
 
     def persistent_ref_exist?

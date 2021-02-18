@@ -3,7 +3,5 @@ export const AVAILABILITY_STATUS = {
   NOT_SET: 'not_set',
 };
 
-export const isUserBusy = (status) => status === AVAILABILITY_STATUS.BUSY;
-
-export const isValidAvailibility = (availability) =>
-  availability.length ? Object.values(AVAILABILITY_STATUS).includes(availability) : true;
+export const isUserBusy = (status = '') =>
+  Boolean(status.length && status.toLowerCase().trim() === AVAILABILITY_STATUS.BUSY);

@@ -15,17 +15,17 @@ import {
 } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { mapActions, mapState } from 'vuex';
-import { mapComputed } from '~/vuex_shared/bindings';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { mapComputed } from '~/vuex_shared/bindings';
 import {
   AWS_TOKEN_CONSTANTS,
   ADD_CI_VARIABLE_MODAL_ID,
   AWS_TIP_DISMISSED_COOKIE_NAME,
   AWS_TIP_MESSAGE,
 } from '../constants';
-import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
+import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,

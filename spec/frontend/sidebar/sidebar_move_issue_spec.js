@@ -1,10 +1,10 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
+import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
+import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import SidebarService from '~/sidebar/services/sidebar_service';
-import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
 import Mock from './mock_data';
 
 describe('SidebarMoveIssue', () => {

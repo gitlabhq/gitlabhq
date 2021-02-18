@@ -4,6 +4,8 @@ require 'spec_helper'
 RSpec.describe Packages::Package, type: :model do
   include SortingHelper
 
+  it_behaves_like 'having unique enum values'
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:creator) }
@@ -14,7 +16,10 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_many(:pipelines).through(:build_infos) }
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
+    it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
   end
 
   describe '.with_composer_target' do
@@ -374,7 +379,28 @@ RSpec.describe Packages::Package, type: :model do
       end
     end
 
-    Packages::Package.package_types.keys.without('conan').each do |pt|
+    describe "#unique_debian_package_name" do
+      let!(:package) { create(:debian_package) }
+
+      it "will allow a Debian package with same project, name and version, but different distribution" do
+        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
+        expect(new_package).to be_valid
+      end
+
+      it "will not allow a Debian package with same project, name, version and distribution" do
+        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
+        new_package.debian_publication.distribution = package.debian_publication.distribution
+        expect(new_package).not_to be_valid
+        expect(new_package.errors.to_a).to include('Debian package already exists in Distribution')
+      end
+
+      it "will allow a Debian package with same project, name, version, but no distribution" do
+        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version, published_in: nil)
+        expect(new_package).to be_valid
+      end
+    end
+
+    Packages::Package.package_types.keys.without('conan', 'debian').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
 
@@ -580,6 +606,28 @@ RSpec.describe Packages::Package, type: :model do
       subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
 
       it { is_expected.to match_array([pypi_package]) }
+    end
+
+    describe '.displayable' do
+      let_it_be(:hidden_package) { create(:maven_package, :hidden) }
+      let_it_be(:processing_package) { create(:maven_package, :processing) }
+
+      subject { described_class.displayable }
+
+      it 'does not include hidden packages', :aggregate_failures do
+        is_expected.not_to include(hidden_package)
+        is_expected.not_to include(processing_package)
+      end
+    end
+
+    describe '.with_status' do
+      let_it_be(:hidden_package) { create(:maven_package, :hidden) }
+
+      subject { described_class.with_status(:hidden) }
+
+      it 'returns packages with specified status' do
+        is_expected.to match_array([hidden_package])
+      end
     end
   end
 

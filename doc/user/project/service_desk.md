@@ -4,11 +4,9 @@ group: Certify
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Service Desk **(CORE)**
+# Service Desk **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
+> Moved to GitLab Free in 13.2.
 
 Service Desk is a module that allows your team to connect
 with any external party through email, without any external tools.
@@ -34,7 +32,7 @@ It provides a unique email address for end users to create issues in a project.
 Follow-up notes can be sent either through the GitLab interface or by email. End
 users only see the thread through email.
 
-For instance, let's assume you develop a game for iOS or Android.
+For example, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
 with GitLab CI/CD.
 
@@ -56,73 +54,98 @@ Here's how Service Desk works for you:
 
 ## Configuring Service Desk
 
-NOTE:
-Service Desk is enabled on GitLab.com.
-You can skip step 1 below; you only need to enable it per project.
+Users with Maintainer and higher access in a project can configure Service Desk.
 
-If you have project maintainer access you have the option to set up Service Desk. Follow these steps:
+Service Desk issues are [confidential](issues/confidential_issues.md), so they are
+only visible to project members. In GitLab 11.7 we updated the generated email
+address format. The older format is still supported, so existing aliases or
+contacts still work.
 
-1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
+If you have [templates](description_templates.md) in your repository, you can optionally select
+one from the selector menu to append it to all Service Desk issues.
+
+To enable Service Desk in your project:
+
+1. (GitLab self-managed only) [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
    We recommend using [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
-   but in GitLab 11.7 and later you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
-1. Navigate to your project's **Settings > General** and locate the **Service Desk** section.
+   but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
+1. In a project, in the left sidebar, go to **Settings > General** and expand the **Service Desk** section.
 1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
-   to the project. These issues are [confidential](issues/confidential_issues.md), so they are
-   only visible to project members. Note that in GitLab 11.7, we updated the generated email
-   address's format. The older format is still supported, however, allowing existing aliases or
-   contacts to continue working.
+   to the project.
 
-   WARNING:
-   This email address can be used by anyone to create an issue on this project, regardless
-   of their access level to your GitLab instance. We recommend **putting this behind an alias** so it can be
-   changed if needed. We also recommend **[enabling Akismet](../../integration/akismet.md)** on your GitLab
-   instance to add spam checking to this service. Unblocked email spam would result in many spam
-   issues being created.
+Service Desk is now enabled for this project! To access it in a project, in the left sidebar, select 
+**Issues > Service Desk**.
 
-   If you have [templates](description_templates.md) in your repository, you can optionally select
-   one from the selector menu to append it to all Service Desk issues.
+WARNING:
+Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
+of their access level** to your GitLab instance.
 
-Service Desk is now enabled for this project! You should be able to access it from your project's
-**Issues** menu.
+To improve your project's security, we recommend the following:
 
-![Service Desk Navigation Item](img/service_desk_nav_item.png)
+- Put the Service Desk email address behind an alias on your email system so you can change it later.
+- [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
+  Unblocked email spam can result in many spam issues being created.
+
+The unique internal email address is visible to project members with Maintainer (or higher)
+[permission level](../permissions.md)
+in your GitLab instance. However, when using an email alias externally, an end user
+(issue creator) cannot see the internal email address displayed in the information note.
 
 ### Using customized email templates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in GitLab Premium 12.7.
+> - Moved to GitLab Free in 13.2.
 
 An email is sent to the author when:
 
 - A user submits a new issue using Service Desk.
 - A new note is created on a Service Desk issue.
 
-The body of these email messages can be customized by using templates. To create a new customized template,
-create a new Markdown (`.md`) file inside the `.gitlab/service_desk_templates/`
-directory in your repository. Commit and push to your default branch.
+You can customize the body of these email messages with templates.
+Save your templates in the `.gitlab/service_desk_templates/`
+directory in your repository.
+
+With Service Desk, you can use templates for:
+
+- [Thank you emails](#thank-you-email)
+- [New note emails](#new-note-email)
+- [New Service Desk issues](#new-service-desk-issues)
 
 #### Thank you email
 
-The **Thank you email** is the email sent to a user after they submit an issue.
-The filename of the template has to be `thank_you.md`.
-There are a few placeholders you can use which are automatically replaced in the email:
+When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
+You must name the template file `thank_you.md`.
+
+You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 
-As the Service Desk issues are created as confidential (only project members can see them)
-the response email does not provide the issue link.
+Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
+the response email does not contain the issue link.
 
 #### New note email
 
-When a user-submitted issue receives a new comment, GitLab sends a **New note email**
-to the user. The filename of this template must be `new_note.md`, and you can
-use these placeholders in the email:
+When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
+You must name the template file `new_note.md`.
+
+You can use these placeholders to be automatically replaced in each email:
 
 - `%{ISSUE_ID}`: issue IID
 - `%{ISSUE_PATH}`: project path appended with the issue IID
 - `%{NOTE_TEXT}`: note text
+
+#### New Service Desk issues
+
+You can select one [issue description template](description_templates.md#creating-issue-templates)
+**per project** to be appended to every new Service Desk issue's description.
+Issue description templates should reside in your repository's `.gitlab/issue_templates/` directory.
+
+To use a custom issue template with Service Desk, in your project:
+
+1. [Create a description template](description_templates.md#creating-issue-templates)
+1. Go to **Settings > General > Service Desk**.
+1. From the dropdown **Template to append to all Service Desk issues**, select your template.
 
 ### Using custom email display name
 
@@ -139,7 +162,7 @@ To edit the custom email display name:
 
 ### Using custom email address
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab Premium 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
 If the `service_desk_email` is configured, then you can create Service Desk
@@ -215,7 +238,8 @@ The configuration options are the same as for configuring
 
 ## Using Service Desk
 
-There are a few ways Service Desk can be used.
+You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
+In these issues, you can also see our friendly neighborhood [Support Bot](#support-bot-user).
 
 ### As an end user (issue creator)
 

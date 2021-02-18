@@ -1,11 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 
 import testAction from 'helpers/vuex_action_helper';
-import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
-import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
-import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
-
 import axios from '~/lib/utils/axios_utils';
+import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
+import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
+import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
 
 describe('LabelsSelect Actions', () => {
   let state;

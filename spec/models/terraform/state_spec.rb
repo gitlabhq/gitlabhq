@@ -8,7 +8,10 @@ RSpec.describe Terraform::State do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:locked_by_user).class_name('User') }
 
+  it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:project_id) }
+
+  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
 
   describe 'scopes' do
     describe '.ordered_by_name' do
@@ -24,6 +27,15 @@ RSpec.describe Terraform::State do
       end
 
       it { expect(subject.map(&:name)).to eq(names.sort) }
+    end
+
+    describe '.with_name' do
+      let_it_be(:matching_name) { create(:terraform_state, name: 'matching-name') }
+      let_it_be(:other_name) { create(:terraform_state, name: 'other-name') }
+
+      subject { described_class.with_name(matching_name.name) }
+
+      it { is_expected.to contain_exactly(matching_name) }
     end
   end
 

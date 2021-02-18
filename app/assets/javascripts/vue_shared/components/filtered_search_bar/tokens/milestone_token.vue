@@ -10,8 +10,8 @@ import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 
-import { stripQuotes } from '../filtered_search_utils';
 import { DEFAULT_MILESTONES, DEBOUNCE_DELAY } from '../constants';
+import { stripQuotes } from '../filtered_search_utils';
 
 export default {
   components: {

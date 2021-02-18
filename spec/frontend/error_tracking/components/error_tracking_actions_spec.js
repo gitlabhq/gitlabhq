@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 
 describe('Error Tracking Actions', () => {

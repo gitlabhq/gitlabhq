@@ -20,7 +20,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown class="show" :text="text" :header-text="headerText">
+  <gl-dropdown class="show" :text="text" :header-text="headerText" @toggle="$emit('toggle')">
     <slot name="search"></slot>
     <gl-dropdown-form>
       <slot name="items"></slot>

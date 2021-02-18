@@ -15,7 +15,9 @@ RSpec.describe Gitlab::Composer::VersionIndex do
   let(:packages) { [package1, package2] }
 
   describe '#as_json' do
-    subject(:index) { described_class.new(packages).as_json }
+    subject(:package_index) { index['packages'][package_name] }
+
+    let(:index) { described_class.new(packages).as_json }
 
     def expected_json(package)
       {
@@ -32,10 +34,16 @@ RSpec.describe Gitlab::Composer::VersionIndex do
     end
 
     it 'returns the packages json' do
-      packages = index['packages'][package_name]
+      expect(package_index['1.0.0']).to eq(expected_json(package1))
+      expect(package_index['2.0.0']).to eq(expected_json(package2))
+    end
 
-      expect(packages['1.0.0']).to eq(expected_json(package1))
-      expect(packages['2.0.0']).to eq(expected_json(package2))
+    context 'with an unordered list of packages' do
+      let(:packages) { [package2, package1] }
+
+      it 'returns the packages sorted by version' do
+        expect(package_index.keys).to eq ['1.0.0', '2.0.0']
+      end
     end
   end
 

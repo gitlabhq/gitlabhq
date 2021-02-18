@@ -1,18 +1,18 @@
 <script>
-import { mapState } from 'vuex';
 import { GlTable, GlBadge } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
-import { FIELDS } from '../../constants';
 import initUserPopovers from '~/user_popovers';
-import MemberAvatar from './member_avatar.vue';
-import MemberSource from './member_source.vue';
+import { FIELDS } from '../../constants';
+import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import CreatedAt from './created_at.vue';
+import ExpirationDatepicker from './expiration_datepicker.vue';
 import ExpiresAt from './expires_at.vue';
 import MemberActionButtons from './member_action_buttons.vue';
+import MemberAvatar from './member_avatar.vue';
+import MemberSource from './member_source.vue';
 import RoleDropdown from './role_dropdown.vue';
-import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
-import ExpirationDatepicker from './expiration_datepicker.vue';
 
 export default {
   name: 'MembersTable',
@@ -32,7 +32,7 @@ export default {
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
   computed: {
-    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId', 'sourceId']),
+    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId']),
     filteredFields() {
       return FIELDS.filter(
         (field) => this.tableFields.includes(field.key) && this.showField(field),
@@ -55,9 +55,9 @@ export default {
   methods: {
     hasActionButtons(member) {
       return (
-        canRemove(member, this.sourceId) ||
+        canRemove(member) ||
         canResend(member) ||
-        canUpdate(member, this.currentUserId, this.sourceId) ||
+        canUpdate(member, this.currentUserId) ||
         canOverride(member)
       );
     },
@@ -80,7 +80,7 @@ export default {
         return 'col-actions';
       }
 
-      return ['col-actions', 'gl-display-none!', 'gl-display-lg-table-cell!'];
+      return ['col-actions', 'gl-display-none!', 'gl-lg-display-table-cell!'];
     },
     tbodyTrAttr(member) {
       return {

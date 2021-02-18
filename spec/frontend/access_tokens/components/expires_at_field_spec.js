@@ -1,10 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { useFakeDate } from 'helpers/fake_date';
 import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
 
 describe('~/access_tokens/components/expires_at_field', () => {
-  useFakeDate();
-
   let wrapper;
 
   const createComponent = () => {

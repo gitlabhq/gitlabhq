@@ -1,7 +1,7 @@
+import { FILTER_TYPE } from './constants';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
-import { FILTER_TYPE } from './constants';
 
 const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 

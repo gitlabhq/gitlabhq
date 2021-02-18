@@ -1,13 +1,13 @@
 <script>
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
 import AssigneesRealtime from './assignees_realtime.vue';
-import { __ } from '~/locale';
 
 export default {
   name: 'SidebarAssignees',
@@ -43,6 +43,11 @@ export default {
     projectPath: {
       type: String,
       required: true,
+    },
+    assigneeAvailabilityStatus: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -101,6 +106,13 @@ export default {
           return new Flash(__('Error occurred when saving assignees'));
         });
     },
+    exposeAvailabilityStatus(users) {
+      return users.map(({ username, ...rest }) => ({
+        ...rest,
+        username,
+        availability: this.assigneeAvailabilityStatus[username] || '',
+      }));
+    },
   },
 };
 </script>
@@ -123,7 +135,7 @@ export default {
     <assignees
       v-if="!store.isFetching.assignees"
       :root-path="relativeUrlRoot"
-      :users="store.assignees"
+      :users="exposeAvailabilityStatus(store.assignees)"
       :editable="store.editable"
       :issuable-type="issuableType"
       class="value"

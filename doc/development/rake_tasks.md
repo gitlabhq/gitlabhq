@@ -64,9 +64,9 @@ By default, this seeds an average of 10 issues per week for the last 52 weeks
 per project. All issues are also randomly labeled with team, type, severity,
 and priority.
 
-#### Seeding groups with sub-groups
+#### Seeding groups with subgroups
 
-You can seed groups with sub-groups that contain milestones/projects/issues
+You can seed groups with subgroups that contain milestones/projects/issues
 with the `gitlab:seed:group_seed` task:
 
 ```shell
@@ -260,6 +260,48 @@ bundle exec rake db:obsolete_ignored_columns
 ```
 
 Feel free to remove their definitions from their `ignored_columns` definitions.
+
+## Validate GraphQL queries
+
+To check the validity of one or more of our front-end GraphQL queries,
+run:
+
+```shell
+# Validate all queries
+bundle exec rake gitlab::graphql:validate
+# Validate one query
+bundle exec rake gitlab::graphql:validate[path/to/query.graphql]
+# Validate a directory
+bundle exec rake gitlab::graphql:validate[path/to/queries]
+```
+
+This prints out a report with an entry for each query, explaining why
+each query is invalid if it fails to pass validation.
+
+We strip out `@client` fields during validation so it is important to mark
+client fields with the `@client` directive to avoid false positives.
+
+## Analyze GraphQL queries
+
+Analogous to `ANALYZE` in SQL, we can run `gitlab:graphql:analyze` to
+estimate the of the cost of running a query.
+
+Usage:
+
+```shell
+# Analyze all queries
+bundle exec rake gitlab::graphql:analyze
+# Analyze one query
+bundle exec rake gitlab::graphql:analyze[path/to/query.graphql]
+# Analyze a directory
+bundle exec rake gitlab::graphql:analyze[path/to/queries]
+```
+
+This prints out a report for each query, including the complexity
+of the query if it is valid.
+
+The complexity depends on the arguments in some cases, so the reported
+complexity is a best-effort assessment of the upper bound.
 
 ## Update GraphQL documentation and schema definitions
 

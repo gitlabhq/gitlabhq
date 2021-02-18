@@ -169,9 +169,9 @@ RSpec.describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">&#39;def&#39;</span>})
+      expect(marked_old_line).to eq(%q{abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>})
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">&quot;def&quot;</span>})
+      expect(marked_new_line).to eq(%q{abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>})
       expect(marked_new_line).to be_html_safe
     end
 
@@ -356,6 +356,50 @@ RSpec.describe DiffHelper do
 
     it 'returns truncated path' do
       expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
+    end
+  end
+
+  describe "#collapsed_diff_url" do
+    let(:params) do
+      {
+        controller: "projects/commit",
+        action: "show",
+        namespace_id: "foo",
+        project_id: "bar",
+        id: commit.sha
+      }
+    end
+
+    subject { helper.collapsed_diff_url(diff_file) }
+
+    it "returns a valid URL" do
+      allow(helper).to receive(:safe_params).and_return(params)
+
+      expect(subject).to match(/foo\/bar\/-\/commit\/#{commit.sha}\/diff_for_path/)
+    end
+  end
+
+  describe "#render_fork_suggestion" do
+    subject { helper.render_fork_suggestion }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    context "user signed in" do
+      let(:current_user) { build(:user) }
+
+      it "renders the partial" do
+        expect(helper).to receive(:render).with(partial: "projects/fork_suggestion").exactly(:once)
+
+        5.times { subject }
+      end
+    end
+
+    context "guest" do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_nil }
     end
   end
 end

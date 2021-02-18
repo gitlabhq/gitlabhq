@@ -1,6 +1,4 @@
 <script>
-import { isEmpty, findKey } from 'lodash';
-import Vue from 'vue';
 import {
   GlLink,
   GlButton,
@@ -13,12 +11,14 @@ import {
   GlTooltipDirective,
   GlIcon,
 } from '@gitlab/ui';
+import { isEmpty, findKey } from 'lodash';
+import Vue from 'vue';
 import { __, s__ } from '~/locale';
-import Translate from '~/vue_shared/translate';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { alertsValidator, queriesValidator } from '../validators';
+import Translate from '~/vue_shared/translate';
 import { OPERATORS } from '../constants';
+import { alertsValidator, queriesValidator } from '../validators';
 
 Vue.use(Translate);
 

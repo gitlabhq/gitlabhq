@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import Translate from '~/vue_shared/translate';
 import ImportProjectsTable from './components/import_projects_table.vue';
 import createStore from './store';
 

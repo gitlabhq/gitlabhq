@@ -13,12 +13,14 @@ RSpec.describe 'Issue Boards', :js do
   let_it_be(:user2)   { create(:user) }
 
   before do
+    stub_feature_flags(board_new_list: false)
+
     project.add_maintainer(user)
     project.add_maintainer(user2)
 
-    set_cookie('sidebar_collapsed', 'true')
-
     sign_in(user)
+
+    set_cookie('sidebar_collapsed', 'true')
   end
 
   context 'no lists' do
@@ -573,7 +575,7 @@ RSpec.describe 'Issue Boards', :js do
     end
 
     it 'shows the button' do
-      expect(page).to have_link('Toggle focus mode')
+      expect(page).to have_button('Toggle focus mode')
     end
   end
 

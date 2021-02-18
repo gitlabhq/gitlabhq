@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import PackageTitle from '~/packages/list/components/package_title.vue';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '~/packages/list//constants';
+import PackageTitle from '~/packages/list/components/package_title.vue';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 describe('PackageTitle', () => {
   let wrapper;

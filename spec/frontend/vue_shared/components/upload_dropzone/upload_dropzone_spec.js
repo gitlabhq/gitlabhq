@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 jest.mock('~/flash');

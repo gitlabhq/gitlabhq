@@ -8,7 +8,16 @@ module Gitlab
       extend SimpleAbstractCheck
 
       class << self
+        extend ::Gitlab::Utils::Override
+
+        override :available?
+        def available?
+          Gitlab::Runtime.puma_in_clustered_mode?
+        end
+
         def register_master
+          return unless available?
+
           # when we fork, we pass the read pipe to child
           # child can then react on whether the other end
           # of pipe is still available
@@ -16,11 +25,15 @@ module Gitlab
         end
 
         def finish_master
+          return unless available?
+
           close_read
           close_write
         end
 
         def register_worker
+          return unless available?
+
           # fork needs to close the pipe
           close_write
         end

@@ -6,7 +6,7 @@ module Gitlab
       module Credentials
         class Base
           def type
-            self.class.name.demodulize.underscore
+            raise NotImplementedError
           end
         end
       end

@@ -1,5 +1,5 @@
-import * as utils from '~/ide/stores/utils';
 import { commitActionTypes } from '~/ide/constants';
+import * as utils from '~/ide/stores/utils';
 import { file } from '../helpers';
 
 describe('Multi-file store utils', () => {

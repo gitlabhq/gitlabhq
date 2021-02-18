@@ -19,6 +19,8 @@ module Ci
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
     TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
     UNSUPPORTED_FILE_TYPES = %i[license_management].freeze
+    SAST_REPORT_TYPES = %w[sast].freeze
+    SECRET_DETECTION_REPORT_TYPES = %w[secret_detection].freeze
     DEFAULT_FILE_NAMES = {
       archive: nil,
       metadata: nil,
@@ -148,6 +150,14 @@ module Ci
 
     scope :with_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
+    end
+
+    scope :sast_reports, -> do
+      with_file_types(SAST_REPORT_TYPES)
+    end
+
+    scope :secret_detection_reports, -> do
+      with_file_types(SECRET_DETECTION_REPORT_TYPES)
     end
 
     scope :test_reports, -> do

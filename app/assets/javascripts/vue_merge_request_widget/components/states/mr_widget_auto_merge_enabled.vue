@@ -2,14 +2,15 @@
 import { GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
-import statusIcon from '../mr_widget_status_icon.vue';
-import MrWidgetAuthor from '../mr_widget_author.vue';
-import eventHub from '../../event_hub';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
-import { __ } from '~/locale';
+import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
+import MrWidgetAuthor from '../mr_widget_author.vue';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetAutoMergeEnabled',
@@ -53,7 +54,11 @@ export default {
   },
   computed: {
     loading() {
-      return this.glFeatures.mergeRequestWidgetGraphql && this.$apollo.queries.state.loading;
+      return (
+        this.glFeatures.mergeRequestWidgetGraphql &&
+        this.$apollo.queries.state.loading &&
+        Object.keys(this.state).length === 0
+      );
     },
     mergeUser() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -78,7 +83,7 @@ export default {
     canRemoveSourceBranch() {
       const { currentUserId } = this.mr;
       const mergeUserId = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.mergeUser?.id
+        ? getIdFromGraphQLId(this.state.mergeUser?.id)
         : this.mr.mergeUserId;
       const canRemoveSourceBranch = this.glFeatures.mergeRequestWidgetGraphql
         ? this.state.userPermissions.removeSourceBranch
@@ -96,7 +101,11 @@ export default {
         .cancelAutomaticMerge()
         .then((res) => res.data)
         .then((data) => {
-          eventHub.$emit('UpdateWidgetData', data);
+          if (this.glFeatures.mergeRequestWidgetGraphql) {
+            eventHub.$emit('MRWidgetUpdateRequested');
+          } else {
+            eventHub.$emit('UpdateWidgetData', data);
+          }
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
@@ -117,6 +126,11 @@ export default {
         .then((data) => {
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
+          }
+        })
+        .then(() => {
+          if (this.glFeatures.mergeRequestWidgetGraphql) {
+            this.$apollo.queries.state.refetch();
           }
         })
         .catch(() => {

@@ -837,6 +837,16 @@ RSpec.describe Note do
     end
   end
 
+  describe '#for_project_snippet?' do
+    it 'returns true for a project snippet note' do
+      expect(build(:note_on_project_snippet).for_project_snippet?).to be true
+    end
+
+    it 'returns false for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).for_project_snippet?).to be false
+    end
+  end
+
   describe '#for_personal_snippet?' do
     it 'returns false for a project snippet note' do
       expect(build(:note_on_project_snippet).for_personal_snippet?).to be_falsy
@@ -890,35 +900,31 @@ RSpec.describe Note do
   describe '#cache_markdown_field' do
     let(:html) { '<p>some html</p>'}
 
+    before do
+      allow(Banzai::Renderer).to receive(:cacheless_render_field).and_call_original
+    end
+
     context 'note for a project snippet' do
       let(:snippet) { create(:project_snippet) }
-      let(:note) { build(:note_on_project_snippet, project: snippet.project, noteable: snippet) }
+      let(:note) { create(:note_on_project_snippet, project: snippet.project, noteable: snippet) }
 
-      before do
+      it 'skips project check' do
         expect(Banzai::Renderer).to receive(:cacheless_render_field)
-          .with(note, :note, { skip_project_check: false }).and_return(html)
+          .with(note, :note, { skip_project_check: false })
 
-        note.save
-      end
-
-      it 'creates a note' do
-        expect(note.note_html).to eq(html)
+        note.update!(note: html)
       end
     end
 
     context 'note for a personal snippet' do
       let(:snippet) { create(:personal_snippet) }
-      let(:note) { build(:note_on_personal_snippet, noteable: snippet) }
+      let(:note) { create(:note_on_personal_snippet, noteable: snippet) }
 
-      before do
+      it 'does not skip project check' do
         expect(Banzai::Renderer).to receive(:cacheless_render_field)
-          .with(note, :note, { skip_project_check: true }).and_return(html)
+          .with(note, :note, { skip_project_check: true })
 
-        note.save
-      end
-
-      it 'creates a note' do
-        expect(note.note_html).to eq(html)
+        note.update!(note: html)
       end
     end
   end

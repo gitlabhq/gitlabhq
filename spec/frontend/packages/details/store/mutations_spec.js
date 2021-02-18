@@ -1,5 +1,5 @@
-import mutations from '~/packages/details/store/mutations';
 import * as types from '~/packages/details/store/mutation_types';
+import mutations from '~/packages/details/store/mutations';
 import { npmPackage as packageEntity } from '../../mock_data';
 
 describe('Mutations package details Store', () => {

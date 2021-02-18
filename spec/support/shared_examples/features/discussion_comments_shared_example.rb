@@ -150,12 +150,13 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           wait_for_requests
         end
 
-        it 'clicking "Start thread" will post a thread' do
+        it 'clicking "Start thread" will post a thread and show a reply component' do
           expect(page).to have_content(comment)
 
           new_comment = all(comments_selector).last
 
           expect(new_comment).to have_selector('.discussion')
+          expect(new_comment).to have_css('.discussion-with-resolve-btn')
         end
 
         if resource_name =~ /(issue|merge request)/

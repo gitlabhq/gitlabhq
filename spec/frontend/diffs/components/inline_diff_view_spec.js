@@ -1,11 +1,11 @@
 import '~/behaviors/markdown/render_gfm';
-import { mount } from '@vue/test-utils';
 import { getByText } from '@testing-library/dom';
-import { createStore } from '~/mr_notes/stores';
-import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
+import { mount } from '@vue/test-utils';
 import { mapInline } from '~/diffs/components/diff_row_utils';
-import diffFileMockData from '../mock_data/diff_file';
+import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
+import { createStore } from '~/mr_notes/stores';
 import discussionsMockData from '../mock_data/diff_discussions';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('InlineDiffView', () => {
   let wrapper;

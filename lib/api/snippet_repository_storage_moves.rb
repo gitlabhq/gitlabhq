@@ -58,9 +58,14 @@ module API
     resource :snippets do
       helpers do
         def user_snippet
-          Snippet.find_by(id: params[:id])  # rubocop: disable CodeReuse/ActiveRecord
+          @user_snippet ||= Snippet.find_by(id: params[:id]) # rubocop: disable CodeReuse/ActiveRecord
         end
       end
+
+      before do
+        not_found!('Snippet') unless user_snippet
+      end
+
       desc 'Get a list of all snippets repository storage moves' do
         detail 'This feature was introduced in GitLab 13.8.'
         success Entities::SnippetRepositoryStorageMove

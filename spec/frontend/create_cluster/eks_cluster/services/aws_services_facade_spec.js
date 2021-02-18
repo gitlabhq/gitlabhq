@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk/global';
 import EC2 from 'aws-sdk/clients/ec2';
+import AWS from 'aws-sdk/global';
 import {
   setAWSConfig,
   fetchRoles,

@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Sidekiq Metrics API **(CORE ONLY)**
+# Sidekiq Metrics API **(FREE SELF)**
 
 > Introduced in GitLab 8.9.
 

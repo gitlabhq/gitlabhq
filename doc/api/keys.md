@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Keys API
+# Keys API **(FREE)**
 
 ## Get SSH key with user by ID of an SSH key
 

@@ -358,7 +358,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
       it 'calls .destroy_sessions' do
         expect(ActiveSession).to(
           receive(:destroy_sessions)
-            .with(anything, user, [active_session.public_id, rack_session.public_id, rack_session.private_id]))
+            .with(anything, user, [encrypted_active_session_id, rack_session.public_id, rack_session.private_id]))
 
         subject
       end

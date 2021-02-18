@@ -16,6 +16,50 @@ function decodeUrlParameter(val) {
   return decodeURIComponent(val.replace(/\+/g, '%20'));
 }
 
+/**
+ * Safely encodes a string to be used as a path
+ *
+ * Note: This function DOES encode typical URL parts like ?, =, &, #, and +
+ * If you need to use search parameters or URL fragments, they should be
+ *     added AFTER calling this function, not before.
+ *
+ * Usecase: An image filename is stored verbatim, and you need to load it in
+ *     the browser.
+ *
+ * Example: /some_path/file #1.jpg      ==> /some_path/file%20%231.jpg
+ * Example: /some-path/file! Final!.jpg ==> /some-path/file%21%20Final%21.jpg
+ *
+ * Essentially, if a character *could* present a problem in a URL, it's escaped
+ *     to the hexadecimal representation instead. This means it's a bit more
+ *     aggressive than encodeURIComponent: that built-in function doesn't
+ *     encode some characters that *could* be problematic, so this function
+ *     adds them (#, !, ~, *, ', (, and )).
+ *     Additionally, encodeURIComponent *does* encode `/`, but we want safer
+ *     URLs, not non-functional URLs, so this function DEcodes slashes ('%2F').
+ *
+ * @param {String} potentiallyUnsafePath
+ * @returns {String}
+ */
+export function encodeSaferUrl(potentiallyUnsafePath) {
+  const unencode = ['%2F'];
+  const encode = ['#', '!', '~', '\\*', "'", '\\(', '\\)'];
+  let saferPath = encodeURIComponent(potentiallyUnsafePath);
+
+  unencode.forEach((code) => {
+    saferPath = saferPath.replace(new RegExp(code, 'g'), decodeURIComponent(code));
+  });
+  encode.forEach((code) => {
+    const encodedValue = code
+      .codePointAt(code.length - 1)
+      .toString(16)
+      .toUpperCase();
+
+    saferPath = saferPath.replace(new RegExp(code, 'g'), `%${encodedValue}`);
+  });
+
+  return saferPath;
+}
+
 export function cleanLeadingSeparator(path) {
   return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
 }
@@ -307,6 +351,20 @@ export function isBlobUrl(url) {
  */
 export function isAbsoluteOrRootRelative(url) {
   return isAbsolute(url) || isRootRelative(url);
+}
+
+/**
+ * Returns true if url is an external URL
+ *
+ * @param {String} url
+ * @returns {Boolean}
+ */
+export function isExternal(url) {
+  if (isRootRelative(url)) {
+    return false;
+  }
+
+  return !url.includes(gon.gitlab_url);
 }
 
 /**

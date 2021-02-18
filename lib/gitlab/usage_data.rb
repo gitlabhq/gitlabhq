@@ -12,6 +12,9 @@
 #   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 module Gitlab
   class UsageData
+    DEPRECATED_VALUE = -1000
+    MAX_GENERATION_TIME_FOR_SAAS = 40.hours
+
     CE_MEMOIZED_VALUES = %i(
         issue_minimum_id
         issue_maximum_id
@@ -23,6 +26,8 @@ module Gitlab
         deployment_minimum_id
         deployment_maximum_id
         auth_providers
+        aggregated_metrics
+        recorded_at
       ).freeze
 
     class << self
@@ -75,7 +80,7 @@ module Gitlab
       end
 
       def recorded_at
-        Time.current
+        @recorded_at ||= Time.current
       end
 
       # rubocop: disable Metrics/AbcSize
@@ -158,7 +163,7 @@ module Gitlab
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_tracing_enabled: count(ProjectTracingSetting),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
-            projects_with_alerts_service_enabled: count(AlertsService.active),
+            projects_with_alerts_service_enabled: count(Service.active.where(type: 'AlertsService')),
             projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_enabled_alert_integrations: distinct_count(::AlertManagement::HttpIntegration.active, :project_id),
             projects_with_prometheus_alerts: distinct_count(PrometheusAlert, :project_id),
@@ -580,27 +585,35 @@ module Gitlab
           users_created: count(::User.where(time_period), start: user_minimum_id, finish: user_maximum_id),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
+          unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
-            gitlab: distinct_count(::BulkImport.where(time_period, source_type: :gitlab), :user_id)
+            gitlab: DEPRECATED_VALUE,
+            gitlab_v1: count(::BulkImport.where(time_period, source_type: :gitlab))
           },
+          project_imports: project_imports(time_period),
+          issue_imports: issue_imports(time_period),
+          group_imports: group_imports(time_period),
+
+          # Deprecated data to be removed
           projects_imported: {
-            total: distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id),
-            gitlab_project: projects_imported_count('gitlab_project', time_period),
-            gitlab: projects_imported_count('gitlab', time_period),
-            github: projects_imported_count('github', time_period),
-            bitbucket: projects_imported_count('bitbucket', time_period),
-            bitbucket_server: projects_imported_count('bitbucket_server', time_period),
-            gitea: projects_imported_count('gitea', time_period),
-            git: projects_imported_count('git', time_period),
-            manifest: projects_imported_count('manifest', time_period)
+            total: DEPRECATED_VALUE,
+            gitlab_project: DEPRECATED_VALUE,
+            gitlab: DEPRECATED_VALUE,
+            github: DEPRECATED_VALUE,
+            bitbucket: DEPRECATED_VALUE,
+            bitbucket_server: DEPRECATED_VALUE,
+            gitea: DEPRECATED_VALUE,
+            git: DEPRECATED_VALUE,
+            manifest: DEPRECATED_VALUE
           },
           issues_imported: {
-            jira: distinct_count(::JiraImportState.where(time_period), :user_id),
-            fogbugz: projects_imported_count('fogbugz', time_period),
-            phabricator: projects_imported_count('phabricator', time_period),
-            csv: distinct_count(Issues::CsvImport.where(time_period), :user_id)
+            jira: DEPRECATED_VALUE,
+            fogbugz: DEPRECATED_VALUE,
+            phabricator: DEPRECATED_VALUE,
+            csv: DEPRECATED_VALUE
           },
-          groups_imported: distinct_count(::GroupImportState.where(time_period), :user_id)
+          groups_imported: DEPRECATED_VALUE
+          # End of deprecated keys
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -690,13 +703,13 @@ module Gitlab
 
       def aggregated_metrics_monthly
         {
-          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_monthly_data
+          aggregated_metrics: aggregated_metrics.monthly_data
         }
       end
 
       def aggregated_metrics_weekly
         {
-          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_weekly_data
+          aggregated_metrics: aggregated_metrics.weekly_data
         }
       end
 
@@ -740,6 +753,10 @@ module Gitlab
       end
 
       private
+
+      def aggregated_metrics
+        @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new(recorded_at)
+      end
 
       def event_monthly_active_users(date_range)
         data = {
@@ -893,9 +910,51 @@ module Gitlab
         count relation, start: deployment_minimum_id, finish: deployment_maximum_id
       end
 
-      def projects_imported_count(from, time_period)
-        distinct_count(::Project.imported_from(from).where(time_period).where.not(import_type: nil), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
+      def project_imports(time_period)
+        {
+          gitlab_project: projects_imported_count('gitlab_project', time_period),
+          gitlab: projects_imported_count('gitlab', time_period),
+          github: projects_imported_count('github', time_period),
+          bitbucket: projects_imported_count('bitbucket', time_period),
+          bitbucket_server: projects_imported_count('bitbucket_server', time_period),
+          gitea: projects_imported_count('gitea', time_period),
+          git: projects_imported_count('git', time_period),
+          manifest: projects_imported_count('manifest', time_period),
+          gitlab_migration: count(::BulkImports::Entity.where(time_period).project_entity) # rubocop: disable CodeReuse/ActiveRecord
+        }
       end
+
+      def projects_imported_count(from, time_period)
+        count(::Project.imported_from(from).where(time_period).where.not(import_type: nil)) # rubocop: disable CodeReuse/ActiveRecord
+      end
+
+      def issue_imports(time_period)
+        {
+          jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
+          fogbugz: projects_imported_count('fogbugz', time_period),
+          phabricator: projects_imported_count('phabricator', time_period),
+          csv: count(Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
+        }
+      end
+
+      def group_imports(time_period)
+        {
+          group_import: count(::GroupImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
+          gitlab_migration: count(::BulkImports::Entity.where(time_period).group_entity) # rubocop: disable CodeReuse/ActiveRecord
+        }
+      end
+
+      # rubocop:disable CodeReuse/ActiveRecord
+      def unique_users_all_imports(time_period)
+        project_imports = distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id)
+        bulk_imports = distinct_count(::BulkImport.where(time_period), :user_id)
+        jira_issue_imports = distinct_count(::JiraImportState.where(time_period), :user_id)
+        csv_issue_imports = distinct_count(Issues::CsvImport.where(time_period), :user_id)
+        group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
+
+        project_imports + bulk_imports + jira_issue_imports + csv_issue_imports + group_imports
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       # rubocop:disable CodeReuse/ActiveRecord
       def distinct_count_user_auth_by_provider(time_period)

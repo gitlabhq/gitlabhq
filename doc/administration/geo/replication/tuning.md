@@ -5,11 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Tuning Geo **(PREMIUM ONLY)**
+# Tuning Geo **(PREMIUM SELF)**
 
 ## Changing the sync/verification capacity values
 
-In the Geo admin page at **Admin Area > Geo** (`/admin/geo/nodes`),
+In **Admin Area > Geo** (`/admin/geo/nodes`),
 there are several variables that can be tuned to improve performance of Geo:
 
 - Repository sync capacity

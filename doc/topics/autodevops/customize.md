@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Customizing Auto DevOps
+# Customizing Auto DevOps **(FREE)**
 
 While [Auto DevOps](index.md) provides great defaults to get you started, you can customize
 almost everything to fit your needs. Auto DevOps offers everything from custom
@@ -136,7 +136,7 @@ repository or by specifying a project variable:
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), enabling
   you to control exactly how your application is deployed.
-- **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
+- **Project variable** - Create a [project CI/CD variable](../../ci/variables/README.md)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use, or create two project
   variables: `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository,
   and `AUTO_DEVOPS_CHART` with the path to the chart.
@@ -163,7 +163,7 @@ to override the default chart values by setting `HELM_UPGRADE_EXTRA_ARGS` to `--
 You can customize the `helm upgrade` command used in the [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image)
 by passing options to the command with the `HELM_UPGRADE_EXTRA_ARGS` variable.
 For example, set the value of `HELM_UPGRADE_EXTRA_ARGS` to `--no-hooks` to disable
-pre and post upgrade hooks when the command is executed.
+pre-upgrade and post-upgrade hooks when the command is executed.
 
 See [the official documentation](https://helm.sh/docs/helm/helm_upgrade/) for the full
 list of options.
@@ -171,7 +171,7 @@ list of options.
 ## Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
-to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables).
+to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables).
 
 ## Customizing `.gitlab-ci.yml`
 
@@ -357,7 +357,7 @@ applications.
 
 NOTE:
 After you set up your replica variables using a
-[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables),
+[project CI/CD variable](../../ci/variables/README.md),
 you can scale your application by redeploying it.
 
 WARNING:
@@ -376,7 +376,7 @@ The following table lists variables related to the database.
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `true`. Set to `false` to disable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-environment-variables). Set it to use a custom database name. |
+| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
 
 ### Disable jobs

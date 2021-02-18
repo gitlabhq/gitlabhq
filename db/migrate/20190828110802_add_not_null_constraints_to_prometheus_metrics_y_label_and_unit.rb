@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddNotNullConstraintsToPrometheusMetricsYLabelAndUnit < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 

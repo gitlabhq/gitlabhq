@@ -1,9 +1,9 @@
 <script>
-import * as Sentry from '~/sentry/wrapper';
-import { s__ } from '~/locale';
+import MetricCard from '~/analytics/shared/components/metric_card.vue';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
-import MetricCard from '~/analytics/shared/components/metric_card.vue';
+import { s__ } from '~/locale';
+import * as Sentry from '~/sentry/wrapper';
 import instanceStatisticsCountQuery from '../graphql/queries/instance_statistics_count.query.graphql';
 
 const defaultPrecision = 0;

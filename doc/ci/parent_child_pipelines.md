@@ -156,7 +156,11 @@ build a matrix of targets and architectures.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
 
-We also have an [example project using Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet) which shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime. You could use a similar process for other templating languages like [Dhall](https://dhall-lang.org/) or [`ytt`](https://get-ytt.io/).
+<!-- vale gitlab.Spelling = NO -->
+We also have an example project using
+[Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet)
+which shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime. You could use a similar process for other templating languages like [Dhall](https://dhall-lang.org/) or [`ytt`](https://get-ytt.io/).
+<!-- vale gitlab.Spelling = NO -->
 
 The artifact path is parsed by GitLab, not the runner, so the path must match the
 syntax for the OS running GitLab. If GitLab is running on Linux but using a Windows
@@ -176,7 +180,10 @@ pipelines, which was later increased to two. A parent pipeline can trigger many 
 pipelines, and these child pipelines can trigger their own child pipelines. It's not
 possible to trigger another level of child pipelines.
 
-## Pass variables to a child pipeline
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
 
-You can [pass variables to a downstream pipeline](multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline)
+## Pass CI/CD variables to a child pipeline
+
+You can [pass CI/CD variables to a downstream pipeline](multi_project_pipelines.md#passing-cicd-variables-to-a-downstream-pipeline)
 the same way as for multi-project pipelines.

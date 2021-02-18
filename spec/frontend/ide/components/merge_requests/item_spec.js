@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { createStore } from '~/ide/stores';
-import { createRouter } from '~/ide/ide_router';
+import Vuex from 'vuex';
 import Item from '~/ide/components/merge_requests/item.vue';
+import { createRouter } from '~/ide/ide_router';
+import { createStore } from '~/ide/stores';
 
 const TEST_ITEM = {
   iid: 1,

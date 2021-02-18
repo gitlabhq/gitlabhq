@@ -6,6 +6,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
+    stub_feature_flags(vue_notification_dropdown: false)
     sign_in(project.owner)
   end
 

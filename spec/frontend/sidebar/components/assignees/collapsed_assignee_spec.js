@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
+import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import userDataMock from '../../user_data_mock';
 
 const TEST_USER = userDataMock();
@@ -18,6 +19,9 @@ describe('CollapsedAssignee assignee component', () => {
 
     wrapper = shallowMount(CollapsedAssignee, {
       propsData,
+      stubs: {
+        UserNameWithStatus,
+      },
     });
   }
 

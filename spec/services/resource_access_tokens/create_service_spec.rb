@@ -195,6 +195,14 @@ RSpec.describe ResourceAccessTokens::CreateService do
           end
         end
       end
+
+      it 'logs the event' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        response = subject
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(/PROJECT ACCESS TOKEN CREATION: created_by: #{user.username}, project_id: #{resource.id}, token_user: #{response.payload[:access_token].user.name}, token_id: \d+/)
+      end
     end
 
     context 'when resource is a project' do
@@ -208,7 +216,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
           response = subject
 
           expect(response.error?).to be true
-          expect(response.errors).to include("User does not have permission to create #{resource_type} Access Token")
+          expect(response.errors).to include("User does not have permission to create #{resource_type} access token")
         end
       end
 

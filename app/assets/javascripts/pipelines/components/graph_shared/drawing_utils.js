@@ -40,10 +40,10 @@ export const generateLinksData = ({ links }, containerID, modifier = '') => {
     // positioned in the center of the job node by adding half the height
     // of the job pill.
     const paddingLeft = parseFloat(
-      window.getComputedStyle(containerEl, null).getPropertyValue('padding-left'),
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-left') || 0,
     );
     const paddingTop = parseFloat(
-      window.getComputedStyle(containerEl, null).getPropertyValue('padding-top'),
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-top') || 0,
     );
 
     const sourceNodeX = sourceNodeCoordinates.right - containerCoordinates.x - paddingLeft;

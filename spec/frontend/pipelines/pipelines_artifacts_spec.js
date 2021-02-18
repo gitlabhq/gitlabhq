@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 
 describe('Pipelines Artifacts dropdown', () => {

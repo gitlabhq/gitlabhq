@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import component from '~/vue_shared/components/registry/history_item.vue';
 

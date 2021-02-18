@@ -1,5 +1,5 @@
-import httpStatusCodes, { successCodes } from './http_status';
 import { normalizeHeaders } from './common_utils';
+import httpStatusCodes, { successCodes } from './http_status';
 
 /**
  * Polling utility for handling realtime updates.

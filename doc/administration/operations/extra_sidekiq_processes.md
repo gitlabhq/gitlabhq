@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Run multiple Sidekiq processes **(CORE ONLY)**
+# Run multiple Sidekiq processes **(FREE SELF)**
 
 GitLab allows you to start multiple Sidekiq processes.
 These processes can be used to consume a dedicated set
@@ -27,7 +27,7 @@ can be started.
 ## Start multiple processes
 
 > - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4006) in GitLab 12.10, starting multiple processes with Sidekiq cluster.
-> - [Sidekiq cluster moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
+> - [Sidekiq cluster moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Sidekiq cluster became default](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4140) in GitLab 13.0.
 
 To start multiple processes:
@@ -112,8 +112,8 @@ you list:
 
 ## Queue selector
 
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
-> - [Sidekiq cluster including queue selector moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in GitLab 12.8.
+> - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
 
 In addition to selecting queues by name, as above, the `queue_selector`

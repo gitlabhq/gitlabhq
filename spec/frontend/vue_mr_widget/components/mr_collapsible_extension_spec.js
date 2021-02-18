@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import MrCollapsibleSection from '~/vue_merge_request_widget/components/mr_collapsible_extension.vue';
 
 describe('Merge Request Collapsible Extension', () => {

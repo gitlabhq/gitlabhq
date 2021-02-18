@@ -1,6 +1,6 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import SentryErrorStackTrace from '~/sentry_error_stack_trace/components/sentry_error_stack_trace.vue';
 

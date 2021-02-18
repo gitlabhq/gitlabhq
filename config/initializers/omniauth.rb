@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if Gitlab::Auth::Ldap::Config.enabled?
   module OmniAuth::Strategies
     Gitlab::Auth::Ldap::Config.available_servers.each do |server|

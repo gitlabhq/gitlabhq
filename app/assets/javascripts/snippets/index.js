@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 
 import { SNIPPET_LEVELS_MAP, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
+import Translate from '~/vue_shared/translate';
 
 Vue.use(VueApollo);
 Vue.use(Translate);

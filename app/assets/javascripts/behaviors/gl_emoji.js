@@ -1,6 +1,12 @@
 import 'document-register-element';
+import {
+  initEmojiMap,
+  getEmojiInfo,
+  emojiFallbackImageSrc,
+  emojiImageTag,
+  FALLBACK_EMOJI_KEY,
+} from '../emoji';
 import isEmojiUnicodeSupported from '../emoji/support';
-import { initEmojiMap, getEmojiInfo, emojiFallbackImageSrc, emojiImageTag } from '../emoji';
 
 class GlEmoji extends HTMLElement {
   connectedCallback() {
@@ -17,6 +23,10 @@ class GlEmoji extends HTMLElement {
 
         if (emojiInfo) {
           if (name !== emojiInfo.name) {
+            if (emojiInfo.name === FALLBACK_EMOJI_KEY && this.innerHTML) {
+              return; // When fallback emoji is used, but there is a <img> provided, use the <img> instead
+            }
+
             ({ name } = emojiInfo);
             this.dataset.name = emojiInfo.name;
           }

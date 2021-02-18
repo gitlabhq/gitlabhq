@@ -36,7 +36,7 @@ RSpec.describe Projects::Alerting::NotifyService do
 
     subject { service.execute(token, nil) }
 
-    shared_examples 'notifcations are handled correctly' do
+    shared_examples 'notifications are handled correctly' do
       context 'with valid token' do
         let(:token) { integration.token }
         let(:incident_management_setting) { double(send_email?: email_enabled, create_issue?: issue_enabled, auto_close_incident?: auto_close_enabled) }
@@ -84,6 +84,15 @@ RSpec.describe Projects::Alerting::NotifyService do
 
           it_behaves_like 'creates an alert management alert'
           it_behaves_like 'assigns the alert properties'
+
+          it 'passes the integration to alert processing' do
+            expect(Gitlab::AlertManagement::Payload)
+              .to receive(:parse)
+              .with(project, payload.to_h, integration: integration)
+              .and_call_original
+
+            subject
+          end
 
           it 'creates a system note corresponding to alert creation' do
             expect { subject }.to change(Note, :count).by(1)
@@ -259,7 +268,7 @@ RSpec.describe Projects::Alerting::NotifyService do
 
       subject { service.execute(token, integration) }
 
-      it_behaves_like 'notifcations are handled correctly' do
+      it_behaves_like 'notifications are handled correctly' do
         let(:source) { integration.name }
       end
 

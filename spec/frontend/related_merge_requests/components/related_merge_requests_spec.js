@@ -1,9 +1,9 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import RelatedMergeRequests from '~/related_merge_requests/components/related_merge_requests.vue';
 import createStore from '~/related_merge_requests/store/index';
+import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 
 const FIXTURE_PATH = 'issues/related_merge_requests.json';
 const API_ENDPOINT = '/api/v4/projects/2/issues/33/related_merge_requests';

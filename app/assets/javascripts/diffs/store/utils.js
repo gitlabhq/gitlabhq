@@ -1,6 +1,6 @@
 import { property, isEqual } from 'lodash';
-import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import { diffModes, diffViewerModes } from '~/ide/constants';
+import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,

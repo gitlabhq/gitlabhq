@@ -1,9 +1,9 @@
+import * as UserApi from '~/api/user_api';
 import {
   openUserCountsBroadcast,
   closeUserCountsBroadcast,
   refreshUserMergeRequestCounts,
 } from '~/commons/nav/user_merge_requests';
-import * as UserApi from '~/api/user_api';
 
 jest.mock('~/api');
 

@@ -1,16 +1,16 @@
 import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
 
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
+import DropdownUtils from '~/filtered_search/dropdown_utils';
+import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
+import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
-import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
-import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import DropdownUtils from '~/filtered_search/dropdown_utils';
-import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
-import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
+import * as commonUtils from '~/lib/utils/common_utils';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
-import * as commonUtils from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

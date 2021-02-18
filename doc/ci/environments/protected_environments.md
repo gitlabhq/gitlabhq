@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Protected Environments **(PREMIUM)**
+# Protected environments **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
@@ -31,7 +31,7 @@ To protect, update, or unprotect an environment, you need to have at least
 To protect an environment:
 
 1. Navigate to your project's **Settings > CI/CD**.
-1. Expand the **Protected Environments** section.
+1. Expand the **Protected environments** section.
 1. From the **Environment** dropdown menu, select the environment you want to protect.
 1. In the **Allowed to Deploy** dropdown menu, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:

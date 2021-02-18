@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Repository
+# Repository **(FREE)**
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is what you use to store your codebase in GitLab and change it with version control.
@@ -14,7 +14,7 @@ A repository is part of a [project](../index.md), which has a lot of other featu
 ## Create a repository
 
 To create a new repository, all you need to do is
-[create a new project](../../../gitlab-basics/create-project.md) or
+[create a new project](../../../user/project/working_with_projects.md#create-a-project) or
 [fork an existing project](forking_workflow.md).
 
 Once you create a new project, you can add new files via UI
@@ -43,7 +43,7 @@ You can either use the user interface (UI), or connect your local computer
 with GitLab [through the command line](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 To configure [GitLab CI/CD](../../../ci/README.md) to build, test, and deploy
-your code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/README.md)
+your code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/index.md)
 to your repository's root.
 
 **From the user interface:**
@@ -242,13 +242,32 @@ Learn how to [clone a repository through the command line](../../../gitlab-basic
 
 Alternatively, clone directly into a code editor as documented below.
 
-### Clone to Apple Xcode
+### Clone and open in Apple Xcode
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45820) in GitLab 11.0.
 
 Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
-into Xcode using the new **Open in Xcode** button, located next to the Git URL
-used for cloning your project. The button is only shown on macOS.
+into Xcode on macOS. To do that:
+
+1. From the GitLab UI, go to the project's overview page.
+1. Click **Clone**.
+1. Select **Xcode**.
+
+The project will be cloned onto your computer in a folder of your choice and you'll
+be prompted to open in XCode.
+
+### Clone and open in Visual Studio Code
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.8.
+
+All projects can be cloned into Visual Studio Code. To do that:
+
+1. From the GitLab UI, go to the project's overview page.
+1. Click **Clone**.
+1. Select **VS Code**
+
+You'll be prompted to select a folder to clone the project into. When VS Code has
+successfully cloned your project, it will open the folder.
 
 ## Download Source Code
 
@@ -269,6 +288,28 @@ By clicking the download icon, a dropdown will open with links to download the f
   `tar`, `tar.gz`, and `tar.bz2`.
 - **Artifacts:**
   allows users to download the artifacts of the latest CI build.
+
+## Redirects when changing repository paths
+
+When a repository path changes, it is essential to smoothly transition from the
+old location to the new one. GitLab provides two kinds of redirects: the web UI
+and Git push/pull redirects.
+
+Depending on the situation, different things apply.
+
+When [renaming a user](../../profile/index.md#changing-your-username),
+[changing a group path](../../group/index.md#changing-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
+
+- Existing web URLs for the namespace and anything under it (such as projects) will
+  redirect to the new URLs.
+- Starting with GitLab 10.3, existing Git remote URLs for projects under the
+  namespace redirect to the new remote URL. Every time you push/pull to a
+  repository that has changed its location, a warning message to update
+  your remote is displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients continue to
+  work after a rename, making any transition a lot smoother.
+- The redirects are available as long as the original path is not claimed by
+  another group, user or project.
 
 <!-- ## Troubleshooting
 

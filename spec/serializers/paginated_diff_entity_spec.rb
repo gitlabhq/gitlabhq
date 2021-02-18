@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe PaginatedDiffEntity do
   let(:user) { create(:user) }
   let(:request) { double('request', current_user: user) }
-  let(:merge_request) { create(:merge_request, :with_diffs) }
+  let(:merge_request) { create(:merge_request) }
   let(:diff_batch) { merge_request.merge_request_diff.diffs_in_batch(2, 3, diff_options: nil) }
   let(:options) do
     {

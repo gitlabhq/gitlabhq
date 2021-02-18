@@ -182,7 +182,7 @@ module Gitlab
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
             archive_stream!(stream)
-            stream.destroy!
+            destroy_stream(job) { stream.destroy! }
           end
         elsif current_path
           File.open(current_path) do |stream|
@@ -268,7 +268,21 @@ module Gitlab
       end
 
       def trace_artifact
-        job.job_artifacts_trace
+        read_trace_artifact(job) { job.job_artifacts_trace }
+      end
+
+      ##
+      # Overridden in EE
+      #
+      def destroy_stream(job)
+        yield
+      end
+
+      ##
+      # Overriden in EE
+      #
+      def read_trace_artifact(job)
+        yield
       end
 
       def being_watched_cache_key
@@ -277,3 +291,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Ci::Trace.prepend_if_ee('EE::Gitlab::Ci::Trace')

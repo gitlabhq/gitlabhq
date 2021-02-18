@@ -149,7 +149,9 @@ module TestEnv
       end
     end
 
-    FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path }
+    )
     FileUtils.mkdir_p(SECOND_STORAGE_PATH)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)

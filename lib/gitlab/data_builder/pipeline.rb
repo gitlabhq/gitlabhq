@@ -13,7 +13,7 @@ module Gitlab
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          builds: pipeline.builds.map(&method(:build_hook_attrs))
+          builds: pipeline.builds.latest.map(&method(:build_hook_attrs))
         }
       end
 
@@ -76,7 +76,8 @@ module Gitlab
           id: runner.id,
           description: runner.description,
           active: runner.active?,
-          is_shared: runner.instance_type?
+          is_shared: runner.instance_type?,
+          tags: runner.tags&.map(&:name)
         }
       end
     end

@@ -1,42 +1,56 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'snippets spam check is performed' do
-  shared_examples 'marked as spam' do
-    it 'marks a snippet as spam' do
-      expect(snippet).to be_spam
-    end
-
-    it 'invalidates the snippet' do
-      expect(snippet).to be_invalid
-    end
-
-    it 'creates a new spam_log' do
-      expect { snippet }
-        .to have_spam_log(title: snippet.title, noteable_type: snippet.class.name)
-    end
-
-    it 'assigns a spam_log to an issue' do
-      expect(snippet.spam_log).to eq(SpamLog.last)
-    end
-  end
+RSpec.shared_examples 'checking spam' do
+  let(:request) { double(:request) }
+  let(:api) { true }
+  let(:captcha_response) { 'abc123' }
+  let(:spam_log_id) { 1 }
+  let(:disable_spam_action_service) { false }
 
   let(:extra_opts) do
-    { visibility_level: Gitlab::VisibilityLevel::PUBLIC, request: double(:request, env: {}) }
+    {
+      request: request,
+      api: api,
+      captcha_response: captcha_response,
+      spam_log_id: spam_log_id,
+      disable_spam_action_service: disable_spam_action_service
+    }
   end
 
   before do
-    expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-      expect(akismet_service).to receive_messages(spam?: true)
+    allow_next_instance_of(UserAgentDetailService) do |instance|
+      allow(instance).to receive(:create)
     end
   end
 
-  [true, false, nil].each do |allow_possible_spam|
-    context "when allow_possible_spam flag is #{allow_possible_spam.inspect}" do
-      before do
-        stub_feature_flags(allow_possible_spam: allow_possible_spam) unless allow_possible_spam.nil?
-      end
+  it 'executes SpamActionService' do
+    spam_params = Spam::SpamParams.new(
+      api: api,
+      captcha_response: captcha_response,
+      spam_log_id: spam_log_id
+    )
+    expect_next_instance_of(
+      Spam::SpamActionService,
+      {
+        spammable: kind_of(Snippet),
+        request: request,
+        user: an_instance_of(User),
+        action: action
+      }
+    ) do |instance|
+      expect(instance).to receive(:execute).with(spam_params: spam_params)
+    end
 
-      it_behaves_like 'marked as spam'
+    subject
+  end
+
+  context 'when spam action service is disabled' do
+    let(:disable_spam_action_service) { true }
+
+    it 'request parameter is not passed to the service' do
+      expect(Spam::SpamActionService).not_to receive(:new)
+
+      subject
     end
   end
 end

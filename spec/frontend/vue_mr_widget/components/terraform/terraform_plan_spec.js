@@ -33,7 +33,7 @@ describe('TerraformPlan', () => {
 
     it('diplays the header text with a name', () => {
       expect(wrapper.text()).toContain(
-        `The Terraform report ${validPlanWithName.job_name} was generated in your pipelines.`,
+        `The report ${validPlanWithName.job_name} was generated in your pipelines.`,
       );
     });
 
@@ -55,7 +55,7 @@ describe('TerraformPlan', () => {
     });
 
     it('diplays the header text without a name', () => {
-      expect(wrapper.text()).toContain('A Terraform report was generated in your pipelines.');
+      expect(wrapper.text()).toContain('A report was generated in your pipelines.');
     });
   });
 
@@ -70,7 +70,7 @@ describe('TerraformPlan', () => {
 
     it('diplays the header text with a name', () => {
       expect(wrapper.text()).toContain(
-        `The Terraform report ${invalidPlanWithName.job_name} failed to generate.`,
+        `The report ${invalidPlanWithName.job_name} failed to generate.`,
       );
     });
 
@@ -85,7 +85,7 @@ describe('TerraformPlan', () => {
     });
 
     it('diplays the header text without a name', () => {
-      expect(wrapper.text()).toContain('A Terraform report failed to generate.');
+      expect(wrapper.text()).toContain('A report failed to generate.');
     });
 
     it('does not render button because url is missing', () => {

@@ -1,16 +1,14 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml, GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
-import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { sprintf } from '~/locale';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
-import notesEventHub from '../../notes/event_hub';
-import DiffFileHeader from './diff_file_header.vue';
-import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
-import { collapsedType, isCollapsed } from '../utils/diff_file';
+import { sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import notesEventHub from '../../notes/event_hub';
+
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -18,8 +16,11 @@ import {
   EVT_PERF_MARK_DIFF_FILES_END,
   EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
 } from '../constants';
-import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 import eventHub from '../event_hub';
+import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
+import { collapsedType, isCollapsed, getShortShaFromFile } from '../utils/diff_file';
+import DiffContent from './diff_content.vue';
+import DiffFileHeader from './diff_file_header.vue';
 
 export default {
   components: {
@@ -27,6 +28,7 @@ export default {
     DiffContent,
     GlButton,
     GlLoadingIcon,
+    GlSprintf,
   },
   directives: {
     SafeHtml,
@@ -81,15 +83,11 @@ export default {
     ...mapState('diffs', ['currentDiffFileId']),
     ...mapGetters(['isNotesFetched']),
     ...mapGetters('diffs', ['getDiffFileDiscussions']),
-    viewBlobLink() {
-      return sprintf(
-        this.$options.i18n.blobView,
-        {
-          linkStart: `<a href="${escape(this.file.view_path)}">`,
-          linkEnd: '</a>',
-        },
-        false,
-      );
+    viewBlobHref() {
+      return escape(this.file.view_path);
+    },
+    shortSha() {
+      return getShortShaFromFile(this.file);
     },
     showLoadingIcon() {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
@@ -98,7 +96,7 @@ export default {
       return hasDiff(this.file);
     },
     isFileTooLarge() {
-      return this.file.viewer.error === diffViewerErrors.too_large;
+      return !this.manuallyCollapsed && this.file.viewer.error === diffViewerErrors.too_large;
     },
     errorMessage() {
       return !this.manuallyCollapsed ? this.file.viewer.error_message : '';
@@ -144,6 +142,12 @@ export default {
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;
     },
+    showLocalFileReviews() {
+      const loggedIn = Boolean(gon.current_user_id);
+      const featureOn = this.glFeatures.localFileReviews;
+
+      return loggedIn && featureOn;
+    },
   },
   watch: {
     'file.file_hash': {
@@ -180,6 +184,10 @@ export default {
   mounted() {
     if (this.hasDiff) {
       this.postRender();
+    }
+
+    if (this.reviewed && !this.isCollapsed && this.showLocalFileReviews) {
+      this.handleToggle();
     }
   },
   beforeDestroy() {
@@ -273,9 +281,11 @@ export default {
       :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
+      :reviewed="reviewed"
       :expanded="!isCollapsed"
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
+      :show-local-file-reviews="showLocalFileReviews"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle"
@@ -309,14 +319,27 @@ export default {
           data-testid="loader-icon"
         />
         <div v-else-if="errorMessage" class="diff-viewer">
-          <div v-safe-html="errorMessage" class="nothing-here-block"></div>
+          <div
+            v-if="isFileTooLarge"
+            class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+          >
+            <p class="gl-mb-5">
+              {{ $options.i18n.tooLarge }}
+            </p>
+            <gl-button data-testid="blob-button" category="secondary" :href="viewBlobHref">
+              <gl-sprintf :message="$options.i18n.blobView">
+                <template #commitSha>{{ shortSha }}</template>
+              </gl-sprintf>
+            </gl-button>
+          </div>
+          <div v-else v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
           <div
             v-show="showWarning"
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
-            <p class="gl-mb-8">
+            <p class="gl-mb-5">
               {{ $options.i18n.autoCollapsed }}
             </p>
             <gl-button

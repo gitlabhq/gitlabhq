@@ -1,10 +1,10 @@
-import { cloneDeep } from 'lodash';
-import { mount } from '@vue/test-utils';
 import { getByText } from '@testing-library/dom';
-import { createStore } from '~/mr_notes/stores';
+import { mount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
-import { getPreviousLineIndex } from '~/diffs/store/utils';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import { getPreviousLineIndex } from '~/diffs/store/utils';
+import { createStore } from '~/mr_notes/stores';
 import diffFileMockData from '../mock_data/diff_file';
 
 const EXPAND_UP_CLASS = '.js-unfold';

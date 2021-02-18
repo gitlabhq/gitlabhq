@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
-import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
 
 const DEFAULT_ERROR_MESSAGE = __('An error occurred while updating the configuration.');
 

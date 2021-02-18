@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This migration adds a primary key constraint to tables
 # that only have a composite unique key.
 #

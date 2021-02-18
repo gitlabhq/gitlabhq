@@ -30,19 +30,6 @@ RSpec.describe 'User views an open merge request' do
     end
   end
 
-  context 'when merge_request_reviewers is turned off' do
-    let(:project) { create(:project, :public, :repository) }
-
-    before do
-      stub_feature_flags(merge_request_reviewers: false)
-      visit(merge_request_path(merge_request))
-    end
-
-    it 'has reviewers in sidebar' do
-      expect(page).not_to have_css('.reviewer')
-    end
-  end
-
   context 'when a merge request has repository', :js do
     let(:project) { create(:project, :public, :repository) }
 
@@ -105,6 +92,22 @@ RSpec.describe 'User views an open merge request' do
         page.within('.mr-source-target') do
           expect(page).to have_content(/([0-9]+ commits behind)/)
         end
+      end
+    end
+
+    context 'when the assignee\'s availability set' do
+      before do
+        merge_request.author.create_status(availability: 'busy')
+        merge_request.assignees << merge_request.author
+
+        visit(merge_request_path(merge_request))
+      end
+
+      it 'exposes the availability in the data-availability attribute' do
+        assignees_data = find_all("input[name='merge_request[assignee_ids][]']", visible: false)
+
+        expect(assignees_data.size).to eq(1)
+        expect(assignees_data.first['data-availability']).to eq('busy')
       end
     end
   end

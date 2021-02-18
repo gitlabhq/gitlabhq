@@ -1,8 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
-import state from '~/ide/stores/modules/branches/state';
-import * as types from '~/ide/stores/modules/branches/mutation_types';
 import {
   requestBranches,
   receiveBranchesError,
@@ -10,6 +7,9 @@ import {
   fetchBranches,
   resetBranches,
 } from '~/ide/stores/modules/branches/actions';
+import * as types from '~/ide/stores/modules/branches/mutation_types';
+import state from '~/ide/stores/modules/branches/state';
+import axios from '~/lib/utils/axios_utils';
 import { branches, projectData } from '../../../mock_data';
 
 describe('IDE branches actions', () => {

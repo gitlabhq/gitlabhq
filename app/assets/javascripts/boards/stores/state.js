@@ -14,6 +14,9 @@ export default () => ({
   issues: {},
   filterParams: {},
   boardConfig: {},
+  labels: [],
+  highlightedLists: [],
+  selectedBoardItems: [],
   groupProjects: [],
   groupProjectsFlags: {
     isLoading: false,
@@ -22,6 +25,7 @@ export default () => ({
   },
   selectedProject: {},
   error: undefined,
+  addColumnFormVisible: false,
   // TODO: remove after ce/ee split of board_content.vue
   isShowingEpicsSwimlanes: false,
 });

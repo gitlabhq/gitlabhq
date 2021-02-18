@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlBadge, GlSprintf } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'TestIssueBody',

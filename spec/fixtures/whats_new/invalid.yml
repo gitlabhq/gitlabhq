@@ -13,7 +13,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Starter]
+  packages: [Free]
   url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22

@@ -76,7 +76,7 @@ Example response:
 ]
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) see
 different parameters, due to the ability to have multiple group boards.
 
 Example response:
@@ -192,7 +192,7 @@ Example response:
   }
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) see
 different parameters, due to the ability to have multiple group issue boards.
 
 Example response:
@@ -526,7 +526,7 @@ Example response:
 
 ## Delete a group issue board list
 
-Only for admins and group owners. Deletes the board list in question.
+Only for administrators and group owners. Deletes the board list in question.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id/lists/:list_id

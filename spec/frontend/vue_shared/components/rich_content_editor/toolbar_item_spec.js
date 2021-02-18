@@ -1,6 +1,6 @@
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { GlIcon } from '@gitlab/ui';
 import ToolbarItem from '~/vue_shared/components/rich_content_editor/toolbar_item.vue';
 
 describe('Toolbar Item', () => {

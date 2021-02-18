@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   desc "GitLab | Setup production application"
   task setup: :gitlab_environment do

@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import { listObj } from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header_deprecated.vue';
-import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
+import List from '~/boards/models/list';
 import axios from '~/lib/utils/axios_utils';
 
 describe('Board List Header Component', () => {
@@ -74,7 +74,13 @@ describe('Board List Header Component', () => {
 
   describe('Add issue button', () => {
     const hasNoAddButton = [ListType.closed];
-    const hasAddButton = [ListType.backlog, ListType.label, ListType.milestone, ListType.assignee];
+    const hasAddButton = [
+      ListType.backlog,
+      ListType.label,
+      ListType.milestone,
+      ListType.iteration,
+      ListType.assignee,
+    ];
 
     it.each(hasNoAddButton)('does not render when List Type is `%s`', (listType) => {
       createComponent({ listType });

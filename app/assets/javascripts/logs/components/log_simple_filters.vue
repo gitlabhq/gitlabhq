@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlDropdown, GlDropdownSectionHeader, GlDropdownItem } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 
 export default {
@@ -42,7 +42,7 @@ export default {
       ref="podsDropdown"
       :text="podDropdownText"
       :disabled="disabled"
-      class="gl-mr-3 gl-mb-3 gl-display-flex gl-display-md-block qa-pods-dropdown"
+      class="gl-mr-3 gl-mb-3 gl-display-flex gl-md-display-block qa-pods-dropdown"
     >
       <gl-dropdown-section-header>
         {{ s__('Environments|Select pod') }}

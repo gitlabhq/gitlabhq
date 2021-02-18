@@ -11,8 +11,8 @@ module Gitlab
         def initialize(project, base_dir, extension, categories = {})
           @categories     = categories
           @extension      = extension
-          @repository     = project.repository
-          @commit         = @repository.head_commit if @repository.exists?
+          @repository     = project&.repository
+          @commit         = @repository.head_commit if @repository&.exists?
 
           super(base_dir)
         end
@@ -51,7 +51,7 @@ module Gitlab
         private
 
         def select_directory(file_name)
-          return [] unless @commit
+          return unless @commit
 
           # Insert root as directory
           directories = ["", *@categories.keys]

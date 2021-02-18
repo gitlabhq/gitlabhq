@@ -1,9 +1,9 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButton, GlModal } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import createStore from '~/deploy_freeze/store';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
 const localVue = createLocalVue();

@@ -3,6 +3,7 @@
 query getCiConfigData($projectPath: ID!, $content: String!) {
   ciConfig(projectPath: $projectPath, content: $content) {
     errors
+    mergedYaml
     status
     stages {
       ...PipelineStagesConnection

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MrWidgetIcon from '~/vue_merge_request_widget/components/mr_widget_icon.vue';
 
 const TEST_ICON = 'commit';

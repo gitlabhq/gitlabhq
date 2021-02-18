@@ -1,7 +1,8 @@
-import * as utils from './utils';
-import * as types from './mutation_types';
-import * as constants from '../constants';
+import { isEqual } from 'lodash';
 import { isInMRPage } from '../../lib/utils/common_utils';
+import * as constants from '../constants';
+import * as types from './mutation_types';
+import * as utils from './utils';
 
 export default {
   [types.ADD_NEW_NOTE](state, data) {
@@ -31,7 +32,22 @@ export default {
         }
       }
 
-      note.base_discussion = undefined; // No point keeping a reference to this
+      if (window.gon?.features?.paginatedNotes && note.base_discussion) {
+        if (discussion.diff_file) {
+          discussion.file_hash = discussion.diff_file.file_hash;
+
+          discussion.truncated_diff_lines = utils.prepareDiffLines(
+            discussion.truncated_diff_lines || [],
+          );
+        }
+
+        discussion.resolvable = note.resolvable;
+        discussion.expanded = note.base_discussion.expanded;
+        discussion.resolved = note.resolved;
+      }
+
+      // note.base_discussion = undefined; // No point keeping a reference to this
+      delete note.base_discussion;
       discussion.notes = [note];
 
       state.discussions.push(discussion);
@@ -220,6 +236,11 @@ export default {
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
+    // Disable eslint here so we can delete the property that we no longer need
+    // in the note object
+    // eslint-disable-next-line no-param-reassign
+    delete note.base_discussion;
+
     if (noteObj.individual_note) {
       if (note.type === constants.DISCUSSION_NOTE) {
         noteObj.individual_note = false;
@@ -228,7 +249,10 @@ export default {
       noteObj.notes.splice(0, 1, note);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
-      noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+
+      if (!isEqual(comment, note)) {
+        noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+      }
     }
   },
 
@@ -311,6 +335,10 @@ export default {
 
   [types.SET_NOTES_LOADING_STATE](state, value) {
     state.isLoading = value;
+  },
+
+  [types.SET_NOTES_FETCHING_STATE](state, value) {
+    state.isFetching = value;
   },
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {

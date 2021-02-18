@@ -35,7 +35,7 @@ class Projects::BlobController < Projects::ApplicationController
     record_experiment_user(:ci_syntax_templates, namespace_id: @project.namespace_id) if params[:file_name] == @project.ci_config_path_or_default
   end
 
-  track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions, feature_default_enabled: true
+  track_redis_hll_event :create, :update, name: 'g_edit_by_sfe'
 
   feature_category :source_code_management
 

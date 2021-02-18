@@ -3,17 +3,13 @@
 require 'fast_spec_helper'
 
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   shared_examples 'an offensive factory call' do |namespace|
-    %i[build build_list create create_list].each do |forbidden_method|
+    %i[build build_list create create_list attributes_for].each do |forbidden_method|
       namespaced_forbidden_method = "#{namespace}#{forbidden_method}(:user)"
 
       it "registers an offense for #{namespaced_forbidden_method}" do

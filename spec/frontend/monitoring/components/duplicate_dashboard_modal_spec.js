@@ -1,12 +1,12 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 import waitForPromises from 'helpers/wait_for_promises';
 
-import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
 import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_form.vue';
+import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
 
 import { dashboardGitResponse } from '../mock_data';
 

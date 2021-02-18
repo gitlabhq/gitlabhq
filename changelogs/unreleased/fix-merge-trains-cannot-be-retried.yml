@@ -1,0 +1,5 @@
+---
+title: Fix retry option does not work in Merge Trains
+merge_request: 52463
+author:
+type: fixed

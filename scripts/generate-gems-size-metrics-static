@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 abort "usage: #{__FILE__} <memory_bundle_mem_file_name>" unless ARGV.length == 1
 memory_bundle_mem_file_name = ARGV.first

@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe API::GroupImport do
   include WorkhorseHelpers
 
+  include_context 'workhorse headers'
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let(:path) { '/groups/import' }
   let(:file) { File.join('spec', 'fixtures', 'group_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/group_export_spec" }
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
 
   before do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|

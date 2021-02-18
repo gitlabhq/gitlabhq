@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: how-tos
 ---
 
-# Develop on a feature branch
+# Develop on a feature branch **(FREE)**
 
 GitLab values encourage the use of [Minimal Viable Change (MVC)](https://about.gitlab.com/handbook/values/#minimal-viable-change-mvc).
 However, viable changes are not always small. In such cases, it can help to set up a dedicated feature branch.

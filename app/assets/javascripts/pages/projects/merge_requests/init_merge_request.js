@@ -2,8 +2,8 @@
 
 import $ from 'jquery';
 import IssuableForm from 'ee_else_ce/issuable_form';
-import Diff from '~/diff';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import Diff from '~/diff';
 import GLForm from '~/gl_form';
 import LabelsSelect from '~/labels_select';
 import MilestoneSelect from '~/milestone_select';

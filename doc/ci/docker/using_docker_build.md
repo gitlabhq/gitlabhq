@@ -126,7 +126,7 @@ not without its own challenges:
   instance of Docker engine so they don't conflict with each other. But this
   also means that jobs can be slower because there's no caching of layers.
 - By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
-  the recommended storage driver. See [Using the overlayfs driver](#use-the-overlayfs-driver)
+  the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver)
   for details.
 - Since the `docker:19.03.12-dind` container and the runner container don't share their
   root file system, the job's working directory can be used as a mount point for
@@ -801,7 +801,7 @@ NOTE:
 The shared runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
-copies the filesystem on every run. This is a disk-intensive operation
+copies the file system on every run. This is a disk-intensive operation
 which can be avoided if a different driver is used, for example `overlay2`.
 
 ### Requirements
@@ -830,7 +830,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
 ### Use the OverlayFS driver per project
 
 You can enable the driver for each project individually by using the `DOCKER_DRIVER`
-environment [variable](../yaml/README.md#variables) in `.gitlab-ci.yml`:
+[CI/CD variable](../yaml/README.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:

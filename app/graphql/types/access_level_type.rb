@@ -7,11 +7,11 @@ module Types
     description 'Represents the access level of a relationship between a User and object that it is related to'
 
     field :integer_value, GraphQL::INT_TYPE, null: true,
-          description: 'Integer representation of access level',
+          description: 'Integer representation of access level.',
           method: :to_i
 
     field :string_value, Types::AccessLevelEnum, null: true,
-          description: 'String representation of access level',
+          description: 'String representation of access level.',
           method: :to_i
   end
 end

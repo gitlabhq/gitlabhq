@@ -1,0 +1,8 @@
+---
+name: members_invite_email
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51223
+rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/325
+milestone: '13.9'
+type: experiment
+group: group::expansion
+default_enabled: false

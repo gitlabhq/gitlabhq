@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Product Planning
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+---
+
 # GraphQL API removed items
 
 GraphQL is a versionless API, unlike the REST API.

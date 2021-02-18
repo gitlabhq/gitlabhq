@@ -2,8 +2,8 @@ import $ from 'jquery';
 import { escape } from 'lodash';
 import { s__, n__, sprintf } from '~/locale';
 import axios from '../lib/utils/axios_utils';
-import PANEL_STATE from './constants';
 import { backOff } from '../lib/utils/common_utils';
+import PANEL_STATE from './constants';
 
 export default class PrometheusMetrics {
   constructor(wrapperSelector) {

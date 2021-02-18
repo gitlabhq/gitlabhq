@@ -13,11 +13,11 @@ module Boards
     private
 
     def can_create_board?
-      parent.boards.empty? || parent.multiple_issue_boards_available?
+      parent_board_collection.empty? || parent.multiple_issue_boards_available?
     end
 
     def create_board!
-      board = parent.boards.create(params)
+      board = parent_board_collection.create(params)
 
       unless board.persisted?
         return ServiceResponse.error(message: "There was an error when creating a board.", payload: board)
@@ -29,6 +29,10 @@ module Boards
       end
 
       ServiceResponse.success(payload: board)
+    end
+
+    def parent_board_collection
+      parent.boards
     end
   end
 end

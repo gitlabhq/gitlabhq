@@ -6,16 +6,13 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/graphql/id_type'
 
 RSpec.describe RuboCop::Cop::Graphql::IDType do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'adds an offense when GraphQL::ID_TYPE is used as a param to #argument' do
-    inspect_source(<<~TYPE)
+    expect_offense(<<~TYPE)
       argument :some_arg, GraphQL::ID_TYPE, some: other, params: do_not_matter
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use GraphQL::ID_TYPE, use a specific GlobalIDType instead
     TYPE
-
-    expect(cop.offenses.size).to eq 1
   end
 
   context 'whitelisted arguments' do

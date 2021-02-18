@@ -1,5 +1,5 @@
 .notify-slack:
-  image: alpine
+  image: ${GITLAB_DEPENDENCY_PROXY}alpine
   stage: notify
   dependencies: []
   cache: {}

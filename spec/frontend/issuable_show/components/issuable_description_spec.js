@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import { shallowMount } from '@vue/test-utils';
+import $ from 'jquery';
 
 import IssuableDescription from '~/issuable_show/components/issuable_description.vue';
 

@@ -4,8 +4,8 @@ import axios from '~/lib/utils/axios_utils';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import { createStore } from '~/monitoring/stores';
-import { setupAllDashboards } from '../store_utils';
 import { dashboardProps } from '../fixture_data';
+import { setupAllDashboards } from '../store_utils';
 
 jest.mock('~/lib/utils/url_utility');
 

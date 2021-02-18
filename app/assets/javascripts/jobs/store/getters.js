@@ -1,7 +1,7 @@
 import { isEmpty, isString } from 'lodash';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
-export const headerTime = (state) => (state.job.started ? state.job.started : state.job.created_at);
+export const headerTime = (state) => state.job.started ?? state.job.created_at;
 
 export const hasForwardDeploymentFailure = (state) =>
   state?.job?.failure_reason === 'forward_deployment_failure';
@@ -28,11 +28,9 @@ export const hasEnvironment = (state) => !isEmpty(state.job.deployment_status);
 export const hasTrace = (state) =>
   state.job.has_trace || (!isEmpty(state.job.status) && state.job.status.group === 'running');
 
-export const emptyStateIllustration = (state) =>
-  (state.job && state.job.status && state.job.status.illustration) || {};
+export const emptyStateIllustration = (state) => state?.job?.status?.illustration || {};
 
-export const emptyStateAction = (state) =>
-  (state.job && state.job.status && state.job.status.action) || null;
+export const emptyStateAction = (state) => state?.job?.status?.action || null;
 
 /**
  * Shared runners limit is only rendered when
@@ -48,4 +46,4 @@ export const shouldRenderSharedRunnerLimitWarning = (state) =>
 export const isScrollingDown = (state) => isScrolledToBottom() && !state.isTraceComplete;
 
 export const hasRunnersForProject = (state) =>
-  state.job.runners.available && !state.job.runners.online;
+  state?.job?.runners?.available && !state?.job?.runners?.online;

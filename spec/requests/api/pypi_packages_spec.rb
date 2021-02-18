@@ -5,6 +5,7 @@ RSpec.describe API::PypiPackages do
   include WorkhorseHelpers
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
@@ -20,8 +21,6 @@ RSpec.describe API::PypiPackages do
     subject { get api(url) }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package versions' | :success
         'PUBLIC'  | :guest      | true  | true  | 'PyPI package versions' | :success
@@ -75,16 +74,14 @@ RSpec.describe API::PypiPackages do
   end
 
   describe 'POST /api/v4/projects/:id/packages/pypi/authorize' do
-    let_it_be(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-    let_it_be(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+    include_context 'workhorse headers'
+
     let(:url) { "/projects/#{project.id}/packages/pypi/authorize" }
     let(:headers) { {} }
 
     subject { post api(url), headers: headers }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process PyPI api request' | :success
         'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
@@ -109,7 +106,7 @@ RSpec.describe API::PypiPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_header) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
 
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
@@ -127,8 +124,8 @@ RSpec.describe API::PypiPackages do
   end
 
   describe 'POST /api/v4/projects/:id/packages/pypi' do
-    let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-    let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+    include_context 'workhorse headers'
+
     let_it_be(:file_name) { 'package.whl' }
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
@@ -149,8 +146,6 @@ RSpec.describe API::PypiPackages do
     end
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package creation'    | :created
         'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
@@ -175,7 +170,7 @@ RSpec.describe API::PypiPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_header) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
 
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
@@ -189,7 +184,7 @@ RSpec.describe API::PypiPackages do
       let(:requires_python) { 'x' * 256 }
       let(:token) { personal_access_token.token }
       let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_header) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
 
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -201,7 +196,7 @@ RSpec.describe API::PypiPackages do
     context 'with an invalid package' do
       let(:token) { personal_access_token.token }
       let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_header) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
 
       before do
         params[:name] = '.$/@!^*'
@@ -218,7 +213,7 @@ RSpec.describe API::PypiPackages do
     it_behaves_like 'rejects PyPI access with unknown project id'
 
     context 'file size above maximum limit' do
-      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
 
       before do
         allow_next_instance_of(UploadedFile) do |uploaded_file|
@@ -239,8 +234,6 @@ RSpec.describe API::PypiPackages do
     subject { get api(url) }
 
     context 'with valid project' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'PyPI package download' | :success
         'PUBLIC'  | :guest      | true  | true  | 'PyPI package download' | :success

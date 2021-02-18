@@ -1,9 +1,12 @@
-/* eslint-disable no-param-reassign */
+// This is a true violation of @gitlab/no-runtime-template-compiler, as it relies on
+// app/views/projects/merge_requests/conflicts/components/_diff_file_editor.html.haml
+// for its template.
+/* eslint-disable no-param-reassign, @gitlab/no-runtime-template-compiler */
 
-import Vue from 'vue';
 import { debounce } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
+import Vue from 'vue';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
 ((global) => {
@@ -90,9 +93,11 @@ import { __ } from '~/locale';
         this.saved = true;
 
         // This probably be better placed in the data provider
+        /* eslint-disable vue/no-mutating-props */
         this.file.content = this.editor.getValue();
         this.file.resolveEditChanged = this.file.content !== this.originalContent;
         this.file.promptDiscardConfirmation = false;
+        /* eslint-enable vue/no-mutating-props */
       },
       resetEditorContent() {
         if (this.fileLoaded) {

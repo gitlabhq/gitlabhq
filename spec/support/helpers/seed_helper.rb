@@ -4,7 +4,7 @@ require_relative 'test_env'
 
 # This file is specific to specs in spec/lib/gitlab/git/
 
-SEED_STORAGE_PATH      = TestEnv.repos_path
+SEED_STORAGE_PATH      = Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path }
 TEST_REPO_PATH         = 'gitlab-git-test.git'
 TEST_NORMAL_REPO_PATH  = 'not-bare-repo.git'
 TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'

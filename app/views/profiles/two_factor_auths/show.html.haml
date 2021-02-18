@@ -22,12 +22,11 @@
                 data: { confirm: webauthn_enabled ? _('Are you sure? This will invalidate your registered applications and U2F / WebAuthn devices.') : _('Are you sure? This will invalidate your registered applications and U2F devices.') },
                 class: 'gl-button btn btn-danger gl-mr-3'
           = form_tag codes_profile_two_factor_auth_path, {style: 'display: inline-block', method: :post} do |f|
-            = submit_tag _('Regenerate recovery codes'), class: 'btn'
+            = submit_tag _('Regenerate recovery codes'), class: 'gl-button btn btn-default'
 
       - else
         %p
-          - help_link_start = '<a href="%{url}" target="_blank">' % { url: help_page_path('user/profile/account/two_factor_authentication') }
-          - register_2fa_token = _('Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and use that app to scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}.') % { free_otp_link:'<a href="https://freeotp.github.io/">FreeOTP</a>', help_link_start:help_link_start, help_link_end:'</a>' }
+          - register_2fa_token = _('We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
         .row.gl-mb-3
           .col-md-4

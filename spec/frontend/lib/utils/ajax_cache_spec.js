@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
 
 describe('AjaxCache', () => {
   const dummyEndpoint = '/AjaxCache/dummyEndpoint';

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Getting started with Auto DevOps
+# Getting started with Auto DevOps **(FREE)**
 
 This step-by-step guide helps you use [Auto DevOps](index.md) to
 deploy a project hosted on GitLab.com to Google Kubernetes Engine.
@@ -51,7 +51,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
-   [GitLab Gold plan](https://about.gitlab.com/pricing/#gitlab-com).
+   [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 
    ![Create project](img/guide_create_project_v12_3.png)
 
@@ -177,7 +177,7 @@ The jobs are separated into stages:
   - The `test` job runs unit and integration tests by detecting the language and
     framework ([Auto Test](stages.md#auto-test))
   - The `code_quality` job checks the code quality and is allowed to fail
-    ([Auto Code Quality](stages.md#auto-code-quality)) **(STARTER)**
+    ([Auto Code Quality](stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any
     vulnerabilities and is allowed to fail ([Auto Container Scanning](stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies

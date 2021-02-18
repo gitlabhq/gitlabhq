@@ -1,6 +1,6 @@
+import { GlButton, GlCard } from '@gitlab/ui';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton, GlCard } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedGroup from '~/monitoring/components/embeds/embed_group.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';

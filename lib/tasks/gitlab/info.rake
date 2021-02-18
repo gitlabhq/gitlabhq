@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :env do
     desc 'GitLab | Env | Show information about GitLab and its environment'

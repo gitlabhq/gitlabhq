@@ -1,9 +1,9 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButtonGroup, GlButton, GlDropdown, GlFormCheckbox } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
-import eventHub from '../event_hub';
 import { EVT_VIEW_FILE_BY_FILE } from '../constants';
+import eventHub from '../event_hub';
 import { SETTINGS_DROPDOWN } from '../i18n';
 
 export default {

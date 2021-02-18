@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import Translate from '~/vue_shared/translate';
+import Vue from 'vue';
 import LimitWarningComponent from '~/cycle_analytics/components/limit_warning_component.vue';
+import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);
 

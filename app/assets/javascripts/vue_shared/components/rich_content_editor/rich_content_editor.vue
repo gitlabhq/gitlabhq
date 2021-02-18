@@ -2,9 +2,9 @@
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
+import { EDITOR_TYPES, EDITOR_HEIGHT, EDITOR_PREVIEW_STYLE, CUSTOM_EVENTS } from './constants';
 import AddImageModal from './modals/add_image/add_image_modal.vue';
 import InsertVideoModal from './modals/insert_video_modal.vue';
-import { EDITOR_TYPES, EDITOR_HEIGHT, EDITOR_PREVIEW_STYLE, CUSTOM_EVENTS } from './constants';
 
 import {
   registerHTMLToMarkdownRenderer,

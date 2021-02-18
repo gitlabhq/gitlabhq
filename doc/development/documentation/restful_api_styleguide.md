@@ -165,7 +165,7 @@ curl --request POST \
 
 ### Post data using form-data
 
-Instead of using JSON or urlencode you can use multipart/form-data which
+Instead of using JSON or URL-encoding data, you can use `multipart/form-data` which
 properly handles data encoding:
 
 ```shell

@@ -52,7 +52,7 @@ module SmimeHelper
       cert.add_extension(extension_factory.create_extension('extendedKeyUsage', 'clientAuth,emailProtection', false))
     end
 
-    cert.sign(signed_by&.fetch(:key, nil) || key, OpenSSL::Digest::SHA256.new)
+    cert.sign(signed_by&.fetch(:key, nil) || key, OpenSSL::Digest.new('SHA256'))
 
     { key: key, cert: cert }
   end

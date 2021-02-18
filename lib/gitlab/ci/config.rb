@@ -13,7 +13,8 @@ module Gitlab
       RESCUE_ERRORS = [
         Gitlab::Config::Loader::FormatError,
         Extendable::ExtensionError,
-        External::Processor::IncludeError
+        External::Processor::IncludeError,
+        Config::Yaml::Tags::TagError
       ].freeze
 
       attr_reader :root
@@ -89,9 +90,10 @@ module Gitlab
       end
 
       def build_config(config)
-        initial_config = Gitlab::Config::Loader::Yaml.new(config).load!
+        initial_config = Config::Yaml.load!(config)
         initial_config = Config::External::Processor.new(initial_config, @context).perform
         initial_config = Config::Extendable.new(initial_config).to_hash
+        initial_config = Config::Yaml::Tags::Resolver.new(initial_config).to_hash
         initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
 
         initial_config

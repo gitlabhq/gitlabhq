@@ -113,8 +113,8 @@ RSpec.describe 'Contributions Calendar', :js do
       describe 'deselect calendar day' do
         before do
           cells[0].click
-          page.find('.js-overview-tab a').click
           wait_for_requests
+          cells[0].click
         end
 
         it 'hides calendar day activities' do

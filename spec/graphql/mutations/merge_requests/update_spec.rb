@@ -12,10 +12,11 @@ RSpec.describe Mutations::MergeRequests::Update do
 
   describe '#resolve' do
     let(:attributes) { { title: 'new title', description: 'new description', target_branch: 'new-branch' } }
+    let(:arguments) { attributes }
     let(:mutated_merge_request) { subject[:merge_request] }
 
     subject do
-      mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, **attributes)
+      mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, **arguments)
     end
 
     it_behaves_like 'permission level for merge request mutation is correctly verified'
@@ -59,6 +60,24 @@ RSpec.describe Mutations::MergeRequests::Update do
           expect { subject }.not_to change { merge_request.reset.description }
 
           expect(mutated_merge_request).to have_attributes(attributes)
+        end
+      end
+
+      context 'when closing the MR' do
+        let(:arguments) { { state_event: ::Types::MergeRequestStateEventEnum.values['CLOSED'].value } }
+
+        it 'closes the MR' do
+          expect(mutated_merge_request).to be_closed
+        end
+      end
+
+      context 'when re-opening the MR' do
+        let(:arguments) { { state_event: ::Types::MergeRequestStateEventEnum.values['OPEN'].value } }
+
+        it 'closes the MR' do
+          merge_request.close!
+
+          expect(mutated_merge_request).to be_open
         end
       end
     end

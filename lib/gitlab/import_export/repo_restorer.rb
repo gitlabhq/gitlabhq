@@ -5,10 +5,12 @@ module Gitlab
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(project:, shared:, path_to_bundle:)
-        @repository = project.repository
+      attr_reader :importable
+
+      def initialize(importable:, shared:, path_to_bundle:)
         @path_to_bundle = path_to_bundle
         @shared = shared
+        @importable = importable
       end
 
       def restore
@@ -17,14 +19,25 @@ module Gitlab
         ensure_repository_does_not_exist!
 
         repository.create_from_bundle(path_to_bundle)
+        update_importable_repository_info
+
+        true
       rescue => e
         shared.error(e)
         false
       end
 
+      def repository
+        @repository ||= importable.repository
+      end
+
       private
 
-      attr_accessor :repository, :path_to_bundle, :shared
+      attr_accessor :path_to_bundle, :shared
+
+      def update_importable_repository_info
+        # No-op. Overridden in EE
+      end
 
       def ensure_repository_does_not_exist!
         if repository.exists?
@@ -38,3 +51,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ImportExport::RepoRestorer.prepend_if_ee('EE::Gitlab::ImportExport::RepoRestorer')

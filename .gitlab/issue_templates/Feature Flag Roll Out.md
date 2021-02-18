@@ -31,7 +31,6 @@ If applicable, any groups/projects that are happy to have this feature turned on
 
 ## Roll Out Steps
 
-- [ ] Confirm that QA tests pass with the feature flag enabled (if you're unsure how, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors))
 - [ ] Enable on staging (`/chatops run feature set feature_name true --staging`)
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated
@@ -42,7 +41,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set feature_name true`)
 - [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled
-- [ ] Remove feature flag and add changelog entry
+- [ ] Remove feature flag and add changelog entry. Ensure that the feature flag definition YAML file has been removed in the **same MR** that is removing the feature flag from the code
 - [ ] After the flag removal is deployed, [clean up the feature flag](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up) by running chatops command in `#production` channel
 
 ## Rollback Steps

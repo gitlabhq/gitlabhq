@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlCollapse } from '@gitlab/ui';
-import { trimText } from 'helpers/text_helper';
+import { mount } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
+import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
 import { ASSET_LINK_TYPE } from '~/releases/constants';

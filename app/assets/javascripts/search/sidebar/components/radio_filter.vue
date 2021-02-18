@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import { sprintf, s__ } from '~/locale';
 
 export default {

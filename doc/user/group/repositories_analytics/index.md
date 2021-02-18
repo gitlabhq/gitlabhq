@@ -12,6 +12,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
+![Group repositories analytics](../img/group_code_coverage_analytics_v13_9.png)
+
+## Current group code coverage
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
+
+The **Analytics > Repositories** group page displays the overall test coverage of all your projects in your group.
+In the **Overall activity** section, you can see:
+
+- The number of projects with coverage reports.
+- The average percentage of coverage across all your projects.
+- The total number of pipeline jobs that produce coverage reports.
+
+## Average group test coverage from the last 30 days
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215140) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.9.
+
+The **Analytics > Repositories** group page displays the average test coverage of all your projects in your group in a graph for the last 30 days.
+
 ## Latest project test coverage list
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
@@ -30,10 +49,10 @@ You can get a CSV of the code coverage data for all of the projects in your grou
 To get the report:
 
 1. Go to your group's **Analytics > Repositories** page
-1. Click **Download historic test coverage data (.csv)**,
+1. Click **Download historic test coverage data (`.csv`)**,
 1. In the popup, select the projects you want to include in the report.
 1. Select the date range for the report from the preset options.
-1. Click **Download test coverage data (.csv)**.
+1. Click **Download test coverage data (`.csv`)**.
 
 The projects dropdown shows up to 100 projects from your group. If the project you want to check is not in the dropdown list, you can select **All projects** to download the report for all projects in your group, including any projects that are not listed. There is a plan to improve this behavior in this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/250684).
 

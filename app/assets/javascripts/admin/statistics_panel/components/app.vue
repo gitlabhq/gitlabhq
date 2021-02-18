@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import statisticsLabels from '../constants';
 
 export default {
@@ -26,8 +26,8 @@ export default {
 </script>
 
 <template>
-  <div class="info-well">
-    <div class="well-segment admin-well admin-well-statistics">
+  <div class="gl-card">
+    <div class="gl-card-body">
       <h4>{{ __('Statistics') }}</h4>
       <gl-loading-icon v-if="isLoading" size="md" class="my-3" />
       <template v-else>

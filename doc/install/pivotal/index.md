@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Pivotal Tile **(PREMIUM ONLY)**
+# GitLab Pivotal Tile **(PREMIUM SELF)**
 
 WARNING:
 As of September 13, 2017, the GitLab Enterprise Plus for Pivotal Cloud Foundry

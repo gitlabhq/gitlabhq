@@ -4,11 +4,11 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deploy Keys API
+# Deploy keys API
 
 ## List all deploy keys
 
-Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires admin access and is not available on GitLab.com.
+Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires administrator access and is not available on GitLab.com.
 
 ```plaintext
 GET /deploy_keys

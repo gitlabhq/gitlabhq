@@ -1,6 +1,6 @@
+import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import mutations from '~/ide/stores/modules/pipelines/mutations';
 import state from '~/ide/stores/modules/pipelines/state';
-import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import { fullPipelinesResponse, stages, jobs } from '../../../mock_data';
 
 describe('IDE pipelines mutations', () => {

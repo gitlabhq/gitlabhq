@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import IdeStatusMr from '~/ide/components/ide_status_mr.vue';
 

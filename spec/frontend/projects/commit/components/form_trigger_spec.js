@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import FormTrigger from '~/projects/commit/components/form_trigger.vue';
 import eventHub from '~/projects/commit/event_hub';
 

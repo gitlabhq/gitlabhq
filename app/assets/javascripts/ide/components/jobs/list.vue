@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import Stage from './stage.vue';
 
 export default {

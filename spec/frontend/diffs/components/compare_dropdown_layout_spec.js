@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import CompareDropdownLayout from '~/diffs/components/compare_dropdown_layout.vue';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 const TEST_COMMIT_TEXT = '1 commit';
 const TEST_CREATED_AT = '2018-10-23T11:49:16.611Z';
@@ -69,7 +69,7 @@ describe('CompareDropdownLayout', () => {
       expect(findListItemsData()).toEqual([
         {
           href: 'version/1',
-          text: 'version 1 (base) abcdef1 1 commit 2 years ago',
+          text: 'version 1 (base) abcdef1 1 commit 1 year ago',
           createdAt: TEST_CREATED_AT,
           isActive: true,
         },

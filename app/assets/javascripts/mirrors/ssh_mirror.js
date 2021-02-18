@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { __ } from '~/locale';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import AUTH_METHOD from './constants';
 
 export default class SSHMirror {

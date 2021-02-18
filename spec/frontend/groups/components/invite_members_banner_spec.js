@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBanner, GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
+import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils');
 

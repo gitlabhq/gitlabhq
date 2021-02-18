@@ -1,5 +1,5 @@
-import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Filtered Search Tokenizer', () => {
   const allowedKeys = IssuableFilteredSearchTokenKeys.getKeys();

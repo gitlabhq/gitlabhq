@@ -54,7 +54,7 @@ describe('MRWidgetFailedToMerge', () => {
 
         Vue.nextTick()
           .then(() => {
-            expect(vm.mergeError).toBe('contains line breaks');
+            expect(vm.mergeError).toBe('contains line breaks.');
           })
           .then(done)
           .catch(done.fail);
@@ -113,14 +113,14 @@ describe('MRWidgetFailedToMerge', () => {
   describe('while it is not regresing', () => {
     it('renders warning icon and disabled merge button', () => {
       expect(vm.$el.querySelector('.js-ci-status-icon-warning')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-disabled-merge-button').getAttribute('disabled')).toEqual(
-        'disabled',
-      );
+      expect(
+        vm.$el.querySelector('[data-testid="disabled-merge-button"]').getAttribute('disabled'),
+      ).toEqual('disabled');
     });
 
     it('renders given error', () => {
       expect(vm.$el.querySelector('.has-error-message').textContent.trim()).toEqual(
-        'Merge error happened',
+        'Merge error happened.',
       );
     });
 

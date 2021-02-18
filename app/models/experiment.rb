@@ -10,6 +10,10 @@ class Experiment < ApplicationRecord
     find_or_create_by!(name: name).record_user_and_group(user, group_type, context)
   end
 
+  def self.add_group(name, variant:, group:)
+    find_or_create_by!(name: name).record_group_and_variant!(group, variant)
+  end
+
   def self.record_conversion_event(name, user)
     find_or_create_by!(name: name).record_conversion_event_for_user(user)
   end
@@ -23,5 +27,9 @@ class Experiment < ApplicationRecord
 
   def record_conversion_event_for_user(user)
     experiment_users.find_by(user: user, converted_at: nil)&.touch(:converted_at)
+  end
+
+  def record_group_and_variant!(group, variant)
+    experiment_subjects.find_or_initialize_by(group: group).update!(variant: variant)
   end
 end

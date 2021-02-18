@@ -95,8 +95,6 @@
 
   &:active,
   &.active {
-    box-shadow: $gl-btn-active-background;
-
     background-color: $dark;
     border-color: $border-dark;
     color: $color;
@@ -348,14 +346,6 @@
   }
 }
 
-.btn-build {
-  margin-left: 10px;
-
-  svg {
-    fill: $gl-text-color-secondary;
-  }
-}
-
 .clone-dropdown-btn a {
   color: $gray-700;
 
@@ -434,19 +424,6 @@
       color: $blue-600;
       text-decoration: none;
     }
-  }
-}
-
-.btn-missing {
-  color: $gl-text-color-secondary;
-  border: 1px dashed $border-gray-normal-dashed;
-  border-radius: $border-radius-default;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $gl-text-color-secondary;
-    background-color: $white-normal;
   }
 }
 

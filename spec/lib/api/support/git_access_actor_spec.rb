@@ -152,6 +152,10 @@ RSpec.describe API::Support::GitAccessActor do
   end
 
   describe '#update_last_used_at!' do
+    before do
+      stub_feature_flags(disable_ssh_key_used_tracking: false)
+    end
+
     context 'when initialized with a User' do
       let(:user) { build(:user) }
 
@@ -167,6 +171,14 @@ RSpec.describe API::Support::GitAccessActor do
 
       it 'updates update_last_used_at' do
         expect(key).to receive(:update_last_used_at)
+
+        subject.update_last_used_at!
+      end
+
+      it 'does not update `last_used_at` when the functionality is disabled' do
+        stub_feature_flags(disable_ssh_key_used_tracking: true)
+
+        expect(key).not_to receive(:update_last_used_at)
 
         subject.update_last_used_at!
       end

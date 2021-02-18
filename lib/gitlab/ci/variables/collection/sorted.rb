@@ -8,8 +8,9 @@ module Gitlab
           include TSort
           include Gitlab::Utils::StrongMemoize
 
-          def initialize(variables)
+          def initialize(variables, project)
             @variables = variables
+            @project = project
           end
 
           def valid?
@@ -19,7 +20,7 @@ module Gitlab
           # errors sorts an array of variables, ignoring unknown variable references,
           # and returning an error string if a circular variable reference is found
           def errors
-            return if Feature.disabled?(:variable_inside_variable)
+            return if Feature.disabled?(:variable_inside_variable, @project)
 
             strong_memoize(:errors) do
               # Check for cyclic dependencies and build error message in that case
@@ -34,7 +35,7 @@ module Gitlab
           # sort sorts an array of variables, ignoring unknown variable references.
           # If a circular variable reference is found, the original array is returned
           def sort
-            return @variables if Feature.disabled?(:variable_inside_variable)
+            return @variables if Feature.disabled?(:variable_inside_variable, @project)
             return @variables if errors
 
             tsort

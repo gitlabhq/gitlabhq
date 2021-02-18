@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Experiment do
+  include AfterNextHelpers
+
   subject { build(:experiment) }
 
   describe 'associations' do
@@ -64,6 +66,33 @@ RSpec.describe Experiment do
       end
 
       expect { described_class.add_user(experiment_name, group, user) }.not_to raise_error
+    end
+  end
+
+  describe '.add_group' do
+    let_it_be(:experiment_name) { :experiment_key }
+    let_it_be(:variant) { :control }
+    let_it_be(:group) { build(:group) }
+
+    subject(:add_group) { described_class.add_group(experiment_name, variant: variant, group: group) }
+
+    context 'when an experiment with the provided name does not exist' do
+      it 'creates a new experiment record' do
+        allow_next(described_class, name: :experiment_key)
+          .to receive(:record_group_and_variant!).with(group, variant)
+
+        expect { add_group }.to change(described_class, :count).by(1)
+      end
+    end
+
+    context 'when an experiment with the provided name already exists' do
+      before do
+        create(:experiment, name: experiment_name)
+      end
+
+      it 'does not create a new experiment record' do
+        expect { add_group }.not_to change(described_class, :count)
+      end
     end
   end
 
@@ -131,6 +160,34 @@ RSpec.describe Experiment do
 
         it 'updates the converted_at value' do
           expect { record_conversion_event_for_user }.to change { experiment_user.reload.converted_at }
+        end
+      end
+    end
+  end
+
+  describe '#record_group_and_variant!' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:variant) { :control }
+    let_it_be(:experiment) { create(:experiment) }
+
+    subject(:record_group_and_variant!) { experiment.record_group_and_variant!(group, variant) }
+
+    context 'when no existing experiment_subject record exists for the given group' do
+      it 'creates an experiment_subject record' do
+        expect_next(ExperimentSubject).to receive(:update!).with(variant: variant).and_call_original
+
+        expect { record_group_and_variant! }.to change(ExperimentSubject, :count).by(1)
+      end
+    end
+
+    context 'when an existing experiment_subject exists for the given group' do
+      context 'but it belonged to a different variant' do
+        let!(:experiment_subject) do
+          create(:experiment_subject, experiment: experiment, group: group, user: nil, variant: :experimental)
+        end
+
+        it 'updates the variant value' do
+          expect { record_group_and_variant! }.to change { experiment_subject.reload.variant }.to('control')
         end
       end
     end

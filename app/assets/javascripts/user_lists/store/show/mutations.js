@@ -1,6 +1,6 @@
 import { states } from '../../constants/show';
-import * as types from './mutation_types';
 import { parseUserIds } from '../utils';
+import * as types from './mutation_types';
 
 export default {
   [types.REQUEST_USER_LIST](state) {

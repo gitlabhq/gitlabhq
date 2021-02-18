@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.production?
   desc "GitLab | Run ESLint"
   task eslint: ['yarn:check'] do

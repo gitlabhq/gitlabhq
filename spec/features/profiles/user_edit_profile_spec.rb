@@ -199,6 +199,38 @@ RSpec.describe 'User edit profile' do
         expect(busy_status.checked?).to eq(true)
       end
 
+      context 'with user status set to busy' do
+        let(:project) { create(:project, :public) }
+        let(:issue) { create(:issue, project: project, author: user) }
+
+        before do
+          toggle_busy_status
+          submit_settings
+
+          project.add_developer(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'shows author as busy in the assignee dropdown' do
+          find('.block.assignee .edit-link').click
+          wait_for_requests
+
+          page.within '.dropdown-menu-user' do
+            expect(page).to have_content("#{user.name} (Busy)")
+          end
+        end
+
+        it 'displays the assignee busy status' do
+          click_button 'assign yourself'
+          wait_for_requests
+
+          visit project_issue_path(project, issue)
+          wait_for_requests
+
+          expect(page.find('[data-testid="expanded-assignee"]')).to have_text("#{user.name} (Busy)")
+        end
+      end
+
       context 'with set_user_availability_status feature flag disabled' do
         before do
           stub_feature_flags(set_user_availability_status: false)

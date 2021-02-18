@@ -1,20 +1,26 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlLabel, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
-import initUserPopovers from '~/user_popovers';
+import Issuable from '~/issues_list/components/issuable.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import Issuable from '~/issues_list/components/issuable.vue';
+import initUserPopovers from '~/user_popovers';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { simpleIssue, testAssignees, testLabels } from '../issuable_list_test_data';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 
 jest.mock('~/user_popovers');
 
-const TEST_NOW = '2019-08-28T20:03:04.713Z';
-const TEST_MONTH_AGO = '2019-07-28';
-const TEST_MONTH_LATER = '2019-09-30';
+const TODAY = new Date();
+
+const createTestDateFromDelta = (timeDelta) =>
+  formatDate(new Date(TODAY.getTime() + timeDelta), 'yyyy-mm-dd');
+
+// TODO: Encapsulate date helpers https://gitlab.com/gitlab-org/gitlab/-/issues/320883
+const MONTHS_IN_MS = 1000 * 60 * 60 * 24 * 31;
+const TEST_MONTH_AGO = createTestDateFromDelta(-MONTHS_IN_MS);
+const TEST_MONTH_LATER = createTestDateFromDelta(MONTHS_IN_MS);
 const DATE_FORMAT = 'mmm d, yyyy';
 const TEST_USER_NAME = 'Tyler Durden';
 const TEST_BASE_URL = `${TEST_HOST}/issues`;
@@ -26,16 +32,8 @@ const TEST_MILESTONE = {
 const TEXT_CLOSED = 'CLOSED';
 const TEST_META_COUNT = 100;
 
-// Use FixedDate so that time sensitive info in snapshots don't fail
-class FixedDate extends Date {
-  constructor(date = TEST_NOW) {
-    super(date);
-  }
-}
-
 describe('Issuable component', () => {
   let issuable;
-  let DateOrig;
   let wrapper;
 
   const factory = (props = {}, scopedLabelsAvailable = false) => {
@@ -61,15 +59,6 @@ describe('Issuable component', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-  });
-
-  beforeAll(() => {
-    DateOrig = window.Date;
-    window.Date = FixedDate;
-  });
-
-  afterAll(() => {
-    window.Date = DateOrig;
   });
 
   const checkExists = (findFn) => () => findFn().exists();

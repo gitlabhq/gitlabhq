@@ -1,6 +1,6 @@
 <script>
-import { isNumber } from 'lodash';
 import { GlIcon } from '@gitlab/ui';
+import { isNumber } from 'lodash';
 import { n__ } from '~/locale';
 
 export default {

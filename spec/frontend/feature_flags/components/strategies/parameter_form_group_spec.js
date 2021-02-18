@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 
 describe('~/feature_flags/strategies/parameter_form_group.vue', () => {

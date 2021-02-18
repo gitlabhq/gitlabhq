@@ -121,6 +121,7 @@ module API
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+          optional :include_retried, type: Boolean, default: false, desc: 'Includes retried jobs'
           use :optional_scope
           use :pagination
         end

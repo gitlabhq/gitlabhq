@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Instance template repository **(PREMIUM ONLY)**
+# Instance template repository **(PREMIUM SELF)** **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
@@ -22,10 +22,9 @@ select the project to serve as the custom template repository.
 
 ![File templates in the Admin Area](img/file_template_admin_area.png)
 
-Once a project has been selected, you can add custom templates to the repository,
-and they will appear in the appropriate places in the
-[frontend](../../project/repository/web_editor.md#template-dropdowns) and
-[API](../../../api/settings.md).
+After that, you can add custom templates to the selected repository and use them for the entire instance.
+They will be available on the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
+and through the [API settings](../../../api/settings.md).
 
 Templates must be added to a specific subdirectory in the repository,
 corresponding to the kind of template. The following types of custom templates
@@ -61,9 +60,7 @@ extension and not be empty. So, the hierarchy should look like this:
     |-- another_metrics-dashboard.yml
 ```
 
-Once this is established, the list of custom templates will be included when
-creating a new file and the template type is selected. These will appear at the
-top of the list.
+Your custom templates will be displayed on the dropdown menu when a new file is added through the GitLab UI:
 
 ![Custom template dropdown menu](img/file_template_user_dropdown.png)
 

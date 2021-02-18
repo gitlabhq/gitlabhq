@@ -13,7 +13,7 @@ functionality to GitLab.
 ## Accessing integrations
 
 You can find the available integrations under your project's
-**Settings ➔ Integrations** page.
+**Settings > Integrations** page.
 
 There are more than 20 integrations to integrate with. Click on the one that you
 want to configure.
@@ -39,7 +39,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md) | Email the commits and diff of each push to a list of recipients | No |
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki | No |
 | Flowdock | Flowdock is a collaboration web app for technical teams | No |
-| [Generic alerts](../../../operations/incident_management/alert_integrations.md) **(ULTIMATE)** | Receive alerts on GitLab from any source | No |
+| [Generic alerts](../../../operations/incident_management/integrations.md) **(ULTIMATE)** | Receive alerts on GitLab from any source | No |
 | [GitHub](github.md) **(PREMIUM)** | Sends pipeline notifications to GitHub | No |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat | No |
 | [HipChat](hipchat.md) | Private group chat and IM | No |
@@ -53,8 +53,8 @@ Click on the service links to see further configuration instructions and details
 | Packagist | Update your projects on Packagist, the main Composer repository | Yes |
 | Pipelines emails | Email the pipeline status to a list of recipients | No |
 | [Slack Notifications](slack.md) | Send GitLab events (for example, an issue was created) to Slack as notifications | No |
-| [Slack slash commands](slack_slash_commands.md) **(CORE ONLY)** | Use slash commands in Slack to control GitLab | No |
-| [GitLab Slack application](gitlab_slack_application.md) **(FREE ONLY)** | Use Slack's official application | No |
+| [Slack slash commands](slack_slash_commands.md) **(FREE SELF)** | Use slash commands in Slack to control GitLab | No |
+| [GitLab Slack application](gitlab_slack_application.md) **(FREE SAAS)** | Use Slack's official application | No |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) | No |
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps | No |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop | No |

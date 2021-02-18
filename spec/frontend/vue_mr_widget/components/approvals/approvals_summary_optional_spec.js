@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
 
 const TEST_HELP_PATH = 'help/path';

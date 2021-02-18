@@ -1,7 +1,17 @@
-import { __ } from '~/locale';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { isUndefined } from 'lodash';
+import {
+  getParameterByName,
+  convertObjectPropsToCamelCase,
+  parseBoolean,
+} from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
-import { FIELDS, DEFAULT_SORT } from './constants';
+import { __ } from '~/locale';
+import {
+  FIELDS,
+  DEFAULT_SORT,
+  GROUP_LINK_BASE_PROPERTY_NAME,
+  GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
+} from './constants';
 
 export const generateBadges = (member, isCurrentUser) => [
   {
@@ -25,26 +35,24 @@ export const isGroup = (member) => {
   return Boolean(member.sharedWithGroup);
 };
 
-export const isDirectMember = (member, sourceId) => {
-  return isGroup(member) || member.source?.id === sourceId;
+export const isDirectMember = (member) => {
+  return isGroup(member) || member.isDirectMember;
 };
 
 export const isCurrentUser = (member, currentUserId) => {
   return member.user?.id === currentUserId;
 };
 
-export const canRemove = (member, sourceId) => {
-  return isDirectMember(member, sourceId) && member.canRemove;
+export const canRemove = (member) => {
+  return isDirectMember(member) && member.canRemove;
 };
 
 export const canResend = (member) => {
   return Boolean(member.invite?.canResend);
 };
 
-export const canUpdate = (member, currentUserId, sourceId) => {
-  return (
-    !isCurrentUser(member, currentUserId) && isDirectMember(member, sourceId) && member.canUpdate
-  );
+export const canUpdate = (member, currentUserId) => {
+  return !isCurrentUser(member, currentUserId) && isDirectMember(member) && member.canUpdate;
 };
 
 export const parseSortParam = (sortableFields) => {
@@ -95,3 +103,35 @@ export const buildSortHref = ({
 
 // Defined in `ee/app/assets/javascripts/vue_shared/components/members/utils.js`
 export const canOverride = () => false;
+
+export const parseDataAttributes = (el) => {
+  const { members, sourceId, memberPath, canManageMembers } = el.dataset;
+
+  return {
+    members: convertObjectPropsToCamelCase(JSON.parse(members), { deep: true }),
+    sourceId: parseInt(sourceId, 10),
+    memberPath,
+    canManageMembers: parseBoolean(canManageMembers),
+  };
+};
+
+export const baseRequestFormatter = (basePropertyName, accessLevelPropertyName) => ({
+  accessLevel,
+  ...otherProperties
+}) => {
+  const accessLevelProperty = !isUndefined(accessLevel)
+    ? { [accessLevelPropertyName]: accessLevel }
+    : {};
+
+  return {
+    [basePropertyName]: {
+      ...accessLevelProperty,
+      ...otherProperties,
+    },
+  };
+};
+
+export const groupLinkRequestFormatter = baseRequestFormatter(
+  GROUP_LINK_BASE_PROPERTY_NAME,
+  GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
+);

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 return unless event.visible_to_user?(current_user)
 
 event = event.present

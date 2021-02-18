@@ -1,6 +1,6 @@
 <script>
-import { throttle } from 'lodash';
 import { GlIcon } from '@gitlab/ui';
+import { throttle } from 'lodash';
 
 export default {
   components: {

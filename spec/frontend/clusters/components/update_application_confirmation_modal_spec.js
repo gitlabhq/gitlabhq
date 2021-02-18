@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UpdateApplicationConfirmationModal from '~/clusters/components/update_application_confirmation_modal.vue';
 import { ELASTIC_STACK } from '~/clusters/constants';
 

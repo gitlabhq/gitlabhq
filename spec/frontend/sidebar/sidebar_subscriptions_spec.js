@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import SidebarSubscriptions from '~/sidebar/components/subscriptions/sidebar_subscriptions.vue';
-import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarService from '~/sidebar/services/sidebar_service';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import Mock from './mock_data';
 

@@ -1,3 +1,4 @@
+import { NpmManager } from '~/packages/details/constants';
 import {
   conanInstallationCommand,
   conanSetupCommand,
@@ -32,7 +33,6 @@ import {
   registryUrl,
   pypiSetupCommandStr,
 } from '../mock_data';
-import { NpmManager } from '~/packages/details/constants';
 
 describe('Getters PackageDetails Store', () => {
   let state;

@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlFormCheckbox } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 
 describe('JiraTriggerFields', () => {

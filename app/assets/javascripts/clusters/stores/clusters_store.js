@@ -1,5 +1,5 @@
-import { s__ } from '../../locale';
 import { parseBoolean } from '../../lib/utils/common_utils';
+import { s__ } from '../../locale';
 import {
   INGRESS,
   JUPYTER,

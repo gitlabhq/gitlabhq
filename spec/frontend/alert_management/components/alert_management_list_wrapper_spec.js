@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import AlertManagementList from '~/alert_management/components/alert_management_list_wrapper.vue';
 import AlertManagementEmptyState from '~/alert_management/components/alert_management_empty_state.vue';
+import AlertManagementList from '~/alert_management/components/alert_management_list_wrapper.vue';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import defaultProvideValues from '../mocks/alerts_provide_config.json';
 

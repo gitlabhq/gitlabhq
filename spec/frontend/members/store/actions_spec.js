@@ -1,17 +1,17 @@
-import { noop } from 'lodash';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { members, group } from 'jest/members/mock_data';
-import testAction from 'helpers/vuex_action_helper';
+import { noop } from 'lodash';
 import { useFakeDate } from 'helpers/fake_date';
+import testAction from 'helpers/vuex_action_helper';
+import { members, group } from 'jest/members/mock_data';
 import httpStatusCodes from '~/lib/utils/http_status';
-import * as types from '~/members/store/mutation_types';
 import {
   updateMemberRole,
   showRemoveGroupLinkModal,
   hideRemoveGroupLinkModal,
   updateMemberExpiration,
 } from '~/members/store/actions';
+import * as types from '~/members/store/mutation_types';
 
 describe('Vuex members actions', () => {
   describe('update member actions', () => {
@@ -57,15 +57,17 @@ describe('Vuex members actions', () => {
 
       describe('unsuccessful request', () => {
         it(`commits ${types.RECEIVE_MEMBER_ROLE_ERROR} mutation and throws error`, async () => {
-          mock.onPut().networkError();
+          const error = new Error('Network Error');
+          mock.onPut().reply(() => Promise.reject(error));
 
           await expect(
             testAction(updateMemberRole, payload, state, [
               {
                 type: types.RECEIVE_MEMBER_ROLE_ERROR,
+                payload: { error },
               },
             ]),
-          ).rejects.toThrowError(new Error('Network Error'));
+          ).rejects.toThrowError(error);
         });
       });
     });
@@ -108,15 +110,17 @@ describe('Vuex members actions', () => {
 
       describe('unsuccessful request', () => {
         it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_ERROR} mutation and throws error`, async () => {
-          mock.onPut().networkError();
+          const error = new Error('Network Error');
+          mock.onPut().reply(() => Promise.reject(error));
 
           await expect(
             testAction(updateMemberExpiration, { memberId, expiresAt }, state, [
               {
                 type: types.RECEIVE_MEMBER_EXPIRATION_ERROR,
+                payload: { error },
               },
             ]),
-          ).rejects.toThrowError(new Error('Network Error'));
+          ).rejects.toThrowError(error);
         });
       });
     });

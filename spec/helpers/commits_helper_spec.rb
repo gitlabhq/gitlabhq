@@ -7,19 +7,12 @@ RSpec.describe CommitsHelper do
     context 'when current_user exists' do
       before do
         allow(helper).to receive(:current_user).and_return(double('User'))
-        allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
       end
 
       it 'renders a div for Vue' do
-        result = helper.revert_commit_link('_commit_', '_path_', pajamas: true)
+        result = helper.revert_commit_link
 
         expect(result).to include('js-revert-commit-trigger')
-      end
-
-      it 'does not render a div for Vue' do
-        result = helper.revert_commit_link('_commit_', '_path_')
-
-        expect(result).not_to include('js-revert-commit-trigger')
       end
     end
 
@@ -29,7 +22,33 @@ RSpec.describe CommitsHelper do
       end
 
       it 'does not render anything' do
-        result = helper.revert_commit_link(double('Commit'), '_path_')
+        result = helper.revert_commit_link
+
+        expect(result).to be_nil
+      end
+    end
+  end
+
+  describe '#cherry_pick_commit_link' do
+    context 'when current_user exists' do
+      before do
+        allow(helper).to receive(:current_user).and_return(double('User'))
+      end
+
+      it 'renders a div for Vue' do
+        result = helper.cherry_pick_commit_link
+
+        expect(result).to include('js-cherry-pick-commit-trigger')
+      end
+    end
+
+    context 'when current_user does not exist' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'does not render anything' do
+        result = helper.cherry_pick_commit_link
 
         expect(result).to be_nil
       end
@@ -155,6 +174,79 @@ RSpec.describe CommitsHelper do
       commit = project.repository.commit
 
       expect(helper.commit_path(project, commit)).to eq(project_commit_path(project, commit))
+    end
+  end
+
+  describe "#conditionally_paginate_diff_files" do
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
+    let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
+    let(:page) { nil }
+
+    let(:files) do
+      Array.new(85).map do
+        { too_large: false, diff: "" }
+      end
+    end
+
+    let(:params) do
+      {
+        page: page
+      }
+    end
+
+    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate) }
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+    end
+
+    context "pagination is enabled" do
+      let(:paginate) { true }
+
+      it "has been paginated" do
+        expect(subject).to be_an(Array)
+      end
+
+      it "can change the number of items per page" do
+        commits = helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: 10)
+
+        expect(commits).to be_an(Array)
+        expect(commits.size).to eq(10)
+      end
+
+      context "page 1" do
+        let(:page) { 1 }
+
+        it "has 20 diffs" do
+          expect(subject.size).to eq(75)
+        end
+      end
+
+      context "page 2" do
+        let(:page) { 2 }
+
+        it "has the remaining 10 diffs" do
+          expect(subject.size).to eq(10)
+        end
+      end
+    end
+
+    context "pagination is disabled" do
+      let(:paginate) { false }
+
+      it "returns a standard DiffCollection" do
+        expect(subject).to be_a(Gitlab::Git::DiffCollection)
+      end
+    end
+
+    context "feature flag is disabled" do
+      let(:paginate) { true }
+
+      it "returns a standard DiffCollection" do
+        stub_feature_flags(paginate_commit_view: false)
+
+        expect(subject).to be_a(Gitlab::Git::DiffCollection)
+      end
     end
   end
 end

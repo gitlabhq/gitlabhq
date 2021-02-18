@@ -9,7 +9,7 @@ RSpec.describe IssueLink do
   end
 
   describe 'link_type' do
-    it { is_expected.to define_enum_for(:link_type).with_values(relates_to: 0, blocks: 1, is_blocked_by: 2) }
+    it { is_expected.to define_enum_for(:link_type).with_values(relates_to: 0, blocks: 1) }
 
     it 'provides the "related" as default link_type' do
       expect(create(:issue_link).link_type).to eq 'relates_to'

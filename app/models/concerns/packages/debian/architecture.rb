@@ -7,6 +7,12 @@ module Packages
 
       included do
         belongs_to :distribution, class_name: "Packages::Debian::#{container_type.capitalize}Distribution", inverse_of: :architectures
+        # files must be destroyed by ruby code in order to properly remove carrierwave uploads
+        has_many :files,
+          class_name: "Packages::Debian::#{container_type.capitalize}ComponentFile",
+          foreign_key: :architecture_id,
+          inverse_of: :architecture,
+          dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
         validates :distribution,
           presence: true

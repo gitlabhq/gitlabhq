@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import statusIcon from '../mr_widget_status_icon.vue';
 import notesEventHub from '~/notes/event_hub';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'UnresolvedDiscussions',

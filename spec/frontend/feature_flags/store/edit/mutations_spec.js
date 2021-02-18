@@ -1,6 +1,6 @@
-import state from '~/feature_flags/store/edit/state';
-import mutations from '~/feature_flags/store/edit/mutations';
 import * as types from '~/feature_flags/store/edit/mutation_types';
+import mutations from '~/feature_flags/store/edit/mutations';
+import state from '~/feature_flags/store/edit/state';
 
 describe('Feature flags Edit Module Mutations', () => {
   let stateCopy;

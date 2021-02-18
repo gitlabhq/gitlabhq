@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UnmetPrerequisitesBlock from '~/jobs/components/unmet_prerequisites_block.vue';
 
 describe('Unmet Prerequisites Block Job component', () => {

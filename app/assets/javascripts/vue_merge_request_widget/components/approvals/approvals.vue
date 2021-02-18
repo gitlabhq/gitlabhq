@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
@@ -124,7 +125,7 @@ export default {
   methods: {
     approve() {
       if (this.requirePasswordToApprove) {
-        this.$root.$emit('bv::show::modal', this.modalId);
+        this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
       }
 
@@ -158,6 +159,7 @@ export default {
         .then((data) => {
           this.mr.setApprovals(data);
           eventHub.$emit('MRWidgetUpdateRequested');
+          eventHub.$emit('ApprovalUpdated');
           this.$emit('updated');
         })
         .catch(errFn)

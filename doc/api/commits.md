@@ -5,7 +5,9 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Commits API
+# Commits API **(FREE)**
+
+This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository). Read more about [GitLab-specific information](../user/project/repository/index.md#commits) for commits.
 
 ## List repository commits
 

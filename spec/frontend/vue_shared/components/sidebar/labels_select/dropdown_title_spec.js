@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import dropdownTitleComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_title.vue';
 
 const createComponent = (canEdit = true) =>

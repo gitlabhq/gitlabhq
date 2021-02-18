@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Sidekiq queues administration API **(CORE ONLY)**
+# Sidekiq queues administration API **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
 

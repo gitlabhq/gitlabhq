@@ -11,7 +11,8 @@ RSpec.describe Git::BranchHooksService do
 
   let(:branch) { project.default_branch }
   let(:ref) { "refs/heads/#{branch}" }
-  let(:commit) { project.commit(sample_commit.id) }
+  let(:commit_id) { sample_commit.id }
+  let(:commit) { project.commit(commit_id) }
   let(:oldrev) { commit.parent_id }
   let(:newrev) { commit.id }
 
@@ -93,12 +94,12 @@ RSpec.describe Git::BranchHooksService do
   describe 'Push Event' do
     let(:event) { Event.pushed_action.first }
 
-    before do
-      service.execute
-    end
+    subject(:execute_service) { service.execute }
 
     context "with an existing branch" do
       it 'generates a push event with one commit' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action
@@ -109,12 +110,87 @@ RSpec.describe Git::BranchHooksService do
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to eq(1)
       end
+
+      context 'with changing CI config' do
+        before do
+          allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+            allow(diff).to receive(:new_path).and_return('.gitlab-ci.yml')
+          end
+
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+        end
+
+        let!(:commit_author) { create(:user, email: sample_commit.author_email) }
+
+        let(:tracking_params) do
+          ['o_pipeline_authoring_unique_users_committing_ciconfigfile', values: commit_author.id]
+        end
+
+        it 'tracks the event' do
+          execute_service
+
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+            .to have_received(:track_event).with(*tracking_params)
+        end
+
+        context 'when the FF usage_data_unique_users_committing_ciconfigfile is disabled' do
+          before do
+            stub_feature_flags(usage_data_unique_users_committing_ciconfigfile: false)
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when usage ping is disabled' do
+          before do
+            stub_application_setting(usage_ping_enabled: false)
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when the branch is not the main branch' do
+          let(:branch) { 'feature' }
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+
+        context 'when the CI config is a different path' do
+          before do
+            project.ci_config_path = 'config/ci.yml'
+          end
+
+          it 'does not track the event' do
+            execute_service
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+              .not_to have_received(:track_event).with(*tracking_params)
+          end
+        end
+      end
     end
 
     context "with a new branch" do
       let(:oldrev) { Gitlab::Git::BLANK_SHA }
 
       it 'generates a push event with more than one commit' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action
@@ -131,6 +207,8 @@ RSpec.describe Git::BranchHooksService do
       let(:newrev) { Gitlab::Git::BLANK_SHA }
 
       it 'generates a push event with no commits' do
+        execute_service
+
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
         expect(event).to be_pushed_action
@@ -150,7 +228,6 @@ RSpec.describe Git::BranchHooksService do
       )
     end
 
-    let(:commit) { project.repository.commit(commit_id) }
     let(:blank_sha) { Gitlab::Git::BLANK_SHA }
 
     def clears_cache(extended: [])
@@ -431,11 +508,7 @@ RSpec.describe Git::BranchHooksService do
   end
 
   describe 'Metrics dashboard sync' do
-    context 'with feature flag enabled' do
-      before do
-        Feature.enable(:metrics_dashboards_sync)
-      end
-
+    shared_examples 'trigger dashboard sync' do
       it 'imports metrics to database' do
         expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
 
@@ -443,12 +516,95 @@ RSpec.describe Git::BranchHooksService do
       end
     end
 
-    context 'with feature flag disabled' do
-      it 'imports metrics to database' do
-        expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
+    shared_examples 'no dashboard sync' do
+      it 'does not sync metrics to database' do
+        expect(Metrics::Dashboard::SyncDashboardsWorker).not_to receive(:perform_async)
 
         service.execute
       end
+    end
+
+    def change_repository(**changes)
+      actions = changes.flat_map do |(action, paths)|
+        Array(paths).flat_map do |file_path|
+          { action: action, file_path: file_path, content: SecureRandom.hex }
+        end
+      end
+
+      project.repository.multi_action(
+        user, message: 'message', branch_name: branch, actions: actions
+      )
+    end
+
+    let(:charts) { '.gitlab/dashboards/charts.yml' }
+    let(:readme) { 'README.md' }
+    let(:commit_id) { change_repository(**commit_changes) }
+
+    context 'with default branch' do
+      context 'when adding files' do
+        let(:new_file) { 'somenewfile.md' }
+
+        context 'also related' do
+          let(:commit_changes) { { create: [charts, new_file] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { create: new_file } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'when deleting files' do
+        before do
+          change_repository(create: charts)
+        end
+
+        context 'also related' do
+          let(:commit_changes) { { delete: [charts, readme] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { delete: readme } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'when updating files' do
+        before do
+          change_repository(create: charts)
+        end
+
+        context 'also related' do
+          let(:commit_changes) { { update: [charts, readme] } }
+
+          include_examples 'trigger dashboard sync'
+        end
+
+        context 'only unrelated' do
+          let(:commit_changes) { { update: readme } }
+
+          include_examples 'no dashboard sync'
+        end
+      end
+
+      context 'without changes' do
+        let(:commit_changes) { {} }
+
+        include_examples 'no dashboard sync'
+      end
+    end
+
+    context 'with other branch' do
+      let(:branch) { 'fix' }
+      let(:commit_changes) { { create: charts } }
+
+      include_examples 'no dashboard sync'
     end
   end
 end

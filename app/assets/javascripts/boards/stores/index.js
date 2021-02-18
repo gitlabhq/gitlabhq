@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import state from 'ee_else_ce/boards/stores/state';
-import getters from 'ee_else_ce/boards/stores/getters';
 import actions from 'ee_else_ce/boards/stores/actions';
+import getters from 'ee_else_ce/boards/stores/getters';
 import mutations from 'ee_else_ce/boards/stores/mutations';
+import state from 'ee_else_ce/boards/stores/state';
 
 Vue.use(Vuex);
 

@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Code Intelligence
+# Code Intelligence **(FREE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
 
@@ -45,7 +45,7 @@ sequenceDiagram
    GitLab Rails to authorize the upload.
 
 1. GitLab Rails validates whether the artifact can be uploaded and sends
-   `ProcessLsif: true` header if the lsif artifact can be processed.
+   `ProcessLsif: true` header if the LSIF artifact can be processed.
 
 1. Workhorse reads the LSIF document line by line and generates code intelligence
    data for each file in the project. The output is a zipped directory of JSON

@@ -121,6 +121,7 @@ In these cases, use the following workflow:
    - [User Experience (UX)](https://about.gitlab.com/handbook/engineering/ux/)
    - [Security](https://about.gitlab.com/handbook/engineering/security/)
    - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
+     - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity-team/)
    - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
    - [Technical Writing](https://about.gitlab.com/handbook/engineering/ux/technical-writing/)
 
@@ -151,6 +152,7 @@ In these cases, use the following workflow:
 
 ## Backend guides
 
+- [Directory structure](directory_structure.md)
 - [GitLab utilities](utilities.md)
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Logging](logging.md)
@@ -229,7 +231,7 @@ See [database guidelines](database/index.md).
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
-- [How to run local Codesandbox integration for Web IDE Live Preview](integrations/codesandbox.md)
+- [How to run local `Codesandbox` integration for Web IDE Live Preview](integrations/codesandbox.md)
 
 ## Testing guides
 
@@ -293,6 +295,7 @@ See [database guidelines](database/index.md).
 - [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
 - [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
 - [Dashboards for stage groups](stage_group_dashboards.md)
+- [Preventing transient bugs](transient/prevention-patterns.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

@@ -80,6 +80,14 @@ RSpec.describe Ci::Bridge do
         end
       end
 
+      it "schedules downstream pipeline creation when the status is waiting for resource" do
+        bridge.status = :waiting_for_resource
+
+        expect(bridge).to receive(:schedule_downstream_pipeline!)
+
+        bridge.enqueue_waiting_for_resource!
+      end
+
       it 'raises error when the status is failed' do
         bridge.status = :failed
 

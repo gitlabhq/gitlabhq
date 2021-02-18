@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
-import EditForm from '~/sidebar/components/confidential/edit_form.vue';
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import createStore from '~/notes/stores';
 import * as types from '~/notes/stores/mutation_types';
+import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
+import EditForm from '~/sidebar/components/confidential/edit_form.vue';
 
 jest.mock('~/flash');
 jest.mock('~/sidebar/services/sidebar_service');

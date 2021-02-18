@@ -9,8 +9,9 @@ module Pages
 
     attr_reader :project
 
-    def initialize(project)
+    def initialize(project, ignore_invalid_entries: false)
       @project = project
+      @ignore_invalid_entries = ignore_invalid_entries
     end
 
     def execute
@@ -26,7 +27,7 @@ module Pages
     private
 
     def execute_unsafe
-      zip_result = ::Pages::ZipDirectoryService.new(project.pages_path).execute
+      zip_result = ::Pages::ZipDirectoryService.new(project.pages_path, ignore_invalid_entries: @ignore_invalid_entries).execute
 
       if zip_result[:status] == :error
         if !project.pages_metadatum&.reload&.pages_deployment &&

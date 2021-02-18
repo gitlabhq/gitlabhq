@@ -69,7 +69,7 @@ const openFileRow = (row) => {
   row.click();
 };
 
-const findAndTraverseToPath = async (path, index = 0, row = null) => {
+export const findAndTraverseToPath = async (path, index = 0, row = null) => {
   if (!path) {
     return row;
   }
@@ -109,6 +109,12 @@ const findAndClickRootAction = async (name) => {
 
   button.click();
 };
+
+/**
+ * Drop leading "/-/ide" and file path from the current URL
+ */
+export const getBaseRoute = (url = window.location.pathname) =>
+  url.replace(/^\/-\/ide/, '').replace(/\/-\/.*$/, '');
 
 export const clickPreviewMarkdown = () => {
   screen.getByText('Preview Markdown').click();

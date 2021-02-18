@@ -35,7 +35,7 @@ The following images and packages are supported.
 | Docker           | 11.11+         |
 
 For a list of planned additions, view the
-[direction page](https://about.gitlab.com/direction/package/dependency_proxy/#top-vision-items).
+[direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
 ## Enable the Dependency Proxy
 
@@ -64,7 +64,7 @@ Prerequisites:
 > - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -91,94 +91,35 @@ You can authenticate using:
 
 #### Authenticate within CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
+> - Automatic runner authentication [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
 
-To work with the Dependency Proxy in [GitLab CI/CD](../../../ci/README.md), you can use:
-
-- `CI_DEPENDENCY_PROXY_USER`: A CI user for logging in to the Dependency Proxy.
-- `CI_DEPENDENCY_PROXY_PASSWORD`: A CI password for logging in to the Dependency Proxy.
-- `CI_DEPENDENCY_PROXY_SERVER`: The server for logging in to the Dependency Proxy.
-- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: The image prefix for pulling images through the Dependency Proxy.
-
-This script shows how to use these variables to log in and pull an image from the Dependency Proxy:
+Runners log in to the Dependency Proxy automatically. To pull through
+the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
+[predefined CI/CD variable](../../../ci/variables/predefined_variables.md):
 
 ```yaml
 # .gitlab-ci.yml
-
-dependency-proxy-pull-master:
-  # Official docker image.
-  image: docker:latest
-  stage: build
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" "$CI_DEPENDENCY_PROXY_SERVER"
-  script:
-    - docker pull "$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX"/alpine:latest
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
 ```
 
-`CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` include the server port. So if you use `CI_DEPENDENCY_PROXY_SERVER` to log in, for example, you must explicitly include the port in your pull command and vice-versa:
+There are other additional predefined CI/CD variables you can also use:
+
+- `CI_DEPENDENCY_PROXY_USER`: A CI/CD user for logging in to the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_PASSWORD`: A CI/CD password for logging in to the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_SERVER`: The server for logging in to the Dependency Proxy.
+- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`: The image prefix for pulling images through the Dependency Proxy.
+
+`CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
+include the server port. If you explicitly include the Dependency Proxy
+path, the port must be included, unless you have logged into the Dependency
+Proxy manually without including the port:
 
 ```shell
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 ```
 
-You can also use [custom environment variables](../../../ci/variables/README.md#custom-environment-variables) to store and access your personal access token or other valid credentials.
-
-##### Authenticate with `DOCKER_AUTH_CONFIG`
-
-You can use the Dependency Proxy to pull your base image.
-
-1. [Create a `DOCKER_AUTH_CONFIG` environment variable](../../../ci/docker/using_docker_images.md#define-an-image-from-a-private-container-registry).
-1. Get credentials that allow you to log into the Dependency Proxy.
-1. Generate the version of these credentials that will be used by Docker:
-
-   ```shell
-   # The use of "-n" - prevents encoding a newline in the password.
-   echo -n "my_username:my_password" | base64
-
-   # Example output to copy
-   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
-   ```
-
-   This can also be a [personal access token](../../../user/profile/personal_access_tokens.md) such as:
-
-   ```shell
-   echo -n "my_username:personal_access_token" | base64
-   ```
-
-1. Create a [custom environment variables](../../../ci/variables/README.md#custom-environment-variables)
-named `DOCKER_AUTH_CONFIG` with a value of:
-
-   ```json
-   {
-       "auths": {
-           "https://gitlab.example.com": {
-               "auth": "(Base64 content from above)"
-           }
-       }
-   }
-   ```
-
-   To use `$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` when referencing images, you must explicitly include the port in your `DOCKER_AUTH_CONFIG` value:
-
-   ```json
-   {
-       "auths": {
-           "https://gitlab.example.com:443": {
-               "auth": "(Base64 content from above)"
-           }
-       }
-   }
-   ```
-
-1. Now reference the Dependency Proxy in your base image:
-
-   ```yaml
-   # .gitlab-ci.yml
-   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
-   ...
-   ```
+You can also use [custom CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
 
 ### Store a Docker image in Dependency Proxy cache
 
@@ -284,3 +225,19 @@ RateLimit-Remaining: 98;w=21600
 ```
 
 This example shows the total limit of 100 pulls in six hours, with 98 pulls remaining.
+
+#### Check the rate limit in a CI/CD job
+
+This example shows a GitLab CI/CD job that uses an image with `jq` and `curl` installed:
+
+```yaml
+hub_docker_quota_check:
+    stage: build
+    image: alpine:latest
+    tags:
+        - <optional_runner_tag>
+    before_script: apk add curl jq
+    script:
+      - |
+        TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
+```

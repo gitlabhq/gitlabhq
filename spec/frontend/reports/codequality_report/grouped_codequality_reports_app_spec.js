@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
+import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import { getStoreConfig } from '~/reports/codequality_report/store';
 import { mockParsedHeadIssues, mockParsedBaseIssues } from './mock_data';
 
@@ -9,7 +9,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Grouped code quality reports app', () => {
-  const Component = localVue.extend(GroupedCodequalityReportsApp);
   let wrapper;
   let mockStore;
 
@@ -22,7 +21,7 @@ describe('Grouped code quality reports app', () => {
   };
 
   const mountComponent = (props = {}) => {
-    wrapper = mount(Component, {
+    wrapper = mount(GroupedCodequalityReportsApp, {
       store: mockStore,
       localVue,
       propsData: {
@@ -135,7 +134,7 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('renders error text', () => {
-      expect(findWidget().text()).toEqual('Failed to load codeclimate report');
+      expect(findWidget().text()).toContain('Failed to load codeclimate report');
     });
 
     it('renders a help icon with more information', () => {

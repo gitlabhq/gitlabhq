@@ -64,6 +64,6 @@ More examples of how to write a cron schedule can be found at
 
 ## How GitLab parses cron syntax strings
 
-GitLab uses [fugit](https://github.com/floraison/fugit) to parse cron syntax
+GitLab uses [`fugit`](https://github.com/floraison/fugit) to parse cron syntax
 strings on the server and [cron-validate](https://github.com/Airfooox/cron-validate)
 to validate cron syntax in the browser.

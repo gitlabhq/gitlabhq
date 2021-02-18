@@ -9,6 +9,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuesCalendar
   include SpammableActions
   include RecordUserLastActivity
+  include CommentAndCloseFlag
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
   SET_ISSUEABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
@@ -41,7 +42,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :create_rate_limit, only: [:create]
 
   before_action do
-    push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
     push_frontend_feature_flag(:tribute_autocomplete, @project)
     push_frontend_feature_flag(:vue_issuables_list, project)
     push_frontend_feature_flag(:usage_data_design_action, project, default_enabled: true)
@@ -52,6 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
     real_time_enabled = Gitlab::ActionCable::Config.in_app? || Feature.enabled?(real_time_feature_flag, @project)
 
     push_to_gon_attributes(:features, real_time_feature_flag, real_time_enabled)
+    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
@@ -60,8 +61,7 @@ class Projects::IssuesController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   before_action :run_null_hypothesis_experiment,
-                only: [:index, :new, :create],
-                if: -> { Feature.enabled?(:gitlab_experiments) }
+                only: [:index, :new, :create]
 
   respond_to :html
 
@@ -106,7 +106,7 @@ class Projects::IssuesController < Projects::ApplicationController
     build_params = issue_create_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve],
-      confidential: !!Gitlab::Utils.to_boolean(params[:issue][:confidential])
+      confidential: !!Gitlab::Utils.to_boolean(issue_create_params[:confidential])
     )
     service = ::Issues::BuildService.new(project, current_user, build_params)
 
@@ -131,7 +131,7 @@ class Projects::IssuesController < Projects::ApplicationController
     service = ::Issues::CreateService.new(project, current_user, create_params)
     @issue = service.execute
 
-    create_vulnerability_issue_link(issue)
+    create_vulnerability_issue_feedback(issue)
 
     if service.discussions_to_resolve.count(&:resolved?) > 0
       flash[:notice] = if service.discussion_to_resolve_id
@@ -144,9 +144,6 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         recaptcha_check_with_fallback { render :new }
-      end
-      format.js do
-        @link = @issue.attachment.url.to_js
       end
     end
   end
@@ -403,7 +400,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   # Overridden in EE
-  def create_vulnerability_issue_link(issue); end
+  def create_vulnerability_issue_feedback(issue); end
 end
 
 Projects::IssuesController.prepend_if_ee('EE::Projects::IssuesController')

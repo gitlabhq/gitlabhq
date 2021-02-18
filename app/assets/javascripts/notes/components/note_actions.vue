@@ -1,13 +1,14 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
-import ReplyButton from './note_actions/reply_button.vue';
-import eventHub from '~/sidebar/event_hub';
+import { mapGetters } from 'vuex';
 import Api from '~/api';
+import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { __, sprintf } from '~/locale';
+import eventHub from '~/sidebar/event_hub';
 import { splitCamelCase } from '../../lib/utils/text_utility';
+import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
   name: 'NoteActions',
@@ -193,7 +194,7 @@ export default {
     },
     closeTooltip() {
       this.$nextTick(() => {
-        this.$root.$emit('bv::hide::tooltip');
+        this.$root.$emit(BV_HIDE_TOOLTIP);
       });
     },
     handleAssigneeUpdate(assignees) {
@@ -243,66 +244,62 @@ export default {
       :title="displayContributorBadgeText"
       >{{ __('Contributor') }}</span
     >
-    <div v-if="canResolve" class="gl-ml-2">
-      <gl-button
-        ref="resolveButton"
-        v-gl-tooltip
-        size="small"
-        category="tertiary"
-        :variant="resolveVariant"
-        :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
-        :title="resolveButtonTitle"
-        :aria-label="resolveButtonTitle"
-        :icon="resolveIcon"
-        :loading="isResolving"
-        class="line-resolve-btn note-action-button"
-        @click="onResolve"
-      />
-    </div>
-    <div v-if="canAwardEmoji" class="gl-ml-3 gl-mr-2">
-      <a
-        v-gl-tooltip
-        :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-        class="note-action-button note-emoji-button js-add-award js-note-emoji"
-        href="#"
-        title="Add reaction"
-        data-position="right"
-      >
-        <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
-        <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
-        <gl-icon class="link-highlight award-control-icon-super-positive" name="smile" />
-      </a>
-    </div>
+    <gl-button
+      v-if="canResolve"
+      ref="resolveButton"
+      v-gl-tooltip
+      size="small"
+      category="tertiary"
+      :variant="resolveVariant"
+      :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
+      :title="resolveButtonTitle"
+      :aria-label="resolveButtonTitle"
+      :icon="resolveIcon"
+      :loading="isResolving"
+      class="line-resolve-btn note-action-button"
+      @click="onResolve"
+    />
+    <a
+      v-if="canAwardEmoji"
+      v-gl-tooltip
+      :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
+      class="note-action-button note-emoji-button js-add-award js-note-emoji gl-text-gray-600 gl-m-2"
+      href="#"
+      title="Add reaction"
+      data-position="right"
+    >
+      <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
+      <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
+      <gl-icon class="link-highlight award-control-icon-super-positive" name="smile" />
+    </a>
     <reply-button
       v-if="showReply"
       ref="replyButton"
       class="js-reply-button"
       @startReplying="$emit('startReplying')"
     />
-    <div v-if="canEdit" class="gl-ml-2">
-      <gl-button
-        v-gl-tooltip
-        title="Edit comment"
-        icon="pencil"
-        size="small"
-        category="tertiary"
-        class="note-action-button js-note-edit btn btn-transparent"
-        data-qa-selector="note_edit_button"
-        @click="onEdit"
-      />
-    </div>
-    <div v-if="showDeleteAction" class="gl-ml-2">
-      <gl-button
-        v-gl-tooltip
-        title="Delete comment"
-        size="small"
-        icon="remove"
-        category="tertiary"
-        class="note-action-button js-note-delete btn btn-transparent"
-        @click="onDelete"
-      />
-    </div>
-    <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions gl-ml-2">
+    <gl-button
+      v-if="canEdit"
+      v-gl-tooltip
+      title="Edit comment"
+      icon="pencil"
+      size="small"
+      category="tertiary"
+      class="note-action-button js-note-edit btn btn-transparent"
+      data-qa-selector="note_edit_button"
+      @click="onEdit"
+    />
+    <gl-button
+      v-if="showDeleteAction"
+      v-gl-tooltip
+      title="Delete comment"
+      size="small"
+      icon="remove"
+      category="tertiary"
+      class="note-action-button js-note-delete btn btn-transparent"
+      @click="onDelete"
+    />
+    <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions">
       <gl-button
         v-gl-tooltip
         title="More actions"

@@ -1,3 +1,4 @@
+import { TEST_HOST } from 'helpers/test_constants';
 import {
   SNIPPET_BLOB_ACTION_CREATE,
   SNIPPET_BLOB_ACTION_UPDATE,
@@ -7,6 +8,51 @@ import {
 
 const CONTENT_1 = 'Lorem ipsum dolar\nSit amit\n\nGoodbye!\n';
 const CONTENT_2 = 'Lorem ipsum dolar sit amit.\n\nGoodbye!\n';
+
+export const createGQLSnippet = () => ({
+  __typename: 'Snippet',
+  id: 7,
+  title: 'Snippet Title',
+  description: 'Lorem ipsum snippet desc',
+  descriptionHtml: '<p>Lorem ipsum snippet desc</p>',
+  createdAt: new Date(Date.now() - 1e6),
+  updatedAt: new Date(Date.now() - 1e3),
+  httpUrlToRepo: `${TEST_HOST}/repo`,
+  sshUrlToRepo: 'ssh://ssh.test/repo',
+  blobs: [],
+  userPermissions: {
+    __typename: 'SnippetPermissions',
+    adminSnippet: true,
+    updateSnippet: true,
+  },
+  project: {
+    __typename: 'Project',
+    fullPath: 'group/project',
+    webUrl: `${TEST_HOST}/group/project`,
+  },
+  author: {
+    __typename: 'User',
+    id: 1,
+    avatarUrl: `${TEST_HOST}/avatar.png`,
+    name: 'root',
+    username: 'root',
+    webUrl: `${TEST_HOST}/root`,
+    status: {
+      __typename: 'UserStatus',
+      emoji: '',
+      message: '',
+    },
+  },
+});
+
+export const createGQLSnippetsQueryResponse = (snippets) => ({
+  data: {
+    snippets: {
+      __typename: 'SnippetConnection',
+      nodes: snippets,
+    },
+  },
+});
 
 export const testEntries = {
   created: {
@@ -54,6 +100,15 @@ export const testEntries = {
       filePath: '/sit.md',
       previousPath: '/sit/amit.md',
       content: CONTENT_2,
+    },
+  },
+  empty: {
+    id: 'empty',
+    diff: {
+      action: SNIPPET_BLOB_ACTION_CREATE,
+      filePath: '',
+      previousPath: '',
+      content: '',
     },
   },
 };

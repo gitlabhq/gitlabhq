@@ -3,10 +3,11 @@
 module Gitlab
   module ImportExport
     class DesignRepoRestorer < RepoRestorer
-      def initialize(project:, shared:, path_to_bundle:)
-        super(project: project, shared: shared, path_to_bundle: path_to_bundle)
+      extend ::Gitlab::Utils::Override
 
-        @repository = project.design_repository
+      override :repository
+      def repository
+        @repository ||= importable.design_repository
       end
 
       # `restore` method is handled in super class

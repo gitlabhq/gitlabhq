@@ -25,7 +25,7 @@ GitLab can be configured to authenticate access requests with the following auth
 - Enable sign in via [LDAP](../administration/auth/ldap/index.md).
 - Enable [OAuth2 provider](oauth_provider.md) application creation.
 - Use [OmniAuth](omniauth.md) to enable sign in via Twitter, GitHub, GitLab.com, Google,
-  Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure or Authentiq ID.
+  Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure, or Authentiq ID.
 - Use GitLab as an [OpenID Connect](openid_connect_provider.md) identity provider.
 - Authenticate to [Vault](vault.md) through GitLab OpenID Connect.
 - Configure GitLab as a [SAML](saml.md) 2.0 Service Provider.
@@ -38,6 +38,11 @@ GitLab can be integrated with the following external services to enhance securit
 - Google [reCAPTCHA](recaptcha.md) helps verify new users.
 
 GitLab also provides features to improve the security of your own application. For more details see [GitLab Secure](../user/application_security/index.md).
+
+## Security partners
+
+GitLab has integrated with several security partners. For more information, see
+[Security partners integration](security_partners/index.md).
 
 ## Continuous integration
 
@@ -65,7 +70,9 @@ Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, 
 
 ### SSL certificate errors
 
-When trying to integrate GitLab with services that are using self-signed certificates, it is very likely that SSL certificate errors occur in different parts of the application, most likely Sidekiq.
+When trying to integrate GitLab with services using self-signed certificates,
+SSL certificate errors can occur in different parts of the application. Sidekiq
+is a common culprit.
 
 There are two approaches you can take to solve this:
 

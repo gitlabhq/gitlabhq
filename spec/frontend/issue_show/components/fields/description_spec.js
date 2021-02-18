@@ -1,70 +1,70 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import DescriptionField from '~/issue_show/components/fields/description.vue';
 import eventHub from '~/issue_show/event_hub';
-import Store from '~/issue_show/stores';
-import descriptionField from '~/issue_show/components/fields/description.vue';
-import { keyboardDownEvent } from '../../helpers';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 describe('Description field component', () => {
-  let vm;
-  let store;
+  let wrapper;
 
-  beforeEach((done) => {
-    const Component = Vue.extend(descriptionField);
-    const el = document.createElement('div');
-    store = new Store({
-      titleHtml: '',
-      descriptionHtml: '',
-      issuableRef: '',
-    });
-    store.formState.description = 'test';
+  const findTextarea = () => wrapper.find({ ref: 'textarea' });
 
-    document.body.appendChild(el);
-
-    jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-    vm = new Component({
-      el,
+  const mountComponent = (description = 'test') =>
+    shallowMount(DescriptionField, {
+      attachTo: document.body,
       propsData: {
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
-        formState: store.formState,
+        formState: {
+          description,
+        },
       },
-    }).$mount();
+      stubs: {
+        MarkdownField,
+      },
+    });
 
-    Vue.nextTick(done);
+  beforeEach(() => {
+    jest.spyOn(eventHub, '$emit');
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders markdown field with description', () => {
-    expect(vm.$el.querySelector('.md-area textarea').value).toBe('test');
+    wrapper = mountComponent();
+
+    expect(findTextarea().element.value).toBe('test');
   });
 
-  it('renders markdown field with a markdown description', (done) => {
-    store.formState.description = '**test**';
+  it('renders markdown field with a markdown description', () => {
+    const markdown = '**test**';
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.md-area textarea').value).toBe('**test**');
+    wrapper = mountComponent(markdown);
 
-      done();
-    });
+    expect(findTextarea().element.value).toBe(markdown);
   });
 
   it('focuses field when mounted', () => {
-    expect(document.activeElement).toBe(vm.$refs.textarea);
+    wrapper = mountComponent();
+
+    expect(document.activeElement).toBe(findTextarea().element);
   });
 
   it('triggers update with meta+enter', () => {
-    vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, true));
+    wrapper = mountComponent();
 
-    expect(eventHub.$emit).toHaveBeenCalled();
+    findTextarea().trigger('keydown.enter', { metaKey: true });
+
+    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 
   it('triggers update with ctrl+enter', () => {
-    vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, false, true));
+    wrapper = mountComponent();
 
-    expect(eventHub.$emit).toHaveBeenCalled();
-  });
+    findTextarea().trigger('keydown.enter', { ctrlKey: true });
 
-  it('has a ref named `textarea`', () => {
-    expect(vm.$refs.textarea).not.toBeNull();
+    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 });

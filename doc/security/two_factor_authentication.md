@@ -110,9 +110,10 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-## Two-factor Authentication (2FA) for Git over SSH operations
+## Two-factor Authentication (2FA) for Git over SSH operations **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
@@ -149,3 +150,8 @@ To disable it:
 ```ruby
 Feature.disable(:two_factor_for_cli)
 ```
+
+The feature flag affects these features:
+
+- [Two-factor Authentication (2FA) for Git over SSH operations](#two-factor-authentication-2fa-for-git-over-ssh-operations).
+- [Customize session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).

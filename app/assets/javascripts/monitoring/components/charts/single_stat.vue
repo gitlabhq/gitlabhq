@@ -1,7 +1,7 @@
 <script>
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { __ } from '~/locale';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
+import { __ } from '~/locale';
 import { graphDataValidatorForValues } from '../../utils';
 
 const defaultPrecision = 2;
@@ -45,12 +45,18 @@ export default {
       }
 
       if (this.graphData?.maxValue) {
-        formatter = getFormatter(SUPPORTED_FORMATS.percent);
-        return formatter(this.queryResult / Number(this.graphData.maxValue), defaultPrecision);
+        formatter = getFormatter(SUPPORTED_FORMATS.number);
+        return formatter(
+          (this.queryResult / Number(this.graphData.maxValue)) * 100,
+          defaultPrecision,
+        );
       }
 
       formatter = getFormatter(SUPPORTED_FORMATS.number);
-      return `${formatter(this.queryResult, defaultPrecision)}${this.queryInfo.unit ?? ''}`;
+      return `${formatter(this.queryResult, defaultPrecision)}`;
+    },
+    unit() {
+      return this.graphData?.maxValue ? '%' : this.queryInfo.unit;
     },
     graphTitle() {
       return this.queryInfo.label;
@@ -60,6 +66,6 @@ export default {
 </script>
 <template>
   <div>
-    <gl-single-stat :value="statValue" :title="graphTitle" variant="success" />
+    <gl-single-stat :value="statValue" :title="graphTitle" :unit="unit" variant="success" />
   </div>
 </template>

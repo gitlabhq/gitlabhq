@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
-import eventHub from '~/deploy_keys/eventhub';
+import { TEST_HOST } from 'spec/test_constants';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
+import eventHub from '~/deploy_keys/eventhub';
+import axios from '~/lib/utils/axios_utils';
 
 const TEST_ENDPOINT = `${TEST_HOST}/dummy/`;
 

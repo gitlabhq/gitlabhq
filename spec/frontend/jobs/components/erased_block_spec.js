@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import { mount } from '@vue/test-utils';
 import ErasedBlock from '~/jobs/components/erased_block.vue';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Erased block', () => {
   let wrapper;
@@ -9,6 +9,8 @@ describe('Erased block', () => {
   const erasedAt = '2016-11-07T11:11:16.525Z';
   const timeago = getTimeago();
   const formattedDate = timeago.format(erasedAt);
+
+  const findLink = () => wrapper.find(GlLink);
 
   const createComponent = (props) => {
     wrapper = mount(ErasedBlock, {
@@ -32,7 +34,7 @@ describe('Erased block', () => {
     });
 
     it('renders username and link', () => {
-      expect(wrapper.find(GlLink).attributes('href')).toEqual('gitlab.com/root');
+      expect(findLink().attributes('href')).toEqual('gitlab.com/root');
 
       expect(wrapper.text().trim()).toContain('Job has been erased by');
       expect(wrapper.text().trim()).toContain('root');

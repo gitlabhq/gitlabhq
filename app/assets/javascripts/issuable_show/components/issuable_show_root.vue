@@ -1,8 +1,8 @@
 <script>
 import IssuableSidebar from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
 
-import IssuableHeader from './issuable_header.vue';
 import IssuableBody from './issuable_body.vue';
+import IssuableHeader from './issuable_header.vue';
 
 export default {
   components: {

@@ -72,9 +72,9 @@ RSpec.describe 'Project Graph', :js do
 
     it 'renders CI graphs' do
       expect(page).to have_content 'Overall'
-      expect(page).to have_content 'Pipelines for last week'
-      expect(page).to have_content 'Pipelines for last month'
-      expect(page).to have_content 'Pipelines for last year'
+      expect(page).to have_content 'Last week'
+      expect(page).to have_content 'Last month'
+      expect(page).to have_content 'Last year'
       expect(page).to have_content 'Duration for the last 30 commits'
     end
   end

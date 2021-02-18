@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue, { nextTick } from 'vue';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import { listObj } from 'jest/boards/mock_data';
 import Board from '~/boards/components/board_column_deprecated.vue';
-import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
+import List from '~/boards/models/list';
 import axios from '~/lib/utils/axios_utils';
 
 describe('Board Column Component', () => {
@@ -30,6 +30,7 @@ describe('Board Column Component', () => {
   const createComponent = ({
     listType = ListType.backlog,
     collapsed = false,
+    highlighted = false,
     withLocalStorage = true,
   } = {}) => {
     const boardId = '1';
@@ -37,6 +38,7 @@ describe('Board Column Component', () => {
     const listMock = {
       ...listObj,
       list_type: listType,
+      highlighted,
       collapsed,
     };
 
@@ -89,6 +91,16 @@ describe('Board Column Component', () => {
       createComponent({ collapsed: true });
 
       expect(isCollapsed()).toBe(true);
+    });
+  });
+
+  describe('highlighting', () => {
+    it('scrolls to column when highlighted', async () => {
+      createComponent({ highlighted: true });
+
+      await nextTick();
+
+      expect(wrapper.element.scrollIntoView).toHaveBeenCalled();
     });
   });
 });

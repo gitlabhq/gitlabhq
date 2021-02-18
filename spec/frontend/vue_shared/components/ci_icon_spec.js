@@ -1,122 +1,51 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('CI Icon component', () => {
-  const Component = Vue.extend(ciIcon);
-  let vm;
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('should render a span element with an svg', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_success',
+    wrapper = shallowMount(ciIcon, {
+      propsData: {
+        status: {
+          icon: 'status_success',
+        },
       },
     });
 
-    expect(vm.$el.tagName).toEqual('SPAN');
-    expect(vm.$el.querySelector('span > svg')).toBeDefined();
+    expect(wrapper.find('span').exists()).toBe(true);
+    expect(wrapper.find(GlIcon).exists()).toBe(true);
   });
 
-  it('should render a success status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_success',
-        group: 'success',
-      },
+  describe('rendering a status', () => {
+    it.each`
+      icon                 | group         | cssClass
+      ${'status_success'}  | ${'success'}  | ${'ci-status-icon-success'}
+      ${'status_failed'}   | ${'failed'}   | ${'ci-status-icon-failed'}
+      ${'status_warning'}  | ${'warning'}  | ${'ci-status-icon-warning'}
+      ${'status_pending'}  | ${'pending'}  | ${'ci-status-icon-pending'}
+      ${'status_running'}  | ${'running'}  | ${'ci-status-icon-running'}
+      ${'status_created'}  | ${'created'}  | ${'ci-status-icon-created'}
+      ${'status_skipped'}  | ${'skipped'}  | ${'ci-status-icon-skipped'}
+      ${'status_canceled'} | ${'canceled'} | ${'ci-status-icon-canceled'}
+      ${'status_manual'}   | ${'manual'}   | ${'ci-status-icon-manual'}
+    `('should render a $group status', ({ icon, group, cssClass }) => {
+      wrapper = shallowMount(ciIcon, {
+        propsData: {
+          status: {
+            icon,
+            group,
+          },
+        },
+      });
+
+      expect(wrapper.classes()).toContain(cssClass);
     });
-
-    expect(vm.$el.classList.contains('ci-status-icon-success')).toEqual(true);
-  });
-
-  it('should render a failed status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_failed',
-        group: 'failed',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-failed')).toEqual(true);
-  });
-
-  it('should render success with warnings status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_warning',
-        group: 'warning',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-warning')).toEqual(true);
-  });
-
-  it('should render pending status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_pending',
-        group: 'pending',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-pending')).toEqual(true);
-  });
-
-  it('should render running status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_running',
-        group: 'running',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-running')).toEqual(true);
-  });
-
-  it('should render created status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_created',
-        group: 'created',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-created')).toEqual(true);
-  });
-
-  it('should render skipped status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_skipped',
-        group: 'skipped',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-skipped')).toEqual(true);
-  });
-
-  it('should render canceled status', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_canceled',
-        group: 'canceled',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-canceled')).toEqual(true);
-  });
-
-  it('should render status for manual action', () => {
-    vm = mountComponent(Component, {
-      status: {
-        icon: 'status_manual',
-        group: 'manual',
-      },
-    });
-
-    expect(vm.$el.classList.contains('ci-status-icon-manual')).toEqual(true);
   });
 });

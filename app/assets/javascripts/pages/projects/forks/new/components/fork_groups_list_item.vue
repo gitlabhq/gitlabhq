@@ -10,7 +10,6 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/groups/constants';
-import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
 export default {
@@ -29,10 +28,6 @@ export default {
   props: {
     group: {
       type: Object,
-      required: true,
-    },
-    hasReachedProjectLimit: {
-      type: Boolean,
       required: true,
     },
   },
@@ -60,12 +55,7 @@ export default {
       return GROUP_VISIBILITY_TYPE[this.group.visibility];
     },
     isSelectButtonDisabled() {
-      return this.hasReachedProjectLimit || !this.group.can_create_project;
-    },
-    selectButtonDisabledTooltip() {
-      return this.hasReachedProjectLimit
-        ? this.$options.i18n.hasReachedProjectLimitMessage
-        : this.$options.i18n.insufficientPermissionsMessage;
+      return !this.group.can_create_project;
     },
   },
 
@@ -74,13 +64,6 @@ export default {
       this.isForking = true;
       this.$refs.form.submit();
     },
-  },
-
-  i18n: {
-    hasReachedProjectLimitMessage: __('You have reached your project limit'),
-    insufficientPermissionsMessage: __(
-      'You must have permission to create a project in a namespace before forking.',
-    ),
   },
 
   csrf,
@@ -94,7 +77,7 @@ export default {
       </div>
       <gl-link
         :href="group.relative_path"
-        class="gl-display-none gl-flex-shrink-0 gl-display-sm-flex gl-mr-3"
+        class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3"
       >
         <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatarUrl" />
       </gl-link>
@@ -113,7 +96,7 @@ export default {
             <gl-badge
               v-if="isGroupPendingRemoval"
               variant="warning"
-              class="gl-display-none gl-display-sm-flex gl-mt-3 gl-mr-1"
+              class="gl-display-none gl-sm-display-flex gl-mt-3 gl-mr-1"
               >{{ __('pending removal') }}</gl-badge
             >
             <span v-if="group.permission" class="user-access-role gl-mt-3">
@@ -149,7 +132,9 @@ export default {
               </form>
             </div>
             <gl-tooltip v-if="isSelectButtonDisabled" :target="() => $refs.selectButtonWrapper">
-              {{ selectButtonDisabledTooltip }}
+              {{
+                __('You must have permission to create a project in a namespace before forking.')
+              }}
             </gl-tooltip>
           </template>
         </div>

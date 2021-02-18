@@ -1,5 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import IssuableHeader from '~/issuable_show/components/issuable_header.vue';
 
@@ -10,21 +11,23 @@ const issuableHeaderProps = {
   ...mockIssuableShowProps,
 };
 
-const createComponent = (propsData = issuableHeaderProps) =>
-  shallowMount(IssuableHeader, {
-    propsData,
-    slots: {
-      'status-badge': 'Open',
-      'header-actions': `
+const createComponent = (propsData = issuableHeaderProps, { stubs } = {}) =>
+  extendedWrapper(
+    shallowMount(IssuableHeader, {
+      propsData,
+      slots: {
+        'status-badge': 'Open',
+        'header-actions': `
         <button class="js-close">Close issuable</button>
         <a class="js-new" href="/gitlab-org/gitlab-shell/-/issues/new">New issuable</a>
       `,
-    },
-  });
+      },
+      stubs,
+    }),
+  );
 
 describe('IssuableHeader', () => {
   let wrapper;
-  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -63,7 +66,7 @@ describe('IssuableHeader', () => {
 
   describe('template', () => {
     it('renders issuable status icon and text', () => {
-      const statusBoxEl = findByTestId('status');
+      const statusBoxEl = wrapper.findByTestId('status');
 
       expect(statusBoxEl.exists()).toBe(true);
       expect(statusBoxEl.find(GlIcon).props('name')).toBe(mockIssuableShowProps.statusIcon);
@@ -77,7 +80,7 @@ describe('IssuableHeader', () => {
 
       await wrapper.vm.$nextTick();
 
-      const blockedEl = findByTestId('blocked');
+      const blockedEl = wrapper.findByTestId('blocked');
 
       expect(blockedEl.exists()).toBe(true);
       expect(blockedEl.find(GlIcon).props('name')).toBe('lock');
@@ -90,7 +93,7 @@ describe('IssuableHeader', () => {
 
       await wrapper.vm.$nextTick();
 
-      const confidentialEl = findByTestId('confidential');
+      const confidentialEl = wrapper.findByTestId('confidential');
 
       expect(confidentialEl.exists()).toBe(true);
       expect(confidentialEl.find(GlIcon).props('name')).toBe('eye-slash');
@@ -105,7 +108,7 @@ describe('IssuableHeader', () => {
         href: webUrl,
         target: '_blank',
       };
-      const avatarEl = findByTestId('avatar');
+      const avatarEl = wrapper.findByTestId('avatar');
       expect(avatarEl.exists()).toBe(true);
       expect(avatarEl.attributes()).toMatchObject(avatarElAttrs);
       expect(avatarEl.find(GlAvatarLabeled).attributes()).toMatchObject({
@@ -113,20 +116,46 @@ describe('IssuableHeader', () => {
         src: avatarUrl,
         label: name,
       });
+      expect(avatarEl.find(GlAvatarLabeled).find(GlIcon).exists()).toBe(false);
     });
 
     it('renders sidebar toggle button', () => {
-      const toggleButtonEl = findByTestId('sidebar-toggle');
+      const toggleButtonEl = wrapper.findByTestId('sidebar-toggle');
 
       expect(toggleButtonEl.exists()).toBe(true);
       expect(toggleButtonEl.props('icon')).toBe('chevron-double-lg-left');
     });
 
     it('renders header actions', () => {
-      const actionsEl = findByTestId('header-actions');
+      const actionsEl = wrapper.findByTestId('header-actions');
 
       expect(actionsEl.find('button.js-close').exists()).toBe(true);
       expect(actionsEl.find('a.js-new').exists()).toBe(true);
+    });
+
+    describe('when author exists outside of GitLab', () => {
+      it("renders 'external-link' icon in avatar label", () => {
+        wrapper = createComponent(
+          {
+            ...issuableHeaderProps,
+            author: {
+              ...issuableHeaderProps.author,
+              webUrl: 'https://jira.com/test-user/author.jpg',
+            },
+          },
+          {
+            stubs: {
+              GlAvatarLabeled,
+            },
+          },
+        );
+
+        const avatarEl = wrapper.findComponent(GlAvatarLabeled);
+        const icon = avatarEl.find(GlIcon);
+
+        expect(icon.exists()).toBe(true);
+        expect(icon.props('name')).toBe('external-link');
+      });
     });
   });
 });

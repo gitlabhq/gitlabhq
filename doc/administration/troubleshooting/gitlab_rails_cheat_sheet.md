@@ -5,13 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Rails Console Cheat Sheet **(CORE ONLY)**
+# GitLab Rails Console Cheat Sheet **(FREE SELF)**
 
 This is the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for transparency,
 and it may be useful for users with experience with these tools. If you are currently
-having an issue with GitLab, it is highly recommended that you check your
-[support options](https://about.gitlab.com/support/) first, before attempting to use
+having an issue with GitLab, it is highly recommended that you first check
+our guide on [navigating our Rails console](navigating_gitlab_via_rails_console.md),
+and your [support options](https://about.gitlab.com/support/), before attempting to use
 this information.
 
 WARNING:
@@ -562,7 +563,7 @@ service = ::Groups::TransferService.new(group, user)
 service.execute(parent_group)
 ```
 
-### Count unique users in a group and sub-groups
+### Count unique users in a group and subgroups
 
 ```ruby
 group = Group.find_by_path_or_name("groupname")

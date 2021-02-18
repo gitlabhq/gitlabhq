@@ -20,7 +20,7 @@ to use pipeline features that improve efficiency right away, and get a faster so
 development lifecycle earlier.
 
 First ensure you are familiar with [GitLab CI/CD fundamentals](../introduction/index.md)
-and understand the [quick start guide](../quick_start/README.md).
+and understand the [quick start guide](../quick_start/index.md).
 
 ## Identify bottlenecks and common failures
 
@@ -161,7 +161,7 @@ Try to find which jobs don't need to run in all situations, and use pipeline con
 to stop them from running:
 
 - Use the [`interruptible`](../yaml/README.md#interruptible) keyword to stop old pipelines
-  when they are superceded by a newer pipeline.
+  when they are superseded by a newer pipeline.
 - Use [`rules`](../yaml/README.md#rules) to skip tests that aren't needed. For example,
   skip backend tests when only the frontend code is changed.
 - Run non-essential [scheduled pipelines](schedules.md) less frequently.
@@ -235,7 +235,7 @@ Methods to reduce Docker image size:
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
-[Docker images](../docker/README.md) and test, build and publish them with CI/CD pipelines.
+[Docker images](../docker/index.md) and test, build and publish them with CI/CD pipelines.
 
 ## Test, document, and learn
 

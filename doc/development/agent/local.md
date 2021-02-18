@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Run the Kubernetes Agent locally **(PREMIUM ONLY)**
+# Run the Kubernetes Agent locally **(PREMIUM SELF)**
 
 You can run `kas` and `agentk` locally to test the [Kubernetes Agent](index.md) yourself.
 

@@ -7,6 +7,7 @@ RSpec.describe 'User visits the notifications tab', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_notification_dropdown: false)
     project.add_maintainer(user)
     sign_in(user)
     visit(profile_notifications_path)

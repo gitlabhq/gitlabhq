@@ -6,7 +6,7 @@ type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
 
-# Start using Git on the command line
+# Start using Git on the command line **(FREE)**
 
 [Git](https://git-scm.com/) is an open-source distributed version control system designed to
 handle everything from small to very large projects with speed and efficiency. GitLab is built
@@ -51,7 +51,7 @@ prompt, terminal, and command line) of your preference. Here are some suggestion
   - Built-in: [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type "terminal" to find it.
   - [iTerm2](https://iterm2.com/), which you can integrate with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting, among other handy features for Git users.
 - For Windows users:
-  - Built-in: **cmd**. Click the search icon on the bottom navbar on Windows and type "cmd" to find it.
+  - Built-in: `cmd`. Click the search icon on the bottom navigation bar on Windows and type `cmd` to find it.
   - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7): a Windows "powered up" shell, from which you can execute a greater number of commands.
   - Git Bash: it comes built into [Git for Windows](https://gitforwindows.org/).
 - For Linux users:
@@ -152,8 +152,12 @@ Your files in GitLab live in a **repository**, similar to how you have them in a
 directory in your computer. **Remote** repository refers to the files in
 GitLab and the copy in your computer is called **local** copy.
 A **project** in GitLab is what holds a repository, which holds your files.
-Often, the word "repository" is shortened to "repo".
 
+<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab.SubstitutionWarning = NO -->
+Often, the word "repository" is shortened to "repo".
+<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab.SubstitutionWarning = YES -->
 ### Fork
 
 When you want to copy someone else's repository, you [**fork**](../user/project/repository/forking_workflow.md#creating-a-fork)
@@ -274,7 +278,7 @@ identified by Git as the local content for that specific remote project.
 
 To add a remote repository to your local copy:
 
-1. In GitLab, [create a new project](../gitlab-basics/create-project.md#push-to-create-a-new-project) to hold your files.
+1. In GitLab, [create a new project](../user/project/working_with_projects.md#create-a-project) to hold your files.
 1. Visit this project's homepage, scroll down to **Push an existing folder**, and copy the command that starts with `git remote add`.
 1. On your computer, open the terminal in the directory you've initialized, paste the command you copied, and press <kbd>enter</kbd>:
 

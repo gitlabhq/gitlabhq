@@ -1,0 +1,5 @@
+---
+title: Fix Y axis units of pipeline charts when values are small
+merge_request: 52024
+author:
+type: fixed

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
-import PackageTags from '~/packages/shared/components/package_tags.vue';
 import PackagePath from '~/packages/shared/components/package_path.vue';
+import PackageTags from '~/packages/shared/components/package_tags.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { packageList } from '../../mock_data';
 

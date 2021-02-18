@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlDatepicker, GlSprintf, GlLink, GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';

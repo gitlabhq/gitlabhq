@@ -5,7 +5,7 @@
     .col-sm-2.col-form-label
       = f.label :projects_limit
     .col-sm-10
-      = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control'
+      = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control gl-form-input'
 
   .form-group.row
     .col-sm-2.col-form-label.gl-pt-0

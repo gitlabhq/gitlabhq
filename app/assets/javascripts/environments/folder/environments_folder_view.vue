@@ -1,9 +1,9 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
-import environmentsMixin from '../mixins/environments_mixin';
-import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
-import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
+import StopEnvironmentModal from '../components/stop_environment_modal.vue';
+import environmentsMixin from '../mixins/environments_mixin';
+import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
 
 export default {
   components: {
@@ -14,7 +14,7 @@ export default {
     StopEnvironmentModal,
   },
 
-  mixins: [environmentsMixin, CIPaginationMixin],
+  mixins: [environmentsMixin, EnvironmentsPaginationApiMixin],
 
   props: {
     endpoint: {
@@ -33,21 +33,6 @@ export default {
     canReadEnvironment: {
       type: Boolean,
       required: true,
-    },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   methods: {
@@ -88,9 +73,6 @@ export default {
       :environments="state.environments"
       :pagination="state.paginationInformation"
       :can-read-environment="canReadEnvironment"
-      :user-callouts-path="userCalloutsPath"
-      :lock-promotion-svg-path="lockPromotionSvgPath"
-      :help-canary-deployments-path="helpCanaryDeploymentsPath"
       @onChangePage="onChangePage"
     />
   </div>

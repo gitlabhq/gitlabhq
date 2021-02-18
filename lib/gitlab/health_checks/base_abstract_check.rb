@@ -11,6 +11,10 @@ module Gitlab
         name.sub(/_check$/, '').capitalize
       end
 
+      def available?
+        true
+      end
+
       def readiness
         raise NotImplementedError
       end

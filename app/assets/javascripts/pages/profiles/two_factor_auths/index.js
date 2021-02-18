@@ -1,6 +1,6 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { mount2faRegistration } from '~/authentication/mount_2fa';
 import { initRecoveryCodes } from '~/authentication/two_factor_auth';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
   const twoFactorNode = document.querySelector('.js-two-factor-auth');

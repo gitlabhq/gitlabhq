@@ -55,20 +55,29 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.pipeline_open_merge_requests?(project)
-        ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: true)
-      end
-
       def self.ci_pipeline_editor_page_enabled?(project)
         ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
       end
 
-      def self.allow_failure_with_exit_codes_enabled?
-        ::Feature.enabled?(:ci_allow_failure_with_exit_codes, default_enabled: :yaml)
-      end
-
       def self.rules_variables_enabled?(project)
         ::Feature.enabled?(:ci_rules_variables, project, default_enabled: true)
+      end
+
+      def self.validate_build_dependencies?(project)
+        ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
+          ::Feature.disabled?(:ci_validate_build_dependencies_override, project)
+      end
+
+      def self.display_quality_on_mr_diff?(project)
+        ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: false)
+      end
+
+      def self.display_codequality_backend_comparison?(project)
+        ::Feature.enabled?(:codequality_backend_comparison, project, default_enabled: :yaml)
+      end
+
+      def self.use_coverage_data_new_finder?(record)
+        ::Feature.enabled?(:coverage_data_new_finder, record, default_enabled: :yaml)
       end
     end
   end

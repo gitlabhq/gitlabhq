@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBanner } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
-import CustomizeHomepageBanner from '~/pages/dashboard/projects/index/components/customize_homepage_banner.vue';
 import axios from '~/lib/utils/axios_utils';
+import CustomizeHomepageBanner from '~/pages/dashboard/projects/index/components/customize_homepage_banner.vue';
 
 const svgPath = '/illustrations/background';
 const provide = {

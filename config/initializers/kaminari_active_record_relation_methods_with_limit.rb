@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kaminari
   # Active Record specific page scope methods implementations
   module ActiveRecordRelationMethodsWithLimit

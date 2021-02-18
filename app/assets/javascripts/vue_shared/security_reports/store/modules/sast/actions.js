@@ -1,5 +1,5 @@
-import * as types from './mutation_types';
 import { fetchDiffData } from '../../utils';
+import * as types from './mutation_types';
 
 export const setDiffEndpoint = ({ commit }, path) => commit(types.SET_DIFF_ENDPOINT, path);
 

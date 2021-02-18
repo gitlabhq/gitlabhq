@@ -6,6 +6,9 @@ module API
 
     before { authenticate! }
 
+    SUBSCRIBE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      subscribable_id: API::NO_SLASH_URL_PART_REGEX)
+
     subscribables = [
       {
         type: 'merge_requests',
@@ -44,7 +47,7 @@ module API
         requires :id, type: String, desc: "The #{source_type} ID"
         requires :subscribable_id, type: String, desc: 'The ID of a resource'
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: SUBSCRIBE_ENDPOINT_REQUIREMENTS do
         desc 'Subscribe to a resource' do
           success subscribable[:entity]
         end

@@ -196,17 +196,18 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
 
     context 'when requesting `commit_count`' do
-      let(:requested_fields) { [:commit_count] }
+      let(:merge_request_with_commits) { create(:merge_request, source_project: project) }
+      let(:search_params) { { iids: [merge_request_a.iid.to_s, merge_request_with_commits.iid.to_s] } }
+      let(:requested_fields) { [:iid, :commit_count] }
 
       it 'exposes `commit_count`' do
-        merge_request_a.metrics.update!(commits_count: 5)
-
         execute_query
 
-        expect(results).to include(a_hash_including('commitCount' => 5))
+        expect(results).to match_array([
+          { "iid" => merge_request_a.iid.to_s, "commitCount" => 0 },
+          { "iid" => merge_request_with_commits.iid.to_s, "commitCount" => 29 }
+        ])
       end
-
-      include_examples 'N+1 query check'
     end
 
     context 'when requesting `merged_at`' do
@@ -262,18 +263,6 @@ RSpec.describe 'getting merge request listings nested in a project' do
             a_hash_including('username' => r.username)
           end)
         })
-      end
-
-      context 'the feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_reviewers: false)
-        end
-
-        it 'does not return reviewers' do
-          execute_query
-
-          expect(results).to all(match a_hash_including('reviewers' => be_nil))
-        end
       end
 
       include_examples 'N+1 query check'
@@ -392,6 +381,89 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c.metrics.update!(merged_at: five_days_ago)
 
           merge_request_b.metrics.update!(merged_at: 1.day.ago)
+        end
+      end
+    end
+  end
+
+  context 'when only the count is requested' do
+    context 'when merged at filter is present' do
+      let_it_be(:merge_request) do
+        create(:merge_request, :unique_branches, source_project: project).tap do |mr|
+          mr.metrics.update!(merged_at: Time.new(2020, 1, 3))
+        end
+      end
+
+      let(:query) do
+        # Note: __typename meta field is always requested by the FE
+        graphql_query_for(:project, { full_path: project.full_path },
+        <<~QUERY
+        mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0, sourceBranches: null, labels: null) {
+          count
+          __typename
+        }
+        QUERY
+        )
+      end
+
+      shared_examples 'count examples' do
+        it 'returns the correct count' do
+          post_graphql(query, current_user: current_user)
+
+          count = graphql_data.dig('project', 'mergeRequests', 'count')
+          expect(count).to eq(1)
+        end
+      end
+
+      context 'when "optimized_merge_request_count_with_merged_at_filter" feature flag is enabled' do
+        before do
+          stub_feature_flags(optimized_merge_request_count_with_merged_at_filter: true)
+        end
+
+        it 'does not query the merge requests table for the count' do
+          query_recorder = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+          queries = query_recorder.data.each_value.first[:occurrences]
+          expect(queries).not_to include(match(/SELECT COUNT\(\*\) FROM "merge_requests"/))
+          expect(queries).to include(match(/SELECT COUNT\(\*\) FROM "merge_request_metrics"/))
+        end
+
+        context 'when total_time_to_merge and count is queried' do
+          let(:query) do
+            graphql_query_for(:project, { full_path: project.full_path },
+            <<~QUERY
+            mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
+              totalTimeToMerge
+              count
+            }
+            QUERY
+            )
+          end
+
+          it 'does not query the merge requests table for the total_time_to_merge' do
+            query_recorder = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+            queries = query_recorder.data.each_value.first[:occurrences]
+            expect(queries).to include(match(/SELECT.+SUM.+FROM "merge_request_metrics" WHERE/))
+          end
+        end
+
+        it_behaves_like 'count examples'
+
+        context 'when "optimized_merge_request_count_with_merged_at_filter" feature flag is disabled' do
+          before do
+            stub_feature_flags(optimized_merge_request_count_with_merged_at_filter: false)
+          end
+
+          it 'queries the merge requests table for the count' do
+            query_recorder = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+            queries = query_recorder.data.each_value.first[:occurrences]
+            expect(queries).to include(match(/SELECT COUNT\(\*\) FROM "merge_requests"/))
+            expect(queries).not_to include(match(/SELECT COUNT\(\*\) FROM "merge_request_metrics"/))
+          end
+
+          it_behaves_like 'count examples'
         end
       end
     end

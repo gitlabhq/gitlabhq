@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   task list_repos: :environment do
     scope = Project

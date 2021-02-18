@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { componentNames } from '~/reports/components/issue_body';
-import ReportSection from '~/reports/components/report_section.vue';
 import IssuesList from '~/reports/components/issues_list.vue';
+import ReportSection from '~/reports/components/report_section.vue';
 import createStore from './store';
 
 export default {

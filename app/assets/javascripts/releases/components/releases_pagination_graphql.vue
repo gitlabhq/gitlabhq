@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlKeysetPagination } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 
 export default {

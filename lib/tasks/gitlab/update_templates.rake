@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   desc "GitLab | Update templates"
   task :update_templates do

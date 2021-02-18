@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
+import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 
 describe('Api', () => {
@@ -257,6 +257,28 @@ describe('Api', () => {
         expect(response[0].name).toBe('test');
         done();
       });
+    });
+  });
+
+  describe('groupLabels', () => {
+    it('fetches group labels', (done) => {
+      const options = { params: { search: 'foo' } };
+      const expectedGroup = 'gitlab-org';
+      const expectedUrl = `${dummyUrlRoot}/groups/${expectedGroup}/-/labels`;
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+        {
+          id: 1,
+          title: 'Foo Label',
+        },
+      ]);
+
+      Api.groupLabels(expectedGroup, options)
+        .then((res) => {
+          expect(res.length).toBe(1);
+          expect(res[0].title).toBe('Foo Label');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

@@ -59,13 +59,13 @@
               %li.divider
               - if user.can_be_removed?
                 %li
-                  %button.delete-user-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete',
+                  %button.js-delete-user-modal-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete',
                     delete_user_url: admin_user_path(user),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }
                     = s_('AdminUsers|Delete user')
                 %li
-                  %button.delete-user-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                  %button.js-delete-user-modal-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
                     delete_user_url: admin_user_path(user, hard_delete: true),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }

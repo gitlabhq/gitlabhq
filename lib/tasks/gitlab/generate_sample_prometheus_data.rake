@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   desc "GitLab | Generate Sample Prometheus Data"
   task :generate_sample_prometheus_data, [:environment_id] => :gitlab_environment do |_, args|

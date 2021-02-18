@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import PersistentUserCallout from '~/persistent_user_callout';
-import { deprecatedCreateFlash as Flash } from '~/flash';
 
 jest.mock('~/flash');
 

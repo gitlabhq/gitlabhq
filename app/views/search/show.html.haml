@@ -1,6 +1,11 @@
 - @hide_top_links = true
 - page_title @search_term
 - @hide_breadcrumbs = true
+- if params[:group_id].present?
+  = hidden_field_tag :group_id, params[:group_id]
+- if params[:project_id].present?
+  = hidden_field_tag :project_id, params[:project_id]
+- project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
 - if @search_results
   - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
@@ -11,7 +16,7 @@
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
 .gl-mt-3
-  = render 'search/form'
+  #js-search-topbar{ data: { "group-initial-data": @group.to_json, "project-initial-data": project_attributes.to_json } }
 - if @search_term
   = render 'search/category'
   = render 'search/results'

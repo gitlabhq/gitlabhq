@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
-import { stateFilterData } from '~/search/sidebar/constants/state_filter_data';
 import { confidentialFilterData } from '~/search/sidebar/constants/confidential_filter_data';
+import { stateFilterData } from '~/search/sidebar/constants/state_filter_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

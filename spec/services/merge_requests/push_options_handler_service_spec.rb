@@ -21,6 +21,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:deleted_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 #{Gitlab::Git::BLANK_SHA} refs/heads/#{source_branch}" }
   let(:default_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{project.default_branch}" }
+  let(:error_mr_required) { "A merge_request.create push option is required to create a merge request for branch #{source_branch}" }
 
   shared_examples_for 'a service that can create a merge request' do
     subject(:last_mr) { MergeRequest.last }
@@ -176,11 +177,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -197,11 +196,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -263,11 +260,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -308,11 +303,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -329,11 +322,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -374,11 +365,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -395,11 +384,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -440,11 +427,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -461,11 +446,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -506,11 +489,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -527,11 +508,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do

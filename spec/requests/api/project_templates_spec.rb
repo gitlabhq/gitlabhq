@@ -131,7 +131,7 @@ RSpec.describe API::ProjectTemplates do
     end
   end
 
-  describe 'GET /projects/:id/templates/:type/:key' do
+  describe 'GET /projects/:id/templates/:type/:name' do
     it 'returns a specific dockerfile' do
       get api("/projects/#{public_project.id}/templates/dockerfiles/Binary")
 

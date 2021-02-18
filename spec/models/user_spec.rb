@@ -2477,7 +2477,7 @@ RSpec.describe User do
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
 
-      expect(user.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico'])
+      expect(user.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp'])
     end
   end
 
@@ -2828,6 +2828,79 @@ RSpec.describe User do
       user.toggle_star(project)
 
       expect(user.starred?(project)).to be_falsey
+    end
+  end
+
+  describe '#following?' do
+    it 'check if following another user' do
+      user = create :user
+      followee1 = create :user
+
+      expect(user.follow(followee1)).to be_truthy
+
+      expect(user.following?(followee1)).to be_truthy
+
+      expect(user.unfollow(followee1)).to be_truthy
+
+      expect(user.following?(followee1)).to be_falsey
+    end
+  end
+
+  describe '#follow' do
+    it 'follow another user' do
+      user = create :user
+      followee1 = create :user
+      followee2 = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee1)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1)
+
+      expect(user.follow(followee2)).to be_truthy
+      expect(user.follow(followee2)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1, followee2)
+    end
+
+    it 'follow itself is not possible' do
+      user = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(user)).to be_falsey
+
+      expect(user.followees).to be_empty
+    end
+  end
+
+  describe '#unfollow' do
+    it 'unfollow another user' do
+      user = create :user
+      followee1 = create :user
+      followee2 = create :user
+
+      expect(user.followees).to be_empty
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee1)).to be_falsey
+
+      expect(user.follow(followee2)).to be_truthy
+      expect(user.follow(followee2)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee1, followee2)
+
+      expect(user.unfollow(followee1)).to be_truthy
+      expect(user.unfollow(followee1)).to be_falsey
+
+      expect(user.followees).to contain_exactly(followee2)
+
+      expect(user.unfollow(followee2)).to be_truthy
+      expect(user.unfollow(followee2)).to be_falsey
+
+      expect(user.followees).to be_empty
     end
   end
 

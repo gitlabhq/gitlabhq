@@ -1,8 +1,8 @@
+import { GlButton } from '@gitlab/ui';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton } from '@gitlab/ui';
-import { createStore } from '~/mr_notes/stores';
 import NoChanges from '~/diffs/components/no_changes.vue';
+import { createStore } from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const localVue = createLocalVue();

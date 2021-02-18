@@ -68,12 +68,14 @@ module Terraform
 
       find_params = { project: project, name: params[:name] }
 
-      if find_only
-        Terraform::State.find_by(find_params) || # rubocop: disable CodeReuse/ActiveRecord
-          raise(ActiveRecord::RecordNotFound.new("Couldn't find state"))
-      else
-        Terraform::State.create_or_find_by(find_params)
-      end
+      return find_state!(find_params) if find_only
+
+      state = Terraform::State.create_or_find_by(find_params)
+
+      # https://github.com/rails/rails/issues/36027
+      return state unless state.errors.of_kind? :name, :taken
+
+      find_state(find_params)
     end
 
     def lock_matches?(state)
@@ -85,6 +87,14 @@ module Terraform
 
     def can_modify_state?
       current_user.can?(:admin_terraform_state, project)
+    end
+
+    def find_state(find_params)
+      Terraform::State.find_by(find_params) # rubocop: disable CodeReuse/ActiveRecord
+    end
+
+    def find_state!(find_params)
+      find_state(find_params) || raise(ActiveRecord::RecordNotFound.new("Couldn't find state"))
     end
   end
 end

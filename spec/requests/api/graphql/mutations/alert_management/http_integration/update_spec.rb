@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Updating an existing HTTP Integration' do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
 
@@ -32,18 +32,8 @@ RSpec.describe 'Updating an existing HTTP Integration' do
   let(:mutation_response) { graphql_mutation_response(:http_integration_update) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(current_user)
   end
 
-  it 'updates the integration' do
-    post_graphql_mutation(mutation, current_user: user)
-
-    integration_response = mutation_response['integration']
-
-    expect(response).to have_gitlab_http_status(:success)
-    expect(integration_response['id']).to eq(GitlabSchema.id_from_object(integration).to_s)
-    expect(integration_response['name']).to eq('Modified Name')
-    expect(integration_response['active']).to be_falsey
-    expect(integration_response['url']).to include('modified-name')
-  end
+  it_behaves_like 'updating an existing HTTP integration'
 end

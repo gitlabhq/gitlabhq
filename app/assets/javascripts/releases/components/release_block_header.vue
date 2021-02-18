@@ -1,7 +1,7 @@
 <script>
-import { GlTooltipDirective, GlLink, GlBadge, GlButton } from '@gitlab/ui';
-import { BACK_URL_PARAM } from '~/releases/constants';
+import { GlTooltipDirective, GlLink, GlBadge, GlButton, GlIcon } from '@gitlab/ui';
 import { setUrlParams } from '~/lib/utils/url_utility';
+import { BACK_URL_PARAM } from '~/releases/constants';
 
 export default {
   name: 'ReleaseBlockHeader',
@@ -9,6 +9,7 @@ export default {
     GlLink,
     GlBadge,
     GlButton,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -44,7 +45,19 @@ export default {
       <gl-link v-if="selfLink" :href="selfLink" class="font-size-inherit">
         {{ release.name }}
       </gl-link>
-      <template v-else>{{ release.name }}</template>
+      <template v-else>
+        {{ release.name }}
+        <gl-icon
+          v-gl-tooltip
+          name="lock"
+          :title="
+            __(
+              'Private - Guest users are not allowed to view detailed release information like title and source code.',
+            )
+          "
+          class="text-secondary gl-mb-2"
+        />
+      </template>
       <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
         __('Upcoming Release')
       }}</gl-badge>

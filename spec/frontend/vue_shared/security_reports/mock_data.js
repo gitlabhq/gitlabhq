@@ -322,6 +322,23 @@ export const secretScanningDiffSuccessMock = {
   head_report_created_at: '2020-01-10T10:00:00.000Z',
 };
 
+export const securityReportDownloadPathsQueryNoArtifactsResponse = {
+  project: {
+    mergeRequest: {
+      headPipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/176',
+        jobs: {
+          nodes: [],
+          __typename: 'CiJobConnection',
+        },
+        __typename: 'Pipeline',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'Project',
+  },
+};
+
 export const securityReportDownloadPathsQueryResponse = {
   project: {
     mergeRequest: {

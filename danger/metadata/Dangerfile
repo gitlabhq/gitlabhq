@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/SignalException
 
 THROUGHPUT_LABELS = [
@@ -15,10 +17,6 @@ THROUGHPUT_LABELS = [
 
 if gitlab.mr_body.size < 5
   fail "Please provide a proper merge request description."
-end
-
-if gitlab.mr_labels.empty?
-  fail "Please add labels to this merge request."
 end
 
 if (THROUGHPUT_LABELS & gitlab.mr_labels).empty?

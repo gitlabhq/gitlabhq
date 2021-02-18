@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation') }
+%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation'), 'aria-label': _('Project navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to project_path(@project), title: @project.name do
@@ -33,6 +33,13 @@
               = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
                 %span= _('Releases')
 
+      - if project_nav_tab? :learn_gitlab
+        = nav_link(controller: :learn_gitlab, html_options: { class: 'home' }) do
+          = link_to project_learn_gitlab_path(@project) do
+            .nav-icon-container
+              = sprite_icon('home')
+            %span.nav-item-name
+              = _('Learn GitLab')
 
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths, unless: -> { current_path?('projects/graphs#charts') }) do
@@ -212,7 +219,8 @@
 
             = render_if_exists "layouts/nav/test_cases_link", project: @project
 
-      = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
+      - if project_nav_tab? :security_and_compliance
+        = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
@@ -283,27 +291,14 @@
                   %span
                     = _('Kubernetes')
                   - if show_cluster_hint
-                    .feature-highlight.js-feature-highlight{ disabled: true,
+                    .js-feature-highlight{ disabled: true,
                       data: { trigger: 'manual',
                         container: 'body',
                         placement: 'right',
                         highlight: UserCalloutsHelper::GKE_CLUSTER_INTEGRATION,
                         highlight_priority: UserCallout.feature_names[:GKE_CLUSTER_INTEGRATION],
-                        dismiss_endpoint: user_callouts_path } }
-                - if show_cluster_hint
-                  .feature-highlight-popover-content
-                    = image_tag 'illustrations/cluster_popover.svg', class: 'feature-highlight-illustration', lazy: false, alt: _('Kubernetes popover')
-                    .feature-highlight-popover-sub-content
-                      %p= _('Allows you to add and manage Kubernetes clusters.')
-                      %p
-                        = _('Protip:')
-                        = link_to _('Auto DevOps'), help_page_path('topics/autodevops/index.md')
-                        %span= _('uses Kubernetes clusters to deploy your code!')
-                      %hr
-                      %button.gl-button.btn.btn-success.btn-sm.dismiss-feature-highlight{ type: 'button' }
-                        %span.gl-mr-2= _("Got it!")
-                        = sprite_icon('thumb-up')
-
+                        dismiss_endpoint: user_callouts_path,
+                        auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
             - if project_nav_tab? :environments
               = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
                 = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
@@ -383,7 +378,7 @@
               %strong.fly-out-top-item-name
                 = _('Members')
 
-      = render_if_exists 'projects/invite_members_side_nav_link', project: @project
+      = content_for :invite_members_sidebar
 
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do
@@ -438,8 +433,6 @@
                     %span
                       = _('Pages')
 
-      = render 'shared/sidebar_toggle_button'
-
       -# Shortcut to Project > Activity
       %li.hidden
         = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
@@ -474,3 +467,5 @@
       - if project_nav_tab?(:issues)
         %li.hidden
           = link_to _('Issue Boards'), project_boards_path(@project), title: _('Issue Boards'), class: 'shortcuts-issue-boards'
+
+    = render 'shared/sidebar_toggle_button'

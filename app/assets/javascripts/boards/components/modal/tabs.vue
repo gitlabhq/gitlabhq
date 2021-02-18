@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
-import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
+import ModalStore from '../../stores/modal_store';
 
 export default {
   components: {

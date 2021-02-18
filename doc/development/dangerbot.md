@@ -105,9 +105,9 @@ minimize the number of lines of code in `danger/`. A non-trivial `Dangerfile`
 should mostly call plugin code with arguments derived from the methods provided
 by Danger. The plugin code itself should have unit tests.
 
-At present, we do this by putting the code in a module in `lib/gitlab/danger/...`,
+At present, we do this by putting the code in a module in `tooling/danger/...`,
 and including it in the matching `danger/plugins/...` file. Specs can then be
-added in `spec/lib/gitlab/danger/...`.
+added in `spec/tooling/danger/...`.
 
 To determine if your `Dangerfile` works, push the branch that contains it to
 GitLab. This can be quite frustrating, as it significantly increases the cycle

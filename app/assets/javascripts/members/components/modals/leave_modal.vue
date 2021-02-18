@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlModal, GlForm, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import { LEAVE_MODAL_ID } from '../../constants';

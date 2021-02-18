@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import createStore from '~/notes/stores';
 import awardsNote from '~/notes/components/note_awards_list.vue';
+import createStore from '~/notes/stores';
 import { noteableDataMock, notesDataMock } from '../mock_data';
 
 describe('note_awards_list component', () => {

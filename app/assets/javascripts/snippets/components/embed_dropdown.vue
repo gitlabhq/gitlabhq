@@ -1,5 +1,4 @@
 <script>
-import { escape as esc } from 'lodash';
 import {
   GlButton,
   GlDropdown,
@@ -8,6 +7,7 @@ import {
   GlFormInputGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { escape as esc } from 'lodash';
 import { __ } from '~/locale';
 
 const MSG_EMBED = __('Embed');

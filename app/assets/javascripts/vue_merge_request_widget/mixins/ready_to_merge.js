@@ -35,5 +35,8 @@ export default {
     shouldRenderMergeTrainHelperText() {
       return false;
     },
+    pipelineId() {
+      return this.pipeline.id;
+    },
   },
 };

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Stages of Auto DevOps
+# Stages of Auto DevOps **(FREE)**
 
 The following sections describe the stages of [Auto DevOps](index.md).
 Read them carefully to understand how each one works.
@@ -135,7 +135,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab](https://about.gitlab.com/pricing/) 9.3.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
 
 Auto Code Quality uses the
@@ -377,6 +377,12 @@ This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
 in the first place, and thus not realize that it needs to re-apply the old configuration.
+
+WARNING:
+GitLab 14.0 [renews the Auto Deploy template](https://gitlab.com/gitlab-org/gitlab/-/issues/232788).
+This might cause an unexpected failure on your Auto DevOps project due to the breaking changes on
+the v2 `auto-deploy-image`. Follow [the upgrade guide](upgrading_auto_deploy_dependencies.md#upgrade-guide)
+to upgrade your environments before upgrading to GitLab 14.0.
 
 ### GitLab deploy tokens
 

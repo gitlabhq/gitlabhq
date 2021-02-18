@@ -10,24 +10,22 @@ class-methods-use-this */
 old_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
  */
 
-import $ from 'jquery';
-import '~/lib/utils/jquery_at_who';
-import { escape, uniqueId } from 'lodash';
-import Cookies from 'js-cookie';
-import Autosize from 'autosize';
-import Vue from 'vue';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import Autosize from 'autosize';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
+import { escape, uniqueId } from 'lodash';
+import Vue from 'vue';
+import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
-import axios from './lib/utils/axios_utils';
-import { getLocationHash } from './lib/utils/url_utility';
+import Autosave from './autosave';
+import loadAwardsHandler from './awards_handler';
+import CommentTypeToggle from './comment_type_toggle';
 import { deprecatedCreateFlash as Flash } from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
-import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
-import loadAwardsHandler from './awards_handler';
-import Autosave from './autosave';
-import TaskList from './task_list';
+import axios from './lib/utils/axios_utils';
 import {
   isInViewport,
   getPagePath,
@@ -36,7 +34,9 @@ import {
   isInMRPage,
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import { getLocationHash } from './lib/utils/url_utility';
 import { sprintf, s__, __ } from './locale';
+import TaskList from './task_list';
 
 window.autosize = Autosize;
 
@@ -904,18 +904,7 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
-    form
-      .prepend(
-        `<a href="${escape(
-          gon.current_username,
-        )}" class="user-avatar-link d-none d-sm-block"><img class="avatar s40" src="${encodeURI(
-          gon.current_user_avatar_url || gon.default_avatar_url,
-        )}" alt="${escape(gon.current_user_fullname)}" /></a>`,
-      )
-      .append('</div>')
-      .find('.js-close-discussion-note-form')
-      .show()
-      .removeClass('hide');
+    form.append('</div>').find('.js-close-discussion-note-form').show().removeClass('hide');
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);

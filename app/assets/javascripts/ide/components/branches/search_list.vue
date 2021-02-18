@@ -1,7 +1,7 @@
 <script>
-import { mapActions, mapState } from 'vuex';
-import { debounce } from 'lodash';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { mapActions, mapState } from 'vuex';
 import Item from './item.vue';
 
 export default {

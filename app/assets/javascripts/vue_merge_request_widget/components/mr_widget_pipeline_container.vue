@@ -1,10 +1,10 @@
 <script>
 import { isNumber } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ArtifactsApp from './artifacts_list_app.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 /**
  * Renders the pipeline and related deployments from the store.

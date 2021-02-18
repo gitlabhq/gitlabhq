@@ -71,7 +71,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       it 'does not enqueue a GC run' do
         expect { subject.execute }
-          .not_to change(GitGarbageCollectWorker.jobs, :count)
+          .not_to change(Projects::GitGarbageCollectWorker.jobs, :count)
       end
     end
 
@@ -84,24 +84,29 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
         stub_application_setting(housekeeping_enabled: false)
 
         expect { subject.execute }
-          .not_to change(GitGarbageCollectWorker.jobs, :count)
+          .not_to change(Projects::GitGarbageCollectWorker.jobs, :count)
       end
 
       it 'enqueues a GC run' do
         expect { subject.execute }
-          .to change(GitGarbageCollectWorker.jobs, :count).by(1)
+          .to change(Projects::GitGarbageCollectWorker.jobs, :count).by(1)
       end
     end
   end
 
   context 'when the filesystems are the same' do
-    let(:destination) { project.repository_storage }
+    before do
+      expect(Gitlab::GitalyClient).to receive(:filesystem_id).twice.and_return(SecureRandom.uuid)
+    end
 
-    it 'bails out and does nothing' do
+    it 'updates the database without trying to move the repostory', :aggregate_failures do
       result = subject.execute
+      project.reload
 
-      expect(result).to be_error
-      expect(result.message).to match(/SameFilesystemError/)
+      expect(result).to be_success
+      expect(project).not_to be_repository_read_only
+      expect(project.repository_storage).to eq('test_second_storage')
+      expect(project.project_repository.shard_name).to eq('test_second_storage')
     end
   end
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # This script is used both in CI and in local development 'rspec' runs.
 

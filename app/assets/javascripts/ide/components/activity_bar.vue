@@ -1,6 +1,7 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../constants';
 
 export default {
@@ -11,7 +12,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   computed: {
-    ...mapState(['currentActivityView']),
+    ...mapState(['currentActivityView', 'stagedFiles']),
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -20,7 +21,7 @@ export default {
 
       this.updateActivityBarView(view);
 
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
   },
   leftSidebarViews,
@@ -81,6 +82,9 @@ export default {
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
           <gl-icon name="commit" />
+          <div v-if="stagedFiles.length > 0" class="ide-commit-badge badge badge-pill">
+            {{ stagedFiles.length }}
+          </div>
         </button>
       </li>
     </ul>

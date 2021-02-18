@@ -2,17 +2,26 @@ import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
-import GetKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
 import UpdateKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
+import GetKeepLatestArtifactApplicationSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
+import GetKeepLatestArtifactProjectSetting from '~/artifacts_settings/graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
+import KeepLatestArtifactCheckbox from '~/artifacts_settings/keep_latest_artifact_checkbox.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const keepLatestArtifactMock = {
+const keepLatestArtifactProjectMock = {
   data: {
     project: {
       ciCdSettings: { keepLatestArtifact: true },
+    },
+  },
+};
+
+const keepLatestArtifactApplicationMock = {
+  data: {
+    ciApplicationSettings: {
+      keepLatestArtifact: true,
     },
   },
 };
@@ -34,7 +43,12 @@ describe('Keep latest artifact checkbox', () => {
 
   const createComponent = (handlers) => {
     requestHandlers = {
-      keepLatestArtifactQueryHandler: jest.fn().mockResolvedValue(keepLatestArtifactMock),
+      keepLatestArtifactProjectQueryHandler: jest
+        .fn()
+        .mockResolvedValue(keepLatestArtifactProjectMock),
+      keepLatestArtifactApplicationQueryHandler: jest
+        .fn()
+        .mockResolvedValue(keepLatestArtifactApplicationMock),
       keepLatestArtifactMutationHandler: jest
         .fn()
         .mockResolvedValue(keepLatestArtifactMockResponse),
@@ -42,7 +56,11 @@ describe('Keep latest artifact checkbox', () => {
     };
 
     apolloProvider = createMockApollo([
-      [GetKeepLatestArtifactProjectSetting, requestHandlers.keepLatestArtifactQueryHandler],
+      [GetKeepLatestArtifactProjectSetting, requestHandlers.keepLatestArtifactProjectQueryHandler],
+      [
+        GetKeepLatestArtifactApplicationSetting,
+        requestHandlers.keepLatestArtifactApplicationQueryHandler,
+      ],
       [UpdateKeepLatestArtifactProjectSetting, requestHandlers.keepLatestArtifactMutationHandler],
     ]);
 
@@ -51,14 +69,13 @@ describe('Keep latest artifact checkbox', () => {
         fullPath,
         helpPagePath,
       },
+      stubs: {
+        GlFormCheckbox,
+      },
       localVue,
       apolloProvider,
     });
   };
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -66,23 +83,60 @@ describe('Keep latest artifact checkbox', () => {
     apolloProvider = null;
   });
 
-  it('displays the checkbox and the help link', () => {
-    expect(findCheckbox().exists()).toBe(true);
-    expect(findHelpLink().exists()).toBe(true);
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('displays the checkbox and the help link', () => {
+      expect(findCheckbox().exists()).toBe(true);
+      expect(findHelpLink().exists()).toBe(true);
+    });
+
+    it('calls mutation on artifact setting change with correct payload', () => {
+      findCheckbox().vm.$emit('change', false);
+
+      expect(requestHandlers.keepLatestArtifactMutationHandler).toHaveBeenCalledWith({
+        fullPath,
+        keepLatestArtifact: false,
+      });
+    });
   });
 
-  it('sets correct setting value in checkbox with query result', async () => {
-    await wrapper.vm.$nextTick();
+  describe('when application keep latest artifact setting is enabled', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-    expect(wrapper.element).toMatchSnapshot();
+    it('sets correct setting value in checkbox with query result', async () => {
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('checkbox is enabled when application setting is enabled', async () => {
+      await wrapper.vm.$nextTick();
+
+      expect(findCheckbox().attributes('disabled')).toBeUndefined();
+    });
   });
 
-  it('calls mutation on artifact setting change with correct payload', () => {
-    findCheckbox().vm.$emit('change', false);
+  describe('when application keep latest artifact setting is disabled', () => {
+    it('checkbox is disabled when application setting is disabled', async () => {
+      createComponent({
+        keepLatestArtifactApplicationQueryHandler: jest.fn().mockResolvedValue({
+          data: {
+            ciApplicationSettings: {
+              keepLatestArtifact: false,
+            },
+          },
+        }),
+      });
 
-    expect(requestHandlers.keepLatestArtifactMutationHandler).toHaveBeenCalledWith({
-      fullPath,
-      keepLatestArtifact: false,
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.element).toMatchSnapshot();
+      expect(findCheckbox().attributes('disabled')).toBe('true');
     });
   });
 });

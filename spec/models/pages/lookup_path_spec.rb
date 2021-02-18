@@ -56,6 +56,15 @@ RSpec.describe Pages::LookupPath do
 
     include_examples 'uses disk storage'
 
+    it 'return nil when legacy storage is disabled and there is no deployment' do
+      stub_feature_flags(pages_serve_from_legacy_storage: false)
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+                                         .with(described_class::LegacyStorageDisabledError)
+                                         .and_call_original
+
+      expect(source).to eq(nil)
+    end
+
     context 'when there is pages deployment' do
       let(:deployment) { create(:pages_deployment, project: project) }
 
@@ -114,6 +123,35 @@ RSpec.describe Pages::LookupPath do
         end
 
         include_examples 'uses disk storage'
+      end
+
+      context 'when deployment were created during migration' do
+        before do
+          allow(deployment).to receive(:migrated?).and_return(true)
+        end
+
+        it 'uses deployment from object storage' do
+          freeze_time do
+            expect(source).to(
+              eq({
+                   type: 'zip',
+                   path: deployment.file.url(expire_at: 1.day.from_now),
+                   global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+                   sha256: deployment.file_sha256,
+                   file_size: deployment.size,
+                   file_count: deployment.file_count
+                 })
+            )
+          end
+        end
+
+        context 'when pages_serve_from_migrated_zip feature flag is disabled' do
+          before do
+            stub_feature_flags(pages_serve_from_migrated_zip: false)
+          end
+
+          include_examples 'uses disk storage'
+        end
       end
     end
   end

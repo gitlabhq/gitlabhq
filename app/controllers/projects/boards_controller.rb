@@ -15,6 +15,28 @@ class Projects::BoardsController < Projects::ApplicationController
 
   private
 
+  def board_klass
+    Board
+  end
+
+  def boards_finder
+    strong_memoize :boards_finder do
+      Boards::ListService.new(parent, current_user)
+    end
+  end
+
+  def board_finder
+    strong_memoize :board_finder do
+      Boards::ListService.new(parent, current_user, board_id: params[:id])
+    end
+  end
+
+  def board_create_service
+    strong_memoize :board_create_service do
+      Boards::CreateService.new(parent, current_user)
+    end
+  end
+
   def assign_endpoint_vars
     @boards_endpoint = project_boards_path(project)
     @bulk_issues_path = bulk_update_project_issues_path(project)

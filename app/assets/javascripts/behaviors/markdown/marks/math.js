@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-import { Mark } from 'tiptap';
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { Mark } from 'tiptap';
 import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::MathFilter

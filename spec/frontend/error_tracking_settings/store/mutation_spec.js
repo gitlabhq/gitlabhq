@@ -1,7 +1,7 @@
 import { TEST_HOST } from 'helpers/test_constants';
+import * as types from '~/error_tracking_settings/store/mutation_types';
 import mutations from '~/error_tracking_settings/store/mutations';
 import defaultState from '~/error_tracking_settings/store/state';
-import * as types from '~/error_tracking_settings/store/mutation_types';
 import {
   initialEmptyState,
   initialPopulatedState,

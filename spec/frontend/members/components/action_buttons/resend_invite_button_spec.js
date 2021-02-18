@@ -1,6 +1,6 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ResendInviteButton from '~/members/components/action_buttons/resend_invite_button.vue';
 

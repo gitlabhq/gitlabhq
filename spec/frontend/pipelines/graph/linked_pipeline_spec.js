@@ -1,9 +1,10 @@
-import { mount } from '@vue/test-utils';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import mockData from './linked_pipelines_mock_data';
-import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 
 const mockPipeline = mockData.triggered[0];
 const validTriggeredPipelineId = mockPipeline.project.id;
@@ -212,11 +213,11 @@ describe('Linked pipeline', () => {
       expect(wrapper.emitted().pipelineClicked).toBeTruthy();
     });
 
-    it('should emit `bv::hide::tooltip` to close the tooltip', () => {
+    it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, () => {
       jest.spyOn(wrapper.vm.$root, '$emit');
       findButton().trigger('click');
 
-      expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual(['bv::hide::tooltip']);
+      expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual([BV_HIDE_TOOLTIP]);
     });
 
     it('should emit downstreamHovered with job name on mouseover', () => {

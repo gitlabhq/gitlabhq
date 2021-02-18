@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateCustomEmojis < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false

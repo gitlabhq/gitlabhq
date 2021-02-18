@@ -7,6 +7,7 @@ module Clusters
       include EnumWithNil
       include AfterCommitQueue
       include ReactiveCaching
+      include NullifyIfBlank
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
@@ -25,7 +26,6 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_truncated,
         algorithm: 'aes-256-cbc'
 
-      before_validation :nullify_blank_namespace
       before_validation :enforce_namespace_to_lower_case
       before_validation :enforce_ca_whitespace_trimming
 
@@ -63,6 +63,8 @@ module Clusters
       }
 
       default_value_for :authorization_type, :rbac
+
+      nullify_if_blank :namespace
 
       def predefined_variables(project:, environment_name:, kubernetes_namespace: nil)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
@@ -253,10 +255,6 @@ module Clusters
         end
 
         true
-      end
-
-      def nullify_blank_namespace
-        self.namespace = nil if namespace.blank?
       end
 
       def extract_relevant_pod_data(pods)

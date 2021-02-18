@@ -1,21 +1,20 @@
 <script>
-import { throttle, isEmpty } from 'lodash';
-import { mapGetters, mapState, mapActions } from 'vuex';
 import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { throttle, isEmpty } from 'lodash';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
-import { polyfillSticky } from '~/lib/utils/sticky';
+import { sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
+import delayedJobMixin from '../mixins/delayed_job_mixin';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
 import LogTopBar from './job_log_controllers.vue';
+import Log from './log/log.vue';
+import Sidebar from './sidebar.vue';
 import StuckBlock from './stuck_block.vue';
 import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
-import Sidebar from './sidebar.vue';
-import { sprintf } from '~/locale';
-import delayedJobMixin from '../mixins/delayed_job_mixin';
-import Log from './log/log.vue';
 
 export default {
   name: 'JobPageApp',
@@ -50,11 +49,6 @@ export default {
       default: null,
     },
     variablesSettingsUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    runnerHelpUrl: {
       type: String,
       required: false,
       default: null,
@@ -139,14 +133,6 @@ export default {
         if (defaultStage) {
           this.fetchJobsForStage(defaultStage);
         }
-      }
-
-      if (newVal.archived) {
-        this.$nextTick(() => {
-          if (this.$refs.sticky) {
-            polyfillSticky(this.$refs.sticky);
-          }
-        });
       }
     },
   },
@@ -250,7 +236,6 @@ export default {
           v-if="shouldRenderSharedRunnerLimitWarning"
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
-          :runners-path="runnerHelpUrl"
           :project-path="projectPath"
           :subscriptions-more-minutes-url="subscriptionsMoreMinutesUrl"
         />
@@ -271,7 +256,6 @@ export default {
 
         <div
           v-if="job.archived"
-          ref="sticky"
           class="gl-mt-3 archived-job"
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
           data-testid="archived-job"
@@ -330,7 +314,6 @@ export default {
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
       :artifact-help-url="artifactHelpUrl"
-      :runner-help-url="runnerHelpUrl"
       data-testid="job-sidebar"
     />
   </div>

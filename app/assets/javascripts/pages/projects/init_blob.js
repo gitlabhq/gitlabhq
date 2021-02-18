@@ -1,9 +1,9 @@
-import LineHighlighter from '~/line_highlighter';
-import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
-import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
+import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import initBlobBundle from '~/blob_edit/blob_bundle';
+import LineHighlighter from '~/line_highlighter';
 
 export default () => {
   new LineHighlighter(); // eslint-disable-line no-new

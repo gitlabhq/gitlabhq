@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
+import initUserPopovers from '../../user_popovers';
+import highlightCurrentUser from './highlight_current_user';
 import renderMath from './render_math';
 import renderMermaid from './render_mermaid';
 import renderMetrics from './render_metrics';
-import highlightCurrentUser from './highlight_current_user';
-import initUserPopovers from '../../user_popovers';
 
 // Render GitLab flavoured Markdown
 //

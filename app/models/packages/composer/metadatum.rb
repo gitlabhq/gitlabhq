@@ -9,6 +9,9 @@ module Packages
       belongs_to :package, -> { where(package_type: :composer) }, inverse_of: :composer_metadatum
 
       validates :package, :target_sha, :composer_json, presence: true
+
+      scope :for_package, ->(name, project_id) { joins(:package).where(packages_packages: { name: name, project_id: project_id, package_type: Packages::Package.package_types[:composer] }) }
+      scope :locked_for_update, -> { lock('FOR UPDATE') }
     end
   end
 end

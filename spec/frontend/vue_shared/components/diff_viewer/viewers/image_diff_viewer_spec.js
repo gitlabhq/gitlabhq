@@ -1,6 +1,6 @@
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import { compileToFunctions } from 'vue-template-compiler';
-import { mount } from '@vue/test-utils';
 
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
 import imageDiffViewer from '~/vue_shared/components/diff_viewer/viewers/image_diff_viewer.vue';

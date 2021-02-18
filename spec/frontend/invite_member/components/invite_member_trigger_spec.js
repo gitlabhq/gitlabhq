@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import InviteMemberTrigger from '~/invite_member/components/invite_member_trigger.vue';
 import triggerProvides from './invite_member_trigger_mock_data';

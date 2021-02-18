@@ -8,14 +8,15 @@ import {
   AJAX_USERS_SELECT_OPTIONS_MAP,
   AJAX_USERS_SELECT_PARAMS_MAP,
 } from 'ee_else_ce/users_select/constants';
-import axios from '../lib/utils/axios_utils';
-import { s__, __, sprintf } from '../locale';
-import ModalStore from '../boards/stores/modal_store';
-import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
-import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
+import ModalStore from '../boards/stores/modal_store';
+import axios from '../lib/utils/axios_utils';
+import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { loadCSSFile } from '../lib/utils/css_utils';
+import { s__, __, sprintf } from '../locale';
+import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -795,13 +796,17 @@ UsersSelect.prototype.renderRow = function (
     ? `data-container="body" data-placement="left" data-title="${tooltip}"`
     : '';
 
+  const name =
+    user?.availability && isUserBusy(user.availability)
+      ? sprintf(__('%{name} (Busy)'), { name: user.name })
+      : user.name;
   return `
     <li data-user-id=${user.id}>
       <a href="#" class="dropdown-menu-user-link d-flex align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="d-flex flex-column overflow-hidden">
           <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
-            ${escape(user.name)}
+            ${escape(name)}
           </strong>
           ${
             username
@@ -834,7 +839,7 @@ UsersSelect.prototype.renderRowAvatar = function (issuableType, user, img) {
 UsersSelect.prototype.renderApprovalRules = function (elsClassName, approvalRules = []) {
   const count = approvalRules.length;
 
-  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer') || !count) {
+  if (!elsClassName?.includes('reviewer') || !count) {
     return '';
   }
 

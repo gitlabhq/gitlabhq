@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# File Locking **(CORE)**
+# File Locking **(FREE)**
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
@@ -26,7 +26,7 @@ GitLab supports two different modes of file locking:
 
 - [Exclusive file locks](#exclusive-file-locks) for binary files: done **through
   the command line** with Git LFS and `.gitattributes`, it prevents locked
-  files from being modified on any branch. **(CORE)**
+  files from being modified on any branch. **(FREE)**
 - [Default branch locks](#default-branch-file-and-directory-locks): done
   **through the GitLab UI**, it prevents locked files and directories being
   modified on the default branch. **(PREMIUM)**
@@ -41,7 +41,7 @@ users will be prevented from modifying locked files by pushing, merging,
 or any other means, and will be shown an error like: `The path '.gitignore' is
 locked by Administrator`.
 
-## Exclusive file locks
+## Exclusive file locks **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35856) in GitLab 10.5.
 
@@ -198,7 +198,8 @@ Suggested workflow for shared projects:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab Enterprise Edition 8.9. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 This process allows you to lock one file at a time through the GitLab UI and
-requires access to [GitLab Premium, GitLab.com Silver](https://about.gitlab.com/pricing/), or higher tiers.
+requires access to [GitLab Premium](https://about.gitlab.com/pricing/)
+or higher tiers.
 
 Default branch file and directory locks only apply to the default branch set in
 the project's settings (usually `master`).

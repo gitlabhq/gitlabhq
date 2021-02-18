@@ -16,9 +16,7 @@ module Gitlab
         # load balancer's IP.
         req = Rack::Request.new(env)
 
-        Gitlab::RequestContext.instance.client_ip = req.ip
-        Gitlab::RequestContext.instance.start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
-        Gitlab::RequestContext.instance.request_start_time = Gitlab::Metrics::System.real_time
+        ::Gitlab::InstrumentationHelper.init_instrumentation_data(request_ip: req.ip)
 
         @app.call(env)
       end

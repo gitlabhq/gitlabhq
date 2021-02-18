@@ -1,15 +1,15 @@
+import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import component from '~/registry/settings/components/registry_settings_app.vue';
-import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsForm from '~/registry/settings/components/settings_form.vue';
 import {
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/registry/settings/constants';
+import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
 
 import {
   expirationPolicyPayload,

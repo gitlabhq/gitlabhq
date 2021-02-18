@@ -17,8 +17,8 @@ import {
   REQUEST_CREATE_CLUSTER,
   CREATE_CLUSTER_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
-import createState from '~/create_cluster/eks_cluster/store/state';
 import mutations from '~/create_cluster/eks_cluster/store/mutations';
+import createState from '~/create_cluster/eks_cluster/store/state';
 
 describe('Create EKS cluster store mutations', () => {
   let clusterName;

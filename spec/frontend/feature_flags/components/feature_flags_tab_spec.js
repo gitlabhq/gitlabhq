@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import FeatureFlagsTab from '~/feature_flags/components/feature_flags_tab.vue';
 
 const DEFAULT_PROPS = {

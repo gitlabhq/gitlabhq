@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
+  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+
   before do
     project = create(:project, :repository)
     sign_in project.owner
@@ -34,8 +36,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
     let(:experiment_active) { true }
     let(:in_experiment_group) { true }
 
-    it 'allows the user to pick a "Learn CI/CD syntax" template from the dropdown', :js,
-       { quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297347' } } do
+    it 'allows the user to pick a "Learn CI/CD syntax" template from the dropdown', :js do
       expect(page).to have_css('.gitlab-ci-syntax-yml-selector')
 
       find('.js-gitlab-ci-syntax-yml-selector').click
@@ -50,7 +51,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
       wait_for_requests
 
       expect(page).to have_css('.gitlab-ci-syntax-yml-selector .dropdown-toggle-text', text: 'Learn CI/CD syntax')
-      expect(page).to have_content('You can use artifacts to pass data to jobs in later stages.')
+      expect(editor_get_value).to have_content('You can use artifacts to pass data to jobs in later stages.')
     end
   end
 end

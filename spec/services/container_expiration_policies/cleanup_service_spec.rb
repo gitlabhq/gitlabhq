@@ -61,7 +61,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
             original_size: 1000,
             before_truncate_size: 800,
             after_truncate_size: 200,
-            before_delete_size: 100
+            before_delete_size: 100,
+            deleted_size: 100
           }
         end
 
@@ -77,7 +78,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
                 cleanup_tags_service_original_size: 1000,
                 cleanup_tags_service_before_truncate_size: 800,
                 cleanup_tags_service_after_truncate_size: 200,
-                cleanup_tags_service_before_delete_size: 100
+                cleanup_tags_service_before_delete_size: 100,
+                cleanup_tags_service_deleted_size: 100
               )
             expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
             expect(repository.reload.cleanup_unfinished?).to be_truthy
@@ -95,6 +97,22 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
         response = subject
 
         expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'with a network error' do
+      before do
+        expect(Projects::ContainerRepository::CleanupTagsService)
+          .to receive(:new).and_raise(Faraday::TimeoutError)
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(Faraday::TimeoutError)
+
+        expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
+        expect(repository.reload.cleanup_unfinished?).to be_truthy
+        expect(repository.expiration_policy_started_at).not_to eq(nil)
+        expect(repository.expiration_policy_completed_at).to eq(nil)
       end
     end
   end

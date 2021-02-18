@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Bring a demoted primary node back online **(PREMIUM ONLY)**
+# Bring a demoted primary node back online **(PREMIUM SELF)**
 
 After a failover, it is possible to fail back to the demoted **primary** node to
 restore your original configuration. This process consists of two steps:

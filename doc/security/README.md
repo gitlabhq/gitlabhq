@@ -23,7 +23,7 @@ type: index
 - [Send email confirmation on sign-up](user_email_confirmation.md)
 - [Security of running jobs](https://docs.gitlab.com/runner/security/)
 - [Proxying images](asset_proxy.md)
-- [CI/CD environment variables](cicd_environment_variables.md)
+- [CI/CD variables](cicd_variables.md)
 
 ## Securing your GitLab installation
 

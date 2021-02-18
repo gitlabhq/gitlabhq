@@ -111,7 +111,7 @@ preferred editor (all major editors are supported) accordingly. We suggest
 setting up Prettier to run when each file is saved. For instructions about using
 Prettier in your preferred editor, see the [Prettier documentation](https://prettier.io/docs/en/editors.html).
 
-Please take care that you only let Prettier format the same file types as the global Yarn script does (`.js`, `.vue`, `.graphql`, and `.scss`). In VSCode by example you can easily exclude file formats in your settings file:
+Please take care that you only let Prettier format the same file types as the global Yarn script does (`.js`, `.vue`, `.graphql`, and `.scss`). For example, you can exclude file formats in your Visual Studio Code settings file:
 
 ```json
   "prettier.disableLanguages": [
@@ -128,13 +128,13 @@ The following yarn scripts are available to do global formatting:
 yarn prettier-staged-save
 ```
 
-Updates all currently staged files (based on `git diff`) with Prettier and saves the needed changes.
+Updates all staged files (based on `git diff`) with Prettier and saves the needed changes.
 
 ```shell
 yarn prettier-staged
 ```
 
-Checks all currently staged files (based on `git diff`) with Prettier and log which files would need manual updating to the console.
+Checks all staged files (based on `git diff`) with Prettier and log which files would need manual updating to the console.
 
 ```shell
 yarn prettier-all

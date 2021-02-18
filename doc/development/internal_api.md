@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Internal API
+# Internal API **(FREE)**
 
 The internal API is used by different GitLab components, it can not be
 used by other consumers. This documentation is intended for people
@@ -26,7 +26,7 @@ file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE:
-The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (kas) uses JSON Web Token (JWT)
+The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (`kas`) uses JSON Web Token (JWT)
 authentication, which is different from GitLab Shell.
 
 ## Git Authentication
@@ -51,7 +51,7 @@ POST /internal/allowed
 | `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab Shell |
 | `username` | string | no      | Username from the certificate used to connect to GitLab Shell |
 | `project`  | string | no (if `gl_repository` is passed) | Path to the project |
-| `gl_repository`  | string | no (if `project` is passed) | Repository identifier (e.g. `project-7`) |
+| `gl_repository`  | string | no (if `project` is passed) | Repository identifier, such as `project-7` |
 | `protocol` | string | yes     | SSH when called from GitLab Shell, HTTP or SSH when called from Gitaly |
 | `action`   | string | yes     | Git command being run (`git-upload-pack`, `git-receive-pack`, `git-upload-archive`) |
 | `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, the magic string `_any` when called from GitLab Shell |
@@ -378,7 +378,7 @@ Example response:
 > - This feature is not deployed on GitLab.com
 > - It's not recommended for production use.
 
-The following endpoints are used by the GitLab Kubernetes Agent Server (kas)
+The following endpoints are used by the GitLab Kubernetes Agent Server (`kas`)
 for various purposes.
 
 These endpoints are all authenticated using JWT. The JWT secret is stored in a file
@@ -390,9 +390,9 @@ The Kubernetes agent is under development and is not recommended for production 
 
 ### Kubernetes agent information
 
-Called from GitLab Kubernetes Agent Server (kas) to retrieve agent
+Called from GitLab Kubernetes Agent Server (`kas`) to retrieve agent
 information for the given agent token. This returns the Gitaly connection
-information for the agent's project in order for kas to fetch and update
+information for the agent's project in order for `kas` to fetch and update
 the agent's configuration.
 
 ```plaintext
@@ -407,13 +407,13 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Auth
 
 ### Kubernetes agent project information
 
-Called from GitLab Kubernetes Agent Server (kas) to retrieve project
+Called from GitLab Kubernetes Agent Server (`kas`) to retrieve project
 information for the given agent token. This returns the Gitaly
-connection for the requested project. GitLab kas uses this to configure
+connection for the requested project. GitLab `kas` uses this to configure
 the agent to fetch Kubernetes resources from the project repository to
 sync.
 
-Only public projects are currently supported. For private projects, the ability for the
+Only public projects are supported. For private projects, the ability for the
 agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
 | Attribute | Type   | Required | Description |
@@ -432,7 +432,7 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Auth
 
 ### Kubernetes agent usage metrics
 
-Called from GitLab Kubernetes Agent Server (kas) to increase the usage
+Called from GitLab Kubernetes Agent Server (`kas`) to increase the usage
 metric counters.
 
 | Attribute | Type   | Required | Description |
@@ -456,7 +456,7 @@ Cluster.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `alert` | Hash | yes | Alerts detail. Currently same format as [3rd party alert](../operations/incident_management/alert_integrations.md#customize-the-alert-payload-outside-of-gitlab). |
+| `alert` | Hash | yes | Alerts detail. Same format as [3rd party alert](../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab). |
 
 ```plaintext
 POST internal/kubernetes/modules/cilium_alert
@@ -467,3 +467,153 @@ Example Request:
 ```shell
 curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" --data '"{\"alert\":{\"title\":\"minimal\",\"message\":\"network problem\",\"evalMatches\":[{\"value\":1,\"metric\":\"Count\",\"tags\":{}}]}}"' "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium_alert"
 ```
+
+## Subscriptions
+
+The subscriptions endpoint is used by `[customers.gitlab.com](https://gitlab.com/gitlab-org/customers-gitlab-com)` (CustomersDot)
+in order to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
+
+### Creating a subscription
+
+Use a POST to create a subscription.
+
+```plaintext
+POST /namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | yes      | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of active users in the last month |
+| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="silver"&seats=10"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":10,
+    "seats_in_use":1,
+    "max_seats_used":0,
+    "seats_owed":0
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":null,
+    "trial_ends_on":null
+  }
+}
+```
+
+### Updating a subscription
+
+Use a PUT command to update an existing subscription.
+
+```plaintext
+PUT /namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | no       | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of active users in the last month |
+| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial. Required if trial is true. |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request PUT --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?max_seats_used=0"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":80,
+    "seats_in_use":82,
+    "max_seats_used":0,
+    "seats_owed":2
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":"2021-07-15",
+    "trial_ends_on":null
+  }
+}
+```
+
+### Retrieving a subscription
+
+Use a GET command to view an existing subscription.
+
+```plaintext
+GET /namespaces/:id/gitlab_subscription
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"silver",
+    "name":"Silver",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":80,
+    "seats_in_use":82,
+    "max_seats_used":82,
+    "seats_owed":2
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":"2021-07-15",
+    "trial_ends_on":null
+  }
+}
+```
+
+### Known consumers
+
+- CustomersDot

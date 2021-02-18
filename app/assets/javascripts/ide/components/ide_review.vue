@@ -1,8 +1,8 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
-import IdeTreeList from './ide_tree_list.vue';
-import EditorModeDropdown from './editor_mode_dropdown.vue';
 import { viewerTypes } from '../constants';
+import EditorModeDropdown from './editor_mode_dropdown.vue';
+import IdeTreeList from './ide_tree_list.vue';
 
 export default {
   components: {

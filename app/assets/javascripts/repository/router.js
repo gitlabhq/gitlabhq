@@ -1,6 +1,6 @@
+import { escapeRegExp } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { escapeRegExp } from 'lodash';
 import { joinPaths } from '../lib/utils/url_utility';
 import IndexPage from './pages/index.vue';
 import TreePage from './pages/tree.vue';

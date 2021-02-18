@@ -4,21 +4,28 @@
 #             - "AND": counts unique elements that were observed triggering all of following events
 #  events: list of events names to aggregate into metric. All events in this list must have the same 'redis_slot' and 'aggregation' attributes
 #           see from lib/gitlab/usage_data_counters/known_events/ for the list of valid events.
+#  source: defines which datasource will be used to locate events that should be included in aggregated metric. Valid values are:
+#          - database
+#          - redis
 #  feature_flag: name of development feature flag that will be checked before metrics aggregation is performed.
 #                Corresponding feature flag should have `default_enabled` attribute set to `false`.
 #                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 ---
 - name: compliance_features_track_unique_visits_union
   operator: OR
+  source: redis
   events: ['g_compliance_audit_events', 'g_compliance_dashboard', 'i_compliance_audit_events', 'a_compliance_audit_events_api', 'i_compliance_credential_inventory']
 - name: product_analytics_test_metrics_union
   operator: OR
+  source: redis
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
 - name: product_analytics_test_metrics_intersection
   operator: AND
+  source: redis
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
 - name: incident_management_alerts_total_unique_counts
   operator: OR
+  source: redis
   events: [
     'incident_management_alert_status_changed',
     'incident_management_alert_assigned',
@@ -27,6 +34,7 @@
   ]
 - name: incident_management_incidents_total_unique_counts
   operator: OR
+  source: redis
   events: [
     'incident_management_incident_created',
     'incident_management_incident_reopened',
@@ -40,3 +48,13 @@
     'incident_management_incident_unrelate',
     'incident_management_incident_change_confidential'
   ]
+- name: i_testing_paid_monthly_active_user_total
+  operator: OR
+  source: redis
+  events: [
+  'i_testing_web_performance_widget_total',
+  'i_testing_full_code_quality_report_total',
+  'i_testing_group_code_coverage_visit_total',
+  'i_testing_load_performance_widget_total',
+  'i_testing_metrics_report_widget_total'
+]

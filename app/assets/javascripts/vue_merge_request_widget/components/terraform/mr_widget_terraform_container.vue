@@ -1,9 +1,9 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
-import { n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import MrWidgetExpanableSection from '../mr_widget_expandable_section.vue';
 import Poll from '~/lib/utils/poll';
+import { n__ } from '~/locale';
+import MrWidgetExpanableSection from '../mr_widget_expandable_section.vue';
 import TerraformPlan from './terraform_plan.vue';
 
 export default {
@@ -128,12 +128,9 @@ export default {
       </template>
 
       <template #content>
-        <terraform-plan
-          v-for="(plan, key) in plansObject"
-          :key="key"
-          :plan="plan"
-          class="mr-widget-body"
-        />
+        <div class="mr-widget-body gl-pb-1">
+          <terraform-plan v-for="(plan, key) in plansObject" :key="key" :plan="plan" />
+        </div>
       </template>
     </mr-widget-expanable-section>
   </section>

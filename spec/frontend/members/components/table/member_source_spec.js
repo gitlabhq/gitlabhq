@@ -1,5 +1,5 @@
-import { mount, createWrapper } from '@vue/test-utils';
 import { getByText as getByTextHelper } from '@testing-library/dom';
+import { mount, createWrapper } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MemberSource from '~/members/components/table/member_source.vue';
 

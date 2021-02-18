@@ -1,10 +1,10 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
-import Todos from '~/pages/dashboard/todos/index/todos';
+import $ from 'jquery';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
+import Todos from '~/pages/dashboard/todos/index/todos';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrl'),

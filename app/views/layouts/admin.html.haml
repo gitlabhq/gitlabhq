@@ -3,4 +3,9 @@
 - nav "admin"
 - @left_sidebar = true
 
+-# This active_nav_link check is also used in `app/views/layouts/nav/sidebar/_admin.html.haml`
+- is_application_settings = active_nav_link?(controller: [:application_settings, :integrations])
+
+- enable_search_settings if is_application_settings
+
 = render template: "layouts/application"

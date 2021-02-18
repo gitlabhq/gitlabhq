@@ -1,6 +1,7 @@
 <script>
 import { throttle } from 'lodash';
-import { numberToHumanSize } from '../../../../lib/utils/number_utils';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { encodeSaferUrl } from '~/lib/utils/url_utility';
 
 export default {
   props: {
@@ -43,6 +44,9 @@ export default {
     hasDimensions() {
       return this.width && this.height;
     },
+    safePath() {
+      return encodeSaferUrl(this.path);
+    },
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeThrottled, false);
@@ -84,7 +88,7 @@ export default {
 <template>
   <div data-testid="image-viewer" data-qa-selector="image_viewer_container">
     <div :class="innerCssClasses" class="position-relative">
-      <img ref="contentImg" :src="path" @load="onImgLoad" />
+      <img ref="contentImg" :src="safePath" @load="onImgLoad" />
       <slot
         name="image-overlay"
         :rendered-width="renderedWidth"

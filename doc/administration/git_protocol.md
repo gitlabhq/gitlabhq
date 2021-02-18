@@ -6,7 +6,7 @@ type: reference
 description: "Set and configure Git protocol v2"
 ---
 
-# Configuring Git Protocol v2
+# Configuring Git Protocol v2 **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46555) in GitLab 11.4.
 > - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
@@ -29,11 +29,11 @@ server to accept the `GIT_PROTOCOL` environment.
 
 In installations using [GitLab Helm Charts](https://docs.gitlab.com/charts/)
 and [All-in-one Docker image](https://docs.gitlab.com/omnibus/docker/), the SSH
-service is already configured to accept the `GIT_PROTOCOL` environment and users
+service is already configured to accept the `GIT_PROTOCOL` environment. Users
 need not do anything more.
 
-For Omnibus GitLab and installations from source, you have to manually update
-the SSH configuration of your server by adding the line below to the `/etc/ssh/sshd_config` file:
+For Omnibus GitLab and installations from source, update
+the SSH configuration of your server manually by adding this line to the `/etc/ssh/sshd_config` file:
 
 ```plaintext
 AcceptEnv GIT_PROTOCOL
@@ -119,6 +119,8 @@ production environment, you can use the following Prometheus query:
 ```prometheus
 sum(rate(gitaly_git_protocol_requests_total[1m])) by (grpc_method,git_protocol,grpc_service)
 ```
+
+<!-- This link sporadically returns a 503 during automated link checking but is correct -->
 
 You can view what Git protocol versions are being used on GitLab.com at
 <https://dashboards.gitlab.com/d/pqlQq0xik/git-protocol-versions>.

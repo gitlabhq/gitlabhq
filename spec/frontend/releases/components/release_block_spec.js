@@ -1,13 +1,13 @@
-import $ from 'jquery';
 import { mount } from '@vue/test-utils';
+import $ from 'jquery';
 import { getJSONFixture } from 'helpers/fixtures';
+import * as commonUtils from '~/lib/utils/common_utils';
+import * as urlUtility from '~/lib/utils/url_utility';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
-import * as urlUtility from '~/lib/utils/url_utility';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 

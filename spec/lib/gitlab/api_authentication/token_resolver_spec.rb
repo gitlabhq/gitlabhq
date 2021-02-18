@@ -47,8 +47,8 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
 
     subject { resolver.resolve(raw) }
 
-    context 'with :personal_access_token' do
-      let(:type) { :personal_access_token }
+    context 'with :personal_access_token_with_username' do
+      let(:type) { :personal_access_token_with_username }
       let(:token) { personal_access_token }
 
       context 'with valid credentials' do
@@ -62,10 +62,16 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
 
         it_behaves_like 'an unauthorized request'
       end
+
+      context 'with no username' do
+        let(:raw) { username_and_password(nil, token.token) }
+
+        it_behaves_like 'an unauthorized request'
+      end
     end
 
-    context 'with :job_token' do
-      let(:type) { :job_token }
+    context 'with :job_token_with_username' do
+      let(:type) { :job_token_with_username }
       let(:token) { ci_job }
 
       context 'with valid credentials' do
@@ -93,8 +99,8 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
       end
     end
 
-    context 'with :deploy_token' do
-      let(:type) { :deploy_token }
+    context 'with :deploy_token_with_username' do
+      let(:type) { :deploy_token_with_username }
       let(:token) { deploy_token }
 
       context 'with a valid deploy token' do
@@ -107,6 +113,51 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
         let(:raw) { username_and_password("not-my-#{token.username}", token.token) }
 
         it_behaves_like 'an unauthorized request'
+      end
+    end
+
+    context 'with :personal_access_token' do
+      let(:type) { :personal_access_token }
+      let(:token) { personal_access_token }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password(nil, token.token) }
+
+        it_behaves_like 'an authorized request'
+      end
+    end
+
+    context 'with :job_token' do
+      let(:type) { :job_token }
+      let(:token) { ci_job }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password(nil, token.token) }
+
+        it_behaves_like 'an authorized request'
+      end
+
+      context 'when the job is not running' do
+        let(:raw) { username_and_password(nil, ci_job_done.token) }
+
+        it_behaves_like 'an unauthorized request'
+      end
+
+      context 'with an invalid job token' do
+        let(:raw) { username_and_password(nil, "not a valid CI job token") }
+
+        it_behaves_like 'an unauthorized request'
+      end
+    end
+
+    context 'with :deploy_token' do
+      let(:type) { :deploy_token }
+      let(:token) { deploy_token }
+
+      context 'with a valid deploy token' do
+        let(:raw) { username_and_password(nil, token.token) }
+
+        it_behaves_like 'an authorized request'
       end
     end
   end

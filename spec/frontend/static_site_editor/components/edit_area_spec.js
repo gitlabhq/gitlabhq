@@ -1,15 +1,14 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
-import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
-
 import EditArea from '~/static_site_editor/components/edit_area.vue';
-import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
-import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import EditDrawer from '~/static_site_editor/components/edit_drawer.vue';
+import EditHeader from '~/static_site_editor/components/edit_header.vue';
+import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved_changes_confirm_dialog.vue';
+import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
+import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 
 import {
   sourceContentTitle as title,

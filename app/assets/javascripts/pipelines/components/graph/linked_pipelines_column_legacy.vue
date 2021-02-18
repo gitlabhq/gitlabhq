@@ -1,6 +1,6 @@
 <script>
-import LinkedPipeline from './linked_pipeline.vue';
 import { UPSTREAM } from './constants';
+import LinkedPipeline from './linked_pipeline.vue';
 import { reportToSentry } from './utils';
 
 export default {

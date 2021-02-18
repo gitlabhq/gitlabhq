@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import EnableReviewAppButton from '~/environments/components/enable_review_app_modal.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 describe('Enable Review App Button', () => {
   let wrapper;

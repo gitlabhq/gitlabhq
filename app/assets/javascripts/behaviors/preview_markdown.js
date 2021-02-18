@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
 // MarkdownPreview

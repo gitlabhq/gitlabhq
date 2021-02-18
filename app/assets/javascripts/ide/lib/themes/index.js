@@ -1,9 +1,9 @@
-import white from './white';
 import dark from './dark';
 import monokai from './monokai';
-import solarizedLight from './solarized_light';
-import solarizedDark from './solarized_dark';
 import none from './none';
+import solarizedDark from './solarized_dark';
+import solarizedLight from './solarized_light';
+import white from './white';
 
 export const themes = [
   {

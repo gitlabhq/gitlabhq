@@ -1,0 +1,6 @@
+mutation configureSast($input: ConfigureSastInput!) {
+  configureSast(input: $input) {
+    successPath
+    errors
+  }
+}

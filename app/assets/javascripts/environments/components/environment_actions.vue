@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
 import { formatTime } from '~/lib/utils/datetime_utility';
+import { __, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {

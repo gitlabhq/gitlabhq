@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { __ } from '~/locale';
-import { doesHashExistInUrl } from '~/lib/utils/url_utility';
+import Vue from 'vue';
 import {
   parseBoolean,
   historyReplaceState,
   buildUrlWithCurrentLocation,
 } from '~/lib/utils/common_utils';
+import { doesHashExistInUrl } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import Pipelines from './components/pipelines_list/pipelines.vue';
 import PipelinesStore from './stores/pipelines_store';

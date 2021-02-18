@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Package Registry
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 With the GitLab Package Registry, you can use GitLab as a private or public registry
 for a variety of common package managers. You can publish and share
@@ -21,15 +21,21 @@ You can view packages for your project or group.
 
 You can search, sort, and filter packages on this page.
 
+When you view packages in a group:
+
+- All projects published to the group and its projects are displayed.
+- Only the projects you can access are displayed.
+- If a project is private, or you are not a member of the project, it is not displayed.
+
 For information on how to create and upload a package, view the GitLab documentation for your package type.
 
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/README.md) to build packages.
-For Maven, NuGet, NPM, Conan, and PyPI packages, and Composer dependencies, you can
+For Maven, NuGet, npm, Conan, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
-CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 Learn more about using CI/CD to build:
 
@@ -37,7 +43,7 @@ Learn more about using CI/CD to build:
 - [Conan packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
 - [Generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [NPM packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [npm packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
 - [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 
 If you use CI/CD to build a package, extended activity information is displayed

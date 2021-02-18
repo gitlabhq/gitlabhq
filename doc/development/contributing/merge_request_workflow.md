@@ -65,9 +65,9 @@ request is as follows:
       template already provided in the "Description" field.
    1. If you are contributing documentation, choose `Documentation` from the
       "Choose a template" menu and fill in the description according to the template.
-   1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-      `Closes #XXX` syntax to [auto-close](../../user/project/issues/managing_issues.md#closing-issues-automatically)
-      the issue(s) once the merge request is merged.
+   1. Use the syntax `Solves #XXX`, `Closes #XXX`, or `Refs #XXX` to mention the issue(s) your merge
+      request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
+      You must close them manually once the merge request is merged.
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
 1. UI changes should use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/). The MR must include *Before* and
@@ -150,7 +150,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 #### Why these standards matter
 
 1. Consistent commit messages that follow these guidelines make the history more readable.
-1. Concise standard commit messages helps to identify breaking changes for a deployment or ~"master:broken" quicker when
+1. Concise standard commit messages helps to identify [breaking changes](index.md#breaking-changes) for a deployment or ~"master:broken" quicker when
    reviewing commits between two points in time.
 
 #### Commit message template
@@ -212,7 +212,7 @@ the contribution acceptance criteria below:
 1. Changes do not degrade performance:
    - Avoid repeated polling of endpoints that require a significant amount of overhead.
    - Check for N+1 queries via the SQL log or [`QueryRecorder`](../merge_request_performance_guidelines.md).
-   - Avoid repeated access of the filesystem.
+   - Avoid repeated access of the file system.
    - Use [polling with ETag caching](../polling.md) if needed to support real-time features.
 1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.),
    they should conform to our [Licensing guidelines](../licensing.md). See those

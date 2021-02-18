@@ -1,5 +1,5 @@
-import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '../../constants';
 import { s__, n__ } from '~/locale';
+import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '../../constants';
 
 export const groupedSummaryText = (state) => {
   if (state.isLoading) {

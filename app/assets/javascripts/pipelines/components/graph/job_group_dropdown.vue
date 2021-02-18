@@ -60,7 +60,7 @@ export default {
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <span class="gl-display-flex gl-align-items-center gl-min-w-0">
-          <ci-icon :status="group.status" :size="24" />
+          <ci-icon :status="group.status" :size="24" class="gl-line-height-0" />
           <span class="gl-text-truncate mw-70p gl-pl-3">
             {{ group.name }}
           </span>

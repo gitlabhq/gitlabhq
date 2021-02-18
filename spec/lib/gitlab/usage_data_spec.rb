@@ -228,11 +228,32 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
+    it 'includes import gmau usage data' do
+      for_defined_days_back do
+        user = create(:user)
+        group = create(:group)
+
+        group.add_owner(user)
+
+        create(:project, import_type: :github, creator_id: user.id)
+        create(:jira_import_state, :finished, project: create(:project, creator_id: user.id))
+        create(:issue_csv_import, user: user)
+        create(:group_import_state, group: group, user: user)
+        create(:bulk_import, user: user)
+      end
+
+      expect(described_class.usage_activity_by_stage_manage({})).to include(
+        unique_users_all_imports: 10
+      )
+
+      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+        unique_users_all_imports: 5
+      )
+    end
+
     it 'includes imports usage data' do
       for_defined_days_back do
         user = create(:user)
-
-        create(:bulk_import, user: user)
 
         %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz phabricator).each do |type|
           create(:project, import_type: type, creator_id: user.id)
@@ -242,70 +263,111 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:jira_import_state, :finished, project: jira_project)
 
         create(:issue_csv_import, user: user)
+
+        group = create(:group)
+        group.add_owner(user)
+        create(:group_import_state, group: group, user: user)
+
+        bulk_import = create(:bulk_import, user: user)
+        create(:bulk_import_entity, :group_entity, bulk_import: bulk_import)
+        create(:bulk_import_entity, :project_entity, bulk_import: bulk_import)
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         {
           bulk_imports: {
-            gitlab: 2
+            gitlab_v1: 2,
+            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
           },
-          projects_imported: {
-            total: 2,
-            gitlab_project: 2,
-            gitlab: 2,
-            github: 2,
+          project_imports: {
             bitbucket: 2,
             bitbucket_server: 2,
-            gitea: 2,
             git: 2,
+            gitea: 2,
+            github: 2,
+            gitlab: 2,
+            gitlab_migration: 2,
+            gitlab_project: 2,
             manifest: 2
           },
-          issues_imported: {
+          issue_imports: {
             jira: 2,
             fogbugz: 2,
             phabricator: 2,
             csv: 2
-          }
+          },
+          group_imports: {
+            group_import: 2,
+            gitlab_migration: 2
+          },
+          projects_imported: {
+            total: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
+            github: Gitlab::UsageData::DEPRECATED_VALUE,
+            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
+            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
+            git: Gitlab::UsageData::DEPRECATED_VALUE,
+            manifest: Gitlab::UsageData::DEPRECATED_VALUE
+          },
+          issues_imported: {
+            jira: Gitlab::UsageData::DEPRECATED_VALUE,
+            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
+            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
+            csv: Gitlab::UsageData::DEPRECATED_VALUE
+          },
+          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
         }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
         {
           bulk_imports: {
-            gitlab: 1
+            gitlab_v1: 1,
+            gitlab: Gitlab::UsageData::DEPRECATED_VALUE
           },
-          projects_imported: {
-            total: 1,
-            gitlab_project: 1,
-            gitlab: 1,
-            github: 1,
+          project_imports: {
             bitbucket: 1,
             bitbucket_server: 1,
-            gitea: 1,
             git: 1,
+            gitea: 1,
+            github: 1,
+            gitlab: 1,
+            gitlab_migration: 1,
+            gitlab_project: 1,
             manifest: 1
           },
-          issues_imported: {
+          issue_imports: {
             jira: 1,
             fogbugz: 1,
             phabricator: 1,
             csv: 1
-          }
+          },
+          group_imports: {
+            group_import: 1,
+            gitlab_migration: 1
+          },
+          projects_imported: {
+            total: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitlab_project: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitlab: Gitlab::UsageData::DEPRECATED_VALUE,
+            github: Gitlab::UsageData::DEPRECATED_VALUE,
+            bitbucket: Gitlab::UsageData::DEPRECATED_VALUE,
+            bitbucket_server: Gitlab::UsageData::DEPRECATED_VALUE,
+            gitea: Gitlab::UsageData::DEPRECATED_VALUE,
+            git: Gitlab::UsageData::DEPRECATED_VALUE,
+            manifest: Gitlab::UsageData::DEPRECATED_VALUE
+          },
+          issues_imported: {
+            jira: Gitlab::UsageData::DEPRECATED_VALUE,
+            fogbugz: Gitlab::UsageData::DEPRECATED_VALUE,
+            phabricator: Gitlab::UsageData::DEPRECATED_VALUE,
+            csv: Gitlab::UsageData::DEPRECATED_VALUE
+          },
+          groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
+
         }
       )
-    end
-
-    it 'includes group imports usage data' do
-      for_defined_days_back do
-        user = create(:user)
-        group = create(:group)
-        group.add_owner(user)
-        create(:group_import_state, group: group, user: user)
-      end
-
-      expect(described_class.usage_activity_by_stage_manage({}))
-        .to include(groups_imported: 2)
-      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period))
-        .to include(groups_imported: 1)
     end
 
     def omniauth_providers
@@ -1262,7 +1324,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
-    let(:ineligible_total_categories) { %w[source_code ci_secrets_management incident_management_alerts snippets terraform] }
+    let(:ineligible_total_categories) do
+      %w[source_code ci_secrets_management incident_management_alerts snippets terraform pipeline_authoring]
+    end
 
     it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)
@@ -1286,8 +1350,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe '.aggregated_metrics_weekly' do
     subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_weekly }
 
-    it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
-      expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:aggregated_metrics_weekly_data).and_return(global_search_gmau: 123)
+    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate#weekly_data', :aggregate_failures do
+      expect_next_instance_of(::Gitlab::Usage::Metrics::Aggregates::Aggregate) do |instance|
+        expect(instance).to receive(:weekly_data).and_return(global_search_gmau: 123)
+      end
       expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
     end
   end
@@ -1295,8 +1361,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe '.aggregated_metrics_monthly' do
     subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_monthly }
 
-    it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
-      expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:aggregated_metrics_monthly_data).and_return(global_search_gmau: 123)
+    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate#monthly_data', :aggregate_failures do
+      expect_next_instance_of(::Gitlab::Usage::Metrics::Aggregates::Aggregate) do |instance|
+        expect(instance).to receive(:monthly_data).and_return(global_search_gmau: 123)
+      end
       expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
     end
   end

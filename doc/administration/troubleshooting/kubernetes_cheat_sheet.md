@@ -70,7 +70,7 @@ and they will assist you with any issues you are having.
   kubectl logs <pod-name> --previous
   ```
 
-  No logs are kept in the containers/pods themselves. Everything is written to stdout.
+  No logs are kept in the containers/pods themselves. Everything is written to `stdout`.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
@@ -88,7 +88,7 @@ and they will assist you with any issues you are having.
 
 - Minimal configuration that can be used to [test a Kubernetes Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
 
-- Tailing logs of a separate pod. An example for a Webservice pod:
+- Tailing logs of a separate pod. An example for a `webservice` pod:
 
   ```shell
   kubectl logs gitlab-webservice-54fbf6698b-hpckq -c webservice
@@ -154,7 +154,7 @@ and they will assist you with any issues you are having.
   - On the side of GitLab check Sidekiq log and Kubernetes log. When GitLab is installed
     via Helm Chart, `kubernetes.log` can be found inside the Sidekiq pod.
 
-- How to get your initial admin password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
+- How to get your initial administrator password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
 
   ```shell
   # find the name of the secret containing the password

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { removeBreakLine } from 'helpers/text_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
 
 describe('ShaMismatch', () => {

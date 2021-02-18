@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import LengthValidator from './length_validator';
-import UsernameValidator from './username_validator';
 import NoEmojiValidator from '../../../emoji/no_emoji_validator';
-import SigninTabsMemoizer from './signin_tabs_memoizer';
+import LengthValidator from './length_validator';
 import OAuthRememberMe from './oauth_remember_me';
 import preserveUrlFragment from './preserve_url_fragment';
+import SigninTabsMemoizer from './signin_tabs_memoizer';
+import UsernameValidator from './username_validator';
 
 document.addEventListener('DOMContentLoaded', () => {
   new UsernameValidator(); // eslint-disable-line no-new

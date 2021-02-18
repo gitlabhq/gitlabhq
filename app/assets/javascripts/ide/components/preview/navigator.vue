@@ -1,6 +1,6 @@
 <script>
-import { listen } from 'codesandbox-api';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { listen } from 'codesandbox-api';
 
 export default {
   components: {
@@ -78,6 +78,7 @@ export default {
       this.visitPath(this.path);
     },
     visitPath(path) {
+      // eslint-disable-next-line vue/no-mutating-props
       this.manager.iframe.src = `${this.manager.bundlerURL}${path}`;
     },
   },

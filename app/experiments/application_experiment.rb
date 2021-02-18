@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
-class ApplicationExperiment < Gitlab::Experiment
+class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/NamespacedClass
+  def enabled?
+    return false if Feature::Definition.get(feature_flag_name).nil? # there has to be a feature flag yaml file
+    return false unless Gitlab.dev_env_or_com? # we're in an environment that allows experiments
+
+    Feature.get(feature_flag_name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
+  end
+
   def publish(_result)
     track(:assignment) # track that we've assigned a variant for this context
     Gon.global.push({ experiment: { name => signature } }, true) # push to client
   end
 
   def track(action, **event_args)
-    return if excluded? # no events for opted out actors or excluded subjects
+    return unless should_track? # no events for opted out actors or excluded subjects
 
     Gitlab::Tracking.event(name, action.to_s, **event_args.merge(
       context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
@@ -16,10 +23,39 @@ class ApplicationExperiment < Gitlab::Experiment
     ))
   end
 
+  def rollout_strategy
+    # no-op override in inherited class as desired
+  end
+
+  def variants
+    # override as desired in inherited class with all variants + control
+    # %i[variant1 variant2 control]
+    #
+    # this will make sure we supply variants as these go together - rollout_strategy of :round_robin must have variants
+    raise NotImplementedError, "Inheriting class must supply variants as an array if :round_robin strategy is used" if rollout_strategy == :round_robin
+  end
+
   private
 
+  def feature_flag_name
+    name.tr('/', '_')
+  end
+
   def resolve_variant_name
-    return variant_names.first if Feature.enabled?(name, self, type: :experiment)
+    case rollout_strategy
+    when :round_robin
+      round_robin_rollout
+    else
+      percentage_rollout
+    end
+  end
+
+  def round_robin_rollout
+    Strategy::RoundRobin.new(feature_flag_name, variants).execute
+  end
+
+  def percentage_rollout
+    return variant_names.first if Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
 
     nil # Returning nil vs. :control is important for not caching and rollouts.
   end
@@ -41,7 +77,7 @@ class ApplicationExperiment < Gitlab::Experiment
   # default cache key strategy. So running `cache.fetch("foo:bar", "value")`
   # would create/update a hash with the key of "foo", with a field named
   # "bar" that has "value" assigned to it.
-  class Cache < ActiveSupport::Cache::Store
+  class Cache < ActiveSupport::Cache::Store # rubocop:disable Gitlab/NamespacedClass
     # Clears the entire cache for a given experiment. Be careful with this
     # since it would reset all resolved variants for the entire experiment.
     def clear(key:)
@@ -72,7 +108,6 @@ class ApplicationExperiment < Gitlab::Experiment
     end
 
     def write_entry(key, entry, **options)
-      return false unless Feature.enabled?(:caching_experiments)
       return false if entry.value.blank? # don't cache any empty values
 
       pool { |redis| redis.hset(*hkey(key), entry.value) }

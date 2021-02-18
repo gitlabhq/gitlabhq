@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
-import axios from './lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from './flash';
 import { fixTitle, hide } from '~/tooltips';
+import { deprecatedCreateFlash as flash } from './flash';
+import axios from './lib/utils/axios_utils';
 
 const tooltipTitles = {
   group: __('Unsubscribe at group level'),

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # `ReactiveCaching`
 
-> This doc refers to <https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/reactive_caching.rb>.
+> This doc refers to [`reactive_caching.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/reactive_caching.rb).
 
 The `ReactiveCaching` concern is used for fetching some data in the background and storing it
 in the Rails cache, keeping it up-to-date for as long as it is being requested. If the
@@ -103,7 +103,7 @@ not wait until the background worker completes.
 - An API that calls a model or service method that uses `ReactiveCaching` should return
   `202 accepted` when the cache is being calculated (when `#with_reactive_cache` returns `nil`).
 - It should also
-  [set the polling interval header](fe_guide/performance.md#realtime-components) with
+  [set the polling interval header](fe_guide/performance.md#real-time-components) with
   `Gitlab::PollingInterval.set_header`.
 - The consumer of the API is expected to poll the API.
 - You can also consider implementing [ETag caching](polling.md) to reduce the server

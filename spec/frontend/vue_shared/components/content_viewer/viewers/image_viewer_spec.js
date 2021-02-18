@@ -33,4 +33,14 @@ describe('Image Viewer', () => {
       },
     );
   });
+
+  describe('file path', () => {
+    it('should output a valid URL path for the image', () => {
+      wrapper = mount(ImageViewer, {
+        propsData: { path: '/url/hello#1.jpg' },
+      });
+
+      expect(wrapper.find('img').attributes('src')).toBe('/url/hello%231.jpg');
+    });
+  });
 });

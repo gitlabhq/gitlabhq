@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :web_hook do
     desc "GitLab | Webhook | Adds a webhook to the projects"

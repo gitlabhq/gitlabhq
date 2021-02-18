@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :db do
     desc 'GitLab | DB | Manually insert schema migration version'
@@ -228,6 +230,38 @@ namespace :gitlab do
 
       puts "Found user created projects. Database active"
       exit 0
+    end
+
+    desc 'Run migrations with instrumentation'
+    task :migration_testing, [:result_file] => :environment do |_, args|
+      result_file = args[:result_file] || raise("Please specify result_file argument")
+      raise "File exists already, won't overwrite: #{result_file}" if File.exist?(result_file)
+
+      verbose_was, ActiveRecord::Migration.verbose = ActiveRecord::Migration.verbose, true
+
+      ctx = ActiveRecord::Base.connection.migration_context
+      existing_versions = ctx.get_all_versions.to_set
+
+      pending_migrations = ctx.migrations.reject do |migration|
+        existing_versions.include?(migration.version)
+      end
+
+      instrumentation = Gitlab::Database::Migrations::Instrumentation.new
+
+      pending_migrations.each do |migration|
+        instrumentation.observe(migration.version) do
+          ActiveRecord::Migrator.new(:up, ctx.migrations, ctx.schema_migration, migration.version).run
+        end
+      end
+    ensure
+      if instrumentation
+        File.open(result_file, 'wb+') do |io|
+          io << instrumentation.observations.to_json
+        end
+      end
+
+      ActiveRecord::Base.clear_cache!
+      ActiveRecord::Migration.verbose = verbose_was
     end
   end
 end

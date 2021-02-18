@@ -10,20 +10,20 @@ module Types
     present_using BoardPresenter
 
     field :id, type: GraphQL::ID_TYPE, null: false,
-          description: 'ID (global ID) of the board'
+          description: 'ID (global ID) of the board.'
     field :name, type: GraphQL::STRING_TYPE, null: true,
-          description: 'Name of the board'
+          description: 'Name of the board.'
 
     field :hide_backlog_list, type: GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Whether or not backlog list is hidden'
+          description: 'Whether or not backlog list is hidden.'
 
     field :hide_closed_list, type: GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Whether or not closed list is hidden'
+          description: 'Whether or not closed list is hidden.'
 
     field :lists,
           Types::BoardListType.connection_type,
           null: true,
-          description: 'Lists of the board',
+          description: 'Lists of the board.',
           resolver: Resolvers::BoardListsResolver,
           extras: [:lookahead]
 

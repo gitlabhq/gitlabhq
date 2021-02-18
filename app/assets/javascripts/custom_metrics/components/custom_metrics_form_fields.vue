@@ -8,11 +8,11 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { __, s__ } from '~/locale';
-import csrf from '~/lib/utils/csrf';
 import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
+import csrf from '~/lib/utils/csrf';
+import statusCodes from '~/lib/utils/http_status';
+import { __, s__ } from '~/locale';
 import { queryTypes, formDataValidator } from '../constants';
 
 const VALIDATION_REQUEST_TIMEOUT = 10000;

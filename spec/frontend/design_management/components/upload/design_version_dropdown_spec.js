@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DesignVersionDropdown from '~/design_management/components/upload/design_version_dropdown.vue';
 import mockAllVersions from './mock_data/all_versions';
 

@@ -5,12 +5,10 @@ require 'fast_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/httparty_basic_auth'
 
 RSpec.describe RuboCop::Cop::RSpec::HTTPartyBasicAuth do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'when passing `basic_auth: { user: ... }`' do
-    it 'registers an offence' do
+    it 'registers an offense and corrects', :aggregate_failures do
       expect_offense(<<~SOURCE, 'spec/foo.rb')
         HTTParty.put(
           url,
@@ -19,17 +17,19 @@ RSpec.describe RuboCop::Cop::RSpec::HTTPartyBasicAuth do
           body: body
         )
       SOURCE
-    end
 
-    it 'can autocorrect the source' do
-      bad  = 'HTTParty.put(url, basic_auth: { user: user, password: token })'
-      good = 'HTTParty.put(url, basic_auth: { username: user, password: token })'
-      expect(autocorrect_source(bad)).to eq(good)
+      expect_correction(<<~SOURCE)
+        HTTParty.put(
+          url,
+          basic_auth: { username: user, password: token },
+          body: body
+        )
+      SOURCE
     end
   end
 
   context 'when passing `basic_auth: { username: ... }`' do
-    it 'does not register an offence' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~SOURCE, 'spec/frontend/fixtures/foo.rb')
         HTTParty.put(
           url,

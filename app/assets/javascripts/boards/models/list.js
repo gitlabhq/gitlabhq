@@ -1,9 +1,10 @@
 /* eslint-disable class-methods-use-this */
-import { __ } from '~/locale';
-import ListLabel from './label';
-import ListAssignee from './assignee';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { __ } from '~/locale';
 import boardsStore from '../stores/boards_store';
+import ListAssignee from './assignee';
+import ListIteration from './iteration';
+import ListLabel from './label';
 import ListMilestone from './milestone';
 import 'ee_else_ce/boards/models/issue';
 
@@ -43,6 +44,7 @@ class List {
     this.isExpandable = Boolean(typeInfo.isExpandable);
     this.isExpanded = !obj.collapsed;
     this.page = 1;
+    this.highlighted = obj.highlighted;
     this.loading = true;
     this.loadingMore = false;
     this.issues = obj.issues || [];
@@ -57,6 +59,9 @@ class List {
     } else if (IS_EE && obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
       this.title = this.milestone.title;
+    } else if (IS_EE && obj.iteration) {
+      this.iteration = new ListIteration(obj.iteration);
+      this.title = this.iteration.title;
     }
 
     // doNotFetchIssues is a temporary workaround until issues are fetched using GraphQL on issue boards

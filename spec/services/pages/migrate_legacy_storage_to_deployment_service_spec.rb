@@ -6,6 +6,14 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
   let(:project) { create(:project, :repository) }
   let(:service) { described_class.new(project) }
 
+  it 'calls ::Pages::ZipDirectoryService' do
+    expect_next_instance_of(::Pages::ZipDirectoryService, project.pages_path, ignore_invalid_entries: true) do |zip_service|
+      expect(zip_service).to receive(:execute).and_call_original
+    end
+
+    expect(described_class.new(project, ignore_invalid_entries: true).execute[:status]).to eq(:error)
+  end
+
   it 'marks pages as not deployed if public directory is absent' do
     project.mark_pages_as_deployed
 

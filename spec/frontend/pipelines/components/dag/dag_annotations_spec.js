@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
 import { singleNote, multiNote } from './mock_data';
 

@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { isSafeURL } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 
 export default {
   components: { GlButton, GlModal, GlSprintf },

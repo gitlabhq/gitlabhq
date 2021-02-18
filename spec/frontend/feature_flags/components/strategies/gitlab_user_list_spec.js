@@ -1,9 +1,9 @@
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import Api from '~/api';
-import createStore from '~/feature_flags/store/new';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
+import createStore from '~/feature_flags/store/new';
 import { userListStrategy, userList } from '../../mock_data';
 
 jest.mock('~/api');

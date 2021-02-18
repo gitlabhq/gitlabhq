@@ -1,0 +1,16 @@
+---
+key_path: recording_ce_finished_at
+description: When the core features were computed
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: string
+status: data_available
+time_frame: none
+data_source:
+distribution:
+- ce
+- ee
+tier: []
+skip_validation: true

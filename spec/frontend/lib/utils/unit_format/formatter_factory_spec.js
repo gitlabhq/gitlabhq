@@ -36,6 +36,27 @@ describe('unit_format/formatter_factory', () => {
       expect(formatNumber(10 ** 7, undefined, 9)).toBe('1.00e+7');
       expect(formatNumber(10 ** 7, undefined, 10)).toBe('10,000,000');
     });
+
+    describe('formats with a different locale', () => {
+      let originalLang;
+
+      beforeAll(() => {
+        originalLang = document.documentElement.lang;
+        document.documentElement.lang = 'es';
+      });
+
+      afterAll(() => {
+        document.documentElement.lang = originalLang;
+      });
+
+      it('formats a using the correct thousands separator', () => {
+        expect(formatNumber(1000000)).toBe('1.000.000');
+      });
+
+      it('formats a using the correct decimal separator', () => {
+        expect(formatNumber(12.345)).toBe('12,345');
+      });
+    });
   });
 
   describe('suffixFormatter', () => {

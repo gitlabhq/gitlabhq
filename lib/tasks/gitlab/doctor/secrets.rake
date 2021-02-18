@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :doctor do
     desc "GitLab | Check if the database encrypted values can be decrypted using current secrets"

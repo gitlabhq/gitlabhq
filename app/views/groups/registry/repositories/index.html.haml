@@ -1,6 +1,6 @@
 - page_title _("Container Registry")
 - @content_class = "limit-container-width" unless fluid_layout
-- add_page_startup_graphql_call('container_registry/get_container_repositories', { fullPath: @group.full_path, first: 10, name: nil, isGroupPage: true} )
+- add_page_startup_graphql_call('container_registry/get_container_repositories', { fullPath: @group.full_path, first: 10, name: nil, isGroupPage: true, sort: nil} )
 
 %section
   #js-container-registry{ data: { endpoint: group_container_registries_path(@group),
@@ -17,4 +17,7 @@
     is_group_page: "true",
     "group_path": @group.full_path,
     "gid_prefix": container_repository_gid_prefix,
-    character_error: @character_error.to_s } }
+    character_error: @character_error.to_s,
+    user_callouts_path: user_callouts_path,
+    user_callout_id: UserCalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
+    show_unfinished_tag_cleanup_callout: show_unfinished_tag_cleanup_callout?.to_s } }

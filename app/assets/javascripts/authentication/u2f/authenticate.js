@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { template as lodashTemplate, omit } from 'lodash';
-import importU2FLibrary from './util';
 import U2FError from './error';
+import importU2FLibrary from './util';
 
 // Authenticate U2F (universal 2nd factor) devices for users to authenticate with.
 //

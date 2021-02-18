@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
 import reportSection from '~/reports/components/report_section.vue';
 

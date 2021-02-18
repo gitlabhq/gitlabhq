@@ -36,7 +36,7 @@ environments are not displayed.
 
 To add a project to the dashboard:
 
-1. Click the **Add projects** button in the homescreen of the dashboard.
+1. Click the **Add projects** button in the home screen of the dashboard.
 1. Search and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 
@@ -53,4 +53,4 @@ You can add up to 150 projects for GitLab to display on this dashboard.
 
 GitLab.com users can add public projects to the Environments
 Dashboard for free. If your project is private, the group it belongs
-to must have a [GitLab Silver](https://about.gitlab.com/pricing/) plan.
+to must have a [GitLab Premium](https://about.gitlab.com/pricing/) plan.

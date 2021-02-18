@@ -12,7 +12,7 @@ The GitLab documentation is [intended as the single source of truth (SSOT)](http
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Style Guide](styleguide/index.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
-- [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
+- [Topic type template](structure.md) - Learn about the different types of topics.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
 - [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.
@@ -96,17 +96,17 @@ belongs to, as well as an information block as described below:
   https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
   ```
 
-For example, the following metadata would be at the beginning of a product
-documentation page whose content is primarily associated with the Audit Events
-feature:
+For example:
 
 ```yaml
 ---
-stage: Monitor
-group: APM
+stage: Example Stage
+group: Example Group
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 ```
+
+If you need help determining the correct stage, read [Ask for help](workflow.md#ask-for-help).
 
 ### Document type metadata
 
@@ -161,73 +161,69 @@ Nanoc layout), which is displayed at the top of the page if defined:
 
 ## Move or rename a page
 
-Moving or renaming a document is the same as changing its location.
-Be sure to assign a technical writer to any MR that renames or moves a page. Technical
-Writers can help with any questions and can review your change.
+Moving or renaming a document is the same as changing its location. Be sure to
+assign a technical writer to any merge request that renames or moves a page.
+Technical Writers can help with any questions and can review your change.
 
-When moving or renaming a page, you must redirect browsers to the new page. This
-ensures users find the new page, and have the opportunity to update their bookmarks.
+When moving or renaming a page, you must redirect browsers to the new page.
+This ensures users find the new page, and have the opportunity to update their
+bookmarks.
 
 There are two types of redirects:
 
-- Redirect files added into the docs themselves, for users who view the docs in `/help`
-  on self-managed instances. For example, [`/help` on GitLab.com](https://gitlab.com/help).
-- Redirects in a [`_redirects`](../../user/project/pages/redirects.md) file, for users
-  who view the docs on <https://docs.gitlab.com>.
+- Redirect codes added into the documentation files themselves, for users who
+  view the docs in `/help` on self-managed instances. For example,
+  [`/help` on GitLab.com](https://gitlab.com/help).
+- [GitLab Pages redirects](../../user/project/pages/redirects.md),
+  for users who view the docs on [`docs.gitlab.com`](https://docs.gitlab.com).
+
+The Technical Writing team manages the [process](https://gitlab.com/gitlab-org/technical-writing/-/blob/master/.gitlab/issue_templates/tw-monthly-tasks.md)
+to regularly update the [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_data/redirects.yaml)
+file.
 
 To add a redirect:
 
-1. In an MR in one of the internal docs projects (`gitlab`, `gitlab-runner`, `omnibus-gitlab`
-   or `charts`):
-   1. Move or rename the doc, but do not delete the old doc.
-   1. In the old doc, add the redirect code for `/help`. Use the following template exactly,
-      and only change the links and date. Use relative paths and `.md` for a redirect
-      to another docs page. Use the full URL to redirect to a different project or site:
+1. Create a merge request in one of the internal docs projects (`gitlab`,
+   `gitlab-runner`, `omnibus-gitlab`, or `charts`), depending on the location of
+   the file that's being moved, renamed, or removed.
+1. To move or rename the documentation file, create a new file with the new
+   name or location, but don't delete the existing documentation file.
+1. In the original documentation file, add the redirect code for
+   `/help`. Use the following template exactly, and change only the links and
+   date. Use relative paths and `.md` for a redirect to another documentation
+   page. Use the full URL (with `https://`) to redirect to a different project or
+   site:
 
-      ```markdown
-      ---
-      redirect_to: '../path/to/file/index.md'
-      ---
+   ```markdown
+   ---
+   redirect_to: '../path/to/file/index.md'
+   ---
 
-      This document was moved to [another location](../path/to/file/index.md).
+   This document was moved to [another location](../path/to/file/index.md).
 
-      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
-      <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
-      ```
+   <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+   <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
+   ```
 
-      Redirect files linking to docs in any of the 4 internal docs projects can be
-      removed after 3 months. Redirect files linking to external sites can be removed
-      after 1 year.
+   Redirect files linking to docs in any of the internal documentations projects
+   are removed after three months. Redirect files linking to external sites are
+   removed after one year.
 
-   1. If the document being moved has any Disqus comments on it, follow the steps
-      described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
-   1. If a documentation page you're removing includes images that aren't used
-      with any other documentation pages, be sure to use your MR to delete
-      those images from the repository.
-   1. Assign the MR to a technical writer for review and merge.
-1. If the redirect is to one of the 4 internal docs projects (not an external URL),
-   create an MR in [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs):
-   1. Update [`_redirects`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_redirects)
-      with one redirect entry for each renamed or moved file. This code works for
-      <https://docs.gitlab.com> links only:
-
-      ```plaintext
-      /ee/path/to/old_file.html /ee/path/to/new_file 302 # To be removed after YYYY-MM-DD
-      ```
-
-      The path must start with the internal project directory `/ee` for `gitlab`,
-      `/gitlab-runner`, `/omnibus-gitlab` or `charts`, and must end with `.html`.
-
-      `_redirects` entries can be removed after one year.
-
-1. Search for links to the old file. You must find and update all links to the old file:
+1. If the documentation page being moved has any Disqus comments, follow the steps
+   described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+1. If a documentation page you're removing includes images that aren't used
+   with any other documentation pages, be sure to use your merge request to delete
+   those images from the repository.
+1. Assign the merge request to a technical writer for review and merge.
+1. Search for links to the original documentation file. You must find and update all
+   links that point to the original documentation file:
 
    - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
      `grep -r "docs.gitlab.com/ee/path/to/file.html" .`
    - In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
      search the navigation bar configuration files for the path with `.html`:
      `grep -r "path/to/file.html" .`
-   - In any of the 4 internal projects. This includes searching for links in the docs
+   - In any of the four internal projects. This includes searching for links in the docs
      and codebase. Search for all variations, including full URL and just the path.
      In macOS for example, go to the root directory of the `gitlab` project and run:
 
@@ -238,8 +234,8 @@ To add a redirect:
      grep -r "path/to/file" .
      ```
 
-     You may need to try variations of relative links as well, such as `../path/to/file`
-     or even `../file` to find every case.
+     You may need to try variations of relative links, such as `../path/to/file` or
+     `../file` to find every case.
 
 ### Redirections for pages with Disqus comments
 
@@ -306,68 +302,51 @@ with GitLab 11.4. Meaning, it's available only with `/help` from GitLab
 
 ### Linking to `/help`
 
-When you're building a new feature, you may need to link the documentation
-from GitLab, the application. This is normally done in files inside the
-`app/views/` directory with the help of the `help_page_path` helper method.
+When you're building a new feature, you may need to link to the documentation
+from the GitLab application. This is normally done in files inside the
+`app/views/` directory, with the help of the `help_page_path` helper method.
 
-In its simplest form, the HAML code to generate a link to the `/help` page is:
+The `help_page_path` contains the path to the document you want to link to,
+with the following conventions:
 
-```haml
-= link_to 'Help page', help_page_path('user/permissions')
-```
+- It's relative to the `doc/` directory in the GitLab repository.
+- It omits the `.md` extension.
+- It doesn't end with a slash (`/`).
 
-The `help_page_path` contains the path to the document you want to link to with
-the following conventions:
+The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/helping-users/#formatting-help-content).
 
-- it is relative to the `doc/` directory in the GitLab repository
-- the `.md` extension must be omitted
-- it must not end with a slash (`/`)
+Use the following special cases depending on the context, ensuring all links
+are inside `_()` so they can be translated:
 
-Below are some special cases where should be used depending on the context.
-You can combine one or more of the following:
+- Linking to a doc page. In its most basic form, the HAML code to generate a
+  link to the `/help` page is:
 
-1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
-   method:
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer'
+  ```
 
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
-   ```
+- Linking to an anchor link. Use `anchor` as part of the `help_page_path`
+  method:
 
-1. **Opening links in a new tab.** This should be the default behavior:
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+  ```
 
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
-   ```
+- Using links inline of some text. First, define the link, and then use it. In
+  this example, `link_start` is the name of the variable that contains the
+  link:
 
-1. **Using a question icon.** Usually used in settings where a long
-   description cannot be used, like near checkboxes. You can basically use
-   any GitLab SVG icon, but prefer the `question-o`:
+  ```haml
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/permissions') }
+  %p= _("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  ```
 
-   ```haml
-   = link_to sprite_icon('question-o'), help_page_path('user/permissions')
-   ```
+- Using a button link. Useful in places where text would be out of context with
+  the rest of the page layout:
 
-1. **Using a button link.** Useful in places where text would be out of context
-   with the rest of the page layout:
-
-   ```haml
-   = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
-   ```
-
-1. **Using links inline of some text.**
-
-   ```haml
-   Description to #{link_to 'Help page', help_page_path('user/permissions')}.
-   ```
-
-1. **Adding a period at the end of the sentence.** Useful when you don't want
-   the period to be part of the link:
-
-   ```haml
-   = succeed '.' do
-     Learn more in the
-     = link_to 'Help page', help_page_path('user/permissions')
-   ```
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'),  class: 'btn btn-info', target: '_blank', rel: 'noopener noreferrer'
+  ```
 
 #### Linking to `/help` in JavaScript
 
@@ -514,7 +493,7 @@ To run the tool on an existing screenshot generator, take the following steps:
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
-1. Install pngquant, see the tool website for more information: [`pngquant`](https://pngquant.org/)
+1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.

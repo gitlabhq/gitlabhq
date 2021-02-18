@@ -40,6 +40,13 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         expect(new_issue.description).to eq(expected_description.strip)
       end
 
+      it 'creates an issue_email_participant' do
+        receiver.execute
+        new_issue = Issue.last
+
+        expect(new_issue.issue_email_participants.first.email).to eq("jake@adventuretime.ooo")
+      end
+
       it 'sends thank you email' do
         expect { receiver.execute }.to have_enqueued_job.on_queue('mailers')
       end

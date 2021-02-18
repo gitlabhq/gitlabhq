@@ -33,12 +33,14 @@ module API
                                 desc: 'Return packages with this name'
         optional :include_versionless, type: Boolean,
                                        desc: 'Returns packages without a version'
+        optional :status, type: String, values: Packages::Package.statuses.keys,
+                 desc: 'Return packages with specified status'
       end
       get ':id/packages' do
         packages = Packages::GroupPackagesFinder.new(
           current_user,
           user_group,
-          declared(params).slice(:exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless)
+          declared(params).slice(:exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless, :status)
         ).execute
 
         present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true

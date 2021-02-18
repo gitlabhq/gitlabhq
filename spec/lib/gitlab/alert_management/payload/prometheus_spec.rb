@@ -156,8 +156,6 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
   end
 
   describe '#gitlab_fingerprint' do
-    subject { parsed_payload.gitlab_fingerprint }
-
     let(:raw_payload) do
       {
         'startsAt' => Time.current.to_s,
@@ -165,6 +163,8 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
         'annotations' => { 'title' => 'title' }
       }
     end
+
+    subject { parsed_payload.gitlab_fingerprint }
 
     it 'returns a fingerprint' do
       plain_fingerprint = [
@@ -235,6 +235,65 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
       let(:parsed_payload) { described_class.new(project: project, payload: nil) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#severity' do
+    subject { parsed_payload.severity }
+
+    context 'when set' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:raw_payload) { { 'labels' => { 'severity' => payload_severity } } }
+
+      where(:payload_severity, :expected_severity) do
+        'critical' | :critical
+        'high'     | :high
+        'medium'   | :medium
+        'low'      | :low
+        'info'     | :info
+
+        's1'       | :critical
+        's2'       | :high
+        's3'       | :medium
+        's4'       | :low
+        's5'       | :info
+        'p1'       | :critical
+        'p2'       | :high
+        'p3'       | :medium
+        'p4'       | :low
+        'p5'       | :info
+
+        'CRITICAL' | :critical
+        'cRiTiCaL' | :critical
+        'S1'       | :critical
+
+        'unmapped' | nil
+        1          | nil
+        nil        | nil
+
+        'debug'       | :info
+        'information' | :info
+        'notice'      | :info
+        'warn'        | :low
+        'warning'     | :low
+        'minor'       | :low
+        'error'       | :medium
+        'major'       | :high
+        'emergency'   | :critical
+        'fatal'       | :critical
+
+        'alert'       | :medium
+        'page'        | :high
+      end
+
+      with_them do
+        it { is_expected.to eq(expected_severity) }
+      end
+    end
+
+    context 'without key' do
+      it { is_expected.to be_nil }
     end
   end
 end

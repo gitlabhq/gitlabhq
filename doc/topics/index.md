@@ -19,6 +19,6 @@ tutorials, technical overviews, blog posts) and videos.
 - [Cron](cron/index.md)
 - [Git](git/index.md)
 - [GitLab Flow](gitlab_flow.md)
-- [GitLab Installation](../install/README.md)
+- [GitLab Installation](../install/index.md)
 - [GitLab Pages](../user/project/pages/index.md)
 - [Offline GitLab](offline/index.md)

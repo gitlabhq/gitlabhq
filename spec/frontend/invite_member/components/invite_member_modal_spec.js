@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlModal } from '@gitlab/ui';
-import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
+import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import InviteMemberModal from '~/invite_member/components/invite_member_modal.vue';
 
 const memberPath = 'member_path';

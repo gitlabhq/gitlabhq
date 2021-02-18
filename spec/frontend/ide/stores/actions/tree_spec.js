@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import testAction from 'helpers/vuex_action_helper';
+import { createRouter } from '~/ide/ide_router';
+import service from '~/ide/services';
+import { createStore } from '~/ide/stores';
 import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import { createStore } from '~/ide/stores';
-import service from '~/ide/services';
-import { createRouter } from '~/ide/ide_router';
 import { file, createEntriesFromPaths } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {

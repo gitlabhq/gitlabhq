@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import actions from '~/code_navigation/store/actions';
-import axios from '~/lib/utils/axios_utils';
 import { setCurrentHoverElement, addInteractionClass } from '~/code_navigation/utils';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/code_navigation/utils');
 

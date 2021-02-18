@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.production?
   namespace :karma do
     # alias exists for legacy reasons

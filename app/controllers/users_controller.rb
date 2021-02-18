@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  include InternalRedirect
   include RoutableActions
   include RendersMemberAccess
   include RendersProjectsList
@@ -13,13 +14,15 @@ class UsersController < ApplicationController
                                 contributed: false,
                                 snippets: true,
                                 calendar: false,
+                                followers: false,
+                                following: false,
                                 calendar_activities: true
 
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
-  before_action :user, except: [:exists, :suggests]
+  before_action :user, except: [:exists, :suggests, :ssh_keys]
   before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets]
+                only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following]
 
   feature_category :users
 
@@ -41,7 +44,12 @@ class UsersController < ApplicationController
 
   # Get all keys of a user(params[:username]) in a text format
   # Helpful for sysadmins to put in respective servers
+  #
+  # Uses `UserFinder` rather than `find_routable!` because this endpoint should
+  # be publicly available regardless of instance visibility settings.
   def ssh_keys
+    user = UserFinder.new(params[:username]).find_by_username
+
     render plain: user.all_ssh_keys.join("\n")
   end
 
@@ -90,6 +98,18 @@ class UsersController < ApplicationController
     load_starred_projects
 
     present_projects(@starred_projects)
+  end
+
+  def followers
+    @user_followers = user.followers.page(params[:page])
+
+    present_users(@user_followers)
+  end
+
+  def following
+    @user_following = user.followees.page(params[:page])
+
+    present_users(@user_following)
   end
 
   def present_projects(projects)
@@ -141,6 +161,22 @@ class UsersController < ApplicationController
     render json: { exists: exists, suggests: suggestions }
   end
 
+  def follow
+    current_user.follow(user)
+
+    redirect_path = referer_path(request) || @user
+
+    redirect_to redirect_path
+  end
+
+  def unfollow
+    current_user.unfollow(user)
+
+    redirect_path = referer_path(request) || @user
+
+    redirect_to redirect_path
+  end
+
   private
 
   def user
@@ -164,7 +200,7 @@ class UsersController < ApplicationController
   end
 
   def load_events
-    @events = UserRecentEventsFinder.new(current_user, user, params).execute
+    @events = UserRecentEventsFinder.new(current_user, user, nil, params).execute
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
@@ -210,6 +246,17 @@ class UsersController < ApplicationController
 
   def authorize_read_user_profile!
     access_denied! unless can?(current_user, :read_user_profile, user)
+  end
+
+  def present_users(users)
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/users/index", users: users)
+        }
+      end
+    end
   end
 end
 

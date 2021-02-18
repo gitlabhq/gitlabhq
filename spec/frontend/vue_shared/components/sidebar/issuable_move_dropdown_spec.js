@@ -1,5 +1,3 @@
-import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import {
   GlIcon,
   GlLoadingIcon,
@@ -9,6 +7,8 @@ import {
   GlSearchBoxByType,
   GlButton,
 } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 
 import axios from '~/lib/utils/axios_utils';
 import IssuableMoveDropdown from '~/vue_shared/components/sidebar/issuable_move_dropdown.vue';

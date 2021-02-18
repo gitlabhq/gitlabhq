@@ -16,7 +16,7 @@ pre-push:
     markdownlint:
       tags: documentation style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.md"
+      glob: "doc/*.md"
       run: yarn markdownlint {files}
     scss-lint:
       tags: stylesheet css style
@@ -32,5 +32,5 @@ pre-push:
     vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/#install-linters
       tags: documentation style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.md"
+      glob: "doc/*.md"
       run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi

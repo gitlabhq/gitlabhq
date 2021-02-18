@@ -1,5 +1,5 @@
-import { __, n__, sprintf } from '~/locale';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { __, n__, sprintf } from '~/locale';
 import { DIFF_COMPARE_BASE_VERSION_INDEX, DIFF_COMPARE_HEAD_VERSION_INDEX } from '../constants';
 
 export const selectedTargetIndex = (state) =>

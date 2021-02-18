@@ -30,6 +30,32 @@ module Spec
           def invite_users_form
             page.find('[data-testid="invite-users-form"]')
           end
+
+          def find_row(name)
+            page.within(members_table) do
+              page.find('tbody > tr', text: name)
+            end
+          end
+
+          def find_member_row(user)
+            find_row(user.name)
+          end
+
+          def find_invited_member_row(email)
+            find_row(email)
+          end
+
+          def find_group_row(group)
+            find_row(group.full_name)
+          end
+
+          def fill_in_filtered_search(label, with:)
+            page.within '[data-testid="members-filtered-search-bar"]' do
+              find_field(label).click
+              find('input').native.send_keys(with)
+              click_button 'Search'
+            end
+          end
         end
       end
     end

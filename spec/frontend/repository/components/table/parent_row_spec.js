@@ -1,5 +1,5 @@
-import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import ParentRow from '~/repository/components/table/parent_row.vue';
 
 let vm;

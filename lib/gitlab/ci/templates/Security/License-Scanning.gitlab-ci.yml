@@ -1,4 +1,4 @@
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/license_compliance/
+# Read more about this feature here: https://docs.gitlab.com/ee/user/compliance/license_compliance/index.html
 #
 # Configure the scanning tool through the environment variables.
 # List of the variables: https://gitlab.com/gitlab-org/security-products/analyzers/license-finder#settings
@@ -21,7 +21,6 @@ license_scanning:
     LM_REPORT_VERSION: '2.1'
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
   allow_failure: true
-  needs: []
   script:
     - /run.sh analyze .
   artifacts:

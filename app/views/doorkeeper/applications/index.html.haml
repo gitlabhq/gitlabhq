@@ -40,8 +40,8 @@
                       - application.redirect_uri.split.each do |uri|
                         %div= uri
                     %td= application.access_tokens.count
-                    %td
-                      = link_to edit_oauth_application_path(application), class: "gl-button btn btn-transparent gl-mr-2" do
+                    %td.gl-display-flex
+                      = link_to edit_oauth_application_path(application), class: "gl-button btn btn-default gl-mr-2" do
                         %span.sr-only
                           = _('Edit')
                         = sprite_icon('pencil')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 resources :snippets, except: [:create, :update, :destroy], concerns: :awardable, constraints: { id: /\d+/ } do
   member do
     get :raw

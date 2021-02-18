@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import PipelineGraphWrapper from './components/graph/graph_component_wrapper.vue';
 import { GRAPHQL } from './components/graph/constants';
+import PipelineGraphWrapper from './components/graph/graph_component_wrapper.vue';
 import { reportToSentry } from './components/graph/utils';
 
 Vue.use(VueApollo);

@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
-import NoteForm from '~/notes/components/note_form.vue';
 import { createStore } from '~/mr_notes/stores';
-import diffFileMockData from '../mock_data/diff_file';
+import NoteForm from '~/notes/components/note_form.vue';
 import { noteableDataMock } from '../../notes/mock_data';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffLineNoteForm', () => {
   let wrapper;
@@ -17,6 +17,7 @@ describe('DiffLineNoteForm', () => {
     const store = createStore();
     store.state.notes.userData.id = 1;
     store.state.notes.noteableData = noteableDataMock;
+    store.state.diffs.diffFiles = [diffFile];
 
     store.replaceState({ ...store.state, ...args.state });
 

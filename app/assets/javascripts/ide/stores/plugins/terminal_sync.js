@@ -1,8 +1,8 @@
 import { debounce } from 'lodash';
-import eventHub from '~/ide/eventhub';
 import { commitActionTypes } from '~/ide/constants';
-import terminalSyncModule from '../modules/terminal_sync';
+import eventHub from '~/ide/eventhub';
 import { isEndingStatus, isRunningStatus } from '../modules/terminal/utils';
+import terminalSyncModule from '../modules/terminal_sync';
 
 const UPLOAD_DEBOUNCE = 200;
 

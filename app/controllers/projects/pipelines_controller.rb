@@ -13,15 +13,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:dag_pipeline_tab, project, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
     push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
-    push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
-    push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: false)
-    push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development, default_enabled: true)
+    push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: :yaml)
+    push_frontend_feature_flag(:graphql_pipeline_details_users, current_user, type: :development, default_enabled: :yaml)
+    push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, project, type: :development, default_enabled: :yaml)
+    push_frontend_feature_flag(:jira_for_vulnerabilities, project, type: :development, default_enabled: :yaml)
   end
   before_action :ensure_pipeline, only: [:show]
-  before_action :push_experiment_to_gon, only: :index, if: :html_request?
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -46,11 +45,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
-      format.html do
-        record_empty_pipeline_experiment
-
-        render :index
-      end
+      format.html
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
@@ -300,20 +295,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index_params
     params.permit(:scope, :username, :ref, :status)
-  end
-
-  def record_empty_pipeline_experiment
-    return unless @pipelines_count.to_i == 0
-    return if helpers.has_gitlab_ci?(@project)
-
-    record_experiment_user(:pipelines_empty_state)
-  end
-
-  def push_experiment_to_gon
-    return unless current_user
-
-    push_frontend_experiment(:pipelines_empty_state, subject: current_user)
-    frontend_experimentation_tracking_data(:pipelines_empty_state, 'view', project.namespace_id, subject: current_user)
   end
 end
 

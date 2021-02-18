@@ -14,7 +14,7 @@ Applications API operates on OAuth applications for:
 - [Allowing access to GitLab resources on a user's behalf](oauth2.md).
 
 NOTE:
-Only admin users can use the Applications API.
+Only administrator users can use the Applications API.
 
 ## Create an application
 

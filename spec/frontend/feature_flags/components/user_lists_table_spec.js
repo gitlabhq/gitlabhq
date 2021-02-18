@@ -1,6 +1,6 @@
+import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import * as timeago from 'timeago.js';
-import { GlModal } from '@gitlab/ui';
 import UserListsTable from '~/feature_flags/components/user_lists_table.vue';
 import { userList } from '../mock_data';
 

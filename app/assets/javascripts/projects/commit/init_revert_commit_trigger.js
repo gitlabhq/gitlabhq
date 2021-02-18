@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import RevertCommitTrigger from './components/form_trigger.vue';
-import { OPEN_REVERT_MODAL } from './constants';
+import CommitFormTrigger from './components/form_trigger.vue';
+import { OPEN_REVERT_MODAL, REVERT_LINK_TEST_ID } from './constants';
 
 export default function initInviteMembersTrigger() {
   const el = document.querySelector('.js-revert-commit-trigger');
@@ -13,8 +13,8 @@ export default function initInviteMembersTrigger() {
 
   return new Vue({
     el,
-    provide: { displayText },
+    provide: { displayText, testId: REVERT_LINK_TEST_ID },
     render: (createElement) =>
-      createElement(RevertCommitTrigger, { props: { openModal: OPEN_REVERT_MODAL } }),
+      createElement(CommitFormTrigger, { props: { openModal: OPEN_REVERT_MODAL } }),
   });
 }

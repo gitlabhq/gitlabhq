@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'when the deploy_keys_on_protected_branches FF is turned on' do
+RSpec.shared_examples 'Deploy keys with protected branches' do
   before do
-    stub_feature_flags(deploy_keys_on_protected_branches: true)
     project.add_maintainer(user)
     sign_in(user)
   end

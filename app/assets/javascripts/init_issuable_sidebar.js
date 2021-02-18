@@ -1,11 +1,11 @@
 /* eslint-disable no-new */
 
-import MilestoneSelect from './milestone_select';
-import LabelsSelect from './labels_select';
-import IssuableContext from './issuable_context';
-import Sidebar from './right_sidebar';
-import DueDateSelectors from './due_date_select';
 import { mountSidebarLabels, getSidebarOptions } from '~/sidebar/mount_sidebar';
+import DueDateSelectors from './due_date_select';
+import IssuableContext from './issuable_context';
+import LabelsSelect from './labels_select';
+import MilestoneSelect from './milestone_select';
+import Sidebar from './right_sidebar';
 
 export default () => {
   const sidebarOptEl = document.querySelector('.js-sidebar-options');

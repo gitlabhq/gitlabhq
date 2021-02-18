@@ -9,7 +9,9 @@ module Packages
         .packages
         .with_package_type(package_type)
         .safe_find_or_create_by!(name: name, version: version) do |package|
+          package.status = params[:status] if params[:status]
           package.creator = package_creator
+
           add_build_info(package)
         end
     end
@@ -29,8 +31,9 @@ module Packages
       {
         creator: package_creator,
         name: params[:name],
-        version: params[:version]
-      }.merge(attrs)
+        version: params[:version],
+        status: params[:status]
+      }.compact.merge(attrs)
     end
 
     def package_creator

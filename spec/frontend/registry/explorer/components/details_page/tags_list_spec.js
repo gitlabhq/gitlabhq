@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/registry/explorer/components/details_page/tags_list_row.vue';
 import { TAGS_LIST_TITLE, REMOVE_TAGS_BUTTON_TITLE } from '~/registry/explorer/constants/index';
@@ -70,18 +70,25 @@ describe('Tags List', () => {
       });
     });
 
-    it('is disabled when no item is selected', () => {
-      mountComponent();
+    it.each`
+      disabled | doSelect | buttonDisabled
+      ${true}  | ${false} | ${'true'}
+      ${true}  | ${true}  | ${'true'}
+      ${false} | ${false} | ${'true'}
+      ${false} | ${true}  | ${undefined}
+    `(
+      'is $buttonDisabled that the button is disabled when the component disabled state is $disabled and is $doSelect that the user selected a tag',
+      async ({ disabled, buttonDisabled, doSelect }) => {
+        mountComponent({ tags, disabled, isMobile: false });
 
-      expect(findDeleteButton().attributes('disabled')).toBe('true');
-    });
+        if (doSelect) {
+          findTagsListRow().at(0).vm.$emit('select');
+          await wrapper.vm.$nextTick();
+        }
 
-    it('is enabled when at least one item is selected', async () => {
-      mountComponent();
-      findTagsListRow().at(0).vm.$emit('select');
-      await wrapper.vm.$nextTick();
-      expect(findDeleteButton().attributes('disabled')).toBe(undefined);
-    });
+        expect(findDeleteButton().attributes('disabled')).toBe(buttonDisabled);
+      },
+    );
 
     it('click event emits a deleted event with selected items', () => {
       mountComponent();
@@ -100,12 +107,13 @@ describe('Tags List', () => {
     });
 
     it('the correct props are bound to it', () => {
-      mountComponent();
+      mountComponent({ tags, disabled: true });
 
       const rows = findTagsListRow();
 
       expect(rows.at(0).attributes()).toMatchObject({
         first: 'true',
+        disabled: 'true',
       });
     });
 

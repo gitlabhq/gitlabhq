@@ -15,7 +15,7 @@ package system support with solely backend changes. This guide is superficial an
 not cover the way the code should be written. However, you can find a good example
 by looking at the following merge requests:
 
-- [NPM registry support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8673).
+- [npm registry support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8673).
 - [Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607).
 - [Composer repository for PHP dependencies](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22415).
 - [Terraform modules registry](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834).
@@ -33,7 +33,7 @@ The existing database model requires the following:
 ### API endpoints
 
 Package systems work with GitLab via API. For example `lib/api/npm_packages.rb`
-implements API endpoints to work with NPM clients. So, the first thing to do is to
+implements API endpoints to work with npm clients. So, the first thing to do is to
 add a new `lib/api/your_name_packages.rb` file with API endpoints that are
 necessary to make the package system client to work. Usually that means having
 endpoints like:
@@ -69,15 +69,15 @@ The current state of existing package registries availability is:
 |------------------|---------------|-------------|----------------|
 | Maven            | Yes           | Yes         | Yes            |
 | Conan            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
-| NPM              | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
-| NuGet            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
+| npm              | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
+| NuGet            | Yes           | Yes         | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36425) |
 | PyPI             | Yes           | No          | No             |
 | Go               | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213900) | No - [open-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213902) |
 | Composer         | Yes           | Yes         | No             |
 | Generic | Yes           | No          | No             |
 
 NOTE:
-NPM is currently a hybrid of the instance level and group level.
+npm is currently a hybrid of the instance level and group level.
 It is using the top-level group or namespace as the defining portion of the name
 (for example, `@my-group-name/my-package-name`).
 
@@ -124,7 +124,7 @@ The way new package systems are integrated in GitLab is using an [MVC](https://a
 Required actions are all the additional requests that GitLab needs to handle so the corresponding package manager CLI can work properly. It could be a search feature or an endpoint providing meta information about a package. For example:
 
 - For NuGet, the search request was implemented during the first MVC iteration, to support Visual Studio.
-- For NPM, there is a metadata endpoint used by `npm` to get the tarball URL.
+- For npm, there is a metadata endpoint used by `npm` to get the tarball URL.
 
 For the first MVC iteration, it's recommended to stay at the project level of the [remote hierarchy](#remote-hierarchy). Other levels can be tackled with [future Merge Requests](#future-work).
 
@@ -191,7 +191,7 @@ support is done by overriding a specific function in the API helpers, like
 For this authentication mechanism, keep in mind that some clients can send an unauthenticated
 request first, wait for the 401 Unauthorized response with the [`WWW-Authenticate`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate)
 field, then send an updated (authenticated) request. This case is more involved as
-GitLab needs to handle the 401 Unauthorized response. The [Nuget API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/nuget_packages.rb)
+GitLab needs to handle the 401 Unauthorized response. The [NuGet API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/nuget_packages.rb)
 supports this case.
 
 #### Authorization
@@ -245,8 +245,8 @@ in your local development environment.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits). 
-This results in a `429 Too Many Requests` error. 
+[GitLab.com standard API rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,
 new package managers should follow these conventions so they can take advantage of the

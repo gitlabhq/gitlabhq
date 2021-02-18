@@ -1,6 +1,6 @@
 import { editor } from 'monaco-editor';
-import { registerLanguages } from '~/ide/utils';
 import vue from '~/ide/lib/languages/vue';
+import { registerLanguages } from '~/ide/utils';
 
 // This file only tests syntax specific to vue. This does not test existing syntaxes
 // of html, javascript, css and handlebars, which vue files extend.

@@ -312,7 +312,7 @@ RSpec.describe API::Ci::Pipelines do
     let(:query) { {} }
     let(:api_user) { user }
     let_it_be(:job) do
-      create(:ci_build, :success, pipeline: pipeline,
+      create(:ci_build, :success, name: 'build', pipeline: pipeline,
                                   artifacts_expire_at: 1.day.since)
     end
 
@@ -404,6 +404,38 @@ RSpec.describe API::Ci::Pipelines do
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.not_to exceed_all_query_limit(control_count)
+      end
+
+      context 'pipeline has retried jobs' do
+        before_all do
+          job.update!(retried: true)
+        end
+
+        let_it_be(:successor) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
+
+        it 'does not return retried jobs by default' do
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+        end
+
+        context 'when include_retried is false' do
+          let(:query) { { include_retried: false } }
+
+          it 'does not return retried jobs' do
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(1)
+          end
+        end
+
+        context 'when include_retried is true' do
+          let(:query) { { include_retried: true } }
+
+          it 'returns retried jobs' do
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(2)
+            expect(json_response[0]['name']).to eq(json_response[1]['name'])
+          end
+        end
       end
     end
 

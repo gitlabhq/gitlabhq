@@ -1,11 +1,11 @@
 <script>
 import { capitalize, escape, isEmpty } from 'lodash';
 import MainGraphWrapper from '../graph_shared/main_graph_wrapper.vue';
-import JobItem from './job_item.vue';
-import JobGroupDropdown from './job_group_dropdown.vue';
+import { accessValue } from './accessors';
 import ActionComponent from './action_component.vue';
 import { GRAPHQL } from './constants';
-import { accessValue } from './accessors';
+import JobGroupDropdown from './job_group_dropdown.vue';
+import JobItem from './job_item.vue';
 import { reportToSentry } from './utils';
 
 export default {
@@ -67,6 +67,9 @@ export default {
   errorCaptured(err, _vm, info) {
     reportToSentry('stage_column_component', `error: ${err}, info: ${info}`);
   },
+  mounted() {
+    this.$emit('updateMeasurements');
+  },
   methods: {
     getGroupId(group) {
       return accessValue(GRAPHQL, 'groupId', group);
@@ -75,17 +78,13 @@ export default {
       return `ci-badge-${escape(group.name)}`;
     },
     isFadedOut(jobName) {
-      return (
-        this.jobHovered &&
-        this.highlightedJobs.length > 1 &&
-        !this.highlightedJobs.includes(jobName)
-      );
+      return this.highlightedJobs.length > 1 && !this.highlightedJobs.includes(jobName);
     },
   },
 };
 </script>
 <template>
-  <main-graph-wrapper class="gl-px-6">
+  <main-graph-wrapper class="gl-px-6" data-testid="stage-column">
     <template #stages>
       <div
         data-testid="stage-column-title"
@@ -123,12 +122,9 @@ export default {
           :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
-        <job-group-dropdown
-          v-else
-          :group="group"
-          :pipeline-id="pipelineId"
-          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
-        />
+        <div v-else :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
+          <job-group-dropdown :group="group" :pipeline-id="pipelineId" />
+        </div>
       </div>
     </template>
   </main-graph-wrapper>

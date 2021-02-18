@@ -10,7 +10,7 @@
     .gl-alert-body
       = _('Webhooks have moved. They can now be found under the Settings menu.')
     .gl-alert-actions
-      = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'btn gl-alert-action btn-info new-gl-button'
+      = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'gl-button btn gl-alert-action btn-info'
 
 %h4= _('Integrations')
 - integrations_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('user/project/integrations/overview') }

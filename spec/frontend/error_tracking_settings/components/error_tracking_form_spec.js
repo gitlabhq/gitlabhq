@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlFormInput, GlButton } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import createStore from '~/error_tracking_settings/store';
 import { defaultProps } from '../mock';

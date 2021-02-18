@@ -17,13 +17,18 @@ class Packages::Package < ApplicationRecord
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
+  has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos
+  has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
+  has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
 
   accepts_nested_attributes_for :conan_metadatum
+  accepts_nested_attributes_for :debian_publication
   accepts_nested_attributes_for :maven_metadatum
 
   delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan
+  delegate :codename, :suite, to: :debian_distribution, prefix: :debian_distribution
 
   validates :project, presence: true
   validates :name, presence: true
@@ -31,7 +36,8 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
-    uniqueness: { scope: %i[project_id version package_type] }, unless: :conan?
+    uniqueness: { scope: %i[project_id version package_type] }, unless: -> { conan? || debian_package? }
+  validate :unique_debian_package_name, if: :debian_package?
 
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_npm_package_name, if: :npm?
@@ -59,7 +65,11 @@ class Packages::Package < ApplicationRecord
     if: :debian_package?
   validate :forbidden_debian_changes, if: :debian?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7, golang: 8, debian: 9 }
+  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
+                       composer: 6, generic: 7, golang: 8, debian: 9,
+                       rubygems: 10 }
+
+  enum status: { default: 0, hidden: 1, processing: 2 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
@@ -68,6 +78,8 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :with_status, ->(status) { where(status: status) }
+  scope :displayable, -> { with_status(:default) }
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
@@ -249,6 +261,18 @@ class Packages::Package < ApplicationRecord
     if project.package_already_taken?(name)
       errors.add(:base, _('Package already exists'))
     end
+  end
+
+  def unique_debian_package_name
+    return unless debian_publication&.distribution
+
+    package_exists = debian_publication.distribution.packages
+                            .with_name(name)
+                            .with_version(version)
+                            .id_not_in(id)
+                            .exists?
+
+    errors.add(:base, _('Debian package already exists in Distribution')) if package_exists
   end
 
   def forbidden_debian_changes

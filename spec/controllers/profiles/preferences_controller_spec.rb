@@ -24,7 +24,7 @@ RSpec.describe Profiles::PreferencesController do
   end
 
   describe 'PATCH update' do
-    def go(params: {}, format: :js)
+    def go(params: {}, format: :json)
       params.reverse_merge!(
         color_scheme_id: '1',
         dashboard: 'stars',
@@ -35,9 +35,12 @@ RSpec.describe Profiles::PreferencesController do
     end
 
     context 'on successful update' do
-      it 'sets the flash' do
+      it 'responds with success' do
         go
-        expect(flash[:notice]).to eq _('Preferences saved.')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.parsed_body['message']).to eq _('Preferences saved.')
+        expect(response.parsed_body['type']).to eq('notice')
       end
 
       it "changes the user's preferences" do
@@ -59,36 +62,26 @@ RSpec.describe Profiles::PreferencesController do
     end
 
     context 'on failed update' do
-      it 'sets the flash' do
+      it 'responds with error' do
         expect(user).to receive(:save).and_return(false)
 
         go
 
-        expect(flash[:alert]).to eq(_('Failed to save preferences.'))
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['message']).to eq _('Failed to save preferences.')
+        expect(response.parsed_body['type']).to eq('alert')
       end
     end
 
     context 'on invalid dashboard setting' do
-      it 'sets the flash' do
+      it 'responds with error' do
         prefs = { dashboard: 'invalid' }
 
         go params: prefs
 
-        expect(flash[:alert]).to match(/\AFailed to save preferences \(.+\)\.\z/)
-      end
-    end
-
-    context 'as js' do
-      it 'renders' do
-        go
-        expect(response).to render_template :update
-      end
-    end
-
-    context 'as html' do
-      it 'redirects' do
-        go format: :html
-        expect(response).to redirect_to(profile_preferences_path)
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['message']).to match(/\AFailed to save preferences \(.+\)\.\z/)
+        expect(response.parsed_body['type']).to eq('alert')
       end
     end
   end

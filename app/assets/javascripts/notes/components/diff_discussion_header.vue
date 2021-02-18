@@ -1,10 +1,10 @@
 <script>
-import { mapActions } from 'vuex';
-import { escape } from 'lodash';
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { escape } from 'lodash';
+import { mapActions } from 'vuex';
 
-import { s__, __, sprintf } from '~/locale';
 import { truncateSha } from '~/lib/utils/text_utility';
+import { s__, __, sprintf } from '~/locale';
 
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteEditedText from './note_edited_text.vue';

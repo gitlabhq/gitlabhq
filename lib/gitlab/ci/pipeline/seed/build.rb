@@ -73,15 +73,26 @@ module Gitlab
 
           def to_resource
             strong_memoize(:resource) do
-              if bridge?
-                ::Ci::Bridge.new(attributes)
-              else
-                ::Ci::Build.new(attributes).tap do |build|
-                  build.assign_attributes(self.class.environment_attributes_for(build))
-                  build.resource_group = Seed::Build::ResourceGroup.new(build, @resource_group_key).to_resource
-                end
+              processable = initialize_processable
+              assign_resource_group(processable)
+              processable
+            end
+          end
+
+          def initialize_processable
+            if bridge?
+              ::Ci::Bridge.new(attributes)
+            else
+              ::Ci::Build.new(attributes).tap do |build|
+                build.assign_attributes(self.class.environment_attributes_for(build))
               end
             end
+          end
+
+          def assign_resource_group(processable)
+            processable.resource_group =
+              Seed::Processable::ResourceGroup.new(processable, @resource_group_key)
+                                              .to_resource
           end
 
           def self.environment_attributes_for(build)
@@ -159,7 +170,11 @@ module Gitlab
               next {} unless @using_rules
 
               if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
-                rules_result.build_attributes(@seed_attributes)
+                rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                  @seed_attributes[:yaml_variables], rules_result.variables
+                )
+
+                rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
               else
                 rules_result.build_attributes
               end
@@ -188,7 +203,6 @@ module Gitlab
           # we need to prevent the exit codes from being persisted because they
           # would break the behavior defined by `rules:allow_failure`.
           def allow_failure_criteria_attributes
-            return {} unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
             return {} if rules_attributes[:allow_failure].nil?
             return {} unless @seed_attributes.dig(:options, :allow_failure_criteria)
 

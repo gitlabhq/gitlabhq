@@ -1894,8 +1894,11 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'removes the remote' do
         repository_rugged.remotes.create(remote_name, url)
 
-        repository.remove_remote(remote_name)
+        expect(repository.remove_remote(remote_name)).to be true
 
+        # Since we deleted the remote via Gitaly, Rugged doesn't know
+        # this changed underneath it. Let's refresh the Rugged repo.
+        repository_rugged = Rugged::Repository.new(repository_path)
         expect(repository_rugged.remotes[remote_name]).to be_nil
       end
     end

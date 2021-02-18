@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
-import { createStore } from '~/frequent_items/store';
 import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
+import { createStore } from '~/frequent_items/store';
 import { mockFrequentProjects } from '../mock_data';
 
 describe('FrequentItemsListComponent', () => {

@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils';
-import Vuex from 'vuex';
-import Vue, { nextTick } from 'vue';
-import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
+import Vue, { nextTick } from 'vue';
+import Vuex from 'vuex';
 import { TEST_HOST as FAKE_ENDPOINT } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import ArtifactsListApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';

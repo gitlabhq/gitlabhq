@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Praefect Rake tasks **(CORE ONLY)**
+# Praefect Rake tasks **(FREE SELF)**
 
 > [Introduced]( https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28369) in GitLab 12.10.
 

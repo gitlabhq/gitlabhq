@@ -5,25 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Predefined environment variables reference
+# Predefined variables reference
 
 For an introduction on this subject, read through the
-[getting started with environment variables](README.md) document.
+[CI/CD variables](README.md) document.
 
-Some of the predefined environment variables are available only if a minimum
+Some of the predefined variables are available only if a minimum
 version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the table below to find the
 version of GitLab Runner that's required.
 
 You can add a command to your `.gitlab-ci.yml` file to
 [output the values of all variables available for a job](README.md#list-all-environment-variables).
 
-Kubernetes-specific environment variables are detailed in the
+Kubernetes-specific variables are detailed in the
 [Kubernetes deployment variables](../../user/project/clusters/index.md#deployment-variables) section.
 
 | Variable                                      | GitLab | Runner | Description |
 |-----------------------------------------------|--------|--------|-------------|
-| `CHAT_CHANNEL`                                | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
-| `CHAT_INPUT`                                  | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
+| `CHAT_CHANNEL`                                | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/index.md) command. |
+| `CHAT_INPUT`                                  | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/index.md) command. |
 | `CI`                                          | all    | 0.4    | Mark that job is executed in CI environment. |
 | `CI_API_V4_URL`                               | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                               | all    | 11.10  | Top-level directory where builds are executed. |
@@ -145,3 +145,4 @@ Kubernetes-specific environment variables are detailed in the
 | `GITLAB_USER_ID`                              | 8.12   | all    | The ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                           | 10.0   | all    | The login username of the user who started the job. |
 | `GITLAB_USER_NAME`                            | 10.0   | all    | The real name of the user who started the job. |
+| `TRIGGER_PAYLOAD`                             | 13.9   | all    | This variable is available when a pipeline is [triggered with a webhook](../triggers/README.md#using-webhook-payload-in-the-triggered-pipeline) |

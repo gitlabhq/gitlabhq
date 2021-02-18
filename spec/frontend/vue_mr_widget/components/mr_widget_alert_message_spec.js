@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 
 describe('MrWidgetAlertMessage', () => {

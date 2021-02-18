@@ -5,14 +5,14 @@
  * https://gitlab.com/groups/gitlab-org/-/epics/895#what-if-theres-a-karma-spec-which-is-simply-unmovable-to-jest-ie-it-is-dependent-on-a-running-browser-environment
  */
 
-import Vue from 'vue';
 import { createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
-import axios from '~/lib/utils/axios_utils';
-import { mockApiEndpoint } from '../mock_data';
 import { metricsDashboardPayload, dashboardProps } from '../fixture_data';
+import { mockApiEndpoint } from '../mock_data';
 import { setupStoreWithData } from '../store_utils';
 
 const localVue = createLocalVue();

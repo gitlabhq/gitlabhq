@@ -1,10 +1,10 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import datePicker from '../pikaday.vue';
-import toggleSidebar from './toggle_sidebar.vue';
-import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
-import { dateInWords } from '../../../lib/utils/datetime_utility';
 import { __ } from '~/locale';
+import { dateInWords } from '../../../lib/utils/datetime_utility';
+import datePicker from '../pikaday.vue';
+import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
+import toggleSidebar from './toggle_sidebar.vue';
 
 export default {
   name: 'SidebarDatePicker',

@@ -1,6 +1,6 @@
-import { createDefaultFileEditor } from '~/ide/stores/modules/editor/utils';
 import * as types from '~/ide/stores/modules/editor/mutation_types';
 import mutations from '~/ide/stores/modules/editor/mutations';
+import { createDefaultFileEditor } from '~/ide/stores/modules/editor/utils';
 import { createTriggerRenamePayload } from '../../../helpers';
 
 const TEST_PATH = 'test/path.md';

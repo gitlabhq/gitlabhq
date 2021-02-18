@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :explore do
   resources :projects, only: [:index] do
     collection do

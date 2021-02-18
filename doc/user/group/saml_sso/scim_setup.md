@@ -5,9 +5,9 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SCIM provisioning using SAML SSO for GitLab.com groups **(SILVER ONLY)**
+# SCIM provisioning using SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in [GitLab.com Silver](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab Premium 11.10.
 
 System for Cross-domain Identity Management (SCIM), is an open standard that enables the
 automation of user provisioning. When SCIM is provisioned for a GitLab group, membership of
@@ -260,7 +260,7 @@ It is important not to update these to incorrect values, since this will cause u
 
 Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](index.md#i-need-to-change-my-saml-app) section.
 
-Alternatively, users can be removed from the SCIM app which will delink all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
+Alternatively, users can be removed from the SCIM app which de-links all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
 
 ### The SCIM app is throwing `"User has already been taken","status":409` error message
 

@@ -153,7 +153,7 @@ steps to upgrade to v2:
 
 ### Use a specific version of Auto Deploy dependencies
 
-To use a specifc version of Auto Deploy dependencies, specify the previous Auto Deploy
+To use a specific version of Auto Deploy dependencies, specify the previous Auto Deploy
 stable template that contains the [desired version of `auto-deploy-image` and `auto-deploy-app`](#verify-dependency-versions).
 
 For example, if the template is bundled in GitLab v13.3, change your `.gitlab-ci.yml` to:
@@ -181,7 +181,7 @@ the latest Auto Deploy template into your `.gitlab-ci.yml`:
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
+  - template: Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
 WARNING:

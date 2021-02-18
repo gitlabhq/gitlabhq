@@ -744,13 +744,19 @@ RSpec.describe Event do
 
     describe '#wiki_page and #wiki_page?' do
       context 'for a wiki page event' do
-        let(:wiki_page) do
-          create(:wiki_page, project: project)
-        end
+        let(:wiki_page) { create(:wiki_page, project: project) }
 
         subject(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }
 
         it { is_expected.to have_attributes(wiki_page?: be_truthy, wiki_page: wiki_page) }
+
+        context 'title is empty' do
+          before do
+            expect(event.target).to receive(:canonical_slug).and_return('')
+          end
+
+          it { is_expected.to have_attributes(wiki_page?: be_truthy, wiki_page: nil) }
+        end
       end
 
       context 'for any other event' do
@@ -904,6 +910,58 @@ RSpec.describe Event do
       expect(events.first.target.author).to be_an_instance_of(User)
 
       expect(count).to be_zero
+    end
+  end
+
+  context 'with snippet note' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, author: user) }
+    let_it_be(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: user) }
+    let_it_be(:other_note) { create(:note_on_issue, author: user)}
+    let_it_be(:personal_snippet_event) { create(:event, :commented, project: nil, target: note_on_personal_snippet, author: user) }
+    let_it_be(:project_snippet_event) { create(:event, :commented, project: note_on_project_snippet.project, target: note_on_project_snippet, author: user) }
+    let_it_be(:other_event) { create(:event, :commented, project: other_note.project, target: other_note, author: user) }
+
+    describe '#snippet_note?' do
+      it 'returns true for a project snippet event' do
+        expect(project_snippet_event.snippet_note?).to be true
+      end
+
+      it 'returns true for a personal snippet event' do
+        expect(personal_snippet_event.snippet_note?).to be true
+      end
+
+      it 'returns false for a other kinds of event' do
+        expect(other_event.snippet_note?).to be false
+      end
+    end
+
+    describe '#personal_snippet_note?' do
+      it 'returns false for a project snippet event' do
+        expect(project_snippet_event.personal_snippet_note?).to be false
+      end
+
+      it 'returns true for a personal snippet event' do
+        expect(personal_snippet_event.personal_snippet_note?).to be true
+      end
+
+      it 'returns false for a other kinds of event' do
+        expect(other_event.personal_snippet_note?).to be false
+      end
+    end
+
+    describe '#project_snippet_note?' do
+      it 'returns true for a project snippet event' do
+        expect(project_snippet_event.project_snippet_note?).to be true
+      end
+
+      it 'returns false for a personal snippet event' do
+        expect(personal_snippet_event.project_snippet_note?).to be false
+      end
+
+      it 'returns false for a other kinds of event' do
+        expect(other_event.project_snippet_note?).to be false
+      end
     end
   end
 

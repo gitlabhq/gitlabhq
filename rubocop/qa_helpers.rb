@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   # Module containing helper methods for writing QA cops.
   module QAHelpers

@@ -44,7 +44,6 @@ RSpec.describe BulkInsertSafe do
         insecure_mode: false
 
       default_value_for :enum_value, 'case_1'
-      default_value_for :secret_value, 'my-secret'
       default_value_for :sha_value, '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
       default_value_for :jsonb_value, { "key" => "value" }
 
@@ -53,11 +52,11 @@ RSpec.describe BulkInsertSafe do
       end
 
       def self.valid_list(count)
-        Array.new(count) { |n| new(name: "item-#{n}") }
+        Array.new(count) { |n| new(name: "item-#{n}", secret_value: 'my-secret') }
       end
 
       def self.invalid_list(count)
-        Array.new(count) { new }
+        Array.new(count) { new(secret_value: 'my-secret') }
       end
     end
   end
@@ -102,7 +101,7 @@ RSpec.describe BulkInsertSafe do
 
     context 'primary keys' do
       it 'raises error if primary keys are set prior to insertion' do
-        item = bulk_insert_item_class.new(name: 'valid', id: 10)
+        item = bulk_insert_item_class.new(name: 'valid', id: 10, secret_value: 'my-secret')
 
         expect { bulk_insert_item_class.bulk_insert!([item]) }
           .to raise_error(bulk_insert_item_class::PrimaryKeySetError)

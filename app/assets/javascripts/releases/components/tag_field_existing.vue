@@ -1,7 +1,7 @@
 <script>
-import { mapState } from 'vuex';
-import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
+import { mapState } from 'vuex';
 import FormFieldContainer from './form_field_container.vue';
 
 export default {

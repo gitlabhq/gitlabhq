@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :ci_bridge, class: 'Ci::Bridge' do
+  factory :ci_bridge, class: 'Ci::Bridge', parent: :ci_processable do
     name { 'bridge' }
-    stage { 'test' }
-    stage_idx { 0 }
-    ref { 'master' }
-    tag { false }
     created_at { '2013-10-29 09:50:00 CET' }
     status { :created }
-    scheduling_type { 'stage' }
-
-    pipeline factory: :ci_pipeline
 
     trait :variables do
       yaml_variables do
@@ -53,6 +46,11 @@ FactoryBot.define do
       finished_at { '2013-10-29 09:53:28 CET' }
     end
 
+    trait :success do
+      finished
+      status { 'success' }
+    end
+
     trait :failed do
       finished
       status { 'failed' }
@@ -74,6 +72,10 @@ FactoryBot.define do
 
     trait :playable do
       manual
+    end
+
+    trait :allowed_to_fail do
+      allow_failure { true }
     end
   end
 end

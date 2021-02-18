@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapActions, mapState } from 'vuex';
-import { throttle } from 'lodash';
 import { GlTooltipDirective, GlButton, GlIcon } from '@gitlab/ui';
+import { throttle } from 'lodash';
+import { mapActions, mapState } from 'vuex';
 import { __ } from '../../../locale';
-import ScrollButton from './detail/scroll_button.vue';
 import JobDescription from './detail/description.vue';
+import ScrollButton from './detail/scroll_button.vue';
 
 const scrollPositions = {
   top: 0,

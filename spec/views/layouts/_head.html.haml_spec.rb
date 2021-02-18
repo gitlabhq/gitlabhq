@@ -92,7 +92,8 @@ RSpec.describe 'layouts/_head' do
     before do
       stub_config(extra: {
                     matomo_url: matomo_host,
-                    matomo_site_id: 12345
+                    matomo_site_id: 12345,
+                    matomo_disable_cookies: false
                   })
     end
 
@@ -101,6 +102,19 @@ RSpec.describe 'layouts/_head' do
 
       expect(rendered).to match(/<script.*>.*var u="\/\/#{matomo_host}\/".*<\/script>/m)
       expect(rendered).to match(%r(<noscript>.*<img src="//#{matomo_host}/matomo.php.*</noscript>))
+      expect(rendered).not_to include('_paq.push(["disableCookies"])')
+    end
+
+    context 'when matomo_disable_cookies is true' do
+      before do
+        stub_config(extra: { matomo_url: matomo_host, matomo_site_id: 12345, matomo_disable_cookies: true })
+      end
+
+      it 'disables cookies' do
+        render
+
+        expect(rendered).to include('_paq.push(["disableCookies"])')
+      end
     end
   end
 

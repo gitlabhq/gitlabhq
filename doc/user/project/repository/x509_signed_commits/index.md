@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Signing commits and tags with X.509
+# Signing commits and tags with X.509 **(FREE)**
 
 [X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).

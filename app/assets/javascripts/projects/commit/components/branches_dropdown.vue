@@ -68,6 +68,7 @@ export default {
       autocomplete="off"
       :debounce="250"
       :placeholder="$options.i18n.searchPlaceholder"
+      data-testid="dropdown-search-box"
       @input="searchTermChanged"
     />
     <gl-dropdown-item
@@ -77,6 +78,7 @@ export default {
       :name="branch"
       :is-checked="isSelected(branch)"
       is-check-item
+      data-testid="dropdown-item"
       @click="selectBranch(branch)"
     >
       {{ branch }}

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cal = Icalendar::Calendar.new
 cal.prodid = '-//GitLab//NONSGML GitLab//EN'
 cal.x_wr_calname = 'GitLab Issues'

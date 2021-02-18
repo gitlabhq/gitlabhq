@@ -28,8 +28,8 @@ RSpec.describe Projects::AlertManagementHelper do
         expect(helper.alert_management_data(current_user, project)).to match(
           'project-path' => project_path,
           'enable-alert-management-path' => setting_path,
-          'alerts-help-url' => 'http://test.host/help/operations/incident_management/index.md',
-          'populating-alerts-help-url' => 'http://test.host/help/operations/incident_management/index.md#enable-alert-management',
+          'alerts-help-url' => 'http://test.host/help/operations/incident_management/alerts.md',
+          'populating-alerts-help-url' => 'http://test.host/help/operations/incident_management/integrations.md#configuration',
           'empty-alert-svg-path' => match_asset_path('/assets/illustrations/alert-management-empty-state.svg'),
           'user-can-enable-alert-management' => 'true',
           'alert-management-enabled' => 'false',
@@ -113,7 +113,8 @@ RSpec.describe Projects::AlertManagementHelper do
         'alert-id' => alert_id,
         'project-path' => project_path,
         'project-id' => project_id,
-        'project-issues-path' => issues_path
+        'project-issues-path' => issues_path,
+        'page' => 'OPERATIONS'
       )
     end
   end

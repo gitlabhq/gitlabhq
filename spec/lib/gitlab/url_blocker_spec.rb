@@ -302,36 +302,36 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         it 'does not block urls from private networks' do
           local_ips.each do |ip|
             stub_domain_resolv(fake_domain, ip) do
-              expect(described_class).not_to be_blocked_url("http://#{fake_domain}", url_blocker_attributes)
+              expect(described_class).not_to be_blocked_url("http://#{fake_domain}", **url_blocker_attributes)
             end
 
-            expect(described_class).not_to be_blocked_url("http://#{ip}", url_blocker_attributes)
+            expect(described_class).not_to be_blocked_url("http://#{ip}", **url_blocker_attributes)
           end
         end
 
         it 'allows localhost endpoints' do
-          expect(described_class).not_to be_blocked_url('http://0.0.0.0', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://localhost', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://127.0.0.1', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://0.0.0.0', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://localhost', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://127.0.0.1', **url_blocker_attributes)
         end
 
         it 'allows loopback endpoints' do
-          expect(described_class).not_to be_blocked_url('http://127.0.0.2', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://127.0.0.2', **url_blocker_attributes)
         end
 
         it 'allows IPv4 link-local endpoints' do
-          expect(described_class).not_to be_blocked_url('http://169.254.169.254', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://169.254.168.100', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://169.254.169.254', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://169.254.168.100', **url_blocker_attributes)
         end
 
         it 'allows IPv6 link-local endpoints' do
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.169.254]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a9fe]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.168.100]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]', url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.169.254]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a9fe]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.168.100]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]', **url_blocker_attributes)
         end
       end
 
@@ -416,11 +416,11 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
               attrs = url_blocker_attributes.merge(dns_rebind_protection: false)
 
               stub_domain_resolv('example.com', '192.168.1.2') do
-                expect(described_class).not_to be_blocked_url(url, attrs)
+                expect(described_class).not_to be_blocked_url(url, **attrs)
               end
 
               stub_domain_resolv('example.com', '192.168.1.3') do
-                expect(described_class).to be_blocked_url(url, attrs)
+                expect(described_class).to be_blocked_url(url, **attrs)
               end
             end
           end
@@ -442,18 +442,18 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
               stub_domain_resolv(domain, '192.168.1.1') do
                 expect(described_class).not_to be_blocked_url("http://#{domain}",
-                  url_blocker_attributes)
+                  **url_blocker_attributes)
               end
 
               stub_domain_resolv(subdomain1, '192.168.1.1') do
                 expect(described_class).not_to be_blocked_url("http://#{subdomain1}",
-                  url_blocker_attributes)
+                  **url_blocker_attributes)
               end
 
               # subdomain2 is not part of the allowlist so it should be blocked
               stub_domain_resolv(subdomain2, '192.168.1.1') do
                 expect(described_class).to be_blocked_url("http://#{subdomain2}",
-                  url_blocker_attributes)
+                  **url_blocker_attributes)
               end
             end
 
@@ -463,12 +463,12 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
               stub_domain_resolv(unicode_domain, '192.168.1.1') do
                 expect(described_class).not_to be_blocked_url("http://#{unicode_domain}",
-                  url_blocker_attributes)
+                  **url_blocker_attributes)
               end
 
               stub_domain_resolv(idna_encoded_domain, '192.168.1.1') do
                 expect(described_class).not_to be_blocked_url("http://#{idna_encoded_domain}",
-                  url_blocker_attributes)
+                  **url_blocker_attributes)
               end
             end
 
@@ -525,7 +525,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
             it 'allows domain with port when resolved ip has port allowed' do
               stub_domain_resolv("www.resolve-domain.com", '127.0.0.1') do
-                expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", url_blocker_attributes)
+                expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", **url_blocker_attributes)
               end
             end
           end

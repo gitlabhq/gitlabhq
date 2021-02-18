@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import autosize from 'autosize';
+import $ from 'jquery';
 import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';

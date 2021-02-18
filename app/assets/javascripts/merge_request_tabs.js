@@ -1,13 +1,16 @@
 /* eslint-disable no-new, class-methods-use-this */
-
-import $ from 'jquery';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import $ from 'jquery';
 import Cookies from 'js-cookie';
+import Vue from 'vue';
+import CommitPipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import createEventHub from '~/helpers/event_hub_factory';
-import axios from './lib/utils/axios_utils';
-import { deprecatedCreateFlash as flash } from './flash';
+import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import Diff from './diff';
+import { deprecatedCreateFlash as flash } from './flash';
 import initChangesDropdown from './init_changes_dropdown';
+import axios from './lib/utils/axios_utils';
 import {
   parseUrlPathname,
   handleLocationHash,
@@ -15,15 +18,12 @@ import {
   parseBoolean,
   scrollToElement,
 } from './lib/utils/common_utils';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
-import Diff from './diff';
-import { localTimeAgo } from './lib/utils/datetime_utility';
-import syntaxHighlight from './syntax_highlight';
-import Notes from './notes';
-import { polyfillSticky } from './lib/utils/sticky';
-import initAddContextCommitsTriggers from './add_context_commits_modal';
 import { __ } from './locale';
+import Notes from './notes';
+import syntaxHighlight from './syntax_highlight';
 
 // MergeRequestTabs
 //
@@ -123,7 +123,6 @@ export default class MergeRequestTabs {
     ) {
       this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click();
     }
-    this.initAffix();
   }
 
   bindEvents() {
@@ -352,25 +351,29 @@ export default class MergeRequestTabs {
 
   mountPipelinesView() {
     const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const { CommitPipelinesTable, mrWidgetData } = gl;
+    const { mrWidgetData } = gl;
 
-    this.commitPipelinesTable = new CommitPipelinesTable({
-      propsData: {
-        endpoint: pipelineTableViewEl.dataset.endpoint,
-        helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
-        emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-        errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-        autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
-        canCreatePipelineInTargetProject: Boolean(
-          mrWidgetData?.can_create_pipeline_in_target_project,
-        ),
-        sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
-        targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
-        projectId: pipelineTableViewEl.dataset.projectId,
-        mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
-      },
+    this.commitPipelinesTable = new Vue({
       provide: {
         targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+      },
+      render(createElement) {
+        return createElement(CommitPipelinesTable, {
+          props: {
+            endpoint: pipelineTableViewEl.dataset.endpoint,
+            helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+            emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+            errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
+            autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
+            canCreatePipelineInTargetProject: Boolean(
+              mrWidgetData?.can_create_pipeline_in_target_project,
+            ),
+            sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
+            targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+            projectId: pipelineTableViewEl.dataset.projectId,
+            mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+          },
+        });
       },
     }).$mount();
 
@@ -508,22 +511,5 @@ export default class MergeRequestTabs {
         $gutterBtn.trigger('click', [true]);
       }
     }, 0);
-  }
-
-  initAffix() {
-    const $tabs = $('.js-tabs-affix');
-
-    // Screen space on small screens is usually very sparse
-    // So we dont affix the tabs on these
-    if (bp.getBreakpointSize() === 'xs' || !$tabs.length) return;
-
-    /**
-      If the browser does not support position sticky, it returns the position as static.
-      If the browser does support sticky, then we allow the browser to handle it, if not
-      then we default back to Bootstraps affix
-    */
-    if ($tabs.css('position') !== 'static') return;
-
-    polyfillSticky($tabs);
   }
 }

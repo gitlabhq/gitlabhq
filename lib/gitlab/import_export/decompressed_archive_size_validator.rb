@@ -1,24 +1,16 @@
 # frozen_string_literal: true
 
-require 'zlib'
-
 module Gitlab
   module ImportExport
     class DecompressedArchiveSizeValidator
       include Gitlab::Utils::StrongMemoize
 
       DEFAULT_MAX_BYTES = 10.gigabytes.freeze
-      CHUNK_SIZE = 4096.freeze
-
-      attr_reader :error
+      TIMEOUT_LIMIT = 60.seconds
 
       def initialize(archive_path:, max_bytes: self.class.max_bytes)
         @archive_path = archive_path
         @max_bytes = max_bytes
-        @bytes_read = 0
-        @total_reads = 0
-        @denominator = 5
-        @error = nil
       end
 
       def valid?
@@ -31,59 +23,62 @@ module Gitlab
         DEFAULT_MAX_BYTES
       end
 
-      def archive_file
-        @archive_file ||= File.open(@archive_path)
-      end
-
       private
 
       def validate
-        until archive_file.eof?
-          compressed_chunk = archive_file.read(CHUNK_SIZE)
+        pgrp = nil
+        valid_archive = true
 
-          inflate_stream.inflate(compressed_chunk) do |chunk|
-            @bytes_read += chunk.size
-            @total_reads += 1
+        Timeout.timeout(TIMEOUT_LIMIT) do
+          stdin, stdout, stderr, wait_thr = Open3.popen3(command, pgroup: true)
+          stdin.close
+          pgrp = Process.getpgid(wait_thr[:pid])
+          status = wait_thr.value
+
+          if status.success?
+            result = stdout.readline
+
+            if result.to_i > @max_bytes
+              valid_archive = false
+
+              log_error('Decompressed archive size limit reached')
+            end
+          else
+            valid_archive = false
+
+            log_error(stderr.readline)
           end
 
-          # Start garbage collection every 5 reads in order
-          # to prevent memory bloat during archive decompression
-          GC.start if gc_start?
-
-          if @bytes_read > @max_bytes
-            @error = error_message
-
-            return false
-          end
+        ensure
+          stdout.close
+          stderr.close
         end
 
-        true
-      rescue => e
-        @error = error_message
+        valid_archive
+      rescue Timeout::Error
+        log_error('Timeout reached during archive decompression')
 
-        Gitlab::ErrorTracking.track_exception(e)
-
-        Gitlab::Import::Logger.info(
-          message: @error,
-          error: e.message
-        )
+        Process.kill(-1, pgrp) if pgrp
 
         false
-      ensure
-        inflate_stream.close
-        archive_file.close
+      rescue => e
+        log_error(e.message)
+
+        Process.kill(-1, pgrp) if pgrp
+
+        false
       end
 
-      def inflate_stream
-        @inflate_stream ||= Zlib::Inflate.new(Zlib::MAX_WBITS + 32)
+      def command
+        "gzip -dc #{@archive_path} | wc -c"
       end
 
-      def gc_start?
-        @total_reads % @denominator == 0
-      end
-
-      def error_message
-        _('Decompressed archive size validation failed.')
+      def log_error(error)
+        Gitlab::Import::Logger.info(
+          message: error,
+          import_upload_archive_path: @archive_path,
+          import_upload_archive_size: File.size(@archive_path)
+        )
       end
     end
   end

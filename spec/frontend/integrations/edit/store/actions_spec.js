@@ -1,6 +1,4 @@
 import testAction from 'helpers/vuex_action_helper';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createState from '~/integrations/edit/store/state';
 import {
   setOverride,
   setIsSaving,
@@ -9,8 +7,13 @@ import {
   requestResetIntegration,
   receiveResetIntegrationSuccess,
   receiveResetIntegrationError,
+  requestJiraIssueTypes,
+  receiveJiraIssueTypesSuccess,
+  receiveJiraIssueTypesError,
 } from '~/integrations/edit/store/actions';
 import * as types from '~/integrations/edit/store/mutation_types';
+import createState from '~/integrations/edit/store/state';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -67,6 +70,36 @@ describe('Integration form store actions', () => {
     it('should commit RECEIVE_RESET_INTEGRATION_ERROR mutation', () => {
       return testAction(receiveResetIntegrationError, null, state, [
         { type: types.RECEIVE_RESET_INTEGRATION_ERROR },
+      ]);
+    });
+  });
+
+  describe('requestJiraIssueTypes', () => {
+    it('should commit SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE and SET_IS_LOADING_JIRA_ISSUE_TYPES mutations', () => {
+      return testAction(requestJiraIssueTypes, null, state, [
+        { type: types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE, payload: '' },
+        { type: types.SET_IS_LOADING_JIRA_ISSUE_TYPES, payload: true },
+      ]);
+    });
+  });
+
+  describe('receiveJiraIssueTypesSuccess', () => {
+    it('should commit SET_IS_LOADING_JIRA_ISSUE_TYPES and SET_JIRA_ISSUE_TYPES mutations', () => {
+      const issueTypes = ['issue', 'epic'];
+      return testAction(receiveJiraIssueTypesSuccess, issueTypes, state, [
+        { type: types.SET_IS_LOADING_JIRA_ISSUE_TYPES, payload: false },
+        { type: types.SET_JIRA_ISSUE_TYPES, payload: issueTypes },
+      ]);
+    });
+  });
+
+  describe('receiveJiraIssueTypesError', () => {
+    it('should commit SET_IS_LOADING_JIRA_ISSUE_TYPES, SET_JIRA_ISSUE_TYPES and SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE mutations', () => {
+      const errorMessage = 'something went wrong';
+      return testAction(receiveJiraIssueTypesError, errorMessage, state, [
+        { type: types.SET_IS_LOADING_JIRA_ISSUE_TYPES, payload: false },
+        { type: types.SET_JIRA_ISSUE_TYPES, payload: [] },
+        { type: types.SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE, payload: errorMessage },
       ]);
     });
   });

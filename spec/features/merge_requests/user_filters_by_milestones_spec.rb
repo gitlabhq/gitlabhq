@@ -10,7 +10,7 @@ RSpec.describe 'Merge Requests > User filters by milestones', :js do
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    create(:merge_request, :with_diffs, source_project: project)
+    create(:merge_request, source_project: project)
     create(:merge_request, :simple, source_project: project, milestone: milestone)
 
     sign_in(user)

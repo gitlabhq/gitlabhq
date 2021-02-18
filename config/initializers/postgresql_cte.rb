@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Adds support for WITH statements when using PostgreSQL. The code here is taken
 # from https://github.com/shmay/ctes_in_my_pg which at the time of writing has
 # not been pushed to RubyGems. The license of this repository is as follows:

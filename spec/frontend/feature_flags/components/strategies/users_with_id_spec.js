@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlFormTextarea } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import UsersWithId from '~/feature_flags/components/strategies/users_with_id.vue';
 import { usersWithIdStrategy } from '../../mock_data';
 

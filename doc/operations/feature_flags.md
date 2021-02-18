@@ -4,11 +4,10 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Feature Flags **(CORE)**
+# Feature Flags **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
 
 With Feature Flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -61,14 +60,13 @@ next to any feature flag in the list.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
 
 The maximum number of feature flags per project on self-managed GitLab instances
-is 200. On GitLab.com, the maximum number is determined by [GitLab.com tier](https://about.gitlab.com/pricing/):
+is 200. For GitLab SaaS, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
 
 | Tier     | Number of feature flags per project |
 |----------|-------------------------------------|
 | Free     | 50                                  |
-| Bronze   | 100                                 |
-| Silver   | 150                                 |
-| Gold     | 200                                 |
+| Premium  | 150                                 |
+| Ultimate | 200                                 |
 
 ## Feature flag strategies
 
@@ -237,6 +235,18 @@ It can be set to:
   - Optionally, you can click the **Include additional user IDs** checkbox and add a list
     of specific users IDs to enable the feature for.
 - [User IDs](#user-ids)
+
+## Legacy feature flag migration
+
+Legacy feature flags became read-only in GitLab 13.4. GitLab 14.0 removes support for legacy feature
+flags. You must migrate your legacy feature flags to the new version. To do so, follow these steps:
+
+1. Take a screenshot of the legacy flag for tracking.
+1. Delete the flag through the API or UI (you don't need to alter the code).
+1. Create a new feature flag with the same name as the legacy flag you deleted. Make sure the
+   strategies and environments match the deleted flag.
+
+See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help with this migration.
 
 ## Disable a feature flag for a specific environment
 

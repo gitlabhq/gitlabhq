@@ -1,11 +1,11 @@
-import Vuex from 'vuex';
+import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlIcon } from '@gitlab/ui';
+import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
-import { sprintf } from '~/locale';
 import { ENTER_KEY } from '~/lib/utils/keys';
+import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { X_TOTAL_HEADER, DEFAULT_I18N } from '~/ref/constants';
 import createStore from '~/ref/stores/';

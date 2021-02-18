@@ -21,4 +21,4 @@ class ProjectSetting < ApplicationRecord
   end
 end
 
-ProjectSetting.prepend_if_ee('EE::ProjectSetting')
+ProjectSetting.prepend_ee_mod

@@ -383,14 +383,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
     end
 
     context 'when job is a bridge' do
-      let(:attributes) do
+      let(:base_attributes) do
         {
           name: 'rspec', ref: 'master', options: { trigger: 'my/project' }, scheduling_type: :stage
         }
       end
 
+      let(:attributes) { base_attributes }
+
       it { is_expected.to be_a(::Ci::Bridge) }
       it { is_expected.to be_valid }
+
+      context 'when job belongs to a resource group' do
+        let(:attributes) { base_attributes.merge(resource_group_key: 'iOS') }
+
+        it 'returns a job with resource group' do
+          expect(subject.resource_group).not_to be_nil
+          expect(subject.resource_group.key).to eq('iOS')
+        end
+      end
     end
 
     it 'memoizes a resource object' do

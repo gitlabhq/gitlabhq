@@ -1,0 +1,20 @@
+- followers_illustration_path = 'illustrations/starred_empty.svg'
+- followers_visitor_empty_message = s_('UserProfile|This user doesn\'t have any followers.')
+- followers_current_user_empty_message_header = s_('UserProfile|You do not have any followers.')
+- following_illustration_path = 'illustrations/starred_empty.svg'
+- following_visitor_empty_message = s_('UserProfile|This user isn\'t following other users.')
+- following_current_user_empty_message_header = s_('UserProfile|You are not following other users.')
+
+- if users.size > 0
+  .row.gl-mt-3
+    = render partial: 'shared/users/user', collection: users, as: :user
+  = paginate users, theme: 'gitlab'
+- else
+  - if @user_followers
+    = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: followers_illustration_path,
+      visitor_empty_message: followers_visitor_empty_message,
+      current_user_empty_message_header: followers_current_user_empty_message_header}
+  - elsif @user_following
+    = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: following_illustration_path,
+      visitor_empty_message: following_visitor_empty_message,
+      current_user_empty_message_header: following_current_user_empty_message_header}

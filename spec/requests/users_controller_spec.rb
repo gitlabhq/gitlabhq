@@ -268,6 +268,14 @@ RSpec.describe UsersController do
         end
 
         it_behaves_like 'renders all public keys'
+
+        context 'when public visibility is restricted' do
+          before do
+            stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+          end
+
+          it_behaves_like 'renders all public keys'
+        end
       end
     end
   end

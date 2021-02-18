@@ -1,5 +1,5 @@
-import * as Sentry from '~/sentry/wrapper';
 import SentryConfig from '~/sentry/sentry_config';
+import * as Sentry from '~/sentry/wrapper';
 
 describe('SentryConfig', () => {
   describe('IGNORE_ERRORS', () => {

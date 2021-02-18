@@ -2,6 +2,14 @@
  * File content holder
  *
  */
+.container-fluid.container-limited.limit-container-width {
+  .file-holder.readme-holder.limited-width-container .file-content {
+    max-width: $limited-layout-width;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .file-holder {
   border: 1px solid $border-color;
   border-top: 0;
@@ -17,12 +25,6 @@
 
   &.readme-holder {
     margin: $gl-padding 0;
-
-    &.limited-width-container .file-content {
-      max-width: $limited-layout-width;
-      margin-left: auto;
-      margin-right: auto;
-    }
   }
 
   .file-title {
@@ -351,23 +353,17 @@ span.idiff {
     color: $gl-text-color;
   }
 
-  .file-actions .btn:not(.btn-icon) {
-    padding: 0 10px;
-    font-size: 13px;
-    line-height: 28px;
-    display: inline-block;
-    float: none;
-  }
-
   .file-actions .ide-edit-button {
     z-index: 2;
   }
 
-  @include media-breakpoint-down(sm) {
-    display: block;
-
+  @include media-breakpoint-down(md) {
     .file-actions {
-      margin-top: 5px;
+      margin-top: $gl-padding-8;
+
+      .btn {
+        margin-bottom: $gl-padding-8;
+      }
     }
   }
 }
@@ -442,12 +438,6 @@ span.idiff {
     .user-avatar-link.new-comment {
       position: absolute;
       margin: 40px $gl-padding 0 116px;
-
-      ~ .note-edit-form form.edit-note {
-        @include media-breakpoint-up(sm) {
-          margin-left: $note-icon-gutter-width;
-        }
-      }
     }
   }
 

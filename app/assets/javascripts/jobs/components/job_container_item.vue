@@ -1,8 +1,8 @@
 <script>
 import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { sprintf } from '~/locale';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
@@ -51,7 +51,7 @@ export default {
       v-gl-tooltip
       :href="job.status.details_path"
       :title="tooltipText"
-      class="js-job-link d-flex"
+      class="js-job-link gl-display-flex gl-align-items-center"
     >
       <gl-icon
         v-if="isActive"

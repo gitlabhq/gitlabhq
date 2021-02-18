@@ -1,12 +1,10 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { n__ } from '~/locale';
 
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import DeleteButton from '../delete_button.vue';
-
 import {
   ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
   LIST_DELETE_BUTTON_DISABLED,
@@ -16,6 +14,7 @@ import {
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
 } from '../../constants/index';
+import DeleteButton from '../delete_button.vue';
 
 export default {
   name: 'ImageListRow',

@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 const scrollIntoViewMock = jest.fn();
 const note = {

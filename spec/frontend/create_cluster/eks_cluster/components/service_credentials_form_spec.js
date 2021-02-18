@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ServiceCredentialsForm from '~/create_cluster/eks_cluster/components/service_credentials_form.vue';
 import eksClusterState from '~/create_cluster/eks_cluster/store/state';
 

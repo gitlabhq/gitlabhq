@@ -1,7 +1,7 @@
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { pick, clone } from 'lodash';
 import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
 import { defaultProps, projectList, staleProject } from '../mock';
 

@@ -39,11 +39,11 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count rendered_readme readme_path contribution_guide
+  CACHED_METHODS = %i(size commit_count readme_path contribution_guide
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
-                      has_visible_content? issue_template_names merge_request_template_names
+                      has_visible_content? issue_template_names_by_category merge_request_template_names_by_category
                       user_defined_metrics_dashboard_paths xcode_project? has_ambiguous_refs?).freeze
 
   # Methods that use cache_method but only memoize the value
@@ -53,15 +53,15 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: %i(rendered_readme readme_path),
+    readme: %i(readme_path),
     changelog: :changelog,
     license: %i(license_blob license_key license),
     contributing: :contribution_guide,
     gitignore: :gitignore,
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
-    issue_template: :issue_template_names,
-    merge_request_template: :merge_request_template_names,
+    issue_template: :issue_template_names_by_category,
+    merge_request_template: :merge_request_template_names_by_category,
     metrics_dashboard: :user_defined_metrics_dashboard_paths,
     xcode_config: :xcode_project?
   }.freeze
@@ -151,7 +151,8 @@ class Repository
       all: !!opts[:all],
       first_parent: !!opts[:first_parent],
       order: opts[:order],
-      literal_pathspec: opts.fetch(:literal_pathspec, true)
+      literal_pathspec: opts.fetch(:literal_pathspec, true),
+      trailers: opts[:trailers]
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -497,23 +498,7 @@ class Repository
   end
 
   def blob_at(sha, path)
-    blob = Blob.decorate(raw_repository.blob_at(sha, path), container)
-
-    # Don't attempt to return a special result if there is no blob at all
-    return unless blob
-
-    # Don't attempt to return a special result if this can't be a README
-    return blob unless Gitlab::FileDetector.type_of(blob.name) == :readme
-
-    # Don't attempt to return a special result unless we're looking at HEAD
-    return blob unless head_commit&.sha == sha
-
-    case path
-    when head_tree&.readme_path
-      ReadmeBlob.new(blob, self)
-    else
-      blob
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), container)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -587,15 +572,16 @@ class Repository
   end
   cache_method :avatar
 
-  def issue_template_names
-    Gitlab::Template::IssueTemplate.dropdown_names(project)
+  # store issue_template_names as hash
+  def issue_template_names_by_category
+    Gitlab::Template::IssueTemplate.repository_template_names(project)
   end
-  cache_method :issue_template_names, fallback: []
+  cache_method :issue_template_names_by_category, fallback: {}
 
-  def merge_request_template_names
-    Gitlab::Template::MergeRequestTemplate.dropdown_names(project)
+  def merge_request_template_names_by_category
+    Gitlab::Template::MergeRequestTemplate.repository_template_names(project)
   end
-  cache_method :merge_request_template_names, fallback: []
+  cache_method :merge_request_template_names_by_category, fallback: {}
 
   def user_defined_metrics_dashboard_paths
     Gitlab::Metrics::Dashboard::RepoDashboardFinder.list_dashboards(project)
@@ -610,15 +596,6 @@ class Repository
     head_tree&.readme_path
   end
   cache_method :readme_path
-
-  def rendered_readme
-    return unless readme
-
-    context = { project: project }
-
-    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
-  end
-  cache_method :rendered_readme
 
   def contribution_guide
     file_on_head(:contributing)
@@ -1058,6 +1035,10 @@ class Repository
     blob_data_at(sha, '.lfsconfig')
   end
 
+  def changelog_config(ref = 'HEAD')
+    blob_data_at(ref, Gitlab::Changelog::Config::FILE_PATH)
+  end
+
   def fetch_ref(source_repository, source_ref:, target_ref:)
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
@@ -1140,6 +1121,13 @@ class Repository
     else
       container.try(:project)
     end
+  end
+
+  # Choose one of the available repository storage options based on a normalized weighted probability.
+  # We should always use the latest settings, to avoid picking a deleted shard.
+  def self.pick_storage_shard(expire: true)
+    Gitlab::CurrentSettings.expire_current_application_settings if expire
+    Gitlab::CurrentSettings.pick_repository_storage
   end
 
   private

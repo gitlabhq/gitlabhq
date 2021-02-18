@@ -27,7 +27,7 @@ module Ci
     # rubocop:enable Cop/ActiveRecordSerialize
 
     state_machine :status do
-      after_transition [:created, :manual] => :pending do |bridge|
+      after_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
         next unless bridge.downstream_project
 
         bridge.run_after_commit do
@@ -153,6 +153,10 @@ module Ci
     end
 
     def runnable?
+      false
+    end
+
+    def any_unmet_prerequisites?
       false
     end
 

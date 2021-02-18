@@ -1,8 +1,0 @@
----
-name: core_security_mr_widget_downloads
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48769
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/273418
-milestone: '13.7'
-type: development
-group: group::static analysis
-default_enabled: true

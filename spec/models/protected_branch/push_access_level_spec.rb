@@ -54,16 +54,6 @@ RSpec.describe ProtectedBranch::PushAccessLevel do
         specify do
           expect(push_access_level.check_access(user)).to be_truthy
         end
-
-        context 'when the deploy_keys_on_protected_branches FF is false' do
-          before do
-            stub_feature_flags(deploy_keys_on_protected_branches: false)
-          end
-
-          it 'is false' do
-            expect(push_access_level.check_access(user)).to be_falsey
-          end
-        end
       end
 
       context 'when the deploy key is not among the active keys of this project' do

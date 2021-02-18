@@ -1,14 +1,14 @@
-import Vue from 'vue';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
-import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
-import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
-import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
-import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
-import eventHub from '~/vue_merge_request_widget/event_hub';
-import { MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import Vue from 'vue';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import simplePoll from '~/lib/utils/simple_poll';
+import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
+import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
+import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
+import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
+import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
+import { MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),

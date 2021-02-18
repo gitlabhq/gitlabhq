@@ -11,11 +11,11 @@ module Types
 
       argument :not, NegatedBoardIssueInputType,
                required: false,
-               description: 'List of negated params. Warning: this argument is experimental and a subject to change in future'
+               description: 'List of negated params. Warning: this argument is experimental and a subject to change in future.'
 
       argument :search, GraphQL::STRING_TYPE,
                required: false,
-               description: 'Search query for issue title or description'
+               description: 'Search query for issue title or description.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

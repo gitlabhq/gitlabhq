@@ -1,5 +1,5 @@
-import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_identifier_instance_text';
 import { buildUneditableInlineTokens } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
+import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_identifier_instance_text';
 
 import { buildMockTextNode, normalTextNode } from './mock_data';
 

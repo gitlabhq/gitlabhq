@@ -2,13 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/rspec/expect_gitlab_tracking'
 
 RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking do
-  include CopHelper
-
   let(:source_file) { 'spec/foo_spec.rb' }
 
   subject(:cop) { described_class.new }
@@ -36,29 +32,18 @@ RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking do
   good_samples.each do |good|
     context "good: #{good}" do
       it 'does not register an offense' do
-        inspect_source(good)
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(good)
       end
     end
   end
 
   bad_samples.each do |bad|
     context "bad: #{bad}" do
-      it 'registers an offense', :aggregate_failures do
-        inspect_source(bad, source_file)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.map(&:line)).to eq([1])
-        expect(cop.highlights).to eq([bad])
-
-        msg = cop.offenses.first.message
-
-        expect(msg).to match(
-          /Do not expect directly on `Gitlab::Tracking#event`/
-        )
-        expect(msg).to match(/add the `snowplow` annotation/)
-        expect(msg).to match(/use `expect_snowplow_event` instead/)
+      it 'registers an offense' do
+        expect_offense(<<~CODE, node: bad)
+          %{node}
+          ^{node} Do not expect directly on `Gitlab::Tracking#event`[...]
+        CODE
       end
     end
   end

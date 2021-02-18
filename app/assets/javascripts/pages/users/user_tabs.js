@@ -1,9 +1,9 @@
-import $ from 'jquery';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import axios from '~/lib/utils/axios_utils';
+import $ from 'jquery';
 import Activities from '~/activities';
-import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import ActivityCalendar from './activity_calendar';
 import UserOverviewBlock from './user_overview_block';
@@ -141,7 +141,15 @@ export default class UserTabs {
       this.loadOverviewTab();
     }
 
-    const loadableActions = ['groups', 'contributed', 'projects', 'starred', 'snippets'];
+    const loadableActions = [
+      'groups',
+      'contributed',
+      'projects',
+      'starred',
+      'snippets',
+      'followers',
+      'following',
+    ];
     if (loadableActions.indexOf(action) > -1) {
       this.loadTab(action, endpoint);
     }

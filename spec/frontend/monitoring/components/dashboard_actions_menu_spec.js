@@ -1,14 +1,14 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem } from '@gitlab/ui';
-import { createStore } from '~/monitoring/stores';
-import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
-import { setupAllDashboards, setupStoreWithData } from '../store_utils';
-import { redirectTo } from '~/lib/utils/url_utility';
-import Tracking from '~/tracking';
-import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
+import { shallowMount } from '@vue/test-utils';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import { dashboardActionsMenuProps, dashboardGitResponse } from '../mock_data';
+import { redirectTo } from '~/lib/utils/url_utility';
+import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
+import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
+import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
+import Tracking from '~/tracking';
+import { dashboardActionsMenuProps, dashboardGitResponse } from '../mock_data';
+import { setupAllDashboards, setupStoreWithData } from '../store_utils';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

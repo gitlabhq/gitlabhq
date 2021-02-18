@@ -1,8 +1,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
-import SearchableDropdown from './searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
+import SearchableDropdown from './searchable_dropdown.vue';
 
 export default {
   name: 'ProjectFilter',
@@ -27,7 +27,7 @@ export default {
     handleProjectChange(project) {
       // This determines if we need to update the group filter or not
       const queryParams = {
-        ...(project.namespace_id && { [GROUP_DATA.queryParam]: project.namespace_id }),
+        ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
         [PROJECT_DATA.queryParam]: project.id,
       };
 
@@ -40,6 +40,7 @@ export default {
 
 <template>
   <searchable-dropdown
+    data-testid="project-filter"
     :header-text="$options.PROJECT_DATA.headerText"
     :selected-display-value="$options.PROJECT_DATA.selectedDisplayValue"
     :items-display-value="$options.PROJECT_DATA.itemsDisplayValue"

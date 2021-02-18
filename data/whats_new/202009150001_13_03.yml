@@ -18,7 +18,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/yaml/#parallel-matrix-jobs
   image_url: https://about.gitlab.com/images/13_3/cartesian-matrix.png
   published_at: 2020-08-22
@@ -46,7 +46,7 @@
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/application_security/sast/#making-sast-analyzers-available-to-all-gitlab-tiers
   image_url: https://about.gitlab.com/images/13_3/sast-gitlab-languages.png
   published_at: 2020-08-22

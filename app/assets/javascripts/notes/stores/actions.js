@@ -1,23 +1,24 @@
-import Vue from 'vue';
 import $ from 'jquery';
 import Visibility from 'visibilityjs';
+import Vue from 'vue';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import TaskList from '../../task_list';
+import { __, sprintf } from '~/locale';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import loadAwardsHandler from '../../awards_handler';
 import { deprecatedCreateFlash as Flash } from '../../flash';
+import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import Poll from '../../lib/utils/poll';
+import { mergeUrlParams } from '../../lib/utils/url_utility';
+import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
+import TaskList from '../../task_list';
+import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import * as constants from '../constants';
+import eventHub from '../event_hub';
 import * as types from './mutation_types';
 import * as utils from './utils';
-import * as constants from '../constants';
-import loadAwardsHandler from '../../awards_handler';
-import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
-import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
-import { mergeUrlParams } from '../../lib/utils/url_utility';
-import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
-import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
-import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
-import { __, sprintf } from '~/locale';
-import Api from '~/api';
 
 let eTagPoll;
 
@@ -420,14 +421,25 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     .catch(processErrors);
 };
 
-const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
+export const setFetchingState = ({ commit }, fetchingState) =>
+  commit(types.SET_NOTES_FETCHING_STATE, fetchingState);
+
+const pollSuccessCallBack = async (resp, commit, state, getters, dispatch) => {
   if (state.isResolvingDiscussion) {
     return null;
   }
 
+  if (window.gon?.features?.paginatedNotes && !resp.more && state.isFetching) {
+    eventHub.$emit('fetchedNotesData');
+    dispatch('setFetchingState', false);
+    dispatch('setNotesFetchedState', true);
+    dispatch('setLoadingState', false);
+  }
+
   if (resp.notes?.length) {
-    dispatch('updateOrCreateNotes', resp.notes);
+    await dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
+    dispatch('updateResolvableDiscussionsCounts');
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
@@ -727,9 +739,13 @@ export const updateConfidentialityOnIssuable = (
     })
     .then(({ data }) => {
       const {
-        issueSetConfidential: { issue },
+        issueSetConfidential: { issue, errors },
       } = data;
 
-      setConfidentiality({ commit }, issue.confidential);
+      if (errors?.length) {
+        Flash(errors[0], 'alert');
+      } else {
+        setConfidentiality({ commit }, issue.confidential);
+      }
     });
 };

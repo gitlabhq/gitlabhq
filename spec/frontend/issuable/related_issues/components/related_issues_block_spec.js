@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlButton, GlIcon } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import {
   issuable1,
   issuable2,

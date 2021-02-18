@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
 import { GlPagination } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import * as commonUtils from '~/lib/utils/common_utils';
 import ReleasesPaginationRest from '~/releases/components/releases_pagination_rest.vue';
 import createStore from '~/releases/stores';
 import createListModule from '~/releases/stores/modules/list';
-import * as commonUtils from '~/lib/utils/common_utils';
 
 commonUtils.historyPushState = jest.fn();
 

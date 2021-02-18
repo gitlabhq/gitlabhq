@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import TreeContent, { INITIAL_FETCH_COUNT } from '~/repository/components/tree_content.vue';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
+import TreeContent, { INITIAL_FETCH_COUNT } from '~/repository/components/tree_content.vue';
 
 let vm;
 let $apollo;

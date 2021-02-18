@@ -100,6 +100,8 @@ module ApplicationSettingImplementation
         max_import_size: 0,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
+        notes_create_limit: 300,
+        notes_create_limit_allowlist: [],
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,
@@ -174,6 +176,7 @@ module ApplicationSettingImplementation
         container_registry_expiration_policies_worker_capacity: 0,
         kroki_enabled: false,
         kroki_url: nil,
+        kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
         rate_limiting_response_text: nil
       }
     end
@@ -269,13 +272,21 @@ module ApplicationSettingImplementation
     self.protected_paths = strings_to_array(values)
   end
 
-  def asset_proxy_whitelist=(values)
+  def notes_create_limit_allowlist_raw
+    array_to_string(self.notes_create_limit_allowlist)
+  end
+
+  def notes_create_limit_allowlist_raw=(values)
+    self.notes_create_limit_allowlist = strings_to_array(values).map(&:downcase)
+  end
+
+  def asset_proxy_allowlist=(values)
     values = strings_to_array(values) if values.is_a?(String)
 
-    # make sure we always whitelist the running host
+    # make sure we always allow the running host
     values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
 
-    self[:asset_proxy_whitelist] = values
+    self[:asset_proxy_allowlist] = values
   end
 
   def repository_storages

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import RemoveIssue from '~/boards/components/sidebar/remove_issue.vue';
 

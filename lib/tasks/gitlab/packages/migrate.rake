@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 desc "GitLab | Packages | Migrate packages files to remote storage"

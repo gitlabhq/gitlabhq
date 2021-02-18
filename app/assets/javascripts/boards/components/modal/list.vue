@@ -1,6 +1,6 @@
 <script>
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { GlIcon } from '@gitlab/ui';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import ModalStore from '../../stores/modal_store';
 import IssueCardInner from '../issue_card_inner.vue';
 

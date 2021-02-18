@@ -13,7 +13,7 @@ in case something goes wrong:
 - [Diagnostics tools](diagnostics_tools.md)
 - [Elasticsearch](elasticsearch.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
-- [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(SILVER ONLY)**
+- [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
 - [Kubernetes cheat sheet](kubernetes_cheat_sheet.md)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](log_parsing.md)

@@ -32,6 +32,7 @@ module API
       helpers ::API::Helpers::Packages::BasicAuthHelpers
 
       format :txt
+      content_type :txt, 'text/plain'
 
       rescue_from ArgumentError do |e|
         render_api_error!(e.message, 400)
@@ -50,33 +51,33 @@ module API
       end
 
       namespace 'dists/*distribution', requirements: DISTRIBUTION_REQUIREMENTS do
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/Release.gpg
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release.gpg
         desc 'The Release file signature' do
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'Release.gpg' do
           not_found!
         end
 
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/Release
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release
         desc 'The unsigned Release file' do
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'Release' do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
           'TODO Release'
         end
 
-        # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/InRelease
+        # GET {projects|groups}/:id/packages/debian/dists/*distribution/InRelease
         desc 'The signed Release file' do
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get 'InRelease' do
           not_found!
         end
@@ -87,12 +88,12 @@ module API
         end
 
         namespace ':component/binary-:architecture', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
-          # GET {projects|groups}/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
+          # GET {projects|groups}/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages
           desc 'The binary files index' do
             detail 'This feature was introduced in GitLab 13.5'
           end
 
-          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
           get 'Packages' do
             # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
             'TODO Packages'
@@ -107,7 +108,7 @@ module API
       end
 
       namespace 'pool/:component/:letter/:source_package', requirements: COMPONENT_LETTER_SOURCE_PACKAGE_REQUIREMENTS do
-        # GET {projects|groups}/:id/-/packages/debian/pool/:component/:letter/:source_package/:file_name
+        # GET {projects|groups}/:id/packages/debian/pool/:component/:letter/:source_package/:file_name
         params do
           requires :file_name, type: String, desc: 'The Debian File Name'
         end
@@ -115,7 +116,7 @@ module API
           detail 'This feature was introduced in GitLab 13.5'
         end
 
-        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
         get ':file_name', requirements: FILE_NAME_REQUIREMENTS do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
           'TODO File'

@@ -23,6 +23,10 @@ When a feature is no longer necessary, you can [archive the related requirement]
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a more in-depth walkthrough using a [demonstration project](https://gitlab.com/gitlab-org/requiremeents-mgmt),
+see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
+
 ![requirements list view](img/requirements_list_v13_5.png)
 
 ## Create a requirement
@@ -260,7 +264,9 @@ For GitLab.com, it is set to 10 MB.
 
 ## Export requirements to a CSV file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290813) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290813) in GitLab 13.8.
+> - Revised CSV column headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299247) in GitLab 13.9.
+> - Ability to select which fields to export [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290823) in GitLab 13.9.
 
 You can export GitLab requirements to a
 [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) sent to your default notification
@@ -275,19 +281,41 @@ Users with Reporter or higher [permissions](../../permissions.md) can export req
 To export requirements:
 
 1. In a project, go to **Requirements**.
-1. Select the **Export as CSV** icon (**{export}**) in the top right. A confirmation modal appears.
+1. In the top right, select the **Export as CSV** icon (**{export}**).
+
+   A confirmation modal appears.
+
+1. Under **Advanced export options**, select which fields to export.
+
+   All fields are selected by default. To exclude a field from being exported, clear the checkbox next to it.
+
 1. Select **Export requirements**. The exported CSV file is sent to the email address associated with your user.
 
 ### Exported CSV file format
 
+<!-- vale gitlab.Spelling = NO -->
 You can preview the exported CSV file in a spreadsheet editor, such as Microsoft Excel,
 OpenOffice Calc, or Google Sheets.
+<!-- vale gitlab.Spelling = YES -->
 
-The exported CSV file contains the following columns:
+The exported CSV file contains the following headers:
 
-- Requirement ID
-- Title
-- Description
-- Author Username
-- Latest Test Report State
-- Latest Test Report Created At (UTC)
+- In GitLab 13.8:
+
+  - Requirement ID
+  - Title
+  - Description
+  - Author Username
+  - Latest Test Report State
+  - Latest Test Report Created At (UTC)
+
+- In GitLab 13.9 and later:
+
+  - Requirement ID
+  - Title
+  - Description
+  - Author
+  - Author Username
+  - Created At (UTC)
+  - State
+  - State Updated At (UTC)

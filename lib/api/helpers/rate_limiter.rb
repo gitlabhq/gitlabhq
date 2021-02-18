@@ -3,8 +3,8 @@
 module API
   module Helpers
     module RateLimiter
-      def check_rate_limit!(key, scope)
-        if rate_limiter.throttled?(key, scope: scope)
+      def check_rate_limit!(key, scope, users_allowlist = nil)
+        if rate_limiter.throttled?(key, scope: scope, users_allowlist: users_allowlist)
           log_request(key)
           render_exceeded_limit_error!
         end

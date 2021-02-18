@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import {
   GlIcon,
   GlFormInput,
@@ -8,11 +7,15 @@ import {
   GlSearchBoxByType,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
+import Vue from 'vue';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { s__, __ } from '~/locale';
-// Mocks will be removed when integrating with BE is ready
-// data format is defined and will be the same as mocked (maybe with some minor changes)
-// feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171
-import gitlabFieldsMock from './mocks/gitlabFields.json';
+import {
+  getMappingData,
+  getPayloadFields,
+  transformForSave,
+} from '../utils/mapping_transformations';
 
 export const i18n = {
   columns: {
@@ -40,18 +43,25 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: {
-    gitlabAlertFields: {
-      default: gitlabFieldsMock,
-    },
-  },
   props: {
-    payloadFields: {
+    alertFields: {
+      type: Array,
+      required: true,
+      validator: (fields) => {
+        return (
+          fields.length &&
+          fields.every(({ name, types, label }) => {
+            return typeof name === 'string' && Array.isArray(types) && typeof label === 'string';
+          })
+        );
+      },
+    },
+    parsedPayload: {
       type: Array,
       required: false,
       default: () => [],
     },
-    mapping: {
+    savedMapping: {
       type: Array,
       required: false,
       default: () => [],
@@ -59,31 +69,18 @@ export default {
   },
   data() {
     return {
-      gitlabFields: this.gitlabAlertFields,
+      gitlabFields: cloneDeep(this.alertFields),
     };
   },
   computed: {
+    payloadFields() {
+      return getPayloadFields(this.parsedPayload);
+    },
     mappingData() {
-      return this.gitlabFields.map((gitlabField) => {
-        const mappingFields = this.payloadFields.filter(({ type }) =>
-          type.some((t) => gitlabField.compatibleTypes.includes(t)),
-        );
-
-        const foundMapping = this.mapping.find(
-          ({ alertFieldName }) => alertFieldName === gitlabField.name,
-        );
-
-        const { fallbackAlertPaths, payloadAlertPaths } = foundMapping || {};
-
-        return {
-          mapping: payloadAlertPaths,
-          fallback: fallbackAlertPaths,
-          searchTerm: '',
-          fallbackSearchTerm: '',
-          mappingFields,
-          ...gitlabField,
-        };
-      });
+      return getMappingData(this.gitlabFields, this.payloadFields, this.savedMapping);
+    },
+    hasFallbackColumn() {
+      return this.gitlabFields.some(({ numberOfFallbacks }) => Boolean(numberOfFallbacks));
     },
   },
   methods: {
@@ -91,6 +88,7 @@ export default {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);
       const updatedField = { ...this.gitlabFields[fieldIndex], ...{ [valueKey]: mappingKey } };
       Vue.set(this.gitlabFields, fieldIndex, updatedField);
+      this.$emit('onMappingUpdate', transformForSave(this.mappingData));
     },
     setSearchTerm(search = '', searchFieldKey, gitlabKey) {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);
@@ -99,7 +97,6 @@ export default {
     },
     filterFields(searchTerm = '', fields) {
       const search = searchTerm.toLowerCase();
-
       return fields.filter((field) => field.label.toLowerCase().includes(search));
     },
     isSelected(fieldValue, mapping) {
@@ -111,8 +108,10 @@ export default {
         this.$options.i18n.makeSelection
       );
     },
-    getFieldValue({ label, type }) {
-      return `${label} (${type.join(__(' or '))})`;
+    getFieldValue({ label, types }) {
+      const type = types.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(__(' or '));
+
+      return `${label} (${type})`;
     },
     noResults(searchTerm, fields) {
       return !this.filterFields(searchTerm, fields).length;
@@ -131,7 +130,11 @@ export default {
       <h5 id="parsedFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
         {{ $options.i18n.columns.payloadKeyTitle }}
       </h5>
-      <h5 id="fallbackFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5
+        v-if="hasFallbackColumn"
+        id="fallbackFieldsHeader"
+        class="gl-display-table-cell gl-py-3 gl-pr-3"
+      >
         {{ $options.i18n.columns.fallbackKeyTitle }}
         <gl-icon
           v-gl-tooltip

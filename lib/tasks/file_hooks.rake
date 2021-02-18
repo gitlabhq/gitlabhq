@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :file_hooks do
   desc 'Validate existing file hooks'
   task validate: :environment do

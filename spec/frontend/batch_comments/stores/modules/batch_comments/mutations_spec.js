@@ -1,6 +1,6 @@
-import createState from '~/batch_comments/stores/modules/batch_comments/state';
-import mutations from '~/batch_comments/stores/modules/batch_comments/mutations';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
+import mutations from '~/batch_comments/stores/modules/batch_comments/mutations';
+import createState from '~/batch_comments/stores/modules/batch_comments/state';
 
 describe('Batch comments mutations', () => {
   let state;

@@ -29,6 +29,12 @@ module Resolvers
           .new(project: project, current_user: context[:current_user])
           .validate(content, dry_run: dry_run)
 
+        response(result).merge(merged_yaml: result.merged_yaml)
+      end
+
+      private
+
+      def response(result)
         if result.errors.empty?
           {
             status: :valid,
@@ -42,8 +48,6 @@ module Resolvers
           }
         end
       end
-
-      private
 
       def make_jobs(config_jobs)
         config_jobs.map do |job|

@@ -1,7 +1,6 @@
-import { mount, shallowMount } from '@vue/test-utils';
-
-import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
-import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
+import { GlToggle } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 
 describe('Project Feature Settings', () => {
   const defaultProps = {
@@ -19,81 +18,76 @@ describe('Project Feature Settings', () => {
   };
   let wrapper;
 
-  const mountComponent = (customProps) => {
-    const propsData = { ...defaultProps, ...customProps };
-    return shallowMount(projectFeatureSetting, { propsData });
-  };
+  const findHiddenInput = () => wrapper.find(`input[name=${defaultProps.name}]`);
+  const findToggle = () => wrapper.findComponent(GlToggle);
 
-  beforeEach(() => {
-    wrapper = mountComponent();
-  });
+  const mountComponent = (customProps = {}) =>
+    shallowMount(ProjectFeatureSetting, {
+      propsData: {
+        ...defaultProps,
+        ...customProps,
+      },
+    });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('Hidden name input', () => {
     it('should set the hidden name input if the name exists', () => {
-      expect(wrapper.find(`input[name=${defaultProps.name}]`).attributes().value).toBe('1');
+      wrapper = mountComponent();
+
+      expect(findHiddenInput().attributes('value')).toBe('1');
     });
 
     it('should not set the hidden name input if the name does not exist', () => {
-      wrapper.setProps({ name: null });
+      wrapper = mountComponent({ name: null });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(`input[name=${defaultProps.name}]`).exists()).toBe(false);
-      });
+      expect(findHiddenInput().exists()).toBe(false);
     });
   });
 
   describe('Feature toggle', () => {
-    it('should be hidden if "showToggle" is passed false', async () => {
-      wrapper.setProps({ showToggle: false });
+    it('should be hidden if "showToggle" is passed false', () => {
+      wrapper = mountComponent({ showToggle: false });
 
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.find(projectFeatureToggle).element).toBeUndefined();
+      expect(findToggle().exists()).toBe(false);
     });
 
     it('should enable the feature toggle if the value is not 0', () => {
-      expect(wrapper.find(projectFeatureToggle).props().value).toBe(true);
+      wrapper = mountComponent();
+
+      expect(findToggle().props('value')).toBe(true);
     });
 
     it('should enable the feature toggle if the value is less than 0', () => {
-      wrapper.setProps({ value: -1 });
+      wrapper = mountComponent({ value: -1 });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(projectFeatureToggle).props().value).toBe(true);
-      });
+      expect(findToggle().props('value')).toBe(true);
     });
 
     it('should disable the feature toggle if the value is 0', () => {
-      wrapper.setProps({ value: 0 });
+      wrapper = mountComponent({ value: 0 });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(projectFeatureToggle).props().value).toBe(false);
-      });
+      expect(findToggle().props('value')).toBe(false);
     });
 
     it('should disable the feature toggle if disabledInput is set', () => {
-      wrapper.setProps({ disabledInput: true });
+      wrapper = mountComponent({ disabledInput: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find(projectFeatureToggle).props().disabledInput).toBe(true);
-      });
+      expect(findToggle().props('disabled')).toBe(true);
     });
 
     it('should emit a change event when the feature toggle changes', () => {
-      // Needs to be fully mounted to be able to trigger the click event on the internal button
-      wrapper = mount(projectFeatureSetting, { propsData: defaultProps });
+      wrapper = mountComponent({ propsData: defaultProps });
 
-      expect(wrapper.emitted().change).toBeUndefined();
-      wrapper.find(projectFeatureToggle).find('button').trigger('click');
+      expect(wrapper.emitted('change')).toBeUndefined();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().change.length).toBe(1);
-        expect(wrapper.emitted().change[0]).toEqual([0]);
-      });
+      findToggle().vm.$emit('change', false);
+
+      expect(wrapper.emitted('change')).toHaveLength(1);
+      expect(wrapper.emitted('change')[0]).toEqual([0]);
     });
   });
 
@@ -108,26 +102,23 @@ describe('Project Feature Settings', () => {
     `(
       'should set disabled to $isDisabled when disabledInput is $disabledInput, the value is $value and options are $options',
       ({ disabledInput, value, options, isDisabled }) => {
-        wrapper.setProps({ disabledInput, value, options });
+        wrapper = mountComponent({ disabledInput, value, options });
 
-        return wrapper.vm.$nextTick(() => {
-          if (isDisabled) {
-            expect(wrapper.find('select').attributes().disabled).toEqual('disabled');
-          } else {
-            expect(wrapper.find('select').attributes().disabled).toBeUndefined();
-          }
-        });
+        const expected = isDisabled ? 'disabled' : undefined;
+
+        expect(wrapper.find('select').attributes('disabled')).toBe(expected);
       },
     );
 
     it('should emit the change when a new option is selected', () => {
-      expect(wrapper.emitted().change).toBeUndefined();
+      wrapper = mountComponent();
+
+      expect(wrapper.emitted('change')).toBeUndefined();
+
       wrapper.findAll('option').at(1).trigger('change');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().change.length).toBe(1);
-        expect(wrapper.emitted().change[0]).toEqual([2]);
-      });
+      expect(wrapper.emitted('change')).toHaveLength(1);
+      expect(wrapper.emitted('change')[0]).toEqual([2]);
     });
   });
 });

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import SharedRunnersForm from '~/group_settings/components/shared_runners_form.vue';

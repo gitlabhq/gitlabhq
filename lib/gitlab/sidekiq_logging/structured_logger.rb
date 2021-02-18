@@ -11,13 +11,25 @@ module Gitlab
       def call(job, queue)
         started_time = get_time
         base_payload = parse_job(job)
+
         ActiveRecord::LogSubscriber.reset_runtime
 
-        Sidekiq.logger.info log_job_start(base_payload)
+        Sidekiq.logger.info log_job_start(job, base_payload)
 
         yield
 
         Sidekiq.logger.info log_job_done(job, started_time, base_payload)
+      rescue Sidekiq::JobRetry::Handled => job_exception
+        # Sidekiq::JobRetry::Handled is raised by the internal Sidekiq
+        # processor. It is a wrapper around real exception indicating an
+        # exception is already handled by the Job retrier. The real exception
+        # should be unwrapped before being logged.
+        #
+        # For more information:
+        # https://github.com/mperham/sidekiq/blob/v5.2.7/lib/sidekiq/processor.rb#L173
+        Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception.cause || job_exception)
+
+        raise
       rescue => job_exception
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception)
 
@@ -27,7 +39,9 @@ module Gitlab
       private
 
       def add_instrumentation_keys!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper.keys))
+        instrumentation_values = job.slice(*::Gitlab::InstrumentationHelper.keys).stringify_keys
+
+        output_payload.merge!(instrumentation_values)
       end
 
       def add_logging_extras!(job, output_payload)
@@ -36,16 +50,14 @@ module Gitlab
         )
       end
 
-      def add_db_counters!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS))
-      end
-
-      def log_job_start(payload)
+      def log_job_start(job, payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
 
         scheduling_latency_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
         payload['scheduling_latency_s'] = scheduling_latency_s if scheduling_latency_s
+
+        payload['job_size_bytes'] = Sidekiq.dump_json(job).bytesize
 
         payload
       end
@@ -54,7 +66,6 @@ module Gitlab
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
         add_logging_extras!(job, payload)
-        add_db_counters!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)
@@ -66,6 +77,7 @@ module Gitlab
           payload['job_status'] = 'fail'
           payload['error_message'] = job_exception.message
           payload['error_class'] = job_exception.class.name
+          add_exception_backtrace!(job_exception, payload)
         else
           payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
           payload['job_status'] = 'done'
@@ -79,26 +91,22 @@ module Gitlab
 
       def add_time_keys!(time, payload)
         payload['duration_s'] = time[:duration].round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
-
-        # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
-        # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
-        payload['cpu_s'] = time[:cputime].round(Gitlab::InstrumentationHelper::DURATION_PRECISION) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
+      end
+
+      def add_exception_backtrace!(job_exception, payload)
+        return if job_exception.backtrace.blank?
+
+        payload['error_backtrace'] = Rails.backtrace_cleaner.clean(job_exception.backtrace)
       end
 
       def elapsed(t0)
         t1 = get_time
-        {
-          duration: t1[:now] - t0[:now],
-          cputime: t1[:thread_cputime] - t0[:thread_cputime]
-        }
+        { duration: t1[:now] - t0[:now] }
       end
 
       def get_time
-        {
-          now: current_time,
-          thread_cputime: defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0
-        }
+        { now: current_time }
       end
 
       def current_time

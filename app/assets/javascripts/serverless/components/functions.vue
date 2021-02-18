@@ -1,10 +1,10 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLink, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { sprintf, s__ } from '~/locale';
-import EnvironmentRow from './environment_row.vue';
-import EmptyState from './empty_state.vue';
 import { CHECKING_INSTALLED } from '../constants';
+import EmptyState from './empty_state.vue';
+import EnvironmentRow from './environment_row.vue';
 
 export default {
   components: {
@@ -69,18 +69,16 @@ export default {
 
     <div v-else-if="isInstalled">
       <div v-if="hasFunctionData">
-        <template>
-          <div class="groups-list-tree-container js-functions-wrapper">
-            <ul class="content-list group-list-tree">
-              <environment-row
-                v-for="(env, index) in getFunctions"
-                :key="index"
-                :env="env"
-                :env-name="index"
-              />
-            </ul>
-          </div>
-        </template>
+        <div class="groups-list-tree-container js-functions-wrapper">
+          <ul class="content-list group-list-tree">
+            <environment-row
+              v-for="(env, index) in getFunctions"
+              :key="index"
+              :env="env"
+              :env-name="index"
+            />
+          </ul>
+        </div>
         <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3 gl-mb-3 js-functions-loader" />
       </div>
       <div v-else class="empty-state js-empty-state">

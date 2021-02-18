@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.entry do
   xml.id      project_issue_url(issue.project, issue)
   xml.link    href: project_issue_url(issue.project, issue)

@@ -1,10 +1,10 @@
-import AxiosMockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import ForkGroupsList from '~/pages/projects/forks/new/components/fork_groups_list.vue';
 import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_groups_list_item.vue';
 
@@ -16,7 +16,6 @@ describe('Fork groups list component', () => {
 
   const DEFAULT_PROPS = {
     endpoint: '/dummy',
-    hasReachedProjectLimit: false,
   };
 
   const replyWith = (...args) => axiosMock.onGet(DEFAULT_PROPS.endpoint).reply(...args);
@@ -94,10 +93,9 @@ describe('Fork groups list component', () => {
 
   it('renders list items for each available group', async () => {
     const namespaces = [{ name: 'dummy1' }, { name: 'dummy2' }, { name: 'otherdummy' }];
-    const hasReachedProjectLimit = true;
 
     replyWith(200, { namespaces });
-    createWrapper({ hasReachedProjectLimit });
+    createWrapper();
 
     await waitForPromises();
 
@@ -106,7 +104,6 @@ describe('Fork groups list component', () => {
     namespaces.forEach((namespace, idx) => {
       expect(wrapper.findAll(ForkGroupsListItem).at(idx).props()).toStrictEqual({
         group: namespace,
-        hasReachedProjectLimit,
       });
     });
   });

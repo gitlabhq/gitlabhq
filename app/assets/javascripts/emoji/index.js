@@ -1,10 +1,11 @@
-import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { escape, minBy } from 'lodash';
 import emojiAliases from 'emojis/aliases.json';
-import axios from '../lib/utils/axios_utils';
 import AccessorUtilities from '../lib/utils/accessor';
+import axios from '../lib/utils/axios_utils';
 
 let emojiMap = null;
 let validEmojiNames = null;
+export const FALLBACK_EMOJI_KEY = 'grey_question';
 
 export const EMOJI_VERSION = '1';
 
@@ -30,23 +31,17 @@ async function loadEmoji() {
   return data;
 }
 
+async function loadEmojiWithNames() {
+  return Object.entries(await loadEmoji()).reduce((acc, [key, value]) => {
+    acc[key] = { ...value, name: key };
+
+    return acc;
+  }, {});
+}
+
 async function prepareEmojiMap() {
-  emojiMap = await loadEmoji();
-
+  emojiMap = await loadEmojiWithNames();
   validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
-
-  Object.keys(emojiMap).forEach((name) => {
-    emojiMap[name].aliases = [];
-    emojiMap[name].name = name;
-  });
-  Object.entries(emojiAliases).forEach(([alias, name]) => {
-    // This check, `if (name in emojiMap)` is necessary during testing. In
-    // production, it shouldn't be necessary, because at no point should there
-    // be an entry in aliases.json with no corresponding entry in emojis.json.
-    // However, during testing, the endpoint for emojis.json is mocked with a
-    // small dataset, whereas aliases.json is always `import`ed directly.
-    if (name in emojiMap) emojiMap[name].aliases.push(alias);
-  });
 }
 
 export function initEmojiMap() {
@@ -63,151 +58,101 @@ export function getValidEmojiNames() {
 }
 
 export function isEmojiNameValid(name) {
-  return validEmojiNames.indexOf(name) >= 0;
+  if (!emojiMap) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('The emoji map is uninitialized or initialization has not completed');
+  }
+
+  return name in emojiMap || name in emojiAliases;
 }
 
 export function getAllEmoji() {
   return emojiMap;
 }
 
-/**
- * Retrieves an emoji by name or alias.
- *
- * Note: `initEmojiMap` must have been called and completed before this method
- * can safely be called.
- *
- * @param {String} query The emoji name
- * @param {Boolean} fallback If true, a fallback emoji will be returned if the
- * named emoji does not exist. Defaults to false.
- * @returns {Object} The matching emoji.
- */
-export function getEmoji(query, fallback = false) {
-  // TODO https://gitlab.com/gitlab-org/gitlab/-/issues/268208
-  const fallbackEmoji = emojiMap.grey_question;
-  if (!query) {
-    return fallback ? fallbackEmoji : null;
-  }
+function getAliasesMatchingQuery(query) {
+  return Object.keys(emojiAliases)
+    .filter((alias) => alias.includes(query))
+    .reduce((map, alias) => {
+      const emojiName = emojiAliases[alias];
+      const score = alias.indexOf(query);
 
-  if (!emojiMap) {
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    throw new Error('The emoji map is uninitialized or initialization has not completed');
-  }
+      const prev = map.get(emojiName);
+      // overwrite if we beat the previous score or we're more alphabetical
+      const shouldSet =
+        !prev ||
+        prev.score > score ||
+        (prev.score === score && prev.alias.localeCompare(alias) > 0);
 
-  const lowercaseQuery = query.toLowerCase();
-  const name = normalizeEmojiName(lowercaseQuery);
+      if (shouldSet) {
+        map.set(emojiName, { score, alias });
+      }
 
-  if (name in emojiMap) {
-    return emojiMap[name];
-  }
-
-  return fallback ? fallbackEmoji : null;
+      return map;
+    }, new Map());
 }
 
-const searchMatchers = {
-  // Fuzzy matching compares using a fuzzy matching library
-  fuzzy: (value, query) => {
-    const score = fuzzaldrinPlus.score(value, query) > 0;
-    return { score, success: score > 0 };
-  },
-  // Contains matching compares by indexOf
-  contains: (value, query) => {
-    const index = value.indexOf(query.toLowerCase());
-    return { index, success: index >= 0 };
-  },
-  // Exact matching compares by equality
-  exact: (value, query) => {
-    return { success: value === query.toLowerCase() };
-  },
-};
-
-const searchPredicates = {
-  // Search by name
-  name: (matcher, query) => (emoji) => {
-    const m = matcher(emoji.name, query);
-    return [{ ...m, emoji, field: emoji.name }];
-  },
-  // Search by alias
-  alias: (matcher, query) => (emoji) =>
-    emoji.aliases.map((alias) => {
-      const m = matcher(alias, query);
-      return { ...m, emoji, field: alias };
-    }),
-  // Search by description
-  description: (matcher, query) => (emoji) => {
-    const m = matcher(emoji.d, query);
-    return [{ ...m, emoji, field: emoji.d }];
-  },
-  // Search by unicode value (always exact)
-  unicode: (matcher, query) => (emoji) => {
-    return [{ emoji, field: emoji.e, success: emoji.e === query }];
-  },
-};
-
-/**
- * Searches emoji by name, aliases, description, and unicode value and returns
- * an array of matches.
- *
- * Behavior is undefined if `opts.fields` is empty or if `opts.match` is fuzzy
- * and the query is empty.
- *
- * Note: `initEmojiMap` must have been called and completed before this method
- * can safely be called.
- *
- * @param {String} query Search query.
- * @param {Object} opts Search options (optional).
- * @param {String[]} opts.fields Fields to search. Choices are 'name', 'alias',
- * 'description', and 'unicode' (value). Default is all (four) fields.
- * @param {String} opts.match Search method to use. Choices are 'exact',
- * 'contains', or 'fuzzy'. All methods are case-insensitive. Exact matching (the
- * default) compares by equality. Contains matching compares by indexOf. Fuzzy
- * matching compares using a fuzzy matching library.
- * @param {Boolean} opts.fallback If true, a fallback emoji will be returned if
- * the result set is empty. Defaults to false.
- * @param {Boolean} opts.raw Returns the raw match data instead of just the
- * matching emoji.
- * @returns {Object[]} A list of emoji that match the query.
- */
-export function searchEmoji(query, opts) {
-  if (!emojiMap) {
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    throw new Error('The emoji map is uninitialized or initialization has not completed');
+function getUnicodeMatch(emoji, query) {
+  if (emoji.e === query) {
+    return { score: 0, field: 'e', fieldValue: emoji.name, emoji };
   }
 
-  const {
-    fields = ['name', 'alias', 'description', 'unicode'],
-    match = 'exact',
-    fallback = false,
-    raw = false,
-  } = opts || {};
+  return null;
+}
 
-  const fallbackEmoji = emojiMap.grey_question;
-  if (!query) {
-    if (fallback) {
-      return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];
-    }
-
-    return [];
+function getDescriptionMatch(emoji, query) {
+  if (emoji.d.includes(query)) {
+    return { score: emoji.d.indexOf(query), field: 'd', fieldValue: emoji.d, emoji };
   }
 
-  // optimization for an exact match in name and alias
-  if (match === 'exact' && new Set([...fields, 'name', 'alias']).size === 2) {
-    const emoji = getEmoji(query, fallback);
-    return emoji ? [emoji] : [];
+  return null;
+}
+
+function getAliasMatch(emoji, matchingAliases) {
+  if (matchingAliases.has(emoji.name)) {
+    const { score, alias } = matchingAliases.get(emoji.name);
+
+    return { score, field: 'alias', fieldValue: alias, emoji };
   }
 
-  const matcher = searchMatchers[match] || searchMatchers.exact;
-  const predicates = fields.map((f) => searchPredicates[f](matcher, query));
+  return null;
+}
 
-  const results = Object.values(emojiMap)
-    .flatMap((emoji) => predicates.flatMap((predicate) => predicate(emoji)))
-    .filter((r) => r.success);
-
-  // Fallback to question mark for unknown emojis
-  if (fallback && results.length === 0) {
-    return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];
+function getNameMatch(emoji, query) {
+  if (emoji.name.includes(query)) {
+    return {
+      score: emoji.name.indexOf(query),
+      field: 'name',
+      fieldValue: emoji.name,
+      emoji,
+    };
   }
 
-  return raw ? results : results.map((r) => r.emoji);
+  return null;
+}
+
+export function searchEmoji(query) {
+  const lowercaseQuery = query ? `${query}`.toLowerCase() : '';
+
+  const matchingAliases = getAliasesMatchingQuery(lowercaseQuery);
+
+  return Object.values(emojiMap)
+    .map((emoji) => {
+      const matches = [
+        getUnicodeMatch(emoji, query),
+        getDescriptionMatch(emoji, lowercaseQuery),
+        getAliasMatch(emoji, matchingAliases),
+        getNameMatch(emoji, lowercaseQuery),
+      ].filter(Boolean);
+
+      return minBy(matches, (x) => x.score);
+    })
+    .filter(Boolean);
+}
+
+export function sortEmoji(items) {
+  // Sort results by index of and string comparison
+  return [...items].sort((a, b) => a.score - b.score || a.fieldValue.localeCompare(b.fieldValue));
 }
 
 let emojiCategoryMap;
@@ -233,11 +178,28 @@ export function getEmojiCategoryMap() {
   return emojiCategoryMap;
 }
 
-export function getEmojiInfo(query) {
-  return searchEmoji(query, {
-    fields: ['name', 'alias'],
-    fallback: true,
-  })[0];
+/**
+ * Retrieves an emoji by name
+ *
+ * @param {String} query The emoji name
+ * @param {Boolean} fallback If true, a fallback emoji will be returned if the
+ * named emoji does not exist.
+ * @returns {Object} The matching emoji.
+ */
+export function getEmojiInfo(query, fallback = true) {
+  if (!emojiMap) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('The emoji map is uninitialized or initialization has not completed');
+  }
+
+  const lowercaseQuery = query ? `${query}`.toLowerCase() : '';
+  const name = normalizeEmojiName(lowercaseQuery);
+
+  if (name in emojiMap) {
+    return emojiMap[name];
+  }
+
+  return fallback ? emojiMap[FALLBACK_EMOJI_KEY] : null;
 }
 
 export function emojiFallbackImageSrc(inputName) {
@@ -257,12 +219,8 @@ export function glEmojiTag(inputName, options) {
   const fallbackSpriteClass = `emoji-${name}`;
 
   const fallbackSpriteAttribute = opts.sprite
-    ? `data-fallback-sprite-class="${fallbackSpriteClass}"`
+    ? `data-fallback-sprite-class="${escape(fallbackSpriteClass)}" `
     : '';
 
-  return `
-    <gl-emoji
-      ${fallbackSpriteAttribute}
-      data-name="${name}"></gl-emoji>
-  `;
+  return `<gl-emoji ${fallbackSpriteAttribute}data-name="${escape(name)}"></gl-emoji>`;
 }

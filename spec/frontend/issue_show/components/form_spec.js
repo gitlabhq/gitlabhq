@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import formComponent from '~/issue_show/components/form.vue';
 import Autosave from '~/autosave';
+import formComponent from '~/issue_show/components/form.vue';
 import eventHub from '~/issue_show/event_hub';
 
 jest.mock('~/autosave');
@@ -19,6 +19,7 @@ describe('Inline edit form component', () => {
     markdownPreviewPath: '/',
     markdownDocsPath: '/',
     projectPath: '/',
+    projectId: 1,
     projectNamespace: '/',
   };
 
@@ -42,7 +43,11 @@ describe('Inline edit form component', () => {
   });
 
   it('renders template selector when templates exists', () => {
-    createComponent({ issuableTemplates: ['test'] });
+    createComponent({
+      issuableTemplates: [
+        { name: 'test', id: 'test', project_path: 'test', namespace_path: 'test' },
+      ],
+    });
 
     expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
   });

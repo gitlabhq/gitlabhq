@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
+import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
 import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA } from '~/search/topbar/constants';

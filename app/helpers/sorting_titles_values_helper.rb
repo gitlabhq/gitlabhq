@@ -166,10 +166,6 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Expired date')
   end
 
-  def sort_title_relevant
-    s_('SortOptions|Relevant')
-  end
-
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -329,10 +325,6 @@ module SortingTitlesValuesHelper
 
   def sort_value_expire_date
     'expired_asc'
-  end
-
-  def sort_value_relevant
-    'relevant'
   end
 end
 

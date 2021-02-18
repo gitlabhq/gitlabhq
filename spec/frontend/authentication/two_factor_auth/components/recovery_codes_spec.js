@@ -1,17 +1,17 @@
-import { mount } from '@vue/test-utils';
 import { GlAlert, GlButton } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { within } from '@testing-library/dom';
+import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import Tracking from '~/tracking';
 import RecoveryCodes, {
   i18n,
 } from '~/authentication/two_factor_auth/components/recovery_codes.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
   RECOVERY_CODE_DOWNLOAD_FILENAME,
   COPY_KEYBOARD_SHORTCUT,
 } from '~/authentication/two_factor_auth/constants';
+import Tracking from '~/tracking';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { codes, codesFormattedString, codesDownloadHref, profileAccountPath } from '../mock_data';
 
 describe('RecoveryCodes', () => {

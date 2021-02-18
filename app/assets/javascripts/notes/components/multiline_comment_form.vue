@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { getSymbol, getLineClasses } from './multiline_comment_utils';
 
 export default {

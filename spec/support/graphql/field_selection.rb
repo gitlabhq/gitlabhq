@@ -47,7 +47,7 @@ module Graphql
     NO_SKIP = ->(_name, _field) { false }
 
     def self.select_fields(type, skip = NO_SKIP, parent_types = Set.new, max_depth = 3)
-      return new if max_depth <= 0
+      return new if max_depth <= 0 || !type.kind.fields?
 
       new(type.fields.flat_map do |name, field|
         next [] if skip[name, field]

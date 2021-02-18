@@ -29,6 +29,11 @@ RSpec.describe Admin::UsersController do
 
       expect(assigns(:users).first.association(:authorized_projects)).to be_loaded
     end
+
+    it_behaves_like 'tracking unique visits', :index do
+      let(:target_id) { 'i_analytics_cohorts' }
+      let(:request_params) { { tab: 'cohorts' } }
+    end
   end
 
   describe 'GET :id' do
@@ -180,7 +185,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the error' do
         subject
 
-        expect(flash[:alert]).to eq('The user you are trying to approve is not pending an approval')
+        expect(flash[:alert]).to eq('The user you are trying to approve is not pending approval')
       end
 
       it 'does not activate the user' do

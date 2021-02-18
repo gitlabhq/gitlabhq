@@ -575,7 +575,7 @@ Example response:
 
 ```json
 {
-    "id": "12345",
+    "id": 12345,
     "token": "6337ff461c94fd3fa32ba3b1ff4125"
 }
 ```

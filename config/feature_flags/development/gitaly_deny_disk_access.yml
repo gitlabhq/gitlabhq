@@ -1,8 +1,0 @@
----
-name: gitaly_deny_disk_access
-introduced_by_url: 
-rollout_issue_url: 
-milestone: 
-type: development
-group: 
-default_enabled: false

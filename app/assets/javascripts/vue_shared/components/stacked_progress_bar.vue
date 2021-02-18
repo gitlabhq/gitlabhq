@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { roundDownFloat } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 
 export default {
   directives: {

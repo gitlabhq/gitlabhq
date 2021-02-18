@@ -77,7 +77,6 @@ module Gitlab
       check_authentication_abilities!
       check_command_disabled!
       check_command_existence!
-      check_otp_session!
 
       custom_action = check_custom_action
       return custom_action if custom_action
@@ -255,31 +254,6 @@ module Gitlab
       end
     end
 
-    def check_otp_session!
-      return unless ssh?
-      return if !key? || deploy_key?
-      return unless Feature.enabled?(:two_factor_for_cli)
-      return unless user.two_factor_enabled?
-
-      if ::Gitlab::Auth::Otp::SessionEnforcer.new(actor).access_restricted?
-        message = "OTP verification is required to access the repository.\n\n"\
-                  "   Use: #{build_ssh_otp_verify_command}"
-
-        raise ForbiddenError, message
-      end
-    end
-
-    def build_ssh_otp_verify_command
-      user = "#{Gitlab.config.gitlab_shell.ssh_user}@" unless Gitlab.config.gitlab_shell.ssh_user.empty?
-      user_host = "#{user}#{Gitlab.config.gitlab_shell.ssh_host}"
-
-      if Gitlab.config.gitlab_shell.ssh_port != 22
-        "ssh #{user_host} -p #{Gitlab.config.gitlab_shell.ssh_port} 2fa_verify"
-      else
-        "ssh #{user_host} 2fa_verify"
-      end
-    end
-
     def check_db_accessibility!
       return unless receive_pack?
 
@@ -345,10 +319,8 @@ module Gitlab
     end
 
     def check_change_access!
-      return if deploy_key? && !deploy_keys_on_protected_branches_enabled?
-
       if changes == ANY
-        can_push = (deploy_key? && deploy_keys_on_protected_branches_enabled?) ||
+        can_push = deploy_key? ||
                    user_can_push? ||
           project&.any_branch_allows_collaboration?(user_access.user)
 
@@ -479,7 +451,7 @@ module Gitlab
                          CiAccess.new
                        elsif user && request_from_ci_build?
                          BuildAccess.new(user, container: container)
-                       elsif deploy_key? && deploy_keys_on_protected_branches_enabled?
+                       elsif deploy_key?
                          DeployKeyAccess.new(deploy_key, container: container)
                        else
                          UserAccess.new(user, container: container)
@@ -557,10 +529,6 @@ module Gitlab
 
     def size_checker
       container.repository_size_checker
-    end
-
-    def deploy_keys_on_protected_branches_enabled?
-      Feature.enabled?(:deploy_keys_on_protected_branches, project)
     end
   end
 end

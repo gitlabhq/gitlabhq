@@ -1,9 +1,11 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import { last } from 'lodash';
 import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { last } from 'lodash';
+import Vuex from 'vuex';
 import Api from '~/api';
-import createStore from '~/feature_flags/store/new';
+import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
+import Strategy from '~/feature_flags/components/strategy.vue';
+import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
 import {
   PERCENT_ROLLOUT_GROUP_ID,
   ROLLOUT_STRATEGY_ALL_USERS,
@@ -12,9 +14,7 @@ import {
   ROLLOUT_STRATEGY_USER_ID,
   ROLLOUT_STRATEGY_GITLAB_USER_LIST,
 } from '~/feature_flags/constants';
-import Strategy from '~/feature_flags/components/strategy.vue';
-import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
-import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
+import createStore from '~/feature_flags/store/new';
 
 import { userList } from '../mock_data';
 

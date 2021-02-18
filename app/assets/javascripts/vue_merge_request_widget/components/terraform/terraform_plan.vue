@@ -15,6 +15,16 @@ export default {
       type: Object,
     },
   },
+  i18n: {
+    changes: s__(
+      'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
+    ),
+    generationErrored: s__('Terraform|Generating the report caused an error.'),
+    namedReportFailed: s__('Terraform|The report %{name} failed to generate.'),
+    namedReportGenerated: s__('Terraform|The report %{name} was generated in your pipelines.'),
+    reportFailed: s__('Terraform|A report failed to generate.'),
+    reportGenerated: s__('Terraform|A report was generated in your pipelines.'),
+  },
   computed: {
     addNum() {
       return Number(this.plan.create);
@@ -30,23 +40,21 @@ export default {
     },
     reportChangeText() {
       if (this.validPlanValues) {
-        return s__(
-          'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
-        );
+        return this.$options.i18n.changes;
       }
 
-      return s__('Terraform|Generating the report caused an error.');
+      return this.$options.i18n.generationErrored;
     },
     reportHeaderText() {
       if (this.validPlanValues) {
         return this.plan.job_name
-          ? s__('Terraform|The Terraform report %{name} was generated in your pipelines.')
-          : s__('Terraform|A Terraform report was generated in your pipelines.');
+          ? this.$options.i18n.namedReportGenerated
+          : this.$options.i18n.reportGenerated;
       }
 
       return this.plan.job_name
-        ? s__('Terraform|The Terraform report %{name} failed to generate.')
-        : s__('Terraform|A Terraform report failed to generate.');
+        ? this.$options.i18n.namedReportFailed
+        : this.$options.i18n.reportFailed;
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;
@@ -56,16 +64,16 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex gl-pb-3">
     <span
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-mr-3 gl-align-self-start gl-mt-1"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-px-2"
     >
-      <gl-icon :name="iconType" :size="18" data-testid="change-type-icon" />
+      <gl-icon :name="iconType" :size="16" data-testid="change-type-icon" />
     </span>
 
-    <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row">
-      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column">
-        <p class="gl-m-0 gl-pr-1">
+    <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row gl-pl-3">
+      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column gl-pr-3">
+        <p class="gl-mb-3 gl-line-height-normal">
           <gl-sprintf :message="reportHeaderText">
             <template #name>
               <strong>{{ plan.job_name }}</strong>
@@ -73,7 +81,7 @@ export default {
           </gl-sprintf>
         </p>
 
-        <p class="gl-m-0">
+        <p class="gl-mb-3 gl-line-height-normal">
           <gl-sprintf :message="reportChangeText">
             <template #addNum>
               <strong>{{ addNum }}</strong>

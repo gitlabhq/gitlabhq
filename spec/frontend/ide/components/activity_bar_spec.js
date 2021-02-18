@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/ide/stores';
-import { leftSidebarViews } from '~/ide/constants';
 import ActivityBar from '~/ide/components/activity_bar.vue';
+import { leftSidebarViews } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 
 describe('IDE activity bar', () => {
   const Component = Vue.extend(ActivityBar);
   let vm;
   let store;
+
+  const findChangesBadge = () => vm.$el.querySelector('.badge');
 
   beforeEach(() => {
     store = createStore();
@@ -67,6 +69,21 @@ describe('IDE activity bar', () => {
 
         done();
       });
+    });
+  });
+
+  describe('changes badge', () => {
+    it('is rendered when files are staged', () => {
+      store.state.stagedFiles = [{ path: '/path/to/file' }];
+      vm.$mount();
+
+      expect(findChangesBadge()).toBeTruthy();
+      expect(findChangesBadge().textContent.trim()).toBe('1');
+    });
+
+    it('is not rendered when no changes are present', () => {
+      vm.$mount();
+      expect(findChangesBadge()).toBeFalsy();
     });
   });
 });

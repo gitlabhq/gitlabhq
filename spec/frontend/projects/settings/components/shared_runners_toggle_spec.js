@@ -2,8 +2,8 @@ import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
 import axios from '~/lib/utils/axios_utils';
+import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
 

@@ -97,7 +97,7 @@ Any settings or feature limits not listed here are using the defaults listed in 
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size (compressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
-| Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
+| Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
@@ -114,7 +114,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 | Setting                       | GitLab.com  | Default       |
 | -----------                   | ----------- | ------------- |
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB        | Unlimited     |
+| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
@@ -130,7 +130,7 @@ GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you 
 For outgoing connections from CI/CD runners we are not providing static IP addresses.
 All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
-[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
 ## Hostname list
 
@@ -170,7 +170,7 @@ Linux shared runners on GitLab.com run in autoscale mode and are powered by Goog
 
 Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each project, thus maximizing security. These shared runners are available for users and customers on GitLab.com.
 
-GitLab offers Gold tier capabilities and included CI/CD minutes per group per month for our [Open Source](https://about.gitlab.com/solutions/open-source/join/), [Education](https://about.gitlab.com/solutions/education/), and [Startups](https://about.gitlab.com/solutions/startups/) programs. For private projects, GitLab offers various [plans](https://about.gitlab.com/pricing/), starting with a Free tier.
+GitLab offers Ultimate tier capabilities and included CI/CD minutes per group per month for our [Open Source](https://about.gitlab.com/solutions/open-source/join/), [Education](https://about.gitlab.com/solutions/education/), and [Startups](https://about.gitlab.com/solutions/startups/) programs. For private projects, GitLab offers various [plans](https://about.gitlab.com/pricing/), starting with a Free tier.
 
 All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, CoreOS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
@@ -534,14 +534,16 @@ limiting responses](#rate-limiting-responses).
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
 
-| Rate limit                                                                | Before 2021-01-18           | From 2021-01-18               |
-|:--------------------------------------------------------------------------|:----------------------------|:------------------------------|
-| **Protected paths** (for a given **IP address**)                          | **10** requests per minute  | **10** requests per minute    |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute | **300** requests per minute   |
-| **Unauthenticated** traffic (from a given **IP address**)                 | No specific limit           | **500** requests per minute   |
-| **Authenticated** API traffic (for a given **user**)                      | No specific limit           | **2,000** requests per minute |
-| **Authenticated** non-API HTTP traffic (for a given **user**)             | No specific limit           | **1,000** requests per minute |
-| **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute |
+| Rate limit                                                                | Before 2021-01-18           | From 2021-01-18               | From 2021-02-12               |
+|:--------------------------------------------------------------------------|:----------------------------|:------------------------------|:------------------------------|
+| **Protected paths** (for a given **IP address**)                          | **10** requests per minute  | **10** requests per minute    | **10** requests per minute    |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute | **300** requests per minute   | **300** requests per minute   |
+| **Unauthenticated** traffic (from a given **IP address**)                 | No specific limit           | **500** requests per minute   | **500** requests per minute   |
+| **Authenticated** API traffic (for a given **user**)                      | No specific limit           | **2,000** requests per minute | **2,000** requests per minute |
+| **Authenticated** non-API HTTP traffic (for a given **user**)             | No specific limit           | **1,000** requests per minute | **1,000** requests per minute |
+| **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute | **2,000** requests per minute |
+| **Issue creation**                                                        |                             | **300** requests per minute   | **300** requests per minute   |
+| **Note creation** (on issues and merge requests)                          |                             | **300** requests per minute   | **60** requests per minute    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw
@@ -622,13 +624,6 @@ dropped and users get
 
 To help avoid abuse, project and group imports, exports, and export downloads are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits) for details.
 
-GitLab.com Import/Export Rate Limits are set to the default except:
-
-| Setting                                          | GitLab.com | Default |
-|:-------------------------------------------------|:-----------|:--------|
-| Max Project Export requests per minute per user  | 1          | 6       |
-| Max Group Export requests per minute per user    | 1          | 6       |
-
 ### Non-configurable limits
 
 See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits) for information on
@@ -639,7 +634,7 @@ rate limits that are not configurable, and therefore also used on GitLab.com.
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to
 [Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver) and [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub).
 Stackdriver is used for storing logs long-term in Google Cold Storage (GCS). Cloud Pub/Sub
-is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [pubsubbeat](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
+is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
 
 You can view more information in our runbooks such as:
 

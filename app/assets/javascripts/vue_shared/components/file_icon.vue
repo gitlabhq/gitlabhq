@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import getIconForFile from './file_icon/file_icon_map';
 import { FILE_SYMLINK_MODE } from '../constants';
+import getIconForFile from './file_icon/file_icon_map';
 
 /* This is a re-usable vue component for rendering a svg sprite
     icon
@@ -90,6 +90,12 @@ export default {
     <svg v-else-if="!folder" :key="spriteHref" :class="[iconSizeClass, cssClasses]">
       <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>
-    <gl-icon v-else :name="folderIconName" :size="size" class="folder-icon" />
+    <gl-icon
+      v-else
+      :name="folderIconName"
+      :size="size"
+      class="folder-icon"
+      data-qa-selector="folder_icon_content"
+    />
   </span>
 </template>

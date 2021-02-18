@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import LineNumber from './line_number.vue';
 import DurationBadge from './duration_badge.vue';
+import LineNumber from './line_number.vue';
 
 export default {
   components: {

@@ -428,16 +428,18 @@ func logFields(startTime time.Time, params *resizeParams, outcome *resizeOutcome
 
 func handleOutcome(w http.ResponseWriter, req *http.Request, startTime time.Time, params *resizeParams, outcome *resizeOutcome) {
 	fields := logFields(startTime, params, outcome)
-	log := log.WithRequest(req).WithFields(fields)
+	logger := log.WithRequest(req).WithFields(fields)
 
 	switch outcome.status {
 	case statusRequestFailure:
 		if outcome.bytesWritten <= 0 {
-			helper.Fail500WithFields(w, req, outcome.err, fields)
+			helper.Fail500(w, req, outcome.err, func(b *log.Builder) *log.Builder {
+				return b.WithFields(fields)
+			})
 		} else {
-			log.WithError(outcome.err).Error(outcome.status)
+			logger.WithError(outcome.err).Error(outcome.status)
 		}
 	default:
-		log.Info(outcome.status)
+		logger.Info(outcome.status)
 	}
 }

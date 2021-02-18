@@ -13,7 +13,7 @@ module OptimizedIssuableLabelFilter
   def by_label(items)
     return items unless params.labels?
 
-    return super if Feature.disabled?(:optimized_issuable_label_filter)
+    return super if Feature.disabled?(:optimized_issuable_label_filter, default_enabled: :yaml)
 
     target_model = items.model
 
@@ -29,7 +29,7 @@ module OptimizedIssuableLabelFilter
   # Taken from IssuableFinder
   def count_by_state
     return super if root_namespace.nil?
-    return super if Feature.disabled?(:optimized_issuable_label_filter)
+    return super if Feature.disabled?(:optimized_issuable_label_filter, default_enabled: :yaml)
 
     count_params = params.merge(state: nil, sort: nil, force_cte: true)
     finder = self.class.new(current_user, count_params)

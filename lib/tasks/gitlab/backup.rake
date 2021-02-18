@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_record/fixtures'
 
 namespace :gitlab do

@@ -1,8 +1,8 @@
+import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
-import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import CommitsList from '~/commits';
+import axios from '~/lib/utils/axios_utils';
 import Pager from '~/pager';
 
 describe('Commits List', () => {

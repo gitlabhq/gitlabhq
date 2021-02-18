@@ -1,8 +1,8 @@
 <script>
-import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { GlIcon } from '@gitlab/ui';
-import FileIcon from '../file_icon.vue';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import ChangedFileIcon from '../changed_file_icon.vue';
+import FileIcon from '../file_icon.vue';
 
 const MAX_PATH_LENGTH = 60;
 

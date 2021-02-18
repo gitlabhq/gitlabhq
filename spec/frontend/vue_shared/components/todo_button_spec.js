@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import TodoButton from '~/vue_shared/components/todo_button.vue';
 
 describe('Todo Button', () => {
@@ -33,7 +33,7 @@ describe('Todo Button', () => {
   it.each`
     label             | isTodo
     ${'Mark as done'} | ${true}
-    ${'Add a To Do'}  | ${false}
+    ${'Add a to do'}  | ${false}
   `('sets correct label when isTodo is $isTodo', ({ label, isTodo }) => {
     createComponent({ isTodo });
 

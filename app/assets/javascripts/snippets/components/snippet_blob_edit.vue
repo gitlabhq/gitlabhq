@@ -1,12 +1,12 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
-import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
-import axios from '~/lib/utils/axios_utils';
-import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
+import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 export default {
   components: {

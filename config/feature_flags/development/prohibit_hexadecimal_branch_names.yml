@@ -1,8 +1,8 @@
 ---
 name: prohibit_hexadecimal_branch_names
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/28439ca4b1dd14f22a5a6ad14530f6bf1046f8bc
 rollout_issue_url: 
-milestone: 
+milestone: '12.10'
 type: development
-group: 
+group: group::source code
 default_enabled: true

@@ -32,6 +32,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:dependency_proxy_blobs) }
     it { is_expected.to have_many(:dependency_proxy_manifests) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
+    it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -410,7 +411,7 @@ RSpec.describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp"])
     end
   end
 
@@ -1492,6 +1493,28 @@ RSpec.describe Group do
     end
   end
 
+  describe '.preset_root_ancestor_for' do
+    let_it_be(:rootgroup, reload: true) { create(:group) }
+    let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }
+    let_it_be(:subgroup2, reload: true) { create(:group, parent: subgroup) }
+
+    it 'does noting for single group' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([subgroup])
+    end
+
+    it 'sets the same root_ancestor for multiple groups' do
+      expect(subgroup).not_to receive(:self_and_ancestors)
+      expect(subgroup2).not_to receive(:self_and_ancestors)
+
+      described_class.preset_root_ancestor_for([rootgroup, subgroup, subgroup2])
+
+      expect(subgroup.root_ancestor).to eq(rootgroup)
+      expect(subgroup2.root_ancestor).to eq(rootgroup)
+    end
+  end
+
   def subject_and_reload(*models)
     subject
     models.map(&:reload)
@@ -1756,19 +1779,6 @@ RSpec.describe Group do
   describe 'with Debian Distributions' do
     subject { create(:group) }
 
-    let!(:distributions) { create_list(:debian_group_distribution, 2, :with_file, container: subject) }
-
-    it 'removes distribution files on removal' do
-      distribution_file_paths = distributions.map do |distribution|
-        distribution.file.path
-      end
-
-      expect { subject.destroy }
-        .to change {
-          distribution_file_paths.select do |path|
-            File.exist? path
-          end.length
-        }.from(distribution_file_paths.length).to(0)
-    end
+    it_behaves_like 'model with Debian distributions'
   end
 end

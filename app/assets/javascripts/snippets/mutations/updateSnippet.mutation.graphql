@@ -4,5 +4,8 @@ mutation UpdateSnippet($input: UpdateSnippetInput!) {
     snippet {
       webUrl
     }
+    needsCaptchaResponse
+    captchaSiteKey
+    spamLogId
   }
 }

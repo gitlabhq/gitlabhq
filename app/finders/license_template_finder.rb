@@ -28,6 +28,10 @@ class LicenseTemplateFinder
     end
   end
 
+  def template_names
+    ::Gitlab::Template::BaseTemplate.template_names_by_category(vendored_licenses)
+  end
+
   private
 
   def vendored_licenses
@@ -36,6 +40,7 @@ class LicenseTemplateFinder
         LicenseTemplate.new(
           key: license.key,
           name: license.name,
+          project: project,
           nickname: license.nickname,
           category: (license.featured? ? :Popular : :Other),
           content: license.content,

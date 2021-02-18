@@ -1,0 +1,9 @@
+{
+  "description": "Git trailer key/value pairs",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "string"
+    }
+  }
+}

@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   FETCH_LOADING,
   FETCH_ERROR,

@@ -1,7 +1,45 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import { isUserBusy } from '~/set_status_modal/utils';
 import AssigneeAvatar from './assignee_avatar.vue';
+
+const I18N = {
+  BUSY: __('Busy'),
+  CANNOT_MERGE: __('Cannot merge'),
+  LC_CANNOT_MERGE: __('cannot merge'),
+};
+
+const paranthesize = (str) => `(${str})`;
+
+const generateAssigneeTooltip = ({
+  name,
+  availability,
+  cannotMerge = true,
+  tooltipHasName = false,
+}) => {
+  if (!tooltipHasName) {
+    return cannotMerge ? I18N.CANNOT_MERGE : '';
+  }
+
+  const statusInformation = [];
+  if (availability && isUserBusy(availability)) {
+    statusInformation.push(I18N.BUSY);
+  }
+
+  if (cannotMerge) {
+    statusInformation.push(I18N.LC_CANNOT_MERGE);
+  }
+
+  if (tooltipHasName && statusInformation.length) {
+    return sprintf(__('%{name} %{status}'), {
+      name,
+      status: statusInformation.map(paranthesize).join(' '),
+    });
+  }
+
+  return name;
+};
 
 export default {
   components: {
@@ -37,15 +75,13 @@ export default {
       return this.issuableType === 'merge_request' && !this.user.can_merge;
     },
     tooltipTitle() {
-      if (this.cannotMerge && this.tooltipHasName) {
-        return sprintf(__('%{userName} (cannot merge)'), { userName: this.user.name });
-      } else if (this.cannotMerge) {
-        return __('Cannot merge');
-      } else if (this.tooltipHasName) {
-        return this.user.name;
-      }
-
-      return '';
+      const { name = '', availability = '' } = this.user;
+      return generateAssigneeTooltip({
+        name,
+        availability,
+        cannotMerge: this.cannotMerge,
+        tooltipHasName: this.tooltipHasName,
+      });
     },
     tooltipOption() {
       return {

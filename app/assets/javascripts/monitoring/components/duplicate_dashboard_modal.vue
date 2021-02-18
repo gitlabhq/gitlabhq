@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import DuplicateDashboardForm from './duplicate_dashboard_form.vue';
 

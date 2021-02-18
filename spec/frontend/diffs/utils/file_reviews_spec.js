@@ -5,6 +5,7 @@ import {
   setReviewsForMergeRequest,
   isFileReviewed,
   markFileReview,
+  reviewStatuses,
   reviewable,
 } from '~/diffs/utils/file_reviews';
 
@@ -26,6 +27,39 @@ describe('File Review(s) utilities', () => {
   beforeEach(() => {
     reviews = getDefaultReviews();
     localStorage.clear();
+  });
+
+  describe('isFileReviewed', () => {
+    it.each`
+      description                            | diffFile                      | fileReviews
+      ${'the file does not have an `id`'}    | ${{ ...file, id: undefined }} | ${getDefaultReviews()}
+      ${'there are no reviews for the file'} | ${file}                       | ${{ ...getDefaultReviews(), abc: undefined }}
+    `('returns `false` if $description', ({ diffFile, fileReviews }) => {
+      expect(isFileReviewed(fileReviews, diffFile)).toBe(false);
+    });
+
+    it("returns `true` for a file if it's available in the provided reviews", () => {
+      expect(isFileReviewed(reviews, file)).toBe(true);
+    });
+  });
+
+  describe('reviewStatuses', () => {
+    const file1 = { id: '123', file_identifier_hash: 'abc' };
+    const file2 = { id: '098', file_identifier_hash: 'abc' };
+
+    it.each`
+      mrReviews                         | files             | fileReviews
+      ${{}}                             | ${[file1, file2]} | ${[false, false]}
+      ${{ abc: ['123'] }}               | ${[file1, file2]} | ${[true, false]}
+      ${{ abc: ['098'] }}               | ${[file1, file2]} | ${[false, true]}
+      ${{ def: ['123'] }}               | ${[file1, file2]} | ${[false, false]}
+      ${{ abc: ['123'], def: ['098'] }} | ${[]}             | ${[]}
+    `(
+      'returns $fileReviews based on the diff files in state and the existing reviews $reviews',
+      ({ mrReviews, files, fileReviews }) => {
+        expect(reviewStatuses(files, mrReviews)).toStrictEqual(fileReviews);
+      },
+    );
   });
 
   describe('getReviewsForMergeRequest', () => {
@@ -70,20 +104,6 @@ describe('File Review(s) utilities', () => {
 
     it('returns the new value for chainability', () => {
       expect(setReviewsForMergeRequest(mrPath, reviews)).toStrictEqual(reviews);
-    });
-  });
-
-  describe('isFileReviewed', () => {
-    it.each`
-      description                            | diffFile                      | fileReviews
-      ${'the file does not have an `id`'}    | ${{ ...file, id: undefined }} | ${getDefaultReviews()}
-      ${'there are no reviews for the file'} | ${file}                       | ${{ ...getDefaultReviews(), abc: undefined }}
-    `('returns `false` if $description', ({ diffFile, fileReviews }) => {
-      expect(isFileReviewed(fileReviews, diffFile)).toBe(false);
-    });
-
-    it("returns `true` for a file if it's available in the provided reviews", () => {
-      expect(isFileReviewed(reviews, file)).toBe(true);
     });
   });
 

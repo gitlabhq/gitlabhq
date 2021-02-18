@@ -5,7 +5,7 @@ FactoryBot.define do
     resource_group factory: :ci_resource_group
 
     trait(:retained) do
-      build factory: :ci_build
+      processable factory: :ci_build
     end
   end
 end

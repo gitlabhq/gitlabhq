@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Form from '~/jobs/components/manual_variables_form.vue';
 
 const localVue = createLocalVue();

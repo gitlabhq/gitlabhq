@@ -1,9 +1,11 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/details_page/delete_modal.vue';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
   REMOVE_TAGS_CONFIRMATION_TEXT,
+  DELETE_IMAGE_CONFIRMATION_TITLE,
+  DELETE_IMAGE_CONFIRMATION_TEXT,
 } from '~/registry/explorer/constants';
 import { GlModal } from '../../stubs';
 
@@ -35,13 +37,13 @@ describe('Delete Modal', () => {
 
   describe('events', () => {
     it.each`
-      glEvent     | localEvent
-      ${'ok'}     | ${'confirmDelete'}
-      ${'cancel'} | ${'cancelDelete'}
+      glEvent      | localEvent
+      ${'primary'} | ${'confirmDelete'}
+      ${'cancel'}  | ${'cancelDelete'}
     `('GlModal $glEvent emits $localEvent', ({ glEvent, localEvent }) => {
       mountComponent();
       findModal().vm.$emit(glEvent);
-      expect(wrapper.emitted(localEvent)).toBeTruthy();
+      expect(wrapper.emitted(localEvent)).toEqual([[]]);
     });
   });
 
@@ -53,27 +55,51 @@ describe('Delete Modal', () => {
     });
   });
 
-  describe('itemsToBeDeleted contains one element', () => {
-    beforeEach(() => {
-      mountComponent({ itemsToBeDeleted: [{ path: 'foo' }] });
+  describe('when we are deleting images', () => {
+    it('has the correct title', () => {
+      mountComponent({ deleteImage: true });
+
+      expect(wrapper.text()).toContain(DELETE_IMAGE_CONFIRMATION_TITLE);
     });
-    it(`has the correct description`, () => {
-      expect(findDescription().text()).toBe(REMOVE_TAG_CONFIRMATION_TEXT.replace('%{item}', 'foo'));
-    });
-    it('has the correct action', () => {
-      expect(wrapper.text()).toContain('Remove tag');
+
+    it('has the correct description', () => {
+      mountComponent({ deleteImage: true });
+
+      expect(wrapper.text()).toContain(DELETE_IMAGE_CONFIRMATION_TEXT);
     });
   });
 
-  describe('itemsToBeDeleted contains more than element', () => {
-    beforeEach(() => {
-      mountComponent({ itemsToBeDeleted: [{ path: 'foo' }, { path: 'bar' }] });
+  describe('when we are deleting tags', () => {
+    describe('itemsToBeDeleted contains one element', () => {
+      beforeEach(() => {
+        mountComponent({ itemsToBeDeleted: [{ path: 'foo' }] });
+      });
+
+      it(`has the correct description`, () => {
+        expect(findDescription().text()).toBe(
+          REMOVE_TAG_CONFIRMATION_TEXT.replace('%{item}', 'foo'),
+        );
+      });
+
+      it('has the correct title', () => {
+        expect(wrapper.text()).toContain('Remove tag');
+      });
     });
-    it(`has the correct description`, () => {
-      expect(findDescription().text()).toBe(REMOVE_TAGS_CONFIRMATION_TEXT.replace('%{item}', '2'));
-    });
-    it('has the correct action', () => {
-      expect(wrapper.text()).toContain('Remove tags');
+
+    describe('itemsToBeDeleted contains more than element', () => {
+      beforeEach(() => {
+        mountComponent({ itemsToBeDeleted: [{ path: 'foo' }, { path: 'bar' }] });
+      });
+
+      it(`has the correct description`, () => {
+        expect(findDescription().text()).toBe(
+          REMOVE_TAGS_CONFIRMATION_TEXT.replace('%{item}', '2'),
+        );
+      });
+
+      it('has the correct title', () => {
+        expect(wrapper.text()).toContain('Remove tags');
+      });
     });
   });
 });

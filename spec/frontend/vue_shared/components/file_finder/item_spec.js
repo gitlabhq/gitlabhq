@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { file } from 'jest/ide/helpers';
 import createComponent from 'helpers/vue_mount_component_helper';
+import { file } from 'jest/ide/helpers';
 import ItemComponent from '~/vue_shared/components/file_finder/item.vue';
 
 describe('File finder item spec', () => {

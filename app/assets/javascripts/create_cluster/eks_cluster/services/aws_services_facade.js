@@ -1,6 +1,6 @@
-import AWS from 'aws-sdk/global';
 import EC2 from 'aws-sdk/clients/ec2';
 import IAM from 'aws-sdk/clients/iam';
+import AWS from 'aws-sdk/global';
 
 const lookupVpcName = ({ Tags: tags, VpcId: id }) => {
   const nameTag = tags.find(({ Key: key }) => key === 'Name');

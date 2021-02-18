@@ -141,6 +141,7 @@
 setup-test-env:
   extends:
     - .rails-job-base
+    - .setup-test-env-cache
     - .rails:rules:default-refs-code-backstage-qa
     - .use-pg11
   stage: prepare
@@ -180,11 +181,19 @@ setup-test-env:
       - tmp/tests/second_storage/
     when: always
 
-update-rails-cache:
+update-setup-test-env-cache:
   extends:
     - setup-test-env
     - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
+  artifacts:
+    paths: []  # This job's purpose is only to update the cache.
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+update-rails-cache:
+  extends:
+    - update-setup-test-env-cache
+    - .rails-cache
   cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
@@ -376,6 +385,17 @@ db:rollback:
     - bundle exec rake db:migrate VERSION=20181228175414
     - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
+db:gitlabcom-database-testing:
+  extends: .rails:rules:db:gitlabcom-database-testing
+  stage: test
+  image: ruby:2.7-alpine
+  needs: []
+  allow_failure: true
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - ./scripts/trigger-build gitlab-com-database-testing
+
 gitlab:setup:
   extends: .db-job-base
   variables:
@@ -433,6 +453,8 @@ rspec:deprecations:
   variables:
     SETUP_DB: "false"
   script:
+    - grep -h -R "keyword" deprecations/ | awk '{$1=$1};1' | sort | uniq -c | sort
+    - grep -R "keyword" deprecations/ | wc
     - run_timed_command "bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
   artifacts:
     expire_in: 31d
@@ -482,7 +504,6 @@ rspec:feature-flags:
     - .coverage-base
     - .rails:rules:rspec-feature-flags
   stage: post-test
-  allow_failure: true
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
   # so we use `dependencies` here.
   dependencies:
@@ -502,7 +523,11 @@ rspec:feature-flags:
     - memory-on-boot
   script:
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
-    - 'run_timed_command "bundle exec scripts/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1)'
+    - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+        run_timed_command "bundle exec scripts/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+      else
+        run_timed_command "bundle exec scripts/used-feature-flags";
+      fi
 
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
 #######################################################

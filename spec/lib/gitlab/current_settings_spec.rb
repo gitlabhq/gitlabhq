@@ -194,4 +194,32 @@ RSpec.describe Gitlab::CurrentSettings do
       end
     end
   end
+
+  describe '#current_application_settings?', :use_clean_rails_memory_store_caching do
+    before do
+      allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_call_original
+    end
+
+    it 'returns true when settings exist' do
+      create(:application_setting,
+        home_page_url: 'http://mydomain.com',
+        signup_enabled: false)
+
+      expect(described_class.current_application_settings?).to eq(true)
+    end
+
+    it 'returns false when settings do not exist' do
+      expect(described_class.current_application_settings?).to eq(false)
+    end
+
+    context 'with cache', :request_store do
+      include_context 'with settings in cache'
+
+      it 'returns an in-memory ApplicationSetting object' do
+        expect(ApplicationSetting).not_to receive(:current)
+
+        expect(described_class.current_application_settings?).to eq(true)
+      end
+    end
+  end
 end

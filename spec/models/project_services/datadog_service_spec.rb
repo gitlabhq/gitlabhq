@@ -11,7 +11,7 @@ RSpec.describe DatadogService, :model do
   let(:active) { true }
   let(:dd_site) { 'datadoghq.com' }
   let(:default_url) { 'https://webhooks-http-intake.logs.datadoghq.com/v1/input/' }
-  let(:api_url) { nil }
+  let(:api_url) { '' }
   let(:api_key) { SecureRandom.hex(32) }
   let(:dd_env) { 'ci' }
   let(:dd_service) { 'awesome-gitlab' }
@@ -22,13 +22,11 @@ RSpec.describe DatadogService, :model do
     described_class.new(
       active: active,
       project: project,
-      properties: {
-        datadog_site: dd_site,
-        api_url: api_url,
-        api_key: api_key,
-        datadog_env: dd_env,
-        datadog_service: dd_service
-      }
+      datadog_site: dd_site,
+      api_url: api_url,
+      api_key: api_key,
+      datadog_env: dd_env,
+      datadog_service: dd_service
     )
   end
 
@@ -58,7 +56,7 @@ RSpec.describe DatadogService, :model do
 
       context 'when selecting site' do
         let(:dd_site) { 'datadoghq.com' }
-        let(:api_url) { nil }
+        let(:api_url) { '' }
 
         it { is_expected.to validate_presence_of(:datadog_site) }
         it { is_expected.not_to validate_presence_of(:api_url) }
@@ -66,7 +64,7 @@ RSpec.describe DatadogService, :model do
       end
 
       context 'with custom api_url' do
-        let(:dd_site) { nil }
+        let(:dd_site) { '' }
         let(:api_url) { 'https://webhooks-http-intake.logs.datad0g.com/v1/input/' }
 
         it { is_expected.not_to validate_presence_of(:datadog_site) }
@@ -76,12 +74,20 @@ RSpec.describe DatadogService, :model do
       end
 
       context 'when missing site and api_url' do
-        let(:dd_site) { nil }
-        let(:api_url) { nil }
+        let(:dd_site) { '' }
+        let(:api_url) { '' }
 
         it { is_expected.not_to be_valid }
         it { is_expected.to validate_presence_of(:datadog_site) }
         it { is_expected.to validate_presence_of(:api_url) }
+      end
+
+      context 'when providing both site and api_url' do
+        let(:dd_site) { 'datadoghq.com' }
+        let(:api_url) { default_url }
+
+        it { is_expected.not_to allow_value('datadog hq.com').for(:datadog_site) }
+        it { is_expected.not_to allow_value('example.com').for(:api_url) }
       end
     end
 
@@ -113,8 +119,8 @@ RSpec.describe DatadogService, :model do
     end
 
     context 'without optional params' do
-      let(:dd_service) { nil }
-      let(:dd_env) { nil }
+      let(:dd_service) { '' }
+      let(:dd_env) { '' }
 
       it { is_expected.to eq(default_url + api_key) }
     end
@@ -126,7 +132,7 @@ RSpec.describe DatadogService, :model do
     it { is_expected.to eq("https://app.#{dd_site}/account/settings#api") }
 
     context 'with unset datadog_site' do
-      let(:dd_site) { nil }
+      let(:dd_site) { '' }
 
       it { is_expected.to eq("https://docs.datadoghq.com/account_management/api-app-keys/") }
     end

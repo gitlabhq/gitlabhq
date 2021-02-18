@@ -516,28 +516,8 @@
     left: auto;
     max-height: $dropdown-max-height-lg;
 
-    li.current-user {
-      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
-
-      .user-name {
-        display: block;
-      }
-
-      .user-status {
-        margin-right: 0;
-        max-width: 240px;
-        font-size: $gl-font-size-small;
-
-        gl-emoji {
-          font-size: $gl-font-size-small;
-        }
-
-        .user-status-emoji {
-          gl-emoji {
-            font-size: $gl-font-size;
-          }
-        }
-      }
+    .user-status {
+      max-width: 240px;
     }
 
     svg {

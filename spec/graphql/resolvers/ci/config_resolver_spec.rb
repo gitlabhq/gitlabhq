@@ -36,7 +36,8 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
         File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_includes.yml'))
       end
 
-      it 'lints the ci config file' do
+      it 'lints the ci config file and returns the merged yaml file' do
+        expect(response[:merged_yaml]).to eq(content)
         expect(response[:status]).to eq(:valid)
         expect(response[:errors]).to be_empty
       end

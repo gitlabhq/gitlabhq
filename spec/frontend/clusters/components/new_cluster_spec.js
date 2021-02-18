@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import NewCluster from '~/clusters/components/new_cluster.vue';
 import createClusterStore from '~/clusters/stores/new_cluster';
 

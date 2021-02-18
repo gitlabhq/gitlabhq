@@ -68,7 +68,7 @@ outbound connections for upstream and downstream pipeline dependencies.
 
 When using:
 
-- Variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
+- CI/CD Variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipeline triggered through the API with `CI_JOB_TOKEN`.
 - [`only/except`](yaml/README.md#onlyexcept-basic) to control job behavior, use the
@@ -114,7 +114,7 @@ the `staging` job is marked as _failed_.
 
 When using:
 
-- Variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
+- CI/CD variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipelines triggered with a bridge job (using the
   [`trigger:`](yaml/README.md#trigger) keyword).
@@ -162,11 +162,11 @@ of the user that ran the trigger job in the upstream project. If the user does n
 have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See
 [pipeline security for protected branches](pipelines/index.md#pipeline-security-on-protected-branches).
 
-### Passing variables to a downstream pipeline
+### Passing CI/CD variables to a downstream pipeline
 
 #### With the `variables` keyword
 
-Sometimes you might want to pass variables to a downstream pipeline.
+Sometimes you might want to pass CI/CD variables to a downstream pipeline.
 You can do that using the `variables` keyword, just like you would when
 defining a regular job.
 
@@ -183,7 +183,7 @@ staging:
 ```
 
 The `ENVIRONMENT` variable is passed to every job defined in a downstream
-pipeline. It is available as an environment variable when GitLab Runner picks a job.
+pipeline. It is available as a variable when GitLab Runner picks a job.
 
 In the following configuration, the `MY_VARIABLE` variable is passed to the downstream pipeline
 that is created when the `trigger-downstream` job is queued. This is because `trigger-downstream`
@@ -220,7 +220,7 @@ the ones defined in the upstream project take precedence.
 
 #### With variable inheritance
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](variables/README.md#inherit-environment-variables) and [cross project artifact downloads](yaml/README.md#cross-project-artifact-downloads-with-needs).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](variables/README.md#inherit-cicd-variables) and [cross project artifact downloads](yaml/README.md#cross-project-artifact-downloads-with-needs).
 
 In the upstream pipeline:
 
@@ -261,7 +261,7 @@ test:
 ### Mirroring status from triggered pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Core in 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can mirror the pipeline status from the triggered pipeline to the source
 bridge job by using `strategy: depend`. For example:

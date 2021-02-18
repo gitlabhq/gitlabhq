@@ -1,7 +1,7 @@
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import DesignPresentation from '~/design_management/components/design_presentation.vue';
+import { nextTick } from 'vue';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
+import DesignPresentation from '~/design_management/components/design_presentation.vue';
 
 const mockOverlayData = {
   overlayDimensions: {

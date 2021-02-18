@@ -1,3 +1,4 @@
+import * as urlUtils from '~/lib/utils/url_utility';
 import {
   parseTemplatingVariables,
   mergeURLVariables,
@@ -9,7 +10,6 @@ import {
   storeCustomVariables,
   storeMetricLabelValuesVariables,
 } from '../mock_data';
-import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('Monitoring variable mapping', () => {
   describe('parseTemplatingVariables', () => {

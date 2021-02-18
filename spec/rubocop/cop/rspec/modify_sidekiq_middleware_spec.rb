@@ -5,33 +5,20 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
 RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
-  let(:source) do
-    <<~SRC
-    Sidekiq::Testing.server_middleware do |chain|
-      chain.add(MyCustomMiddleware)
-    end
-    SRC
-  end
+  it 'registers an offense and corrects', :aggregate_failures do
+    expect_offense(<<~CODE)
+      Sidekiq::Testing.server_middleware do |chain|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't modify global sidekiq middleware, [...]
+        chain.add(MyCustomMiddleware)
+      end
+    CODE
 
-  let(:corrected) do
-    <<~SRC
-    with_sidekiq_server_middleware do |chain|
-      chain.add(MyCustomMiddleware)
-    end
-    SRC
-  end
-
-  it 'registers an offence' do
-    inspect_source(source)
-
-    expect(cop.offenses.size).to eq(1)
-  end
-
-  it 'can autocorrect the source' do
-    expect(autocorrect_source(source)).to eq(corrected)
+    expect_correction(<<~CODE)
+      with_sidekiq_server_middleware do |chain|
+        chain.add(MyCustomMiddleware)
+      end
+    CODE
   end
 end

@@ -66,6 +66,16 @@ RSpec.describe GraphqlController do
 
         expect(assigns(:context)[:is_sessionless_user]).to be false
       end
+
+      it 'calls the track api when trackable method' do
+        agent = 'vs-code-gitlab-workflow/3.11.1 VSCode/1.52.1 Node.js/12.14.1 (darwin; x64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
     end
 
     context 'when user uses an API token' do
@@ -82,6 +92,16 @@ RSpec.describe GraphqlController do
         subject
 
         expect(assigns(:context)[:is_sessionless_user]).to be true
+      end
+
+      it 'calls the track api when trackable method' do
+        agent = 'vs-code-gitlab-workflow/3.11.1 VSCode/1.52.1 Node.js/12.14.1 (darwin; x64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
       end
     end
 

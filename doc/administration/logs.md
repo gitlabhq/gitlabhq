@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Log system
+# Log system **(FREE SELF)**
 
 GitLab has an advanced log system where everything is logged, so you
 can analyze your instance using various system log files. In addition to
@@ -93,6 +93,8 @@ which correspond to:
 
 1. `elasticsearch_calls`: total number of calls to Elasticsearch
 1. `elasticsearch_duration_s`: total time taken by Elasticsearch calls
+1. `elasticsearch_timed_out_count`: total number of calls to Elasticsearch that
+   timed out and therefore returned partial results
 
 ActionCable connection and subscription events are also logged to this file and they follow the same
 format above. The `method`, `path`, and `format` fields are not applicable, and are always empty.
@@ -381,16 +383,18 @@ only. For example:
 }
 ```
 
-## `audit_json.log`
+## `audit_json.log` **(FREE)**
 
 NOTE:
-Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing/), however a few exist in GitLab Core.
+GitLab Free tracks a small number of different audit events.
+[GitLab Premium](https://about.gitlab.com/pricing/) tracks many more.
 
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for
 installations from source.
 
-Changes to group or project settings are logged to this file. For example:
+Changes to group or project settings and memberships (`target_details`) are logged to this file.
+For example:
 
 ```json
 {
@@ -411,11 +415,14 @@ Changes to group or project settings are logged to this file. For example:
 
 ## Sidekiq Logs
 
+NOTE:
+In Omnibus GitLab `12.10` or earlier, the Sidekiq log lives in `/var/log/gitlab/gitlab-rails/sidekiq.log`.
+
 For Omnibus installations, some Sidekiq logs reside in `/var/log/gitlab/sidekiq/current` and as follows.
 
 ### `sidekiq.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for
+This file lives in `/var/log/gitlab/sidekiq/current` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq.log` for
 installations from source.
 
@@ -772,7 +779,7 @@ are generated:
 - For Omnibus GitLab packages, in `/var/log/gitlab/gitlab-rails/web_exporter.log`.
 - For installations from source, in `/home/git/gitlab/log/web_exporter.log`.
 
-## `database_load_balancing.log` **(PREMIUM ONLY)**
+## `database_load_balancing.log` **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
@@ -782,7 +789,7 @@ It's stored at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
 
-## `elasticsearch.log` **(STARTER ONLY)**
+## `elasticsearch.log` **(PREMIUM SELF)**
 
 > Introduced in GitLab 12.6.
 
@@ -856,7 +863,7 @@ For example:
 { "severity":"INFO", "time":"2020-04-22T16:04:50.691Z","correlation_id":"04f1366e-57a1-45b8-88c1-b00b23dc3616","class":"Projects::ImportExport::ExportService","current_user":"John Doe","project_full_path":"group1/test-export","file_path":"/path/to/archive","gc_stats":{"count":{"before":127,"after":127,"diff":0},"heap_allocated_pages":{"before":10369,"after":10369,"diff":0},"heap_sorted_length":{"before":10369,"after":10369,"diff":0},"heap_allocatable_pages":{"before":0,"after":0,"diff":0},"heap_available_slots":{"before":4226409,"after":4226409,"diff":0},"heap_live_slots":{"before":2542709,"after":2641420,"diff":98711},"heap_free_slots":{"before":1683700,"after":1584989,"diff":-98711},"heap_final_slots":{"before":0,"after":0,"diff":0},"heap_marked_slots":{"before":2542704,"after":2542704,"diff":0},"heap_eden_pages":{"before":10369,"after":10369,"diff":0},"heap_tomb_pages":{"before":0,"after":0,"diff":0},"total_allocated_pages":{"before":10369,"after":10369,"diff":0},"total_freed_pages":{"before":0,"after":0,"diff":0},"total_allocated_objects":{"before":24896308,"after":24995019,"diff":98711},"total_freed_objects":{"before":22353599,"after":22353599,"diff":0},"malloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"malloc_increase_bytes_limit":{"before":25804104,"after":25804104,"diff":0},"minor_gc_count":{"before":94,"after":94,"diff":0},"major_gc_count":{"before":33,"after":33,"diff":0},"remembered_wb_unprotected_objects":{"before":34284,"after":34284,"diff":0},"remembered_wb_unprotected_objects_limit":{"before":68568,"after":68568,"diff":0},"old_objects":{"before":2404725,"after":2404725,"diff":0},"old_objects_limit":{"before":4809450,"after":4809450,"diff":0},"oldmalloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"oldmalloc_increase_bytes_limit":{"before":68537556,"after":68537556,"diff":0}},"time_to_finish":0.12298400001600385,"number_of_sql_calls":70,"memory_usage":"0.0 MiB","label":"process_48616"}
 ```
 
-## `geo.log` **(PREMIUM ONLY)**
+## `geo.log` **(PREMIUM SELF)**
 
 > Introduced in 9.5.
 
@@ -973,9 +980,13 @@ For Omnibus GitLab installations, Redis logs reside in `/var/log/gitlab/redis/`.
 
 For Omnibus GitLab installations, Alertmanager logs reside in `/var/log/gitlab/alertmanager/`.
 
+<!-- vale gitlab.Spelling = NO -->
+
 ## Crond Logs
 
-For Omnibus GitLab installations, `crond` logs reside in `/var/log/gitlab/crond/`.
+For Omnibus GitLab installations, crond logs reside in `/var/log/gitlab/crond/`.
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## Grafana Logs
 
@@ -983,7 +994,7 @@ For Omnibus GitLab installations, Grafana logs reside in `/var/log/gitlab/grafan
 
 ## LogRotate Logs
 
-For Omnibus GitLab installations, logrotate logs reside in `/var/log/gitlab/logrotate/`.
+For Omnibus GitLab installations, `logrotate` logs reside in `/var/log/gitlab/logrotate/`.
 
 ## GitLab Monitor Logs
 
@@ -1009,7 +1020,7 @@ installations from source.
 Performance bar statistics (currently only duration of SQL queries) are recorded in that file. For example:
 
 ```json
-{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","filenum":"395","method":"each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"type": "sql"}
+{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"type": "sql"}
 ```
 
 These statistics are logged on .com only, disabled on self-deployments.
@@ -1026,14 +1037,14 @@ GitLab Support often asks for one of these, and maintains the required tools.
 ### Briefly tail the main logs
 
 If the bug or error is readily reproducible, save the main GitLab logs
-[to a file](troubleshooting/linux_cheat_sheet.md#files--dirs) while reproducing the
+[to a file](troubleshooting/linux_cheat_sheet.md#files-and-directories) while reproducing the
 problem a few times:
 
 ```shell
 sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
 ```
 
-Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+Conclude the log gathering with <kbd>Control</kbd> + <kbd>C</kbd>.
 
 ### GitLabSOS
 

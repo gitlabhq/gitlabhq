@@ -16,6 +16,13 @@ export const PERMISSION_CREATE_MR = 'createMergeRequestIn';
 export const PERMISSION_READ_MR = 'readMergeRequest';
 export const PERMISSION_PUSH_CODE = 'pushCode';
 
+// The default permission object to use when the project data isn't available yet.
+// This helps us encapsulate checks like `canPushCode` without requiring an
+// additional check like `currentProject && canPushCode`.
+export const DEFAULT_PERMISSIONS = {
+  [PERMISSION_PUSH_CODE]: true,
+};
+
 export const viewerTypes = {
   mr: 'mrdiff',
   edit: 'editor',
@@ -100,3 +107,7 @@ export const SIDE_RIGHT = 'right';
 
 // Live Preview feature
 export const LIVE_PREVIEW_DEBOUNCE = 2000;
+
+// This is the maximum number of files to auto open when opening the Web IDE
+// from a Merge Request
+export const MAX_MR_FILES_AUTO_OPEN = 10;

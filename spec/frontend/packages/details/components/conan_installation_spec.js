@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import ConanInstallation from '~/packages/details/components/conan_installation.vue';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { conanPackage as packageEntity } from '../../mock_data';

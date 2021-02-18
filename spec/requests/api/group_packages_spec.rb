@@ -144,6 +144,7 @@ RSpec.describe API::GroupPackages do
     end
 
     it_behaves_like 'with versionless packages'
+    it_behaves_like 'with status param'
     it_behaves_like 'does not cause n^2 queries'
   end
 end

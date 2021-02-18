@@ -1,9 +1,8 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
-import '~/commit/pipelines/pipelines_bundle';
 import '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/webpack', () => ({

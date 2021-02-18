@@ -1,5 +1,4 @@
 <script>
-import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
 import {
   GlFormGroup,
   GlFormInput,
@@ -9,8 +8,9 @@ import {
   GlSprintf,
   GlButton,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
+import { s__ } from '~/locale';
 import { KUBERNETES_VERSIONS } from '../constants';
 
 const { mapState: mapRolesState, mapActions: mapRolesActions } = createNamespacedHelpers('roles');

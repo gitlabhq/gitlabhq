@@ -1,5 +1,5 @@
-import { times } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
+import { times } from 'lodash';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import {

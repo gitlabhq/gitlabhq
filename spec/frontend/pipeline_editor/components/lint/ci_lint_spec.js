@@ -1,5 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlAlert, GlLink } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { mergeUnwrappedCiConfig, mockLintHelpPagePath } from '../../mock_data';

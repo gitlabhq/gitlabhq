@@ -1,5 +1,5 @@
-import { withValues } from '../utils/obj';
 import { getCommit } from '../fixtures';
+import { withValues } from '../utils/obj';
 import { createCommitId } from './commit_id';
 
 export const createNewCommit = ({ id = createCommitId(), message }, orig = getCommit()) => {

@@ -19,8 +19,8 @@ module Gitlab
         value
       when URI::GID
         GlobalID.new(value)
-      when Integer
-        raise CoerceError, 'Cannot coerce Integer' unless model_name.present?
+      when Integer, String
+        raise CoerceError, "Cannot coerce #{value.class}" unless model_name.present?
 
         GlobalID.new(::Gitlab::GlobalId.build(model_name: model_name, id: value))
       else

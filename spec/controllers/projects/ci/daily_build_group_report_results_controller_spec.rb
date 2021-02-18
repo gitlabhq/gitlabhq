@@ -11,6 +11,7 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
     let(:end_date) { '2020-03-09' }
     let(:allowed_to_read) { true }
     let(:user) { create(:user) }
+    let(:feature_enabled?) { true }
 
     before do
       create_daily_coverage('rspec', 79.0, '2020-03-09')
@@ -23,6 +24,8 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
 
       allow(Ability).to receive(:allowed?).and_call_original
       allow(Ability).to receive(:allowed?).with(user, :read_build_report_results, project).and_return(allowed_to_read)
+
+      stub_feature_flags(coverage_data_new_finder: feature_enabled?)
 
       get :index, params: {
         namespace_id: project.namespace,
@@ -55,9 +58,7 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
       end
     end
 
-    context 'when format is CSV' do
-      let(:format) { :csv }
-
+    shared_examples 'CSV results' do
       it 'serves the results in CSV' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Type']).to eq('text/csv; charset=utf-8')
@@ -88,9 +89,7 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
       it_behaves_like 'ensuring policy'
     end
 
-    context 'when format is JSON' do
-      let(:format) { :json }
-
+    shared_examples 'JSON results' do
       it 'serves the results in JSON' do
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -136,6 +135,38 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
 
       it_behaves_like 'validating param_type'
       it_behaves_like 'ensuring policy'
+    end
+
+    context 'when format is JSON' do
+      let(:format) { :json }
+
+      context 'when coverage_data_new_finder flag is enabled' do
+        let(:feature_enabled?) { true }
+
+        it_behaves_like 'JSON results'
+      end
+
+      context 'when coverage_data_new_finder flag is disabled' do
+        let(:feature_enabled?) { false }
+
+        it_behaves_like 'JSON results'
+      end
+    end
+
+    context 'when format is CSV' do
+      let(:format) { :csv }
+
+      context 'when coverage_data_new_finder flag is enabled' do
+        let(:feature_enabled?) { true }
+
+        it_behaves_like 'CSV results'
+      end
+
+      context 'when coverage_data_new_finder flag is disabled' do
+        let(:feature_enabled?) { false }
+
+        it_behaves_like 'CSV results'
+      end
     end
   end
 

@@ -1,7 +1,7 @@
 ---
 name: migrate_user_mentions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34378
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/231175
 milestone: '13.3'
 type: development
 group: group::project management

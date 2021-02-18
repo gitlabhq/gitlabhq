@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -65,7 +65,7 @@ GET /users?active=true
 GET /users?blocked=true
 ```
 
-GitLab supports bot users such as the [alert bot](../operations/incident_management/alert_integrations.md)
+GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
 or the [support bot](../user/project/service_desk.md#support-bot-user).
 To exclude these users from the users' list, you can use the parameter `exclude_internal=true`
 ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4).
@@ -88,7 +88,7 @@ GET /users
 | `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id`               |
 | `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
-| `without_projects` | boolean | no       | Filter users without projects. Default is `false`                                                                     |
+| `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only admin users. Default is `false`                                 |
 
 ```json
@@ -171,7 +171,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `using_license_seat` parameters.
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -186,7 +186,7 @@ Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) 
 ]
 ```
 
-Users on GitLab [Silver or higher](https://about.gitlab.com/pricing/) also see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
 the `group_saml` provider option:
 
 ```json
@@ -217,7 +217,9 @@ For example:
 GET /users?extern_uid=1234567&provider=github
 ```
 
-You can search for users who are external with: `/users?external=true`
+Instance administrators can search for users who are external with: `/users?external=true`
+
+You cannot search for external users if you are not an instance administrator. 
 
 You can search users by creation date time range with:
 
@@ -264,6 +266,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "bio": "",
   "bio_html": "",
+  "bot": false,
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -271,7 +274,9 @@ Parameters:
   "twitter": "",
   "website_url": "",
   "organization": "",
-  "job_title": "Operations Specialist"
+  "job_title": "Operations Specialist",
+  "followers": 1,
+  "following": 1
 }
 ```
 
@@ -337,7 +342,7 @@ Example Responses:
 NOTE:
 The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
@@ -350,7 +355,7 @@ the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` par
 }
 ```
 
-Users on GitLab.com [Silver, or higher](https://about.gitlab.com/pricing/) also
+Users on GitLab.com [Premium or higher](https://about.gitlab.com/pricing/) also
 see the `group_saml` option:
 
 ```json
@@ -623,7 +628,8 @@ Example response:
 {
   "emoji":"coffee",
   "message":"I crave coffee :coffee:",
-  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>"
+  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>",
+  "clear_status_at": null
 }
 ```
 
@@ -649,7 +655,8 @@ Example response:
 {
   "emoji":"coffee",
   "message":"I crave coffee :coffee:",
-  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>"
+  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>",
+  "clear_status_at": null
 }
 ```
 
@@ -661,15 +668,16 @@ Set the status of the current user.
 PUT /user/status
 ```
 
-| Attribute | Type   | Required | Description                                                                                                                                                                                                             |
-| --------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `emoji`   | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message` | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
+| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
+| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emoji`              | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
+| `message`            | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
+| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
 
-When both parameters `emoji` and `message` are empty, the status is cleared.
+When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example responses
@@ -678,8 +686,91 @@ Example responses
 {
   "emoji":"coffee",
   "message":"I crave coffee",
-  "message_html": "I crave coffee"
+  "message_html": "I crave coffee",
+  "clear_status_at":"2021-02-15T10:49:01.311Z"
 }
+```
+
+## User Follow
+
+### Follow and unfollow users
+
+Follow a user.
+
+```plaintext
+POST /users/:id/follow
+```
+
+Unfollow a user.
+
+```plaintext
+POST /users/:id/unfollow
+```
+
+| Attribute | Type    | Required | Description                  |
+| --------- | ------- | -------- | ---------------------------- |
+| `id`      | integer | yes      | The ID of the user to follow |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/follow"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "name": "John Smith",
+  "state": "active",
+  "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+  "web_url": "http://localhost:3000/john_smith"
+}
+```
+
+### Followers and following
+
+Get the followers of a user.
+
+```plaintext
+GET /users/:id/followers
+```
+
+Get the list of users being followed.
+
+```plaintext
+GET /users/:id/following
+```
+
+| Attribute | Type    | Required | Description                  |
+| --------- | ------- | -------- | ---------------------------- |
+| `id`      | integer | yes      | The ID of the user to follow |
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.example.com/users/3/followers"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 2,
+    "name": "Lennie Donnelly",
+    "username": "evette.kilback",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/7955171a55ac4997ed81e5976287890a?s=80&d=identicon",
+    "web_url": "http://127.0.0.1:3000/evette.kilback"
+  },
+  {
+    "id": 4,
+    "name": "Serena Bradtke",
+    "username": "cammy",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/a2daad869a7b60d3090b7b9bef4baf57?s=80&d=identicon",
+    "web_url": "http://127.0.0.1:3000/cammy"
+  }
+]
 ```
 
 ## User counts
@@ -1374,7 +1465,7 @@ Example Responses:
 ```
 
 ```json
-{ "message": "The user you are trying to approve is not pending an approval" }
+{ "message": "The user you are trying to approve is not pending approval" }
 ```
 
 ## Get an impersonation token of a user
@@ -1481,7 +1572,7 @@ Parameters:
 | `user_id`                | integer | yes      | The ID of the user                |
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
-## Create a personal access token **(CORE ONLY)**
+## Create a personal access token **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267553) in GitLab 13.8.

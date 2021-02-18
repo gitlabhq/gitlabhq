@@ -2,10 +2,10 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { map } from 'lodash';
 import { __, s__ } from '~/locale';
-import PipelineTriggerAuthorToken from './tokens/pipeline_trigger_author_token.vue';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
 import PipelineStatusToken from './tokens/pipeline_status_token.vue';
 import PipelineTagNameToken from './tokens/pipeline_tag_name_token.vue';
+import PipelineTriggerAuthorToken from './tokens/pipeline_trigger_author_token.vue';
 
 export default {
   userType: 'username',

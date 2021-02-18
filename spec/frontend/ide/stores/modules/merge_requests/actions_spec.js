@@ -1,8 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
-import state from '~/ide/stores/modules/merge_requests/state';
-import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
 import {
   requestMergeRequests,
   receiveMergeRequestsError,
@@ -10,6 +7,9 @@ import {
   fetchMergeRequests,
   resetMergeRequests,
 } from '~/ide/stores/modules/merge_requests/actions';
+import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
+import state from '~/ide/stores/modules/merge_requests/state';
+import axios from '~/lib/utils/axios_utils';
 import { mergeRequests } from '../../../mock_data';
 
 describe('IDE merge requests actions', () => {

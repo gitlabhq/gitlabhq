@@ -2,8 +2,8 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import Pager from './pager';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import Pager from './pager';
 
 export default class Activities {
   constructor(container = '') {

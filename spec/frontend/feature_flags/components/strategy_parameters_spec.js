@@ -1,16 +1,16 @@
 import { shallowMount } from '@vue/test-utils';
 import { last } from 'lodash';
+import Default from '~/feature_flags/components/strategies/default.vue';
+import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
+import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
+import UsersWithId from '~/feature_flags/components/strategies/users_with_id.vue';
+import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
   ROLLOUT_STRATEGY_USER_ID,
   ROLLOUT_STRATEGY_GITLAB_USER_LIST,
 } from '~/feature_flags/constants';
-import Default from '~/feature_flags/components/strategies/default.vue';
-import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
-import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
-import UsersWithId from '~/feature_flags/components/strategies/users_with_id.vue';
-import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
 import { allUsersStrategy } from '../mock_data';
 
 const DEFAULT_PROPS = {

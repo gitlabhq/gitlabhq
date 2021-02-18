@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlButton, GlIcon } from '@gitlab/ui';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   components: {

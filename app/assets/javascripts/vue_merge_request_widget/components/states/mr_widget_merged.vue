@@ -3,10 +3,12 @@
 import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__, __ } from '~/locale';
+import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
+import modalEventHub from '~/projects/commit/event_hub';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import eventHub from '../../event_hub';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
-import eventHub from '../../event_hub';
 
 export default {
   name: 'MRWidgetMerged',
@@ -77,6 +79,9 @@ export default {
       return s__('mrWidget|Cherry-pick');
     },
   },
+  mounted() {
+    document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
+  },
   methods: {
     removeSourceBranch() {
       this.isMakingRequest = true;
@@ -97,6 +102,12 @@ export default {
           this.isMakingRequest = false;
           Flash(__('Something went wrong. Please try again.'));
         });
+    },
+    openRevertModal() {
+      modalEventHub.$emit(OPEN_REVERT_MODAL);
+    },
+    openCherryPickModal() {
+      modalEventHub.$emit(OPEN_CHERRY_PICK_MODAL);
     },
   },
 };
@@ -119,9 +130,7 @@ export default {
           size="small"
           category="secondary"
           variant="warning"
-          href="#modal-revert-commit"
-          data-toggle="modal"
-          data-container="body"
+          @click="openRevertModal"
         >
           {{ revertLabel }}
         </gl-button>
@@ -142,9 +151,7 @@ export default {
           v-gl-tooltip.hover
           :title="cherryPickTitle"
           size="small"
-          href="#modal-cherry-pick-commit"
-          data-toggle="modal"
-          data-container="body"
+          @click="openCherryPickModal"
         >
           {{ cherryPickLabel }}
         </gl-button>

@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
-import BlobViewer from '~/blob/viewer/index';
-import initBlob from '~/pages/projects/init_blob';
-import GpgBadges from '~/gpg_badges';
-import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import '~/sourcegraph/load';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
+import BlobViewer from '~/blob/viewer/index';
+import GpgBadges from '~/gpg_badges';
+import initBlob from '~/pages/projects/init_blob';
+import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
+import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import '~/sourcegraph/load';
 
 document.addEventListener('DOMContentLoaded', () => {
   new BlobViewer(); // eslint-disable-line no-new

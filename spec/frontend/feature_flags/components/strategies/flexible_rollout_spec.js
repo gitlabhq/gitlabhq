@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlFormInput, GlFormSelect } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import FlexibleRollout from '~/feature_flags/components/strategies/flexible_rollout.vue';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';

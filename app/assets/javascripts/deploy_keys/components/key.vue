@@ -1,6 +1,6 @@
 <script>
-import { head, tail } from 'lodash';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { head, tail } from 'lodash';
 import { s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -97,7 +97,7 @@ export default {
   methods: {
     projectTooltipTitle(project) {
       return project.can_push
-        ? s__('DeployKeys|Write access allowed')
+        ? s__('DeployKeys|Grant write permissions to this key')
         : s__('DeployKeys|Read access only');
     },
     toggleExpanded() {

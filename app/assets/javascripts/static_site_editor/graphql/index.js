@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import typeDefs from './typedefs.graphql';
 import fileResolver from './resolvers/file';
-import submitContentChangesResolver from './resolvers/submit_content_changes';
 import hasSubmittedChangesResolver from './resolvers/has_submitted_changes';
+import submitContentChangesResolver from './resolvers/submit_content_changes';
+import typeDefs from './typedefs.graphql';
 
 Vue.use(VueApollo);
 

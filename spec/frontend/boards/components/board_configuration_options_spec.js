@@ -7,6 +7,7 @@ describe('BoardConfigurationOptions', () => {
   const defaultProps = {
     hideBacklogList: false,
     hideClosedList: false,
+    readonly: false,
   };
 
   const createComponent = (props = {}) => {
@@ -60,5 +61,19 @@ describe('BoardConfigurationOptions', () => {
     closedListCheckbox().vm.$emit('change');
 
     expect(wrapper.emitted('update:hideClosedList')).toEqual([[true]]);
+  });
+
+  it('renders checkboxes disabled when user does not have edit rights', () => {
+    createComponent({ readonly: true });
+
+    expect(closedListCheckbox().attributes('disabled')).toBe('true');
+    expect(backlogListCheckbox().attributes('disabled')).toBe('true');
+  });
+
+  it('renders checkboxes enabled when user has edit rights', () => {
+    createComponent();
+
+    expect(closedListCheckbox().attributes('disabled')).toBeUndefined();
+    expect(backlogListCheckbox().attributes('disabled')).toBeUndefined();
   });
 });

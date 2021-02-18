@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Suggestion from './item.vue';
 import query from '../queries/issues.query.graphql';
+import Suggestion from './item.vue';
 
 export default {
   components: {

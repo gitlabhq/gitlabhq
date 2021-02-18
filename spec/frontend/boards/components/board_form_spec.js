@@ -1,16 +1,15 @@
-import { shallowMount } from '@vue/test-utils';
-
-import { TEST_HOST } from 'helpers/test_constants';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { visitUrl } from '~/lib/utils/url_utility';
-import boardsStore from '~/boards/stores/boards_store';
 import BoardForm from '~/boards/components/board_form.vue';
-import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
+import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
+import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
@@ -35,6 +34,7 @@ const defaultProps = {
   labelsPath: `${TEST_HOST}/labels/path`,
   labelsWebUrl: `${TEST_HOST}/-/labels`,
   currentBoard,
+  currentPage: '',
 };
 
 describe('BoardForm', () => {
@@ -75,14 +75,12 @@ describe('BoardForm', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    boardsStore.state.currentPage = null;
     mutate = null;
   });
 
   describe('when user can not admin the board', () => {
     beforeEach(() => {
-      boardsStore.state.currentPage = 'new';
-      createComponent();
+      createComponent({ currentPage: formType.new });
     });
 
     it('hides modal footer when user is not a board admin', () => {
@@ -100,8 +98,7 @@ describe('BoardForm', () => {
 
   describe('when user can admin the board', () => {
     beforeEach(() => {
-      boardsStore.state.currentPage = 'new';
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.new });
     });
 
     it('shows modal footer when user is a board admin', () => {
@@ -118,13 +115,9 @@ describe('BoardForm', () => {
   });
 
   describe('when creating a new board', () => {
-    beforeEach(() => {
-      boardsStore.state.currentPage = 'new';
-    });
-
     describe('on non-scoped-board', () => {
       beforeEach(() => {
-        createComponent({ canAdminBoard: true });
+        createComponent({ canAdminBoard: true, currentPage: formType.new });
       });
 
       it('clears the form', () => {
@@ -165,7 +158,7 @@ describe('BoardForm', () => {
       });
 
       it('does not call API if board name is empty', async () => {
-        createComponent({ canAdminBoard: true });
+        createComponent({ canAdminBoard: true, currentPage: formType.new });
         findInput().trigger('keyup.enter', { metaKey: true });
 
         await waitForPromises();
@@ -174,7 +167,7 @@ describe('BoardForm', () => {
       });
 
       it('calls a correct GraphQL mutation and redirects to correct page from existing board', async () => {
-        createComponent({ canAdminBoard: true });
+        createComponent({ canAdminBoard: true, currentPage: formType.new });
         fillForm();
 
         await waitForPromises();
@@ -194,7 +187,7 @@ describe('BoardForm', () => {
 
       it('shows an error flash if GraphQL mutation fails', async () => {
         mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
-        createComponent({ canAdminBoard: true });
+        createComponent({ canAdminBoard: true, currentPage: formType.new });
         fillForm();
 
         await waitForPromises();
@@ -209,13 +202,9 @@ describe('BoardForm', () => {
   });
 
   describe('when editing a board', () => {
-    beforeEach(() => {
-      boardsStore.state.currentPage = 'edit';
-    });
-
     describe('on non-scoped-board', () => {
       beforeEach(() => {
-        createComponent({ canAdminBoard: true });
+        createComponent({ canAdminBoard: true, currentPage: formType.edit });
       });
 
       it('clears the form', () => {
@@ -247,7 +236,7 @@ describe('BoardForm', () => {
         },
       });
       window.location = new URL('https://test/boards/1');
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.edit });
 
       findInput().trigger('keyup.enter', { metaKey: true });
 
@@ -273,7 +262,7 @@ describe('BoardForm', () => {
         },
       });
       window.location = new URL('https://test/boards/1?group_by=epic');
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.edit });
 
       findInput().trigger('keyup.enter', { metaKey: true });
 
@@ -294,7 +283,7 @@ describe('BoardForm', () => {
 
     it('shows an error flash if GraphQL mutation fails', async () => {
       mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.edit });
       findInput().trigger('keyup.enter', { metaKey: true });
 
       await waitForPromises();
@@ -308,24 +297,20 @@ describe('BoardForm', () => {
   });
 
   describe('when deleting a board', () => {
-    beforeEach(() => {
-      boardsStore.state.currentPage = 'delete';
-    });
-
     it('passes correct primary action text and variant', () => {
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.delete });
       expect(findModalActionPrimary().text).toBe('Delete');
       expect(findModalActionPrimary().attributes[0].variant).toBe('danger');
     });
 
     it('renders delete confirmation message', () => {
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.delete });
       expect(findDeleteConfirmation().exists()).toBe(true);
     });
 
     it('calls a correct GraphQL mutation and redirects to correct page after deleting board', async () => {
       mutate = jest.fn().mockResolvedValue({});
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.delete });
       findModal().vm.$emit('primary');
 
       await waitForPromises();
@@ -343,7 +328,7 @@ describe('BoardForm', () => {
 
     it('shows an error flash if GraphQL mutation fails', async () => {
       mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
-      createComponent({ canAdminBoard: true });
+      createComponent({ canAdminBoard: true, currentPage: formType.delete });
       findModal().vm.$emit('primary');
 
       await waitForPromises();

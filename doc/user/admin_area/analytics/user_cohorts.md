@@ -4,19 +4,19 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cohorts **(CORE)**
+# Cohorts **(FREE)**
 
 As a benefit of having the [usage ping active](../settings/usage_statistics.md),
 you can analyze your users' GitLab activities over time.
 
-To see user cohorts, go to **Admin Area > Analytics > Cohorts**.
+To see user cohorts, go to **Admin Area > Overview > Users**.
 
 ## Overview
 
 How do you interpret the user cohorts table? Let's review an example with the
 following user cohorts:
 
-![User cohort example](img/cohorts_v13_4.png)
+![User cohort example](img/cohorts_v13_9.png)
 
 For the cohort of March 2020, three users were added to this server and have
 been active since this month. One month later (April 2020), two users are still

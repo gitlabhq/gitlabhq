@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { handleBlobRichViewer } from '~/blob/viewer';
 import RichViewer from '~/vue_shared/components/blob_viewers/rich_viewer.vue';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
-import { handleBlobRichViewer } from '~/blob/viewer';
 
 jest.mock('~/blob/viewer');
 

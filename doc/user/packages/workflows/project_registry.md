@@ -13,7 +13,7 @@ Then you can configure your remote repositories to point to the project in GitLa
 You might want to do this because:
 
 - You want to publish your packages in GitLab, but to a different project from where your code is stored.
-- You want to group packages together in one project. For example, you might want to put all NPM packages,
+- You want to group packages together in one project. For example, you might want to put all npm packages,
   or all packages for a specific department, or all private packages in the same project.
 - When you install packages for other projects, you want to use one remote.
 - You want to migrate your packages from a third-party package registry to a single place in GitLab and do not
@@ -27,7 +27,7 @@ No functionality is specific to this feature. Instead, we're taking advantage of
 of each package management system to publish different package types to the same place.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  Watch a video of how to add Maven, NPM, and Conan packages to [the same project](https://youtu.be/ui2nNBwN35c).
+  Watch a video of how to add Maven, npm, and Conan packages to [the same project](https://youtu.be/ui2nNBwN35c).
 - [View an example project](https://gitlab.com/sabrams/my-package-registry/-/packages).
 
 ## Store different package types in one GitLab project
@@ -44,14 +44,14 @@ Let's take a look at how you might create a public place to hold all of your pub
 You can upload all types of packages to the same project, or
 split things up based on package type or package visibility level.
 
-### NPM
+### npm
 
-If you're using NPM, create an `.npmrc` file. Add the appropriate URL for publishing
+If you're using npm, create an `.npmrc` file. Add the appropriate URL for publishing
 packages to your project. Finally, add a section to your `package.json` file.
 
 Follow the instructions in the
-[GitLab NPM Registry documentation](../npm_registry/index.md#authenticate-to-the-package-registry). After
-you do this, you can publish your NPM package to your project using `npm publish`, as described in the
+[GitLab Package Registry npm documentation](../npm_registry/index.md#authenticate-to-the-package-registry). After
+you do this, you can publish your npm package to your project using `npm publish`, as described in the
 [publishing packages](../npm_registry/index.md#publish-an-npm-package) section.
 
 ### Maven

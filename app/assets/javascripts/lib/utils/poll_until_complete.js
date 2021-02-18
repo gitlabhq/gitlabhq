@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
-import Poll from './poll';
 import httpStatusCodes from './http_status';
+import Poll from './poll';
 
 /**
  * Polls an endpoint until it returns either a 200 OK or a error status.

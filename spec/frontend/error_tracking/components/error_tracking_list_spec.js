@@ -1,12 +1,12 @@
+import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
 import stubChildren from 'helpers/stub_children';
-import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
+import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
-import errorsList from './list_mock.json';
 import Tracking from '~/tracking';
+import errorsList from './list_mock.json';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -298,9 +298,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.find('a').attributes('href')).toBe(
-        '/help/user/project/operations/error_tracking.html',
-      );
+      expect(wrapper.find(GlEmptyState).isVisible()).toBe(true);
     });
   });
 

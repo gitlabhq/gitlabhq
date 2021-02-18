@@ -38,6 +38,8 @@ class BulkImportService
     bulk_import = create_bulk_import
 
     BulkImportWorker.perform_async(bulk_import.id)
+
+    bulk_import
   end
 
   private

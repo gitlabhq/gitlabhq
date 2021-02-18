@@ -55,10 +55,6 @@ class Packages::PackageFile < ApplicationRecord
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
   end
 
-  def local?
-    file_store == ::Packages::PackageFileUploader::Store::LOCAL
-  end
-
   private
 
   def update_size_from_file

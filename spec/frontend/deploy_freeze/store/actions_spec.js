@@ -1,11 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import getInitialState from '~/deploy_freeze/store/state';
 import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
+import getInitialState from '~/deploy_freeze/store/state';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
 jest.mock('~/api.js');

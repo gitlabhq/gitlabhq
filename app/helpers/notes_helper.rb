@@ -175,7 +175,9 @@ module NotesHelper
     end
   end
 
-  def notes_data(issuable)
+  def notes_data(issuable, start_at_zero = false)
+    initial_last_fetched_at = start_at_zero ? 0 : Time.current.to_i * ::Gitlab::UpdatedNotesPaginator::MICROSECOND
+
     data = {
       discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
@@ -186,7 +188,7 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
-      lastFetchedAt: Time.now.to_i * ::Gitlab::UpdatedNotesPaginator::MICROSECOND
+      lastFetchedAt: initial_last_fetched_at
     }
 
     if issuable.is_a?(MergeRequest)

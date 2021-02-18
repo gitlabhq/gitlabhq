@@ -1,11 +1,11 @@
 ---
 stage: Create
-group: Knowledge
+group: Editor
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 ---
 
-# Wiki **(CORE)**
+# Wiki **(FREE)**
 
 A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find
@@ -184,7 +184,7 @@ Similar to versioned diff file views, you can see the changes made in a given Wi
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
-and [project](../index.md#project-activity) activity pages.
+and [project](../working_with_projects.md#project-activity) activity pages.
 
 ## Adding and editing wiki pages locally
 

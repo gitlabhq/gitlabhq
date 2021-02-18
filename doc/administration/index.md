@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 ---
 
-# Administrator documentation **(CORE ONLY)**
+# Administrator documentation **(FREE SELF)**
 
 Learn how to administer your self-managed GitLab instance.
 
@@ -17,7 +17,7 @@ GitLab has two product distributions available through [different subscriptions]
 You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/install/ce-or-ee/).
 However, the features you have access to depend on your chosen [subscription](https://about.gitlab.com/pricing/).
 
-GitLab Community Edition installations have access only to Core features.
+GitLab Community Edition installations have access only to Free features.
 
 Non-administrator users can't access GitLab administration tools and settings.
 
@@ -32,7 +32,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Installing GitLab
 
-- [Install](../install/README.md): Requirements, directory structures, and installation methods.
+- [Install](../install/index.md): Requirements, directory structures, and installation methods.
   - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
   - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 - [Reference architectures](reference_architectures/index.md): Add additional resources to support more users.
@@ -80,6 +80,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   emails with S/MIME.
 - [Enabling and disabling features flags](feature_flags.md): how to enable and
   disable GitLab features deployed behind feature flags.
+- [Application settings cache expiry interval](application_settings_cache.md)
 
 #### Customizing GitLab appearance
 
@@ -91,7 +92,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Maintaining GitLab
 
-- [Rake tasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
+- [Rake tasks](../raketasks/index.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Puma).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
@@ -101,14 +102,15 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 #### Updating GitLab
 
 - [GitLab versions and maintenance policy](../policy/maintenance.md): Understand GitLab versions and releases (Major, Minor, Patch, Security), as well as update recommendations.
-- [Update GitLab](../update/README.md): Update guides to upgrade your installation to a new version.
-- [Upgrading without downtime](../update/README.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
+- [GitLab in maintenance mode](maintenance_mode/index.md): Put GitLab in maintenance mode.
+- [Update GitLab](../update/index.md): Update guides to upgrade your installation to a new version.
+- [Upgrading without downtime](../update/index.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
 - [Migrate your GitLab CI/CD data to another version of GitLab](../migrate_ci_to_ce/README.md): If you have an old GitLab installation (older than 8.0), follow this guide to migrate your existing GitLab CI/CD data to another version of GitLab.
 
 ### Upgrading or downgrading GitLab
 
-- [Upgrade from GitLab CE to GitLab EE](../update/README.md#upgrading-between-editions): learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
-- [Downgrade from GitLab EE to GitLab CE](../downgrade_ee_to_ce/README.md): Learn how to downgrade GitLab Enterprise Editions to Community Edition.
+- [Upgrade from GitLab CE to GitLab EE](../update/index.md#upgrading-between-editions): learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
+- [Downgrade from GitLab EE to GitLab CE](../downgrade_ee_to_ce/index.md): Learn how to downgrade GitLab Enterprise Editions to Community Edition.
 
 ### GitLab platform integrations
 
@@ -152,8 +154,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Package Registry administration
 
-- [Container Registry](packages/container_registry.md): Configure Container Registry with GitLab.
-- [Package Registry](packages/index.md): Enable GitLab to act as an NPM Registry and a Maven Repository.
+- [Container Registry](packages/container_registry.md): Configure GitLab to act as a registry for containers.
+- [Package Registry](packages/index.md): Enable GitLab to act as a registry for packages.
 - [Dependency Proxy](packages/dependency_proxy.md): Configure the Dependency Proxy, a local proxy for frequently used upstream images/packages.
 
 ### Repository settings
@@ -168,7 +170,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## Continuous Integration settings
 
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
-- [GitLab CI/CD admin settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
+- [GitLab CI/CD administration settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
@@ -186,7 +188,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Git configuration options
 
-- [Server hooks](server_hooks.md): Server hooks (on the filesystem) for when webhooks aren't enough.
+- [Server hooks](server_hooks.md): Server hooks (on the file system) for when webhooks aren't enough.
 - [Git LFS configuration](lfs/index.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.

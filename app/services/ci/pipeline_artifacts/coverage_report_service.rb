@@ -11,7 +11,7 @@ module Ci
         pipeline.pipeline_artifacts.create!(
           project_id: pipeline.project_id,
           file_type: :code_coverage,
-          file_format: :raw,
+          file_format: Ci::PipelineArtifact::REPORT_TYPES.fetch(:code_coverage),
           size: file["tempfile"].size,
           file: file,
           expire_at: Ci::PipelineArtifact::EXPIRATION_DATE.from_now

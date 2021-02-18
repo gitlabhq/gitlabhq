@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import produce from 'immer';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import getCurrentIntegrationQuery from './graphql/queries/get_current_integration.query.graphql';

@@ -1,0 +1,5 @@
+- if group_packages_list_nav?
+  = nav_link(controller: :packages_and_registries) do
+    = link_to group_settings_packages_and_registries_path(@group), title: _('Packages & Registries') do
+      %span
+        = _('Packages & Registries')

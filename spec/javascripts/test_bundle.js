@@ -2,19 +2,17 @@
   jasmine/no-global-setup, no-underscore-dangle, no-console
 */
 
+import { config as testUtilsConfig } from '@vue/test-utils';
+import jasmineDiff from 'jasmine-diff';
 import $ from 'jquery';
 import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
-import jasmineDiff from 'jasmine-diff';
-import { config as testUtilsConfig } from '@vue/test-utils';
+import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import Translate from '~/vue_shared/translate';
 
-import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
-
-import customMatchers from './matchers';
 
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;
@@ -58,7 +56,6 @@ beforeAll(() => {
       inline: window.__karma__.config.color,
     }),
   );
-  jasmine.addMatchers(customMatchers);
 });
 
 // globalize common libraries
@@ -80,14 +77,6 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:');
   console.error(event.reason.stack || event.reason);
 });
-
-// HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
-// because it appears to lock up the thread that communicates to Karma's socket
-// This async beforeEach gets called on every spec and releases the JS thread long
-// enough for the socket to continue to communicate.
-// The downside is that it creates a minor performance penalty in the time it takes
-// to run our unit tests.
-beforeEach((done) => done());
 
 let longRunningTestTimeoutHandle;
 

@@ -81,6 +81,10 @@ module Gitlab
         puma? || sidekiq? || action_cable?
       end
 
+      def puma_in_clustered_mode?
+        puma? && Puma.cli_config.options[:workers].to_i > 0
+      end
+
       def max_threads
         threads = 1 # main thread
 

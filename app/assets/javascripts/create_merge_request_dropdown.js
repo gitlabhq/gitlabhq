@@ -1,16 +1,16 @@
 /* eslint-disable no-new */
 import { debounce } from 'lodash';
-import axios from './lib/utils/axios_utils';
-import { deprecatedCreateFlash as Flash } from './flash';
-import DropLab from './droplab/drop_lab';
-import ISetter from './droplab/plugins/input_setter';
-import { __, sprintf } from './locale';
 import {
   init as initConfidentialMergeRequest,
   isConfidentialIssue,
   canCreateConfidentialMergeRequest,
 } from './confidential_merge_request';
 import confidentialMergeRequestState from './confidential_merge_request/state';
+import DropLab from './droplab/drop_lab';
+import ISetter from './droplab/plugins/input_setter';
+import { deprecatedCreateFlash as Flash } from './flash';
+import axios from './lib/utils/axios_utils';
+import { __, sprintf } from './locale';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = { ...ISetter };

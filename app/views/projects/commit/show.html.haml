@@ -12,10 +12,10 @@
 .container-fluid{ class: [limited_container_width, container_class] }
   = render "commit_box"
   = render "ci_menu"
-  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-commit"
+  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-commit", paginate_diffs: true
 
   .limited-width-notes
     = render "shared/notes/notes_with_form", :autocomplete => true
     - if can_collaborate_with_project?(@project)
-      = render "projects/commit/change", type: 'revert', commit: @commit, pajamas: true
-      = render "projects/commit/change", type: 'cherry-pick', commit: @commit, title: @commit.title
+      = render "projects/commit/change", type: 'revert', commit: @commit
+      = render "projects/commit/change", type: 'cherry-pick', commit: @commit

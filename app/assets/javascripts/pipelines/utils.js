@@ -1,6 +1,6 @@
 import { pickBy } from 'lodash';
-import { SUPPORTED_FILTER_PARAMETERS } from './constants';
 import { createNodeDict } from './components/parsing_utils';
+import { SUPPORTED_FILTER_PARAMETERS } from './constants';
 
 export const validateParams = (params) => {
   return pickBy(params, (val, key) => SUPPORTED_FILTER_PARAMETERS.includes(key) && val);
@@ -49,10 +49,10 @@ export const generateJobNeedsDict = (jobs = {}) => {
           // to the list of `needs` to ensure we can properly reference it.
           const group = jobs[job];
           if (group.size > 1) {
-            return [job, group.name, ...newNeeds];
+            return [job, group.name, newNeeds];
           }
 
-          return [job, ...newNeeds];
+          return [job, newNeeds];
         })
         .flat(Infinity);
     };

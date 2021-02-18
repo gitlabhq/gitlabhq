@@ -1,15 +1,14 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { flatten } from 'lodash';
 import Mousetrap from 'mousetrap';
 import Vue from 'vue';
-import { flatten } from 'lodash';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import findAndFollowLink from '~/lib/utils/navigation_utility';
+import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
+
+import { keysFor, TOGGLE_PERFORMANCE_BAR, TOGGLE_CANARY } from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
-import ShortcutsToggle from './shortcuts_toggle.vue';
-import axios from '../../lib/utils/axios_utils';
-import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
-import findAndFollowLink from '../../lib/utils/navigation_utility';
-import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
-import { keysFor, TOGGLE_PERFORMANCE_BAR } from './keybindings';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;
 Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
@@ -19,15 +18,6 @@ Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo
 
   return defaultStopCallback.call(this, e, element, combo);
 };
-
-function initToggleButton() {
-  return new Vue({
-    el: document.querySelector('.js-toggle-shortcuts'),
-    render(createElement) {
-      return createElement(ShortcutsToggle);
-    },
-  });
-}
 
 /**
  * The key used to save and fetch the local Mousetrap instance
@@ -65,13 +55,15 @@ function getToolbarBtnToShortcutsMap($textarea) {
 export default class Shortcuts {
   constructor() {
     this.onToggleHelp = this.onToggleHelp.bind(this);
-    this.enabledHelp = [];
+    this.helpModalElement = null;
+    this.helpModalVueInstance = null;
 
     Mousetrap.bind('?', this.onToggleHelp);
     Mousetrap.bind('s', Shortcuts.focusSearch);
     Mousetrap.bind('/', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
     Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);
+    Mousetrap.bind(keysFor(TOGGLE_CANARY), Shortcuts.onToggleCanary);
 
     const findFileURL = document.body.dataset.findFile;
 
@@ -106,11 +98,33 @@ export default class Shortcuts {
   }
 
   onToggleHelp(e) {
-    if (e.preventDefault) {
+    if (e?.preventDefault) {
       e.preventDefault();
     }
 
-    Shortcuts.toggleHelp(this.enabledHelp);
+    if (this.helpModalElement && this.helpModalVueInstance) {
+      this.helpModalVueInstance.$destroy();
+      this.helpModalElement.remove();
+      this.helpModalElement = null;
+      this.helpModalVueInstance = null;
+    } else {
+      this.helpModalElement = document.createElement('div');
+      document.body.append(this.helpModalElement);
+
+      this.helpModalVueInstance = new Vue({
+        el: this.helpModalElement,
+        components: {
+          ShortcutsHelp: () => import('./shortcuts_help.vue'),
+        },
+        render: (createElement) => {
+          return createElement('shortcuts-help', {
+            on: {
+              hidden: this.onToggleHelp,
+            },
+          });
+        },
+      });
+    }
   }
 
   static onTogglePerfBar(e) {
@@ -124,6 +138,14 @@ export default class Shortcuts {
     refreshCurrentPage();
   }
 
+  static onToggleCanary(e) {
+    e.preventDefault();
+    const canaryCookieName = 'gitlab_canary';
+    const currentValue = parseBoolean(Cookies.get(canaryCookieName));
+    Cookies.set(canaryCookieName, (!currentValue).toString(), { expires: 365, path: '/' });
+    refreshCurrentPage();
+  }
+
   static toggleMarkdownPreview(e) {
     // Check if short-cut was triggered while in Write Mode
     const $target = $(e.target);
@@ -133,34 +155,6 @@ export default class Shortcuts {
       $('.js-md-preview-button', $form).focus();
     }
     $(document).triggerHandler('markdown-preview:toggle', [e]);
-  }
-
-  static toggleHelp(location) {
-    const $modal = $('#modal-shortcuts');
-
-    if ($modal.length) {
-      $modal.modal('toggle');
-      return null;
-    }
-
-    return axios
-      .get(gon.shortcuts_path, {
-        responseType: 'text',
-      })
-      .then(({ data }) => {
-        $.globalEval(data, { nonce: getCspNonceValue() });
-
-        if (location && location.length > 0) {
-          const results = [];
-          for (let i = 0, len = location.length; i < len; i += 1) {
-            results.push($(location[i]).show());
-          }
-          return results;
-        }
-
-        return $('.js-more-help-button').remove();
-      })
-      .then(initToggleButton);
   }
 
   focusFilter(e) {

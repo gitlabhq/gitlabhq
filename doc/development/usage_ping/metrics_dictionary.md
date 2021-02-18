@@ -14,37 +14,32 @@ We are using [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/co
 
 This process is meant to ensure consistent and valid metrics defined for Usage Ping. All metrics *must*:
 
-- Comply with the definied [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
-- Have a unique `full_path` .
+- Comply with the defined [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
+- Have a unique `key_path` .
 - Have an owner.
 
 All metrics are stored in YAML files:
 
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 
-Each metric is definied in a separate YAML file consisting of a number of fields:
+Each metric is defined in a separate YAML file consisting of a number of fields:
 
 | Field               | Required | Additional information                                         |
 |---------------------|----------|----------------------------------------------------------------|
-| `name`              | yes      |                                                                |
+| `key_path`          | yes      | JSON key path for the metric, location in Usage Ping payload.  |
 | `description`       | yes      |                                                                |
 | `value_type`        | yes      |                                                                |
 | `status`            | yes      |                                                                |
-| `default_generation`| yes      | Default generation path of the metric. One full_path value. (1) |
-| `full_path`         | yes      | Full path of the metric for one or multiple generations. Path of the metric in Usage Ping payload. (1) |
-| `group`             | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the metric. |
+| `product_group`     | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the metric. |
 | `time_frame`        | yes      | `string`; may be set to a value like "7d"                             |
 | `data_source`       | yes      | `string`: may be set to a value like `database` or `redis_hll`.       |
 | `distribution`      | yes      | The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the metric applies. |
 | `tier`              | yes      | The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the metric applies. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
-| `stage`             | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
+| `product_stage`     | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
-
-1. The default generation path is the location of the metric in the Usage Ping payload.
-   The `full_path` is the list locations for multiple Usage Ping generaations.
 
 ### Example metric definition
 
@@ -53,21 +48,46 @@ YAML file includes an example metric definition, where the `uuid` metric is the 
 instance unique identifier.
 
 ```yaml
-name: uuid
+key_path: uuid
 description: GitLab instance unique identifier
 value_type: string
 product_category: collection
-stage: growth
+product_stage: growth
 status: data_available
-default_generation: generation_1
-full_path:
-  generation_1: uuid
-  generation_2: license.uuid
 milestone: 9.1
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
-group: group::product intelligence
+product_group: group::product intelligence
 time_frame: none
 data_source: database
-distribution: [ee, ce]
-tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate
+```
+
+## Create a new metric definition
+
+The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
+
+For uniqueness, the generated file includes a timestamp prefix, in ISO 8601 format.
+
+The generator takes the key path argument and 2 options and creates the metric YAML definition in corresponding location:
+
+- `--ee`, `--no-ee` Indicates if metric is for EE.
+- `--dir=DIR` indicates the metric directory. It must be one of: `counts_7d`, `7d`, `counts_28d`, `28d`, `counts_all`, `all`, `settings`, `license`.
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition counts.issues --dir=7d
+create  config/metrics/counts_7d/issues.yml
+```
+
+NOTE:
+To create a metric definition used in EE, add the `--ee` flag.
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --dir=7d
+create  ee/config/metrics/counts_7d/issues.yml
 ```

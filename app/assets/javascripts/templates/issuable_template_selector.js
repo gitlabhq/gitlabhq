@@ -1,16 +1,15 @@
 /* eslint-disable no-useless-return */
 
 import $ from 'jquery';
+import { __ } from '~/locale';
 import Api from '../api';
 import TemplateSelector from '../blob/template_selector';
-import { __ } from '~/locale';
 
 export default class IssuableTemplateSelector extends TemplateSelector {
   constructor(...args) {
     super(...args);
 
-    this.projectPath = this.dropdown.data('projectPath');
-    this.namespacePath = this.dropdown.data('namespacePath');
+    this.projectId = this.dropdown.data('projectId');
     this.issuableType = this.$dropdownContainer.data('issuableType');
     this.titleInput = $(`#${this.issuableType}_title`);
     this.templateWarningEl = $('.js-issuable-template-warning');
@@ -81,21 +80,21 @@ export default class IssuableTemplateSelector extends TemplateSelector {
   }
 
   requestFile(query) {
+    const callback = (currentTemplate) => {
+      this.currentTemplate = currentTemplate;
+      this.stopLoadingSpinner();
+      this.setInputValueToTemplateContent();
+    };
+
     this.startLoadingSpinner();
 
-    Api.issueTemplate(
-      this.namespacePath,
-      this.projectPath,
-      query.name,
+    Api.projectTemplate(
+      this.projectId,
       this.issuableType,
-      (err, currentTemplate) => {
-        this.currentTemplate = currentTemplate;
-        this.stopLoadingSpinner();
-        if (err) return; // Error handled by global AJAX error handler
-        this.setInputValueToTemplateContent();
-      },
+      query.name,
+      { source_template_project_id: query.project_id },
+      callback,
     );
-    return;
   }
 
   setInputValueToTemplateContent() {

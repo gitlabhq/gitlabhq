@@ -2,6 +2,7 @@
 
 module IssuablesHelper
   include GitlabRoutingHelper
+  include IssuablesDescriptionTemplatesHelper
 
   def sidebar_gutter_toggle_icon
     content_tag(:span, class: 'js-sidebar-toggle-container', data: { is_expanded: !sidebar_gutter_collapsed? }) do
@@ -73,28 +74,6 @@ module IssuablesHelper
       .new(current_user: current_user, project: issuable.project)
       .represent(issuable, opts)
       .to_json
-  end
-
-  def template_dropdown_tag(issuable, &block)
-    title = selected_template(issuable) || "Choose a template"
-    options = {
-      toggle_class: 'js-issuable-selector',
-      title: title,
-      filter: true,
-      placeholder: 'Filter',
-      footer_content: true,
-      data: {
-        data: issuable_templates(issuable),
-        field_name: 'issuable_template',
-        selected: selected_template(issuable),
-        project_path: ref_project.path,
-        namespace_path: ref_project.namespace.full_path
-      }
-    }
-
-    dropdown_tag(title, options: options) do
-      capture(&block)
-    end
   end
 
   def users_dropdown_label(selected_users)
@@ -215,24 +194,12 @@ module IssuablesHelper
     state_title = titles[state] || state.to_s.humanize
     html = content_tag(:span, state_title)
 
-    if display_count
-      count = issuables_count_for_state(issuable_type, state)
-      tag =
-        if count == -1
-          tooltip = _("Couldn't calculate number of %{issuables}.") % { issuables: issuable_type.to_s.humanize(capitalize: false) }
+    return html.html_safe unless display_count
 
-          content_tag(
-            :span,
-            '?',
-            class: 'badge badge-pill has-tooltip',
-            aria: { label: tooltip },
-            title: tooltip
-          )
-        else
-          content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
-        end
+    count = issuables_count_for_state(issuable_type, state)
 
-      html << " " << tag
+    if count != -1
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
     end
 
     html.html_safe
@@ -294,6 +261,7 @@ module IssuablesHelper
 
     {
       projectPath: ref_project.path,
+      projectId: ref_project.id,
       projectNamespace: ref_project.namespace.full_path
     }
   end
@@ -346,6 +314,7 @@ module IssuablesHelper
   def assignee_sidebar_data(assignee, merge_request: nil)
     { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
       data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+      data[:availability] = assignee.status.availability if assignee.association(:status).loaded? && assignee.status&.availability
     end
   end
 
@@ -367,24 +336,6 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
-  end
-
-  def issuable_templates(issuable)
-    @issuable_templates ||=
-      case issuable
-      when Issue
-        ref_project.repository.issue_template_names
-      when MergeRequest
-        ref_project.repository.merge_request_template_names
-      end
-  end
-
-  def issuable_templates_names(issuable)
-    issuable_templates(issuable).map { |template| template[:name] }
-  end
-
-  def selected_template(issuable)
-    params[:issuable_template] if issuable_templates(issuable).any? { |template| template[:name] == params[:issuable_template] }
   end
 
   def issuable_todo_button_data(issuable, is_collapsed)
@@ -422,12 +373,6 @@ module IssuablesHelper
     elsif @group
       group_labels_path(@group)
     end
-  end
-
-  def template_names_path(parent, issuable)
-    return '' unless parent.is_a?(Project)
-
-    project_template_names_path(parent, template_type: issuable.class.name.underscore)
   end
 
   def issuable_sidebar_options(issuable)

@@ -13,7 +13,7 @@ Secrets represent sensitive information your CI job needs to complete work. This
 sensitive information can be items like API tokens, database credentials, or private keys.
 Secrets are sourced from your secrets provider.
 
-Unlike CI variables, which are always presented to a job, secrets must be explicitly
+Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly
 required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/README.md#secrets)
 for more information about the syntax.
 
@@ -80,7 +80,7 @@ To configure your Vault server:
 
 1. Configure roles on your Vault server, restricting roles to a project or namespace,
    as described in [Configure Vault server roles](#configure-vault-server-roles) on this page.
-1. [Create the following CI variables](../variables/README.md#custom-environment-variables)
+1. [Create the following CI/CD variables](../variables/README.md#custom-cicd-variables)
    to provide details about your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
@@ -113,8 +113,8 @@ In this example:
 - `ops` - The path where the secrets engine is mounted.
 
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
-The path to this file is stored in environment variable named `DATABASE_PASSWORD`,
-similar to [CI variables of type `file`](../variables/README.md#custom-environment-variables-of-type-file).
+The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
+similar to [variables of type `file`](../variables/README.md#custom-cicd-variables-of-type-file).
 
 For more information about the supported syntax, read the
 [`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault).

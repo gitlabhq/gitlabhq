@@ -48,6 +48,17 @@ NOTE:
 We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)
 for Push and Tag events, but we never display commits.
 
+## Create a system hook
+
+To create a system hook:
+
+1. In the top navigation bar, go to **{admin}** **Admin Area**.
+1. In the left sidebar, select **System Hooks**.
+1. Provide the **URL** and **Secret Token**.
+1. Select the check box next to each **Trigger** you want to enable.
+1. Select **Enable SSL verification**, if desired.
+1. Click **Add system hook**.
+
 ## Hooks request example
 
 **Request header**:
@@ -300,14 +311,10 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_create",
          "name": "StoreCloud",
-  "owner_email": null,
-   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
-
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
 
 **Group removed:**
 
@@ -317,14 +324,10 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_destroy",
          "name": "StoreCloud",
-  "owner_email": null,
-   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
-
-`owner_name` and `owner_email` are always `null`. Please see [issue #20011](https://gitlab.com/gitlab-org/gitlab/-/issues/20011).
 
 **Group renamed:**
 
@@ -337,14 +340,10 @@ If the user is blocked via LDAP, `state` is `ldap_blocked`.
            "path": "better-name",
       "full_path": "parent-group/better-name",
        "group_id": 64,
-     "owner_name": null,
-    "owner_email": null,
        "old_path": "old-name",
   "old_full_path": "parent-group/old-name"
 }
 ```
-
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
 
 **New Group Member:**
 

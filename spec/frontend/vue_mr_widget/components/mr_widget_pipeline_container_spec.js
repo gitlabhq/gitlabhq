@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
-import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
-import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
-import { mockStore } from '../mock_data';
 import axios from '~/lib/utils/axios_utils';
+import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
+import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
+import { mockStore } from '../mock_data';
 
 describe('MrWidgetPipelineContainer', () => {
   let wrapper;

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveProjectIdAndIdIndexFromVulnerabilitiesTable < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 

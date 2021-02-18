@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
+import { useFakeDate } from 'helpers/fake_date';
 
 import IssuableBody from '~/issuable_show/components/issuable_body.vue';
 
-import IssuableTitle from '~/issuable_show/components/issuable_title.vue';
 import IssuableDescription from '~/issuable_show/components/issuable_description.vue';
 import IssuableEditForm from '~/issuable_show/components/issuable_edit_form.vue';
+import IssuableTitle from '~/issuable_show/components/issuable_title.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
@@ -35,6 +36,9 @@ const createComponent = (propsData = issuableBodyProps) =>
   });
 
 describe('IssuableBody', () => {
+  // Some assertions expect a date later than our default
+  useFakeDate(2020, 11, 11);
+
   let wrapper;
 
   beforeEach(() => {
@@ -98,11 +102,8 @@ describe('IssuableBody', () => {
 
     it('renders issuable edit info', () => {
       const editedEl = wrapper.find('small');
-      const sanitizedText = editedEl.text().replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
-      expect(sanitizedText).toContain('Edited');
-      expect(sanitizedText).toContain('ago');
-      expect(sanitizedText).toContain(`by ${mockIssuable.updatedBy.name}`);
+      expect(editedEl.text()).toMatchInterpolatedText('Edited 3 months ago by Administrator');
     });
 
     it('renders issuable-edit-form when `editFormVisible` prop is true', async () => {

@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
+import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
-import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import readmeQuery from '../../queries/readme.query.graphql';
 

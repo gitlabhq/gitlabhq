@@ -1,8 +1,8 @@
-import Visibility from 'visibilityjs';
 import MockAdapter from 'axios-mock-adapter';
+import Visibility from 'visibilityjs';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
+import { rightSidebarViews } from '~/ide/constants';
 import {
   requestLatestPipeline,
   receiveLatestPipelineError,
@@ -22,9 +22,9 @@ import {
   fetchJobLogs,
   resetLatestPipeline,
 } from '~/ide/stores/modules/pipelines/actions';
-import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
-import { rightSidebarViews } from '~/ide/constants';
+import state from '~/ide/stores/modules/pipelines/state';
+import axios from '~/lib/utils/axios_utils';
 import { pipelines, jobs } from '../../../mock_data';
 
 describe('IDE pipelines actions', () => {

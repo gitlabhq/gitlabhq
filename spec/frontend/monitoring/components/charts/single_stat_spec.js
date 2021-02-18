@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
 import { singleStatGraphData } from '../../graph_data';
 
@@ -27,8 +27,12 @@ describe('Single Stat Chart component', () => {
 
   describe('computed', () => {
     describe('statValue', () => {
-      it('should interpolate the value and unit props', () => {
-        expect(findChart().props('value')).toBe('1.00MB');
+      it('should display the correct value', () => {
+        expect(findChart().props('value')).toBe('1.00');
+      });
+
+      it('should display the correct value unit', () => {
+        expect(findChart().props('unit')).toBe('MB');
       });
 
       it('should change the value representation to a percentile one', () => {
@@ -36,7 +40,8 @@ describe('Single Stat Chart component', () => {
           graphData: singleStatGraphData({ max_value: 120 }, { value: 91 }),
         });
 
-        expect(findChart().props('value')).toContain('75.83%');
+        expect(findChart().props('value')).toBe('75.83');
+        expect(findChart().props('unit')).toBe('%');
       });
 
       it('should display NaN for non numeric maxValue values', () => {

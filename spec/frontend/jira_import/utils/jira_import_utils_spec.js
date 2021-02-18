@@ -1,4 +1,5 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issues_list/constants';
 import {
   calculateJiraImportLabel,
   extractJiraProjectsOptions,
@@ -8,7 +9,6 @@ import {
   setFinishedAlertHideMap,
   shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
-import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issues_list/constants';
 
 useLocalStorageSpy();
 

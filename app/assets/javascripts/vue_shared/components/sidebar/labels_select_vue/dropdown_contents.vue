@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
+import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
 
 export default {
   components: {

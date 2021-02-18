@@ -30,7 +30,7 @@ export default {
     :href="monitoringUrl"
     :title="title"
     :aria-label="title"
-    class="monitoring-url gl-display-none gl-display-sm-none gl-display-md-block"
+    class="monitoring-url gl-display-none gl-sm-display-none gl-md-display-block"
     icon="chart"
     rel="noopener noreferrer nofollow"
     variant="default"

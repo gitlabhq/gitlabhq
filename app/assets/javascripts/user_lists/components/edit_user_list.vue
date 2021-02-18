@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__, sprintf } from '~/locale';
 import statuses from '../constants/edit';
 import UserListForm from './user_list_form.vue';

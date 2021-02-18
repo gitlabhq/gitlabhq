@@ -1,7 +1,8 @@
 import { GlDropdown, GlModal, GlSprintf } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import StateActions from '~/terraform/components/states_table_actions.vue';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';
 import removeStateMutation from '~/terraform/graphql/mutations/remove_state.mutation.graphql';
@@ -13,7 +14,9 @@ localVue.use(VueApollo);
 describe('StatesTableActions', () => {
   let lockResponse;
   let removeResponse;
+  let toast;
   let unlockResponse;
+  let updateStateResponse;
   let wrapper;
 
   const defaultProps = {
@@ -26,7 +29,9 @@ describe('StatesTableActions', () => {
   };
 
   const createMockApolloProvider = () => {
-    lockResponse = jest.fn().mockResolvedValue({ data: { terraformStateLock: { errors: [] } } });
+    lockResponse = jest
+      .fn()
+      .mockResolvedValue({ data: { terraformStateLock: { errors: ['There was an error'] } } });
 
     removeResponse = jest
       .fn()
@@ -36,26 +41,39 @@ describe('StatesTableActions', () => {
       .fn()
       .mockResolvedValue({ data: { terraformStateUnlock: { errors: [] } } });
 
-    return createMockApollo([
-      [lockStateMutation, lockResponse],
-      [removeStateMutation, removeResponse],
-      [unlockStateMutation, unlockResponse],
-    ]);
+    updateStateResponse = jest.fn().mockResolvedValue({});
+
+    return createMockApollo(
+      [
+        [lockStateMutation, lockResponse],
+        [removeStateMutation, removeResponse],
+        [unlockStateMutation, unlockResponse],
+      ],
+      {
+        Mutation: {
+          addDataToTerraformState: updateStateResponse,
+        },
+      },
+    );
   };
 
   const createComponent = (propsData = defaultProps) => {
     const apolloProvider = createMockApolloProvider();
 
+    toast = jest.fn();
+
     wrapper = shallowMount(StateActions, {
       apolloProvider,
       localVue,
       propsData,
+      mocks: { $toast: { show: toast } },
       stubs: { GlDropdown, GlModal, GlSprintf },
     });
 
     return wrapper.vm.$nextTick();
   };
 
+  const findActionsDropdown = () => wrapper.find(GlDropdown);
   const findLockBtn = () => wrapper.find('[data-testid="terraform-state-lock"]');
   const findUnlockBtn = () => wrapper.find('[data-testid="terraform-state-unlock"]');
   const findDownloadBtn = () => wrapper.find('[data-testid="terraform-state-download"]');
@@ -69,8 +87,42 @@ describe('StatesTableActions', () => {
   afterEach(() => {
     lockResponse = null;
     removeResponse = null;
+    toast = null;
     unlockResponse = null;
+    updateStateResponse = null;
     wrapper.destroy();
+  });
+
+  describe('when the state is loading', () => {
+    describe('when lock/unlock is processing', () => {
+      beforeEach(() => {
+        return createComponent({
+          state: {
+            ...defaultProps.state,
+            loadingLock: true,
+          },
+        });
+      });
+
+      it('disables the actions dropdown', () => {
+        expect(findActionsDropdown().props('disabled')).toBe(true);
+      });
+    });
+
+    describe('when remove is processing', () => {
+      beforeEach(() => {
+        return createComponent({
+          state: {
+            ...defaultProps.state,
+            loadingRemove: true,
+          },
+        });
+      });
+
+      it('disables the actions dropdown', () => {
+        expect(findActionsDropdown().props('disabled')).toBe(true);
+      });
+    });
   });
 
   describe('download button', () => {
@@ -104,7 +156,8 @@ describe('StatesTableActions', () => {
     describe('when clicking the unlock button', () => {
       beforeEach(() => {
         findUnlockBtn().vm.$emit('click');
-        return wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('calls the unlock mutation', () => {
@@ -137,13 +190,52 @@ describe('StatesTableActions', () => {
     describe('when clicking the lock button', () => {
       beforeEach(() => {
         findLockBtn().vm.$emit('click');
-        return wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('calls the lock mutation', () => {
         expect(lockResponse).toHaveBeenCalledWith({
           stateID: unlockedProps.state.id,
         });
+      });
+
+      it('calls mutations to set loading and errors', () => {
+        // loading update
+        expect(updateStateResponse).toHaveBeenNthCalledWith(
+          1,
+          {},
+          {
+            terraformState: {
+              ...unlockedProps.state,
+              _showDetails: false,
+              errorMessages: [],
+              loadingLock: true,
+              loadingRemove: false,
+            },
+          },
+          // Apollo fields
+          expect.any(Object),
+          expect.any(Object),
+        );
+
+        // final update
+        expect(updateStateResponse).toHaveBeenNthCalledWith(
+          2,
+          {},
+          {
+            terraformState: {
+              ...unlockedProps.state,
+              _showDetails: true,
+              errorMessages: ['There was an error'],
+              loadingLock: false,
+              loadingRemove: false,
+            },
+          },
+          // Apollo fields
+          expect.any(Object),
+          expect.any(Object),
+        );
       });
     });
   });
@@ -156,7 +248,7 @@ describe('StatesTableActions', () => {
     describe('when clicking the remove button', () => {
       beforeEach(() => {
         findRemoveBtn().vm.$emit('click');
-        return wrapper.vm.$nextTick();
+        return waitForPromises();
       });
 
       it('displays a remove modal', () => {
@@ -166,21 +258,70 @@ describe('StatesTableActions', () => {
       });
 
       describe('when submitting the remove modal', () => {
-        it('does not call the remove mutation when state name is missing', async () => {
-          findRemoveModal().vm.$emit('ok');
-          await wrapper.vm.$nextTick();
+        describe('when state name is missing', () => {
+          beforeEach(() => {
+            findRemoveModal().vm.$emit('ok');
+            return waitForPromises();
+          });
 
-          expect(removeResponse).not.toHaveBeenCalledWith();
+          it('does not call the remove mutation', () => {
+            expect(removeResponse).not.toHaveBeenCalledWith();
+          });
         });
 
-        it('calls the remove mutation when state name is present', async () => {
-          await wrapper.setData({ removeConfirmText: defaultProps.state.name });
+        describe('when state name is present', () => {
+          beforeEach(async () => {
+            await wrapper.setData({ removeConfirmText: defaultProps.state.name });
 
-          findRemoveModal().vm.$emit('ok');
-          await wrapper.vm.$nextTick();
+            findRemoveModal().vm.$emit('ok');
 
-          expect(removeResponse).toHaveBeenCalledWith({
-            stateID: defaultProps.state.id,
+            await waitForPromises();
+          });
+
+          it('calls the remove mutation', () => {
+            expect(removeResponse).toHaveBeenCalledWith({ stateID: defaultProps.state.id });
+          });
+
+          it('calls the toast action', () => {
+            expect(toast).toHaveBeenCalledWith(`${defaultProps.state.name} successfully removed`);
+          });
+
+          it('calls mutations to set loading and errors', () => {
+            // loading update
+            expect(updateStateResponse).toHaveBeenNthCalledWith(
+              1,
+              {},
+              {
+                terraformState: {
+                  ...defaultProps.state,
+                  _showDetails: false,
+                  errorMessages: [],
+                  loadingLock: false,
+                  loadingRemove: true,
+                },
+              },
+              // Apollo fields
+              expect.any(Object),
+              expect.any(Object),
+            );
+
+            // final update
+            expect(updateStateResponse).toHaveBeenNthCalledWith(
+              2,
+              {},
+              {
+                terraformState: {
+                  ...defaultProps.state,
+                  _showDetails: false,
+                  errorMessages: [],
+                  loadingLock: false,
+                  loadingRemove: false,
+                },
+              },
+              // Apollo fields
+              expect.any(Object),
+              expect.any(Object),
+            );
           });
         });
       });

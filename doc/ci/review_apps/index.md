@@ -58,7 +58,7 @@ The process of configuring Review Apps is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
-1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
+1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
 1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the Review Apps.
@@ -180,18 +180,19 @@ After you have the route mapping set up, it takes effect in the following locati
 
 - In the diff for a merge request, comparison, or commit.
 
-  !["View on env" button in merge request diff](img/view_on_env_mr.png)
+  ![View on environment button in merge request diff](img/view_on_env_mr.png)
 
 - In the blob file view.
 
-  !["View on env" button in file view](img/view_on_env_blob.png)
+  ![View on environment button in file view](img/view_on_env_blob.png)
 
-## Visual Reviews **(STARTER)**
+## Visual Reviews **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab Starter 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
+> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(STARTER ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(PREMIUM SELF)**
 
 With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
 
@@ -242,7 +243,7 @@ looks for a project with code hosted in a project on GitLab.com:
 </script>
 ```
 
-Ideally, you should use [environment variables](../variables/predefined_variables.md)
+Ideally, you should use [CI/CD variables](../variables/predefined_variables.md)
 to replace those values at runtime when each review app is created:
 
 - `data-project-id` is the project ID, which can be found by the `CI_PROJECT_ID`
@@ -288,7 +289,7 @@ can supply the ID by either:​​
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
-### Enable or disable Visual Reviews **(STARTER ONLY)**
+### Enable or disable Visual Reviews **(PREMIUM SELF)**
 
 Visual Reviews is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)

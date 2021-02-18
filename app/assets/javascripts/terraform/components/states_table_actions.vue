@@ -9,10 +9,11 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import addDataToState from '../graphql/mutations/add_data_to_state.mutation.graphql';
 import lockState from '../graphql/mutations/lock_state.mutation.graphql';
-import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 import removeState from '../graphql/mutations/remove_state.mutation.graphql';
+import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 
 export default {
   components: {
@@ -33,13 +34,13 @@ export default {
   },
   data() {
     return {
-      loading: false,
       showRemoveModal: false,
       removeConfirmText: '',
     };
   },
   i18n: {
     downloadJSON: s__('Terraform|Download JSON'),
+    errorUpdate: s__('Terraform|An error occurred while changing the state file'),
     lock: s__('Terraform|Lock'),
     modalBody: s__(
       'Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously	will remain intact, only the state file with all its versions are to be removed. This action is non-revertible.',
@@ -51,6 +52,7 @@ export default {
     ),
     modalRemove: s__('Terraform|Remove'),
     remove: s__('Terraform|Remove state file and versions'),
+    removeSuccessful: s__('Terraform|%{name} successfully removed'),
     unlock: s__('Terraform|Unlock'),
   },
   computed: {
@@ -62,6 +64,9 @@ export default {
     },
     disableModalSubmit() {
       return this.removeConfirmText !== this.state.name;
+    },
+    loading() {
+      return this.state.loadingLock || this.state.loadingRemove;
     },
     primaryModalProps() {
       return {
@@ -76,19 +81,56 @@ export default {
       this.removeConfirmText = '';
     },
     lock() {
-      this.stateMutation(lockState);
+      this.updateStateCache({
+        _showDetails: false,
+        errorMessages: [],
+        loadingLock: true,
+        loadingRemove: false,
+      });
+
+      this.stateActionMutation(lockState);
     },
     unlock() {
-      this.stateMutation(unlockState);
+      this.updateStateCache({
+        _showDetails: false,
+        errorMessages: [],
+        loadingLock: true,
+        loadingRemove: false,
+      });
+
+      this.stateActionMutation(unlockState);
+    },
+    updateStateCache(newData) {
+      this.$apollo.mutate({
+        mutation: addDataToState,
+        variables: {
+          terraformState: {
+            ...this.state,
+            ...newData,
+          },
+        },
+      });
     },
     remove() {
       if (!this.disableModalSubmit) {
         this.hideModal();
-        this.stateMutation(removeState);
+
+        this.updateStateCache({
+          _showDetails: false,
+          errorMessages: [],
+          loadingLock: false,
+          loadingRemove: true,
+        });
+
+        this.stateActionMutation(
+          removeState,
+          sprintf(this.$options.i18n.removeSuccessful, { name: this.state.name }),
+        );
       }
     },
-    stateMutation(mutation) {
-      this.loading = true;
+    stateActionMutation(mutation, successMessage = null) {
+      let errorMessages = [];
+
       this.$apollo
         .mutate({
           mutation,
@@ -99,9 +141,27 @@ export default {
           awaitRefetchQueries: true,
           notifyOnNetworkStatusChange: true,
         })
-        .catch(() => {})
+        .then(({ data }) => {
+          errorMessages =
+            data?.terraformStateDelete?.errors ||
+            data?.terraformStateLock?.errors ||
+            data?.terraformStateUnlock?.errors ||
+            [];
+
+          if (errorMessages.length === 0 && successMessage) {
+            this.$toast.show(successMessage);
+          }
+        })
+        .catch(() => {
+          errorMessages = [this.$options.i18n.errorUpdate];
+        })
         .finally(() => {
-          this.loading = false;
+          this.updateStateCache({
+            _showDetails: Boolean(errorMessages.length),
+            errorMessages,
+            loadingLock: false,
+            loadingRemove: false,
+          });
         });
     },
   },

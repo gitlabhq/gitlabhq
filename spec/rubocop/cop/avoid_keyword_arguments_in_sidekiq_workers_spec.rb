@@ -2,18 +2,15 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers'
 
 RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'flags violation for keyword arguments usage in perform method signature' do
     expect_offense(<<~RUBY)
       def perform(id:)
-      ^^^^^^^^^^^^^^^^ Do not use keyword arguments in Sidekiq workers. For details, check https://github.com/mperham/sidekiq/issues/2372
+      ^^^^^^^^^^^^^^^^ Do not use keyword arguments in Sidekiq workers. For details, [...]
       end
     RUBY
   end
@@ -21,7 +18,7 @@ RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers do
   it 'flags violation for optional keyword arguments usage in perform method signature' do
     expect_offense(<<~RUBY)
       def perform(id: nil)
-      ^^^^^^^^^^^^^^^^^^^^ Do not use keyword arguments in Sidekiq workers. For details, check https://github.com/mperham/sidekiq/issues/2372
+      ^^^^^^^^^^^^^^^^^^^^ Do not use keyword arguments in Sidekiq workers. For details, [...]
       end
     RUBY
   end

@@ -137,7 +137,7 @@ module Backup
         if s == DEFAULT_EXCLUDE
           '--exclude=' + s
         elsif fmt == :rsync
-          '--exclude=/' + s
+          '--exclude=/' + File.join(File.basename(app_files_dir), s)
         elsif fmt == :tar
           '--exclude=./' + s
         end

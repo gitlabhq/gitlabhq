@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/workflow.html'
 ---
 
-# Feature branch workflow
+# Feature branch workflow **(FREE)**
 
 1. Clone project:
 

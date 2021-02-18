@@ -16,7 +16,8 @@ module TriggerableHooks
     deployment_hooks:         :deployment_events,
     feature_flag_hooks:       :feature_flag_events,
     release_hooks:            :releases_events,
-    member_hooks:             :member_events
+    member_hooks:             :member_events,
+    subgroup_hooks:           :subgroup_events
   }.freeze
 
   extend ActiveSupport::Concern

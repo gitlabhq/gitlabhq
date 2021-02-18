@@ -1,11 +1,11 @@
 /* eslint-disable func-names */
 
-import $ from 'jquery';
 import Dropzone from 'dropzone';
-import { visitUrl } from '../lib/utils/url_utility';
+import $ from 'jquery';
+import { sprintf, __ } from '~/locale';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';
-import { sprintf, __ } from '~/locale';
+import { visitUrl } from '../lib/utils/url_utility';
 
 Dropzone.autoDiscover = false;
 

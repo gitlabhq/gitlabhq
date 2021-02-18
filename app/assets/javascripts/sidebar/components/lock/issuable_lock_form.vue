@@ -1,6 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';

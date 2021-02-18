@@ -123,7 +123,7 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
     context 'with a request that bypassed gitlab-workhorse' do
       let(:headers) do
         basic_auth_header(user.username, personal_access_token.token)
-          .merge(workhorse_header)
+          .merge(workhorse_headers)
           .tap { |h| h.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER) }
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :git do
     desc 'GitLab | Git | Check all repos integrity'

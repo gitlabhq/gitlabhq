@@ -1,5 +1,5 @@
-import * as getters from '~/reports/accessibility_report/store/getters';
 import createStore from '~/reports/accessibility_report/store';
+import * as getters from '~/reports/accessibility_report/store/getters';
 import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '~/reports/constants';
 
 describe('Accessibility reports store getters', () => {

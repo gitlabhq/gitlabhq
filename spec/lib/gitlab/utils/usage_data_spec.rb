@@ -58,6 +58,16 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.estimate_batch_distinct_count(relation, 'column')).to eq(5)
     end
 
+    it 'yield provided block with PostgresHll::Buckets' do
+      buckets = Gitlab::Database::PostgresHll::Buckets.new
+
+      allow_next_instance_of(Gitlab::Database::PostgresHll::BatchDistinctCounter) do |instance|
+        allow(instance).to receive(:execute).and_return(buckets)
+      end
+
+      expect { |block| described_class.estimate_batch_distinct_count(relation, 'column', &block) }.to yield_with_args(buckets)
+    end
+
     context 'quasi integration test for different counting parameters' do
       # HyperLogLog http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf algorithm
       # used in estimate_batch_distinct_count produce probabilistic

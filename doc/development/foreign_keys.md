@@ -75,7 +75,7 @@ your models _unless_ absolutely required and only when approved by database
 specialists. For example, if each row in a table has a corresponding file on a
 file system it may be tempting to add a `after_destroy` hook. This however
 introduces non database logic to a model, and means we can no longer rely on
-foreign keys to remove the data as this would result in the filesystem data
+foreign keys to remove the data as this would result in the file system data
 being left behind. In such a case you should use a service class instead that
 takes care of removing non database data.
 

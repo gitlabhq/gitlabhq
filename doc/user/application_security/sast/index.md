@@ -8,7 +8,7 @@ type: reference, howto
 # Static Application Security Testing (SAST)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
-> - All open source (OSS) analyzers were moved to GitLab Core in GitLab 13.3.
+> - All open source (OSS) analyzers were moved to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -83,6 +83,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Objective-C (iOS)                                                                                                                                | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                          |
 | PHP                                                                                                                                              | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit)                        | 10.8                                          |
 | Python ([pip](https://pip.pypa.io/en/stable/))                                                                                                   | [bandit](https://github.com/PyCQA/bandit)                                                                     | 10.3                                          |
+| Python                                                                                                                                           | [semgrep](https://semgrep.dev)                                                                                | 13.9                                          |
 | React                                                                                                                                            | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                       | 12.5                                          |
 | Ruby on Rails                                                                                                                                    | [brakeman](https://brakemanscanner.org)                                                                       | 10.3                                          |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/))  | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven)        |
@@ -111,24 +112,25 @@ The following analyzers have multi-project support:
 - MobSF
 - PMD
 - Security Code Scan
+- Semgrep
 - SpotBugs
 - Sobelow
 
 #### Enable multi-project support for Security Code Scan
 
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
-the repository. For details on the Solution format, see the Microsoft reference [Solution (.sln) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
+the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
 ### Making SAST analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers have been moved to the GitLab Core tier as of GitLab 13.3.
+All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
 
 #### Summary of features per tier
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                         | In Core             | In Ultimate        |
+| Capability                                                                         | In Free             | In Ultimate        |
 |:-----------------------------------------------------------------------------------|:--------------------|:-------------------|
 | [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
@@ -188,14 +190,15 @@ page:
 1. If the project does not have a `.gitlab-ci.yml` file, click **Enable** in the Static Application Security Testing (SAST) row, otherwise click **Configure**.
 1. Enter the custom SAST values.
 
-    Custom values are stored in the `.gitlab-ci.yml` file. For variables not in the SAST Configuration page, their values are left unchanged. Default values are inherited from the GitLab SAST template.
+   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST Configuration page, their values are left unchanged. Default values are inherited from the GitLab SAST template.
+
 1. Optionally, expand the **SAST analyzers** section, select individual [SAST analyzers](analyzers.md) and enter custom analyzer values.
 1. Click **Create Merge Request**.
 1. Review and merge the merge request.
 
 ### Customizing the SAST settings
 
-The SAST settings can be changed through [environment variables](#available-variables)
+The SAST settings can be changed through [CI/CD variables](#available-variables)
 by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 In the following example, we include the SAST template and at the same time we
@@ -254,8 +257,8 @@ To create a custom ruleset:
 1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
 1. In the `sast-ruleset.toml` file, do one of the following:
 
-   - Disable predefined rules belonging to SAST analyzers. In this example, the disabled rules
-     belong to `eslint` and `sobelow` and have the corresponding identifiers `type` and `value`:
+   - Disable predefined rules belonging to SAST analyzers. In this example, the three disabled rules
+     belong to `eslint` and `sobelow` by matching the corresponding identifiers' `type` and `value`:
 
      ```toml
      [eslint]
@@ -264,6 +267,12 @@ To create a custom ruleset:
          [eslint.ruleset.identifier]
            type = "eslint_rule_id"
            value = "security/detect-object-injection"
+
+       [[eslint.ruleset]]
+         disable = true
+         [eslint.ruleset.identifier]
+           type = "cwe"
+           value = "185"
 
      [sobelow]
        [[sobelow.ruleset]]
@@ -322,20 +331,20 @@ To create a custom ruleset:
          value = "gosec-config.json"
      ```
 
-### Using environment variables to pass credentials for private repositories
+### Using CI/CD variables to pass credentials for private repositories
 
 Some analyzers require downloading the project's dependencies in order to
 perform the analysis. In turn, such dependencies may live in private Git
 repositories and thus require credentials like username and password to download them.
 Depending on the analyzer, such credentials can be provided to
-it via [custom environment variables](#custom-environment-variables).
+it via [custom CI/CD variables](#custom-cicd-variables).
 
-#### Using a variable to pass username and password to a private Maven repository
+#### Using a CI/CD variable to pass username and password to a private Maven repository
 
 If your private Maven repository requires login credentials,
-you can use the `MAVEN_CLI_OPTS` environment variable.
+you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
-Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
+Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
 
 ### Enabling Kubesec analyzer
 
@@ -361,7 +370,7 @@ a `before_script` execution to prepare your scan job.
 
 To pass your project's dependencies as artifacts, the dependencies must be included
 in the project's working directory and specified using the `artifacts:path` configuration.
-If all dependencies are present, the `COMPILE=false` variable can be provided to the
+If all dependencies are present, the `COMPILE=false` CI/CD variable can be provided to the
 analyzer and compilation is skipped:
 
 ```yaml
@@ -401,7 +410,7 @@ can use `MAVEN_REPO_PATH`. See
 
 ### Available variables
 
-SAST can be [configured](#customizing-the-sast-settings) using environment variables.
+SAST can be [configured](#customizing-the-sast-settings) using CI/CD variables.
 
 #### Logging level
 
@@ -421,63 +430,75 @@ From highest to lowest severity, the logging levels are:
 #### Custom Certificate Authority
 
 To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
-of CA certs that you want to trust in the SAST environment.
+of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 #### Docker images
 
-The following are Docker image-related variables.
+The following are Docker image-related CI/CD variables.
 
-| Environment variable      | Description                                                                                                                           |
+| CI/CD variable            | Description                                                                                                                           |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_ANALYZER_IMAGE_TAG` | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                 |
-| `SAST_DEFAULT_ANALYZERS`  | **DEPRECATED:** Override the names of default images. Scheduled for [removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/290777).                          |
+| `SAST_DEFAULT_ANALYZERS`  | **DEPRECATED:** Override the names of default images. Scheduled for [removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/290777). |
 | `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. Read more about [customizing analyzers](analyzers.md).                                 |
 
 #### Vulnerability filters
 
 Some analyzers make it possible to filter out vulnerabilities under a given threshold.
 
-| Environment variable          | Default value            | Description                                                                                                                                                                                                                 |
-|-------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_EXCLUDED_PATHS`         | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. |
-| `SEARCH_MAX_DEPTH`            | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
-| `SAST_BANDIT_EXCLUDED_PATHS`  |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`                                                  |
-| `SAST_BRAKEMAN_LEVEL`         | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
-| `SAST_FLAWFINDER_LEVEL`       | 1                        | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk.                                                                                                                                  |
-| `SAST_GOSEC_LEVEL`            | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High.                                                                                                                   |
+| CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
+|------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. |
+| `SEARCH_MAX_DEPTH`           | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
+| `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`                                                  |
+| `SAST_BRAKEMAN_LEVEL`        | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
+| `SAST_FLAWFINDER_LEVEL`      | 1                        | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk.                                                                                                                                  |
+| `SAST_GOSEC_LEVEL`           | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High.                                                                                                                   |
 
 #### Analyzer settings
 
-Some analyzers can be customized with environment variables.
+Some analyzers can be customized with CI/CD variables.
 
-| Environment variable                  | Analyzer             | Description                                                                                                                                                                                                                                |
-|---------------------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                              |
-| `KUBESEC_HELM_CHARTS_PATH`            | Kubesec              | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
-| `KUBESEC_HELM_OPTIONS`                | Kubesec              | Additional arguments for the `helm` executable.                                                                                                                                                                                            |
-| `COMPILE`                             | SpotBugs             | Set to `false` to disable project compilation and dependency fetching. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195252) in GitLab 13.1.                                                                                  |
-| `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable.                                                                                                                                                                                                       |
-| `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable.                                                                                                                                                                                                              |
-| `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable.                                                                                                                                                                                                           |
-| `JAVA_OPTS`                           | SpotBugs             | Additional arguments for the `java` executable.                                                                                                                                                                                            |
-| `JAVA_PATH`                           | SpotBugs             | Path to the `java` executable.                                                                                                                                                                                                             |
-| `SAST_JAVA_VERSION`                   | SpotBugs             | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`.                                                                                                                                                           |
-| `MAVEN_CLI_OPTS`                      | SpotBugs             | Additional arguments for the `mvn` or `mvnw` executable.                                                                                                                                                                                   |
-| `MAVEN_PATH`                          | SpotBugs             | Path to the `mvn` executable.                                                                                                                                                                                                              |
-| `MAVEN_REPO_PATH`                     | SpotBugs             | Path to the Maven local repository (shortcut for the `maven.repo.local` property).                                                                                                                                                         |
-| `SBT_PATH`                            | SpotBugs             | Path to the `sbt` executable.                                                                                                                                                                                                              |
-| `FAIL_NEVER`                          | SpotBugs             | Set to `1` to ignore compilation failure.                                                                                                                                                                                                  |
-| `SAST_GOSEC_CONFIG`                   | Gosec                | Path to configuration for Gosec (optional).                                                                                                                                                                                                |
-| `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions.                                                                                                                                                                                         |
-| `SAST_DISABLE_BABEL`          | NodeJsScan                  | Disable Babel processing for the NodeJsScan scanner. Set to `true` to disable Babel processing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33065) in GitLab 13.2.                                           |
+| CI/CD variable              | Analyzer   | Description                                                                                                                                                                                                                        |
+|-----------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SCAN_KUBERNETES_MANIFESTS` | Kubesec    | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                      |
+| `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
+| `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |
+| `COMPILE`                   | SpotBugs   | Set to `false` to disable project compilation and dependency fetching. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195252) in GitLab 13.1.                                                                          |
+| `ANT_HOME`                  | SpotBugs   | The `ANT_HOME` variable.                                                                                                                                                                                                           |
+| `ANT_PATH`                  | SpotBugs   | Path to the `ant` executable.                                                                                                                                                                                                      |
+| `GRADLE_PATH`               | SpotBugs   | Path to the `gradle` executable.                                                                                                                                                                                                   |
+| `JAVA_OPTS`                 | SpotBugs   | Additional arguments for the `java` executable.                                                                                                                                                                                    |
+| `JAVA_PATH`                 | SpotBugs   | Path to the `java` executable.                                                                                                                                                                                                     |
+| `SAST_JAVA_VERSION`         | SpotBugs   | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`.                                                                                                                                                   |
+| `MAVEN_CLI_OPTS`            | SpotBugs   | Additional arguments for the `mvn` or `mvnw` executable.                                                                                                                                                                           |
+| `MAVEN_PATH`                | SpotBugs   | Path to the `mvn` executable.                                                                                                                                                                                                      |
+| `MAVEN_REPO_PATH`           | SpotBugs   | Path to the Maven local repository (shortcut for the `maven.repo.local` property).                                                                                                                                                 |
+| `SBT_PATH`                  | SpotBugs   | Path to the `sbt` executable.                                                                                                                                                                                                      |
+| `FAIL_NEVER`                | SpotBugs   | Set to `1` to ignore compilation failure.                                                                                                                                                                                          |
+| `SAST_GOSEC_CONFIG`         | Gosec      | Path to configuration for Gosec (optional).                                                                                                                                                                                        |
+| `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions.                                                                                                                                                             |
+| `SAST_DISABLE_BABEL`        | NodeJsScan | Disable Babel processing for the NodeJsScan scanner. Set to `true` to disable Babel processing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33065) in GitLab 13.2.                                                  |
 
-#### Custom environment variables
+#### Custom CI/CD variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
 
-In addition to the aforementioned SAST configuration variables,
-all [custom environment variables](../../../ci/variables/README.md#custom-environment-variables) are propagated
+In addition to the aforementioned SAST configuration CI/CD variables,
+all [custom variables](../../../ci/variables/README.md#custom-cicd-variables) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
@@ -669,22 +690,23 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 Support for custom certificate authorities was introduced in the following versions.
 
-| Analyzer | Version |
-| -------- | ------- |
-| `bandit` | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/bandit/-/releases/v2.3.0) |
-| `brakeman` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman/-/releases/v2.1.0) |
-| `eslint` | [v2.9.2](https://gitlab.com/gitlab-org/security-products/analyzers/eslint/-/releases/v2.9.2) |
-| `flawfinder` | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/releases/v2.3.0) |
-| `gosec` | [v2.5.0](https://gitlab.com/gitlab-org/security-products/analyzers/gosec/-/releases/v2.5.0) |
-| `kubesec` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0) |
-| `nodejs-scan` | [v2.9.5](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan/-/releases/v2.9.5) |
+| Analyzer               | Version                                                                                                    |
+| --------               | -------                                                                                                    |
+| `bandit`               | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/bandit/-/releases/v2.3.0)               |
+| `brakeman`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman/-/releases/v2.1.0)             |
+| `eslint`               | [v2.9.2](https://gitlab.com/gitlab-org/security-products/analyzers/eslint/-/releases/v2.9.2)               |
+| `flawfinder`           | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/releases/v2.3.0)           |
+| `gosec`                | [v2.5.0](https://gitlab.com/gitlab-org/security-products/analyzers/gosec/-/releases/v2.5.0)                |
+| `kubesec`              | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0)              |
+| `nodejs-scan`          | [v2.9.5](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan/-/releases/v2.9.5)          |
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
-| `pmd-apex` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0) |
-| `security-code-scan` | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3) |
-| `sobelow` | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0) |
-| `spotbugs` | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1) |
+| `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
+| `security-code-scan`   | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3)   |
+| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v0.0.1)   |
+| `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
+| `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
 
-### Set SAST CI job variables to use local SAST analyzers
+### Set SAST CI/CD variables to use local SAST analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
@@ -720,6 +742,10 @@ affected. Read more in
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
 
+### Error: `sast is used for configuration only, and its script should not be executed`
+
+For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+
 ### Limitation when using rules:exists
 
 The [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
@@ -750,3 +776,7 @@ For Maven builds, add the following to your `pom.xml` file:
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 </properties>
 ```
+
+### Flawfinder encoding error
+
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/README.md#before_script) feature.

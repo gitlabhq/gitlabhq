@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :shell do
     desc "GitLab | Shell | Install or upgrade gitlab-shell"

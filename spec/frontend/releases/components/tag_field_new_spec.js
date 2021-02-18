@@ -1,9 +1,9 @@
-import { mount, shallowMount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
+import RefSelector from '~/ref/components/ref_selector.vue';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
 import createDetailModule from '~/releases/stores/modules/detail';
-import RefSelector from '~/ref/components/ref_selector.vue';
 
 const TEST_TAG_NAME = 'test-tag-name';
 const TEST_PROJECT_ID = '1234';

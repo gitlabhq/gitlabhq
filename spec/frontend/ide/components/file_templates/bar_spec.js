@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { createStore } from '~/ide/stores';
 import Bar from '~/ide/components/file_templates/bar.vue';
+import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
 describe('IDE file templates bar component', () => {

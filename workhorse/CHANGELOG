@@ -1,5 +1,43 @@
 # Changelog for gitlab-workhorse
 
+## v8.63.0
+
+### Added
+- Accept more paths as Git HTTP
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/684
+
+### Other
+- Migrate error tracking from raven to labkit
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/671
+
+## v8.62.0
+
+### Added
+- Add RubyGems registry upload route
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/680
+
+### Fixed
+- Cleanup Connection headers
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/678
+
+## v8.61.0
+
+### Fixed
+- Revert "Support Git HTTP on toplevel repositories"
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/681
+
+## v8.60.0
+
+### Added
+- Support Git HTTP on toplevel repositories
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/670
+- Update GoCloud to v0.21.1+
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/675
+
+### Changed
+- Allow blank S3 regions to be used
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/677
+
 ## v8.59.0
 
 ### Fixed

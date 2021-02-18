@@ -118,7 +118,7 @@ module Resolvers
     end
 
     def offset_pagination(relation)
-      ::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(relation)
+      ::Gitlab::Graphql::Pagination::OffsetPaginatedRelation.new(relation)
     end
 
     override :object

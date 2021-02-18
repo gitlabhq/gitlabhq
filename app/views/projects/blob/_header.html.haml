@@ -2,23 +2,23 @@
 .js-file-title.file-title-flex-parent
   = render 'projects/blob/header_content', blob: blob
 
-  .file-actions.gl-display-flex.gl-flex-fill-1.gl-align-self-start.gl-md-justify-content-end<
+  .file-actions.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-md-justify-content-end<
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
     - if Feature.enabled?(:consolidated_edit_button, @project)
       = render 'shared/web_ide_button', blob: blob
     - else
       = edit_blob_button(@project, @ref, @path, blob: blob)
       = ide_edit_button(@project, @ref, @path, blob: blob)
-    .btn-group.ml-2{ role: "group" }>
+    .btn-group{ role: "group", class: ("gl-ml-3" if current_user) }>
       = render_if_exists 'projects/blob/header_file_locks_link'
       - if current_user
         = replace_blob_link(@project, @ref, @path, blob: blob)
         = delete_blob_link(@project, @ref, @path, blob: blob)
-    .btn-group.ml-2{ role: "group" }
+    .btn-group.gl-ml-3{ role: "group" }
       = copy_blob_source_button(blob) unless blame
       = open_raw_blob_button(blob)
       = download_blob_button(blob)
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
-= render 'projects/fork_suggestion'
+= render_fork_suggestion
 = render_if_exists 'projects/blob/header_file_locks', project: @project, path: @path

@@ -7,7 +7,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:labels) { create_list(:label, 3) }
-  let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, :with_diffs, labels: labels) }
+  let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
 
   # This mimics the behavior of the `Grape::Entity` serializer
   def present(obj)
@@ -42,29 +42,14 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
   end
 
   context 'reviewers' do
-    context "when merge_request_reviewers FF is enabled" do
-      before do
-        stub_feature_flags(merge_request_reviewers: true)
-        merge_request.reviewers = [user]
-      end
-
-      it 'includes assigned reviewers' do
-        result = Gitlab::Json.parse(present(merge_request).to_json)
-
-        expect(result['reviewers'][0]['username']).to eq user.username
-      end
+    before do
+      merge_request.reviewers = [user]
     end
 
-    context "when merge_request_reviewers FF is disabled" do
-      before do
-        stub_feature_flags(merge_request_reviewers: false)
-      end
+    it 'includes assigned reviewers' do
+      result = Gitlab::Json.parse(present(merge_request).to_json)
 
-      it 'does not include reviewers' do
-        result = Gitlab::Json.parse(present(merge_request).to_json)
-
-        expect(result.keys).not_to include('reviewers')
-      end
+      expect(result['reviewers'][0]['username']).to eq user.username
     end
   end
 end

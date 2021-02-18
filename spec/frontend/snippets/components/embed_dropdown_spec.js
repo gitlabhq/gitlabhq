@@ -1,6 +1,6 @@
-import { escape as esc } from 'lodash';
-import { mount } from '@vue/test-utils';
 import { GlFormInputGroup } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { escape as esc } from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 

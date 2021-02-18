@@ -1,36 +1,25 @@
-import $ from 'jquery';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initSearch from '~/search_settings';
-import { expandSection, closeSection } from '~/settings_panels';
+import mount from '~/search_settings/mount';
 
-jest.mock('~/settings_panels');
+jest.mock('~/search_settings/mount');
 
-describe('search_settings/index', () => {
-  let app;
-
-  beforeEach(() => {
-    const el = document.createElement('div');
-
-    setHTMLFixture('<div id="content-body"></div>');
-
-    app = initSearch({ el });
-  });
-
+describe('~/search_settings', () => {
   afterEach(() => {
-    app.$destroy();
+    resetHTMLFixture();
   });
 
-  it('calls settings_panel.onExpand when expand event is emitted', () => {
-    const section = { name: 'section' };
-    app.$refs.searchSettings.$emit('expand', section);
+  it('initializes search settings when js-search-settings-app is available', async () => {
+    setHTMLFixture('<div class="js-search-settings-app"></div>');
 
-    expect(expandSection).toHaveBeenCalledWith($(section));
+    await initSearch();
+
+    expect(mount).toHaveBeenCalled();
   });
 
-  it('calls settings_panel.closeSection when collapse event is emitted', () => {
-    const section = { name: 'section' };
-    app.$refs.searchSettings.$emit('collapse', section);
+  it('does not initialize search settings when js-search-settings-app is unavailable', async () => {
+    await initSearch();
 
-    expect(closeSection).toHaveBeenCalledWith($(section));
+    expect(mount).not.toHaveBeenCalled();
   });
 });

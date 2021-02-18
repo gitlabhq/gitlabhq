@@ -1,13 +1,12 @@
 <script>
 import { GlFormCheckbox, GlTooltipDirective, GlSprintf, GlIcon } from '@gitlab/ui';
+import { formatDate } from '~/lib/utils/datetime_utility';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { formatDate } from '~/lib/utils/datetime_utility';
-import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import DeleteButton from '../delete_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
@@ -20,6 +19,7 @@ import {
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
 } from '../../constants/index';
+import DeleteButton from '../delete_button.vue';
 
 export default {
   components: {

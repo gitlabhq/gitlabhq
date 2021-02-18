@@ -1,5 +1,5 @@
-import mutations from '~/vuex_shared/modules/modal/mutations';
 import * as types from '~/vuex_shared/modules/modal/mutation_types';
+import mutations from '~/vuex_shared/modules/modal/mutations';
 
 describe('Vuex ModalModule mutations', () => {
   describe(`${types.SHOW}`, () => {

@@ -1,5 +1,5 @@
-import ImageBadge from '~/image_diff/image_badge';
 import imageDiffHelper from '~/image_diff/helpers/index';
+import ImageBadge from '~/image_diff/image_badge';
 import * as mockData from './mock_data';
 
 describe('ImageBadge', () => {

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import BlobContentError from '~/blob/components/blob_content_error.vue';
 
 import { BLOB_RENDER_ERRORS } from '~/blob/components/constants';

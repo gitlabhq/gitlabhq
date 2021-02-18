@@ -1,0 +1,5 @@
+---
+title: Remove duplicates from related_commit_sha query
+merge_request: 51888
+author:
+type: fixed

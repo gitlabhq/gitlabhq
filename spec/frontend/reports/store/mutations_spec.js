@@ -1,6 +1,6 @@
-import state from '~/reports/store/state';
-import mutations from '~/reports/store/mutations';
 import * as types from '~/reports/store/mutation_types';
+import mutations from '~/reports/store/mutations';
+import state from '~/reports/store/state';
 import { issue } from '../mock_data/mock_data';
 
 describe('Reports Store Mutations', () => {

@@ -1,18 +1,20 @@
+import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlFormInput } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
-import state from '~/import_entities/import_projects/store/state';
-import * as getters from '~/import_entities/import_projects/store/getters';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
 import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
+import * as getters from '~/import_entities/import_projects/store/getters';
+import state from '~/import_entities/import_projects/store/state';
 
 describe('ImportProjectsTable', () => {
   let wrapper;
 
   const findFilterField = () =>
-    wrapper.find('input[data-qa-selector="githubish_import_filter_field"]');
+    wrapper
+      .findAllComponents(GlFormInput)
+      .wrappers.find((w) => w.attributes('placeholder') === 'Filter your repositories by name');
 
   const providerTitle = 'THE PROVIDER';
   const providerRepo = {
@@ -205,7 +207,7 @@ describe('ImportProjectsTable', () => {
   it('does not render filtering input field when filterable is false', () => {
     createComponent({ filterable: false });
 
-    expect(findFilterField().exists()).toBe(false);
+    expect(findFilterField()).toBeUndefined();
   });
 
   describe('when paginatable is set to true', () => {

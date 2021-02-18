@@ -57,6 +57,16 @@ export const mockPipelineCount = {
   },
 };
 
+export const chartOptions = {
+  xAxis: {
+    name: 'X axis title',
+    type: 'category',
+  },
+  yAxis: {
+    name: 'Y axis title',
+  },
+};
+
 export const mockPipelineStatistics = {
   data: {
     project: {

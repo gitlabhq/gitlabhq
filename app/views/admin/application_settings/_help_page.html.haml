@@ -6,7 +6,7 @@
 
     .form-group
       = f.label :help_page_text, class: 'label-bold'
-      = f.text_area :help_page_text, class: 'form-control', rows: 4
+      = f.text_area :help_page_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted= _('Markdown enabled')
     .form-group
       .form-check
@@ -15,12 +15,12 @@
           = _('Hide marketing-related entries from help')
     .form-group
       = f.label :help_page_support_url, _('Support page URL'), class: 'label-bold'
-      = f.text_field :help_page_support_url, class: 'form-control', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
+      = f.text_field :help_page_support_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
       %span.form-text.text-muted#support_help_block= _('Alternate support URL for help page and help dropdown')
 
     - if show_documentation_base_url_field?
       .form-group
         = f.label :help_page_documentation_base_url, _('Documentation pages URL'), class: 'label-bold'
-        = f.text_field :help_page_documentation_base_url, class: 'form-control', placeholder: 'https://docs.gitlab.com'
+        = f.text_field :help_page_documentation_base_url, class: 'form-control gl-form-input', placeholder: 'https://docs.gitlab.com'
 
   = f.submit _('Save changes'), class: "gl-button btn btn-success"

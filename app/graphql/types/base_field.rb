@@ -30,7 +30,7 @@ module Types
     def resolve_field(obj, args, ctx)
       ctx.schema.after_lazy(obj) do |after_obj|
         query_ctx = ctx.query.context
-        inner_obj = after_obj && after_obj.object
+        inner_obj = after_obj&.object
 
         ctx.schema.after_lazy(to_ruby_args(after_obj, args, ctx)) do |ruby_args|
           if authorized?(inner_obj, ruby_args, query_ctx)

@@ -38,8 +38,11 @@ If your instance's URL is `https://example.com`, your API URL is `https://exampl
 Your GitLab personal access token enables your GitLab account to be accessed
 from Trello.
 
-> Find it in GitLab by clicking on your avatar (upright corner), from which you access
-your user **Settings** > **Access Tokens**.
+To find it in GitLab:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access Tokens**.
 
 Learn more about generating a personal access token in the
 [Personal Access Token Documentation](../user/profile/personal_access_tokens.md).

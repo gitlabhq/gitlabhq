@@ -2,12 +2,14 @@
 
 module Issues
   class UpdateService < Issues::BaseService
-    include SpamCheckMethods
     extend ::Gitlab::Utils::Override
 
     def execute(issue)
       handle_move_between_ids(issue)
-      filter_spam_check_params
+
+      @request = params.delete(:request)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+
       change_issue_duplicate(issue)
       move_issue_to_new_project(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)
     end
@@ -30,7 +32,14 @@ module Issues
     end
 
     def before_update(issue, skip_spam_check: false)
-      spam_check(issue, current_user, action: :update) unless skip_spam_check
+      return if skip_spam_check
+
+      Spam::SpamActionService.new(
+        spammable: issue,
+        request: request,
+        user: current_user,
+        action: :update
+      ).execute(spam_params: spam_params)
     end
 
     def after_update(issue)
@@ -125,6 +134,8 @@ module Issues
     end
 
     private
+
+    attr_reader :request, :spam_params
 
     def clone_issue(issue)
       target_project = params.delete(:target_clone_project)

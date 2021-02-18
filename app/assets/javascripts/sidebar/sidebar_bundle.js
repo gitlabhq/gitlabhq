@@ -1,5 +1,5 @@
-import Mediator from './sidebar_mediator';
 import { mountSidebar, getSidebarOptions } from './mount_sidebar';
+import Mediator from './sidebar_mediator';
 
 export default () => {
   const mediator = new Mediator(getSidebarOptions());

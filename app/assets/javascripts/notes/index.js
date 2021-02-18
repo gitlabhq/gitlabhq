@@ -2,8 +2,8 @@ import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import initSortDiscussions from './sort_discussions';
-import initTimelineToggle from './timeline';
 import { store } from './stores';
+import initTimelineToggle from './timeline';
 
 const el = document.getElementById('js-vue-notes');
 

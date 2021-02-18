@@ -55,7 +55,7 @@ module Issues
     def close_external_issue(issue, closed_via)
       return unless project.external_issue_tracker&.support_close_issue?
 
-      project.external_issue_tracker.close_issue(closed_via, issue)
+      project.external_issue_tracker.close_issue(closed_via, issue, current_user)
       todo_service.close_issue(issue, current_user)
     end
 

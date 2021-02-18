@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Only use Lograge for Rails
 unless Gitlab::Runtime.sidekiq?
   Rails.application.reloader.to_prepare do

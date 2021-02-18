@@ -1,15 +1,15 @@
 /* eslint-disable no-new */
 
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
-import IssuableIndex from '~/issuable_index';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import UsersSelect from '~/users_select';
-import initFilteredSearch from '~/pages/search/init_filtered_search';
-import { FILTERED_SEARCH } from '~/pages/constants';
-import { ISSUABLE_INDEX } from '~/pages/projects/constants';
+import initIssuableByEmail from '~/issuable/init_issuable_by_email';
+import IssuableIndex from '~/issuable_index';
 import initIssuablesList from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
-import { showLearnGitLabIssuesPopover } from '~/onboarding_issues';
+import { FILTERED_SEARCH } from '~/pages/constants';
+import { ISSUABLE_INDEX } from '~/pages/projects/constants';
+import initFilteredSearch from '~/pages/search/init_filtered_search';
+import UsersSelect from '~/users_select';
 
 IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
 
@@ -25,4 +25,4 @@ new UsersSelect();
 
 initManualOrdering();
 initIssuablesList();
-showLearnGitLabIssuesPopover();
+initIssuableByEmail();

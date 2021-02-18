@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
+import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
+import DeployBoard from '~/environments/components/deploy_board.vue';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
 import eventHub from '~/environments/event_hub';
-import DeployBoard from '~/environments/components/deploy_board.vue';
-import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import { folder, deployBoardMockData } from './mock_data';
 
 const eeOnlyProps = {

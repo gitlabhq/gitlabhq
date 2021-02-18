@@ -1,5 +1,5 @@
 import { createWrapper } from '@vue/test-utils';
-import initAdminUsers from '~/admin/users';
+import { initAdminUsersApp } from '~/admin/users';
 import AdminUsersApp from '~/admin/users/components/app.vue';
 import { users, paths } from './mock_data';
 
@@ -16,7 +16,7 @@ describe('initAdminUsersApp', () => {
 
     document.body.appendChild(el);
 
-    wrapper = createWrapper(initAdminUsers(el));
+    wrapper = createWrapper(initAdminUsersApp(el));
   });
 
   afterEach(() => {

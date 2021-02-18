@@ -6,6 +6,7 @@ export default {
     state.headPath = paths.headPath;
     state.baseBlobPath = paths.baseBlobPath;
     state.headBlobPath = paths.headBlobPath;
+    state.reportsPath = paths.reportsPath;
     state.helpPath = paths.helpPath;
   },
   [types.REQUEST_REPORTS](state) {
@@ -13,12 +14,14 @@ export default {
   },
   [types.RECEIVE_REPORTS_SUCCESS](state, data) {
     state.hasError = false;
+    state.statusReason = '';
     state.isLoading = false;
     state.newIssues = data.newIssues;
     state.resolvedIssues = data.resolvedIssues;
   },
-  [types.RECEIVE_REPORTS_ERROR](state) {
+  [types.RECEIVE_REPORTS_ERROR](state, error) {
     state.isLoading = false;
     state.hasError = true;
+    state.statusReason = error?.response?.data?.status_reason;
   },
 };

@@ -1,12 +1,12 @@
 <script>
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { reduce } from 'lodash';
-import { s__ } from '~/locale';
 import {
   capitalizeFirstCharacter,
   convertToSentenceCase,
   splitCamelCase,
 } from '~/lib/utils/text_utility';
+import { s__ } from '~/locale';
 
 const thClass = 'gl-bg-transparent! gl-border-1! gl-border-b-solid! gl-border-gray-200!';
 const tdClass = 'gl-border-gray-100! gl-p-5!';

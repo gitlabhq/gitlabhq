@@ -95,7 +95,7 @@ RSpec.describe 'issuable templates', :js do
     let(:bug_template_content) { 'this is merge request bug template' }
     let(:template_override_warning) { 'Applying a template will replace the existing issue description.' }
     let(:updated_description) { 'updated merge request description' }
-    let(:merge_request) { create(:merge_request, :with_diffs, source_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
 
     before do
       project.repository.create_file(
@@ -154,7 +154,7 @@ RSpec.describe 'issuable templates', :js do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:fork_user) { create(:user) }
     let(:forked_project) { fork_project(project, fork_user, repository: true) }
-    let(:merge_request) { create(:merge_request, :with_diffs, source_project: forked_project, target_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
 
     before do
       sign_out(:user)

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Microsoft Azure OAuth2 OmniAuth Provider
 
+NOTE:
+Per Microsoft, this provider uses the [older Azure Active Directory v1.0 endpoint](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-protocols-oauth-code).
+Microsoft documentation suggests that you should use the [OpenID Connect protocol to use the v2 endpoints](../administration/auth/oidc.md#microsoft-azure) for new projects.
+
 To enable the Microsoft Azure OAuth2 OmniAuth provider, you must register your application with Azure. Azure generates a client ID and secret key for you to use.
 
 Sign in to the [Azure Portal](https://portal.azure.com), and follow the instructions in

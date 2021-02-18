@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CiVariablePopover from '~/ci_variable_list/components/ci_variable_popover.vue';
 import mockData from '../services/mock_data';
 

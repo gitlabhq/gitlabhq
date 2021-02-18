@@ -1,7 +1,7 @@
-import { initRails } from '~/lib/utils/rails_ujs';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { __, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/common_utils';
+import { initRails } from '~/lib/utils/rails_ujs';
+import { __, sprintf } from '~/locale';
 
 const PARAMETER_NAME = 'leave';
 const LEAVE_LINK_SELECTOR = '.js-leave-link';

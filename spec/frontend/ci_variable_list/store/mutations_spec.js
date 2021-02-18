@@ -1,6 +1,6 @@
-import state from '~/ci_variable_list/store/state';
-import mutations from '~/ci_variable_list/store/mutations';
 import * as types from '~/ci_variable_list/store/mutation_types';
+import mutations from '~/ci_variable_list/store/mutations';
+import state from '~/ci_variable_list/store/state';
 
 describe('CI variable list mutations', () => {
   let stateCopy;

@@ -1,7 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlToggle, GlBadge } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking } from 'helpers/tracking_helper';
+import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
@@ -11,7 +12,6 @@ import {
   LEGACY_FLAG,
   DEFAULT_PERCENT_ROLLOUT,
 } from '~/feature_flags/constants';
-import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
 
 const getDefaultProps = () => ({
   featureFlags: [

@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitOps with the Kubernetes Agent **(PREMIUM ONLY)**
+# GitOps with the Kubernetes Agent **(PREMIUM SELF)**
 
 The [GitLab Kubernetes Agent](../../user/clusters/agent/index.md) supports the
 [pull-based version](https://www.gitops.tech/#pull-based-deployments) of

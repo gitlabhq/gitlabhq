@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import DraftsCount from './drafts_count.vue';
 
 export default {

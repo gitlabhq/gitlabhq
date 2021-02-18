@@ -17,12 +17,20 @@ export default {
     return state.issues[state.activeId] || {};
   },
 
+  groupPathForActiveIssue: (_, getters) => {
+    const { referencePath = '' } = getters.activeIssue;
+    return referencePath.slice(0, referencePath.indexOf('/'));
+  },
+
   projectPathForActiveIssue: (_, getters) => {
-    const referencePath = getters.activeIssue.referencePath || '';
+    const { referencePath = '' } = getters.activeIssue;
     return referencePath.slice(0, referencePath.indexOf('#'));
   },
 
   getListByLabelId: (state) => (labelId) => {
+    if (!labelId) {
+      return null;
+    }
     return find(state.boardLists, (l) => l.label?.id === labelId);
   },
 

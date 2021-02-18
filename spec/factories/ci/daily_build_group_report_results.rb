@@ -7,6 +7,7 @@ FactoryBot.define do
     project
     last_pipeline factory: :ci_pipeline
     group_name { 'rspec' }
+    group
     data do
       { 'coverage' => 77.0 }
     end

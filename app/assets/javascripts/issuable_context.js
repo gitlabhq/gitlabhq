@@ -1,8 +1,8 @@
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import UsersSelect from './users_select';
 import { loadCSSFile } from './lib/utils/css_utils';
+import UsersSelect from './users_select';
 
 export default class IssuableContext {
   constructor(currentUser) {

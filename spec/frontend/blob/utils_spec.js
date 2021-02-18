@@ -1,5 +1,5 @@
-import Editor from '~/editor/editor_lite';
 import * as utils from '~/blob/utils';
+import Editor from '~/editor/editor_lite';
 
 jest.mock('~/editor/editor_lite');
 

@@ -1,8 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
-import initMRPage from '~/mr_notes';
 import axios from '~/lib/utils/axios_utils';
-import { userDataMock, notesDataMock, noteableDataMock } from '../notes/mock_data';
+import initMRPage from '~/mr_notes';
 import diffFileMockData from '../diffs/mock_data/diff_file';
+import { userDataMock, notesDataMock, noteableDataMock } from '../notes/mock_data';
 
 export default function initVueMRPage() {
   const mrTestEl = document.createElement('div');

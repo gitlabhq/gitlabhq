@@ -35,7 +35,11 @@ module Gitlab
           raise ProjectNotFound if project.nil?
 
           create_issue!
-          send_thank_you_email! if from_address
+
+          if from_address
+            add_email_participant
+            send_thank_you_email!
+          end
         end
 
         def metrics_params
@@ -145,6 +149,10 @@ module Gitlab
 
         def author
           User.support_bot
+        end
+
+        def add_email_participant
+          @issue.issue_email_participants.create(email: from_address)
         end
       end
     end

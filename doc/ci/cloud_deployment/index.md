@@ -38,7 +38,7 @@ Some credentials are required to be able to run `aws` commands:
    A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
 1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
-   [environment variables](../variables/README.md#gitlab-cicd-environment-variables)
+   [CI/CD variables](../variables/README.md)
    (see table below):
 
    - Access key ID.
@@ -47,11 +47,11 @@ Some credentials are required to be able to run `aws` commands:
      You might want to check if the AWS service you intend to use is
      [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
 
-   | Env. variable name      | Value                  |
-   |:------------------------|:-----------------------|
-   | `AWS_ACCESS_KEY_ID`     | Your Access key ID     |
-   | `AWS_SECRET_ACCESS_KEY` | Your Secret access key |
-   | `AWS_DEFAULT_REGION`    | Your region code       |
+   | Environment variable name      | Value                  |
+   |:-------------------------------|:-----------------------|
+   | `AWS_ACCESS_KEY_ID`            | Your Access key ID     |
+   | `AWS_SECRET_ACCESS_KEY`        | Your Secret access key |
+   | `AWS_DEFAULT_REGION`           | Your region code       |
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 
@@ -109,7 +109,7 @@ The ECS task definition can be:
 
 After you have these prerequisites ready, follow these steps:
 
-1. Make sure your AWS credentials are set up as environment variables for your
+1. Make sure your AWS credentials are set up as CI/CD variables for your
    project. You can follow [the steps above](#run-aws-commands-from-gitlab-cicd) to complete this setup.
 1. Add these variables to your project's `.gitlab-ci.yml` file, or in the project's
    [CI/CD settings](../variables/README.md#create-a-custom-variable-in-the-ui):
@@ -141,15 +141,15 @@ After you have these prerequisites ready, follow these steps:
    ```
 
    You can create your `CI_AWS_ECS_TASK_DEFINITION_FILE` variable as a
-   [file-typed environment variable](../variables/README.md#custom-environment-variables-of-type-file) instead of a
-   regular environment variable. If you choose to do so, set the variable value to be the full contents of
+   [file-typed CI/CD variable](../variables/README.md#custom-cicd-variables-of-type-file) instead of a
+   regular CI/CD variable. If you choose to do so, set the variable value to be the full contents of
    the JSON task definition. You can then remove the JSON file from your project.
 
    In both cases, make sure that the value for the `containerDefinitions[].name` attribute is
    the same as the `Container name` defined in your targeted ECS service.
 
    WARNING:
-   `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these environment
+   `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these
    variables are defined within your project.
 
    NOTE:
@@ -242,7 +242,7 @@ pass three JSON input objects, based on existing templates:
    have two ways to pass in these JSON objects:
 
    - They can be three actual files located in your project. You must specify their path relative to
-     your project root in your `.gitlab-ci.yml` file, using the following variables. For example, if
+     your project root in your `.gitlab-ci.yml` file, using the following CI/CD variables. For example, if
      your files are in a `<project_root>/aws` folder:
 
      ```yaml
@@ -252,12 +252,12 @@ pass three JSON input objects, based on existing templates:
        CI_AWS_EC2_DEPLOYMENT_FILE: 'aws/create_deployment.json'
      ```
 
-   - Alternatively, you can provide these JSON objects as [file-typed environment variables](../variables/README.md#custom-environment-variables-of-type-file).
-   In your project, go to **Settings > CI / CD > Variables** and add
-   the three variables listed above as file-typed environment variables.
-   For each variable, set the value to its corresponding JSON object.
+   - Alternatively, you can provide these JSON objects as [file-typed CI/CD variables](../variables/README.md#custom-cicd-variables-of-type-file).
+     In your project, go to **Settings > CI/CD > Variables** and add
+     the three variables listed above as file-typed CI/CD variables.
+     For each variable, set the value to its corresponding JSON object.
 
-1. Provide the name of the stack you're creating and/or targeting, as an environment variable:
+1. Provide the name of the stack you're creating and/or targeting, as a CI/CD variable:
 
    ```yaml
    variables:
@@ -286,7 +286,7 @@ When running your project pipeline at this point:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6.
 
 To leverage [Auto DevOps](../../topics/autodevops/index.md) for your project when deploying to
-AWS EC2, first you must define [your AWS credentials as environment variables](#run-aws-commands-from-gitlab-cicd).
+AWS EC2, first you must define [your AWS credentials as CI/CD variables](#run-aws-commands-from-gitlab-cicd).
 
 Next, define a job for the `build` stage. To do so, you must reference the
 `Auto-DevOps.gitlab-ci.yml` template and include a job named `build_artifact` in your
@@ -299,7 +299,7 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
-  - AUTO_DEVOPS_PLATFORM_TARGET: EC2
+  AUTO_DEVOPS_PLATFORM_TARGET: EC2
 
 build_artifact:
   stage: build

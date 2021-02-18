@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 
 const TEST_ADDED_LINES = 100;

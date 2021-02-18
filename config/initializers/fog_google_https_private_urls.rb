@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Monkey patching the https support for private urls
 # See https://gitlab.com/gitlab-org/gitlab/issues/4879

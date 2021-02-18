@@ -2,12 +2,12 @@
 /* eslint-disable vue/no-v-html */
 import '~/commons/bootstrap';
 import { GlIcon, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
-import { sprintf } from '~/locale';
-import IssueMilestone from './issue_milestone.vue';
-import IssueAssignees from './issue_assignees.vue';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import { sprintf } from '~/locale';
 import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
 import CiIcon from '../ci_icon.vue';
+import IssueAssignees from './issue_assignees.vue';
+import IssueMilestone from './issue_milestone.vue';
 
 export default {
   name: 'IssueItem',

@@ -1,6 +1,6 @@
-import initCreateCluster from '~/create_cluster/init_create_cluster';
 import initGkeDropdowns from '~/create_cluster/gke_cluster';
 import initGkeNamespace from '~/create_cluster/gke_cluster_namespace';
+import initCreateCluster from '~/create_cluster/init_create_cluster';
 import PersistentUserCallout from '~/persistent_user_callout';
 
 // This import is loaded dynamically in `init_create_cluster`.

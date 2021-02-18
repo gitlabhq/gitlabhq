@@ -2,9 +2,9 @@
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
-import statusIcon from '../mr_widget_status_icon.vue';
-import autoMergeFailedQuery from '../../queries/states/auto_merge_failed.query.graphql';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
+import autoMergeFailedQuery from '../../queries/states/auto_merge_failed.query.graphql';
+import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetAutoMergeFailed',

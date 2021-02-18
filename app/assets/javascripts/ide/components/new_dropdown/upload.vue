@@ -1,6 +1,6 @@
 <script>
-import ItemButton from './button.vue';
 import { isTextFile } from '~/ide/utils';
+import ItemButton from './button.vue';
 
 export default {
   components: {

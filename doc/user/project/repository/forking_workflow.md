@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/forking_workflow.html'
 ---
 
-# Project forking workflow
+# Project forking workflow **(FREE)**
 
 Whenever possible, it's recommended to work in a common Git repository and use
 [branching strategies](../../../topics/gitlab_flow.md) to manage your work. However,

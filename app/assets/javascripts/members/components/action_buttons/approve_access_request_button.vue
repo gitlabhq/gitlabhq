@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlButton, GlForm, GlTooltipDirective } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 

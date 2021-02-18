@@ -14,7 +14,7 @@ FactoryBot.define do
 
     trait(:with_file) do
       after(:build) do |distribution, evaluator|
-        distribution.file = fixture_file_upload('spec/fixtures/packages/debian/README.md')
+        distribution.file = fixture_file_upload('spec/fixtures/packages/debian/distribution/Release')
       end
     end
 

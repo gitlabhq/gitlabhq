@@ -50,17 +50,17 @@ European/US and APAC friendly hours. You can join the office hours call and brin
 that require a more in-depth discussion between the database reviewers and maintainers:
 
 - [Database Office Hours Agenda](https://docs.google.com/document/d/1wgfmVL30F8SdMg-9yY6Y8djPSxWNvKmhR5XmsvYX1EI/edit).
-- [Youtube playlist with past recordings](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp-kqXeiF7fF7cFYaKtdqXM).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [YouTube playlist with past recordings](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp-kqXeiF7fF7cFYaKtdqXM).
 
 You should also join the [#database-labs](../understanding_explain_plans.md#database-lab)
-Slack channel and get familiar with how to use Joe, the slackbot that provides developers
+Slack channel and get familiar with how to use Joe, the Slackbot that provides developers
 with their own clone of the production database.
 
 Understanding and efficiently using `EXPLAIN` plans is at the core of the database review process.
 The following guides provide a quick introduction and links to follow on more advanced topics:
 
 - Guide on [understanding EXPLAIN plans](../understanding_explain_plans.md).
-- [Explaining the unexplainable series in depesz](https://www.depesz.com/tag/unexplainable/).
+- [Explaining the unexplainable series in `depesz`](https://www.depesz.com/tag/unexplainable/).
 
 Finally, you can find various guides in the [Database guides](index.md) page that cover more specific
 topics and use cases. The most frequently required during database reviewing are the following:

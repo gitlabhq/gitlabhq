@@ -1,13 +1,13 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import IdeStatusList from './ide_status_list.vue';
-import IdeStatusMr from './ide_status_mr.vue';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import { rightSidebarViews } from '../constants';
+import IdeStatusList from './ide_status_list.vue';
+import IdeStatusMr from './ide_status_mr.vue';
 
 export default {
   components: {

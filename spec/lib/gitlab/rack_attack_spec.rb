@@ -6,6 +6,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
   describe '.configure' do
     let(:fake_rack_attack) { class_double("Rack::Attack") }
     let(:fake_rack_attack_request) { class_double("Rack::Attack::Request") }
+    let(:fake_cache) { instance_double("Rack::Attack::Cache") }
 
     let(:throttles) do
       {
@@ -27,6 +28,8 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       allow(fake_rack_attack).to receive(:track)
       allow(fake_rack_attack).to receive(:safelist)
       allow(fake_rack_attack).to receive(:blocklist)
+      allow(fake_rack_attack).to receive(:cache).and_return(fake_cache)
+      allow(fake_cache).to receive(:store=)
     end
 
     it 'extends the request class' do

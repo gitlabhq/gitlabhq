@@ -1,13 +1,13 @@
+import { GlSkeletonLoading } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlSkeletonLoading } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createStore } from '~/ide/stores';
+import IdeReview from '~/ide/components/ide_review.vue';
 import IdeSidebar from '~/ide/components/ide_side_bar.vue';
 import IdeTree from '~/ide/components/ide_tree.vue';
 import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
-import IdeReview from '~/ide/components/ide_review.vue';
 import { leftSidebarViews } from '~/ide/constants';
+import { createStore } from '~/ide/stores';
 import { projectData } from '../mock_data';
 
 const localVue = createLocalVue();

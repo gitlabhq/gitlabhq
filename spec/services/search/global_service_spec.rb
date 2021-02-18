@@ -56,14 +56,20 @@ RSpec.describe Search::GlobalService do
   context 'issues' do
     let(:scope) { 'issues' }
 
-    context 'sort by created_at' do
-      let!(:project) { create(:project, :public) }
+    context 'sorting' do
+      let_it_be(:project) { create(:project, :public) }
+
       let!(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
       let!(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
       let!(:very_old_result) { create(:issue, project: project, title: 'sorted very old', created_at: 1.year.ago) }
 
+      let!(:old_updated) { create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago) }
+      let!(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
+      let!(:very_old_updated) { create(:issue, project: project, title: 'updated very old', updated_at: 1.year.ago) }
+
       include_examples 'search results sorted' do
-        let(:results) { described_class.new(nil, search: 'sorted', sort: sort).execute }
+        let(:results_created) { described_class.new(nil, search: 'sorted', sort: sort).execute }
+        let(:results_updated) { described_class.new(nil, search: 'updated', sort: sort).execute }
       end
     end
   end
@@ -71,14 +77,20 @@ RSpec.describe Search::GlobalService do
   context 'merge_request' do
     let(:scope) { 'merge_requests' }
 
-    context 'sort by created_at' do
+    context 'sorting' do
       let!(:project) { create(:project, :public) }
+
       let!(:old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'old-1', title: 'sorted old', created_at: 1.month.ago) }
       let!(:new_result) { create(:merge_request, :opened, source_project: project, source_branch: 'new-1', title: 'sorted recent', created_at: 1.day.ago) }
       let!(:very_old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1', title: 'sorted very old', created_at: 1.year.ago) }
 
+      let!(:old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-old-1', title: 'updated old', updated_at: 1.month.ago) }
+      let!(:new_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-new-1', title: 'updated recent', updated_at: 1.day.ago) }
+      let!(:very_old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-very-old-1', title: 'updated very old', updated_at: 1.year.ago) }
+
       include_examples 'search results sorted' do
-        let(:results) { described_class.new(nil, search: 'sorted', sort: sort).execute }
+        let(:results_created) { described_class.new(nil, search: 'sorted', sort: sort).execute }
+        let(:results_updated) { described_class.new(nil, search: 'updated', sort: sort).execute }
       end
     end
   end

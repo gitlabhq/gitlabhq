@@ -22,7 +22,7 @@ as the hardware requirements that are needed to install and use GitLab.
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
 
-For the installation options, see [the main installation page](README.md).
+For the installation options, see [the main installation page](index.md).
 
 ### Unsupported Linux distributions and Unix-like operating systems
 
@@ -179,7 +179,7 @@ Omnibus GitLab defaults to the recommended Puma settings. Regardless of installa
 tune the Puma settings.
 
 If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
-for instructions on changing the Puma settings. If you're using the GitLab Helm chart, see the [Webservice chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+for instructions on changing the Puma settings. If you're using the GitLab Helm chart, see the [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
 ### Puma workers
 
@@ -227,7 +227,7 @@ recommendation above) please see [the Unicorn settings in the Omnibus GitLab doc
 
 Redis stores all user sessions and the background task queue.
 The storage requirements for Redis are minimal, about 25kB per user.
-Sidekiq processes the background jobs with a multithreaded process.
+Sidekiq processes the background jobs with a multi-threaded process.
 This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 billable users) the Sidekiq process can use 1GB+ of memory.
 

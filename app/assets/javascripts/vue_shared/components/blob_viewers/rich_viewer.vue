@@ -1,8 +1,8 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { handleBlobRichViewer } from '~/blob/viewer';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 import ViewerMixin from './mixins';
-import { handleBlobRichViewer } from '~/blob/viewer';
 
 export default {
   components: {

@@ -66,7 +66,11 @@ module BoardsResponses
   end
 
   def respond_with_board
-    respond_with(@board) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    return render_404 unless @board
+
+    respond_with(@board)
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
   end
 
   def serialize_as_json(resource)

@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import { pull, union } from 'lodash';
+import Vue from 'vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { s__ } from '~/locale';
 import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
-import { s__ } from '~/locale';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -63,8 +63,8 @@ export default {
     state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
-  [mutationTypes.RECEIVE_LABELS_FAILURE]: (state) => {
-    state.error = s__('Boards|An error occurred while fetching labels. Please reload the page.');
+  [mutationTypes.RECEIVE_LABELS_SUCCESS]: (state, labels) => {
+    state.labels = labels;
   },
 
   [mutationTypes.GENERATE_DEFAULT_LISTS_FAILURE]: (state) => {
@@ -257,5 +257,29 @@ export default {
 
   [mutationTypes.SET_SELECTED_PROJECT]: (state, project) => {
     state.selectedProject = project;
+  },
+
+  [mutationTypes.ADD_BOARD_ITEM_TO_SELECTION]: (state, boardItem) => {
+    state.selectedBoardItems = [...state.selectedBoardItems, boardItem];
+  },
+
+  [mutationTypes.REMOVE_BOARD_ITEM_FROM_SELECTION]: (state, boardItem) => {
+    Vue.set(
+      state,
+      'selectedBoardItems',
+      state.selectedBoardItems.filter((obj) => obj !== boardItem),
+    );
+  },
+
+  [mutationTypes.SET_ADD_COLUMN_FORM_VISIBLE]: (state, visible) => {
+    state.addColumnFormVisible = visible;
+  },
+
+  [mutationTypes.ADD_LIST_TO_HIGHLIGHTED_LISTS]: (state, listId) => {
+    state.highlightedLists.push(listId);
+  },
+
+  [mutationTypes.REMOVE_LIST_FROM_HIGHLIGHTED_LISTS]: (state, listId) => {
+    state.highlightedLists = state.highlightedLists.filter((id) => id !== listId);
   },
 };

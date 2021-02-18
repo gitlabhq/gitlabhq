@@ -1,7 +1,7 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
+import $ from 'jquery';
 import Issue from '~/issue';
+import axios from '~/lib/utils/axios_utils';
 import '~/lib/utils/text_utility';
 
 describe('Issue', () => {

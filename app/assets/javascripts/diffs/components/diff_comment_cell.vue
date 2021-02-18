@@ -1,8 +1,8 @@
 <script>
 import { mapActions } from 'vuex';
+import DiffDiscussionReply from './diff_discussion_reply.vue';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffLineNoteForm from './diff_line_note_form.vue';
-import DiffDiscussionReply from './diff_discussion_reply.vue';
 
 export default {
   components: {

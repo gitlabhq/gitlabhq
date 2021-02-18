@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# GitLab subscription **(STARTER)**
+# GitLab subscription **(PREMIUM)**
 
 GitLab offers tiers of features. Your subscription determines which tier you
 have access to. Subscriptions are valid for 12 months.
@@ -19,26 +19,26 @@ GitLab provides special subscriptions to participants in:
 
 When choosing a subscription, there are two factors to consider:
 
-- [GitLab.com or self-managed](#choose-between-gitlabcom-or-self-managed)
+- [GitLab SaaS or GitLab self-managed](#choose-between-gitlab-saas-or-gitlab-self-managed)
 - [GitLab tier](#choose-a-gitlab-tier)
 
-### Choose between GitLab.com or self-managed
+### Choose between GitLab SaaS or GitLab self-managed
 
 There are some differences in how a subscription applies, depending if you use
-GitLab.com or a self-managed instance:
+GitLab SaaS or GitLab self-managed:
 
-- [GitLab.com](gitlab_com/index.md): The GitLab software-as-a-service offering.
-  You don't need to install anything to use GitLab.com, you only need to
+- [GitLab SaaS](gitlab_com/index.md): The GitLab software-as-a-service offering.
+  You don't need to install anything to use GitLab SaaS, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab self-managed](self_managed/index.md): Install, administer, and maintain
   your own GitLab instance.
 
-On a self-managed instance, a GitLab subscription provides the same set of
-features for _all_ users. On GitLab.com, you can apply a subscription to either
+On a GitLab self-managed instance, a GitLab subscription provides the same set of
+features for _all_ users. On GitLab SaaS, you can apply a subscription to either
 a group or a personal namespace.
 
 NOTE:
-Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
+Subscriptions cannot be transferred between GitLab SaaS and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 
 ### Choose a GitLab tier
@@ -47,8 +47,8 @@ Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choo
 the features which fit your budget. For information on what features are available
 at each tier for each product, see:
 
-- [GitLab.com feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/)
-- [Self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/)
+- [GitLab SaaS feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/)
+- [GitLab self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/)
 
 ## Find your subscription
 
@@ -76,7 +76,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change your company details](#change-your-company-details)
 - [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
-- [Change the associated namespace](#change-the-associated-namespace)
+- [Change the namespace the subscription is linked to](#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
 ### Change your personal details
@@ -130,27 +130,27 @@ method as the default:
 
 ### Change the linked account
 
-To change the GitLab.com account associated with your Customers Portal
-account:
+To change the GitLab.com account linked to your Customers Portal account:
 
 1. Log in to the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. In a separate browser tab, go to [GitLab.com](https://gitlab.com) and ensure you
+1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com) and ensure you
    are not logged in.
 1. On the Customers Portal page, click **My account > Account details**.
 1. Under **Your GitLab.com account**, click **Change linked account**.
-1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal
+1. Log in to the [GitLab SaaS](https://gitlab.com) account you want to link to the Customers Portal
    account.
 
-### Change the associated namespace
+### Change the linked namespace
 
-With a linked GitLab.com account:
+To change the namespace linked to a subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
+   [linked](#change-the-linked-account) GitLab SaaS account.
 1. Navigate to the **Manage Purchases** page.
-1. Click **Change linked namespace**.
+1. Select **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown.
-1. Click **Proceed to checkout**.
+1. Select **Proceed to checkout**.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
 
@@ -173,7 +173,7 @@ Find more information how to apply and renew at
 
 ## GitLab for Open Source subscriptions
 
-All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/)
+All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/)
 requests, including subscription renewals, must be made by using the application process.
 If you have any questions, send an email to `opensource@gitlab.com` for assistance.
 

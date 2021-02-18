@@ -37,10 +37,10 @@ multiple projects.
 
 If you are using a self-managed instance of GitLab:
 
-- Your administrator can install and register shared runners by [following the documentation](https://docs.gitlab.com/runner/install/index.html).
-  <!-- going to your project's-->
-  <!-- **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show runner installation instructions**.-->
-  <!-- These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).-->
+- Your administrator can install and register shared runners by
+  going to your project's **Settings > CI / CD**, expanding the **Runners** section,
+  and clicking **Show runner installation instructions**.
+  These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
 - The administrator can also configure a maximum number of shared runner [pipeline minutes for
   each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota).
 
@@ -136,9 +136,15 @@ Shared runners are automatically disabled for a project:
 To disable shared runners for a group:
 
 1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
-1. In the **Shared runners** area, click **Enable shared runners for this group**.
+1. In the **Shared runners** area, turn off the **Enable shared runners for this group** toggle.
 1. Optionally, to allow shared runners to be enabled for individual projects or subgroups,
    click **Allow projects and subgroups to override the group setting**.
+
+NOTE:
+To re-enable the shared runners for a group, turn on the
+**Enable shared runners for this group** toggle.
+Then, an owner or maintainer must explicitly change this setting
+for each project subgroup or project.
 
 ### Group runners
 
@@ -274,7 +280,7 @@ On GitLab.com, you cannot override the job timeout for shared runners and must u
 To set the maximum job timeout:
 
 1. In a project, go to **Settings > CI/CD > Runners**.
-1. Select your specific runner to edit the settings. 
+1. Select your specific runner to edit the settings.
 1. Enter a value under **Maximum job timeout**.
 1. Select **Save changes**.
 
@@ -805,3 +811,38 @@ You can set them globally or per-job in the [`variables`](../yaml/README.md#vari
 ## System calls not available on GitLab.com shared runners
 
 GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
+
+## Artifact and cache settings
+
+> Introduced in GitLab Runner 13.9.
+
+Artifact and cache settings control the compression ratio of artifacts and caches.
+Use these settings to specify the size of the archive produced by a job.
+
+- On a slow network, uploads might be faster for smaller archives.
+- On a fast network where bandwidth and storage are not a concern, uploads might be faster using the fastest compression ratio, despite the archive produced being larger.
+
+For [GitLab Pages](../../user/project/pages/index.md) to serve
+[HTTP Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests), artifacts
+should use the `ARTIFACT_COMPRESSION_LEVEL: fastest` setting, as only uncompressed zip archives
+support this feature.
+
+A meter can also be enabled to provide the rate of transfer for uploads and downloads.
+
+```yaml
+variables:
+  # output upload and download progress every 2 seconds
+  TRANSFER_METER_FREQUENCY: "2s"
+
+  # Use fast compression for artifacts, resulting in larger archives
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+
+  # Use no compression for caches
+  CACHE_COMPRESSION_LEVEL: "fastest"
+```
+
+| Variable                        | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| `TRANSFER_METER_FREQUENCY`      | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
+| `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |

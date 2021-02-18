@@ -41,3 +41,18 @@ After adding the configuration parameter, reconfigure and restart your GitLab in
 gitlab-ctl reconfigure
 gitlab-ctl restart
 ```
+
+## Changing time zone per user
+
+To allow users to change the time zone in their profile, the feature flag `user_time_settings` should be enabled:
+
+1. [Start a Rails console session](operations/rails_console.md).
+1. Enable the feature flag:
+
+   ```ruby
+   Feature.enable(:user_time_settings)
+   ```
+
+1. You should now be able to see the timezone dropdown in the users' **Settings > Profile** page.
+
+   ![User Time Zone Settings](img/time_zone_settings.png)

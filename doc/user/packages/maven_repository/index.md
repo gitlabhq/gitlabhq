@@ -4,10 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Maven packages in the Package Repository
+# Maven packages in the Package Repository **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in GitLab Premium 11.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 Publish [Maven](https://maven.apache.org) artifacts in your project’s Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -186,10 +186,11 @@ published to the GitLab Package Registry.
 
 ## Authenticate to the Package Registry with Maven
 
-To authenticate to the Package Registry, you need either a personal access token or deploy token.
+To authenticate to the Package Registry, you need one of the following:
 
-- If you use a [personal access token](../../../user/profile/personal_access_tokens.md), set the scope to `api`.
-- If you use a [deploy token](../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
+- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
+- A [CI_JOB_TOKEN](#authenticate-with-a-ci-job-token-in-maven).
 
 ### Authenticate with a personal access token in Maven
 
@@ -219,7 +220,7 @@ The `name` must be `Private-Token`.
 ### Authenticate with a deploy token in Maven
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) deploy token authentication in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 To use a deploy token, add this section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file.
@@ -354,12 +355,13 @@ repositories {
 
 To use the GitLab endpoint for Maven packages, choose an option:
 
-- **Project-level**: Use when you have few Maven packages and they are not in
-  the same GitLab group.
-- **Group-level**: Use when you have many Maven packages in the same GitLab
-  group.
-- **Instance-level**: Use when you have many Maven packages in different
-  GitLab groups or in their own namespace.
+- **Project-level**: To publish Maven packages to a project, use a project-level endpoint.
+  To install Maven packages, use a project-level endpoint when you have few Maven packages
+  and they are not in the same GitLab group.
+- **Group-level**: Use a group-level endpoint when you want to install packages from
+  many different projects in the same GitLab group.
+- **Instance-level**: Use an instance-level endpoint when you want to install many
+  packages from different GitLab groups or in their own namespace.
 
 The option you choose determines the settings you add to your `pom.xml` file.
 
@@ -414,7 +416,7 @@ repositories {
 ### Group-level Maven endpoint
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group-level endpoint for
@@ -462,7 +464,7 @@ repositories {
 ```
 
 - For the `id`, use what you [defined in `settings.xml`](#authenticate-to-the-package-registry-with-maven).
-- For `my-group`, use your group name.
+- For `GROUP_ID`, use your group ID, which you can view on your group's home page.
 - For `PROJECT_ID`, use your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
@@ -472,7 +474,7 @@ repositories {
 ### Instance-level Maven endpoint
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance-level endpoint for
@@ -533,7 +535,7 @@ repositories {
 
 After you have set up the [remote and authentication](#authenticate-to-the-package-registry-with-maven)
 and [configured your project](#use-the-gitlab-endpoint-for-maven-packages),
-publish a Maven artifact from your project.
+publish a Maven package to your project.
 
 ### Publish by using Maven
 
@@ -604,11 +606,35 @@ To publish a package by using Gradle:
 
 Now navigate to your project's **Packages & Registries** page and view the published artifacts.
 
+### Publishing a package with the same name or version
+
+When you publish a package with the same name or version as an existing package,
+the existing package is overwritten.
+
+#### Do not allow duplicate Maven packages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296895) in GitLab Free 13.9.
+
+To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
+
+In the UI:
+
+1. For your group, go to **Settings > Packages & Registries**.
+1. Expand the **Package Registry** section.
+1. Turn on the **Reject duplicates** toggle.
+1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names of packages you want to allow.
+
+Your changes are automatically saved.
+
 ## Install a package
 
 To install a package from the GitLab Package Registry, you must configure
 the [remote and authenticate](#authenticate-to-the-package-registry-with-maven).
-When this is completed, there are two ways to install a package.
+When this is completed, you can install a package from a project,
+group, or namespace.
+
+If multiple packages have the same name and version, when you install
+a package, the most recently-published package is retrieved.
 
 ### Use Maven with `mvn install`
 
@@ -706,7 +732,7 @@ You can create a new package each time the `master` branch is updated.
    ```
 
 1. Make sure your `pom.xml` file includes the following.
-   You can either let Maven use the CI environment variables, as shown in this example,
+   You can either let Maven use the [predefined CI/CD variables](../../../ci/variables/predefined_variables.md), as shown in this example,
    or you can hard code your server's hostname and project's ID.
 
    ```xml
@@ -745,7 +771,7 @@ The next time the `deploy` job runs, it copies `ci_settings.xml` to the
 user's home location. In this example:
 
 - The user is `root`, because the job runs in a Docker container.
-- Maven uses the configured CI [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
+- Maven uses the configured CI/CD variables.
 
 ### Create Maven packages with GitLab CI/CD by using Gradle
 

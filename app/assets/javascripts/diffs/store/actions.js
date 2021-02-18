@@ -1,25 +1,14 @@
-import Vue from 'vue';
 import Cookies from 'js-cookie';
-import Poll from '~/lib/utils/poll';
-import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import Vue from 'vue';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { __, s__ } from '~/locale';
+import { diffViewerModes } from '~/ide/constants';
+import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
+import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
-import TreeWorker from '../workers/tree_worker';
+import { __, s__ } from '~/locale';
 import notesEventHub from '../../notes/event_hub';
-import eventHub from '../event_hub';
-import {
-  getDiffPositionByLineCode,
-  getNoteFormData,
-  convertExpandLines,
-  idleCallback,
-  allDiscussionWrappersExpanded,
-  prepareDiffData,
-  prepareLineForRenamedFile,
-} from './utils';
-import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -48,10 +37,21 @@ import {
   DIFF_VIEW_ALL_FILES,
   DIFF_FILE_BY_FILE_COOKIE_NAME,
 } from '../constants';
-import { diffViewerModes } from '~/ide/constants';
+import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
-import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
+import { getDerivedMergeRequestInformation } from '../utils/merge_request';
+import TreeWorker from '../workers/tree_worker';
+import * as types from './mutation_types';
+import {
+  getDiffPositionByLineCode,
+  getNoteFormData,
+  convertExpandLines,
+  idleCallback,
+  allDiscussionWrappersExpanded,
+  prepareDiffData,
+  prepareLineForRenamedFile,
+} from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
   const {
@@ -749,12 +749,10 @@ export const setFileByFile = ({ commit }, { fileByFile }) => {
   );
 };
 
-export function reviewFile({ commit, state, getters }, { file, reviewed = true }) {
+export function reviewFile({ commit, state }, { file, reviewed = true }) {
   const { mrPath } = getDerivedMergeRequestInformation({ endpoint: file.load_collapsed_diff_url });
-  const reviews = setReviewsForMergeRequest(
-    mrPath,
-    markFileReview(getters.fileReviews(state), file, reviewed),
-  );
+  const reviews = markFileReview(state.mrReviews, file, reviewed);
 
+  setReviewsForMergeRequest(mrPath, reviews);
   commit(types.SET_MR_FILE_REVIEWS, reviews);
 }

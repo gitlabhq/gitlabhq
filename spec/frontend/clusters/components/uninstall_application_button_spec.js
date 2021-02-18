@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UninstallApplicationButton from '~/clusters/components/uninstall_application_button.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 

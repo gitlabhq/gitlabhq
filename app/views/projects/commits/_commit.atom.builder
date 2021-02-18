@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.entry do
   xml.id      project_commit_url(@project, id: commit.id)
   xml.link    href: project_commit_url(@project, id: commit.id)

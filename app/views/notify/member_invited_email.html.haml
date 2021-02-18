@@ -1,12 +1,40 @@
 - placeholders = { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_or_group_name: member_source.human_name, project_or_group: member_source.model_name.singular, br_tag: '<br/>'.html_safe, role: member.human_access.downcase }
-%tr
-  %td.text-content
-    %h2.invite-header
-      = s_('InviteEmail|You are invited!')
-    %p
-      - if member.created_by
-        = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
-      - else
-        = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
-    %p.invite-actions
-      = link_to s_('InviteEmail|Join now'), invite_url(@token), class: 'invite-btn-join'
+
+- experiment('members/invite_email', actor: member) do |experiment_instance|
+  - experiment_instance.use do
+    %tr
+      %td.text-content
+        %h2.invite-header
+          = s_('InviteEmail|You are invited!')
+        %p
+          - if member.created_by
+            = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
+          - else
+            = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
+        %p.invite-actions
+          = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
+  - experiment_instance.try(:avatar) do
+    %tr
+      %td.text-content
+        %img.mail-avatar{ height: "60", src: avatar_icon_for_user(member.created_by, 60, only_path: false), width: "60", alt: "" }
+        %p
+          = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
+        %p.invite-actions
+          = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
+  - experiment_instance.try(:permission_info) do
+    %tr
+      %td.text-content{ colspan: 2 }
+        %img.mail-avatar{ height: "60", src: avatar_icon_for_user(member.created_by, 60, only_path: false), width: "60", alt: "" }
+        %p
+          = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the %{role} permission level.")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
+        %p.invite-actions
+          = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
+    %tr.border-top
+      %td.text-content.half-width
+        %h4
+          = s_('InviteEmail|What is a GitLab %{project_or_group}?') % { project_or_group: member_source.model_name.singular }
+        %p= invited_to_description(member_source.model_name.singular)
+      %td.text-content.half-width
+        %h4
+          = s_('InviteEmail|What can I do with the %{role} permission level?') % { role: member.human_access.downcase }
+        %p= invited_role_description(member.human_access)

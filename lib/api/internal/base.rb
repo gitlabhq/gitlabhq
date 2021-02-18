@@ -52,7 +52,9 @@ module API
           actor.update_last_used_at!
 
           check_result = begin
-                           access_check!(actor, params)
+                           Gitlab::Auth::CurrentUserMode.bypass_session!(actor.user&.id) do
+                             access_check!(actor, params)
+                           end
                          rescue Gitlab::GitAccess::ForbiddenError => e
                            # The return code needs to be 401. If we return 403
                            # the custom message we return won't be shown to the user
@@ -113,6 +115,10 @@ module API
           return 'Could not find the given key' unless actor.key
 
           'Could not find a user for the given key' unless actor.user
+        end
+
+        def two_factor_otp_check
+          { success: false, message: 'Feature is not available' }
         end
       end
 
@@ -276,6 +282,11 @@ module API
           present response, with: Entities::InternalPostReceive::Response
         end
 
+        # This endpoint was added in https://gitlab.com/gitlab-org/gitlab/-/issues/212308
+        # It was added with the plan to be used by  GitLab PAM module but we
+        # decided to pursue a different approach, so it's currently not used.
+        # We might revive the PAM module though as it provides better user
+        # flow.
         post '/two_factor_config', feature_category: :authentication_and_authorization do
           status 200
 
@@ -301,28 +312,7 @@ module API
         post '/two_factor_otp_check', feature_category: :authentication_and_authorization do
           status 200
 
-          break { success: false, message: 'Feature flag is disabled' } unless Feature.enabled?(:two_factor_for_cli)
-
-          actor.update_last_used_at!
-          user = actor.user
-
-          error_message = validate_actor_key(actor, params[:key_id])
-
-          break { success: false, message: error_message } if error_message
-
-          break { success: false, message: 'Deploy keys cannot be used for Two Factor' } if actor.key.is_a?(DeployKey)
-
-          break { success: false, message: 'Two-factor authentication is not enabled for this user' } unless user.two_factor_enabled?
-
-          otp_validation_result = ::Users::ValidateOtpService.new(user).execute(params.fetch(:otp_attempt))
-
-          if otp_validation_result[:status] == :success
-            ::Gitlab::Auth::Otp::SessionEnforcer.new(actor.key).update_session
-
-            { success: true }
-          else
-            { success: false, message: 'Invalid OTP' }
-          end
+          two_factor_otp_check
         end
       end
     end

@@ -1045,4 +1045,12 @@ describe('common_utils', () => {
       expect(commonUtils.getDashPath('/some/url')).toEqual(null);
     });
   });
+
+  describe('convertArrayToCamelCase', () => {
+    it('returns a new array with snake_case string elements converted camelCase', () => {
+      const result = commonUtils.convertArrayToCamelCase(['hello', 'hello_world']);
+
+      expect(result).toEqual(['hello', 'helloWorld']);
+    });
+  });
 });

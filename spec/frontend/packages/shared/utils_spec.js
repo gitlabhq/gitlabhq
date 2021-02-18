@@ -1,10 +1,10 @@
+import { PackageType, TrackingCategories } from '~/packages/shared/constants';
 import {
   packageTypeToTrackCategory,
   beautifyPath,
   getPackageTypeLabel,
   getCommitLink,
 } from '~/packages/shared/utils';
-import { PackageType, TrackingCategories } from '~/packages/shared/constants';
 import { packageList } from '../mock_data';
 
 describe('Packages shared utils', () => {

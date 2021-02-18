@@ -1,8 +1,9 @@
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import initLabels from '~/init_labels';
-import eventHub from '../event_hub';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import Translate from '~/vue_shared/translate';
 import PromoteLabelModal from '../components/promote_label_modal.vue';
+import eventHub from '../event_hub';
 
 Vue.use(Translate);
 
@@ -49,7 +50,7 @@ const initLabelIndex = () => {
       promoteLabelButtons.forEach((button) => {
         button.removeAttribute('disabled');
         button.addEventListener('click', () => {
-          this.$root.$emit('bv::show::modal', 'promote-label-modal');
+          this.$root.$emit(BV_SHOW_MODAL, 'promote-label-modal');
           eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
 
           this.setModalProps({

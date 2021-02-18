@@ -6,7 +6,7 @@ type: reference, howto
 description: "Documentation on Git file blame."
 ---
 
-# Git file blame
+# Git file blame **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/commit/39c657930625ddc3ac8a921f01ffc83acadce68f) in GitLab 2.5.
 

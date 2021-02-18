@@ -62,7 +62,6 @@ Service.available_services_names.each do |service|
 
       stub_licensed_features(licensed_feature => true)
       project.clear_memoization(:disabled_services)
-      project.clear_memoization(:licensed_feature_available)
     end
   end
 end

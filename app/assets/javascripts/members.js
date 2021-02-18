@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { Rails } from '~/lib/utils/rails_ujs';
-import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
+import { Rails } from '~/lib/utils/rails_ujs';
 import { __, sprintf } from '~/locale';
 
 export default class Members {

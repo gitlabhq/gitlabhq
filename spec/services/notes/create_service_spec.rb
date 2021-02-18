@@ -459,6 +459,26 @@ RSpec.describe Notes::CreateService do
             .and change { existing_note.updated_at }
       end
 
+      context 'failure in when_saved' do
+        let(:service) { described_class.new(project, user, reply_opts) }
+
+        it 'converts existing note to DiscussionNote' do
+          expect do
+            existing_note
+
+            allow(service).to receive(:when_saved).and_raise(ActiveRecord::StatementInvalid)
+
+            travel_to(Time.current + 1.minute) do
+              service.execute
+            rescue ActiveRecord::StatementInvalid
+            end
+
+            existing_note.reload
+          end.to change { existing_note.type }.from(nil).to('DiscussionNote')
+            .and change { existing_note.updated_at }
+        end
+      end
+
       it 'returns a DiscussionNote with its parent discussion refreshed correctly' do
         discussion_notes = subject.discussion.notes
 

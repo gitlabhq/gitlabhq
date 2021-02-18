@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 
 import { mockLabelList } from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
@@ -78,7 +78,13 @@ describe('Board List Header Component', () => {
 
   describe('Add issue button', () => {
     const hasNoAddButton = [ListType.closed];
-    const hasAddButton = [ListType.backlog, ListType.label, ListType.milestone, ListType.assignee];
+    const hasAddButton = [
+      ListType.backlog,
+      ListType.label,
+      ListType.milestone,
+      ListType.iteration,
+      ListType.assignee,
+    ];
 
     it.each(hasNoAddButton)('does not render when List Type is `%s`', (listType) => {
       createComponent({ listType });
@@ -167,7 +173,7 @@ describe('Board List Header Component', () => {
 
   describe('user can drag', () => {
     const cannotDragList = [ListType.backlog, ListType.closed];
-    const canDragList = [ListType.label, ListType.milestone, ListType.assignee];
+    const canDragList = [ListType.label, ListType.milestone, ListType.iteration, ListType.assignee];
 
     it.each(cannotDragList)(
       'does not have user-can-drag-class so user cannot drag list',

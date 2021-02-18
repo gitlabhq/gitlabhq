@@ -1,8 +1,8 @@
 <script>
 import { GlAlert, GlModal, GlSprintf } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import updateCanaryIngress from '../graphql/mutations/update_canary_ingress.mutation.graphql';
 import { CANARY_UPDATE_MODAL } from '../constants';
+import updateCanaryIngress from '../graphql/mutations/update_canary_ingress.mutation.graphql';
 
 export default {
   components: {

@@ -18,12 +18,12 @@
             = f.label :snowplow_enabled, _('Enable snowplow tracking'), class: 'form-check-label'
         .form-group
           = f.label :snowplow_collector_hostname, _('Collector hostname'), class: 'label-light'
-          = f.text_field :snowplow_collector_hostname, class: 'form-control', placeholder: 'snowplow.example.com'
+          = f.text_field :snowplow_collector_hostname, class: 'form-control gl-form-input', placeholder: 'snowplow.example.com'
         .form-group
           = f.label :snowplow_app_id, _('App ID'), class: 'label-light'
-          = f.text_field :snowplow_app_id, class: 'form-control'
+          = f.text_field :snowplow_app_id, class: 'form-control gl-form-input'
         .form-group
           = f.label :snowplow_cookie_domain, _('Cookie domain'), class: 'label-light'
-          = f.text_field :snowplow_cookie_domain, class: 'form-control'
+          = f.text_field :snowplow_cookie_domain, class: 'form-control gl-form-input'
 
       = f.submit _('Save changes'), class: 'gl-button btn btn-success'

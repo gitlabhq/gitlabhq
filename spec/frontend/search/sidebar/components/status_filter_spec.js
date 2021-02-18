@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
-import StatusFilter from '~/search/sidebar/components/status_filter.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
+import StatusFilter from '~/search/sidebar/components/status_filter.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

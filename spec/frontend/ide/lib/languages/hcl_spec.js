@@ -1,6 +1,6 @@
 import { editor } from 'monaco-editor';
-import { registerLanguages } from '~/ide/utils';
 import hcl from '~/ide/lib/languages/hcl';
+import { registerLanguages } from '~/ide/utils';
 
 describe('tokenization for .tf files', () => {
   beforeEach(() => {

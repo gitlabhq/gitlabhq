@@ -1,3 +1,4 @@
+import { STATUSES } from '~/import_entities/constants';
 import {
   isLoading,
   isImportingAnyRepo,
@@ -6,7 +7,6 @@ import {
   importAllCount,
   getImportTarget,
 } from '~/import_entities/import_projects/store/getters';
-import { STATUSES } from '~/import_entities/constants';
 import state from '~/import_entities/import_projects/store/state';
 
 const IMPORTED_REPO = {

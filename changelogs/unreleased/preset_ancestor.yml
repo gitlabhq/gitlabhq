@@ -1,0 +1,5 @@
+---
+title: Optimized loading of descendant group labels
+merge_request: 53356
+author:
+type: performance

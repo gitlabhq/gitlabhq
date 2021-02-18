@@ -1,8 +1,8 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import { GlButton } from '@gitlab/ui';
-import BitbucketServerStatusTable from '~/pages/import/bitbucket_server/status/components/bitbucket_server_status_table.vue';
 import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
+import BitbucketServerStatusTable from '~/pages/import/bitbucket_server/status/components/bitbucket_server_status_table.vue';
 
 const BitbucketStatusTableStub = {
   name: 'BitbucketStatusTable',

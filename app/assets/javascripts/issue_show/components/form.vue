@@ -1,12 +1,12 @@
 <script>
 import $ from 'jquery';
-import lockedWarning from './locked_warning.vue';
-import titleField from './fields/title.vue';
-import descriptionField from './fields/description.vue';
-import editActions from './edit_actions.vue';
-import descriptionTemplate from './fields/description_template.vue';
 import Autosave from '~/autosave';
 import eventHub from '../event_hub';
+import editActions from './edit_actions.vue';
+import descriptionField from './fields/description.vue';
+import descriptionTemplate from './fields/description_template.vue';
+import titleField from './fields/title.vue';
+import lockedWarning from './locked_warning.vue';
 
 export default {
   components: {
@@ -44,6 +44,10 @@ export default {
     },
     projectPath: {
       type: String,
+      required: true,
+    },
+    projectId: {
+      type: Number,
       required: true,
     },
     projectNamespace: {
@@ -127,6 +131,7 @@ export default {
           :form-state="formState"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
+          :project-id="projectId"
           :project-namespace="projectNamespace"
         />
       </div>

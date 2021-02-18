@@ -1,8 +1,8 @@
+import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import { createStore } from '~/frequent_items/store';
-import eventHub from '~/frequent_items/event_hub';
 
 describe('FrequentItemsSearchInputComponent', () => {
   let wrapper;
@@ -15,6 +15,8 @@ describe('FrequentItemsSearchInputComponent', () => {
       store,
       propsData: { namespace },
     });
+
+  const findSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
 
   beforeEach(() => {
     store = createStore({ dropdownType: 'project' });
@@ -33,59 +35,13 @@ describe('FrequentItemsSearchInputComponent', () => {
     vm.$destroy();
   });
 
-  describe('methods', () => {
-    describe('setFocus', () => {
-      it('should set focus to search input', () => {
-        jest.spyOn(vm.$refs.search, 'focus').mockImplementation(() => {});
-
-        vm.setFocus();
-
-        expect(vm.$refs.search.focus).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('mounted', () => {
-    it('should listen `dropdownOpen` event', (done) => {
-      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
-      const vmX = createComponent().vm;
-
-      vmX.$nextTick(() => {
-        expect(eventHub.$on).toHaveBeenCalledWith(
-          `${vmX.namespace}-dropdownOpen`,
-          expect.any(Function),
-        );
-        done();
-      });
-    });
-  });
-
-  describe('beforeDestroy', () => {
-    it('should unbind event listeners on eventHub', (done) => {
-      const vmX = createComponent().vm;
-      jest.spyOn(eventHub, '$off').mockImplementation(() => {});
-
-      vmX.$mount();
-      vmX.$destroy();
-
-      vmX.$nextTick(() => {
-        expect(eventHub.$off).toHaveBeenCalledWith(
-          `${vmX.namespace}-dropdownOpen`,
-          expect.any(Function),
-        );
-        done();
-      });
-    });
-  });
-
   describe('template', () => {
     it('should render component element', () => {
       expect(wrapper.classes()).toContain('search-input-container');
-      expect(wrapper.find('input.form-control').exists()).toBe(true);
-      expect(wrapper.find('.search-icon').exists()).toBe(true);
-      expect(wrapper.find('input.form-control').attributes('placeholder')).toBe(
-        'Search your projects',
-      );
+      expect(findSearchBoxByType().exists()).toBe(true);
+      expect(findSearchBoxByType().attributes()).toMatchObject({
+        placeholder: 'Search your projects',
+      });
     });
   });
 
@@ -96,9 +52,7 @@ describe('FrequentItemsSearchInputComponent', () => {
 
       const value = 'my project';
 
-      const input = wrapper.find('input');
-      input.setValue(value);
-      input.trigger('input');
+      findSearchBoxByType().vm.$emit('input', value);
 
       await wrapper.vm.$nextTick();
 

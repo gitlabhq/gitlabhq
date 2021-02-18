@@ -8,19 +8,19 @@ module Types
         graphql_name 'MetricsDashboardAnnotation'
 
         field :description, GraphQL::STRING_TYPE, null: true,
-              description: 'Description of the annotation'
+              description: 'Description of the annotation.'
 
         field :id, GraphQL::ID_TYPE, null: false,
-              description: 'ID of the annotation'
+              description: 'ID of the annotation.'
 
         field :panel_id, GraphQL::STRING_TYPE, null: true,
-              description: 'ID of a dashboard panel to which the annotation should be scoped'
+              description: 'ID of a dashboard panel to which the annotation should be scoped.'
 
         field :starting_at, Types::TimeType, null: true,
-              description: 'Timestamp marking start of annotated time span'
+              description: 'Timestamp marking start of annotated time span.'
 
         field :ending_at, Types::TimeType, null: true,
-              description: 'Timestamp marking end of annotated time span'
+              description: 'Timestamp marking end of annotated time span.'
 
         def panel_id
           object.panel_xid

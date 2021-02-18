@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23532) in GitLab 11.7.
 
 Issues can be imported to a project by uploading a CSV file with the columns
-`title` and `description`.
+`title` and `description`. Other columns are **not** imported. If you want to
+retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#moving-issues).
 
 The user uploading the CSV file is set as the author of the imported issues.
 

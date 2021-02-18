@@ -1,28 +1,35 @@
 - page_title _("Applications")
 %h3.page-title
-  System OAuth applications
+  = _('System OAuth applications')
 %p.light
-  System OAuth applications don't belong to any user and can only be managed by admins
+  = _('System OAuth applications don\'t belong to any user and can only be managed by admins')
 %hr
-%p= link_to 'New application', new_admin_application_path, class: 'gl-button btn btn-success'
-%table.table
-  %thead
-    %tr
-      %th Name
-      %th Callback URL
-      %th Clients
-      %th Trusted
-      %th Confidential
-      %th
-      %th
-  %tbody.oauth-applications
-    - @applications.each do |application|
-      %tr{ :id => "application_#{application.id}" }
-        %td= link_to application.name, admin_application_path(application)
-        %td= application.redirect_uri
-        %td= @application_counts[application.id].to_i
-        %td= application.trusted? ? 'Y': 'N'
-        %td= application.confidential? ? 'Y': 'N'
-        %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'
-        %td= render 'delete_form', application: application
+%p= link_to _('New application'), new_admin_application_path, class: 'gl-button btn btn-success'
+.table-responsive
+  %table.table
+    %thead
+      %tr
+        %th
+          = _('Name')
+        %th
+          = _('Callback URL')
+        %th
+          = _('Clients')
+        %th
+          = _('Trusted')
+        %th
+          = _('Confidential')
+        %th
+        %th
+    %tbody.oauth-applications
+      - @applications.each do |application|
+        %tr{ :id => "application_#{application.id}" }
+          %td= link_to application.name, admin_application_path(application)
+          %td= application.redirect_uri
+          %td= @application_counts[application.id].to_i
+          %td= application.trusted? ? _('Yes'): _('No')
+          %td= application.confidential? ? _('Yes'): _('No')
+          %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'
+          %td= render 'delete_form', application: application
+
 = paginate @applications, theme: 'gitlab'

@@ -30,6 +30,7 @@ class GroupsController < Groups::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issuables_list, @group)
+    push_frontend_feature_flag(:vue_notification_dropdown, @group, default_enabled: :yaml)
   end
 
   before_action do
@@ -319,9 +320,7 @@ class GroupsController < Groups::ApplicationController
 
   private
 
-  def successful_creation_hooks
-    track_experiment_event(:onboarding_issues, 'created_namespace')
-  end
+  def successful_creation_hooks; end
 
   def groups
     if @group.supports_events?

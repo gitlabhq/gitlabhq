@@ -8,8 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Every API call to boards must be authenticated.
 
-If a user is not a member of a project and the project is private, a `GET`
-request on that project will result to a `404` status code.
+If a user is not a member of a private project,
+a `GET` request on that project results in a `404` status code.
 
 ## List project issue boards
 
@@ -488,7 +488,7 @@ Example response:
 
 ## Delete a board list from a board
 
-Only for admins and project owners. Deletes the board list in question.
+Only for administrators and project owners. Deletes a board list.
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id/lists/:list_id

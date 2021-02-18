@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
+import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import createEmptyBadge from '../empty_badge';
@@ -179,7 +179,7 @@ export default {
         id="badge-link-url"
         v-model="linkUrl"
         type="URL"
-        class="form-control"
+        class="form-control gl-form-input"
         required
         @input="debouncedPreview"
       />
@@ -194,7 +194,7 @@ export default {
         id="badge-image-url"
         v-model="imageUrl"
         type="URL"
-        class="form-control"
+        class="form-control gl-form-input"
         required
         @input="debouncedPreview"
       />

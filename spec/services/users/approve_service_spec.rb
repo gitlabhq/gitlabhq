@@ -33,7 +33,7 @@ RSpec.describe Users::ApproveService do
           it 'returns error result' do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message])
-              .to match(/The user you are trying to approve is not pending an approval/)
+              .to match(/The user you are trying to approve is not pending approval/)
           end
         end
 
@@ -61,6 +61,14 @@ RSpec.describe Users::ApproveService do
           expect(user.reload).to be_active
         end
 
+        it 'logs approval in application logs' do
+          allow(Gitlab::AppLogger).to receive(:info)
+
+          subject
+
+          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request approved", user: "#{user.username}", email: "#{user.email}", approved_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+        end
+
         it 'emails the user on approval' do
           expect(DeviseMailer).to receive(:user_admin_approval).with(user).and_call_original
           expect { subject }.to have_enqueued_mail(DeviseMailer, :user_admin_approval)
@@ -80,6 +88,20 @@ RSpec.describe Users::ApproveService do
             it 'does not send a confirmation email' do
               expect { subject }
                 .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+            end
+          end
+
+          context 'audit events' do
+            context 'when not licensed' do
+              before do
+                stub_licensed_features(
+                  admin_audit_log: false
+                )
+              end
+
+              it 'does not log any audit event' do
+                expect { subject }.not_to change(AuditEvent, :count)
+              end
             end
           end
         end

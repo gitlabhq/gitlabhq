@@ -1,9 +1,9 @@
 <script>
-import dateFormat from 'dateformat';
 import { GlLink, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import { truncateSha } from '~/lib/utils/text_utility';
+import dateFormat from 'dateformat';
 import { getTimeago } from '~/lib/utils/datetime_utility';
+import { truncateSha } from '~/lib/utils/text_utility';
+import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ExpandButton from '~/vue_shared/components/expand_button.vue';
 

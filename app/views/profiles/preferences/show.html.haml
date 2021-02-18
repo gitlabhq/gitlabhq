@@ -1,14 +1,15 @@
 - page_title _('Preferences')
 - @content_class = "limit-container-width" unless fluid_layout
-- user_fields = { gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }
 - user_theme_id = Gitlab::Themes.for_user(@user).id
-- data_attributes = { integration_views: integration_views.to_json, user_fields: user_fields.to_json }
+- user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
+- @themes = Gitlab::Themes::THEMES.to_json
+- data_attributes = { themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path }
 
 - Gitlab::Themes.each do |theme|
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put do |f|
-  .row.gl-mt-3.js-preferences-form
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
+  .row.gl-mt-3.js-preferences-form.js-search-settings-section
     .col-lg-4.application-theme#navigation-theme
       %h4.gl-mt-0
         = s_('Preferences|Navigation theme')
@@ -25,6 +26,7 @@
     .col-sm-12
       %hr
 
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
       %h4.gl-mt-0
         = s_('Preferences|Syntax highlighting theme')
@@ -42,6 +44,7 @@
     .col-sm-12
       %hr
 
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#behavior
       %h4.gl-mt-0
         = s_('Preferences|Behavior')
@@ -97,7 +100,7 @@
 
     .col-sm-12
       %hr
-
+  .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#localization
       %h4.gl-mt-0
         = _('Localization')
@@ -141,10 +144,4 @@
             .form-text.text-muted
               = s_('Preferences|For example: 30 mins ago.')
 
-  #js-profile-preferences-app{ data: data_attributes, user_fields: user_fields.to_json }
-
-  .row.gl-mt-3.js-preferences-form
-    .col-lg-4.profile-settings-sidebar
-    .col-lg-8
-      .form-group
-        = f.submit _('Save changes'), class: 'gl-button btn btn-success'
+  #js-profile-preferences-app{ data: data_attributes }

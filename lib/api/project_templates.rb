@@ -26,9 +26,7 @@ module API
         use :pagination
       end
       get ':id/templates/:type' do
-        templates = TemplateFinder
-          .build(params[:type], user_project)
-          .execute
+        templates = TemplateFinder.all_template_names_array(user_project, params[:type])
 
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
       end
@@ -38,16 +36,22 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the template'
-
+        optional :source_template_project_id, type: Integer,
+                 desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name'
         optional :project, type: String, desc: 'The project name to use when expanding placeholders in the template. Only affects licenses'
         optional :fullname, type: String, desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses'
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
         begin
-          template = TemplateFinder
-            .build(params[:type], user_project, name: params[:name])
-            .execute
+          template = TemplateFinder.build(
+            params[:type],
+            user_project,
+            {
+              name: params[:name],
+              source_template_project_id: params[:source_template_project_id]
+            }
+          ).execute
         rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
           not_found!('Template')
         end

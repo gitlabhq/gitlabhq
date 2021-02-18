@@ -110,7 +110,7 @@ for an explanation of these roles and the permissions of each.
 
 Production secrets are needed to deploy successfully. For example, when deploying to the cloud,
 cloud providers require these secrets to connect to their services. In the project settings, you can
-define and protect environment variables for these secrets. [Protected variables](../variables/README.md#protect-a-custom-variable)
+define and protect CI/CD variables for these secrets. [Protected variables](../variables/README.md#protect-a-custom-variable)
 are only passed to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 The other pipelines don't get the protected variable. You can also
@@ -141,7 +141,7 @@ reference a file in another project with a completely different set of permissio
 In this scenario, the `gitlab-ci.yml` is publicly accessible, but can only be edited by users with
 appropriate permissions in the other project.
 
-For more information, see [Custom CI configuration path](../pipelines/settings.md#custom-ci-configuration-path).
+For more information, see [Custom CI/CD configuration path](../pipelines/settings.md#custom-cicd-configuration-path).
 
 ## Troubleshooting
 

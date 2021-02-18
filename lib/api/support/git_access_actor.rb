@@ -37,6 +37,8 @@ module API
       end
 
       def update_last_used_at!
+        return if Feature.enabled?(:disable_ssh_key_used_tracking)
+
         key&.update_last_used_at
       end
 

@@ -85,14 +85,37 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
   end
 
   describe "GET /#{container_type}/:id/repository_storage_moves" do
-    it_behaves_like 'get container repository storage move list' do
-      let(:url) { "/#{container_type}/#{container.id}/repository_storage_moves" }
+    let(:container_id) { container.id }
+    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves" }
+
+    it_behaves_like 'get container repository storage move list'
+
+    context 'non-existent container' do
+      let(:container_id) { non_existing_record_id }
+
+      it 'returns not found' do
+        get api(url, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 
   describe "GET /#{container_type}/:id/repository_storage_moves/:repository_storage_move_id" do
-    it_behaves_like 'get single container repository storage move' do
-      let(:url) { "/#{container_type}/#{container.id}/repository_storage_moves/#{repository_storage_move_id}" }
+    let(:container_id) { container.id }
+    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves/#{repository_storage_move_id}" }
+
+    it_behaves_like 'get single container repository storage move'
+
+    context 'non-existent container' do
+      let(:container_id) { non_existing_record_id }
+      let(:repository_storage_move_id) { storage_move.id }
+
+      it 'returns not found' do
+        get api(url, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 
@@ -109,7 +132,8 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
   end
 
   describe "POST /#{container_type}/:id/repository_storage_moves" do
-    let(:url) { "/#{container_type}/#{container.id}/repository_storage_moves" }
+    let(:container_id) { container.id }
+    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves" }
     let(:destination_storage_name) { 'test_second_storage' }
 
     def create_container_repository_storage_move
@@ -152,6 +176,16 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
         expect(json_response['state']).to eq('scheduled')
         expect(json_response['source_storage_name']).to eq('default')
         expect(json_response['destination_storage_name']).to be_present
+      end
+    end
+
+    context 'when container does not exist' do
+      let(:container_id) { non_existing_record_id }
+
+      it 'returns not found' do
+        create_container_repository_storage_move
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

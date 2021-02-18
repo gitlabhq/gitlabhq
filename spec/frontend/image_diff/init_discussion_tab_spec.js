@@ -1,5 +1,5 @@
-import initDiscussionTab from '~/image_diff/init_discussion_tab';
 import initImageDiffHelper from '~/image_diff/helpers/init_image_diff';
+import initDiscussionTab from '~/image_diff/init_discussion_tab';
 
 describe('initDiscussionTab', () => {
   beforeEach(() => {

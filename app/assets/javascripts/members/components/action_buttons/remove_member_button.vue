@@ -1,6 +1,6 @@
 <script>
-import { mapState } from 'vuex';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapState } from 'vuex';
 
 export default {
   name: 'RemoveMemberButton',

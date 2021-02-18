@@ -1,4 +1,4 @@
-import { addIconStatus, formattedTime } from './utils';
+import { addIconStatus, formatFilePath, formattedTime } from './utils';
 
 export const getTestSuites = (state) => {
   const { test_suites: testSuites = [] } = state.testReports;
@@ -17,7 +17,15 @@ export const getSuiteTests = (state) => {
   const { page, perPage } = state.pageInfo;
   const start = (page - 1) * perPage;
 
-  return testCases.map(addIconStatus).slice(start, start + perPage);
+  return testCases
+    .map((testCase) => ({
+      ...testCase,
+      classname: testCase.classname || '',
+      name: testCase.name || '',
+      filePath: testCase.file ? `${state.blobPath}/${formatFilePath(testCase.file)}` : null,
+    }))
+    .map(addIconStatus)
+    .slice(start, start + perPage);
 };
 
 export const getSuiteTestCount = (state) => getSelectedSuite(state)?.test_cases?.length || 0;

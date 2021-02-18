@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
 import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/constants';
+import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
 
 describe('Blob Simple Viewer component', () => {
   let wrapper;

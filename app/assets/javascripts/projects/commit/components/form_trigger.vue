@@ -10,6 +10,9 @@ export default {
     displayText: {
       default: '',
     },
+    testId: {
+      default: '',
+    },
   },
   props: {
     openModal: {
@@ -26,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <gl-link data-is-link="true" data-testid="revert-commit-link" @click="showModal">
+  <gl-link data-is-link="true" :data-testid="testId" @click="showModal">
     {{ displayText }}
   </gl-link>
 </template>

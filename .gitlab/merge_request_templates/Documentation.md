@@ -11,7 +11,7 @@
 
 ## Related issues
 
-<!-- Link related issues below. Insert the issue link or reference after the word "Closes" if merging this should automatically close it. -->
+<!-- Link related issues below. -->
 
 ## Author's checklist (required)
 
@@ -31,13 +31,13 @@ When applicable:
 
 - [ ] Update the [permissions table](https://docs.gitlab.com/ee/user/permissions.html).
 - [ ] Link docs to and from the higher-level index page, plus other related docs where helpful.
-- [ ] Add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) accordingly.
-- [ ] Add [GitLab's version history note(s)](https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text).
+- [ ] Add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) accordingly.
+- [ ] Add [GitLab's version history note(s)](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#gitlab-versions).
 - [ ] Add/update the [feature flag section](https://docs.gitlab.com/ee/development/documentation/feature_flags.html).
 
 ## Review checklist
 
-All reviewers can help ensure accuracy, clarity, completeness, and adherence to the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
+All reviewers can help ensure accuracy, clarity, completeness, and adherence to the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
 
 **1. Primary Reviewer**
 

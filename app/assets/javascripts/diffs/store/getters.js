@@ -1,11 +1,11 @@
 import { __, n__ } from '~/locale';
-import { parallelizeDiffLines } from './utils';
-import { isFileReviewed } from '../utils/file_reviews';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   INLINE_DIFF_LINES_KEY,
 } from '../constants';
+import { computeSuggestionCommitMessage } from '../utils/suggestions';
+import { parallelizeDiffLines } from './utils';
 
 export * from './getters_versions_dropdowns';
 
@@ -156,6 +156,17 @@ export const diffLines = (state) => (file, unifiedDiffComponents) => {
   );
 };
 
-export function fileReviews(state) {
-  return state.diffFiles.map((file) => isFileReviewed(state.mrReviews, file));
+export function suggestionCommitMessage(state) {
+  return (values = {}) =>
+    computeSuggestionCommitMessage({
+      message: state.defaultSuggestionCommitMessage,
+      values: {
+        branch_name: state.branchName,
+        project_path: state.projectPath,
+        project_name: state.projectName,
+        username: state.username,
+        user_full_name: state.userFullName,
+        ...values,
+      },
+    });
 }

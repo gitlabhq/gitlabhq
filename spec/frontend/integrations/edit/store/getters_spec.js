@@ -4,9 +4,9 @@ import {
   isDisabled,
   propsSource,
 } from '~/integrations/edit/store/getters';
-import createState from '~/integrations/edit/store/state';
-import mutations from '~/integrations/edit/store/mutations';
 import * as types from '~/integrations/edit/store/mutation_types';
+import mutations from '~/integrations/edit/store/mutations';
+import createState from '~/integrations/edit/store/state';
 import { mockIntegrationProps } from '../mock_data';
 
 describe('Integration form store getters', () => {

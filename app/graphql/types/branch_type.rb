@@ -8,11 +8,11 @@ module Types
     field :name,
           GraphQL::STRING_TYPE,
           null: false,
-          description: 'Name of the branch'
+          description: 'Name of the branch.'
 
     field :commit, Types::CommitType,
           null: true, resolver: Resolvers::BranchCommitResolver,
-          description: 'Commit for the branch'
+          description: 'Commit for the branch.'
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

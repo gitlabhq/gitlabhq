@@ -32,29 +32,5 @@ RSpec.describe ::JiraConnect::SyncBuildsWorker do
         subject
       end
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(jira_sync_builds: false)
-      end
-
-      it 'does not call the sync service' do
-        expect_next(::JiraConnect::SyncService).not_to receive(:execute)
-
-        subject
-      end
-    end
-
-    context 'when the feature flag is enabled for this project' do
-      before do
-        stub_feature_flags(jira_sync_builds: pipeline.project)
-      end
-
-      it 'calls the sync service' do
-        expect_next(::JiraConnect::SyncService).to receive(:execute)
-
-        subject
-      end
-    end
   end
 end

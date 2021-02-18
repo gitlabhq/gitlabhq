@@ -13,7 +13,6 @@ export default () => {
   const {
     artifactHelpUrl,
     deploymentHelpUrl,
-    runnerHelpUrl,
     runnerSettingsUrl,
     variablesSettingsUrl,
     subscriptionsMoreMinutesUrl,
@@ -39,7 +38,6 @@ export default () => {
         props: {
           artifactHelpUrl,
           deploymentHelpUrl,
-          runnerHelpUrl,
           runnerSettingsUrl,
           variablesSettingsUrl,
           subscriptionsMoreMinutesUrl,

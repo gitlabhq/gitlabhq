@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import Popover from '~/code_navigation/components/popover.vue';
 import DocLine from '~/code_navigation/components/doc_line.vue';
+import Popover from '~/code_navigation/components/popover.vue';
 
 const DEFINITION_PATH_PREFIX = 'http://gitlab.com';
 

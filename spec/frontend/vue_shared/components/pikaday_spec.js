@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDatepicker } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import datePicker from '~/vue_shared/components/pikaday.vue';
 
 describe('datePicker', () => {

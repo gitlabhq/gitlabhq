@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Developers Guide to Logging
+# GitLab Developers Guide to Logging **(FREE)**
 
 [GitLab Logs](../administration/logs.md) play a critical role for both
 administrators and GitLab team members to diagnose problems in the field.
@@ -291,13 +291,35 @@ method or variable shouldn't be evaluated right away)
 - Change `Gitlab::ApplicationContext` to accept these new values
 - Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
 
-See our [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
+See our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.
 
 The fields of the context are currently only logged for Sidekiq jobs triggered
 through web requests. See the
 [follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/68)
 for more information.
+
+### Logging context metadata (through workers)
+
+Additional metadata can be attached to a worker through the use of the [`ApplicationWorker#log_extra_metadata_on_done`](https://gitlab.com/gitlab-org/gitlab/-/blob/16ecc33341a3f6b6bebdf78d863c5bce76b040d3/app/workers/concerns/application_worker.rb#L31-34)
+method. Using this method adds metadata that is later logged to Kibana with the done job payload.
+
+```ruby
+class MyExampleWorker
+  include ApplicationWorker
+
+  def perform(*args)
+    # Worker performs work
+    # ...
+
+    # The contents of value will appear in Kibana under `json.extra.my_example_worker.my_key`
+    log_extra_metadata_on_done(:my_key, value)
+  end
+end
+```
+
+Please see [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/16ecc33341a3f6b6bebdf78d863c5bce76b040d3/app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb#L20-21)
+which logs a count of how many artifacts are destroyed per run of the `ExpireArtifactsWorker`.
 
 ## Exception Handling
 

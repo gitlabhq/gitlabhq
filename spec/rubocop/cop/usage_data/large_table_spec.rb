@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-
 require 'rubocop'
-require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/usage_data/large_table'
 
 RSpec.describe RuboCop::Cop::UsageData::LargeTable do
-  include CopHelper
-
   let(:large_tables) { %i[Rails Time] }
   let(:count_methods) { %i[count distinct_count] }
   let(:allowed_methods) { %i[minimum maximum] }
+  let(:msg) { 'Use one of the count, distinct_count methods for counting on' }
 
   let(:config) do
     RuboCop::Config.new('UsageData/LargeTable' => {
@@ -31,59 +28,54 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
 
     context 'with large tables' do
       context 'when calling Issue.count' do
-        it 'register an offence' do
-          inspect_source('Issue.count')
-
-          expect(cop.offenses.size).to eq(1)
+        it 'registers an offense' do
+          expect_offense(<<~CODE)
+            Issue.count
+            ^^^^^^^^^^^ #{msg} Issue
+          CODE
         end
       end
 
       context 'when calling Issue.active.count' do
-        it 'register an offence' do
-          inspect_source('Issue.active.count')
-
-          expect(cop.offenses.size).to eq(1)
+        it 'registers an offense' do
+          expect_offense(<<~CODE)
+            Issue.active.count
+            ^^^^^^^^^^^^ #{msg} Issue
+          CODE
         end
       end
 
       context 'when calling count(Issue)' do
-        it 'does not register an offence' do
-          inspect_source('count(Issue)')
-
-          expect(cop.offenses).to be_empty
+        it 'does not register an offense' do
+          expect_no_offenses('count(Issue)')
         end
       end
 
       context 'when calling count(Ci::Build.active)' do
-        it 'does not register an offence' do
-          inspect_source('count(Ci::Build.active)')
-
-          expect(cop.offenses).to be_empty
+        it 'does not register an offense' do
+          expect_no_offenses('count(Ci::Build.active)')
         end
       end
 
       context 'when calling Ci::Build.active.count' do
-        it 'register an offence' do
-          inspect_source('Ci::Build.active.count')
-
-          expect(cop.offenses.size).to eq(1)
+        it 'registers an offense' do
+          expect_offense(<<~CODE)
+            Ci::Build.active.count
+            ^^^^^^^^^^^^^^^^ #{msg} Ci::Build
+          CODE
         end
       end
 
       context 'when using allowed methods' do
-        it 'does not register an offence' do
-          inspect_source('Issue.minimum')
-
-          expect(cop.offenses).to be_empty
+        it 'does not register an offense' do
+          expect_no_offenses('Issue.minimum')
         end
       end
     end
 
     context 'with non related class' do
-      it 'does not register an offence' do
-        inspect_source('Rails.count')
-
-        expect(cop.offenses).to be_empty
+      it 'does not register an offense' do
+        expect_no_offenses('Rails.count')
       end
     end
   end

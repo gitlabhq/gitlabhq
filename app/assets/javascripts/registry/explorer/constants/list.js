@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 //  Translations strings
 
@@ -35,8 +35,6 @@ export const ASYNC_DELETE_IMAGE_ERROR_MESSAGE = s__(
 export const DELETE_IMAGE_SUCCESS_MESSAGE = s__(
   'ContainerRegistry|%{title} was successfully scheduled for deletion',
 );
-export const IMAGE_REPOSITORY_LIST_LABEL = s__('ContainerRegistry|Image Repositories');
-export const SEARCH_PLACEHOLDER_TEXT = s__('ContainerRegistry|Filter by name');
 export const EMPTY_RESULT_TITLE = s__('ContainerRegistry|Sorry, your filter produced no results.');
 export const EMPTY_RESULT_MESSAGE = s__(
   'ContainerRegistry|To widen your search, change or remove the filters above.',
@@ -47,3 +45,9 @@ export const EMPTY_RESULT_MESSAGE = s__(
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';
 export const IMAGE_FAILED_DELETED_STATUS = 'DELETE_FAILED';
 export const GRAPHQL_PAGE_SIZE = 10;
+
+export const SORT_FIELDS = [
+  { orderBy: 'UPDATED', label: __('Updated') },
+  { orderBy: 'CREATED', label: __('Created') },
+  { orderBy: 'NAME', label: __('Name') },
+];

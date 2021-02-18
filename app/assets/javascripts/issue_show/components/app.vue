@@ -1,20 +1,20 @@
 <script>
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { __, s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { visitUrl } from '~/lib/utils/url_utility';
 import Poll from '~/lib/utils/poll';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { __, s__, sprintf } from '~/locale';
+import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
 import eventHub from '../event_hub';
 import Service from '../services/index';
 import Store from '../stores';
-import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import PinnedLinks from './pinned_links.vue';
-import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
+import titleComponent from './title.vue';
 
 export default {
   components: {
@@ -130,6 +130,10 @@ export default {
     },
     projectPath: {
       type: String,
+      required: true,
+    },
+    projectId: {
+      type: Number,
       required: true,
     },
     projectNamespace: {
@@ -419,6 +423,7 @@ export default {
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
         :project-path="projectPath"
+        :project-id="projectId"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"
         :can-attach-file="canAttachFile"

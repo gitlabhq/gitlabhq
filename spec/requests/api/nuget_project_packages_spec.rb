@@ -144,8 +144,8 @@ RSpec.describe API::NugetProjectPackages do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/authorize' do
-    let_it_be(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-    let_it_be(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+    include_context 'workhorse headers'
+
     let(:url) { "/projects/#{target.id}/packages/nuget/authorize" }
     let(:headers) { {} }
 
@@ -176,7 +176,7 @@ RSpec.describe API::NugetProjectPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_header) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
 
         before do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
@@ -194,8 +194,8 @@ RSpec.describe API::NugetProjectPackages do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget' do
-    let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-    let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+    include_context 'workhorse headers'
+
     let_it_be(:file_name) { 'package.nupkg' }
     let(:url) { "/projects/#{target.id}/packages/nuget" }
     let(:headers) { {} }
@@ -239,7 +239,7 @@ RSpec.describe API::NugetProjectPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_header) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
 
         before do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
@@ -256,7 +256,7 @@ RSpec.describe API::NugetProjectPackages do
     it_behaves_like 'rejects nuget access with invalid target id'
 
     context 'file size above maximum limit' do
-      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
 
       before do
         allow_next_instance_of(UploadedFile) do |uploaded_file|

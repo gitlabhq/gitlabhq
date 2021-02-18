@@ -1,6 +1,6 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { dateFormats } from './date_time_picker_lib';
 

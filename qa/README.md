@@ -104,6 +104,15 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/feature
 Note that the separator `--` is required; all subsequent options will be
 ignored by the QA framework and passed to `rspec`.
 
+#### Running tests for transient bugs
+
+A suite of tests have been written to test for [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs).
+Those tests are tagged `:transient` and therefore can be run via:
+
+```shell
+bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag transient
+```
+
 ### Overriding the authenticated user
 
 Unless told otherwise, the QA tests will run as the default `root` user seeded
@@ -207,7 +216,7 @@ run all the tests in the `Test::Instance::All` scenario, and then enable the
 feature flag again if it was enabled earlier.
 
 Note: the QA framework doesn't currently allow you to easily toggle a feature
-flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags.html#specs),
+flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags/index.html),
 but [that capability is planned](https://gitlab.com/gitlab-org/quality/team-tasks/issues/77).
 
 Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature`

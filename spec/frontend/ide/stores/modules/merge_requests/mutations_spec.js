@@ -1,7 +1,7 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import state from '~/ide/stores/modules/merge_requests/state';
-import mutations from '~/ide/stores/modules/merge_requests/mutations';
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
+import mutations from '~/ide/stores/modules/merge_requests/mutations';
+import state from '~/ide/stores/modules/merge_requests/state';
 import { mergeRequests } from '../../../mock_data';
 
 describe('IDE merge requests mutations', () => {

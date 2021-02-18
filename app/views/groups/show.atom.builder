@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 xml.title   "#{@group.name} activity"
 xml.link    href: group_url(@group, rss_url_options), rel: "self", type: "application/atom+xml"
 xml.link    href: group_url(@group), rel: "alternate", type: "text/html"

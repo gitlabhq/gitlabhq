@@ -30,7 +30,7 @@ There are two approaches to SVN to Git migration:
 migration. It creates a writable Git mirror of a local or remote Subversion
 repository and that way you can use both Subversion and Git as long as you like.
 It requires access to your GitLab server as it talks with the Git repositories
-directly in a filesystem level.
+directly in a file system level.
 
 ### SubGit prerequisites
 

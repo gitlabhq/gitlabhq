@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 scope path: :uploads do
   # Note attachments and User/Group/Project avatars
   get "-/system/:model/:mounted_as/:id/:filename",

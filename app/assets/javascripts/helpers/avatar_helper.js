@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
-import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 
 export const DEFAULT_SIZE_CLASS = 's40';
 export const IDENTICON_BG_COUNT = 7;

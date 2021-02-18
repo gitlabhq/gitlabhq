@@ -13,10 +13,10 @@
     %br
     %br
     - if @project.group_runners_enabled?
-      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn gl-button btn-warning-secondary', method: :post do
         = _('Disable group runners')
     - else
-      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success btn-inverted', method: :post do
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn gl-button btn-success btn-inverted', method: :post do
         = _('Enable group runners')
     &nbsp;
     = _('for this project')

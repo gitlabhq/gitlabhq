@@ -1,6 +1,6 @@
-import state from '~/frequent_items/store/state';
-import mutations from '~/frequent_items/store/mutations';
 import * as types from '~/frequent_items/store/mutation_types';
+import mutations from '~/frequent_items/store/mutations';
+import state from '~/frequent_items/store/state';
 import {
   mockNamespace,
   mockStorageKey,

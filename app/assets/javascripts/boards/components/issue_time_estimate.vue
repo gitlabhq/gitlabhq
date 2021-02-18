@@ -1,7 +1,7 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
+import { __ } from '~/locale';
 
 export default {
   i18n: {

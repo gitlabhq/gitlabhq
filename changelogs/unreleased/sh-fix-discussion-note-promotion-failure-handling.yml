@@ -1,0 +1,5 @@
+---
+title: Ensure note is promoted to discussion within reply create transaction
+merge_request: 53542
+author:
+type: fixed

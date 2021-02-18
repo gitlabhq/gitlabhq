@@ -1,0 +1,5 @@
+---
+title: Add post migration to backfill projects updated at after repository move
+merge_request: 53845
+author:
+type: fixed

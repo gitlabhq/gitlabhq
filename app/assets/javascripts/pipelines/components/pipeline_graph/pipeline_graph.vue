@@ -1,13 +1,13 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { generateLinksData } from '../graph_shared/drawing_utils';
-import JobPill from './job_pill.vue';
-import StagePill from './stage_pill.vue';
-import { parseData } from '../parsing_utils';
+import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { DRAW_FAILURE, DEFAULT, INVALID_CI_CONFIG, EMPTY_PIPELINE_DATA } from '../../constants';
 import { createJobsHash, generateJobNeedsDict } from '../../utils';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
+import { generateLinksData } from '../graph_shared/drawing_utils';
+import { parseData } from '../parsing_utils';
+import JobPill from './job_pill.vue';
+import StagePill from './stage_pill.vue';
 
 export default {
   components: {
@@ -224,17 +224,15 @@ export default {
       data-testid="graph-container"
     >
       <svg :viewBox="viewBox" :width="width" :height="height" class="gl-absolute">
-        <template>
-          <path
-            v-for="link in links"
-            :key="link.path"
-            :ref="link.ref"
-            :d="link.path"
-            class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
-            :class="getLinkClasses(link)"
-            :stroke-width="$options.STROKE_WIDTH"
-          />
-        </template>
+        <path
+          v-for="link in links"
+          :key="link.path"
+          :ref="link.ref"
+          :d="link.path"
+          class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
+          :class="getLinkClasses(link)"
+          :stroke-width="$options.STROKE_WIDTH"
+        />
       </svg>
       <div
         v-for="(stage, index) in pipelineStages"

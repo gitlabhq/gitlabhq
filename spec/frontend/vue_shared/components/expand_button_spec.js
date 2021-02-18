@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
 const text = {

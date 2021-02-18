@@ -25,7 +25,7 @@
             = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
     .form-group
       = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'label-bold'
-      = f.number_field :metrics_method_call_threshold, class: 'form-control'
+      = f.number_field :metrics_method_call_threshold, class: 'form-control gl-form-input'
       .form-text.text-muted
         A method call is only tracked when it takes longer to complete than
         the given amount of milliseconds.

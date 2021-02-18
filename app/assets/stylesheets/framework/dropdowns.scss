@@ -216,7 +216,7 @@
   position: absolute;
   width: auto;
   top: 100%;
-  z-index: 300;
+  z-index: $zindex-dropdown-menu;
   min-width: 240px;
   max-width: 500px;
   margin-top: $dropdown-vertical-offset;
@@ -326,7 +326,7 @@
     color: $gl-text-color-secondary;
   }
 
-  .badge.badge-pill + span:not(.badge.badge-pill) {
+  .badge.badge-pill + span:not(.badge):not(.badge-pill) {
     // Expects up to 3 digits on the badge
     margin-right: 40px;
   }
@@ -497,7 +497,7 @@
   li {
     a,
     button,
-    .dropdown-item {
+    .dropdown-item:not(.open-with-link) {
       padding: 8px 40px;
       position: relative;
 
@@ -525,7 +525,7 @@
 
       &.is-active {
         /* stylelint-disable-next-line function-url-quotes */
-        background: url(asset_path('checkmark.png')) no-repeat 14px 8px;
+        background: url(asset_path('checkmark.png')) no-repeat 14px center;
       }
     }
   }
@@ -896,7 +896,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
       position: absolute;
       top: 13px;
       right: 25px;
-      color: $gray-50;
+      color: $gray-300;
     }
   }
 
@@ -1091,19 +1091,5 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 .gl-new-dropdown {
   .gl-dropdown-menu-wide {
     width: $gl-dropdown-width-wide;
-  }
-}
-
-.gl-dropdown-item-deprecated-adapter {
-  .dropdown-item {
-    align-items: flex-start;
-
-    .gl-new-dropdown-item-text-primary {
-      @include gl-font-weight-bold;
-    }
-
-    .gl-new-dropdown-item-text-secondary {
-      color: inherit;
-    }
   }
 }

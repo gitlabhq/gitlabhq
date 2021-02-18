@@ -1,8 +1,8 @@
-import { createWrapper } from '@vue/test-utils';
 import { getByTestId, fireEvent } from '@testing-library/dom';
-import * as urlUtils from '~/lib/utils/url_utility';
+import { createWrapper } from '@vue/test-utils';
 import { initRecoveryCodes, initClose2faSuccessMessage } from '~/authentication/two_factor_auth';
 import RecoveryCodes from '~/authentication/two_factor_auth/components/recovery_codes.vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import { codesJsonString, codes, profileAccountPath } from './mock_data';
 
 describe('initRecoveryCodes', () => {

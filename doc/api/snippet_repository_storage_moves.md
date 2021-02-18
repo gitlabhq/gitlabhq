@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Snippet repository storage moves API **(CORE ONLY)**
+# Snippet repository storage moves API **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
@@ -30,11 +30,10 @@ read-only. Please try again later.` message if they try to push new commits.
 
 This API requires you to [authenticate yourself](README.md#authentication) as an administrator.
 
-Project repositories can be moved using the [Project repository storage moves API](project_repository_storage_moves.md).
+For other repository types see:
 
-## Limitations
-
-- Group-level wikis [can't be moved with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
+- [Project repository storage moves API](project_repository_storage_moves.md).
+- [Group repository storage moves API](group_repository_storage_moves.md).
 
 ## Retrieve all snippet repository storage moves
 

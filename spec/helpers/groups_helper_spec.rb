@@ -444,4 +444,82 @@ RSpec.describe GroupsHelper do
       end
     end
   end
+
+  describe '#group_open_issues_count' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:count_service) { Groups::OpenIssuesCountService }
+
+    before do
+      allow(helper).to receive(:current_user) { current_user }
+    end
+
+    context 'when cached_sidebar_open_issues_count feature flag is enabled' do
+      before do
+        stub_feature_flags(cached_sidebar_open_issues_count: true)
+      end
+
+      it 'returns count value from cache' do
+        allow_next_instance_of(count_service) do |service|
+          allow(service).to receive(:count).and_return(2500)
+        end
+
+        expect(helper.group_open_issues_count(group)).to eq('2.5k')
+      end
+    end
+
+    context 'when cached_sidebar_open_issues_count feature flag is disabled' do
+      before do
+        stub_feature_flags(cached_sidebar_open_issues_count: false)
+      end
+
+      it 'returns not cached issues count' do
+        allow(helper).to receive(:group_issues_count).and_return(2500)
+
+        expect(helper.group_open_issues_count(group)).to eq('2,500')
+      end
+    end
+  end
+
+  describe '#cached_open_group_issues_count' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group) { create(:group, name: 'group') }
+    let_it_be(:count_service) { Groups::OpenIssuesCountService }
+
+    before do
+      allow(helper).to receive(:current_user) { current_user }
+    end
+
+    it 'returns all digits for count value under 1000' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(999)
+      end
+
+      expect(helper.cached_open_group_issues_count(group)).to eq('999')
+    end
+
+    it 'returns truncated digits for count value over 1000' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(2300)
+      end
+
+      expect(helper.cached_open_group_issues_count(group)).to eq('2.3k')
+    end
+
+    it 'returns truncated digits for count value over 10000' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(12560)
+      end
+
+      expect(helper.cached_open_group_issues_count(group)).to eq('12.6k')
+    end
+
+    it 'returns truncated digits for count value over 100000' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(112560)
+      end
+
+      expect(helper.cached_open_group_issues_count(group)).to eq('112.6k')
+    end
+  end
 end

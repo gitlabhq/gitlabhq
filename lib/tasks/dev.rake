@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task dev: ["dev:setup"]
 
 namespace :dev do

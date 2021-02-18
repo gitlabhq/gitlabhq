@@ -10,7 +10,7 @@
     .form-group.row.branch
       = label_tag 'branch_name', _('Target Branch'), class: 'col-form-label col-sm-2'
       .col-sm-10
-        = text_field_tag 'branch_name', branch_name, required: true, class: "form-control js-branch-name ref-name"
+        = text_field_tag 'branch_name', branch_name, required: true, class: "form-control gl-form-input js-branch-name ref-name"
 
         .js-create-merge-request-container
           = render 'shared/new_merge_request_checkbox'

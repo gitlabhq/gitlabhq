@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Rack Attack global throttles' do
+RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_caching do
   include RackAttackSpecHelpers
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
@@ -149,14 +149,14 @@ RSpec.describe 'Rack Attack global throttles' do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        arguments = {
+        arguments = a_hash_including({
           message: 'Rack_Attack',
           env: :throttle,
           remote_ip: '127.0.0.1',
           request_method: 'GET',
           path: '/users/sign_in',
           matched: 'throttle_unauthenticated'
-        }
+        })
 
         expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
 

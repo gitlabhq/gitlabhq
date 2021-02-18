@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import LeaveButton from '~/members/components/action_buttons/leave_button.vue';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';

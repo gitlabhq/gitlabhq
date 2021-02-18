@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
+import eventHub from '~/filtered_search/event_hub';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Recent Searches Dropdown Content', () => {

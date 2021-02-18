@@ -1,9 +1,9 @@
 import $ from 'jquery';
+import SecretValues from '../behaviors/secret_values';
+import CreateItemDropdown from '../create_item_dropdown';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { s__ } from '../locale';
 import setupToggleButtons from '../toggle_buttons';
-import CreateItemDropdown from '../create_item_dropdown';
-import SecretValues from '../behaviors/secret_values';
 
 const ALL_ENVIRONMENTS_STRING = s__('CiVariable|All environments');
 

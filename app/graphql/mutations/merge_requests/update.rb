@@ -19,9 +19,14 @@ module Mutations
                required: false,
                description: copy_field_description(Types::MergeRequestType, :description)
 
-      def resolve(args)
-        merge_request = authorized_find!(**args.slice(:project_path, :iid))
-        attributes = args.slice(:title, :description, :target_branch).compact
+      argument :state, ::Types::MergeRequestStateEventEnum,
+               required: false,
+               as: :state_event,
+               description: 'The action to perform to change the state.'
+
+      def resolve(project_path:, iid:, **args)
+        merge_request = authorized_find!(project_path: project_path, iid: iid)
+        attributes = args.compact
 
         ::MergeRequests::UpdateService
           .new(merge_request.project, current_user, attributes)

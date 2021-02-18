@@ -9,7 +9,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity do
   subject { described_class.represent(feature_flag) }
 
   context 'when the feature flag does not belong to any Jira issue' do
-    let_it_be(:feature_flag) { create(:operations_feature_flag) }
+    let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
 
     describe '#issue_keys' do
       it 'is empty' do
@@ -30,7 +30,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity do
 
   context 'when the feature flag does belong to a Jira issue' do
     let(:feature_flag) do
-      create(:operations_feature_flag, description: 'THING-123')
+      create(:operations_feature_flag, project: project, description: 'THING-123')
     end
 
     describe '#issue_keys' do
@@ -66,6 +66,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity do
       end
 
       it 'has the correct summary' do
+        expect(entity.dig('summary', 'url')).to eq "http://localhost/#{project.full_path}/-/feature_flags/#{feature_flag.iid}/edit"
         expect(entity.dig('summary', 'status')).to eq(
           'enabled' => true,
           'defaultValue' => '',

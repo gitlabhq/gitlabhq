@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { s__ } from '~/locale';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
   components: {

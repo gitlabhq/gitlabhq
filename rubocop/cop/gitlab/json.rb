@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Gitlab
       class Json < RuboCop::Cop::Cop
-        MSG_SEND = <<~EOL.freeze
+        MSG = <<~EOL
           Avoid calling `JSON` directly. Instead, use the `Gitlab::Json`
           wrapper. This allows us to alter the JSON parser being used.
         EOL
@@ -14,7 +14,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression, message: MSG_SEND) if json_node?(node)
+          add_offense(node) if json_node?(node)
         end
 
         def autocorrect(node)

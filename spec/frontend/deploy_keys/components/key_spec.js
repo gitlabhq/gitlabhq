@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import DeployKeysStore from '~/deploy_keys/store';
 import key from '~/deploy_keys/components/key.vue';
+import DeployKeysStore from '~/deploy_keys/store';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Deploy keys key', () => {
@@ -76,7 +76,7 @@ describe('Deploy keys key', () => {
       createComponent({ deployKey: { ...deployKey, deploy_keys_projects: deployKeysProjects } });
 
       expect(wrapper.find('.deploy-project-label').attributes('title')).toBe(
-        'Write access allowed',
+        'Grant write permissions to this key',
       );
     });
 

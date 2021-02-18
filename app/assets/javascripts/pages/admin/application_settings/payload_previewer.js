@@ -1,6 +1,6 @@
+import { deprecatedCreateFlash as flash } from '../../../flash';
 import axios from '../../../lib/utils/axios_utils';
 import { __ } from '../../../locale';
-import { deprecatedCreateFlash as flash } from '../../../flash';
 
 export default class PayloadPreviewer {
   constructor(trigger) {

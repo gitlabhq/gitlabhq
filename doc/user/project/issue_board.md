@@ -4,9 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards **(CORE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
+# Issue Boards **(FREE)**
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -38,10 +36,9 @@ as shown in the following table:
 
 | Tier             | Number of project issue boards | Number of [group issue boards](#group-issue-boards) | [Configurable issue boards](#configurable-issue-boards) | [Assignee lists](#assignee-lists) |
 |------------------|--------------------------------|------------------------------|---------------------------|----------------|
-| Core / Free      | Multiple                       | 1                            | No                        | No             |
-| Starter / Bronze | Multiple                       | 1                            | Yes                       | No             |
-| Premium / Silver | Multiple                       | Multiple                     | Yes                       | Yes            |
-| Ultimate / Gold  | Multiple                       | Multiple                     | Yes                       | Yes            |
+| Free             | Multiple                       | 1                            | No                        | No             |
+| Premium          | Multiple                       | Multiple                     | Yes                       | Yes            |
+| Ultimate         | Multiple                       | Multiple                     | Yes                       | Yes            |
 
 To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards) below.
 
@@ -53,11 +50,10 @@ the Issue Board feature.
 
 ## Multiple issue boards
 
-> - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
-> - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
+> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
+> - Multiple issue boards per group are available in GitLab Premium.
 
-Multiple issue boards allow for more than one issue board for a given project **(CORE)** or group **(PREMIUM)**.
+Multiple issue boards allow for more than one issue board for a given project **(FREE)** or group **(PREMIUM)**.
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
@@ -228,13 +224,13 @@ and vice versa.
 
 ## GitLab Enterprise features for issue boards
 
-GitLab issue boards are available on GitLab Core and GitLab.com Free tiers, but some
+GitLab issue boards are available on the GitLab Free tier, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
 
-### Configurable issue boards **(STARTER)**
+### Configurable issue boards **(PREMIUM)**
 
-> - [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in GitLab 10.2.
 > - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
+> - Moved to GitLab Premium in 13.9.
 
 An issue board can be associated with a [milestone](milestones/index.md#milestones),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
@@ -257,14 +253,15 @@ the Configurable Issue Board feature.
 
 ### Focus mode
 
-> - [Introduced]((https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep)) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to the Free tier of GitLab.com in 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Core in 13.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to GitLab Free SaaS in 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Free self-managed in 13.0.
 
 To enable or disable focus mode, select the **Toggle focus mode** button (**{maximize}**) at the top
 right. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
-### Sum of issue weights **(STARTER)**
+### Sum of issue weights **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
@@ -273,9 +270,6 @@ especially in combination with [assignee lists](#assignee-lists).
 ![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
 
 ### Group issue boards **(PREMIUM)**
-
-> - One group issue board per group introduced in GitLab 10.6.
-> - Multiple group issue boards [introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
 
 Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
 It can display issues from all projects in that
@@ -360,9 +354,10 @@ You can also [drag issues](#drag-issues-between-lists) to change their position 
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
 
-## Work In Progress limits **(STARTER)**
+## Work In Progress limits **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11403) in GitLab 12.7
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11403) in GitLab 12.7
+> - Moved to GitLab Premium in 13.9.
 
 You can set a Work In Progress (WIP) limit for each issue list on an issue board. When a limit is
 set, the list's header shows the number of issues in the list and the soft limit of issues.
@@ -435,13 +430,13 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list **(CORE ONLY)**
+### Add issues to a list **(FREE SELF)**
 
 > - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(FREE SELF)**
 
 You can add issues to a list in a project issue board by clicking the **Add issues** button
 in the top right corner of the issue board. This opens up a modal
@@ -461,7 +456,7 @@ the list by filtering by the following:
 - Release
 - Weight
 
-#### Enable or disable adding issues to the list **(CORE ONLY)**
+#### Enable or disable adding issues to the list **(FREE SELF)**
 
 Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
@@ -547,8 +542,8 @@ to another list, the label changes and a system note is recorded.
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
 
-|                            | To Open            | To Closed    | To label `B` list            | To assignee `Bob` list                |
-|----------------------------|--------------------|--------------|------------------------------|---------------------------------------|
+|                                | To Open            | To Closed    | To label `B` list            | To assignee `Bob` list                |
+| ------------------------------ | ------------------ | ------------ | ---------------------------- | ------------------------------------- |
 | **From Open**                  | -                  | Issue closed | `B` added                    | `Bob` assigned                        |
 | **From Closed**                | Issue reopened     | -            | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned     |
 | **From label `A` list**        | `A` removed        | Issue closed | `A` removed<br/>`B` added    | `Bob` assigned                        |
@@ -563,7 +558,7 @@ another list. This makes it faster to reorder many issues at once.
 
 To select and move multiple cards:
 
-1. Select each card with <kbd>Ctrl</kbd>+`Click` on Windows or Linux, or <kbd>Cmd</kbd>+`Click` on MacOS.
+1. Select each card with <kbd>Control</kbd>+`Click` on Windows or Linux, or <kbd>Command</kbd>+`Click` on MacOS.
 1. Drag one of the selected cards to another position or list and all selected cards are moved.
 
 ![Multi-select Issue Cards](img/issue_boards_multi_select_v12_4.png)

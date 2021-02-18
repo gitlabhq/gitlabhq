@@ -26,6 +26,16 @@ module ApplicationSettingsHelper
     end
   end
 
+  def kroki_available_formats
+    ApplicationSetting.kroki_formats_attributes.map do |key, value|
+      {
+        name: "kroki_formats_#{key}",
+        label: value[:label],
+        value: @application_setting.kroki_formats[key] || false
+      }
+    end
+  end
+
   def storage_weights
     ApplicationSetting.repository_storages_weighted_attributes.map do |attribute|
       storage = attribute.to_s.delete_prefix('repository_storages_weighted_')
@@ -181,7 +191,7 @@ module ApplicationSettingsHelper
       :asset_proxy_enabled,
       :asset_proxy_secret_key,
       :asset_proxy_url,
-      :asset_proxy_whitelist,
+      :asset_proxy_allowlist,
       :static_objects_external_storage_auth_token,
       :static_objects_external_storage_url,
       :authorized_keys_enabled,
@@ -259,6 +269,7 @@ module ApplicationSettingsHelper
       :personal_access_token_prefix,
       :kroki_enabled,
       :kroki_url,
+      :kroki_formats,
       :plantuml_enabled,
       :plantuml_url,
       :polling_interval_multiplier,
@@ -328,6 +339,8 @@ module ApplicationSettingsHelper
       :email_restrictions_enabled,
       :email_restrictions,
       :issues_create_limit,
+      :notes_create_limit,
+      :notes_create_limit_allowlist_raw,
       :raw_blob_request_limit,
       :project_import_limit,
       :project_export_limit,
@@ -337,7 +350,10 @@ module ApplicationSettingsHelper
       :group_download_export_limit,
       :wiki_page_max_content_bytes,
       :container_registry_delete_tags_service_timeout,
-      :rate_limiting_response_text
+      :rate_limiting_response_text,
+      :container_registry_expiration_policies_worker_capacity,
+      :container_registry_cleanup_tags_service_max_list_size,
+      :keep_latest_artifact
     ]
   end
 
@@ -353,9 +369,11 @@ module ApplicationSettingsHelper
     ]
   end
 
+  # ok to remove in REST API v5
   def deprecated_attributes
     [
-      :admin_notification_email # ok to remove in REST API v5
+      :admin_notification_email,
+      :asset_proxy_whitelist
     ]
   end
 

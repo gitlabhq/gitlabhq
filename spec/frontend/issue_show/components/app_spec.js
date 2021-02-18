@@ -2,11 +2,15 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
-import axios from '~/lib/utils/axios_utils';
-import { visitUrl } from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
+import DescriptionComponent from '~/issue_show/components/description.vue';
+import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
+import PinnedLinks from '~/issue_show/components/pinned_links.vue';
+import { IssuableStatus, IssuableStatusText } from '~/issue_show/constants';
 import eventHub from '~/issue_show/event_hub';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import {
   appProps,
   initialRequest,
@@ -14,10 +18,6 @@ import {
   secondRequest,
   zoomMeetingUrl,
 } from '../mock_data';
-import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
-import DescriptionComponent from '~/issue_show/components/description.vue';
-import PinnedLinks from '~/issue_show/components/pinned_links.vue';
-import { IssuableStatus, IssuableStatusText } from '~/issue_show/constants';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -423,7 +423,7 @@ describe('Issuable output', () => {
     });
 
     it('shows the form if template names request is successful', () => {
-      const mockData = [{ name: 'Bug' }];
+      const mockData = [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }];
       mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
 
       return wrapper.vm.requestTemplatesAndShowForm().then(() => {

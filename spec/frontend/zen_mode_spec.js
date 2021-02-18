@@ -1,11 +1,11 @@
-import $ from 'jquery';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
+import $ from 'jquery';
 import Mousetrap from 'mousetrap';
+import initNotes from '~/init_notes';
 import * as utils from '~/lib/utils/common_utils';
 import ZenMode from '~/zen_mode';
-import initNotes from '~/init_notes';
 
 describe('ZenMode', () => {
   let mock;

@@ -6,7 +6,7 @@ type: howto
 disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.html'
 ---
 
-# GitLab Appearance **(CORE ONLY)**
+# GitLab Appearance **(FREE SELF)**
 
 There are several options for customizing the appearance of a self-managed instance
 of GitLab. These settings are accessed from the **Admin Area** in the **Appearance**
@@ -20,7 +20,7 @@ used (less than 1MB) and it is automatically resized.
 
 ![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
 
-Once you select and upload an image, click **Update appearance settings** at the bottom
+After you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
 
 NOTE:
@@ -41,8 +41,7 @@ of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) to GitLab Free in 11.9.
 
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages appear on all projects and pages of the

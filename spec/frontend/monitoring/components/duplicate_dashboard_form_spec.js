@@ -1,5 +1,5 @@
-import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_form.vue';
 
 import { dashboardGitResponse } from '../mock_data';

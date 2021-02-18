@@ -1,8 +1,7 @@
 import Api from '~/api';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
-import * as types from './mutation_types';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
@@ -11,11 +10,11 @@ import {
   MISSING_DELETE_PATH_ERROR,
 } from '../constants';
 import { getNewPaginationPage } from '../utils';
+import * as types from './mutation_types';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
 export const setLoading = ({ commit }, data) => commit(types.SET_MAIN_LOADING, data);
 export const setSorting = ({ commit }, data) => commit(types.SET_SORTING, data);
-export const setSelectedType = ({ commit }, data) => commit(types.SET_SELECTED_TYPE, data);
 export const setFilter = ({ commit }, data) => commit(types.SET_FILTER, data);
 
 export const receivePackagesListSuccess = ({ commit }, { data, headers }) => {
@@ -29,9 +28,9 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   const { page = DEFAULT_PAGE, per_page = DEFAULT_PAGE_SIZE } = params;
   const { sort, orderBy } = state.sorting;
 
-  const type = state.selectedType?.type?.toLowerCase();
-  const nameFilter = state.filterQuery?.toLowerCase();
-  const packageFilters = { package_type: type, package_name: nameFilter };
+  const type = state.filter.find((f) => f.type === 'type');
+  const name = state.filter.find((f) => f.type === 'filtered-search-term');
+  const packageFilters = { package_type: type?.value?.data, package_name: name?.value?.data };
 
   const apiMethod = state.config.isGroupPage ? 'groupPackages' : 'projectPackages';
 

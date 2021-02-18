@@ -178,8 +178,8 @@ module EventsHelper
   def event_note_target_url(event)
     if event.commit_note?
       project_commit_url(event.project, event.note_target, anchor: dom_id(event.target))
-    elsif event.project_snippet_note?
-      project_snippet_url(event.project, event.note_target, anchor: dom_id(event.target))
+    elsif event.snippet_note?
+      gitlab_snippet_url(event.note_target, anchor: dom_id(event.target))
     elsif event.issue_note?
       project_issue_url(event.project, id: event.note_target, anchor: dom_id(event.target))
     elsif event.merge_request_note?

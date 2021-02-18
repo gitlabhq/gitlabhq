@@ -1,11 +1,11 @@
 <script>
+import { PackageType } from '../../shared/constants';
+import ComposerInstallation from './composer_installation.vue';
 import ConanInstallation from './conan_installation.vue';
 import MavenInstallation from './maven_installation.vue';
 import NpmInstallation from './npm_installation.vue';
 import NugetInstallation from './nuget_installation.vue';
 import PypiInstallation from './pypi_installation.vue';
-import ComposerInstallation from './composer_installation.vue';
-import { PackageType } from '../../shared/constants';
 
 export default {
   name: 'InstallationCommands',

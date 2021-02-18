@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import Clipboard from 'clipboard';
+import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import { fixTitle, show } from '~/tooltips';
 

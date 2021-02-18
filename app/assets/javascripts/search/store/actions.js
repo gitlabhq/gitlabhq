@@ -1,7 +1,7 @@
 import Api from '~/api';
 import createFlash from '~/flash';
-import { __ } from '~/locale';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import * as types from './mutation_types';
 
 export const fetchGroups = ({ commit }, search) => {

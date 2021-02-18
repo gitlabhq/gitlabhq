@@ -1,7 +1,8 @@
-import initSettingsPanels from '~/settings_panels';
-import projectSelect from '~/project_select';
-import selfMonitor from '~/self_monitor';
 import initVariableList from '~/ci_variable_list';
+import projectSelect from '~/project_select';
+import initSearchSettings from '~/search_settings';
+import selfMonitor from '~/self_monitor';
+import initSettingsPanels from '~/settings_panels';
 
 document.addEventListener('DOMContentLoaded', () => {
   if (gon.features?.ciInstanceVariablesUi) {
@@ -11,4 +12,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
   initSettingsPanels();
   projectSelect();
+  initSearchSettings();
 });

@@ -16,6 +16,10 @@ module UserStatusTooltip
       status_loaded? && show_status_emoji?(user.status)
     end
 
+    expose :availability, if: -> (*) { status_loaded? } do |user|
+      user.status&.availability
+    end
+
     private
 
     def status_loaded?

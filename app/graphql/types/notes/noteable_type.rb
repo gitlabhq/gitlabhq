@@ -5,8 +5,8 @@ module Types
     module NoteableType
       include Types::BaseInterface
 
-      field :notes, Types::Notes::NoteType.connection_type, null: false, description: "All notes on this noteable"
-      field :discussions, Types::Notes::DiscussionType.connection_type, null: false, description: "All discussions on this noteable"
+      field :notes, Types::Notes::NoteType.connection_type, null: false, description: "All notes on this noteable."
+      field :discussions, Types::Notes::DiscussionType.connection_type, null: false, description: "All discussions on this noteable."
 
       def self.resolve_type(object, context)
         case object

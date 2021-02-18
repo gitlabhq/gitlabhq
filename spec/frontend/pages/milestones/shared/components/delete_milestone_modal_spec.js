@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import { redirectTo } from '~/lib/utils/url_utility';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
+import { redirectTo } from '~/lib/utils/url_utility';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
 

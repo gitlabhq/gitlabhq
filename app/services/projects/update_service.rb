@@ -56,9 +56,23 @@ module Projects
         raise ValidationError.new(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
       end
 
-      if changing_default_branch?
-        raise ValidationError.new(s_("UpdateProject|Could not set the default branch")) unless project.change_head(params[:default_branch])
+      validate_default_branch_change
+    end
+
+    def validate_default_branch_change
+      return unless changing_default_branch?
+
+      previous_default_branch = project.default_branch
+
+      if project.change_head(params[:default_branch])
+        after_default_branch_change(previous_default_branch)
+      else
+        raise ValidationError.new(s_("UpdateProject|Could not set the default branch"))
       end
+    end
+
+    def after_default_branch_change(previous_default_branch)
+      # overridden by EE module
     end
 
     def remove_unallowed_params

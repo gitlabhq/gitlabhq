@@ -20,8 +20,9 @@ function formatNumber(
     return '';
   }
 
+  const locale = document.documentElement.lang || undefined;
   const num = value * valueFactor;
-  const formatted = num.toLocaleString(undefined, {
+  const formatted = num.toLocaleString(locale, {
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
     style,

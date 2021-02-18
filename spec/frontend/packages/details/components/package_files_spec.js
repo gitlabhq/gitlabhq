@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import stubChildren from 'helpers/stub_children';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import component from '~/packages/details/components/package_files.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { npmFiles, mavenFiles } from '../../mock_data';
 

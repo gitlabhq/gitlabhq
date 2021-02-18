@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import {
   RICH_BLOB_VIEWER,

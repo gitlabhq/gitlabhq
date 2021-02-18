@@ -16,3 +16,5 @@ export const integrationViews = [
 export const userFields = {
   foo_enabled: true,
 };
+
+export const bodyClasses = 'ui-light-indigo ui-light gl-dark';

@@ -2,8 +2,60 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationExperiment do
-  subject { described_class.new(:stub) }
+RSpec.describe ApplicationExperiment, :experiment do
+  subject { described_class.new('namespaced/stub') }
+
+  let(:feature_definition) do
+    { name: 'namespaced_stub', type: 'experiment', group: 'group::adoption', default_enabled: false }
+  end
+
+  around do |example|
+    Feature::Definition.definitions[:namespaced_stub] = Feature::Definition.new('namespaced_stub.yml', feature_definition)
+    example.run
+    Feature::Definition.definitions.delete(:namespaced_stub)
+  end
+
+  before do
+    allow(subject).to receive(:enabled?).and_return(true)
+  end
+
+  it "naively assumes a 1x1 relationship to feature flags for tests" do
+    expect(Feature).to receive(:persist_used!).with('namespaced_stub')
+
+    described_class.new('namespaced/stub')
+  end
+
+  describe "enabled" do
+    before do
+      allow(subject).to receive(:enabled?).and_call_original
+
+      allow(Feature::Definition).to receive(:get).and_return('_instance_')
+      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+      allow(Feature).to receive(:get).and_return(double(state: :on))
+    end
+
+    it "is enabled when all criteria are met" do
+      expect(subject).to be_enabled
+    end
+
+    it "isn't enabled if the feature definition doesn't exist" do
+      expect(Feature::Definition).to receive(:get).with('namespaced_stub').and_return(nil)
+
+      expect(subject).not_to be_enabled
+    end
+
+    it "isn't enabled if we're not in dev or dotcom environments" do
+      expect(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+
+      expect(subject).not_to be_enabled
+    end
+
+    it "isn't enabled if the feature flag state is :off" do
+      expect(Feature).to receive(:get).with('namespaced_stub').and_return(double(state: :off))
+
+      expect(subject).not_to be_enabled
+    end
+  end
 
   describe "publishing results" do
     it "tracks the assignment" do
@@ -16,9 +68,9 @@ RSpec.describe ApplicationExperiment do
       expect(Gon.global).to receive(:push).with(
         {
           experiment: {
-            'stub' => { # string key because it can be namespaced
-              experiment: 'stub',
-              key: 'e8f65fd8d973f9985dc7ea3cf1614ae1',
+            'namespaced/stub' => { # string key because it can be namespaced
+              experiment: 'namespaced/stub',
+              key: '86208ac54ca798e11f127e8b23ec396a',
               variant: 'control'
             }
           }
@@ -31,8 +83,8 @@ RSpec.describe ApplicationExperiment do
   end
 
   describe "tracking events", :snowplow do
-    it "doesn't track if excluded" do
-      subject.exclude { true }
+    it "doesn't track if we shouldn't track" do
+      allow(subject).to receive(:should_track?).and_return(false)
 
       subject.track(:action)
 
@@ -45,7 +97,7 @@ RSpec.describe ApplicationExperiment do
       ])
 
       expect_snowplow_event(
-        category: 'stub',
+        category: 'namespaced/stub',
         action: 'action',
         property: '_property_',
         context: [
@@ -55,7 +107,7 @@ RSpec.describe ApplicationExperiment do
           },
           {
             schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
-            data: { experiment: 'stub', key: 'e8f65fd8d973f9985dc7ea3cf1614ae1', variant: 'control' }
+            data: { experiment: 'namespaced/stub', key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
           }
         ]
       )
@@ -63,18 +115,77 @@ RSpec.describe ApplicationExperiment do
   end
 
   describe "variant resolution" do
-    it "returns nil when not rolled out" do
-      stub_feature_flags(stub: false)
+    context "when using the default feature flag percentage rollout" do
+      it "uses the default value as specified in the yaml" do
+        expect(Feature).to receive(:enabled?).with('namespaced_stub', subject, type: :experiment, default_enabled: :yaml)
 
-      expect(subject.variant.name).to eq('control')
+        expect(subject.variant.name).to eq('control')
+      end
+
+      it "returns nil when not rolled out" do
+        stub_feature_flags(namespaced_stub: false)
+
+        expect(subject.variant.name).to eq('control')
+      end
+
+      context "when rolled out to 100%" do
+        it "returns the first variant name" do
+          subject.try(:variant1) {}
+          subject.try(:variant2) {}
+
+          expect(subject.variant.name).to eq('variant1')
+        end
+      end
     end
 
-    context "when rolled out to 100%" do
-      it "returns the first variant name" do
-        subject.try(:variant1) {}
-        subject.try(:variant2) {}
+    context "when using the round_robin strategy", :clean_gitlab_redis_shared_state do
+      context "when variants aren't supplied" do
+        subject :inheriting_class do
+          Class.new(described_class) do
+            def rollout_strategy
+              :round_robin
+            end
+          end.new('namespaced/stub')
+        end
 
-        expect(subject.variant.name).to eq('variant1')
+        it "raises an error" do
+          expect { inheriting_class.variants }.to raise_error(NotImplementedError)
+        end
+      end
+
+      context "when variants are supplied" do
+        let(:inheriting_class) do
+          Class.new(described_class) do
+            def rollout_strategy
+              :round_robin
+            end
+
+            def variants
+              %i[variant1 variant2 control]
+            end
+          end
+        end
+
+        it "proves out round robin in variant selection", :aggregate_failures do
+          instance_1 = inheriting_class.new('namespaced/stub')
+          allow(instance_1).to receive(:enabled?).and_return(true)
+          instance_2 = inheriting_class.new('namespaced/stub')
+          allow(instance_2).to receive(:enabled?).and_return(true)
+          instance_3 = inheriting_class.new('namespaced/stub')
+          allow(instance_3).to receive(:enabled?).and_return(true)
+
+          instance_1.try {}
+
+          expect(instance_1.variant.name).to eq('variant2')
+
+          instance_2.try {}
+
+          expect(instance_2.variant.name).to eq('control')
+
+          instance_3.try {}
+
+          expect(instance_3.variant.name).to eq('variant1')
+        end
       end
     end
   end
@@ -105,7 +216,7 @@ RSpec.describe ApplicationExperiment do
       # every control variant assigned, we'd inflate the cache size and
       # wouldn't be able to roll out to subjects that we'd already assigned to
       # the control.
-      stub_feature_flags(stub: false) # simulate being not rolled out
+      stub_feature_flags(namespaced_stub: false) # simulate being not rolled out
 
       expect(subject.variant.name).to eq('control') # if we ask, it should be control
 

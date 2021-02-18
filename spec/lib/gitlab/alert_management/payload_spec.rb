@@ -56,5 +56,20 @@ RSpec.describe Gitlab::AlertManagement::Payload do
         it { is_expected.to be_a Gitlab::AlertManagement::Payload::Generic }
       end
     end
+
+    context 'with integration specified by caller' do
+      let(:integration) { instance_double(AlertManagement::HttpIntegration) }
+
+      subject { described_class.parse(project, payload, integration: integration) }
+
+      it 'passes an integration to a specific payload' do
+        expect(::Gitlab::AlertManagement::Payload::Generic)
+          .to receive(:new)
+          .with(project: project, payload: payload, integration: integration)
+          .and_call_original
+
+        subject
+      end
+    end
   end
 end

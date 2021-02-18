@@ -1,15 +1,15 @@
 - f ||= local_assigns[:f]
 
-.project-templates-buttons.col-sm-12
+.project-templates-buttons
   %ul.nav-tabs.nav-links.nav.scrolling-tabs
     %li.built-in-tab
       %a.nav-link.active{ href: "#built-in", data: { toggle: 'tab'} }
         = _('Built-in')
-        %span.badge.badge-pill= Gitlab::SampleDataTemplate.all.count + Gitlab::ProjectTemplate.all.count
+        %span.badge.badge-pill= Gitlab::ProjectTemplate.all.count + Gitlab::SampleDataTemplate.all.count
 
 .tab-content
   .project-templates-buttons.import-buttons.tab-pane.active#built-in
-    = render partial: 'projects/project_templates/template', collection: Gitlab::SampleDataTemplate.all + Gitlab::ProjectTemplate.all
+    = render partial: 'projects/project_templates/template', collection: Gitlab::ProjectTemplate.all + Gitlab::SampleDataTemplate.all
 
 .project-fields-form
   = render 'projects/project_templates/project_fields_form'

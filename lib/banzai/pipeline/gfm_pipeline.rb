@@ -34,6 +34,7 @@ module Banzai
           Filter::FootnoteFilter,
           *reference_filters,
           Filter::EmojiFilter,
+          Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
           Filter::SetDirectionFilter
@@ -61,7 +62,8 @@ module Banzai
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
           Filter::MilestoneReferenceFilter,
-          Filter::AlertReferenceFilter
+          Filter::AlertReferenceFilter,
+          Filter::FeatureFlagReferenceFilter
         ]
       end
 

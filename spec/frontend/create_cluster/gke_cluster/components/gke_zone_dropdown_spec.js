@@ -1,13 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import GkeZoneDropdown from '~/create_cluster/gke_cluster/components/gke_zone_dropdown.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
-import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 import { createStore } from '~/create_cluster/gke_cluster/store';
 import {
   SET_PROJECT,
   SET_ZONES,
   SET_PROJECT_BILLING_STATUS,
 } from '~/create_cluster/gke_cluster/store/mutation_types';
+import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
+import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import { selectedZoneMock, selectedProjectMock, gapiZonesResponseMock } from '../mock_data';
 
 const propsData = {

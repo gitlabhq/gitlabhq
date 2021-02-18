@@ -1,50 +1,50 @@
 <script>
-import { isEmpty } from 'lodash';
-import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
-import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
-import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { GlSafeHtmlDirective } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
+import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
+import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
+import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { deprecatedCreateFlash as createFlash } from '../flash';
-import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
+import { setFaviconOverlay } from '../lib/utils/favicon';
+import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
+import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
+import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import Loading from './components/loading.vue';
+import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
-import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
-import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
-import MergedState from './components/states/mr_widget_merged.vue';
-import ClosedState from './components/states/mr_widget_closed.vue';
-import MergingState from './components/states/mr_widget_merging.vue';
-import RebaseState from './components/states/mr_widget_rebase.vue';
-import WorkInProgressState from './components/states/work_in_progress.vue';
+import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
+import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
-import ConflictsState from './components/states/mr_widget_conflicts.vue';
-import NothingToMergeState from './components/states/nothing_to_merge.vue';
-import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
-import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
-import ReadyToMergeState from './components/states/ready_to_merge.vue';
-import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
-import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
-import PipelineFailedState from './components/states/pipeline_failed.vue';
-import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
+import ClosedState from './components/states/mr_widget_closed.vue';
+import ConflictsState from './components/states/mr_widget_conflicts.vue';
+import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
+import MergedState from './components/states/mr_widget_merged.vue';
+import MergingState from './components/states/mr_widget_merging.vue';
+import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
+import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
+import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
+import RebaseState from './components/states/mr_widget_rebase.vue';
+import NothingToMergeState from './components/states/nothing_to_merge.vue';
+import PipelineFailedState from './components/states/pipeline_failed.vue';
+import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
+import WorkInProgressState from './components/states/work_in_progress.vue';
 // import ExtensionsContainer from './components/extensions/container';
-import eventHub from './event_hub';
-import notify from '~/lib/utils/notify';
-import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
-import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
-import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
-import { setFaviconOverlay } from '../lib/utils/favicon';
-import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
+import eventHub from './event_hub';
+import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default {
@@ -94,7 +94,6 @@ export default {
     state: {
       query: getStateQuery,
       manual: true,
-      pollInterval: 10 * 1000,
       skip() {
         return !this.mr || !window.gon?.features?.mergeRequestWidgetGraphql;
       },
@@ -181,7 +180,7 @@ export default {
       );
     },
     shouldRenderSecurityReport() {
-      return Boolean(window.gon?.features?.coreSecurityMrWidget && this.mr.pipeline.id);
+      return Boolean(this.mr.pipeline.id);
     },
     mergeError() {
       let { mergeError } = this.mr;
@@ -191,7 +190,7 @@ export default {
       }
 
       return sprintf(
-        s__('mrWidget|Merge failed: %{mergeError}. Please try again.'),
+        s__('mrWidget|%{mergeError}. Try again.'),
         {
           mergeError,
         },
@@ -286,6 +285,10 @@ export default {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
+      if (window.gon?.features?.mergeRequestWidgetGraphql) {
+        this.$apollo.queries.state.refetch();
+      }
+
       return this.service
         .checkStatus()
         .then(({ data }) => {
@@ -365,6 +368,7 @@ export default {
             const el = document.createElement('div');
             el.innerHTML = res.data;
             document.body.appendChild(el);
+            document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
             Project.initRefSwitcher();
           }
         })
@@ -464,6 +468,7 @@ export default {
         :head-path="mr.codeclimate.head_path"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
+        :codequality-reports-path="mr.codequalityReportsPath"
         :codequality-help-path="mr.codequalityHelpPath"
       />
 

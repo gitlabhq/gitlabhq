@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :workhorse do
     desc "GitLab | Workhorse | Install or upgrade gitlab-workhorse"

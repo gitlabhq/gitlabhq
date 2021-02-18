@@ -1,12 +1,16 @@
 <script>
-import { GlAvatarLink, GlAvatarLabeled, GlBadge } from '@gitlab/ui';
-import { USER_AVATAR_SIZE } from '../constants';
+import { GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { truncate } from '~/lib/utils/text_utility';
+import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from '../constants';
 
 export default {
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
-    GlAvatarLink,
     GlAvatarLabeled,
     GlBadge,
+    GlIcon,
   },
   props: {
     user: {
@@ -22,16 +26,23 @@ export default {
     adminUserHref() {
       return this.adminUserPath.replace('id', this.user.username);
     },
+    adminUserMailto() {
+      // NOTE: 'mailto:' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `mailto:${this.user.email}`;
+    },
+    userNoteShort() {
+      return truncate(this.user.note, LENGTH_OF_USER_NOTE_TOOLTIP);
+    },
   },
   USER_AVATAR_SIZE,
 };
 </script>
 
 <template>
-  <gl-avatar-link
+  <div
     v-if="user"
-    class="js-user-link"
-    :href="adminUserHref"
+    class="js-user-link gl-display-inline-block"
     :data-user-id="user.id"
     :data-username="user.username"
   >
@@ -40,8 +51,13 @@ export default {
       :src="user.avatarUrl"
       :label="user.name"
       :sub-label="user.email"
+      :label-link="adminUserHref"
+      :sub-label-link="adminUserMailto"
     >
       <template #meta>
+        <div v-if="user.note" class="gl-text-gray-500 gl-p-1">
+          <gl-icon v-gl-tooltip="userNoteShort" name="document" />
+        </div>
         <div v-for="(badge, idx) in user.badges" :key="idx" class="gl-p-1">
           <gl-badge class="gl-display-flex!" size="sm" :variant="badge.variant">{{
             badge.text
@@ -49,5 +65,5 @@ export default {
         </div>
       </template>
     </gl-avatar-labeled>
-  </gl-avatar-link>
+  </div>
 </template>

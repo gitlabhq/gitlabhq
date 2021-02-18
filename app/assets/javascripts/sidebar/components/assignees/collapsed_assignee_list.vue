@@ -1,10 +1,29 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import { isUserBusy } from '~/set_status_modal/utils';
 import CollapsedAssignee from './collapsed_assignee.vue';
 
 const DEFAULT_MAX_COUNTER = 99;
 const DEFAULT_RENDER_COUNT = 5;
+
+const generateCollapsedAssigneeTooltip = ({ renderUsers, allUsers, tooltipTitleMergeStatus }) => {
+  const names = renderUsers.map(({ name, availability }) => {
+    if (availability && isUserBusy(availability)) {
+      return sprintf(__('%{name} (Busy)'), { name });
+    }
+    return name;
+  });
+
+  if (!allUsers.length) {
+    return __('Assignee(s)');
+  }
+  if (allUsers.length > names.length) {
+    names.push(sprintf(__('+ %{amount} more'), { amount: allUsers.length - names.length }));
+  }
+  const text = names.join(', ');
+  return tooltipTitleMergeStatus ? `${text} (${tooltipTitleMergeStatus})` : text;
+};
 
 export default {
   directives: {
@@ -74,19 +93,11 @@ export default {
     tooltipTitle() {
       const maxRender = Math.min(DEFAULT_RENDER_COUNT, this.users.length);
       const renderUsers = this.users.slice(0, maxRender);
-      const names = renderUsers.map((u) => u.name);
-
-      if (!this.users.length) {
-        return __('Assignee(s)');
-      }
-
-      if (this.users.length > names.length) {
-        names.push(sprintf(__('+ %{amount} more'), { amount: this.users.length - names.length }));
-      }
-
-      const text = names.join(', ');
-
-      return this.tooltipTitleMergeStatus ? `${text} (${this.tooltipTitleMergeStatus})` : text;
+      return generateCollapsedAssigneeTooltip({
+        renderUsers,
+        allUsers: this.users,
+        tooltipTitleMergeStatus: this.tooltipTitleMergeStatus,
+      });
     },
 
     tooltipOptions() {

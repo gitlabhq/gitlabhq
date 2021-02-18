@@ -40,9 +40,8 @@ RSpec.describe 'Merge requests > User lists merge requests' do
            updated_at: 10.seconds.ago)
   end
 
-  context 'when merge_request_reviewers is turned on' do
+  context 'merge request reviewers' do
     before do
-      stub_feature_flags(merge_request_reviewers: true)
       visit_merge_requests(project, reviewer_id: user.id)
     end
 
@@ -59,15 +58,6 @@ RSpec.describe 'Merge requests > User lists merge requests' do
 
     it 'does not show reviewers avatar count badge if more_reviewers_count <= 4' do
       expect(page.all('.issuable-reviewers')[1]).not_to have_css('.avatar-counter')
-    end
-  end
-
-  context 'when merge_request_reviewers is turned false' do
-    it 'has no reviewers in MR list' do
-      stub_feature_flags(merge_request_reviewers: false)
-      visit_merge_requests(project, reviewer_id: user.id)
-
-      expect(page).not_to have_css('.issuable-reviewers')
     end
   end
 

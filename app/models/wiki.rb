@@ -104,7 +104,7 @@ class Wiki
   end
 
   def empty?
-    list_pages(limit: 1).empty?
+    !repository_exists? || list_pages(limit: 1).empty?
   end
 
   def exists?
@@ -254,6 +254,15 @@ class Wiki
   # Callbacks for background processing after wiki changes.
   # These will be executed after any change to the wiki repository.
   def after_post_receive
+  end
+
+  override :git_garbage_collect_worker_klass
+  def git_garbage_collect_worker_klass
+    Wikis::GitGarbageCollectWorker
+  end
+
+  def cleanup
+    @repository = nil
   end
 
   private

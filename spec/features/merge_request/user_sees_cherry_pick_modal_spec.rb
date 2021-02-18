@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
       it 'does not show a Cherry-pick button' do
         visit project_merge_request_path(project, merge_request)
 
-        expect(page).not_to have_link 'Cherry-pick'
+        expect(page).not_to have_button 'Cherry-pick'
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
       it 'shows a Cherry-pick button' do
         visit project_merge_request_path(project, merge_request)
 
-        expect(page).to have_link 'Cherry-pick'
+        expect(page).to have_button 'Cherry-pick'
       end
 
       it 'hides the cherry pick button for an archived project' do
@@ -48,7 +48,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
 
         visit project_merge_request_path(project, merge_request)
 
-        expect(page).not_to have_link 'Cherry-pick'
+        expect(page).not_to have_button 'Cherry-pick'
       end
     end
 
@@ -56,17 +56,11 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
       before do
         visit project_merge_request_path(project, merge_request)
 
-        click_link('Cherry-pick')
+        click_button('Cherry-pick')
       end
 
       it 'shows the cherry-pick modal' do
         expect(page).to have_content('Cherry-pick this merge request')
-      end
-
-      it 'closes the cherry-pick modal with escape keypress' do
-        find('#modal-cherry-pick-commit').send_keys(:escape)
-
-        expect(page).not_to have_content('Start a new merge request with these changes')
       end
     end
   end

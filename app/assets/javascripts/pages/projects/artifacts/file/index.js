@@ -1,5 +1,5 @@
-import BlobViewer from '~/blob/viewer/index';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import BlobViewer from '~/blob/viewer/index';
 
 document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new

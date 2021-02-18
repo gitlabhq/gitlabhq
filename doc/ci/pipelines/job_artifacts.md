@@ -150,7 +150,7 @@ in merge requests. For more information, see
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
-The `codequality` report collects [CodeQuality issues](../../user/project/merge_requests/code_quality.md)
+The `codequality` report collects [Code Quality issues](../../user/project/merge_requests/code_quality.md)
 as artifacts.
 
 The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
@@ -168,9 +168,11 @@ The collected SAST report uploads to GitLab as an artifact and is summarized
 in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
-#### `artifacts:reports:secret_detection` **(ULTIMATE)**
+#### `artifacts:reports:secret_detection`
 
 > - Introduced in GitLab 13.1.
+> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) in GitLab
+    13.3.
 > - Requires GitLab Runner 11.5 and above.
 
 The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md)
@@ -482,6 +484,12 @@ a project, you can disable this behavior to save space:
 1. Navigate to **Settings > CI/CD > Artifacts**.
 1. Uncheck **Keep artifacts from most recent successful jobs**.
 
+You can disable this behavior for all projects on a self-managed instance in the
+[instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines). **(CORE ONLY)**
+
+When you disable the feature, the latest artifacts do not immediately expire.
+A new pipeline must run before the latest artifacts can expire and be deleted.
+
 ## Troubleshooting
 
 ### Error message `No files to upload`
@@ -490,7 +498,7 @@ This is often preceded by other errors or warnings that specify the filename and
 generated in the first place. Please check the entire job log for such messages.
 
 If you find no helpful messages, please retry the failed job after activating
-[CI debug logging](../variables/README.md#debug-logging).
+[CI/CD debug logging](../variables/README.md#debug-logging).
 This provides useful information to investigate further.
 
 <!-- ## Troubleshooting

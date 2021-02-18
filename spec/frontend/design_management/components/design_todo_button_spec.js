@@ -1,8 +1,8 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import createDesignTodoMutation from '~/design_management/graphql/mutations/create_design_todo.mutation.graphql';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
+import TodoButton from '~/vue_shared/components/todo_button.vue';
 import mockDesign from '../mock_data/design';
 
 const mockDesignWithPendingTodos = {
@@ -111,7 +111,7 @@ describe('Design management design todo button', () => {
     });
 
     it('renders correct button text', () => {
-      expect(wrapper.text()).toBe('Add a To Do');
+      expect(wrapper.text()).toBe('Add a to do');
     });
 
     describe('when clicked', () => {

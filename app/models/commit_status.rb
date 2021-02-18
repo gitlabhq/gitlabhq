@@ -209,14 +209,26 @@ class CommitStatus < ApplicationRecord
   end
 
   def group_name
-    # 'rspec:linux: 1/10' => 'rspec:linux'
-    common_name = name.to_s.gsub(%r{\b\d+[\s:\/\\]+\d+\s*}, '')
+    simplified_commit_status_group_name_feature_flag = Gitlab::SafeRequestStore.fetch("project:#{project_id}:simplified_commit_status_group_name") do
+      Feature.enabled?(:simplified_commit_status_group_name, project, default_enabled: false)
+    end
 
-    # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux'
-    common_name.gsub!(%r{: \[.*\]\s*\z}, '')
+    if simplified_commit_status_group_name_feature_flag
+      # Only remove one or more [...] "X/Y" "X Y" from the end of build names.
+      # More about the regular expression logic: https://docs.gitlab.com/ee/ci/jobs/#group-jobs-in-a-pipeline
 
-    common_name.strip!
-    common_name
+      name.to_s.sub(%r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z}, '').strip
+    else
+      # Prior implementation, remove [...] "X/Y" "X Y" from the beginning and middle of build names
+      # 'rspec:linux: 1/10' => 'rspec:linux'
+      common_name = name.to_s.gsub(%r{\b\d+[\s:\/\\]+\d+\s*}, '')
+
+      # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux'
+      common_name.gsub!(%r{: \[.*\]\s*\z}, '')
+
+      common_name.strip!
+      common_name
+    end
   end
 
   def failed_but_allowed?
@@ -256,15 +268,7 @@ class CommitStatus < ApplicationRecord
   end
 
   def all_met_to_become_pending?
-    !any_unmet_prerequisites? && !requires_resource?
-  end
-
-  def any_unmet_prerequisites?
-    false
-  end
-
-  def requires_resource?
-    false
+    true
   end
 
   def auto_canceled?

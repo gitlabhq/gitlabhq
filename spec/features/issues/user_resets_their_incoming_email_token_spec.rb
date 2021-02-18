@@ -16,17 +16,17 @@ RSpec.describe 'Issues > User resets their incoming email token' do
   end
 
   it 'changes incoming email address token', :js do
-    find('.issuable-email-modal-btn').click
-    previous_token = find('input#issuable_email').value
-    find('.incoming-email-token-reset').click
+    page.find('[data-testid="issuable-email-modal-btn"]').click
 
-    wait_for_requests
+    page.within '#issuable-email-modal' do
+      previous_token = page.find('input[type="text"]').value
+      page.find('[data-testid="incoming-email-token-reset"]').click
 
-    expect(page).to have_no_field('issuable_email', with: previous_token)
-    new_token = project.new_issuable_address(user.reload, 'issue')
-    expect(page).to have_field(
-      'issuable_email',
-      with: new_token
-    )
+      wait_for_requests
+
+      expect(page.find('input[type="text"]').value).not_to eq previous_token
+      new_token = project.new_issuable_address(user.reload, 'issue')
+      expect(page.find('input[type="text"]').value).to eq new_token
+    end
   end
 end

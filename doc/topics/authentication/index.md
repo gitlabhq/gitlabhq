@@ -33,8 +33,8 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
-  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **(SILVER ONLY)**
-  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **(SILVER ONLY)**
+  - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
+  - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md) **(PREMIUM SAAS)**
   - [Okta SSO provider](../../administration/auth/okta.md)
   - [Kerberos integration (GitLab EE)](../../integration/kerberos.md) **(STARTER)**
 
@@ -42,12 +42,16 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 - [OAuth 2 Tokens](../../api/README.md#oauth2-tokens)
 - [Personal access tokens](../../api/README.md#personalproject-access-tokens)
-- [Project access tokens](../../api/README.md#personalproject-access-tokens) **(CORE ONLY)**
+- [Project access tokens](../../api/README.md#personalproject-access-tokens) **(FREE SELF)**
 - [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
 
 ## Third-party resources
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Kanboard Plugin GitLab Authentication](https://github.com/kanboard/plugin-gitlab-auth)
 - [Jenkins GitLab OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+OAuth+Plugin)
 - [OKD - Configuring Authentication and User Agent](https://docs.okd.io/3.11/install_config/configuring_authentication.html#GitLab)
+
+<!-- vale gitlab.Spelling = YES -->

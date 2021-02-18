@@ -183,6 +183,16 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find('#at-view-users')).to have_content(user.name)
     end
 
+    it 'searches across full name for assignees' do
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys('@speciąlsome')
+      end
+
+      wait_for_requests
+
+      expect(find('.atwho-view li', visible: true)).to have_content(user.name)
+    end
+
     it 'selects the first item for non-assignee dropdowns if a query is entered' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys(':1')

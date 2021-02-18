@@ -5,7 +5,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 3,000 users **(PREMIUM ONLY)**
+# Reference architecture: up to 3,000 users **(PREMIUM SELF)**
 
 This page describes GitLab reference architecture for up to 3,000 users.
 It is designed to help your organization achieve a
@@ -21,22 +21,22 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes
-> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git: 6 RPS
+> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 
 | Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
 |--------------------------------------------|-------------|-----------------------|----------------|-------------|---------|
-| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
-| Redis                                      | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
-| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
-| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
-| Gitaly                                     | 2 (minimum) | 4 vCPU, 15 GB memory  | n1-standard-4  | m5.xlarge   | D4s v3  |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
-| GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
-| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | `c5.large`    | F2s v2  |
+| Redis                                      | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | `m5.large`    | D2s v3  |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | `c5.large`    | F2s v2  |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | `m5.large`    | D2s v3  |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | `c5.large`    | F2s v2  |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | `c5.large`    | F2s v2  |
+| Gitaly                                     | 2 (minimum) | 4 vCPU, 15 GB memory  | n1-standard-4  | `m5.xlarge`   | D4s v3  |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | n1-standard-2  | `m5.large`    | D2s v3  |
+| GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | n1-highcpu-8   | `c5.2xlarge`  | F8s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | `c5.large`    | F2s v2  |
 | Object storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
-| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory | n1-highcpu-4   | c5.xlarge   | F4s v2  |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory | n1-highcpu-4   | `c5.xlarge`   | F4s v2  |
 
 ```mermaid
 stateDiagram-v2
@@ -1212,7 +1212,10 @@ To configure Gitaly with TLS:
 
 ## Configure Sidekiq
 
-Sidekiq requires connection to the Redis, PostgreSQL and Gitaly instance.
+Sidekiq requires connection to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+[Object storage](#configure-the-object-storage) is also required to be configured.
+
 The following IPs will be used as an example:
 
 - `10.6.0.71`: Sidekiq 1
@@ -1307,6 +1310,25 @@ To configure the Sidekiq nodes, one each one:
    # Rails Status for prometheus
    gitlab_rails['monitoring_whitelist'] = ['10.6.0.81/32', '127.0.0.0/8']
    gitlab_rails['prometheus_address'] = '10.6.0.81:9090'
+
+   #############################
+   ###     Object storage    ###
+   #############################
+
+   # This is an example for configuring Object Storage on GCP
+   # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1337,6 +1359,7 @@ You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_proces
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
+[Object storage](#configure-the-object-storage) is also required to be configured.
 
 On each node perform the following:
 
@@ -1454,6 +1477,25 @@ On each node perform the following:
    #web_server['gid'] = 9001
    #registry['uid'] = 9002
    #registry['gid'] = 9002
+
+   #############################
+   ###     Object storage    ###
+   #############################
+
+   # This is an example for configuring Object Storage on GCP
+   # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-tls-support), make sure the
@@ -1621,7 +1663,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
@@ -1650,7 +1692,7 @@ on what features you intend to use:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
 | [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) | Yes |
-| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
@@ -1676,7 +1718,7 @@ work.
   </a>
 </div>
 
-## Configure Advanced Search **(STARTER ONLY)**
+## Configure Advanced Search **(PREMIUM SELF)**
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

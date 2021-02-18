@@ -147,6 +147,7 @@ RSpec.describe Packages::GroupPackagesFinder do
       end
 
       it_behaves_like 'concerning versionless param'
+      it_behaves_like 'concerning package statuses'
     end
 
     context 'group has package of all types' do

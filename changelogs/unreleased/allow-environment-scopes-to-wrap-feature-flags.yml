@@ -1,0 +1,5 @@
+---
+title: Allow Environment Scopes to Wrap on Feature Flags Table
+merge_request: 52617
+author:
+type: fixed

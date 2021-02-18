@@ -156,4 +156,51 @@ RSpec.describe 'getting container repositories in a project' do
 
     expect(container_repositories_count_response).to eq(container_repositories.size)
   end
+
+  describe 'sorting and pagination' do
+    let_it_be(:data_path) { [:project, :container_repositories] }
+    let_it_be(:sort_project) { create(:project, :public) }
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:container_repository1) { create(:container_repository, name: 'b', project: sort_project) }
+    let_it_be(:container_repository2) { create(:container_repository, name: 'a', project: sort_project) }
+    let_it_be(:container_repository3) { create(:container_repository, name: 'd', project: sort_project) }
+    let_it_be(:container_repository4) { create(:container_repository, name: 'c', project: sort_project) }
+    let_it_be(:container_repository5) { create(:container_repository, name: 'e', project: sort_project) }
+
+    before do
+      stub_container_registry_tags(repository: container_repository1.path, tags: %w(tag1 tag1 tag3), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository2.path, tags: %w(tag4 tag5 tag6), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository3.path, tags: %w(tag7 tag8), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository4.path, tags: %w(tag9), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository5.path, tags: %w(tag10 tag11), with_manifest: false)
+    end
+
+    def pagination_query(params)
+      graphql_query_for(:project, { full_path: sort_project.full_path },
+        query_nodes(:container_repositories, :name, include_pagination_info: true, args: params)
+      )
+    end
+
+    def pagination_results_data(data)
+      data.map { |container_repository| container_repository.dig('name') }
+    end
+
+    context 'when sorting by name' do
+      context 'when ascending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { :NAME_ASC }
+          let(:first_param) { 2 }
+          let(:expected_results) { [container_repository2.name, container_repository1.name, container_repository4.name, container_repository3.name, container_repository5.name] }
+        end
+      end
+
+      context 'when descending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { :NAME_DESC }
+          let(:first_param) { 2 }
+          let(:expected_results) { [container_repository5.name, container_repository3.name, container_repository4.name, container_repository1.name, container_repository2.name] }
+        end
+      end
+    end
+  end
 end

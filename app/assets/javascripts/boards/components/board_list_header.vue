@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlButton,
   GlButtonGroup,
@@ -9,14 +8,16 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { n__, s__, __ } from '~/locale';
-import AccessorUtilities from '../../lib/utils/accessor';
-import IssueCount from './issue_count.vue';
-import eventHub from '../eventhub';
-import sidebarEventHub from '~/sidebar/event_hub';
-import { inactiveId, LIST, ListType } from '../constants';
-import { isScopedLabel } from '~/lib/utils/common_utils';
+import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { n__, s__, __ } from '~/locale';
+import sidebarEventHub from '~/sidebar/event_hub';
+import AccessorUtilities from '../../lib/utils/accessor';
+import { inactiveId, LIST, ListType } from '../constants';
+import eventHub from '../eventhub';
+import IssueCount from './issue_count.vue';
 
 export default {
   i18n: {
@@ -85,16 +86,16 @@ export default {
       return !this.disabled && this.listType !== ListType.closed;
     },
     showMilestoneListDetails() {
-      return (
-        this.listType === ListType.milestone &&
-        this.list.milestone &&
-        (!this.list.collapsed || !this.isSwimlanesHeader)
-      );
+      return this.listType === ListType.milestone && this.list.milestone && this.showListDetails;
     },
     showAssigneeListDetails() {
-      return (
-        this.listType === ListType.assignee && (!this.list.collapsed || !this.isSwimlanesHeader)
-      );
+      return this.listType === ListType.assignee && this.showListDetails;
+    },
+    showIterationListDetails() {
+      return this.listType === ListType.iteration && this.showListDetails;
+    },
+    showListDetails() {
+      return !this.list.collapsed || !this.isSwimlanesHeader;
     },
     issuesCount() {
       return this.list.issuesCount;
@@ -147,6 +148,7 @@ export default {
       eventHub.$emit(`toggle-issue-form-${this.list.id}`);
     },
     toggleExpanded() {
+      // eslint-disable-next-line vue/no-mutating-props
       this.list.collapsed = !this.list.collapsed;
 
       if (!this.isLoggedIn) {
@@ -157,7 +159,7 @@ export default {
 
       // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
       // Close all tooltips manually to prevent dangling tooltips.
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     addToLocalStorage() {
       if (AccessorUtilities.isLocalStorageAccessSafe()) {
@@ -214,6 +216,17 @@ export default {
         }"
       >
         <gl-icon name="timer" />
+      </span>
+
+      <span
+        v-if="showIterationListDetails"
+        aria-hidden="true"
+        :class="{
+          'gl-mt-3 gl-rotate-90': list.collapsed,
+          'gl-mr-2': !list.collapsed,
+        }"
+      >
+        <gl-icon name="iteration" />
       </span>
 
       <a

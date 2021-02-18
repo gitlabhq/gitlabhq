@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { isEqual, get, isEmpty } from 'lodash';
-import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.query.graphql';
 import {
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_TITLE,
@@ -9,6 +8,7 @@ import {
   UNAVAILABLE_USER_FEATURE_TEXT,
   UNAVAILABLE_ADMIN_FEATURE_TEXT,
 } from '../constants';
+import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.query.graphql';
 
 import SettingsForm from './settings_form.vue';
 

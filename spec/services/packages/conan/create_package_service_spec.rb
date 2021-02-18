@@ -31,6 +31,7 @@ RSpec.describe Packages::Conan::CreatePackageService do
 
       it_behaves_like 'assigns the package creator'
       it_behaves_like 'assigns build to package'
+      it_behaves_like 'assigns status to package'
     end
 
     context 'invalid params' do

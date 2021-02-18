@@ -4,8 +4,8 @@ import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
-import TableRow from './row.vue';
 import ParentRow from './parent_row.vue';
+import TableRow from './row.vue';
 
 export default {
   components: {

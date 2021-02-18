@@ -1,5 +1,5 @@
-import { memoize, throttle } from 'lodash';
 import $ from 'jquery';
+import { memoize, throttle } from 'lodash';
 
 class DirtySubmitForm {
   constructor(form) {

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings Block renders the correct markup 1`] = `
+<section
+  class="settings no-animate"
+>
+  <div
+    class="settings-header"
+  >
+    <h4>
+      <div
+        data-testid="title-slot"
+      />
+    </h4>
+     
+    <gl-button-stub
+      buttontextclasses=""
+      category="primary"
+      icon=""
+      size="medium"
+      variant="default"
+    >
+      
+      Expand
+    
+    </gl-button-stub>
+     
+    <p>
+      <div
+        data-testid="description-slot"
+      />
+    </p>
+  </div>
+   
+  <div
+    class="settings-content"
+  >
+    <div
+      data-testid="default-slot"
+    />
+  </div>
+</section>
+`;

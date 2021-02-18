@@ -1,8 +1,8 @@
 <script>
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
-import { graphDataValidatorForValues } from '../../utils';
 import { formatDate, timezones, formats } from '../../format_date';
+import { graphDataValidatorForValues } from '../../utils';
 
 export default {
   components: {

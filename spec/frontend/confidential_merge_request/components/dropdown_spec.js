@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import Dropdown from '~/confidential_merge_request/components/dropdown.vue';
 
 let vm;

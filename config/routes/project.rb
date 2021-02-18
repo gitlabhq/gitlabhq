@@ -37,6 +37,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        namespace :security do
+          resource :configuration, only: [:show], controller: :configuration
+        end
+
         resources :artifacts, only: [:index, :destroy]
 
         resources :packages, only: [:index, :show, :destroy], module: :packages
@@ -83,10 +87,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        get :learn_gitlab, action: :index, controller: 'learn_gitlab'
+
         namespace :ci do
           resource :lint, only: [:show, :create]
           resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'
           resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
+          namespace :prometheus_metrics do
+            resources :histograms, only: [:create], constraints: { format: 'json' }
+          end
         end
 
         namespace :settings do
@@ -132,7 +141,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+]+} }, concerns: :access_requestable do
+        resources :project_members, except: [:show, :new, :edit], constraints: { id: %r{[a-zA-Z./0-9_\-#%+:]+} }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -219,7 +228,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
-        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+/ }
+        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+|:id/ }
 
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]

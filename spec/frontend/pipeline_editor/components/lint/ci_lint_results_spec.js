@@ -1,7 +1,7 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import { GlTable, GlLink } from '@gitlab/ui';
-import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
+import { shallowMount, mount } from '@vue/test-utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
 import { mockJobs, mockErrors, mockWarnings } from '../../mock_data';
 
 describe('CI Lint Results', () => {

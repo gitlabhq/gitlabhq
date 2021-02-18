@@ -4,6 +4,12 @@ module MergeRequests
   class UpdateService < MergeRequests::BaseService
     extend ::Gitlab::Utils::Override
 
+    def initialize(project, user = nil, params = {})
+      super
+
+      @target_branch_was_deleted = @params.delete(:target_branch_was_deleted)
+    end
+
     def execute(merge_request)
       # We don't allow change of source/target projects and source branch
       # after merge request was created
@@ -36,7 +42,9 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('target_branch')
-        create_branch_change_note(merge_request, 'target',
+        create_branch_change_note(merge_request,
+                                  'target',
+                                  target_branch_was_deleted ? 'delete' : 'update',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
 
@@ -87,11 +95,50 @@ module MergeRequests
       MergeRequests::CloseService
     end
 
+    def before_update(issuable, skip_spam_check: false)
+      return unless issuable.changed?
+
+      @issuable_changes = issuable.changes
+    end
+
     def after_update(issuable)
       issuable.cache_merge_request_closes_issues!(current_user)
+
+      return unless @issuable_changes
+
+      %w(title description).each do |action|
+        next unless @issuable_changes.key?(action)
+
+        # Track edits to title or description
+        #
+        merge_request_activity_counter
+          .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
+
+        # Track changes to Draft/WIP status
+        #
+        if action == "title"
+          old_title, new_title = @issuable_changes["title"]
+          old_title_wip = MergeRequest.work_in_progress?(old_title)
+          new_title_wip = MergeRequest.work_in_progress?(new_title)
+
+          if !old_title_wip && new_title_wip
+            # Marked as Draft/WIP
+            #
+            merge_request_activity_counter
+              .track_marked_as_draft_action(user: current_user)
+          elsif old_title_wip && !new_title_wip
+            # Unmarked as Draft/WIP
+            #
+            merge_request_activity_counter
+              .track_unmarked_as_draft_action(user: current_user)
+          end
+        end
+      end
     end
 
     private
+
+    attr_reader :target_branch_was_deleted
 
     def handle_milestone_change(merge_request)
       return if skip_milestone_email
@@ -109,6 +156,9 @@ module MergeRequests
       create_assignee_note(merge_request, old_assignees)
       notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
       todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
+
+      new_assignees = merge_request.assignees - old_assignees
+      merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
     end
 
     def handle_reviewers_change(merge_request, old_reviewers)
@@ -117,11 +167,14 @@ module MergeRequests
       notification_service.async.changed_reviewer_of_merge_request(merge_request, current_user, old_reviewers)
       todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
       invalidate_cache_counts(merge_request, users: affected_reviewers.compact)
+
+      new_reviewers = merge_request.reviewers - old_reviewers
+      merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
     end
 
-    def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
+    def create_branch_change_note(issuable, branch_type, event_type, old_branch, new_branch)
       SystemNoteService.change_branch(
-        issuable, issuable.project, current_user, branch_type,
+        issuable, issuable.project, current_user, branch_type, event_type,
         old_branch, new_branch)
     end
 

@@ -2,8 +2,8 @@ import { createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import terminalModule from '~/ide/stores/modules/terminal';
-import createTerminalPlugin from '~/ide/stores/plugins/terminal';
 import { SET_BRANCH_WORKING_REFERENCE } from '~/ide/stores/mutation_types';
+import createTerminalPlugin from '~/ide/stores/plugins/terminal';
 
 const TEST_DATASET = {
   eeWebTerminalSvgPath: `${TEST_HOST}/web/terminal/svg`,

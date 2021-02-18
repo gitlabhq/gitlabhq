@@ -1,9 +1,9 @@
 <script>
-import UserActionButtons from '../action_buttons/user_action_buttons.vue';
+import { MEMBER_TYPES } from '../../constants';
+import AccessRequestActionButtons from '../action_buttons/access_request_action_buttons.vue';
 import GroupActionButtons from '../action_buttons/group_action_buttons.vue';
 import InviteActionButtons from '../action_buttons/invite_action_buttons.vue';
-import AccessRequestActionButtons from '../action_buttons/access_request_action_buttons.vue';
-import { MEMBER_TYPES } from '../../constants';
+import UserActionButtons from '../action_buttons/user_action_buttons.vue';
 
 export default {
   name: 'MemberActionButtons',

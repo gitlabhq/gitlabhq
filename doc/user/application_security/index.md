@@ -57,7 +57,7 @@ see [configure SAST in the UI](sast/index.md#configure-sast-in-the-ui).
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the
-base address for Docker images. You can override this globally by setting the variable
+base address for Docker images. You can override this globally by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
 
 ## Security scanning tools
@@ -110,7 +110,7 @@ The scanning tools and vulnerabilities database are updated regularly.
 | Secure scanning tool                                         | Vulnerabilities database updates          |
 |:-------------------------------------------------------------|-------------------------------------------|
 | [Container Scanning](container_scanning/index.md)            | Uses `clair`. The latest `clair-db` version is used for each job by running the [`latest` Docker image tag](https://gitlab.com/gitlab-org/gitlab/blob/438a0a56dc0882f22bdd82e700554525f552d91b/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L37). The `clair-db` database [is updated daily according to the author](https://github.com/arminc/clair-local-scan#clair-server-or-local). |
-| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for NPM packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/master/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
 
@@ -123,19 +123,12 @@ latest versions of the scanning tools without having to do anything. There are s
 with this approach, however, and there is a
 [plan to resolve them](https://gitlab.com/gitlab-org/gitlab/-/issues/9725).
 
-## Viewing security scan information in merge requests **(CORE)**
+## Viewing security scan information in merge requests **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Core 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Free 13.5.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
 > - Report download dropdown [added](https://gitlab.com/gitlab-org/gitlab/-/issues/273418) in 13.7.
-> - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It can be enabled or disabled for a single project.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-basic-security-widget). **(CORE ONLY)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249550) in GitLab 13.9.
 
 Merge requests which have run security scans let you know that the generated
 reports are available to download. To download a report, click on the
@@ -148,12 +141,12 @@ reports are available to download. To download a report, click on the
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
 
 Each security vulnerability in the merge request report or the
-[Security Dashboard](security_dashboard/index.md) is actionable. Click an entry to view detailed
+[Vulnerability Report](vulnerability_report/index.md) is actionable. Click an entry to view detailed
 information with several options:
 
 - [Dismiss vulnerability](#dismissing-a-vulnerability): Dismissing a vulnerability styles it in
   strikethrough.
-- [Create issue](#creating-an-issue-for-a-vulnerability): Create a new issue with the title and
+- [Create issue](vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability): Create a new issue with the title and
   description pre-populated with information from the vulnerability report. By default, such issues
   are [confidential](../project/issues/confidential_issues.md).
 - [Automatic Remediation](#automatic-remediation-for-vulnerabilities): For some vulnerabilities,
@@ -261,40 +254,29 @@ vulnerability as you learn more over time.
 
 #### Dismissing multiple vulnerabilities
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35816) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 You can dismiss multiple vulnerabilities at once, providing an optional reason.
 Selecting the checkboxes on the side of each vulnerability in the list selects that individual vulnerability.
 Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
 Deselecting the checkbox in the header deselects all the vulnerabilities in the list.
-Once you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
+After you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
 Pressing the "Dismiss Selected" button dismisses all the selected vulnerabilities at once, with the reason you chose.
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
 
-### Creating an issue for a vulnerability
+### Create an issue for a vulnerability
 
-You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
-**Create issue**, which you can find in the **Related issues** section.
-
-![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
-
-This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
-vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
-report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
-it.
-
-Upon returning to the group security dashboard, the vulnerability now has an associated issue next
-to the name.
-
-![Linked issue in the group security dashboard](img/issue.png)
+You can create a GitLab issue, or a Jira issue (if it's enabled) for a vulnerability. For more
+details, see [Vulnerability Pages](vulnerabilities/index.md).
 
 ### Automatic remediation for vulnerabilities
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5656) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.7.
 
-Some vulnerabilities can be fixed by applying the solution that GitLab
-automatically generates. Although the feature name is Automatic Remediation, this feature is also commonly called Auto-Remediation, Auto Remediation, or Suggested Solutions. The following scanners are supported:
+Some vulnerabilities can be fixed by applying the solution that GitLab automatically generates.
+Although the feature name is Automatic Remediation, this feature is also commonly called
+Auto-Remediation, Auto Remediation, or Suggested Solutions. The following scanners are supported:
 
 - [Dependency Scanning](dependency_scanning/index.md):
   Automatic Patch creation is only available for Node.js projects managed with
@@ -395,11 +377,11 @@ must be created. A [security scanner job](#security-scanning-tools) must be enab
 job must be enabled for `License-Check`. When the proper jobs aren't configured, the following
 appears:
 
-![Unconfigured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
+![Un-configured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
 
 If at least one security scanner is enabled, you can enable the `Vulnerability-Check` approval rule. If a license scanning job is enabled, you can enable the `License-Check` rule.
 
-![Unconfigured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
+![Un-configured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
 
 For this approval group, you must set the number of approvals required to greater than zero. You
 must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
@@ -446,10 +428,10 @@ environment.
 
 Read how to [operate the Secure scanners in an offline environment](offline_deployments/index.md).
 
-## Using private Maven repos
+## Using private Maven repositories
 
 If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` environment variable
+you can use the `MAVEN_CLI_OPTS` CI/CD variable
 to pass a username and password. You can set it under your project's settings
 so that your credentials aren't exposed in `.gitlab-ci.yml`.
 
@@ -457,8 +439,8 @@ If the username is `myuser` and the password is `verysecret` then you would
 [set the following variable](../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
 under your project's settings:
 
-| Type | Key | Value |
-| ---- | --- | ----- |
+| Type     | Key              | Value |
+| -------- | ---------------- | ----- |
 | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
 
 ```xml
@@ -522,13 +504,28 @@ This error appears when the included job's stage (named `test`) isn't declared i
 To fix this issue, you can either:
 
 - Add a `test` stage in your `.gitlab-ci.yml`.
-- Change the default stage of the included security jobs. For example, with SpotBugs (SAST):
+- Override the default stage of each security job. For example, to use a pre-defined stage name `unit-tests`:
 
   ```yaml
   include:
-    template: Security/SAST.gitlab-ci.yml
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Security/Secret-Detection.gitlab-ci.yml
 
-  spotbugs-sast:
+  stages:
+    - unit-tests
+
+  dependency_scanning:
+    stage: unit-tests
+
+  license_scanning:
+    stage: unit-tests
+
+  sast:
+    stage: unit-tests
+
+  .secret-analyzer:
     stage: unit-tests
   ```
 
@@ -541,7 +538,7 @@ This is often followed by the [error `No files to upload`](../../ci/pipelines/jo
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Please
 check the entire job log for such messages. If you don't find these messages, retry the failed job
 after setting `SECURE_LOG_LEVEL: "debug"` as a
-[custom environment variable](../../ci/variables/README.md#custom-environment-variables).
+[custom CI/CD variable](../../ci/variables/README.md#custom-cicd-variables).
 This provides useful information to investigate further.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
@@ -652,27 +649,16 @@ Analyzer results are displayed in the [job logs](../../ci/jobs/index.md#expand-a
 or [Security Dashboard](security_dashboard/index.md).
 There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
 
-### Enable or disable the basic security widget **(CORE ONLY)**
+### Error: job `is used for configuration only, and its script should not be executed`
 
-The basic security widget is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../feature_flags.md)
-can opt to disable it.
+[Changes made in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41260)
+to the `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
+templates mean that if you enable the `sast` or `dependency_scanning` jobs by setting the `rules` attribute,
+they will fail with the error `(job) is used for configuration only, and its script should not be executed`.
 
-To enable it:
+The `sast` or `dependency_scanning` stanzas can be used to make changes to all SAST or Dependency Scanning,
+such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
 
-```ruby
-# For the instance
-Feature.enable(:core_security_mr_widget)
-# For a single project
-Feature.enable(:core_security_mr_widget, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:core_security_mr_widget)
-# For a single project
-Feature.disable(:core_security_mr_widget, Project.find(<project id>))
-```
+There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).
+Please upvote the issue to help with prioritization, and
+[contributions are welcomed](https://about.gitlab.com/community/contribute/).

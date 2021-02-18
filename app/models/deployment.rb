@@ -38,6 +38,7 @@ class Deployment < ApplicationRecord
 
   scope :for_status, -> (status) { where(status: status) }
   scope :for_project, -> (project_id) { where(project_id: project_id) }
+  scope :for_projects, -> (projects) { where(project: projects) }
 
   scope :visible, -> { where(status: %i[running success failed canceled]) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
@@ -45,11 +46,8 @@ class Deployment < ApplicationRecord
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
 
-  scope :finished_between, -> (start_date, end_date = nil) do
-    selected = where('deployments.finished_at >= ?', start_date)
-    selected = selected.where('deployments.finished_at < ?', end_date) if end_date
-    selected
-  end
+  scope :finished_after, ->(date) { where('finished_at >= ?', date) }
+  scope :finished_before, ->(date) { where('finished_at < ?', date) }
 
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
@@ -112,7 +110,6 @@ class Deployment < ApplicationRecord
 
     after_transition any => any - [:skipped] do |deployment, transition|
       next if transition.loopback?
-      next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
 
       deployment.run_after_commit do
         ::JiraConnect::SyncDeploymentsWorker.perform_async(id)
@@ -121,8 +118,6 @@ class Deployment < ApplicationRecord
   end
 
   after_create unless: :importing? do |deployment|
-    next unless Feature.enabled?(:jira_sync_deployments, deployment.project)
-
     run_after_commit do
       ::JiraConnect::SyncDeploymentsWorker.perform_async(deployment.id)
     end
@@ -351,6 +346,13 @@ class Deployment < ApplicationRecord
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
+  end
+
+  def equal_to?(params)
+    ref == params[:ref] &&
+      tag == params[:tag] &&
+      sha == params[:sha] &&
+      status == params[:status]
   end
 
   private

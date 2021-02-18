@@ -13,5 +13,18 @@ module Gitlab
     MIN_GAP = 2
 
     NoSpaceLeft = Class.new(StandardError)
+    IllegalRange = Class.new(ArgumentError)
+
+    def self.range(lhs, rhs)
+      if lhs && rhs
+        ClosedRange.new(lhs, rhs)
+      elsif lhs
+        StartingFrom.new(lhs)
+      elsif rhs
+        EndingAt.new(rhs)
+      else
+        raise IllegalRange, 'One of rhs or lhs must be provided' unless lhs && rhs
+      end
+    end
   end
 end

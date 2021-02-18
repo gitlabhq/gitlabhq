@@ -6,7 +6,7 @@ description: 'This article describes how to install Git on macOS, Ubuntu Linux a
 type: howto
 ---
 
-# Installing Git
+# Installing Git **(FREE)**
 
 To begin contributing to GitLab projects,
 you will need to install the Git client on your computer.

@@ -1,5 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
@@ -13,11 +14,14 @@ describe('Commit component', () => {
   };
 
   const findUserAvatar = () => wrapper.find(UserAvatarLink);
+  const findRefName = () => wrapper.findByTestId('ref-name');
 
   const createComponent = (propsData) => {
-    wrapper = shallowMount(CommitComponent, {
-      propsData,
-    });
+    wrapper = extendedWrapper(
+      shallowMount(CommitComponent, {
+        propsData,
+      }),
+    );
   };
 
   afterEach(() => {
@@ -221,6 +225,22 @@ describe('Commit component', () => {
       createComponent(props);
 
       expect(wrapper.find('.ref-name').exists()).toBe(false);
+    });
+  });
+
+  describe('When commitRef has a path property instead of ref_url property', () => {
+    it('should render path as href attribute', () => {
+      props = {
+        commitRef: {
+          name: 'master',
+          path: 'http://localhost/namespace2/gitlabhq/tree/master',
+        },
+      };
+
+      createComponent(props);
+
+      expect(findRefName().exists()).toBe(true);
+      expect(findRefName().attributes('href')).toBe(props.commitRef.path);
     });
   });
 });

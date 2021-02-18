@@ -15,12 +15,9 @@ module Resolvers
                required: false,
                description: 'Paths of the blobs.'
 
-      def resolve(**args)
+      def resolve(paths: [])
         authorize!(snippet)
-
         return [snippet.blob] if snippet.empty_repo?
-
-        paths = Array(args.fetch(:paths, []))
 
         if paths.empty?
           snippet.blobs

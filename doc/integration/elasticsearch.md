@@ -5,10 +5,9 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch integration **(STARTER ONLY)**
+# Elasticsearch integration **(PREMIUM SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request") in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
-> - Support for [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1305) in GitLab [Starter](https://about.gitlab.com/pricing/) 9.0.
+> Moved to GitLab Premium in 13.9.
 
 This document describes how to enable Advanced Search. After
 Advanced Search is enabled, you'll have the benefit of fast search response times
@@ -87,7 +86,7 @@ updated automatically.
 
 Since Elasticsearch can read and use indices created in the previous major version, you don't need to change anything in the GitLab configuration when upgrading Elasticsearch.
 
-The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to [reclaim the production index name](#reclaiming-the-gitlab-production-index-name) or reindex from scratch (which will implicitly create an alias). The latter might be faster depending on the GitLab instance size. Once you do that, you'll be able to perform zero-downtime reindexing and you will benefit from any future features that will make use of the alias.
+The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which will implicitly create an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you'll be able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
 
 ## Elasticsearch repository indexer
 
@@ -152,7 +151,7 @@ cd $indexer_path && sudo make install
 
 The `gitlab-elasticsearch-indexer` will be installed to `/usr/local/bin`.
 
-You can change the installation path with the `PREFIX` env variable.
+You can change the installation path with the `PREFIX` environment variable.
 Please remember to pass the `-E` flag to `sudo` if you do so.
 
 Example:
@@ -175,18 +174,17 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area**, then **Settings > General**
-   and expand the **Advanced Search** section.
+1. Navigate to **Admin Area**, then **Settings > Advanced Search**.
 
    NOTE:
-   To see the Advanced Search section, you need an active Starter
+   To see the Advanced Search section, you need an active GitLab Premium
    [license](../user/admin_area/license.md).
 
 1. Configure the [Advanced Search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
 1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
-   General > Advanced Search** and click **Save changes**. This will create
+   Advanced Search** and click **Save changes**. This will create
    an empty index if one does not already exist.
 1. Click **Index all projects**.
 1. Click **Check progress** in the confirmation message to see the status of
@@ -202,7 +200,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    ```
 
 1. After the indexing has completed, enable **Search with Elasticsearch enabled** in
-   **Admin Area > Settings > General > Advanced Search** and click **Save
+   **Admin Area > Settings > Advanced Search** and click **Save
    changes**.
 
 NOTE:
@@ -218,7 +216,7 @@ The following Elasticsearch settings are available:
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
 | `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
-| `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until unpaused. |
+| `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
 | `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
@@ -241,7 +239,7 @@ If you select `Limit namespaces and projects that can be indexed`, more options 
 ![limit namespaces and projects options](img/limit_namespaces_projects_options.png)
 
 You can select namespaces and projects to index exclusively. Note that if the namespace is a group it will include
-any sub-groups and projects belonging to those sub-groups to be indexed as well.
+any subgroups and projects belonging to those subgroups to be indexed as well.
 
 Advanced Search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search will not provide a code or commit scope. This will be possible only in the scope of an indexed namespace. Currently there is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 
@@ -260,13 +258,13 @@ from the Elasticsearch index as expected.
 
 ## Enabling custom language analyzers
 
-You can improve the language support for Chinese and Japanese languages by utilizing [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
+You can improve the language support for Chinese and Japanese languages by utilizing [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
 
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area**, then **Settings > General**..
-1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**..
+1. Locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
 1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
@@ -276,18 +274,17 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
-| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
-| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
-| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
-| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
 
 ## Disabling Advanced Search
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area**, then **Settings > General**.
-1. Expand the **Advanced Search** section and uncheck **Elasticsearch indexing**
-   and **Search with Elasticsearch enabled**.
+1. Navigate to the **Admin Area**, then **Settings > Advanced Search**.
+1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
 1. (Optional) Delete the existing indexes:
 
@@ -301,146 +298,19 @@ To disable the Elasticsearch integration:
 
 ## Zero downtime reindexing
 
-The idea behind this reindexing method is to leverage Elasticsearch index alias
-feature to atomically swap between two indices. We'll refer to each index as
-`primary` (online and used by GitLab for read/writes) and `secondary`
-(offline, for reindexing purpose).
-
-Instead of connecting directly to the `primary` index, we'll setup an index
-alias such as we can change the underlying index at will.
-
-NOTE:
-Any index attached to the production alias is deemed a `primary` and will be
-used by the GitLab Advanced Search integration.
-
-### Pause the indexing
-
-In the **Admin Area > Settings > General > Advanced Search** section, select the
-**Pause Elasticsearch Indexing** setting, and then save your change.
-With this, all updates that should happen on your Elasticsearch index will be
-buffered and caught up once unpaused.
-
-The indexing will also be automatically paused when the [**Trigger cluster reindexing**](#trigger-the-reindex-via-the-advanced-search-administration) button is used, and unpaused when the reindexing completes or aborts.
-
-### Setup
-
-NOTE:
-If your index was created with GitLab 13.0 or greater, you can directly
-[trigger the reindex](#trigger-the-reindex-via-the-advanced-search-administration).
-
-This process involves several shell commands and curl invocations, so a good
-initial setup will help for later:
-
-```shell
-# You can find this value under Admin Area > Settings > General > Advanced Search > URL
-export CLUSTER_URL="http://localhost:9200"
-export PRIMARY_INDEX="gitlab-production"
-export SECONDARY_INDEX="gitlab-production-$(date +%s)"
-```
-
-### Reclaiming the `gitlab-production` index name
-
-WARNING:
-It is highly recommended that you take a snapshot of your cluster to ensure
-there is a recovery path if anything goes wrong.
-
-Due to a technical limitation, there will be a slight downtime because of the
-fact that we need to reclaim the current `primary` index to be used as the alias.
-
-To reclaim the `gitlab-production` index name, you need to first create a `secondary` index and then trigger the re-index from `primary`.
-
-#### Creating a secondary index
-
-To create a secondary index, run the following Rake task. The `SKIP_ALIAS`
-environment variable will disable the automatic creation of the Elasticsearch
-alias, which would conflict with the existing index under `$PRIMARY_INDEX`, and will
-not create a separate Issue index:
-
-```shell
-# Omnibus installation
-sudo SKIP_ALIAS=1 gitlab-rake "gitlab:elastic:create_empty_index[$SECONDARY_INDEX]"
-
-# Source installation
-SKIP_ALIAS=1 bundle exec rake "gitlab:elastic:create_empty_index[$SECONDARY_INDEX]"
-```
-
-The index should be created successfully, with the latest index options and
-mappings.
-
-#### Trigger the re-index from `primary`
-
-To trigger the re-index from `primary` index:
-
-1. Use the Elasticsearch [Reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/docs-reindex.html):
-
-    ```shell
-    curl --request POST \
-          --header 'Content-Type: application/json' \
-          --data "{ \"source\": { \"index\": \"$PRIMARY_INDEX\" }, \"dest\": { \"index\": \"$SECONDARY_INDEX\" } }" \
-          "$CLUSTER_URL/_reindex?slices=auto&wait_for_completion=false"
-    ```
-
-    There will be an output like:
-
-    ```plaintext
-    {"task":"3qw_Tr0YQLq7PF16Xek8YA:1012"}
-    ```
-
-    Note the `task` value, as it will be useful to follow the reindex progress.
-
-1. Wait for the reindex process to complete by checking the `completed` value.
-   Using the `task` value form the previous step:
-
-    ```shell
-    export TASK_ID=3qw_Tr0YQLq7PF16Xek8YA:1012
-    curl "$CLUSTER_URL/_tasks/$TASK_ID?pretty"
-    ```
-
-    The output will be like:
-
-    ```plaintext
-    {"completed":false, …}
-    ```
-
-    After the returned value is `true`, continue to the next step.
-
-1. Ensure that the secondary index has data in it. You can use the
-   Elasticsearch API to look for the index size and compare our two indices:
-
-    ```shell
-    curl $CLUSTER_URL/$PRIMARY_INDEX/_count => 123123
-    curl $CLUSTER_URL/$SECONDARY_INDEX/_count => 123123
-    ```
-
-    NOTE:
-    Comparing the document count is more accurate than using the index size, as improvements to the storage might cause the new index to be smaller than the original one.
-
-1. After you are confident your `secondary` index is valid, you can process to
-   the creation of the alias.
-
-    ```shell
-    # Delete the original index
-    curl --request DELETE $CLUSTER_URL/$PRIMARY_INDEX
-
-    # Create the alias and add the `secondary` index to it
-    curl --request POST \
-          --header 'Content-Type: application/json' \
-          --data "{\"actions\":[{\"add\":{\"index\":\"$SECONDARY_INDEX\",\"alias\":\"$PRIMARY_INDEX\"}}]}}" \
-          $CLUSTER_URL/_aliases
-    ```
-
-    The reindexing is now completed. Your GitLab instance is now ready to use the [automated in-cluster reindexing](#trigger-the-reindex-via-the-advanced-search-administration) feature for future reindexing.
-
-1. Unpause the indexing
-
-    Under **Admin Area > Settings > General > Advanced Search**, uncheck the **Pause Elasticsearch Indexing** setting and save.
+The idea behind this reindexing method is to leverage the [Elasticsearch reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)
+and Elasticsearch index alias feature to perform the operation. We set up an index alias which connects to a
+`primary` index which is used by GitLab for reads/writes. When reindexing process starts, we temporarily pause
+the writes to the `primary` index. Then, we create another index and invoke the Reindex API which migrates the
+index data onto the new index. Once the reindexing job is complete, we switch to the new index by connecting the
+index alias to it which becomes the new `primary` index. At the end, we resume the writes and normal operation resumes.
 
 ### Trigger the reindex via the Advanced Search administration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
-> - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab Starter 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in GitLab 13.2.
+> - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab 13.3.
 
-Under **Admin Area > Settings > General > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
@@ -449,9 +319,9 @@ After the reindexing is completed, the original index will be scheduled to be de
 
 While the reindexing is running, you will be able to follow its progress under that same section.
 
-### Mark the most recent reindex job as failed and unpause the indexing
+### Mark the most recent reindex job as failed and resume the indexing
 
-Sometimes, you might want to abandon the unfinished reindex job and unpause the indexing. You can achieve this via the following steps:
+Sometimes, you might want to abandon the unfinished reindex job and resume the indexing. You can achieve this via the following steps:
 
 1. Mark the most recent reindex job as failed:
 
@@ -463,7 +333,7 @@ Sometimes, you might want to abandon the unfinished reindex job and unpause the 
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > General > Advanced Search**.
+1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > Advanced Search**.
 
 ## Background migrations
 
@@ -519,8 +389,8 @@ In order to debug issues with the migrations you can check the [`elasticsearch.l
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it will be halted and a notification will be displayed in the Advanced Search integration settings.
 It is recommended to check the [`elasticsearch.log` file](../administration/logs.md#elasticsearchlog) to
-debug why the migration was halted and make any changes before retrying the migration. Once you believe you've 
-fixed the cause of the failure, click "Retry migration", and the migration will be scheduled to be retried 
+debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
+fixed the cause of the failure, click "Retry migration", and the migration will be scheduled to be retried
 in the background.
 
 ## GitLab Advanced Search Rake tasks
@@ -539,16 +409,13 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects and queues Sidekiq jobs to index them in the background.                                                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command will result in a complete wipe of the index, and it should be used with caution.                                                                                              |
-| [`sudo gitlab-rake gitlab:elastic:create_empty_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:delete_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
-| [`sudo gitlab-rake gitlab:elastic:recreate_index[<TARGET_NAME>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index[<TARGET_NAME>]` and `gitlab:elastic:create_empty_index[<TARGET_NAME>]`.                                                                       |
+| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
+| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
+| [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`.                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
 | [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
 | [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. This feature should be used with an index that was created after GitLab 13.0. |
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)`]            | Mark the most recent re-index job as failed. |
-
-NOTE:
-The `TARGET_NAME` parameter is optional and will use the default index/alias name from the current `RAILS_ENV` if not set.
 
 ### Environment variables
 
@@ -599,7 +466,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - Number of CPUs (CPU cores) per node usually corresponds to the `Number of Elasticsearch shards` setting described below.
 - A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This will generally help the cluster stay in good health.
 - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB. Another consideration is the number of documents, you should aim for this simple formula for the number of shards: `number of expected documents / 5M +1`.
-- `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in realtime. This will change how soon you will see fresh results. If that's important for you, you should leave it as close as possible to the default value.
+- `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This will change how soon you will see fresh results. If that's important for you, you should leave it as close as possible to the default value.
 - You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
 
 ### Advanced Search integration settings guidance
@@ -799,6 +666,23 @@ However, some larger installations may wish to tune the merge policy settings:
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
 
+## Reverting to Basic Search
+
+Sometimes there may be issues with your Elasticsearch index data and as such
+GitLab will allow you to revert to "basic search" when there are no search
+results and assuming that basic search is supported in that scope. This "basic
+search" will behave as though you don't have Advanced Search enabled at all for
+your instance and search using other data sources (such as PostgreSQL data and Git
+data).
+
+## Data recovery: Elasticsearch is a secondary data store only
+
+The use of Elasticsearch in GitLab is only ever as a secondary data store.
+This means that all of the data stored in Elasticsearch can always be derived
+again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
+the Elasticsearch data store is ever corrupted for whatever reason, you can
+simply reindex everything from scratch.
+
 ## Troubleshooting
 
 One of the most valuable tools for identifying issues with the Elasticsearch
@@ -823,7 +707,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the admin area under **Settings > General > Advanced Search** check that the
+- From the admin area under **Settings > Advanced Search** check that the
   Advanced Search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -980,27 +864,12 @@ problem.
 
 There is a [more structured, lower-level troubleshooting document](../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
 
-### Known issues
-
-[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/groups/gitlab-org/-/epics/3621).
+### Elasticsearch `code_analyzer` doesn't account for all code cases
 
 The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
 
 Improvements to the `code_analyzer` pattern and filters are being discussed in [epic 3621](https://gitlab.com/groups/gitlab-org/-/epics/3621).
 
-### Reverting to Basic Search
+### Some binary files may not be searchable by name
 
-Sometimes there may be issues with your Elasticsearch index data and as such
-GitLab will allow you to revert to "basic search" when there are no search
-results and assuming that basic search is supported in that scope. This "basic
-search" will behave as though you don't have Advanced Search enabled at all for
-your instance and search using other data sources (ie. PostgreSQL data and Git
-data).
-
-### Data recovery: Elasticsearch is a secondary data store only
-
-The use of Elasticsearch in GitLab is only ever as a secondary data store.
-This means that all of the data stored in Elasticsearch can always be derived
-again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
-the Elasticsearch data store is ever corrupted for whatever reason, you can
-simply reindex everything from scratch.
+In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.

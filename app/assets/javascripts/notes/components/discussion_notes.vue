@@ -1,15 +1,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { SYSTEM_NOTE } from '../constants';
 import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { SYSTEM_NOTE } from '../constants';
+import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
+import NoteEditedText from './note_edited_text.vue';
 import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
-import NoteEditedText from './note_edited_text.vue';
-import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'DiscussionNotes',
@@ -18,7 +17,6 @@ export default {
     NoteEditedText,
     DiscussionNotesRepliesWrapper,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     discussion: {
       type: Object,
@@ -96,14 +94,14 @@ export default {
       return note.isPlaceholderNote ? note.notes[0] : note;
     },
     handleMouseEnter(discussion) {
-      if (this.glFeatures.multilineComments && discussion.position) {
+      if (discussion.position) {
         this.setSelectedCommentPositionHover(discussion.position.line_range);
       }
     },
     handleMouseLeave(discussion) {
-      // Even though position isn't used here we still don't want to unecessarily call a mutation
+      // Even though position isn't used here we still don't want to unnecessarily call a mutation
       // The lack of position tells us that highlighting is irrelevant in this context
-      if (this.glFeatures.multilineComments && discussion.position) {
+      if (discussion.position) {
         this.setSelectedCommentPositionHover();
       }
     },

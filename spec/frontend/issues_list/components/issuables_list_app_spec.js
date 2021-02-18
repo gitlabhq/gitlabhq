@@ -1,19 +1,19 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import { shallowMount } from '@vue/test-utils';
 import {
   GlEmptyState,
   GlPagination,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
 } from '@gitlab/ui';
-import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMount } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import Issuable from '~/issues_list/components/issuable.vue';
-import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import issueablesEventBus from '~/issues_list/eventhub';
+import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issues_list/constants';
+import issueablesEventBus from '~/issues_list/eventhub';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 jest.mock('~/flash');
 jest.mock('~/issues_list/eventhub');
@@ -589,6 +589,76 @@ describe('Issuables list component', () => {
         factory({ type: 'jira' });
 
         expect(findFilteredSearchBar().props('initialFilterValue')).toEqual(['free text']);
+      });
+    });
+
+    describe('on filter search', () => {
+      beforeEach(() => {
+        factory({ type: 'jira' });
+
+        window.history.pushState = jest.fn();
+      });
+
+      afterEach(() => {
+        window.history.pushState.mockRestore();
+      });
+
+      const emitOnFilter = (filter) => findFilteredSearchBar().vm.$emit('onFilter', filter);
+
+      describe('empty filter', () => {
+        const mockFilter = [];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened`,
+          );
+        });
+      });
+
+      describe('filter with search term', () => {
+        const mockFilter = [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'free' },
+          },
+        ];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened&search=free`,
+          );
+        });
+      });
+
+      describe('filter with multiple search terms', () => {
+        const mockFilter = [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'free' },
+          },
+          {
+            type: 'filtered-search-term',
+            value: { data: 'text' },
+          },
+        ];
+
+        it('updates URL with correct params', () => {
+          emitOnFilter(mockFilter);
+
+          expect(window.history.pushState).toHaveBeenCalledWith(
+            {},
+            '',
+            `${TEST_LOCATION}?state=opened&search=free+text`,
+          );
+        });
       });
     });
   });

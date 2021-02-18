@@ -1,0 +1,5 @@
+---
+title: Deprecate GitLab-managed (v1) apps that will be removed in 14.0
+merge_request: 54162
+author:
+type: deprecated

@@ -21,7 +21,8 @@ module BoardsHelper
       group_id: @group&.id,
       labels_filter_base_path: build_issue_link_base,
       labels_fetch_path: labels_fetch_path,
-      labels_manage_path: labels_manage_path
+      labels_manage_path: labels_manage_path,
+      board_type: board.to_type
     }
   end
 
@@ -96,23 +97,6 @@ module BoardsHelper
       namespace_path: @namespace_path,
       project_path: @project&.path,
       group_path: @group&.path
-    }
-  end
-
-  def board_sidebar_user_data
-    dropdown_options = assignees_dropdown_options('issue')
-
-    {
-      toggle: 'dropdown',
-      field_name: 'issue[assignee_ids][]',
-      first_user: current_user&.username,
-      current_user: 'true',
-      project_id: @project&.id,
-      group_id: @group&.id,
-      null_user: 'true',
-      multi_select: 'true',
-      'dropdown-header': dropdown_options[:data][:'dropdown-header'],
-      'max-select': dropdown_options[:data][:'max-select']
     }
   end
 

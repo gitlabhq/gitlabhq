@@ -125,11 +125,15 @@ module GraphqlHelpers
   end
 
   def graphql_query_for(name, attributes = {}, fields = nil)
-    <<~QUERY
-    {
-      #{query_graphql_field(name, attributes, fields)}
-    }
-    QUERY
+    type = GitlabSchema.types['Query'].fields[GraphqlHelpers.fieldnamerize(name)]&.type
+    wrap_query(query_graphql_field(name, attributes, fields, type))
+  end
+
+  def wrap_query(query)
+    q = query.to_s
+    return q if q.starts_with?('{')
+
+    "{ #{q} }"
   end
 
   def graphql_mutation(name, input, fields = nil, &block)
@@ -219,12 +223,13 @@ module GraphqlHelpers
     "#{namerized}#{field_params}"
   end
 
-  def query_graphql_field(name, attributes = {}, fields = nil)
+  def query_graphql_field(name, attributes = {}, fields = nil, type = nil)
+    type ||= name.to_s.classify
     attributes, fields = [nil, attributes] if fields.nil? && !attributes.is_a?(Hash)
 
     field = field_with_params(name, attributes)
 
-    field + wrap_fields(fields || all_graphql_fields_for(name.to_s.classify)).to_s
+    field + wrap_fields(fields || all_graphql_fields_for(type)).to_s
   end
 
   def page_info_selection
@@ -235,6 +240,10 @@ module GraphqlHelpers
     fields ||= all_graphql_fields_for(of.to_s.classify, max_depth: max_depth)
     node_selection = include_pagination_info ? "#{page_info_selection} nodes" : :nodes
     query_graphql_path([[name, args], node_selection], fields)
+  end
+
+  def query_graphql_fragment(name)
+    "... on #{name} { #{all_graphql_fields_for(name)} }"
   end
 
   # e.g:
@@ -277,8 +286,8 @@ module GraphqlHelpers
     allow_high_graphql_recursion
     allow_high_graphql_transaction_threshold
 
-    type = GitlabSchema.types[class_name.to_s]
-    return "" unless type
+    type = class_name.respond_to?(:kind) ? class_name : GitlabSchema.types[class_name.to_s]
+    raise "#{class_name} is not a known type in the GitlabSchema" unless type
 
     # We can't guess arguments, so skip fields that require them
     skip = ->(name, field) { excluded.include?(name) || required_arguments?(field) }
@@ -287,7 +296,7 @@ module GraphqlHelpers
   end
 
   def with_signature(variables, query)
-    %Q[query(#{variables.map(&:sig).join(', ')}) #{query}]
+    %Q[query(#{variables.map(&:sig).join(', ')}) #{wrap_query(query)}]
   end
 
   def var(type)
@@ -305,6 +314,10 @@ module GraphqlHelpers
   def post_graphql(query, current_user: nil, variables: nil, headers: {})
     params = { query: query, variables: serialize_variables(variables) }
     post api('/', current_user, version: 'graphql'), params: params, headers: headers
+
+    if graphql_errors # Errors are acceptable, but not this one:
+      expect(graphql_errors).not_to include(a_hash_including('message' => 'Internal server error'))
+    end
   end
 
   def post_graphql_mutation(mutation, current_user: nil)
@@ -374,10 +387,8 @@ module GraphqlHelpers
   end
 
   # Raises an error if no data is found
-  def graphql_data(body = json_response)
-    # Note that `json_response` is defined as `let(:json_response)` and
-    # therefore, in a spec with multiple queries, will only contain data
-    # from the _first_ query, not subsequent ones
+  # NB: We use fresh_response_data to support tests that make multiple requests.
+  def graphql_data(body = fresh_response_data)
     body['data'] || (raise NoData, graphql_errors(body))
   end
 
@@ -510,8 +521,12 @@ module GraphqlHelpers
     end
   end
 
-  def global_id_of(model)
-    model.to_global_id.to_s
+  def global_id_of(model, id: nil, model_name: nil)
+    if id || model_name
+      ::Gitlab::GlobalId.build(model, id: id, model_name: model_name).to_s
+    else
+      model.to_global_id.to_s
+    end
   end
 
   def missing_required_argument(path, argument)

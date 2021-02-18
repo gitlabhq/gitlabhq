@@ -1,28 +1,26 @@
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import Api from '~/api';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { securityReportDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import axios from '~/lib/utils/axios_utils';
-import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
-import eventHub from '~/vue_merge_request_widget/event_hub';
+import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
-import { setFaviconOverlay } from '~/lib/utils/favicon';
-import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import mockData from './mock_data';
-import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
+import eventHub from '~/vue_merge_request_widget/event_hub';
+import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_download_paths.query.graphql';
+import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
+import mockData from './mock_data';
 
 jest.mock('~/smart_interval');
 
 jest.mock('~/lib/utils/favicon');
 
-const returnPromise = (data) =>
-  new Promise((resolve) => {
-    resolve({
-      data,
-    });
-  });
+Vue.use(VueApollo);
 
 describe('MrWidgetOptions', () => {
   let wrapper;
@@ -48,7 +46,7 @@ describe('MrWidgetOptions', () => {
     gon.features = {};
   });
 
-  const createComponent = (mrData = mockData) => {
+  const createComponent = (mrData = mockData, options = {}) => {
     if (wrapper) {
       wrapper.destroy();
     }
@@ -57,6 +55,7 @@ describe('MrWidgetOptions', () => {
       propsData: {
         mrData: { ...mrData },
       },
+      ...options,
     });
 
     return axios.waitForAll();
@@ -68,6 +67,7 @@ describe('MrWidgetOptions', () => {
 
   describe('default', () => {
     beforeEach(() => {
+      jest.spyOn(document, 'dispatchEvent');
       return createComponent();
     });
 
@@ -281,7 +281,7 @@ describe('MrWidgetOptions', () => {
         let isCbExecuted;
 
         beforeEach(() => {
-          jest.spyOn(wrapper.vm.service, 'checkStatus').mockReturnValue(returnPromise(mockData));
+          jest.spyOn(wrapper.vm.service, 'checkStatus').mockResolvedValue({ data: mockData });
           jest.spyOn(wrapper.vm.mr, 'setData').mockImplementation(() => {});
           jest.spyOn(wrapper.vm, 'handleNotification').mockImplementation(() => {});
 
@@ -331,7 +331,7 @@ describe('MrWidgetOptions', () => {
         it('should fetch deployments', () => {
           jest
             .spyOn(wrapper.vm.service, 'fetchDeployments')
-            .mockReturnValue(returnPromise([{ id: 1, status: SUCCESS }]));
+            .mockResolvedValue({ data: [{ id: 1, status: SUCCESS }] });
 
           wrapper.vm.fetchPreMergeDeployments();
 
@@ -347,13 +347,16 @@ describe('MrWidgetOptions', () => {
         it('should fetch content of Cherry Pick and Revert modals', () => {
           jest
             .spyOn(wrapper.vm.service, 'fetchMergeActionsContent')
-            .mockReturnValue(returnPromise('hello world'));
+            .mockResolvedValue({ data: 'hello world' });
 
           wrapper.vm.fetchActionsContent();
 
           return nextTick().then(() => {
             expect(wrapper.vm.service.fetchMergeActionsContent).toHaveBeenCalled();
             expect(document.body.textContent).toContain('hello world');
+            expect(document.dispatchEvent).toHaveBeenCalledWith(
+              new CustomEvent('merged:UpdateActions'),
+            );
           });
         });
       });
@@ -822,36 +825,34 @@ describe('MrWidgetOptions', () => {
 
   describe('security widget', () => {
     describe.each`
-      context                                  | hasPipeline | reportType | isFlagEnabled | shouldRender
-      ${'security report and flag enabled'}    | ${true}     | ${'sast'}  | ${true}       | ${true}
-      ${'security report and flag disabled'}   | ${true}     | ${'sast'}  | ${false}      | ${false}
-      ${'no security report and flag enabled'} | ${true}     | ${'foo'}   | ${true}       | ${false}
-      ${'no pipeline and flag enabled'}        | ${false}    | ${'sast'}  | ${true}       | ${false}
-    `('given $context', ({ hasPipeline, reportType, isFlagEnabled, shouldRender }) => {
+      context                  | hasPipeline | shouldRender
+      ${'there is a pipeline'} | ${true}     | ${true}
+      ${'no pipeline'}         | ${false}    | ${false}
+    `('given $context', ({ hasPipeline, shouldRender }) => {
       beforeEach(() => {
-        gon.features.coreSecurityMrWidget = isFlagEnabled;
-
-        if (hasPipeline) {
-          jest.spyOn(Api, 'pipelineJobs').mockResolvedValue({
-            data: [{ artifacts: [{ file_type: reportType }] }],
-          });
-        }
-
-        return createComponent({
+        const mrData = {
           ...mockData,
-          ...(hasPipeline ? {} : { pipeline: undefined }),
+          ...(hasPipeline ? {} : { pipeline: null }),
+        };
+
+        // Override top-level mocked requests, which always use a fresh copy of
+        // mockData, which always includes the full pipeline object.
+        mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
+        mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
+
+        return createComponent(mrData, {
+          apolloProvider: createMockApollo([
+            [
+              securityReportDownloadPathsQuery,
+              async () => ({ data: securityReportDownloadPathsQueryResponse }),
+            ],
+          ]),
         });
       });
 
-      if (shouldRender) {
-        it('renders', () => {
-          expect(findSecurityMrWidget().exists()).toBe(true);
-        });
-      } else {
-        it('does not render', () => {
-          expect(findSecurityMrWidget().exists()).toBe(false);
-        });
-      }
+      it(shouldRender ? 'renders' : 'does not render', () => {
+        expect(findSecurityMrWidget().exists()).toBe(shouldRender);
+      });
     });
   });
 

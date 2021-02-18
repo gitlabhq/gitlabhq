@@ -1,5 +1,5 @@
-import { pick } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
+import { pick } from 'lodash';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 
 const MockFileRow = {

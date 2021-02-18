@@ -1,8 +1,8 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import IssuableHeaderWarnings from '~/vue_shared/components/issuable/issuable_header_warnings.vue';
-import createIssueStore from '~/notes/stores';
 import { createStore as createMrStore } from '~/mr_notes/stores';
+import createIssueStore from '~/notes/stores';
+import IssuableHeaderWarnings from '~/vue_shared/components/issuable/issuable_header_warnings.vue';
 
 const ISSUABLE_TYPE_ISSUE = 'issue';
 const ISSUABLE_TYPE_MR = 'merge request';

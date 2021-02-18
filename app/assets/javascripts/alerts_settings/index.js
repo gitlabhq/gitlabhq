@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
 import apolloProvider from './graphql';
@@ -31,6 +31,7 @@ export default (el) => {
     url,
     projectPath,
     multiIntegrations,
+    alertFields,
   } = el.dataset;
 
   return new Vue({
@@ -60,7 +61,14 @@ export default (el) => {
     },
     apolloProvider,
     render(createElement) {
-      return createElement('alert-settings-wrapper');
+      return createElement('alert-settings-wrapper', {
+        props: {
+          alertFields:
+            gon.features?.multipleHttpIntegrationsCustomMapping && parseBoolean(multiIntegrations)
+              ? JSON.parse(alertFields)
+              : null,
+        },
+      });
     },
   });
 };

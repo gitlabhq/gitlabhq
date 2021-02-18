@@ -1,6 +1,6 @@
 import { deprecatedCreateFlash as flash } from '~/flash';
-import { s__, sprintf } from '~/locale';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
+import { s__, sprintf } from '~/locale';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class

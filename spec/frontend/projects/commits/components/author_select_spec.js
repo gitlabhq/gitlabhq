@@ -1,6 +1,6 @@
+import { GlDropdown, GlDropdownSectionHeader, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlDropdown, GlDropdownSectionHeader, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import * as urlUtility from '~/lib/utils/url_utility';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
 import { createStore } from '~/projects/commits/store';

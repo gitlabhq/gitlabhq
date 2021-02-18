@@ -34,14 +34,24 @@ module BoardsActions
 
   def boards
     strong_memoize(:boards) do
-      Boards::ListService.new(parent, current_user).execute
+      existing_boards = boards_finder.execute
+      if existing_boards.any?
+        existing_boards
+      else
+        # if no board exists, create one
+        [board_create_service.execute.payload]
+      end
     end
   end
 
   def board
     strong_memoize(:board) do
-      boards.find(params[:id])
+      board_finder.execute.first
     end
+  end
+
+  def board_type
+    board_klass.to_type
   end
 
   def serializer

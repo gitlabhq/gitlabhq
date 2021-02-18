@@ -23,6 +23,15 @@ class ChaosController < ActionController::Base
     do_chaos :kill, Chaos::KillWorker
   end
 
+  def gc
+    gc_stat = Gitlab::Chaos.run_gc
+
+    render json: {
+      worker_id: Prometheus::PidProvider.worker_id,
+      gc_stat: gc_stat
+    }
+  end
+
   private
 
   def do_chaos(method, worker, *args)

@@ -12,9 +12,9 @@ module Types
       description 'Represents a directory'
 
       field :web_url, GraphQL::STRING_TYPE, null: true,
-            description: 'Web URL for the tree entry (directory)'
+            description: 'Web URL for the tree entry (directory).'
       field :web_path, GraphQL::STRING_TYPE, null: true,
-            description: 'Web path for the tree entry (directory)'
+            description: 'Web path for the tree entry (directory).'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

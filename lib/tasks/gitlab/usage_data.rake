@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :usage_data do
     desc 'GitLab | UsageData | Generate raw SQLs for usage ping in YAML'
@@ -20,6 +22,12 @@ namespace :gitlab do
       result = SubmitUsagePingService.new.execute
 
       puts Gitlab::Json.pretty_generate(result.attributes)
+    end
+
+    desc 'GitLab | UsageData | Generate metrics dictionary'
+    task generate_metrics_dictionary: :environment do
+      items = Gitlab::Usage::MetricDefinition.definitions
+      Gitlab::Usage::Docs::Renderer.new(items).write
     end
   end
 end

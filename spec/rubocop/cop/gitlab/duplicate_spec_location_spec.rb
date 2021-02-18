@@ -6,8 +6,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/gitlab/duplicate_spec_location'
 
 RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   let(:rails_root) { '../../../../' }

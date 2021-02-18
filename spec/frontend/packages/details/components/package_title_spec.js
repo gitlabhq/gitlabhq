@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import PackageTitle from '~/packages/details/components/package_title.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';

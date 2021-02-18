@@ -6,7 +6,7 @@ type: reference, howto
 description: "Documentation on Git file history."
 ---
 
-# Git file history
+# Git file history **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/blob/9ba1224867665844b117fa037e1465bb706b3685/app/controllers/commits_controller.rb) in GitLab 0.8.0
 

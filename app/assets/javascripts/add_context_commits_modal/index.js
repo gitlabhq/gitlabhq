@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import createStore from './store';
 import AddContextCommitsModalTrigger from './components/add_context_commits_modal_trigger.vue';
 import AddContextCommitsModalWrapper from './components/add_context_commits_modal_wrapper.vue';
+import createStore from './store';
 
 export default function initAddContextCommitsTriggers() {
   const addContextCommitsModalTriggerEl = document.querySelector('.add-review-item-modal-trigger');

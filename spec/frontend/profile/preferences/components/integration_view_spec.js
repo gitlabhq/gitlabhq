@@ -1,9 +1,9 @@
+import { GlFormText } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import { GlFormText } from '@gitlab/ui';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { integrationViews, userFields } from '../mock_data';
 
 const viewProps = convertObjectPropsToCamelCase(integrationViews[0]);
@@ -114,11 +114,5 @@ describe('IntegrationView component', () => {
     wrapper = createComponent();
 
     expect(findFormGroupLabel().text()).toBe('Enable foo');
-  });
-
-  it('should render IntegrationView properly', () => {
-    wrapper = createComponent();
-
-    expect(wrapper.element).toMatchSnapshot();
   });
 });

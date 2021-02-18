@@ -1,7 +1,7 @@
 <script>
 import { n__ } from '~/locale';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '../constants';
 
 export default {

@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlDropdown,
   GlDropdownDivider,
@@ -10,8 +9,9 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import createStore from '../stores';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { SEARCH_DEBOUNCE_MS, DEFAULT_I18N } from '../constants';
+import createStore from '../stores';
 import RefResultsSection from './ref_results_section.vue';
 
 export default {

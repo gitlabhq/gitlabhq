@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PipelineFailed should render error message with a disabled merge button 1`] = `
+<div
+  class="mr-widget-body media"
+>
+  <status-icon-stub
+    showdisabledbutton="true"
+    status="warning"
+  />
+   
+  <div
+    class="media-body space-children"
+  >
+    <span
+      class="bold"
+    >
+      <gl-sprintf-stub
+        message="The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
+      />
+    </span>
+  </div>
+</div>
+`;

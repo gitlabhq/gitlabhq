@@ -1,6 +1,6 @@
+import PersistentUserCallout from '~/persistent_user_callout';
 import initGkeDropdowns from './gke_cluster';
 import initGkeNamespace from './gke_cluster_namespace';
-import PersistentUserCallout from '~/persistent_user_callout';
 
 const newClusterViews = [':clusters:new', ':clusters:create_gcp', ':clusters:create_user'];
 

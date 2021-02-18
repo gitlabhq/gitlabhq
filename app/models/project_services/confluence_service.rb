@@ -30,8 +30,8 @@ class ConfluenceService < Service
     s_('ConfluenceService|Connect a Confluence Cloud Workspace to GitLab')
   end
 
-  def detailed_description
-    return unless project.wiki_enabled?
+  def help
+    return unless project&.wiki_enabled?
 
     if activated?
       wiki_url = project.wiki.web_url

@@ -1,9 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 
 let mockedAdapter;

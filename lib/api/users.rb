@@ -6,7 +6,7 @@ module API
     include APIGuard
     include Helpers::CustomAttributes
 
-    allow_access_with_scope :read_user, if: -> (request) { request.get? }
+    allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
@@ -157,6 +157,68 @@ module API
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present user.status || {}, with: Entities::UserStatus
+      end
+
+      desc 'Follow a user' do
+        success Entities::User
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ':id/follow', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user
+
+        if current_user.follow(user)
+          present user, with: Entities::UserBasic
+        else
+          not_modified!
+        end
+      end
+
+      desc 'Unfollow a user' do
+        success Entities::User
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ':id/unfollow', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user
+
+        if current_user.unfollow(user)
+          present user, with: Entities::UserBasic
+        else
+          not_modified!
+        end
+      end
+
+      desc 'Get the users who follow a user' do
+        success Entities::UserBasic
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/following', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user && can?(current_user, :read_user_profile, user)
+
+        present paginate(user.followees), with: Entities::UserBasic
+      end
+
+      desc 'Get the followers of a user' do
+        success Entities::UserBasic
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/followers', feature_category: :users do
+        user = find_user(params[:id])
+        not_found!('User') unless user && can?(current_user, :read_user_profile, user)
+
+        present paginate(user.followers), with: Entities::UserBasic
       end
 
       desc 'Create a user. Available only for admins.' do
@@ -1004,11 +1066,15 @@ module API
         optional :emoji, type: String, desc: "The emoji to set on the status"
         optional :message, type: String, desc: "The status message to set"
         optional :availability, type: String, desc: "The availability of user to set"
+        optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
       end
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)
 
-        if ::Users::SetStatusService.new(current_user, declared_params).execute
+        update_params = declared_params
+        update_params.delete(:clear_status_after) if Feature.disabled?(:clear_status_with_quick_options, current_user, default_enabled: :yaml)
+
+        if ::Users::SetStatusService.new(current_user, update_params).execute
           present current_user.status, with: Entities::UserStatus
         else
           render_validation_error!(current_user.status)

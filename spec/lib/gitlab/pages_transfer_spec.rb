@@ -8,9 +8,20 @@ RSpec.describe Gitlab::PagesTransfer do
 
     context 'when receiving an allowed method' do
       it 'schedules a PagesTransferWorker', :aggregate_failures do
-        described_class::Async::METHODS.each do |meth|
+        described_class::METHODS.each do |meth|
           expect(PagesTransferWorker)
             .to receive(:perform_async).with(meth, %w[foo bar])
+
+          async.public_send(meth, 'foo', 'bar')
+        end
+      end
+
+      it 'does nothing if legacy storage is disabled' do
+        stub_feature_flags(pages_update_legacy_storage: false)
+
+        described_class::METHODS.each do |meth|
+          expect(PagesTransferWorker)
+            .not_to receive(:perform_async)
 
           async.public_send(meth, 'foo', 'bar')
         end
@@ -58,6 +69,15 @@ RSpec.describe Gitlab::PagesTransfer do
       subject.public_send(meth, *args)
 
       expect(subject.public_send(meth, *args)).to be(false)
+    end
+
+    it 'does nothing if legacy storage is disabled' do
+      stub_feature_flags(pages_update_legacy_storage: false)
+
+      subject.public_send(meth, *args)
+
+      expect(File.exist?(config_path_before)).to be(true)
+      expect(File.exist?(config_path_after)).to be(false)
     end
   end
 

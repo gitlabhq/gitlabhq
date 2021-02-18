@@ -6,6 +6,7 @@ module Gitlab
       module Models
         # isolated Namespace model
         class Namespace < ApplicationRecord
+          include FeatureGate
           include ::Gitlab::VisibilityLevel
           include ::Gitlab::Utils::StrongMemoize
           include Gitlab::BackgroundMigration::UserMentions::Models::Concerns::Namespace::RecursiveTraversal

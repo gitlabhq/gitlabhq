@@ -15,7 +15,7 @@
               %span.logo-text.d-none.d-lg-block.gl-ml-3
                 = logo_text
           - if Gitlab.com_and_canary?
-            = link_to 'https://next.gitlab.com', class: 'canary-badge bg-transparent', target: :_blank do
+            = link_to 'https://next.gitlab.com', class: 'canary-badge bg-transparent', target: :_blank, rel: :_noopener do
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
@@ -47,11 +47,10 @@
                 %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count == 0) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
-            - reviewers_enabled = merge_request_reviewers_enabled?
-            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter #{reviewers_enabled ? 'dropdown' : ''}" }) do
+            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
               = link_to assigned_mrs_dashboard_path, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
-                toggle: reviewers_enabled ? "dropdown" : "tooltip",
+                toggle: "dropdown",
                 placement: 'bottom',
                 track_label: 'main_navigation',
                 track_event: 'click_merge_link',
@@ -60,23 +59,21 @@
                 = sprite_icon('git-merge')
                 %span.badge.badge-pill.merge-requests-count.js-merge-requests-count{ class: ('hidden' if user_merge_requests_counts[:total] == 0) }
                   = number_with_delimiter(user_merge_requests_counts[:total])
-                - if reviewers_enabled
-                  = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
-              - if reviewers_enabled
-                .dropdown-menu.dropdown-menu-right
-                  %ul
-                    %li.dropdown-header
-                      = _('Merge requests')
-                    %li
-                      = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
-                        = _('Assigned to you')
-                        %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
-                          = user_merge_requests_counts[:assigned]
-                    %li
-                      = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
-                        = _('Review requests for you')
-                        %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
-                          = user_merge_requests_counts[:review_requested]
+                = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
+              .dropdown-menu.dropdown-menu-right
+                %ul
+                  %li.dropdown-header
+                    = _('Merge requests')
+                  %li
+                    = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                      = _('Assigned to you')
+                      %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
+                        = user_merge_requests_counts[:assigned]
+                  %li
+                    = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                      = _('Review requests for you')
+                      %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
+                        = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos',
@@ -120,8 +117,7 @@
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
-- if ::Feature.enabled?(:whats_new_drawer, current_user)
-  #whats-new-app{ data: { storage_key: whats_new_storage_key, versions: whats_new_versions, gitlab_dot_com: Gitlab.dev_env_org_or_com? } }
+#whats-new-app{ data: { storage_key: whats_new_storage_key, versions: whats_new_versions, gitlab_dot_com: Gitlab.dev_env_org_or_com? } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: user_status_data }

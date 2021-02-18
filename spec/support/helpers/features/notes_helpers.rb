@@ -21,6 +21,8 @@ module Spec
                 find(".js-comment-submit-button").click
               end
             end
+
+            wait_for_requests
           end
 
           def edit_note(note_text_to_edit, new_note_text)
@@ -29,6 +31,8 @@ module Spec
               fill_in('note[note]', with: new_note_text)
               find('.js-comment-button').click
             end
+
+            wait_for_requests
           end
 
           def preview_note(text)

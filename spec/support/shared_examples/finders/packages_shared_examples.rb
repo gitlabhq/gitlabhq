@@ -17,3 +17,23 @@ RSpec.shared_examples 'concerning versionless param' do
     it { is_expected.not_to include(versionless_package) }
   end
 end
+
+RSpec.shared_examples 'concerning package statuses' do
+  let_it_be(:hidden_package) { create(:maven_package, :hidden, project: project) }
+
+  context 'hidden packages' do
+    it { is_expected.not_to include(hidden_package) }
+  end
+
+  context 'with status param' do
+    let(:params) { { status: :hidden } }
+
+    it { is_expected.to match_array([hidden_package]) }
+  end
+
+  context 'with invalid status param' do
+    let(:params) { { status: 'invalid_status' } }
+
+    it { expect { subject }.to raise_exception(described_class::InvalidStatusError) }
+  end
+end

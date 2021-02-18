@@ -1,5 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import TerminalSession from '~/ide/components/terminal/session.vue';
 import Terminal from '~/ide/components/terminal/terminal.vue';

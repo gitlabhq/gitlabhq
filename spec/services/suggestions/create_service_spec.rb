@@ -53,6 +53,15 @@ RSpec.describe Suggestions::CreateService do
 
   subject { described_class.new(note) }
 
+  shared_examples_for 'service not tracking add suggestion event' do
+    it 'does not track add suggestion event' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .not_to receive(:track_add_suggestion_action)
+
+      subject.execute
+    end
+  end
+
   describe '#execute' do
     context 'should not try to parse suggestions' do
       context 'when not a diff note for merge requests' do
@@ -66,6 +75,8 @@ RSpec.describe Suggestions::CreateService do
 
           subject.execute
         end
+
+        it_behaves_like 'service not tracking add suggestion event'
       end
 
       context 'when diff note is not for text' do
@@ -76,17 +87,21 @@ RSpec.describe Suggestions::CreateService do
                                               note: markdown)
         end
 
-        it 'does not try to parse suggestions' do
+        before do
           allow(note).to receive(:on_text?) { false }
+        end
 
+        it 'does not try to parse suggestions' do
           expect(Gitlab::Diff::SuggestionsParser).not_to receive(:parse)
 
           subject.execute
         end
+
+        it_behaves_like 'service not tracking add suggestion event'
       end
     end
 
-    context 'should not create suggestions' do
+    context 'when diff file is not found' do
       let(:note) do
         create(:diff_note_on_merge_request, project: project_with_repo,
                                             noteable: merge_request,
@@ -94,13 +109,17 @@ RSpec.describe Suggestions::CreateService do
                                             note: markdown)
       end
 
-      it 'creates no suggestion when diff file is not found' do
+      before do
         expect_next_instance_of(DiffNote) do |diff_note|
           expect(diff_note).to receive(:latest_diff_file).once { nil }
         end
+      end
 
+      it 'creates no suggestion' do
         expect { subject.execute }.not_to change(Suggestion, :count)
       end
+
+      it_behaves_like 'service not tracking add suggestion event'
     end
 
     context 'should create suggestions' do
@@ -135,6 +154,14 @@ RSpec.describe Suggestions::CreateService do
           expect(suggestion.lines_above).to eq(expected_data[:lines_above])
           expect(suggestion.lines_below).to eq(expected_data[:lines_below])
         end
+      end
+
+      it 'tracks add suggestion event' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_add_suggestion_action)
+          .with(user: note.author)
+
+        subject.execute
       end
 
       context 'outdated position note' do

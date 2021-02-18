@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import { s__ } from '~/locale';
 
 export default {
@@ -31,6 +31,7 @@ export default {
     :title="$options.i18n.buttonTitle"
     :aria-label="$options.i18n.buttonTitle"
     icon="remove"
+    data-qa-selector="delete_group_access_link"
     @click="showRemoveGroupLinkModal(groupLink)"
   />
 </template>

@@ -116,6 +116,13 @@ class User < ApplicationRecord
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
 
+  # Followers
+  has_many :followed_users, foreign_key: :follower_id, class_name: 'Users::UserFollowUser'
+  has_many :followees, through: :followed_users
+
+  has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
+  has_many :followers, through: :following_users
+
   # Groups
   has_many :members
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, source: 'GroupMember'
@@ -960,8 +967,8 @@ class User < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_authorized_projects
-    Users::RefreshAuthorizedProjectsService.new(self).execute
+  def refresh_authorized_projects(source: nil)
+    Users::RefreshAuthorizedProjectsService.new(self, source: source).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -1439,6 +1446,29 @@ class User < ApplicationRecord
       else
         UsersStarProject.create!(project: project, user: self)
       end
+    end
+  end
+
+  def following?(user)
+    self.followees.exists?(user.id)
+  end
+
+  def follow(user)
+    return false if self.id == user.id
+
+    begin
+      followee = Users::UserFollowUser.create(follower_id: self.id, followee_id: user.id)
+      self.followees.reset if followee.persisted?
+    rescue ActiveRecord::RecordNotUnique
+      false
+    end
+  end
+
+  def unfollow(user)
+    if Users::UserFollowUser.where(follower_id: self.id, followee_id: user.id).delete_all > 0
+      self.followees.reset
+    else
+      false
     end
   end
 

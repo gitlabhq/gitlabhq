@@ -2,6 +2,8 @@
 
 module Clusters
   module Applications
+    # DEPRECATED for removal in %14.0
+    # See https://gitlab.com/groups/gitlab-org/-/epics/4280
     class CertManager < ApplicationRecord
       VERSION = 'v0.10.1'
       CRD_VERSION = '0.10'

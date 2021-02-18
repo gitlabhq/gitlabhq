@@ -1,6 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
-import Renamed from '~/vue_shared/components/diff_viewer/viewers/renamed.vue';
+import Vuex from 'vuex';
 import {
   TRANSITION_LOAD_START,
   TRANSITION_LOAD_ERROR,
@@ -10,6 +9,7 @@ import {
   STATE_LOADING,
   STATE_ERRORED,
 } from '~/diffs/constants';
+import Renamed from '~/vue_shared/components/diff_viewer/viewers/renamed.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

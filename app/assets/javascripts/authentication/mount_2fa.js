@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import initU2F from './u2f';
-import initWebauthn from './webauthn';
 import U2FRegister from './u2f/register';
+import initWebauthn from './webauthn';
 import WebAuthnRegister from './webauthn/register';
 
 export const mount2faAuthentication = () => {

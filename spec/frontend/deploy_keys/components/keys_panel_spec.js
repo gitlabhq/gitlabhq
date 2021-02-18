@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import DeployKeysStore from '~/deploy_keys/store';
 import deployKeysPanel from '~/deploy_keys/components/keys_panel.vue';
+import DeployKeysStore from '~/deploy_keys/store';
 
 describe('Deploy keys panel', () => {
   const data = getJSONFixture('deploy_keys/keys.json');

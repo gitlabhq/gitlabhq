@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import Store from '~/issue_show/stores';
 import titleComponent from '~/issue_show/components/title.vue';
 import eventHub from '~/issue_show/event_hub';
+import Store from '~/issue_show/stores';
 
 describe('Title component', () => {
   let vm;

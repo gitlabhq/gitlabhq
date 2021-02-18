@@ -91,7 +91,7 @@ Services inherit the same DNS servers, search domains, and additional hosts as
 the CI container itself.
 
 You can see some widely used services examples in the relevant documentation of
-[CI services examples](../services/README.md).
+[CI services examples](../services/index.md).
 
 ### How services are linked to the job
 
@@ -272,11 +272,11 @@ test:
     - bundle exec rake spec
 ```
 
-## Passing environment variables to services
+## Passing CI/CD variables to services
 
-You can also pass custom environment [variables](../variables/README.md)
+You can also pass custom CI/CD [variables](../variables/README.md)
 to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
-For more information, read [custom environment variables](../variables/README.md#gitlab-ciyml-defined-variables)
+For more information, read about [`.gitlab-ci.yml` defined variables](../variables/README.md#gitlab-ciyml-defined-variables).
 
 ```yaml
 # The following variables are automatically passed down to the Postgres container
@@ -528,7 +528,7 @@ To access private container registries, the GitLab Runner process can use:
 To define which should be used, the GitLab Runner process reads the configuration in the following order:
 
 - `DOCKER_AUTH_CONFIG` variable provided as either:
-  - A [variable](../variables/README.md#gitlab-cicd-environment-variables) in `.gitlab-ci.yml`.
+  - A [CI/CD variable](../variables/README.md) in `.gitlab-ci.yml`.
   - A project's variables stored on the projects **Settings > CI/CD** page.
 - `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the runner.
 - `config.json` file placed in `$HOME/.docker` directory of the user running GitLab Runner process.
@@ -627,7 +627,7 @@ Use one of the following methods to determine the value of `DOCKER_AUTH_CONFIG`:
 To configure a single job with access for `registry.example.com:5000`,
 follow these steps:
 
-1. Create a [variable](../variables/README.md#gitlab-cicd-environment-variables) `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [CI/CD variable](../variables/README.md) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
    ```json
@@ -702,7 +702,7 @@ To configure credentials store, follow these steps:
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a
-     [variable](../variables/README.md#gitlab-cicd-environment-variables)
+     [CI/CD variable](../variables/README.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -734,7 +734,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
    Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
-   - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
+   - Create a [CI/CD variable](../variables/README.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -781,13 +781,13 @@ registries to the `"credHelpers"` hash as described above.
 Many services accept environment variables, which you can use to change
 database names or set account names, depending on the environment.
 
-GitLab Runner 0.5.0 and up passes all YAML-defined variables to the created
+GitLab Runner 0.5.0 and up passes all YAML-defined CI/CD variables to the created
 service containers.
 
 For all possible configuration variables, check the documentation of each image
 provided in their corresponding Docker hub page.
 
-All variables are passed to all services containers. It's not
+All CI/CD variables are passed to all services containers. It's not
 designed to distinguish which variable should go where.
 
 ### PostgreSQL service example

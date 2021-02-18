@@ -65,20 +65,19 @@ The following languages and dependency managers are supported:
 | [Golang](https://golang.org/) | Go | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) | Java | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package.json` | [Retire.js](https://retirejs.github.io/retire.js/) |
+| [npm](https://www.npmjs.com/) (7 and earlier), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package.json` | [Retire.js](https://retirejs.github.io/retire.js/) |
 | [NuGet](https://www.nuget.org/) 4.9+ | .NET, C# | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| [setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) (*1*) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| [sbt](https://www.scala-sbt.org/) 1.2 and below ([Ivy](http://ant.apache.org/ivy/)) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [`setuptools`](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) (*1*) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [sbt](https://www.scala-sbt.org/) (*2*) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
 1. [Pipenv](https://pipenv.pypa.io/en/latest/) projects are scanned when a `Pipfile` is present.
-   Gemnasium scans the exact package versions listed in `Pipfile.lock` when this file is also present.
+1. Support for [sbt](https://www.scala-sbt.org/) 1.3 and above was added in GitLab 13.9.
 
 Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
 | [Poetry](https://python-poetry.org/) | Python | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
-| [sbt](https://www.scala-sbt.org/) 1.3+ ([Coursier](https://get-coursier.io/))| Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#271345](https://gitlab.com/gitlab-org/gitlab/-/issues/271345) |
 
 ## Contribute your scanner
 
@@ -109,7 +108,7 @@ always take the latest dependency scanning artifact available.
 
 ### Customizing the dependency scanning settings
 
-The dependency scanning settings can be changed through [environment variables](#available-variables) by using the
+The dependency scanning settings can be changed through [CI/CD variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 
@@ -163,47 +162,63 @@ using environment variables.
 
 The following variables allow configuration of global dependency scanning settings.
 
-| Environment variable                    | Description |
-| --------------------------------------- |------------ |
-| `SECURE_ANALYZERS_PREFIX`               | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. |
-| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
-| `SECURE_LOG_LEVEL`                      | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info` |
+| CI/CD variables             | Description |
+| ----------------------------|------------ |
+| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
+| `DS_DEFAULT_ANALYZERS`      | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_EXCLUDED_PATHS`         | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
+| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
+| `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
 
 #### Configuring specific analyzers used by dependency scanning
 
 The following variables are used for configuring specific analyzers (used for a specific language/framework).
 
-| Environment variable                    | Analyzer           | Default                      | Description |
-| --------------------------------------- | ------------------ | ---------------------------- |------------ |
-| `GEMNASIUM_DB_LOCAL_PATH`               | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
-| `GEMNASIUM_DB_REMOTE_URL`               | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
-| `GEMNASIUM_DB_REF_NAME`                 | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
-| `DS_REMEDIATE`                          | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies.  |
-| `PIP_INDEX_URL`                         | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
-| `PIP_EXTRA_INDEX_URL`                   | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. |
-| `PIP_REQUIREMENTS_FILE`                 | `gemnasium-python` |                              | Pip requirements file to be scanned. |
-| `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
-| `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
-| `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12296) in GitLab 12.1, [removed](https://www.python.org/doc/sunset-python-2/) in GitLab 13.7)|
-| `DS_JAVA_VERSION`                       | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle use the Java version specified by this value. |
-| `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
-| `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
-| `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
-| `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running dependency scanning in an offline, air-gapped environment.|
-| `BUNDLER_AUDIT_ADVISORY_DB_URL`         | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
-| `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
-| `RETIREJS_JS_ADVISORY_DB`               | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository.json` | Path or URL to `retire.js` JS vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` environment variable. |
-| `RETIREJS_NODE_ADVISORY_DB`             | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/npmrepository.json` | Path or URL to `retire.js` node vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` environment variable. |
-| `RETIREJS_ADVISORY_DB_INSECURE`         | `retire.js`        | `false`                      | Enable fetching remote JS and Node vulnerability data files (defined by the `RETIREJS_JS_ADVISORY_DB` and `RETIREJS_NODE_ADVISORY_DB` variables) from hosts using an insecure or self-signed SSL (TLS) certificate. |
+| CI/CD variable                       | Analyzer           | Default                      | Description |
+| ------------------------------------ | ------------------ | ---------------------------- |------------ |
+| `BUNDLER_AUDIT_UPDATE_DISABLED`      | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Use if you're running dependency scanning in an offline, air-gapped environment.|
+| `BUNDLER_AUDIT_ADVISORY_DB_URL`      | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
+| `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME` | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
+| `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
+| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
+| `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
+| `DS_REMEDIATE`                       | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies. |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle use the Java version specified by this value. |
+| `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
+| `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
+| `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
+| `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
+| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. |
+| `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. |
+| `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
+| `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
+| `DS_PYTHON_VERSION`                  | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12296) in GitLab 12.1, [removed](https://www.python.org/doc/sunset-python-2/) in GitLab 13.7). |
+| `RETIREJS_JS_ADVISORY_DB`            | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository.json` | Path or URL to `retire.js` JS vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` variable. |
+| `RETIREJS_NODE_ADVISORY_DB`          | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/npmrepository.json` | Path or URL to `retire.js` node vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` variable. |
+| `RETIREJS_ADVISORY_DB_INSECURE`      | `retire.js`        | `false`                      | Enable fetching remote JS and Node vulnerability data files (defined by the `RETIREJS_JS_ADVISORY_DB` and `RETIREJS_NODE_ADVISORY_DB` variables) from hosts using an insecure or self-signed SSL (TLS) certificate. |
 
-### Using private Maven repos
+### Using a custom SSL CA certificate authority
+
+You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+
+### Using private Maven repositories
 
 If your private Maven repository requires login credentials,
-you can use the `MAVEN_CLI_OPTS` environment variable.
+you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
-Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
+Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
 
 ## Interacting with the vulnerabilities
 
@@ -370,12 +385,12 @@ Here are the requirements for using dependency scanning in an offline environmen
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - If you have a limited access environment you need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`.
-  If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` variable to the URL of this repository. For more information on configuration variables, see [Dependency Scanning](#configuring-dependency-scanning).
+  If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` CI/CD variable to the URL of this repository. For more information on configuration variables, see [Dependency Scanning](#configuring-dependency-scanning).
 
   This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab.
 
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
-- _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
+- _Only if scanning npm/yarn projects_: Host an offline copy of the [`retire.js`](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [`js`](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
 
 Note that GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
@@ -420,7 +435,7 @@ Support for custom certificate authorities was introduced in the following versi
 | `retire.js` | [v2.4.0](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js/-/releases/v2.4.0) |
 | `bundler-audit` | [v2.4.0](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit/-/releases/v2.4.0) |
 
-### Set dependency scanning CI job variables to use local dependency scanning analyzers
+### Set dependency scanning CI/CD job variables to use local dependency scanning analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
@@ -460,7 +475,7 @@ BUNDLER_AUDIT_ADVISORY_DB_REF_NAME: "master"
 BUNDLER_AUDIT_ADVISORY_DB_URL: "gitlab.example.com/ruby-advisory-db.git"
 ```
 
-#### Python (setuptools)
+#### Python (setup tools)
 
 When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
 from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
@@ -526,5 +541,9 @@ scanning job might be triggered even if the scanner doesn't support your project
 
 ### Issues building projects with npm or yarn packages relying on Python 2
 
-Python 2 was removed (see: [Python 2 sunsetting](https://www.python.org/doc/sunset-python-2/)) from the `retire.js` analyzer in GitLab 13.7 (analyzer version 2.10.1). Projects using packages
+[Python 2 was removed](https://www.python.org/doc/sunset-python-2/) from the `retire.js` analyzer in GitLab 13.7 (analyzer version 2.10.1). Projects using packages
 with a dependency on this version of Python should use `retire.js` version 2.10.0 or lower (for example, `registry.gitlab.com/gitlab-org/security-products/analyzers/retire.js:2.10.0`).
+
+### Error: `dependency_scanning is used for configuration only, and its script should not be executed`
+
+For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).

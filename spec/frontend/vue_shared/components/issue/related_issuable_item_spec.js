@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
-import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
 
 describe('RelatedIssuableItem', () => {

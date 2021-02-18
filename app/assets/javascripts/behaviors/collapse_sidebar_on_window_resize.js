@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import $ from 'jquery';
 
 /**
  * This behavior collapses the right sidebar

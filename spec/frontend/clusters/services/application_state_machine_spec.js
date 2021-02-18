@@ -1,10 +1,10 @@
-import transitionApplicationState from '~/clusters/services/application_state_machine';
 import {
   APPLICATION_STATUS,
   UNINSTALL_EVENT,
   UPDATE_EVENT,
   INSTALL_EVENT,
 } from '~/clusters/constants';
+import transitionApplicationState from '~/clusters/services/application_state_machine';
 
 const {
   NO_STATUS,

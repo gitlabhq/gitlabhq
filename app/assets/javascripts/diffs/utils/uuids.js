@@ -12,8 +12,8 @@
  */
 
 import { MersenneTwister } from 'fast-mersenne-twister';
-import stringHash from 'string-hash';
 import { isString } from 'lodash';
+import stringHash from 'string-hash';
 import { v4 } from 'uuid';
 
 function getSeed(seeds) {

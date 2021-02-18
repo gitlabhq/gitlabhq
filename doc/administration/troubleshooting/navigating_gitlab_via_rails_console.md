@@ -107,7 +107,7 @@ Up to now, we've been using `.find` or `.find_by`, which are designed to return
 only a single object (notice the `LIMIT 1` in the generated SQL query?).
 `.where` is used when it is desirable to get a collection of objects.
 
-Let's get a collection of non-admin users and see what we can do with it:
+Let's get a collection of non-administrator users and see what we can do with it:
 
 ```ruby
 users = User.where.not(admin: true)
@@ -364,7 +364,7 @@ StateMachines::InvalidTransition (Cannot transition state via :block from :activ
 We see that a validation error from what feels like a completely separate
 attribute comes back to haunt us when we try to update the user in any way.
 
-In practical terms, we sometimes see this happen with GitLab admin settings --
+In practical terms, we sometimes see this happen with GitLab administration settings --
 validations are sometimes added or changed in a GitLab update, resulting in
 previously saved settings now failing validation. Because you can only update
 a subset of settings at once through the UI, in this case the only way to get
@@ -388,7 +388,7 @@ User.find_by_any_email('user@example.com')
 The `find_by_any_email` method is a custom method added by GitLab developers rather
 than a Rails-provided default method.
 
-**Get a collection of admin users:**
+**Get a collection of administrator users:**
 
 ```ruby
 User.admins
@@ -443,7 +443,7 @@ group = Group.find_by_full_path('group/subgroup')
 # Get group's immediate child projects
 group.projects
 
-# Get group's child projects, including those in sub-groups
+# Get group's child projects, including those in subgroups
 group.all_projects
 ```
 

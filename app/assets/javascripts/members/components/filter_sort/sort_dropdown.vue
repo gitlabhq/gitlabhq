@@ -1,9 +1,9 @@
 <script>
-import { mapState } from 'vuex';
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { parseSortParam, buildSortHref } from '~/members/utils';
 import { FIELDS } from '~/members/constants';
+import { parseSortParam, buildSortHref } from '~/members/utils';
 
 export default {
   name: 'SortDropdown',

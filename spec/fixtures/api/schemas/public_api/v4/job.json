@@ -18,6 +18,7 @@
     "web_url",
     "artifacts",
     "artifacts_expire_at",
+    "tag_list",
     "runner"
   ],
   "properties": {
@@ -53,6 +54,9 @@
       ]
     },
     "artifacts_expire_at": { "type": ["null", "string"] },
+    "tag_list": {
+      "type": "array"
+    },
     "runner": {
       "oneOf": [
         { "type": "null" },

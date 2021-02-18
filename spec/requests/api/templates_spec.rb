@@ -65,7 +65,9 @@ RSpec.describe API::Templates do
       expect(json_response['nickname']).to be_nil
       expect(json_response['popular']).to be true
       expect(json_response['html_url']).to eq('http://choosealicense.com/licenses/mit/')
-      expect(json_response['source_url']).to eq('https://opensource.org/licenses/MIT')
+      # This was dropped:
+      # https://github.com/github/choosealicense.com/commit/325806b42aa3d5b78e84120327ec877bc936dbdd#diff-66df8f1997786f7052d29010f2cbb4c66391d60d24ca624c356acc0ab986f139
+      expect(json_response['source_url']).to be_nil
       expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
@@ -81,7 +83,7 @@ RSpec.describe API::Templates do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(12)
+      expect(json_response.size).to eq(13)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
     end
 

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mapActions, mapGetters } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
@@ -6,41 +7,39 @@ import 'ee_else_ce/boards/models/list';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
-import toggleLabels from 'ee_else_ce/boards/toggle_labels';
-import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import {
   setWeightFetchingState,
   setEpicFetchingState,
   getMilestoneTitle,
   getBoardsModalData,
 } from 'ee_else_ce/boards/ee_functions';
-
-import VueApollo from 'vue-apollo';
+import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
+import toggleLabels from 'ee_else_ce/boards/toggle_labels';
+import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardExtraActions from '~/boards/components/board_extra_actions.vue';
-import createDefaultClient from '~/lib/graphql';
-import { deprecatedCreateFlash as Flash } from '~/flash';
-import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';
-
-import toggleFocusMode from '~/boards/toggle_focus';
-import FilteredSearchBoards from '~/boards/filtered_search_boards';
-import eventHub from '~/boards/eventhub';
-import sidebarEventHub from '~/sidebar/event_hub';
 import '~/boards/models/milestone';
 import '~/boards/models/project';
+import '~/boards/filters/due_date_filters';
+import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
+import eventHub from '~/boards/eventhub';
+import FilteredSearchBoards from '~/boards/filtered_search_boards';
+import modalMixin from '~/boards/mixins/modal_mixins';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import ModalStore from '~/boards/stores/modal_store';
-import modalMixin from '~/boards/mixins/modal_mixins';
-import '~/boards/filters/due_date_filters';
-import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
+import toggleFocusMode from '~/boards/toggle_focus';
+import { deprecatedCreateFlash as Flash } from '~/flash';
+import createDefaultClient from '~/lib/graphql';
 import {
   NavigationType,
   convertObjectPropsToCamelCase,
   parseBoolean,
 } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import sidebarEventHub from '~/sidebar/event_hub';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
 Vue.use(VueApollo);
@@ -73,6 +72,7 @@ export default () => {
     boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
   }
 
+  // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   issueBoardsApp = new Vue({
     el: $boardApp,
     components: {
@@ -86,7 +86,7 @@ export default () => {
       groupId: Number($boardApp.dataset.groupId),
       rootPath: $boardApp.dataset.rootPath,
       currentUserId: gon.current_user_id || null,
-      canUpdate: $boardApp.dataset.canUpdate,
+      canUpdate: parseBoolean($boardApp.dataset.canUpdate),
       labelsFetchPath: $boardApp.dataset.labelsFetchPath,
       labelsManagePath: $boardApp.dataset.labelsManagePath,
       labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,
@@ -275,7 +275,7 @@ export default () => {
     },
   });
 
-  // eslint-disable-next-line no-new
+  // eslint-disable-next-line no-new, @gitlab/no-runtime-template-compiler
   new Vue({
     el: document.getElementById('js-add-list'),
     data: {
@@ -286,6 +286,21 @@ export default () => {
       initNewListDropdown();
     },
   });
+
+  const createColumnTriggerEl = document.querySelector('.js-create-column-trigger');
+  if (createColumnTriggerEl) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: createColumnTriggerEl,
+      components: {
+        BoardAddNewColumnTrigger,
+      },
+      store,
+      render(createElement) {
+        return createElement('board-add-new-column-trigger');
+      },
+    });
+  }
 
   boardConfigToggle(boardsStore);
 
@@ -341,5 +356,6 @@ export default () => {
   mountMultipleBoardsSwitcher({
     fullPath: $boardApp.dataset.fullPath,
     rootPath: $boardApp.dataset.boardsEndpoint,
+    recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
   });
 };

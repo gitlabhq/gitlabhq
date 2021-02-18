@@ -1,7 +1,8 @@
 import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import EmptyState from '~/terraform/components/empty_state.vue';
 import StatesTable from '~/terraform/components/states_table.vue';
 import TerraformList from '~/terraform/components/terraform_list.vue';
@@ -27,8 +28,20 @@ describe('TerraformList', () => {
       },
     };
 
+    const mockResolvers = {
+      TerraformState: {
+        _showDetails: jest.fn().mockResolvedValue(false),
+        errorMessages: jest.fn().mockResolvedValue([]),
+        loadingLock: jest.fn().mockResolvedValue(false),
+        loadingRemove: jest.fn().mockResolvedValue(false),
+      },
+      Mutation: {
+        addDataToTerraformState: jest.fn().mockResolvedValue({}),
+      },
+    };
+
     const statsQueryResponse = queryResponse || jest.fn().mockResolvedValue(apolloQueryResponse);
-    const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]]);
+    const apolloProvider = createMockApollo([[getStatesQuery, statsQueryResponse]], mockResolvers);
 
     wrapper = shallowMount(TerraformList, {
       localVue,
@@ -52,20 +65,28 @@ describe('TerraformList', () => {
     describe('when there is a list of terraform states', () => {
       const states = [
         {
+          _showDetails: false,
+          errorMessages: [],
           id: 'gid://gitlab/Terraform::State/1',
           name: 'state-1',
-          lockedAt: null,
-          updatedAt: null,
-          lockedByUser: null,
           latestVersion: null,
+          loadingLock: false,
+          loadingRemove: false,
+          lockedAt: null,
+          lockedByUser: null,
+          updatedAt: null,
         },
         {
+          _showDetails: false,
+          errorMessages: [],
           id: 'gid://gitlab/Terraform::State/2',
           name: 'state-2',
-          lockedAt: null,
-          updatedAt: null,
-          lockedByUser: null,
           latestVersion: null,
+          loadingLock: false,
+          loadingRemove: false,
+          lockedAt: null,
+          lockedByUser: null,
+          updatedAt: null,
         },
       ];
 
@@ -83,7 +104,7 @@ describe('TerraformList', () => {
           },
         });
 
-        return wrapper.vm.$nextTick();
+        return waitForPromises();
       });
 
       it('displays a states tab and count', () => {
@@ -111,7 +132,7 @@ describe('TerraformList', () => {
             },
           });
 
-          return wrapper.vm.$nextTick();
+          return waitForPromises();
         });
 
         it('renders the states table without pagination buttons', () => {
@@ -131,7 +152,7 @@ describe('TerraformList', () => {
           },
         });
 
-        return wrapper.vm.$nextTick();
+        return waitForPromises();
       });
 
       it('displays a states tab with no count', () => {
@@ -149,7 +170,7 @@ describe('TerraformList', () => {
     beforeEach(() => {
       createWrapper({ terraformStates: null, queryResponse: jest.fn().mockRejectedValue() });
 
-      return wrapper.vm.$nextTick();
+      return waitForPromises();
     });
 
     it('displays an alert message', () => {

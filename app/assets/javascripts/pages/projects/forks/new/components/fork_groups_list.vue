@@ -1,8 +1,8 @@
 <script>
 import { GlTabs, GlTab, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import ForkGroupsListItem from './fork_groups_list_item.vue';
 
 export default {
@@ -14,10 +14,6 @@ export default {
     ForkGroupsListItem,
   },
   props: {
-    hasReachedProjectLimit: {
-      type: Boolean,
-      required: true,
-    },
     endpoint: {
       type: String,
       required: true,
@@ -77,7 +73,6 @@ export default {
           v-for="(namespace, index) in filteredNamespaces"
           :key="index"
           :group="namespace"
-          :has-reached-project-limit="hasReachedProjectLimit"
         />
       </ul>
     </gl-tab>

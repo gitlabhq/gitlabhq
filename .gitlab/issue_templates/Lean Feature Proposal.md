@@ -14,7 +14,7 @@
 
 
 
-/label ~"feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Core"/~"GitLab Starter"/~"GitLab Premium"/~"GitLab Ultimate"
+/label ~"feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Core"/~"GitLab Premium"/~"GitLab Ultimate"
 
 
 <!--- Use the following resources to find the appropriate labels:
@@ -73,7 +73,7 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 
  See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/workflow.html#for-a-product-change
 
-* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements
+* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/workflow.html
 * If this feature requires changing permissions, update the permissions document. See https://docs.gitlab.com/ee/user/permissions.html 
 
 ### Availability & Testing
@@ -96,7 +96,7 @@ Define both the success metrics and acceptance criteria. Note that success metri
 ### What is the type of buyer?
 
 What is the buyer persona for this feature? See https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/buyer-persona/
-In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers
+In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#three-tiers
 
 ### Is this a cross-stage feature?
 

@@ -1,8 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import updateMixin from '../mixins/update';
 import eventHub from '../event_hub';
+import updateMixin from '../mixins/update';
 
 const issuableTypes = {
   issue: __('Issue'),

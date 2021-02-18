@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
-import { mount } from '@vue/test-utils';
 import { GlTabs } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 

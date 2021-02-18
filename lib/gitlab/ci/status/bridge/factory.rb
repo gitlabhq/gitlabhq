@@ -8,6 +8,7 @@ module Gitlab
           def self.extended_statuses
             [[Status::Bridge::Failed],
              [Status::Bridge::Manual],
+             [Status::Bridge::WaitingForResource],
              [Status::Bridge::Play],
              [Status::Bridge::Action]]
           end

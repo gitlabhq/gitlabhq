@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { isValidImage } from './utils';
 import { VALID_DATA_TRANSFER_TYPE, VALID_IMAGE_FILE_MIMETYPE } from './constants';
+import { isValidImage } from './utils';
 
 export default {
   components: {

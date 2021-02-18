@@ -1,0 +1,21 @@
+---
+# See Usage Ping metrics dictionary docs https://docs.gitlab.com/ee/development/usage_ping/metrics_dictionary.html
+key_path: <%= key_path %>
+description:
+product_section:
+product_stage:
+product_group:
+product_category:
+value_type: <%= value_type %>
+status: implemented
+milestone: <%= milestone %>
+introduced_by_url:
+time_frame: <%= time_frame %>
+data_source:
+distribution:
+<%= distribution %>
+# Add here corresponding tiers
+# tier:
+# - free
+# - premium
+# - ultimate

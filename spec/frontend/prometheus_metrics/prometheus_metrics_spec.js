@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
+import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import { metrics2 as metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {

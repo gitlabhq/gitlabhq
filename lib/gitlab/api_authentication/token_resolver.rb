@@ -7,7 +7,16 @@ module Gitlab
 
       attr_reader :token_type
 
-      validates :token_type, inclusion: { in: %i[personal_access_token job_token deploy_token] }
+      validates :token_type, inclusion: {
+        in: %i[
+          personal_access_token_with_username
+          job_token_with_username
+          deploy_token_with_username
+          personal_access_token
+          job_token
+          deploy_token
+        ]
+      }
 
       def initialize(token_type)
         @token_type = token_type
@@ -38,49 +47,94 @@ module Gitlab
 
         when :deploy_token
           resolve_deploy_token raw
+
+        when :personal_access_token_with_username
+          resolve_personal_access_token_with_username raw
+
+        when :job_token_with_username
+          resolve_job_token_with_username raw
+
+        when :deploy_token_with_username
+          resolve_deploy_token_with_username raw
         end
       end
 
       private
 
-      def resolve_personal_access_token(raw)
-        # Check if the password is a personal access token
-        pat = ::PersonalAccessToken.find_by_token(raw.password)
-        return unless pat
+      def resolve_personal_access_token_with_username(raw)
+        raise ::Gitlab::Auth::UnauthorizedError unless raw.username
 
-        # Ensure that the username matches the token. This check is a subtle
-        # departure from the existing behavior of #find_personal_access_token_from_http_basic_auth.
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38627#note_435907856
-        raise ::Gitlab::Auth::UnauthorizedError unless pat.user.username == raw.username
+        with_personal_access_token(raw) do |pat|
+          break unless pat
 
-        pat
+          # Ensure that the username matches the token. This check is a subtle
+          # departure from the existing behavior of #find_personal_access_token_from_http_basic_auth.
+          # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38627#note_435907856
+          raise ::Gitlab::Auth::UnauthorizedError unless pat.user.username == raw.username
+
+          pat
+        end
       end
 
-      def resolve_job_token(raw)
+      def resolve_job_token_with_username(raw)
         # Only look for a job if the username is correct
         return if ::Gitlab::Auth::CI_JOB_USER != raw.username
 
-        job = ::Ci::AuthJobFinder.new(token: raw.password).execute
+        with_job_token(raw) do |job|
+          job
+        end
+      end
 
-        # Actively reject credentials with the username `gitlab-ci-token` if
-        # the password is not a valid job token. This replicates existing
-        # behavior of #find_user_from_job_token.
-        raise ::Gitlab::Auth::UnauthorizedError unless job
+      def resolve_deploy_token_with_username(raw)
+        with_deploy_token(raw) do |token|
+          break unless token
 
-        job
+          # Ensure that the username matches the token. This check is a subtle
+          # departure from the existing behavior of #deploy_token_from_request.
+          # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38627#note_474826205
+          raise ::Gitlab::Auth::UnauthorizedError unless token.username == raw.username
+
+          token
+        end
+      end
+
+      def resolve_personal_access_token(raw)
+        with_personal_access_token(raw) do |pat|
+          pat
+        end
+      end
+
+      def resolve_job_token(raw)
+        with_job_token(raw) do |job|
+          job
+        end
       end
 
       def resolve_deploy_token(raw)
-        # Check if the password is a deploy token
+        with_deploy_token(raw) do |token|
+          token
+        end
+      end
+
+      def with_personal_access_token(raw, &block)
+        pat = ::PersonalAccessToken.find_by_token(raw.password)
+        return unless pat
+
+        yield(pat)
+      end
+
+      def with_deploy_token(raw, &block)
         token = ::DeployToken.active.find_by_token(raw.password)
         return unless token
 
-        # Ensure that the username matches the token. This check is a subtle
-        # departure from the existing behavior of #deploy_token_from_request.
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38627#note_474826205
-        raise ::Gitlab::Auth::UnauthorizedError unless token.username == raw.username
+        yield(token)
+      end
 
-        token
+      def with_job_token(raw, &block)
+        job = ::Ci::AuthJobFinder.new(token: raw.password).execute
+        raise ::Gitlab::Auth::UnauthorizedError unless job
+
+        yield(job)
       end
     end
   end

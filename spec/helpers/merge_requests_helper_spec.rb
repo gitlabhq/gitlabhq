@@ -89,15 +89,5 @@ RSpec.describe MergeRequestsHelper do
         total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
       )
     end
-
-    context 'when merge_request_reviewers is disabled' do
-      before do
-        stub_feature_flags(merge_request_reviewers: false)
-      end
-
-      it 'returns review_requested as 0' do
-        expect(subject[:review_requested]).to eq(0)
-      end
-    end
   end
 end

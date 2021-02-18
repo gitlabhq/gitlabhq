@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBreadcrumb } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import App from '~/projects/experiment_new_project_creation/components/app.vue';
-import WelcomePage from '~/projects/experiment_new_project_creation/components/welcome.vue';
 import LegacyContainer from '~/projects/experiment_new_project_creation/components/legacy_container.vue';
+import WelcomePage from '~/projects/experiment_new_project_creation/components/welcome.vue';
 
 describe('Experimental new project creation app', () => {
   let wrapper;

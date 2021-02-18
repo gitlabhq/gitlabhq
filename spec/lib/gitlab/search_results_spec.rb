@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SearchResults do
   include ProjectForksHelper
   include SearchHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, name: 'foo') }
@@ -41,8 +42,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#formatted_count' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:scope, :count_method, :expected) do
         'projects'       | :limited_projects_count       | max_limited_count
         'issues'         | :limited_issues_count         | max_limited_count
@@ -61,8 +60,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#highlight_map' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:scope, :expected) do
         'projects'       | {}
         'issues'         | {}
@@ -80,8 +77,6 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#formatted_limited_count' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:count, :expected) do
         23   | '23'
         99   | '99'
@@ -183,12 +178,18 @@ RSpec.describe Gitlab::SearchResults do
       end
 
       context 'ordering' do
-        let(:query) { 'sorted' }
         let!(:old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'old-1', title: 'sorted old', created_at: 1.month.ago) }
         let!(:new_result) { create(:merge_request, :opened, source_project: project, source_branch: 'new-1', title: 'sorted recent', created_at: 1.day.ago) }
         let!(:very_old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1', title: 'sorted very old', created_at: 1.year.ago) }
 
-        include_examples 'search results sorted'
+        let!(:old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-old-1', title: 'updated old', updated_at: 1.month.ago) }
+        let!(:new_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-new-1', title: 'updated recent', updated_at: 1.day.ago) }
+        let!(:very_old_updated) { create(:merge_request, :opened, source_project: project, source_branch: 'updated-very-old-1', title: 'updated very old', updated_at: 1.year.ago) }
+
+        include_examples 'search results sorted' do
+          let(:results_created) { described_class.new(user, 'sorted', Project.order(:id), sort: sort, filters: filters) }
+          let(:results_updated) { described_class.new(user, 'updated', Project.order(:id), sort: sort, filters: filters) }
+        end
       end
     end
 
@@ -219,12 +220,18 @@ RSpec.describe Gitlab::SearchResults do
       end
 
       context 'ordering' do
-        let(:query) { 'sorted' }
         let!(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
         let!(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
         let!(:very_old_result) { create(:issue, project: project, title: 'sorted very old', created_at: 1.year.ago) }
 
-        include_examples 'search results sorted'
+        let!(:old_updated) { create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago) }
+        let!(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
+        let!(:very_old_updated) { create(:issue, project: project, title: 'updated very old', updated_at: 1.year.ago) }
+
+        include_examples 'search results sorted' do
+          let(:results_created) { described_class.new(user, 'sorted', Project.order(:id), sort: sort, filters: filters) }
+          let(:results_updated) { described_class.new(user, 'updated', Project.order(:id), sort: sort, filters: filters) }
+        end
       end
     end
 

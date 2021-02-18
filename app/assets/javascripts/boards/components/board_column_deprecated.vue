@@ -2,9 +2,9 @@
 // This component is being replaced in favor of './board_column.vue' for GraphQL boards
 import Sortable from 'sortablejs';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_deprecated.vue';
-import BoardList from './board_list_deprecated.vue';
-import boardsStore from '../stores/boards_store';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
+import boardsStore from '../stores/boards_store';
+import BoardList from './board_list_deprecated.vue';
 
 export default {
   components: {
@@ -46,12 +46,23 @@ export default {
   watch: {
     filter: {
       handler() {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.page = 1;
         this.list.getIssues(true).catch(() => {
           // TODO: handle request error
         });
       },
       deep: true,
+    },
+    'list.highlighted': {
+      handler(highlighted) {
+        if (highlighted) {
+          this.$nextTick(() => {
+            this.$el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
+      },
+      immediate: true,
     },
   },
   mounted() {
@@ -97,6 +108,7 @@ export default {
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
+      :class="{ 'board-column-highlighted': list.highlighted }"
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
       <board-list ref="board-list" :disabled="disabled" :issues="listIssues" :list="list" />

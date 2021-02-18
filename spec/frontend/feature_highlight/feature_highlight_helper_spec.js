@@ -1,62 +1,40 @@
-import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
+import { dismiss } from '~/feature_highlight/feature_highlight_helper';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { getSelector, dismiss, inserted } from '~/feature_highlight/feature_highlight_helper';
-import { togglePopover } from '~/shared/popover';
+import httpStatusCodes from '~/lib/utils/http_status';
+
+jest.mock('~/flash');
 
 describe('feature highlight helper', () => {
-  describe('getSelector', () => {
-    it('returns js-feature-highlight selector', () => {
-      const highlightId = 'highlightId';
-
-      expect(getSelector(highlightId)).toEqual(
-        `.js-feature-highlight[data-highlight=${highlightId}]`,
-      );
-    });
-  });
-
   describe('dismiss', () => {
-    const context = {
-      hide: () => {},
-      attr: () => '/-/callouts/dismiss',
-    };
+    let mockAxios;
+    const endpoint = '/-/callouts/dismiss';
+    const highlightId = '123';
+    const { CREATED, INTERNAL_SERVER_ERROR } = httpStatusCodes;
 
     beforeEach(() => {
-      jest.spyOn(axios, 'post').mockResolvedValue();
-      jest.spyOn(togglePopover, 'call').mockImplementation(() => {});
-      jest.spyOn(context, 'hide').mockImplementation(() => {});
-      dismiss.call(context);
+      mockAxios = new MockAdapter(axios);
     });
 
-    it('calls persistent dismissal endpoint', () => {
-      expect(axios.post).toHaveBeenCalledWith(
-        '/-/callouts/dismiss',
-        expect.objectContaining({ feature_name: undefined }),
+    afterEach(() => {
+      mockAxios.reset();
+    });
+
+    it('calls persistent dismissal endpoint with highlightId', async () => {
+      mockAxios.onPost(endpoint, { feature_name: highlightId }).replyOnce(CREATED);
+
+      await expect(dismiss(endpoint, highlightId)).resolves.toEqual(expect.anything());
+    });
+
+    it('triggers flash when dismiss request fails', async () => {
+      mockAxios.onPost(endpoint, { feature_name: highlightId }).replyOnce(INTERNAL_SERVER_ERROR);
+
+      await dismiss(endpoint, highlightId);
+
+      expect(Flash).toHaveBeenCalledWith(
+        'An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again.',
       );
-    });
-
-    it('calls hide popover', () => {
-      expect(togglePopover.call).toHaveBeenCalledWith(context, false);
-    });
-
-    it('calls hide', () => {
-      expect(context.hide).toHaveBeenCalled();
-    });
-  });
-
-  describe('inserted', () => {
-    it('registers click event callback', (done) => {
-      const context = {
-        getAttribute: () => 'popoverId',
-        dataset: {
-          highlight: 'some-feature',
-        },
-      };
-
-      jest.spyOn($.fn, 'on').mockImplementation((event) => {
-        expect(event).toEqual('click');
-        done();
-      });
-      inserted.call(context);
     });
   });
 });

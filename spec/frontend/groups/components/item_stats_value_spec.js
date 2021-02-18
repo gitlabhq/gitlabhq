@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ItemStatsValue from '~/groups/components/item_stats_value.vue';
 
 describe('ItemStatsValue', () => {

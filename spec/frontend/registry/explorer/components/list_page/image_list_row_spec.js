@@ -1,11 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
-import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import DeleteButton from '~/registry/explorer/components/delete_button.vue';
+import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
 import {
   ROW_SCHEDULED_FOR_DELETION,
   LIST_DELETE_BUTTON_DISABLED,
@@ -15,8 +13,10 @@ import {
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
 } from '~/registry/explorer/constants';
-import { RouterLink } from '../../stubs';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { imagesListResponse } from '../../mock_data';
+import { RouterLink } from '../../stubs';
 
 describe('Image List Row', () => {
   let wrapper;

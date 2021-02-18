@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import SSHMirror from './ssh_mirror';
+import { __ } from '~/locale';
 import { hide } from '~/tooltips';
+import SSHMirror from './ssh_mirror';
 
 export default class MirrorRepos {
   constructor(container) {

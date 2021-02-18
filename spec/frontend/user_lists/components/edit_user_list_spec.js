@@ -1,14 +1,14 @@
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { createLocalVue, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import createStore from '~/user_lists/store/edit';
+import { redirectTo } from '~/lib/utils/url_utility';
 import EditUserList from '~/user_lists/components/edit_user_list.vue';
 import UserListForm from '~/user_lists/components/user_list_form.vue';
+import createStore from '~/user_lists/store/edit';
 import { userList } from '../../feature_flags/mock_data';
-import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');

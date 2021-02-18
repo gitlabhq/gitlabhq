@@ -45,7 +45,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, pipeline: :project)
+        builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
         present paginate(builds), with: Entities::Ci::Job
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -82,7 +82,8 @@ module API
         content_type 'text/plain'
         env['api.format'] = :binary
 
-        trace = build.trace.raw
+        # The trace can be nil bu body method expects a string as an argument.
+        trace = build.trace.raw || ''
         body trace
       end
 

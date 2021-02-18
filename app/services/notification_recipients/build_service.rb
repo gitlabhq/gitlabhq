@@ -36,5 +36,9 @@ module NotificationRecipients
     def self.build_new_review_recipients(*args)
       ::NotificationRecipients::Builder::NewReview.new(*args).notification_recipients
     end
+
+    def self.build_requested_review_recipients(*args)
+      ::NotificationRecipients::Builder::RequestReview.new(*args).notification_recipients
+    end
   end
 end

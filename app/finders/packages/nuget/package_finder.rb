@@ -5,7 +5,7 @@ module Packages
     class PackageFinder
       include ::Packages::FinderHelper
 
-      MAX_PACKAGES_COUNT = 50
+      MAX_PACKAGES_COUNT = 300
 
       def initialize(current_user, project_or_group, package_name:, package_version: nil, limit: MAX_PACKAGES_COUNT)
         @current_user = current_user

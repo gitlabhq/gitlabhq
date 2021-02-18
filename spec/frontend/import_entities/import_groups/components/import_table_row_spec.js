@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlLink, GlFormInput } from '@gitlab/ui';
-import Select2Select from '~/vue_shared/components/select2_select.vue';
-import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
+import { shallowMount } from '@vue/test-utils';
 import { STATUSES } from '~/import_entities/constants';
+import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
+import Select2Select from '~/vue_shared/components/select2_select.vue';
 import { availableNamespacesFixture } from '../graphql/fixtures';
 
 const getFakeGroup = (status) => ({

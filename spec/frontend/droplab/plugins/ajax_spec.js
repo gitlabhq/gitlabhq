@@ -1,5 +1,5 @@
-import AjaxCache from '~/lib/utils/ajax_cache';
 import Ajax from '~/droplab/plugins/ajax';
+import AjaxCache from '~/lib/utils/ajax_cache';
 
 describe('Ajax', () => {
   describe('preprocessing', () => {

@@ -17,7 +17,7 @@ module Mutations
       authorize :destroy_release
 
       def resolve(project_path:, tag:)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         params = { tag: tag }.with_indifferent_access
 

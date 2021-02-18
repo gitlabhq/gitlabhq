@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Security check via brakeman'
 task :brakeman do
   # We get 0 warnings at level 'w3' but we would like to reach 'w2'. Merge

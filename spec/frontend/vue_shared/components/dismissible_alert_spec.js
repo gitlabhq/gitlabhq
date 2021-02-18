@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DismissibleAlert from '~/vue_shared/components/dismissible_alert.vue';
 
 const TEST_HTML = 'Hello World! <strong>Foo</strong>';

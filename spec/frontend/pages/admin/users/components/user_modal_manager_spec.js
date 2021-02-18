@@ -3,6 +3,8 @@ import UserModalManager from '~/pages/admin/users/components/user_modal_manager.
 import ModalStub from './stubs/modal_stub';
 
 describe('Users admin page Modal Manager', () => {
+  let wrapper;
+
   const modalConfiguration = {
     action1: {
       title: 'action1',
@@ -14,11 +16,12 @@ describe('Users admin page Modal Manager', () => {
     },
   };
 
-  let wrapper;
+  const findModal = () => wrapper.find({ ref: 'modal' });
 
   const createComponent = (props = {}) => {
     wrapper = mount(UserModalManager, {
       propsData: {
+        selector: '.js-delete-user-modal-button',
         modalConfiguration,
         csrfToken: 'dummyCSRF',
         ...props,
@@ -37,7 +40,7 @@ describe('Users admin page Modal Manager', () => {
   describe('render behavior', () => {
     it('does not renders modal when initialized', () => {
       createComponent();
-      expect(wrapper.find({ ref: 'modal' }).exists()).toBeFalsy();
+      expect(findModal().exists()).toBeFalsy();
     });
 
     it('throws if action has no proper configuration', () => {
@@ -55,7 +58,7 @@ describe('Users admin page Modal Manager', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        const modal = wrapper.find({ ref: 'modal' });
+        const modal = findModal();
         expect(modal.exists()).toBeTruthy();
         expect(modal.vm.$attrs.csrfToken).toEqual('dummyCSRF');
         expect(modal.vm.$attrs.extraProp).toEqual('extraPropValue');
@@ -64,68 +67,60 @@ describe('Users admin page Modal Manager', () => {
     });
   });
 
-  describe('global listener', () => {
-    beforeEach(() => {
-      jest.spyOn(document, 'addEventListener');
-      jest.spyOn(document, 'removeEventListener');
-    });
-
-    afterAll(() => {
-      jest.restoreAllMocks();
-    });
-
-    it('registers global listener on mount', () => {
-      createComponent();
-      expect(document.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
-    });
-
-    it('removes global listener on destroy', () => {
-      createComponent();
-      wrapper.destroy();
-      expect(document.removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
-    });
-  });
-
   describe('click handling', () => {
-    let node;
+    let button;
+    let button2;
+
+    const createButtons = () => {
+      button = document.createElement('button');
+      button2 = document.createElement('button');
+      button.setAttribute('class', 'js-delete-user-modal-button');
+      button.setAttribute('data-username', 'foo');
+      button.setAttribute('data-gl-modal-action', 'action1');
+      button.setAttribute('data-block-user-url', '/block');
+      button.setAttribute('data-delete-user-url', '/delete');
+      document.body.appendChild(button);
+      document.body.appendChild(button2);
+    };
+    const removeButtons = () => {
+      button.remove();
+      button = null;
+      button2.remove();
+      button2 = null;
+    };
 
     beforeEach(() => {
-      node = document.createElement('div');
-      document.body.appendChild(node);
+      createButtons();
+      createComponent();
     });
 
     afterEach(() => {
-      node.remove();
-      node = null;
+      removeButtons();
     });
 
-    it('ignores wrong clicks', () => {
-      createComponent();
-      const event = new window.MouseEvent('click', {
-        bubbles: true,
-        cancellable: true,
-      });
-      jest.spyOn(event, 'preventDefault');
-      node.dispatchEvent(event);
-      expect(event.preventDefault).not.toHaveBeenCalled();
+    it('renders the modal when the button is clicked', async () => {
+      button.click();
+
+      await wrapper.vm.$nextTick();
+
+      expect(findModal().exists()).toBe(true);
     });
 
-    it('captures click with glModalAction', () => {
-      createComponent();
-      node.dataset.glModalAction = 'action1';
-      const event = new window.MouseEvent('click', {
-        bubbles: true,
-        cancellable: true,
-      });
-      jest.spyOn(event, 'preventDefault');
-      node.dispatchEvent(event);
+    it('does not render the modal when a misconfigured button is clicked', async () => {
+      button.removeAttribute('data-gl-modal-action');
+      button.click();
 
-      expect(event.preventDefault).toHaveBeenCalled();
-      return wrapper.vm.$nextTick().then(() => {
-        const modal = wrapper.find({ ref: 'modal' });
-        expect(modal.exists()).toBeTruthy();
-        expect(modal.vm.showWasCalled).toBeTruthy();
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(findModal().exists()).toBe(false);
+    });
+
+    it('does not render the modal when a button without the selector class is clicked', async () => {
+      button2.click();
+
+      await wrapper.vm.$nextTick();
+
+      expect(findModal().exists()).toBe(false);
     });
   });
 });

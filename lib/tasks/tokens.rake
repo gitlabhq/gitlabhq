@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../app/models/concerns/token_authenticatable.rb'
 require_relative '../../app/models/concerns/token_authenticatable_strategies/base.rb'
 require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure.rb'

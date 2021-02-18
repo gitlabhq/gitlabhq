@@ -18,6 +18,18 @@ then
   ((ERRORCODE++))
 fi
 
+# Documentation pages need front matter for tracking purposes.
+echo '=> Checking documentation for front matter...'
+echo
+no_frontmatter=$(find doc -name "*.md" -exec head -n1 {} \; | grep -v  --count -- ---)
+if [ $no_frontmatter -ne 0 ]
+then
+  echo '✖ ERROR: These documentation pages need front matter. See https://docs.gitlab.com/ee/development/documentation/index.html#stage-and-group-metadata for how to add it.' >&2
+  find doc -name "*.md" -exec sh -c 'if (head -n 1 "{}" | grep -v -- --- >/dev/null); then echo "{}"; fi' \; 2>&1
+  echo
+  ((ERRORCODE++))
+fi
+
 # Test for non-standard spaces (NBSP, NNBSP) in documentation.
 echo '=> Checking for non-standard spaces...'
 echo
@@ -57,7 +69,7 @@ fi
 
 # Do not use 'README.md', instead use 'index.md'
 # Number of 'README.md's as of 2020-10-13
-NUMBER_READMES=36
+NUMBER_READMES=28
 FIND_READMES=$(find doc/ -name "README.md" | wc -l)
 echo '=> Checking for new README.md files...'
 echo
@@ -80,12 +92,12 @@ then
   echo "Merge request pipeline (detached) detected. Testing all files."
 else
   MERGE_BASE=$(git merge-base ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA} ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA})
-  if git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" | grep -E "\.vale|\.markdownlint|lint-doc\.sh"
+  if git diff --diff-filter=d --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" | grep -E "\.vale|\.markdownlint|lint-doc\.sh"
   then
     MD_DOC_PATH=${MD_DOC_PATH:-doc}
     echo "Vale, Markdownlint, or lint-doc.sh configuration changed. Testing all files."
   else
-    MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
+    MD_DOC_PATH=$(git diff --diff-filter=d --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" -- 'doc/*.md')
     if [ -n "${MD_DOC_PATH}" ]
     then
       echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"

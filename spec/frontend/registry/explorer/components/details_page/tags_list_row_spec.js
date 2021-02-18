@@ -1,12 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlFormCheckbox, GlSprintf, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import component from '~/registry/explorer/components/details_page/tags_list_row.vue';
 import DeleteButton from '~/registry/explorer/components/delete_button.vue';
-import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
+import component from '~/registry/explorer/components/details_page/tags_list_row.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   REMOVE_TAG_BUTTON_DISABLE_TOOLTIP,
@@ -14,6 +11,9 @@ import {
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
 } from '~/registry/explorer/constants/index';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { tagsMock } from '../../mock_data';
 import { ListItem } from '../../stubs';

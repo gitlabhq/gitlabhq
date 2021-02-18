@@ -1,14 +1,8 @@
 ---
-stage: Create
-group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: howto
+redirect_to: '../user/project/working_with_projects.md'
 ---
 
-# How to fork a project
+This document was moved to [another location](../user/project/working_with_projects.md).
 
-A fork is a copy of an original repository that you put in another namespace
-where you can experiment and apply changes that you can later decide whether or
-not to share, without affecting the original project.
-
-It takes just a few steps to [fork a project in GitLab](../user/project/repository/forking_workflow.md#creating-a-fork).
+<!-- This redirect file can be deleted after <2021-05-04>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

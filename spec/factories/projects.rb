@@ -40,7 +40,7 @@ FactoryBot.define do
       group_runners_enabled { nil }
       merge_pipelines_enabled { nil }
       merge_trains_enabled { nil }
-      ci_keep_latest_artifact { nil }
+      keep_latest_artifact { nil }
       import_status { nil }
       import_jid { nil }
       import_correlation_id { nil }
@@ -86,7 +86,7 @@ FactoryBot.define do
       project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
       project.merge_pipelines_enabled = evaluator.merge_pipelines_enabled unless evaluator.merge_pipelines_enabled.nil?
       project.merge_trains_enabled = evaluator.merge_trains_enabled unless evaluator.merge_trains_enabled.nil?
-      project.ci_keep_latest_artifact = evaluator.ci_keep_latest_artifact unless evaluator.ci_keep_latest_artifact.nil?
+      project.keep_latest_artifact = evaluator.keep_latest_artifact unless evaluator.keep_latest_artifact.nil?
       project.restrict_user_defined_variables = evaluator.restrict_user_defined_variables unless evaluator.restrict_user_defined_variables.nil?
 
       if evaluator.import_status

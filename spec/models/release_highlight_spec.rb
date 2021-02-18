@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ReleaseHighlight do
+RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
   let(:fixture_dir_glob) { Dir.glob(File.join('spec', 'fixtures', 'whats_new', '*.yml')).grep(/\d*\_(\d*\_\d*)\.yml$/) }
 
   before do

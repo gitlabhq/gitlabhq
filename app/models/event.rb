@@ -294,8 +294,12 @@ class Event < ApplicationRecord
     note? && target && target.for_merge_request?
   end
 
-  def project_snippet_note?
+  def snippet_note?
     note? && target && target.for_snippet?
+  end
+
+  def project_snippet_note?
+    note? && target && target.for_project_snippet?
   end
 
   def personal_snippet_note?

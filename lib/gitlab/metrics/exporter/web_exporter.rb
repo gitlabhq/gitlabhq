@@ -12,6 +12,10 @@ module Gitlab
             Gitlab::HealthChecks::Result.new(
               'web_exporter', exporter.running)
           end
+
+          def available?
+            true
+          end
         end
 
         attr_reader :running

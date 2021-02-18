@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 
 describe('navigation tabs component', () => {

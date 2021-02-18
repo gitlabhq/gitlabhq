@@ -1,6 +1,6 @@
 import { flattenDeep } from 'lodash';
-import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import { __ } from '~/locale';
+import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
 export const tokenKeys = [
   {

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import IncidentsSettingTabs from '~/incidents_settings/components/incidents_settings_tabs.vue';
 
 describe('IncidentsSettingTabs', () => {

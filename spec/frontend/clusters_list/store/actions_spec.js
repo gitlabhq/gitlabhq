@@ -1,14 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as Sentry from '~/sentry/wrapper';
-import Poll from '~/lib/utils/poll';
+import { MAX_REQUESTS } from '~/clusters_list/constants';
+import * as actions from '~/clusters_list/store/actions';
+import * as types from '~/clusters_list/store/mutation_types';
 import { deprecatedCreateFlash as flashError } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import Poll from '~/lib/utils/poll';
+import * as Sentry from '~/sentry/wrapper';
 import { apiData } from '../mock_data';
-import { MAX_REQUESTS } from '~/clusters_list/constants';
-import * as types from '~/clusters_list/store/mutation_types';
-import * as actions from '~/clusters_list/store/actions';
 
 jest.mock('~/flash.js');
 

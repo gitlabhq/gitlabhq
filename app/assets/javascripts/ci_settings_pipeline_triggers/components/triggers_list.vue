@@ -2,9 +2,9 @@
 import { GlTable, GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {

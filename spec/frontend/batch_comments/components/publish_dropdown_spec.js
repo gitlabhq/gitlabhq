@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
 import { createStore } from '~/mr_notes/stores';
 import '~/behaviors/markdown/render_gfm';

@@ -1,10 +1,10 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
-import store from '~/badges/store';
-import BadgeSettings from '~/badges/components/badge_settings.vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import BadgeList from '~/badges/components/badge_list.vue';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
+import BadgeSettings from '~/badges/components/badge_settings.vue';
+import store from '~/badges/store';
 import { createDummyBadge } from '../dummy_badge';
 
 const localVue = createLocalVue();

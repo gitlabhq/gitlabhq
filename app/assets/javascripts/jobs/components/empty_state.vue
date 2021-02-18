@@ -85,7 +85,7 @@ export default {
           <gl-link
             :href="action.path"
             :data-method="action.method"
-            class="btn btn-primary"
+            class="btn gl-button btn-confirm gl-text-decoration-none!"
             data-testid="job-empty-state-action"
             >{{ action.button_title }}</gl-link
           >

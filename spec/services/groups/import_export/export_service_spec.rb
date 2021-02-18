@@ -71,6 +71,16 @@ RSpec.describe Groups::ImportExport::ExportService do
       service.execute
     end
 
+    it 'compresses and removes tmp files' do
+      expect(group.import_export_upload).to be_nil
+      expect(Gitlab::ImportExport::Saver).to receive(:new).and_call_original
+
+      service.execute
+
+      expect(Dir.exist?(shared.archive_path)).to eq false
+      expect(File.exist?(group.import_export_upload.export_file.path)).to eq true
+    end
+
     it 'notifies the user' do
       expect_next_instance_of(NotificationService) do |instance|
         expect(instance).to receive(:group_was_exported)
@@ -134,7 +144,7 @@ RSpec.describe Groups::ImportExport::ExportService do
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
           expect(group.import_export_upload).to be_nil
-          expect(Dir.exist?(shared.base_path)).to eq(false)
+          expect(Dir.exist?(shared.archive_path)).to eq(false)
         end
 
         it 'notifies the user about failed group export' do
@@ -159,7 +169,7 @@ RSpec.describe Groups::ImportExport::ExportService do
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
           expect(group.import_export_upload).to be_nil
-          expect(Dir.exist?(shared.base_path)).to eq(false)
+          expect(Dir.exist?(shared.archive_path)).to eq(false)
         end
 
         it 'notifies logger' do

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 
 describe('CrossplaneProviderStack component', () => {

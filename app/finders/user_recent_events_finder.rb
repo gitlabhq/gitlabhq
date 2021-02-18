@@ -15,40 +15,47 @@ class UserRecentEventsFinder
 
   requires_cross_project_access
 
-  attr_reader :current_user, :target_user, :params
+  attr_reader :current_user, :target_user, :params, :event_filter
 
   DEFAULT_LIMIT = 20
   MAX_LIMIT = 100
 
-  def initialize(current_user, target_user, params = {})
+  def initialize(current_user, target_user, event_filter, params = {})
     @current_user = current_user
     @target_user = target_user
     @params = params
+    @event_filter = event_filter || EventFilter.new(EventFilter::ALL)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    return Event.none unless can?(current_user, :read_user_profile, target_user)
-
-    recent_events(params[:offset] || 0)
-      .joins(:project)
-      .with_associations
-      .limit_recent(limit, params[:offset])
+    if target_user.is_a? User
+      execute_single
+    else
+      execute_multi
+    end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def recent_events(offset)
-    sql = <<~SQL
-      (#{projects}) AS projects_for_join
-      JOIN (#{target_events.to_sql}) AS #{Event.table_name}
-        ON #{Event.table_name}.project_id = projects_for_join.id
-    SQL
+  def execute_single
+    return Event.none unless can?(current_user, :read_user_profile, target_user)
 
-    # Workaround for https://github.com/rails/rails/issues/24193
-    Event.from([Arel.sql(sql)])
+    event_filter.apply_filter(target_events
+      .with_associations
+      .limit_recent(limit, params[:offset])
+      .order_created_desc)
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def execute_multi
+    users = []
+    @target_user.each do |user|
+      users.append(user.id) if can?(current_user, :read_user_profile, user)
+    end
+
+    return Event.none if users.empty?
+
+    event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -57,10 +64,6 @@ class UserRecentEventsFinder
     Event.where(author: target_user)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def projects
-    target_user.project_interactions.to_sql
-  end
 
   def limit
     return DEFAULT_LIMIT unless params[:limit].present?

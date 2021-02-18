@@ -1,18 +1,17 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { shallowMount } from '@vue/test-utils';
-import SnippetApp from '~/snippets/components/show.vue';
+import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
+import SnippetApp from '~/snippets/components/show.vue';
+import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import SnippetTitle from '~/snippets/components/snippet_title.vue';
-import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
-
 import {
   SNIPPET_VISIBILITY_INTERNAL,
   SNIPPET_VISIBILITY_PRIVATE,
   SNIPPET_VISIBILITY_PUBLIC,
 } from '~/snippets/constants';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 
 describe('Snippet view app', () => {
   let wrapper;

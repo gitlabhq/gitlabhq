@@ -221,7 +221,7 @@ $mr-widget-min-height: 69px;
 
   .mr-widget-pipeline-graph {
     .dropdown-menu {
-      z-index: 300;
+      z-index: $zindex-dropdown-menu;
     }
   }
 
@@ -375,12 +375,13 @@ $mr-widget-min-height: 69px;
       }
 
       .text {
-        span {
-          font-weight: $gl-font-weight-bold;
-        }
-
         p {
           margin-top: $gl-padding;
+        }
+
+        .highlight {
+          margin: 0 0 $gl-padding;
+          font-weight: $gl-font-weight-bold;
         }
       }
     }
@@ -981,7 +982,14 @@ $mr-widget-min-height: 69px;
   }
 
   .mini-pipeline-graph-dropdown-toggle,
-  .stage-cell .mini-pipeline-graph-dropdown-toggle svg {
+  .stage-cell .mini-pipeline-graph-dropdown-toggle svg,
+  // As the `mini-pipeline-item` mixin specificity is lower
+  // than the toggle of dropdown with 'variant="link"' we add
+  // classes ".gl-button.btn-link" to make it more specific.
+  // Once FF ci_mini_pipeline_gl_dropdown is removed, the `mini-pipeline-item`
+  // itself could increase its specificity to simplify this selector
+  button.gl-button.btn-link.mini-pipeline-graph-gl-dropdown-toggle,
+  .stage-cell button.gl-button.btn-link.mini-pipeline-graph-gl-dropdown-toggle svg {
     height: $ci-action-icon-size-lg;
     width: $ci-action-icon-size-lg;
   }

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto
 ---
 
-# How to create a branch
+# How to create a branch **(FREE)**
 
 A branch is an independent line of development in a [project](../user/project/index.md).
 

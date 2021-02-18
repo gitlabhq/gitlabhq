@@ -1,29 +1,22 @@
 <script>
 import { GlLoadingIcon, GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
-import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import { __, s__, sprintf } from '~/locale';
 import { getFilename } from '~/lib/utils/file_upload';
-import UploadButton from '../components/upload/button.vue';
-import DeleteButton from '../components/delete_button.vue';
-import Design from '../components/list/item.vue';
-import DesignDestroyer from '../components/design_destroyer.vue';
-import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
+import { __, s__, sprintf } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
-import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
+import DeleteButton from '../components/delete_button.vue';
+import DesignDestroyer from '../components/design_destroyer.vue';
+import Design from '../components/list/item.vue';
+import UploadButton from '../components/upload/button.vue';
+import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
+import { VALID_DESIGN_FILE_MIMETYPE } from '../constants';
 import moveDesignMutation from '../graphql/mutations/move_design.mutation.graphql';
+import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
 import allDesignsMixin from '../mixins/all_designs';
-import {
-  UPLOAD_DESIGN_ERROR,
-  EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
-  EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
-  MOVE_DESIGN_ERROR,
-  UPLOAD_DESIGN_INVALID_FILETYPE_ERROR,
-  designUploadSkippedWarning,
-  designDeletionError,
-} from '../utils/error_messages';
+import { DESIGNS_ROUTE_NAME } from '../router/constants';
 import {
   updateStoreAfterUploadDesign,
   updateDesignsOnStoreAfterReorder,
@@ -33,9 +26,16 @@ import {
   isValidDesignFile,
   moveDesignOptimisticResponse,
 } from '../utils/design_management_utils';
+import {
+  UPLOAD_DESIGN_ERROR,
+  EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
+  EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
+  MOVE_DESIGN_ERROR,
+  UPLOAD_DESIGN_INVALID_FILETYPE_ERROR,
+  designUploadSkippedWarning,
+  designDeletionError,
+} from '../utils/error_messages';
 import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
-import { DESIGNS_ROUTE_NAME } from '../router/constants';
-import { VALID_DESIGN_FILE_MIMETYPE } from '../constants';
 
 const MAXIMUM_FILE_UPLOAD_LIMIT = 10;
 
@@ -347,15 +347,20 @@ export default {
   >
     <header
       v-if="showToolbar"
-      class="row-content-block gl-border-t-0 gl-p-3 gl-display-flex"
+      class="row-content-block gl-border-t-0 gl-py-3 gl-display-flex"
       data-testid="design-toolbar-wrapper"
     >
-      <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
-        <div>
+      <div
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap"
+      >
+        <div class="gl-display-flex gl-align-items-center gl-my-2">
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
           <design-version-dropdown />
         </div>
-        <div v-show="hasDesigns" class="qa-selector-toolbar gl-display-flex gl-align-items-center">
+        <div
+          v-show="hasDesigns"
+          class="qa-selector-toolbar gl-display-flex gl-align-items-center gl-my-2"
+        >
           <gl-button
             v-if="isLatestVersion"
             variant="link"

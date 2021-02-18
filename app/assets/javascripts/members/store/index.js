@@ -1,6 +1,6 @@
-import createState from 'ee_else_ce/members/store/state';
-import mutations from 'ee_else_ce/members/store/mutations';
 import * as actions from 'ee_else_ce/members/store/actions';
+import mutations from 'ee_else_ce/members/store/mutations';
+import createState from 'ee_else_ce/members/store/state';
 
 export default (initialState) => ({
   state: createState(initialState),

@@ -1,8 +1,8 @@
-import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { NEW_VERSION_FLAG } from '../../constants';
 import { mapFromScopesViewModel, mapStrategiesToRails } from '../helpers';
+import * as types from './mutation_types';
 
 /**
  * Handles the creation of a new feature flag.

@@ -1185,60 +1185,6 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe 'state transition with resource group' do
-    let(:resource_group) { create(:ci_resource_group, project: project) }
-
-    context 'when build status is created' do
-      let(:build) { create(:ci_build, :created, project: project, resource_group: resource_group) }
-
-      it 'is waiting for resource when build is enqueued' do
-        expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async).with(resource_group.id)
-
-        expect { build.enqueue! }.to change { build.status }.from('created').to('waiting_for_resource')
-
-        expect(build.waiting_for_resource_at).not_to be_nil
-      end
-
-      context 'when build is waiting for resource' do
-        before do
-          build.update_column(:status, 'waiting_for_resource')
-        end
-
-        it 'is enqueued when build requests resource' do
-          expect { build.enqueue_waiting_for_resource! }.to change { build.status }.from('waiting_for_resource').to('pending')
-        end
-
-        it 'releases a resource when build finished' do
-          expect(build.resource_group).to receive(:release_resource_from).with(build).and_call_original
-          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async).with(build.resource_group_id)
-
-          build.enqueue_waiting_for_resource!
-          build.success!
-        end
-
-        context 'when build has prerequisites' do
-          before do
-            allow(build).to receive(:any_unmet_prerequisites?) { true }
-          end
-
-          it 'is preparing when build is enqueued' do
-            expect { build.enqueue_waiting_for_resource! }.to change { build.status }.from('waiting_for_resource').to('preparing')
-          end
-        end
-
-        context 'when there are no available resources' do
-          before do
-            resource_group.assign_resource_to(create(:ci_build))
-          end
-
-          it 'stays as waiting for resource when build requests resource' do
-            expect { build.enqueue_waiting_for_resource }.not_to change { build.status }
-          end
-        end
-      end
-    end
-  end
-
   describe '#on_stop' do
     subject { build.on_stop }
 
@@ -1914,7 +1860,7 @@ RSpec.describe Ci::Build do
     subject { build.artifacts_file_for_type(file_type) }
 
     it 'queries artifacts for type' do
-      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: Ci::JobArtifact.file_types[file_type])
+      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: [Ci::JobArtifact.file_types[file_type]])
 
       subject
     end
@@ -3605,7 +3551,7 @@ RSpec.describe Ci::Build do
 
     context 'when validates for dependencies is enabled' do
       before do
-        stub_feature_flags(ci_disable_validates_dependencies: false)
+        stub_feature_flags(ci_validate_build_dependencies_override: false)
       end
 
       let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
@@ -3633,7 +3579,7 @@ RSpec.describe Ci::Build do
       let(:options) { { dependencies: ['test'] } }
 
       before do
-        stub_feature_flags(ci_disable_validates_dependencies: true)
+        stub_feature_flags(ci_validate_build_dependencies_override: true)
       end
 
       it_behaves_like 'validation is not active'
@@ -4095,18 +4041,6 @@ RSpec.describe Ci::Build do
           expect { subject }.not_to raise_error
 
           expect(coverage_report.files.keys).to match_array(['src/main/java/com/example/javademo/User.java'])
-        end
-
-        context 'and smart_cobertura_parser feature flag is disabled' do
-          before do
-            stub_feature_flags(smart_cobertura_parser: false)
-          end
-
-          it 'parses blobs and add the results to the coverage report with unmodified paths' do
-            expect { subject }.not_to raise_error
-
-            expect(coverage_report.files.keys).to match_array(['com/example/javademo/User.java'])
-          end
         end
       end
 
@@ -4919,14 +4853,6 @@ RSpec.describe Ci::Build do
 
       context 'when exit_code is nil' do
         let(:exit_code) {}
-
-        it_behaves_like 'drops the build without changing allow_failure'
-      end
-
-      context 'when ci_allow_failure_with_exit_codes is disabled' do
-        before do
-          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
-        end
 
         it_behaves_like 'drops the build without changing allow_failure'
       end

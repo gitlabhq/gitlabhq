@@ -23,4 +23,16 @@ RSpec.describe API::Entities::User do
 
     expect(subject).not_to include(:created_at)
   end
+
+  it 'exposes user as not a bot' do
+    expect(subject[:bot]).to be_falsey
+  end
+
+  context 'with bot user' do
+    let(:user) { create(:user, :security_bot) }
+
+    it 'exposes user as a bot' do
+      expect(subject[:bot]).to eq(true)
+    end
+  end
 end

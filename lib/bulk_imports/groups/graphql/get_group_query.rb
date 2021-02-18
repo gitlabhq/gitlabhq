@@ -12,25 +12,37 @@ module BulkImports
             group(fullPath: $full_path) {
               name
               path
-              fullPath
+              full_path: fullPath
               description
               visibility
-              emailsDisabled
-              lfsEnabled
-              mentionsDisabled
-              projectCreationLevel
-              requestAccessEnabled
-              requireTwoFactorAuthentication
-              shareWithGroupLock
-              subgroupCreationLevel
-              twoFactorGracePeriod
+              emails_disabled: emailsDisabled
+              lfs_enabled: lfsEnabled
+              mentions_disabled: mentionsDisabled
+              project_creation_level: projectCreationLevel
+              request_access_enabled: requestAccessEnabled
+              require_two_factor_authentication: requireTwoFactorAuthentication
+              share_with_group_lock: shareWithGroupLock
+              subgroup_creation_level: subgroupCreationLevel
+              two_factor_grace_period: twoFactorGracePeriod
             }
           }
           GRAPHQL
         end
 
-        def variables(entity)
-          { full_path: entity.source_full_path }
+        def variables(context)
+          { full_path: context.entity.source_full_path }
+        end
+
+        def base_path
+          %w[data group]
+        end
+
+        def data_path
+          base_path
+        end
+
+        def page_info_path
+          base_path << 'page_info'
         end
       end
     end

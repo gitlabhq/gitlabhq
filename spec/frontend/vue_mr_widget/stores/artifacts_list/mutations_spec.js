@@ -1,6 +1,6 @@
-import state from '~/vue_merge_request_widget/stores/artifacts_list/state';
-import mutations from '~/vue_merge_request_widget/stores/artifacts_list/mutations';
 import * as types from '~/vue_merge_request_widget/stores/artifacts_list/mutation_types';
+import mutations from '~/vue_merge_request_widget/stores/artifacts_list/mutations';
+import state from '~/vue_merge_request_widget/stores/artifacts_list/state';
 
 describe('Artifacts Store Mutations', () => {
   let stateCopy;

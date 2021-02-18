@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
-import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
+import ModalStore from '../../stores/modal_store';
 
 export default {
   components: {

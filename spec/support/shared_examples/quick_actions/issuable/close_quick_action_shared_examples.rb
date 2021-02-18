@@ -44,7 +44,6 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
     it 'creates the note and interprets the close quick action accordingly' do
       add_note("this is done, close\n\n/close")
 
-      wait_for_requests
       expect(page).not_to have_content '/close'
       expect(page).to have_content 'this is done, close'
 

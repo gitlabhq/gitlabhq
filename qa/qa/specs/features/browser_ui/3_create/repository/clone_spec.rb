@@ -14,10 +14,12 @@ module QA
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
+          repository.default_branch = project.default_branch
 
           repository.act do
             clone
             configure_identity('GitLab QA', 'root@gitlab.com')
+            checkout(default_branch, new_branch: true)
             commit_file('test.rb', 'class Test; end', 'Add Test class')
             commit_file('README.md', '# Test', 'Add Readme')
             push_changes

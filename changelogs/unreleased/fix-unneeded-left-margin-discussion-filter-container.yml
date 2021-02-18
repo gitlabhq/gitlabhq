@@ -1,0 +1,5 @@
+---
+title: Fix unneeded left margin in discussion filter container on mobile
+merge_request: 54379
+author:
+type: fixed

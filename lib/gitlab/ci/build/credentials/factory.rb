@@ -20,7 +20,7 @@ module Gitlab
           end
 
           def providers
-            [Registry]
+            [Registry::GitlabRegistry, Registry::DependencyProxy]
           end
         end
       end

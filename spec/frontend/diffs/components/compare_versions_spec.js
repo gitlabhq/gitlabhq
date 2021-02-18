@@ -1,10 +1,10 @@
-import { trimText } from 'helpers/text_helper';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import { createStore } from '~/mr_notes/stores';
-import diffsMockData from '../mock_data/merge_request_diffs';
 import getDiffWithCommit from '../mock_data/diff_with_commit';
+import diffsMockData from '../mock_data/merge_request_diffs';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Project badges API
+# Project badges API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17082) in GitLab 10.6.
 
@@ -13,11 +13,14 @@ type: reference, api
 
 Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - **%{project_path}**: will be replaced by the project path.
 - **%{project_id}**: will be replaced by the project ID.
 - **%{default_branch}**: will be replaced by the project default branch.
 - **%{commit_sha}**: will be replaced by the last project's commit SHA.
 
+<!-- vale gitlab.Spelling = YES -->
 ## List all badges of a project
 
 Gets a list of a project's badges and its group badges.
@@ -103,9 +106,10 @@ POST /projects/:id/badges
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `link_url` | string         | yes | URL of the badge link |
 | `image_url` | string | yes | URL of the badge image |
+| `name` | string | no | Name of the badge |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&position=0" "https://gitlab.example.com/api/v4/projects/:id/badges"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&name=mybadge" "https://gitlab.example.com/api/v4/projects/:id/badges"
 ```
 
 Example response:
@@ -113,6 +117,7 @@ Example response:
 ```json
 {
   "id": 1,
+  "name": "mybadge",
   "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "image_url": "https://shields.io/my/badge1",
   "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
@@ -135,6 +140,7 @@ PUT /projects/:id/badges/:badge_id
 | `badge_id` | integer | yes   | The badge ID |
 | `link_url` | string         | no | URL of the badge link |
 | `image_url` | string | no | URL of the badge image |
+| `name` | string | no | Name of the badge |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/badges/:badge_id"
@@ -145,6 +151,7 @@ Example response:
 ```json
 {
   "id": 1,
+  "name": "mybadge",
   "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "image_url": "https://shields.io/my/badge",
   "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",

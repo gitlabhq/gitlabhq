@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import Translate from '~/vue_shared/translate';
+import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import Translate from '~/vue_shared/translate';
 import RegistrySettingsApp from './components/registry_settings_app.vue';
 import { apolloProvider } from './graphql/index';
 

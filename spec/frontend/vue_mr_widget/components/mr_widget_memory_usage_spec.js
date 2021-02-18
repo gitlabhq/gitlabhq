@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 

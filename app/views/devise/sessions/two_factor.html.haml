@@ -8,7 +8,7 @@
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           %div
             = f.label 'Two-Factor Authentication code', name: :otp_attempt
-            = f.text_field :otp_attempt, class: 'form-control', required: true, autofocus: true, autocomplete: 'off', title: 'This field is required.', data: { qa_selector: 'two_fa_code_field' }
+            = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', title: 'This field is required.', data: { qa_selector: 'two_fa_code_field' }
             %p.form-text.text-muted.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
             .prepend-top-20
               = f.submit "Verify code", class: "gl-button btn btn-success", data: { qa_selector: 'verify_code_button' }

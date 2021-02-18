@@ -4,16 +4,16 @@
 
 import $ from 'jquery';
 import { template, escape } from 'lodash';
-import { __, sprintf } from '~/locale';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import Api from '~/api';
-import axios from './lib/utils/axios_utils';
-import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
-import ModalStore from './boards/stores/modal_store';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { __, sprintf } from '~/locale';
 import boardsStore, {
   boardStoreIssueSet,
   boardStoreIssueDelete,
 } from './boards/stores/boards_store';
+import ModalStore from './boards/stores/modal_store';
+import axios from './lib/utils/axios_utils';
+import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {
@@ -95,14 +95,19 @@ export default class MilestoneSelect {
                   name: m.title,
                 }))
                 .sort((mA, mB) => {
+                  const dueDateA = mA.due_date ? parsePikadayDate(mA.due_date) : null;
+                  const dueDateB = mB.due_date ? parsePikadayDate(mB.due_date) : null;
+
                   // Move all expired milestones to the bottom.
-                  if (mA.expired) {
-                    return 1;
-                  }
-                  if (mB.expired) {
-                    return -1;
-                  }
-                  return 0;
+                  if (mA.expired) return 1;
+                  if (mB.expired) return -1;
+
+                  // Move milestones without due dates just above expired milestones.
+                  if (!dueDateA) return 1;
+                  if (!dueDateB) return -1;
+
+                  // Sort by due date in ascending order.
+                  return dueDateA - dueDateB;
                 }),
             )
             .then((data) => {

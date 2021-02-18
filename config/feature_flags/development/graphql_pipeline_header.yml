@@ -1,8 +1,0 @@
----
-name: graphql_pipeline_header
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39494
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/254235
-milestone: '13.5'
-type: development
-group: group::pipeline authoring
-default_enabled: false

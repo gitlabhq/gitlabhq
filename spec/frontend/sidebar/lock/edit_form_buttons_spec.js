@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import { createStore as createMrStore } from '~/mr_notes/stores';
+import createStore from '~/notes/stores';
 import EditFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
-import { deprecatedCreateFlash as flash } from '~/flash';
-import createStore from '~/notes/stores';
-import { createStore as createMrStore } from '~/mr_notes/stores';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
 jest.mock('~/sidebar/event_hub', () => ({ $emit: jest.fn() }));

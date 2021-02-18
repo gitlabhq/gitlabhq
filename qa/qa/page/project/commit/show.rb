@@ -14,12 +14,12 @@ module QA
 
           def select_email_patches
             click_element :options_button
-            click_element :email_patches
+            visit_link_in_element :email_patches
           end
 
           def select_plain_diff
             click_element :options_button
-            click_element :plain_diff
+            visit_link_in_element :plain_diff
           end
 
           def commit_sha

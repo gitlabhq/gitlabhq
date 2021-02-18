@@ -43,7 +43,7 @@ const logUserTimingMetrics = () => {
 const initPerformanceBarLog = () => {
   console.log(
     `%c ${String.fromCodePoint(0x1f98a)} GitLab performance bar`,
-    'width:100%;background-color: #292961; color: #FFFFFF; font-size:24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; padding: 10px;display:block;padding-right: 100px;',
+    'width:100%; background-color: #292961; color: #FFFFFF; padding: 10px; display:block;',
   );
 
   initVitalsLog();

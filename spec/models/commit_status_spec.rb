@@ -510,6 +510,10 @@ RSpec.describe CommitStatus do
   end
 
   describe '#group_name' do
+    before do
+      stub_feature_flags(simplified_commit_status_group_name: false)
+    end
+
     using RSpec::Parameterized::TableSyntax
 
     let(:commit_status) do
@@ -555,6 +559,58 @@ RSpec.describe CommitStatus do
         commit_status.name = name
 
         is_expected.to eq(group_name)
+      end
+    end
+
+    context 'with simplified_commit_status_group_name' do
+      before do
+        stub_feature_flags(simplified_commit_status_group_name: true)
+      end
+
+      where(:name, :group_name) do
+        'rspec1'                                              | 'rspec1'
+        'rspec1 0 1'                                          | 'rspec1'
+        'rspec1 0/2'                                          | 'rspec1'
+        'rspec:windows'                                       | 'rspec:windows'
+        'rspec:windows 0'                                     | 'rspec:windows 0'
+        'rspec:windows 0 2/2'                                 | 'rspec:windows 0'
+        'rspec:windows 0 test'                                | 'rspec:windows 0 test'
+        'rspec:windows 0 test 2/2'                            | 'rspec:windows 0 test'
+        'rspec:windows 0 1 2/2'                               | 'rspec:windows'
+        'rspec:windows 0 1 [aws] 2/2'                         | 'rspec:windows'
+        'rspec:windows 0 1 name [aws] 2/2'                    | 'rspec:windows 0 1 name'
+        'rspec:windows 0 1 name'                              | 'rspec:windows 0 1 name'
+        'rspec:windows 0 1 name 1/2'                          | 'rspec:windows 0 1 name'
+        'rspec:windows 0/1'                                   | 'rspec:windows'
+        'rspec:windows 0/1 name'                              | 'rspec:windows 0/1 name'
+        'rspec:windows 0/1 name 1/2'                          | 'rspec:windows 0/1 name'
+        'rspec:windows 0:1'                                   | 'rspec:windows'
+        'rspec:windows 0:1 name'                              | 'rspec:windows 0:1 name'
+        'rspec:windows 10000 20000'                           | 'rspec:windows'
+        'rspec:windows 0 : / 1'                               | 'rspec:windows'
+        'rspec:windows 0 : / 1 name'                          | 'rspec:windows 0 : / 1 name'
+        '0 1 name ruby'                                       | '0 1 name ruby'
+        '0 :/ 1 name ruby'                                    | '0 :/ 1 name ruby'
+        'rspec: [aws]'                                        | 'rspec'
+        'rspec: [aws] 0/1'                                    | 'rspec'
+        'rspec: [aws, max memory]'                            | 'rspec'
+        'rspec:linux: [aws, max memory, data]'                | 'rspec:linux'
+        'rspec: [inception: [something, other thing], value]' | 'rspec'
+        'rspec:windows 0/1: [name, other]'                    | 'rspec:windows'
+        'rspec:windows: [name, other] 0/1'                    | 'rspec:windows'
+        'rspec:windows: [name, 0/1] 0/1'                      | 'rspec:windows'
+        'rspec:windows: [0/1, name]'                          | 'rspec:windows'
+        'rspec:windows: [, ]'                                 | 'rspec:windows'
+        'rspec:windows: [name]'                               | 'rspec:windows'
+        'rspec:windows: [name,other]'                         | 'rspec:windows'
+      end
+
+      with_them do
+        it "#{params[:name]} puts in #{params[:group_name]}" do
+          commit_status.name = name
+
+          is_expected.to eq(group_name)
+        end
       end
     end
   end
@@ -725,22 +781,6 @@ RSpec.describe CommitStatus do
     let(:commit_status) { create(:commit_status) }
 
     it { is_expected.to eq(true) }
-
-    context 'when build requires a resource' do
-      before do
-        allow(commit_status).to receive(:requires_resource?) { true }
-      end
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when build has a prerequisite' do
-      before do
-        allow(commit_status).to receive(:any_unmet_prerequisites?) { true }
-      end
-
-      it { is_expected.to eq(false) }
-    end
   end
 
   describe '#enqueue' do
@@ -748,7 +788,6 @@ RSpec.describe CommitStatus do
 
     before do
       allow(Time).to receive(:now).and_return(current_time)
-      expect(commit_status.any_unmet_prerequisites?).to eq false
     end
 
     shared_examples 'commit status enqueued' do

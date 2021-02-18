@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
 import {
   GlIcon,
   GlDropdown,
@@ -9,6 +8,7 @@ import {
   GlSearchBoxByType,
   GlModalDirective,
 } from '@gitlab/ui';
+import { mapState, mapGetters } from 'vuex';
 
 const events = {
   selectDashboard: 'selectDashboard',

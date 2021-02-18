@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { createStore } from '~/mr_notes/stores';
-import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
+import Vuex from 'vuex';
 import parallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
+import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
+import { createStore } from '~/mr_notes/stores';
 import diffFileMockData from '../mock_data/diff_file';
 
 let wrapper;

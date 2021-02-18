@@ -1,12 +1,13 @@
-import MockAdapter from 'axios-mock-adapter';
-import { shallowMount, mount, createWrapper } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
+import { shallowMount, mount, createWrapper } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
-import eventHub from '~/projects/commit/event_hub';
-import CommitFormModal from '~/projects/commit/components/form_modal.vue';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue';
+import CommitFormModal from '~/projects/commit/components/form_modal.vue';
+import eventHub from '~/projects/commit/event_hub';
 import createStore from '~/projects/commit/store';
 import mockData from '../mock_data';
 
@@ -64,7 +65,7 @@ describe('CommitFormModal', () => {
 
       wrapper.vm.show();
 
-      expect(rootEmit).toHaveBeenCalledWith('bv::show::modal', mockData.modalPropsData.modalId);
+      expect(rootEmit).toHaveBeenCalledWith(BV_SHOW_MODAL, mockData.modalPropsData.modalId);
     });
 
     it('Clears the modal state once modal is hidden', () => {

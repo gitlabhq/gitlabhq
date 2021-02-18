@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :cleanup do
     desc "GitLab | Cleanup | Delete moved repositories"

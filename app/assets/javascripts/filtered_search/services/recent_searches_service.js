@@ -1,5 +1,5 @@
-import RecentSearchesServiceError from './recent_searches_service_error';
 import AccessorUtilities from '../../lib/utils/accessor';
+import RecentSearchesServiceError from './recent_searches_service_error';
 
 class RecentSearchesService {
   constructor(localStorageKey = 'issuable-recent-searches') {

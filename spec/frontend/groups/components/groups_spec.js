@@ -1,9 +1,9 @@
 import Vue from 'vue';
 
 import mountComponent from 'helpers/vue_mount_component_helper';
-import groupsComponent from '~/groups/components/groups.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
+import groupsComponent from '~/groups/components/groups.vue';
 import eventHub from '~/groups/event_hub';
 import { mockGroups, mockPageInfo } from '../mock_data';
 
@@ -22,8 +22,8 @@ describe('GroupsComponent', () => {
   let vm;
 
   beforeEach(() => {
-    Vue.component('group-folder', groupFolderComponent);
-    Vue.component('group-item', groupItemComponent);
+    Vue.component('GroupFolder', groupFolderComponent);
+    Vue.component('GroupItem', groupItemComponent);
 
     vm = createComponent();
 

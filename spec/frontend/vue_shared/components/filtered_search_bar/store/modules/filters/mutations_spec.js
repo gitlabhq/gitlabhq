@@ -1,9 +1,9 @@
 import { get } from 'lodash';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
-import initialState from '~/vue_shared/components/filtered_search_bar/store/modules/filters/state';
-import mutations from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutations';
-import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';
+import mutations from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutations';
+import initialState from '~/vue_shared/components/filtered_search_bar/store/modules/filters/state';
 import { filterMilestones, filterUsers, filterLabels } from './mock_data';
 
 let state = null;

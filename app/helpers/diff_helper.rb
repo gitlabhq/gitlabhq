@@ -133,7 +133,7 @@ module DiffHelper
         ].join('').html_safe
 
       tooltip = _('Compare submodule commit revisions')
-      link = content_tag(:span, link_to(link_text, compare_url, class: 'btn has-tooltip', title: tooltip), class: 'submodule-compare')
+      link = content_tag(:span, link_to(link_text, compare_url, class: 'btn gl-button has-tooltip', title: tooltip), class: 'submodule-compare')
     end
 
     link
@@ -203,6 +203,26 @@ module DiffHelper
     set_secure_cookie(:diff_view, params.delete(:view), type: CookiesHelper::COOKIE_TYPE_PERMANENT) if params[:view].present?
   end
 
+  def collapsed_diff_url(diff_file)
+    url_for(
+      safe_params.merge(
+        action: :diff_for_path,
+        old_path: diff_file.old_path,
+        new_path: diff_file.new_path,
+        file_identifier: diff_file.file_identifier
+      )
+    )
+  end
+
+  # As the fork suggestion button is identical every time, we cache it for a full page load
+  def render_fork_suggestion
+    return unless current_user
+
+    strong_memoize(:fork_suggestion) do
+      render partial: "projects/fork_suggestion"
+    end
+  end
+
   private
 
   def diff_btn(title, name, selected)
@@ -212,7 +232,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn active' : 'btn'), data: { view_type: name } do
+    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn gl-button active' : 'btn gl-button'), data: { view_type: name } do
       title
     end
   end
@@ -241,7 +261,7 @@ module DiffHelper
   end
 
   def toggle_whitespace_link(url, options)
-    options[:class] = [*options[:class], 'btn btn-default'].join(' ')
+    options[:class] = [*options[:class], 'btn gl-button btn-default'].join(' ')
     link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
   end
 
@@ -254,7 +274,7 @@ module DiffHelper
   end
 
   def code_navigation_path(diffs)
-    Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
+    Gitlab::CodeNavigationPath.new(merge_request.project, merge_request.diff_head_sha)
   end
 
   def conflicts

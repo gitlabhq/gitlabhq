@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The default colors of rack-lineprof can be very hard to look at in terminals
 # with darker backgrounds. This patch tweaks the colors a bit so the output is
 # actually readable.

@@ -1,10 +1,11 @@
-import { mount, createWrapper, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import { nextTick } from 'vue';
-import { within } from '@testing-library/dom';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { within } from '@testing-library/dom';
+import { mount, createWrapper, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { member } from '../../mock_data';
 
@@ -67,7 +68,7 @@ describe('RoleDropdown', () => {
       createComponent();
 
       findDropdownToggle().trigger('click');
-      wrapper.vm.$root.$on('bv::dropdown::shown', () => {
+      wrapper.vm.$root.$on(BV_DROPDOWN_SHOW, () => {
         done();
       });
     });

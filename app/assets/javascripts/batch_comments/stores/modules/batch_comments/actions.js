@@ -1,9 +1,9 @@
 import { deprecatedCreateFlash as flash } from '~/flash';
-import { __ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 import service from '../../../services/drafts_service';
 import * as types from './mutation_types';
-import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 
 export const saveDraft = ({ dispatch }, draft) =>
   dispatch('saveNote', { ...draft, isDraft: true }, { root: true });
@@ -67,13 +67,23 @@ export const publishReview = ({ commit, dispatch, getters }) => {
     .catch(() => commit(types.RECEIVE_PUBLISH_REVIEW_ERROR));
 };
 
-export const updateDiscussionsAfterPublish = ({ dispatch, getters, rootGetters }) =>
-  dispatch('fetchDiscussions', { path: getters.getNotesData.discussionsPath }, { root: true }).then(
-    () =>
-      dispatch('diffs/assignDiscussionsToDiff', rootGetters.discussionsStructuredByLineCode, {
-        root: true,
-      }),
-  );
+export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGetters }) => {
+  if (window.gon?.features?.paginatedNotes) {
+    await dispatch('stopPolling', null, { root: true });
+    await dispatch('fetchData', null, { root: true });
+    await dispatch('restartPolling', null, { root: true });
+  } else {
+    await dispatch(
+      'fetchDiscussions',
+      { path: getters.getNotesData.discussionsPath },
+      { root: true },
+    );
+  }
+
+  dispatch('diffs/assignDiscussionsToDiff', rootGetters.discussionsStructuredByLineCode, {
+    root: true,
+  });
+};
 
 export const updateDraft = (
   { commit, getters },

@@ -46,6 +46,9 @@ export default {
     assignSelf() {
       this.$emit('assign-self');
     },
+    requestReview(data) {
+      this.$emit('request-review', data);
+    },
   },
 };
 </script>
@@ -56,7 +59,7 @@ export default {
 
     <div class="value hide-collapsed">
       <template v-if="hasNoUsers">
-        <span class="assign-yourself no-value qa-assign-yourself">
+        <span class="assign-yourself no-value">
           {{ __('None') }}
         </span>
       </template>
@@ -66,6 +69,7 @@ export default {
         :users="sortedReviewers"
         :root-path="rootPath"
         :issuable-type="issuableType"
+        @request-review="requestReview"
       />
     </div>
   </div>

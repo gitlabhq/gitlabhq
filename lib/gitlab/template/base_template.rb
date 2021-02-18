@@ -8,6 +8,7 @@ module Gitlab
       def initialize(path, project = nil, category: nil)
         @path = path
         @category = category
+        @project = project
         @finder = self.class.finder(project)
       end
 
@@ -29,6 +30,10 @@ module Gitlab
 
       def description
         # override with a comment to be placed at the top of the blob.
+      end
+
+      def project_id
+        @project&.id
       end
 
       # Present for compatibility with license templates, which can replace text
@@ -76,7 +81,7 @@ module Gitlab
         end
 
         # Defines which strategy will be used to get templates files
-        # RepoTemplateFinder - Finds templates on project repository, templates are filtered perproject
+        # RepoTemplateFinder - Finds templates on project repository, templates are filtered per project
         # GlobalTemplateFinder - Finds templates on gitlab installation source, templates can be used in all projects
         def finder(project = nil)
           raise NotImplementedError
@@ -95,19 +100,29 @@ module Gitlab
           File.join(base_dir, categories[category])
         end
 
-        # If template is organized by category it returns { category_name: [{ name: template_name }, { name: template2_name }] }
-        # If no category is present returns [{ name: template_name }, { name: template2_name}]
-        def dropdown_names(project = nil)
-          return [] if project && !project.repository.exists?
+        # `repository_template_names` - reads through Gitaly the actual templates names within a
+        # given project's repository. This is only used by issue and merge request templates,
+        # that need to call this once and then cache the returned value.
+        #
+        # `template_names` - is an alias to `repository_template_names`. It would read through
+        # Gitaly the actual template names within a given project's repository for all file templates
+        # other than `issue` and `merge request` description templates, which would instead
+        # overwrite the `template_names` method to return a redis cached version, by reading cached values
+        # from `repository.issue_template_names_by_category` and `repository.merge_request_template_names_by_category`
+        # methods.
+        def repository_template_names(project)
+          template_names_by_category(self.all(project))
+        end
+        alias_method :template_names, :repository_template_names
 
-          if categories.any?
-            categories.keys.map do |category|
-              files = self.by_category(category, project)
-              [category, files.map { |t| { name: t.name } }]
-            end.to_h
-          else
-            files = self.all(project)
-            files.map { |t| { name: t.name } }
+        def template_names_by_category(items)
+          grouped = items.group_by(&:category)
+          categories = grouped.keys
+
+          categories.each_with_object({}) do |category, hash|
+            hash[category] = grouped[category].map do |item|
+              { name: item.name, id: item.key, key: item.key, project_id: item.try(:project_id) }
+            end
           end
         end
 

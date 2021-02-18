@@ -193,13 +193,16 @@
     .filter-dropdown-container.d-flex.flex-column.flex-md-row
       - if type == :boards
         #js-board-labels-toggle
-        .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
-        - if user_can_admin_list
-          = render 'shared/issuable/board_create_list_dropdown', board: board
-          - if @project
-            #js-add-issues-btn.gl-ml-3{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
         - if current_user
           #js-board-epics-swimlanes-toggle
+        .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
+        - if user_can_admin_list
+          - if Feature.enabled?(:board_new_list, board.resource_parent, default_enabled: :yaml)
+            .js-create-column-trigger{ data: board_list_data }
+          - else
+            = render 'shared/issuable/board_create_list_dropdown', board: board
+          - if @project
+            #js-add-issues-btn{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
         #js-toggle-focus-btn
       - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

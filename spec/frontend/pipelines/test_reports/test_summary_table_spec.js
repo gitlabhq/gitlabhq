@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
 import SummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';

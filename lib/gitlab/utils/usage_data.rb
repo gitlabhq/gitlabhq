@@ -39,6 +39,9 @@ module Gitlab
 
       FALLBACK = -1
       DISTRIBUTED_HLL_FALLBACK = -2
+      ALL_TIME_PERIOD_HUMAN_NAME = "all_time"
+      WEEKLY_PERIOD_HUMAN_NAME = "weekly"
+      MONTHLY_PERIOD_HUMAN_NAME = "monthly"
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch
@@ -61,10 +64,13 @@ module Gitlab
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        Gitlab::Database::PostgresHll::BatchDistinctCounter
+        buckets = Gitlab::Database::PostgresHll::BatchDistinctCounter
           .new(relation, column)
           .execute(batch_size: batch_size, start: start, finish: finish)
-          .estimated_distinct_count
+
+        yield buckets if block_given?
+
+        buckets.estimated_distinct_count
       rescue ActiveRecord::StatementInvalid
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue

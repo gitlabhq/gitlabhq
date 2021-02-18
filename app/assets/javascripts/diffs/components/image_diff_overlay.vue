@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import { isArray } from 'lodash';
-import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import { GlIcon } from '@gitlab/ui';
+import { isArray } from 'lodash';
+import { mapActions, mapGetters } from 'vuex';
+import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 
 function calcPercent(pos, size, renderedSize) {
   return (((pos / size) * 100) / ((renderedSize / size) * 100)) * 100;

@@ -17,4 +17,34 @@ RSpec.describe UserStatus do
 
     expect { status.user.destroy }.to change { described_class.count }.from(1).to(0)
   end
+
+  describe '#clear_status_after=' do
+    it 'sets clear_status_at' do
+      status = build(:user_status)
+
+      freeze_time do
+        status.clear_status_after = '8_hours'
+
+        expect(status.clear_status_at).to be_like_time(8.hours.from_now)
+      end
+    end
+
+    it 'unsets clear_status_at' do
+      status = build(:user_status, clear_status_at: 8.hours.from_now)
+
+      status.clear_status_after = nil
+
+      expect(status.clear_status_at).to be_nil
+    end
+
+    context 'when unknown clear status is given' do
+      it 'unsets clear_status_at' do
+        status = build(:user_status, clear_status_at: 8.hours.from_now)
+
+        status.clear_status_after = 'unknown'
+
+        expect(status.clear_status_at).to be_nil
+      end
+    end
+  end
 end

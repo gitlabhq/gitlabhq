@@ -1,10 +1,13 @@
 /* eslint-disable no-new */
-import { clone } from 'lodash';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'spec/test_constants';
+import { clone } from 'lodash';
 import waitForPromises from 'helpers/wait_for_promises';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
+import { fixTitle } from '~/tooltips';
+
+jest.mock('~/tooltips');
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
   const fixtureName = 'issues/open-issue.html';
@@ -96,11 +99,10 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setImmediate(() => {
-      expect(
-        document
-          .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
-          .getAttribute('data-original-title'),
-      ).toBe('Mark as done');
+      const el = document.querySelector('.js-issuable-todo.sidebar-collapsed-icon');
+
+      expect(el.getAttribute('title')).toBe('Mark as done');
+      expect(fixTitle).toHaveBeenCalledWith(el);
 
       done();
     });

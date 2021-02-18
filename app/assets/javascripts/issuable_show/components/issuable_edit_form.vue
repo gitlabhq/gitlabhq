@@ -1,6 +1,6 @@
 <script>
-import $ from 'jquery';
 import { GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import $ from 'jquery';
 
 import Autosave from '~/autosave';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';

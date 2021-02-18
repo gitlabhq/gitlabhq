@@ -1,6 +1,4 @@
 <script>
-import { debounce } from 'lodash';
-import { mapState, mapActions } from 'vuex';
 import {
   GlDropdown,
   GlDropdownSectionHeader,
@@ -9,8 +7,10 @@ import {
   GlDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { debounce } from 'lodash';
+import { mapState, mapActions } from 'vuex';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 const tooltipMessage = __('Searching by both author and message is currently not supported.');

@@ -8,9 +8,11 @@ module Gitlab
 
       private
 
-      def create_labels(worker_class, queue)
+      def create_labels(worker_class, queue, job)
+        worker_name = (job['wrapped'].presence || worker_class).to_s
+
         labels = { queue: queue.to_s,
-                   worker: worker_class.to_s,
+                   worker: worker_name,
                    urgency: "",
                    external_dependencies: FALSE_LABEL,
                    feature_category: "",

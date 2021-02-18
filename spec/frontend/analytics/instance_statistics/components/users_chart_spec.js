@@ -1,18 +1,17 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
+import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { useFakeDate } from 'helpers/fake_date';
 import UsersChart from '~/analytics/instance_statistics/components/users_chart.vue';
-import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import usersQuery from '~/analytics/instance_statistics/graphql/queries/users.query.graphql';
+import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
+import { mockQueryResponse } from '../apollo_mock_data';
 import {
   mockCountsData1,
   mockCountsData2,
   roundedSortedCountsMonthlyChartData2,
 } from '../mock_data';
-import { mockQueryResponse } from '../apollo_mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -31,8 +30,8 @@ describe('UsersChart', () => {
 
     return shallowMount(UsersChart, {
       props: {
-        startDate: useFakeDate(2020, 9, 26),
-        endDate: useFakeDate(2020, 10, 1),
+        startDate: new Date(2020, 9, 26),
+        endDate: new Date(2020, 10, 1),
         totalDataPoints: mockCountsData2.length,
       },
       localVue,

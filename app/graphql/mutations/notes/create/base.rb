@@ -25,6 +25,7 @@ module Mutations
 
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])
+          verify_rate_limit!(current_user)
 
           note = ::Notes::CreateService.new(
             noteable.project,
@@ -53,6 +54,20 @@ module Mutations
             note: args[:body],
             confidential: args[:confidential]
           }
+        end
+
+        def verify_rate_limit!(current_user)
+          return unless rate_limit_throttled?
+
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable,
+            'This endpoint has been requested too many times. Try again later.'
+        end
+
+        def rate_limit_throttled?
+          rate_limiter = ::Gitlab::ApplicationRateLimiter
+          allowlist = Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
+
+          rate_limiter.throttled?(:notes_create, scope: [current_user], users_allowlist: allowlist)
         end
       end
     end

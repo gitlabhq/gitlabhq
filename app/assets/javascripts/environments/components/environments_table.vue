@@ -5,9 +5,9 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { flow, reverse, sortBy } from 'lodash/fp';
 import { s__ } from '~/locale';
-import EnvironmentItem from './environment_item.vue';
-import DeployBoard from './deploy_board.vue';
 import CanaryUpdateModal from './canary_update_modal.vue';
+import DeployBoard from './deploy_board.vue';
+import EnvironmentItem from './environment_item.vue';
 
 export default {
   components: {
@@ -23,30 +23,10 @@ export default {
       required: true,
       default: () => [],
     },
-    deployBoardsHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     canReadEnvironment: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    helpCanaryDeploymentsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockPromotionSvgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userCalloutsPath: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   data() {
@@ -189,7 +169,6 @@ export default {
         <div class="deploy-board-container">
           <deploy-board
             :deploy-board-data="model.deployBoardData"
-            :deploy-boards-help-path="deployBoardsHelpPath"
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
             :logs-path="model.logs_path"

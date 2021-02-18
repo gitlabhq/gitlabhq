@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import LogControlButtons from '~/logs/components/log_control_buttons.vue';
 
 describe('LogControlButtons', () => {

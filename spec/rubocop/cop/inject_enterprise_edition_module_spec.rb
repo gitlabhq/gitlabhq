@@ -2,12 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/inject_enterprise_edition_module'
 
 RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'flags the use of `prepend_if_ee EE` in the middle of a file' do
@@ -185,18 +182,19 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
   end
 
   it 'autocorrects offenses by just disabling the Cop' do
-    source = <<~SOURCE
-    class Foo
-      prepend_if_ee 'EE::Foo'
-      include_if_ee 'Bar'
-    end
+    expect_offense(<<~SOURCE)
+      class Foo
+        prepend_if_ee 'EE::Foo'
+        ^^^^^^^^^^^^^^^^^^^^^^^ Injecting EE modules must be done on the last line of this file, outside of any class or module definitions
+        include_if_ee 'Bar'
+      end
     SOURCE
 
-    expect(autocorrect_source(source)).to eq(<<~SOURCE)
-    class Foo
-      prepend_if_ee 'EE::Foo' # rubocop: disable Cop/InjectEnterpriseEditionModule
-      include_if_ee 'Bar'
-    end
+    expect_correction(<<~SOURCE)
+      class Foo
+        prepend_if_ee 'EE::Foo' # rubocop: disable Cop/InjectEnterpriseEditionModule
+        include_if_ee 'Bar'
+      end
     SOURCE
   end
 

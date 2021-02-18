@@ -20,6 +20,7 @@ class GraphqlController < ApplicationController
   before_action :authorize_access_api!
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
   before_action :set_user_last_activity
+  before_action :track_vs_code_usage
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -62,6 +63,10 @@ class GraphqlController < ApplicationController
     return unless current_user
 
     Users::ActivityService.new(current_user).execute
+  end
+
+  def track_vs_code_usage
+    Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter.track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 
   def execute_multiplex

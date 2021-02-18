@@ -5,12 +5,11 @@ require 'spec_helper'
 RSpec.describe API::ProjectImport do
   include WorkhorseHelpers
 
+  include_context 'workhorse headers'
+
   let(:user) { create(:user) }
   let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
-
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
 
   before do
     namespace.add_owner(user)

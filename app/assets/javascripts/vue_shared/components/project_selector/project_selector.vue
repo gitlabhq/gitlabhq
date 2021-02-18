@@ -1,6 +1,6 @@
 <script>
-import { debounce } from 'lodash';
 import { GlLoadingIcon, GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { __, n__, sprintf } from '~/locale';
 import ProjectListItem from './project_list_item.vue';
 

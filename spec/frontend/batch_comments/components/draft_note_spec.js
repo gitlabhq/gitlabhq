@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getByRole } from '@testing-library/dom';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
@@ -21,14 +21,11 @@ describe('Batch comments draft note component', () => {
 
   const getList = () => getByRole(wrapper.element, 'list');
 
-  const createComponent = (propsData = { draft }, features = {}) => {
+  const createComponent = (propsData = { draft }) => {
     wrapper = shallowMount(localVue.extend(DraftNote), {
       store,
       propsData,
       localVue,
-      provide: {
-        glFeatures: { multilineComments: true, ...features },
-      },
     });
 
     jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation();
@@ -145,16 +142,14 @@ describe('Batch comments draft note component', () => {
 
   describe('multiline comments', () => {
     describe.each`
-      desc                          | props                 | features                        | event           | expectedCalls
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${{}}                           | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${{}}                           | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${{ multilineComments: false }} | ${'mouseenter'} | ${[]}
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${{ multilineComments: false }} | ${'mouseleave'} | ${[]}
-      ${'without `draft.position`'} | ${{}}                 | ${{}}                           | ${'mouseenter'} | ${[]}
-      ${'without `draft.position`'} | ${{}}                 | ${{}}                           | ${'mouseleave'} | ${[]}
-    `('$desc and features $features', ({ props, event, features, expectedCalls }) => {
+      desc                          | props                 | event           | expectedCalls
+      ${'with `draft.position`'}    | ${draftWithLineRange} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
+      ${'with `draft.position`'}    | ${draftWithLineRange} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
+      ${'without `draft.position`'} | ${{}}                 | ${'mouseenter'} | ${[]}
+      ${'without `draft.position`'} | ${{}}                 | ${'mouseleave'} | ${[]}
+    `('$desc', ({ props, event, expectedCalls }) => {
       beforeEach(() => {
-        createComponent({ draft: { ...draft, ...props } }, features);
+        createComponent({ draft: { ...draft, ...props } });
         jest.spyOn(store, 'dispatch');
       });
 

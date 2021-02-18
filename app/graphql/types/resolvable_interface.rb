@@ -8,7 +8,7 @@ module Types
 
     field :resolved_by, Types::UserType,
           null: true,
-          description: 'User who resolved the object'
+          description: 'User who resolved the object.'
 
     def resolved_by
       return unless object.resolved_by_id
@@ -17,12 +17,12 @@ module Types
     end
 
     field :resolved, GraphQL::BOOLEAN_TYPE, null: false,
-          description: 'Indicates if the object is resolved',
+          description: 'Indicates if the object is resolved.',
           method: :resolved?
     field :resolvable, GraphQL::BOOLEAN_TYPE, null: false,
-          description: 'Indicates if the object can be resolved',
+          description: 'Indicates if the object can be resolved.',
           method: :resolvable?
     field :resolved_at, Types::TimeType, null: true,
-          description: 'Timestamp of when the object was resolved'
+          description: 'Timestamp of when the object was resolved.'
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Fix assignee avatar alignment in edit board modal
+merge_request: 52453
+author: Yogi (@yo)
+type: fixed

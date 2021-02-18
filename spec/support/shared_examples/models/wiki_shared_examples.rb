@@ -154,6 +154,15 @@ RSpec.shared_examples 'wiki model' do
       it 'returns true' do
         expect(subject.empty?).to be(true)
       end
+
+      context 'when the repository does not exist' do
+        let(:wiki_container) { wiki_container_without_repo }
+
+        it 'returns true and does not create the repo' do
+          expect(subject.empty?).to be(true)
+          expect(wiki.repository_exists?).to be false
+        end
+      end
     end
 
     context 'when the wiki has pages' do

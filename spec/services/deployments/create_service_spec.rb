@@ -41,6 +41,27 @@ RSpec.describe Deployments::CreateService do
 
       expect(service.execute).to be_persisted
     end
+
+    context 'when the last deployment has the same parameters' do
+      let(:params) do
+        {
+          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+          ref: 'master',
+          tag: false,
+          status: 'success'
+        }
+      end
+
+      it 'does not create a new deployment' do
+        described_class.new(environment, user, params).execute
+
+        expect(Deployments::UpdateEnvironmentWorker).not_to receive(:perform_async)
+        expect(Deployments::LinkMergeRequestWorker).not_to receive(:perform_async)
+        expect(Deployments::ExecuteHooksWorker).not_to receive(:perform_async)
+
+        described_class.new(environment.reload, user, params).execute
+      end
+    end
   end
 
   describe '#deployment_attributes' do

@@ -1,13 +1,13 @@
 <script>
 import { GlAlert, GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
 import Api from '~/api';
-import Tracking from '~/tracking';
-import { __ } from '~/locale';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
-import { initialPaginationState, defaultI18n, defaultPageSize } from './constants';
-import { isAny } from './utils';
+import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import { initialPaginationState, defaultI18n, defaultPageSize } from './constants';
+import { isAny } from './utils';
 
 export default {
   defaultI18n,

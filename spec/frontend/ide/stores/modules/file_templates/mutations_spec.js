@@ -1,6 +1,6 @@
-import createState from '~/ide/stores/modules/file_templates/state';
 import * as types from '~/ide/stores/modules/file_templates/mutation_types';
 import mutations from '~/ide/stores/modules/file_templates/mutations';
+import createState from '~/ide/stores/modules/file_templates/state';
 
 const mockFileTemplates = [['MIT'], ['CC']];
 const mockTemplateType = 'test';

@@ -1,19 +1,19 @@
 import $ from 'jquery';
 
 import Api from '~/api';
-import toast from '~/vue_shared/plugins/global_toast';
-import { __ } from '~/locale';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
+import { __ } from '~/locale';
+import toast from '~/vue_shared/plugins/global_toast';
 
 import { deprecatedCreateFlash as Flash } from '../flash';
 
-import FileTemplateTypeSelector from './template_selectors/type_selector';
-import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import BlobCiSyntaxYamlSelector from './template_selectors/ci_syntax_yaml_selector';
+import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';
 import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
 import MetricsDashboardSelector from './template_selectors/metrics_dashboard_selector';
+import FileTemplateTypeSelector from './template_selectors/type_selector';
 
 export default class FileTemplateMediator {
   constructor({ editor, currentAction, projectId }) {

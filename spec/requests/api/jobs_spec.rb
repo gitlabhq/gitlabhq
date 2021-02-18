@@ -17,7 +17,7 @@ RSpec.describe API::Jobs do
   end
 
   let!(:job) do
-    create(:ci_build, :success, pipeline: pipeline,
+    create(:ci_build, :success, :tags, pipeline: pipeline,
                                 artifacts_expire_at: 1.day.since)
   end
 
@@ -50,6 +50,7 @@ RSpec.describe API::Jobs do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
         expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
+        expect(json_response.first['tag_list'].sort).to eq job.tag_list.sort
       end
 
       context 'without artifacts and trace' do

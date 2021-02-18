@@ -1,5 +1,5 @@
-import mutations from '~/projects/commit/store/mutations';
 import * as types from '~/projects/commit/store/mutation_types';
+import mutations from '~/projects/commit/store/mutations';
 
 describe('Commit form modal mutations', () => {
   let stateCopy;

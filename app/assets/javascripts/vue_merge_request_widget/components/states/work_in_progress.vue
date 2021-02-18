@@ -1,17 +1,17 @@
 <script>
-import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
-import { __ } from '~/locale';
+import $ from 'jquery';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { __ } from '~/locale';
 import MergeRequest from '~/merge_request';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
 import workInProgressQuery from '../../queries/states/work_in_progress.query.graphql';
 import removeWipMutation from '../../queries/toggle_wip.mutation.graphql';
 import StatusIcon from '../mr_widget_status_icon.vue';
-import eventHub from '../../event_hub';
 
 export default {
   name: 'WorkInProgress',

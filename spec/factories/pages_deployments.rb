@@ -4,12 +4,20 @@ FactoryBot.define do
   factory :pages_deployment, class: 'PagesDeployment' do
     project
 
-    after(:build) do |deployment, _evaluator|
-      filepath = Rails.root.join("spec/fixtures/pages.zip")
+    transient do
+      filename { nil }
+    end
 
-      deployment.file = fixture_file_upload(filepath)
-      deployment.file_sha256 = Digest::SHA256.file(filepath).hexdigest
-      ::Zip::File.open(filepath) do |zip_archive|
+    trait(:migrated) do
+      filename { PagesDeployment::MIGRATED_FILE_NAME }
+    end
+
+    after(:build) do |deployment, evaluator|
+      file = UploadedFile.new("spec/fixtures/pages.zip", filename: evaluator.filename)
+
+      deployment.file = file
+      deployment.file_sha256 = Digest::SHA256.file(file.path).hexdigest
+      ::Zip::File.open(file.path) do |zip_archive|
         deployment.file_count = zip_archive.count
       end
     end

@@ -6,9 +6,9 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlIcon,
 } from '@gitlab/ui';
-import UserAvailabilityStatus from '~/set_status_modal/components/user_availability_status.vue';
-import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '../../../emoji';
+import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 
 const MAX_SKELETON_LINES = 4;
 
@@ -26,7 +26,7 @@ export default {
     GlPopover,
     GlSkeletonLoading,
     UserAvatarImage,
-    UserAvailabilityStatus,
+    UserNameWithStatus,
   },
   props: {
     target: {
@@ -66,7 +66,7 @@ export default {
       );
     },
     availabilityStatus() {
-      return this.user?.status?.availability || null;
+      return this.user?.status?.availability || '';
     },
   },
 };
@@ -93,11 +93,7 @@ export default {
         <template v-else>
           <div class="gl-mb-3">
             <h5 class="gl-m-0">
-              {{ user.name }}
-              <user-availability-status
-                v-if="availabilityStatus"
-                :availability="availabilityStatus"
-              />
+              <user-name-with-status :name="user.name" :availability="availabilityStatus" />
             </h5>
             <span class="gl-text-gray-500">@{{ user.username }}</span>
           </div>

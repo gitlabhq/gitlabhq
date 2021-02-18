@@ -1,0 +1,5 @@
+---
+title: Fix left margin of Merge button in FF merge mode
+merge_request: 53756
+author:
+type: fixed

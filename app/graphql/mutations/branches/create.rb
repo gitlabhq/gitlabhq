@@ -3,7 +3,7 @@
 module Mutations
   module Branches
     class Create < BaseMutation
-      include ResolvesProject
+      include FindsProject
 
       graphql_name 'CreateBranch'
 
@@ -28,7 +28,7 @@ module Mutations
       authorize :push_code
 
       def resolve(project_path:, name:, ref:)
-        project = authorized_find!(full_path: project_path)
+        project = authorized_find!(project_path)
 
         context.scoped_set!(:branch_project, project)
 
@@ -39,12 +39,6 @@ module Mutations
           branch: (result[:branch] if result[:status] == :success),
           errors: Array.wrap(result[:message])
         }
-      end
-
-      private
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
       end
     end
   end

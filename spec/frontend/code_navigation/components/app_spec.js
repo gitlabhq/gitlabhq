@@ -1,8 +1,8 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import createState from '~/code_navigation/store/state';
+import Vuex from 'vuex';
 import App from '~/code_navigation/components/app.vue';
 import Popover from '~/code_navigation/components/popover.vue';
+import createState from '~/code_navigation/store/state';
 
 const localVue = createLocalVue();
 const fetchData = jest.fn();

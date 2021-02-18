@@ -1,10 +1,10 @@
 <script>
-import { isNil } from 'lodash';
-import $ from 'jquery';
 import { GlIcon } from '@gitlab/ui';
-import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
+import $ from 'jquery';
+import { isNil } from 'lodash';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
+import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
+import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 
 const toArray = (value) => (isNil(value) ? [] : [].concat(value));
 const itemsProp = (items, prop) => items.map((item) => item[prop]);

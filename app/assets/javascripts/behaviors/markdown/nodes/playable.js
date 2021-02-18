@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @gitlab/require-i18n-strings */
 
-import { Node } from 'tiptap';
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { Node } from 'tiptap';
 import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 /**

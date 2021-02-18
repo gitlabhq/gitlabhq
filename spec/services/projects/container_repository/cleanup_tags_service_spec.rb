@@ -284,7 +284,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
             deleted: nil
           )
 
-          expect(result).to eq(service_response.compact)
+          expect(result).to eq(service_response)
         end
       end
 
@@ -369,6 +369,6 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
       before_truncate_size: before_truncate_size,
       after_truncate_size: after_truncate_size,
       before_delete_size: before_delete_size
-    }.compact
+    }.compact.merge(deleted_size: deleted&.size)
   end
 end

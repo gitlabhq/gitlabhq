@@ -1,8 +1,8 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
+import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {

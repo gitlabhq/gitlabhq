@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def bullet_enabled?
   Gitlab::Utils.to_boolean(ENV['ENABLE_BULLET'].to_s)
 end

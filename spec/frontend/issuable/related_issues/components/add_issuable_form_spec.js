@@ -1,6 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { issuableTypesMap, linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
+import { issuableTypesMap, linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
 
 const issuable1 = {
   id: 200,

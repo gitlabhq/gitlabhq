@@ -1,4 +1,5 @@
 /* global $ */
+/* eslint-disable import/order */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
@@ -12,6 +13,12 @@ import './behaviors';
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
+import * as popovers from '~/popovers';
+import * as tooltips from '~/tooltips';
+import initAlertHandler from './alert_handler';
+import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
+import initTodoToggle from './header';
+import initLayoutNav from './layout_nav';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -21,25 +28,18 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
-import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
-import initTodoToggle from './header';
-import initLayoutNav from './layout_nav';
-import initAlertHandler from './alert_handler';
-import './feature_highlight/feature_highlight_options';
+import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
+import { __ } from './locale';
 import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
+import initPersistentUserCallouts from './persistent_user_callouts';
+import { initUserTracking, initDefaultTrackers } from './tracking';
 import initUsagePingConsent from './usage_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
-import initPersistentUserCallouts from './persistent_user_callouts';
-import { initUserTracking, initDefaultTrackers } from './tracking';
-import { __ } from './locale';
-
-import * as tooltips from '~/tooltips';
-import * as popovers from '~/popovers';
 
 import 'ee_else_ce/main_ee';
 
@@ -72,7 +72,7 @@ if (gon?.disable_animations) {
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
   disableJQueryAnimations();
-  import(/* webpackMode: "eager" */ './test_utils/'); // eslint-disable-line no-unused-expressions
+  import(/* webpackMode: "eager" */ './test_utils/');
 }
 
 document.addEventListener('beforeunload', () => {
@@ -115,6 +115,7 @@ function deferredInitialisation() {
   initFrequentItemDropdowns();
   initPersistentUserCallouts();
   initDefaultTrackers();
+  initFeatureHighlight();
 
   const search = document.querySelector('#search');
   if (search) {

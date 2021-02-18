@@ -8,6 +8,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   describe 'associations' do
     it { is_expected.to belong_to(:last_pipeline) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
   end
 
   describe 'validations' do
@@ -83,8 +84,9 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   end
 
   describe 'scopes' do
-    let_it_be(:project) { create(:project) }
-    let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project, group: group) }
     let(:old_build_group_report_result) do
       create(:ci_daily_build_group_report_result, date: 1.week.ago, project: project)
     end
@@ -94,6 +96,43 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
 
       it 'returns records by projects' do
         expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.by_group' do
+      subject { described_class.by_group(group) }
+
+      it 'returns records by group' do
+        expect(subject).to contain_exactly(recent_build_group_report_result)
+      end
+    end
+
+    describe '.by_ref_path' do
+      subject(:coverages) { described_class.by_ref_path(recent_build_group_report_result.ref_path) }
+
+      it 'returns coverages by ref_path' do
+        expect(coverages).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.ordered_by_date_and_group_name' do
+      subject(:coverages) { described_class.ordered_by_date_and_group_name }
+
+      it 'returns coverages ordered by data and group name' do
+        expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.by_dates' do
+      subject(:coverages) { described_class.by_dates(start_date, end_date) }
+
+      context 'when daily coverages exist during those dates' do
+        let(:start_date) { 1.day.ago.to_date.to_s }
+        let(:end_date) { Date.current.to_s }
+
+        it 'returns coverages' do
+          expect(coverages).to contain_exactly(recent_build_group_report_result)
+        end
       end
     end
 

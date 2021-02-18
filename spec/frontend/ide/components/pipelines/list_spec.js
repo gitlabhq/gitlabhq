@@ -1,13 +1,13 @@
+import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import { pipelines } from 'jest/ide/mock_data';
-import List from '~/ide/components/pipelines/list.vue';
 import JobsList from '~/ide/components/jobs/list.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import List from '~/ide/components/pipelines/list.vue';
 import IDEServices from '~/ide/services';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 Vue.use(Vuex);
 

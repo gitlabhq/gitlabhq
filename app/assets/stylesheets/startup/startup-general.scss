@@ -736,7 +736,6 @@ body {
   white-space: nowrap;
 }
 .btn:active, .btn.active {
-  box-shadow: rgba(0, 0, 0, 0.16);
   background-color: #eaeaea;
   border-color: #e3e3e3;
   color: #303030;
@@ -903,7 +902,7 @@ table a code {
   padding: 0;
   background-color: #dbdbdb;
 }
-.dropdown-menu .badge.badge-pill + span:not(.badge.badge-pill) {
+.dropdown-menu .badge.badge-pill + span:not(.badge):not(.badge-pill) {
   margin-right: 40px;
 }
 .dropdown-select {

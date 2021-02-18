@@ -1,6 +1,6 @@
+import { GlFilteredSearch } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlFilteredSearch } from '@gitlab/ui';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';

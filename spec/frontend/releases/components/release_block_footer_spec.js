@@ -1,26 +1,16 @@
-import { mount } from '@vue/test-utils';
 import { GlLink, GlIcon } from '@gitlab/ui';
-import { trimText } from 'helpers/text_helper';
-import { getJSONFixture } from 'helpers/fixtures';
+import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
+import { getJSONFixture } from 'helpers/fixtures';
+import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 
-const mockFutureDate = new Date(9999, 0, 0).toISOString();
-let mockIsFutureRelease = false;
-
-jest.mock('~/vue_shared/mixins/timeago', () => ({
-  methods: {
-    timeFormatted() {
-      return mockIsFutureRelease ? 'in 1 month' : '7 fortnights ago';
-    },
-    tooltipTitle() {
-      return 'February 30, 2401';
-    },
-  },
-}));
+// TODO: Encapsulate date helpers https://gitlab.com/gitlab-org/gitlab/-/issues/320883
+const MONTHS_IN_MS = 1000 * 60 * 60 * 24 * 31;
+const mockFutureDate = new Date(new Date().getTime() + MONTHS_IN_MS).toISOString();
 
 describe('Release block footer', () => {
   let wrapper;
@@ -44,7 +34,6 @@ describe('Release block footer', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    mockIsFutureRelease = false;
   });
 
   const commitInfoSection = () => wrapper.find('.js-commit-info');
@@ -88,7 +77,7 @@ describe('Release block footer', () => {
 
     it('renders the author and creation time info', () => {
       expect(trimText(authorDateInfoSection().text())).toBe(
-        `Created 7 fortnights ago by ${release.author.username}`,
+        `Created 1 year ago by ${release.author.username}`,
       );
     });
 
@@ -100,7 +89,6 @@ describe('Release block footer', () => {
 
     describe('renders the author and creation time info with future release date', () => {
       beforeEach(() => {
-        mockIsFutureRelease = true;
         factory({ releasedAt: mockFutureDate });
       });
 
@@ -113,7 +101,6 @@ describe('Release block footer', () => {
 
     describe('when the release date is in the future', () => {
       beforeEach(() => {
-        mockIsFutureRelease = true;
         factory({ releasedAt: mockFutureDate });
       });
 
@@ -177,13 +164,12 @@ describe('Release block footer', () => {
     beforeEach(() => factory({ author: undefined }));
 
     it('renders the release date without the author name', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe(`Created 7 fortnights ago`);
+      expect(trimText(authorDateInfoSection().text())).toBe(`Created 1 year ago`);
     });
   });
 
   describe('future release without any author info', () => {
     beforeEach(() => {
-      mockIsFutureRelease = true;
       factory({ author: undefined, releasedAt: mockFutureDate });
     });
 

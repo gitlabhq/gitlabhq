@@ -7,8 +7,14 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     context 'when the requesting token has the "api" scope' do
       let(:token) { create(:personal_access_token, scopes: ['api'], user: user) }
 
-      it 'returns a "200" response' do
+      it 'returns a "200" response on get request' do
         get api_call.call(path, user, personal_access_token: token, version: version)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns a "200" response on head request' do
+        head api_call.call(path, user, personal_access_token: token, version: version)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -17,8 +23,14 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     context 'when the requesting token has the "read_user" scope' do
       let(:token) { create(:personal_access_token, scopes: ['read_user'], user: user) }
 
-      it 'returns a "200" response' do
+      it 'returns a "200" response on get request' do
         get api_call.call(path, user, personal_access_token: token, version: version)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns a "200" response on head request' do
+        head api_call.call(path, user, personal_access_token: token, version: version)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -45,8 +57,14 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     context 'when the requesting token has the "api" scope' do
       let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }
 
-      it 'returns a "200" response' do
+      it 'returns a "200" response on get request' do
         get api_call.call(path, user, oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns a "200" response on head request' do
+        head api_call.call(path, user, oauth_access_token: token)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -55,8 +73,14 @@ RSpec.shared_examples 'allows the "read_user" scope' do |api_version|
     context 'when the requesting token has the "read_user" scope' do
       let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "read_user" }
 
-      it 'returns a "200" response' do
+      it 'returns a "200" response on get request' do
         get api_call.call(path, user, oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns a "200" response on head request' do
+        head api_call.call(path, user, oauth_access_token: token)
 
         expect(response).to have_gitlab_http_status(:ok)
       end

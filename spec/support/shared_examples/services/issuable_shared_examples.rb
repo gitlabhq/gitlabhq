@@ -18,6 +18,27 @@ RSpec.shared_examples 'updating a single task' do
     update_issuable(description: "- [ ] Task 1\n- [ ] Task 2")
   end
 
+  context 'usage counters' do
+    it 'update as expected' do
+      if try(:merge_request)
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_task_item_status_changed).once.with(user: user)
+      else
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_task_item_status_changed)
+      end
+
+      update_issuable(
+        update_task: {
+          index: 1,
+          checked: true,
+          line_source: '- [ ] Task 1',
+          line_number: 1
+        }
+      )
+    end
+  end
+
   context 'when a task is marked as completed' do
     before do
       update_issuable(update_task: { index: 1, checked: true, line_source: '- [ ] Task 1', line_number: 1 })

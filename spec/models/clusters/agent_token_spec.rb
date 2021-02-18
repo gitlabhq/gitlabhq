@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Clusters::AgentToken do
   it { is_expected.to belong_to(:agent).class_name('Clusters::Agent') }
+  it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
 
   describe '#token' do
     it 'is generated on save' do

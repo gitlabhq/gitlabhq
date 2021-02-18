@@ -85,38 +85,36 @@ export default {
 
 <template>
   <gl-modal ref="modal" modal-id="delete-user-modal" :title="modalTitle" kind="danger">
-    <template>
-      <p>
-        <gl-sprintf :message="content">
-          <template #username>
-            <strong>{{ username }}</strong>
-          </template>
-          <template #strong="props">
-            <strong>{{ props.content }}</strong>
-          </template>
-        </gl-sprintf>
-      </p>
+    <p>
+      <gl-sprintf :message="content">
+        <template #username>
+          <strong>{{ username }}</strong>
+        </template>
+        <template #strong="props">
+          <strong>{{ props.content }}</strong>
+        </template>
+      </gl-sprintf>
+    </p>
 
-      <p>
-        <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
-          <template #username>
-            <code>{{ username }}</code>
-          </template>
-        </gl-sprintf>
-      </p>
+    <p>
+      <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
+        <template #username>
+          <code>{{ username }}</code>
+        </template>
+      </gl-sprintf>
+    </p>
 
-      <form ref="form" :action="deleteUserUrl" method="post" @submit.prevent>
-        <input ref="method" type="hidden" name="_method" value="delete" />
-        <input :value="csrfToken" type="hidden" name="authenticity_token" />
-        <gl-form-input
-          v-model="enteredUsername"
-          autofocus
-          type="text"
-          name="username"
-          autocomplete="off"
-        />
-      </form>
-    </template>
+    <form ref="form" :action="deleteUserUrl" method="post" @submit.prevent>
+      <input ref="method" type="hidden" name="_method" value="delete" />
+      <input :value="csrfToken" type="hidden" name="authenticity_token" />
+      <gl-form-input
+        v-model="enteredUsername"
+        autofocus
+        type="text"
+        name="username"
+        autocomplete="off"
+      />
+    </form>
     <template #modal-footer>
       <gl-button @click="onCancel">{{ s__('Cancel') }}</gl-button>
       <gl-button

@@ -6,8 +6,8 @@
 import axios from '~/lib/utils/axios_utils';
 import './label';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
+import IssueProject from './project';
 
 class ListIssue {
   constructor(obj) {
@@ -51,6 +51,10 @@ class ListIssue {
 
   findAssignee(findAssignee) {
     return boardsStore.findIssueAssignee(this, findAssignee);
+  }
+
+  setAssignees(assignees) {
+    boardsStore.setIssueAssignees(this, assignees);
   }
 
   removeAssignee(removeAssignee) {

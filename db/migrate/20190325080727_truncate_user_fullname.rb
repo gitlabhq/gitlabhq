@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Migration/UpdateLargeTable
 class TruncateUserFullname < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers

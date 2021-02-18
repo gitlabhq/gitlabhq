@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gitlab/testing/request_blocker_middleware'
 require 'gitlab/testing/robots_blocker_middleware'
 require 'gitlab/testing/request_inspector_middleware'

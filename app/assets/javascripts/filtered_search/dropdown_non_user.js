@@ -1,9 +1,9 @@
-import { deprecatedCreateFlash as Flash } from '../flash';
+import { __ } from '~/locale';
 import Ajax from '../droplab/plugins/ajax';
 import Filter from '../droplab/plugins/filter';
-import FilteredSearchDropdown from './filtered_search_dropdown';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import DropdownUtils from './dropdown_utils';
-import { __ } from '~/locale';
+import FilteredSearchDropdown from './filtered_search_dropdown';
 
 export default class DropdownNonUser extends FilteredSearchDropdown {
   constructor(options = {}) {

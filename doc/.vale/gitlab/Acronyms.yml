@@ -27,6 +27,8 @@ exceptions:
   - CNA
   - CNAME
   - CORE
+  - CVS
+  - FREE
   - CPU
   - CRIME
   - CSRF
@@ -41,12 +43,14 @@ exceptions:
   - DSA
   - DVCS
   - ECDSA
+  - EFS
   - EKS
   - EOL
   - EXIF
   - FAQ
   - FOSS
   - FQDN
+  - FREE
   - GCP
   - GDK
   - GDPR
@@ -90,7 +94,6 @@ exceptions:
   - NFS
   - NGINX
   - NOTE
-  - NPM
   - NTP
   - ONLY
   - OWASP
@@ -116,11 +119,13 @@ exceptions:
   - RSS
   - RVM
   - SAML
+  - SAAS
   - SAST
   - SCIM
   - SCP
   - SCSS
   - SDK
+  - SELF
   - SEO
   - SHA
   - SLA
@@ -128,6 +133,7 @@ exceptions:
   - SMTP
   - SOC
   - SOX
+  - SPDX
   - SPF
   - SQL
   - SSD
@@ -138,11 +144,14 @@ exceptions:
   - SVG
   - SVN
   - TCP
+  - TIFF
   - TIP
   - TLD
   - TLS
   - TODO
   - TOML
+  - TTL
+  - UDP
   - UNIX
   - URI
   - URL
@@ -157,3 +166,5 @@ exceptions:
   - XML
   - XSS
   - YAML
+  - ZAP
+  - ZIP

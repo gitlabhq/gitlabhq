@@ -2,9 +2,7 @@
 
 module Boards
   class ListService < Boards::BaseService
-    def execute(create_default_board: true)
-      create_board! if create_default_board && parent.boards.empty?
-
+    def execute
       find_boards
     end
 
@@ -16,10 +14,6 @@ module Boards
 
     def first_board
       parent.boards.first_board
-    end
-
-    def create_board!
-      Boards::CreateService.new(parent, current_user).execute
     end
 
     def find_boards

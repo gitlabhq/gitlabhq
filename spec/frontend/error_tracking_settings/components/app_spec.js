@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import ErrorTrackingSettings from '~/error_tracking_settings/components/app.vue';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';

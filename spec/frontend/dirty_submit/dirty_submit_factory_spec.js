@@ -1,6 +1,6 @@
+import DirtySubmitCollection from '~/dirty_submit/dirty_submit_collection';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
-import DirtySubmitCollection from '~/dirty_submit/dirty_submit_collection';
 import { createForm } from './helper';
 
 describe('DirtySubmitCollection', () => {

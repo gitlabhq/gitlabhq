@@ -1,21 +1,19 @@
 <script>
-import { s__ } from '~/locale';
-import { fetchPolicies } from '~/lib/graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
-import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
+import { fetchPolicies } from '~/lib/graphql';
+import { s__ } from '~/locale';
+import { typeSet } from '../constants';
 import createHttpIntegrationMutation from '../graphql/mutations/create_http_integration.mutation.graphql';
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
-import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
-import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
 import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import updateCurrentIntergrationMutation from '../graphql/mutations/update_current_intergration.mutation.graphql';
-import IntegrationsList from './alerts_integrations_list.vue';
-import AlertSettingsForm from './alerts_settings_form.vue';
+import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
+import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
+import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
+import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
 import service from '../services';
-import { typeSet } from '../constants';
 import {
   updateStoreAfterIntegrationDelete,
   updateStoreAfterIntegrationAdd,
@@ -27,6 +25,8 @@ import {
   UPDATE_INTEGRATION_ERROR,
   INTEGRATION_PAYLOAD_TEST_ERROR,
 } from '../utils/error_messages';
+import IntegrationsList from './alerts_integrations_list.vue';
+import AlertSettingsForm from './alerts_settings_form.vue';
 
 export default {
   typeSet,
@@ -55,6 +55,13 @@ export default {
     },
     multiIntegrations: {
       default: false,
+    },
+  },
+  props: {
+    alertFields: {
+      type: Array,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -312,6 +319,7 @@ export default {
     <alert-settings-form
       :loading="isUpdating"
       :can-add-integration="canAddIntegration"
+      :alert-fields="alertFields"
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"
       @reset-token="resetToken"

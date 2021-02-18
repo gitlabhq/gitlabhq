@@ -206,6 +206,9 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
     # `markdown` helper expects a `@project` and `@group` variable
     @project = @feat.project
     @group = @feat.group
+
+    stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
+    stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
   end
 
   let(:project) { @feat.project } # Shadow this so matchers can use it
@@ -264,6 +267,18 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures 'ColorFilter' do
         expect(doc).to parse_colors
+      end
+
+      aggregate_failures 'MermaidFilter' do
+        expect(doc).to parse_mermaid
+      end
+
+      aggregate_failures 'PlantumlFilter' do
+        expect(doc).to parse_plantuml
+      end
+
+      aggregate_failures 'KrokiFilter' do
+        expect(doc).to parse_kroki
       end
     end
   end
@@ -337,6 +352,18 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures 'ColorFilter' do
         expect(doc).to parse_colors
+      end
+
+      aggregate_failures 'MermaidFilter' do
+        expect(doc).to parse_mermaid
+      end
+
+      aggregate_failures 'PlantumlFilter' do
+        expect(doc).to parse_plantuml
+      end
+
+      aggregate_failures 'KrokiFilter' do
+        expect(doc).to parse_kroki
       end
     end
   end

@@ -402,6 +402,40 @@ entry.
 - Add verbiage + link sast to show it's in core. !51935
 
 
+## 13.7.7 (2021-02-11)
+
+### Security (9 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Prevent Denial of Service Attack on gitlab-shell.
+- Prevent exposure of confidential issue titles in file browser.
+- Updates authorization for linting API.
+- Check user access on API merge request read actions.
+- Limit daily invitations to groups and projects.
+- Enforce the analytics enabled project setting for project-level analytics features.
+- Perform SSL verification for FortiTokenCloud Integration.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
+
+
+## 13.7.6 (2021-02-01)
+
+### Security (5 changes)
+
+- Filter sensitive GraphQL variables from logs.
+- Avoid exposing release links when the user cannot read git-tag/repository.
+- Sanitize target branch on MR page.
+- Fix DNS rebinding protection bypass when allowing an IP address in Outbound Requests setting.
+- Add routes for unmatched url for not-get requests.
+
+
+## 13.7.5 (2021-01-25)
+
+### Fixed (2 changes, 1 of them is from the community)
+
+- New project guidelines are no longer displayed. !50736 (Roger Meier)
+- Fix LFS not working with S3 specific-storage settings. !52296
+
+
 ## 13.7.4 (2021-01-13)
 
 ### Security (1 change)
@@ -902,6 +936,30 @@ entry.
 - Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb. !50059
 - Replace spec/controllers/ide_controller_spec.rb with request spec. !50075 (Takuya Noguchi)
 - Update GitLab Workhorse to v8.57.0.
+
+
+## 13.6.7 (2021-02-11)
+
+### Security (7 changes)
+
+- Cancel running and pending jobs when a project is deleted. !1220
+- Updates authorization for linting API.
+- Prevent exposure of confidential issue titles in file browser.
+- Check user access on API merge request read actions.
+- Prevent Denial of Service Attack on gitlab-shell.
+- Limit daily invitations to groups and projects.
+- Prevent Server-side Request Forgery for Prometheus when secured by Google IAP.
+
+
+## 13.6.6 (2021-02-01)
+
+### Security (5 changes)
+
+- Filter sensitive GraphQL variables from logs.
+- Avoid exposing release links when the user cannot read git-tag/repository.
+- Sanitize target branch on MR page.
+- Fix DNS rebinding protection bypass when allowing an IP address in Outbound Requests setting.
+- Add routes for unmatched url for not-get requests.
 
 
 ## 13.6.5 (2021-01-13)

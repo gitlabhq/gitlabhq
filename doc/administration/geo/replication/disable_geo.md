@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disabling Geo **(PREMIUM ONLY)**
+# Disabling Geo **(PREMIUM SELF)**
 
 If you want to revert to a regular Omnibus setup after a test, or you have encountered a Disaster Recovery
 situation and you want to disable Geo momentarily, you can use these instructions to disable your

@@ -20,7 +20,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/merge_requests/getting_started#reviewer
   image_url: https://about.gitlab.com/images/13_7/reviewers_sidebar.png
   published_at: 2020-12-22
@@ -33,13 +33,13 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/quick_actions.html
   image_url: https://about.gitlab.com/images/13_7/clone_issue_with_quick_action.png
   published_at: 2020-12-22
   release: 13.7
 - title: GitLab Runner for Red Hat OpenShift
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   self-managed: true
   gitlab-com: true
   url: 'https://docs.gitlab.com/runner/install/openshift.html'

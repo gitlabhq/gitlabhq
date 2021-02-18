@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
-import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;

@@ -1,10 +1,10 @@
 import testAction from 'helpers/vuex_action_helper';
 import { userList } from 'jest/feature_flags/mock_data';
 import Api from '~/api';
-import { stringifyUserIds } from '~/user_lists/store/utils';
-import createState from '~/user_lists/store/show/state';
-import * as types from '~/user_lists/store/show/mutation_types';
 import * as actions from '~/user_lists/store/show/actions';
+import * as types from '~/user_lists/store/show/mutation_types';
+import createState from '~/user_lists/store/show/state';
+import { stringifyUserIds } from '~/user_lists/store/utils';
 
 jest.mock('~/api');
 

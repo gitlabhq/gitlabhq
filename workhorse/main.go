@@ -16,6 +16,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/errortracker"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
@@ -156,6 +157,8 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 	defer closer.Close()
 
+	errortracker.Initialize(cfg.Version)
+
 	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
 	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")
 
@@ -223,7 +226,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 	defer accessCloser.Close()
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger))
+	up := upstream.NewUpstream(cfg, accessLogger)
 
 	go func() { finalErrors <- http.Serve(listener, up) }()
 

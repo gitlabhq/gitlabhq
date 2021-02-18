@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ArtifactsList from '~/vue_merge_request_widget/components/artifacts_list.vue';
 import { artifacts } from '../mock_data';
 

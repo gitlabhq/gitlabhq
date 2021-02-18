@@ -48,6 +48,7 @@ module Gitlab
 
         def probe_readiness
           checks
+            .select(&:available?)
             .flat_map(&:readiness)
             .compact
             .group_by(&:name)

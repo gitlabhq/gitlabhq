@@ -1,8 +1,0 @@
----
-name: track_issue_activity_actions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40904
-rollout_issue_url: 
-milestone: '13.4'
-type: development
-group: group::project management
-default_enabled: true

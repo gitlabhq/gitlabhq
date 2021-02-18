@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import Translate from '~/vue_shared/translate';
+import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
-import RegistryExplorer from './pages/index.vue';
+import Translate from '~/vue_shared/translate';
 import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
-import createRouter from './router';
 import { apolloProvider } from './graphql/index';
+import RegistryExplorer from './pages/index.vue';
+import createRouter from './router';
 
 Vue.use(Translate);
 Vue.use(GlToast);
@@ -29,7 +29,14 @@ export default () => {
     return null;
   }
 
-  const { endpoint, expirationPolicy, isGroupPage, isAdmin, ...config } = el.dataset;
+  const {
+    endpoint,
+    expirationPolicy,
+    isGroupPage,
+    isAdmin,
+    showUnfinishedTagCleanupCallout,
+    ...config
+  } = el.dataset;
 
   // This is a mini state to help the breadcrumb have the correct name in the details page
   const breadCrumbState = Vue.observable({
@@ -57,6 +64,7 @@ export default () => {
             expirationPolicy: expirationPolicy ? JSON.parse(expirationPolicy) : undefined,
             isGroupPage: parseBoolean(isGroupPage),
             isAdmin: parseBoolean(isAdmin),
+            showUnfinishedTagCleanupCallout: parseBoolean(showUnfinishedTagCleanupCallout),
           },
           /* eslint-disable @gitlab/require-i18n-strings */
           dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,

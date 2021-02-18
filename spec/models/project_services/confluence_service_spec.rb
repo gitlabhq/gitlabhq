@@ -43,13 +43,13 @@ RSpec.describe ConfluenceService do
     end
   end
 
-  describe '#detailed_description' do
+  describe '#help' do
     it 'can correctly return a link to the project wiki when active' do
       project = create(:project)
       subject.project = project
       subject.active = true
 
-      expect(subject.detailed_description).to include(Gitlab::Routing.url_helpers.project_wikis_url(project))
+      expect(subject.help).to include(Gitlab::Routing.url_helpers.project_wikis_url(project))
     end
 
     context 'when the project wiki is not enabled' do
@@ -60,7 +60,7 @@ RSpec.describe ConfluenceService do
         [true, false].each do |active|
           subject.active = active
 
-          expect(subject.detailed_description).to be_nil
+          expect(subject.help).to be_nil
         end
       end
     end

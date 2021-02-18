@@ -1,5 +1,5 @@
-import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { __ } from '~/locale';
 import { getBinary } from './services/image_service';
 
 const imageRepository = () => {

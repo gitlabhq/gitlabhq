@@ -1,9 +1,10 @@
 <script>
 import { mapState } from 'vuex';
-import DetailRow from './sidebar_detail_row.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import DetailRow from './sidebar_detail_row.vue';
 
 export default {
   name: 'JobSidebarDetailsContainer',
@@ -11,13 +12,6 @@ export default {
     DetailRow,
   },
   mixins: [timeagoMixin],
-  props: {
-    runnerHelpUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   computed: {
     ...mapState(['job']),
     coverage() {
@@ -50,6 +44,11 @@ export default {
     },
     queued() {
       return timeIntervalInWords(this.job.queued);
+    },
+    runnerHelpUrl() {
+      return helpPagePath('ci/runners/README.html', {
+        anchor: 'set-maximum-job-timeout-for-a-runner',
+      });
     },
     runnerId() {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
@@ -96,7 +95,12 @@ export default {
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
       <span class="font-weight-bold">{{ __('Tags:') }}</span>
-      <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary mr-1">{{ tag }}</span>
+      <span
+        v-for="(tag, i) in job.tags"
+        :key="i"
+        class="badge badge-pill badge-primary gl-badge sm"
+        >{{ tag }}</span
+      >
     </p>
   </div>
 </template>

@@ -1,15 +1,15 @@
-import { mount } from '@vue/test-utils';
 import {
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
   GlFilteredSearchTokenSegment,
   GlDropdownDivider,
 } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import createFlash from '~/flash';
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 

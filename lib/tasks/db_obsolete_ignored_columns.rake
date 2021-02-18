@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Show a list of obsolete `ignored_columns`'
 task 'db:obsolete_ignored_columns' => :environment do
   list = Gitlab::Database::ObsoleteIgnoredColumns.new.execute

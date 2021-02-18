@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trimText } from 'helpers/text_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
 import { mockProject } from '../mock_data';

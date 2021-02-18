@@ -26,6 +26,7 @@ module API
       %i[
         assignee_id
         assignee_ids
+        reviewer_ids
         description
         labels
         add_labels
@@ -160,7 +161,8 @@ module API
       helpers do
         params :optional_params do
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
-          optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
+          optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Comma-separated list of assignee ids'
+          optional :reviewer_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Comma-separated list of reviewer ids'
           optional :description, type: String, desc: 'The description of the merge request'
           optional :labels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
           optional :add_labels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
@@ -368,7 +370,7 @@ module API
           with: Entities::MergeRequestChanges,
           current_user: current_user,
           project: user_project,
-          access_raw_diffs: params.fetch(:access_raw_diffs, false)
+          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false))
       end
 
       desc 'Get the merge request pipelines' do

@@ -6,7 +6,7 @@ RSpec.describe 'Projects settings' do
   let_it_be(:project) { create(:project) }
   let(:user) { project.owner }
   let(:panel) { find('.general-settings', match: :first) }
-  let(:button) { panel.find('.btn.js-settings-toggle') }
+  let(:button) { panel.find('.btn.gl-button.js-settings-toggle') }
   let(:title) { panel.find('.settings-title') }
 
   before do
@@ -39,7 +39,7 @@ RSpec.describe 'Projects settings' do
       visit edit_project_path(project)
 
       forking_enabled_input = find('input[name="project[project_feature_attributes][forking_access_level]"]', visible: :hidden)
-      forking_enabled_button = find('input[name="project[project_feature_attributes][forking_access_level]"] + label > button')
+      forking_enabled_button = find('[data-for="project[project_feature_attributes][forking_access_level]"] .gl-toggle')
 
       expect(forking_enabled_input.value).to eq('20')
 

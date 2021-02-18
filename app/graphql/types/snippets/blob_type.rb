@@ -9,53 +9,53 @@ module Types
       present_using SnippetBlobPresenter
 
       field :rich_data, GraphQL::STRING_TYPE,
-            description: 'Blob highlighted data',
+            description: 'Blob highlighted data.',
             null: true
 
       field :plain_data, GraphQL::STRING_TYPE,
-            description: 'Blob plain highlighted data',
+            description: 'Blob plain highlighted data.',
             calls_gitaly: true,
             null: true
 
       field :raw_path, GraphQL::STRING_TYPE,
-            description: 'Blob raw content endpoint path',
+            description: 'Blob raw content endpoint path.',
             null: false
 
       field :size, GraphQL::INT_TYPE,
-            description: 'Blob size',
+            description: 'Blob size.',
             null: false
 
       field :binary, GraphQL::BOOLEAN_TYPE,
-            description: 'Shows whether the blob is binary',
+            description: 'Shows whether the blob is binary.',
             method: :binary?,
             null: false
 
       field :name, GraphQL::STRING_TYPE,
-            description: 'Blob name',
+            description: 'Blob name.',
             null: true
 
       field :path, GraphQL::STRING_TYPE,
-            description: 'Blob path',
+            description: 'Blob path.',
             null: true
 
       field :simple_viewer, type: Types::Snippets::BlobViewerType,
-            description: 'Blob content simple viewer',
+            description: 'Blob content simple viewer.',
             null: false
 
       field :rich_viewer, type: Types::Snippets::BlobViewerType,
-            description: 'Blob content rich viewer',
+            description: 'Blob content rich viewer.',
             null: true
 
       field :mode, type: GraphQL::STRING_TYPE,
-            description: 'Blob mode',
+            description: 'Blob mode.',
             null: true
 
       field :external_storage, type: GraphQL::STRING_TYPE,
-            description: 'Blob external storage',
+            description: 'Blob external storage.',
             null: true
 
       field :rendered_as_text, type: GraphQL::BOOLEAN_TYPE,
-            description: 'Shows whether the blob is rendered as text',
+            description: 'Shows whether the blob is rendered as text.',
             method: :rendered_as_text?,
             null: false
     end

@@ -25,6 +25,7 @@ module MergeRequests
       new_merge_request = create(merge_request)
 
       if new_merge_request.valid?
+        merge_request_activity_counter.track_mr_create_from_issue(user: current_user)
         SystemNoteService.new_merge_request(issue, project, current_user, new_merge_request)
 
         success(new_merge_request)

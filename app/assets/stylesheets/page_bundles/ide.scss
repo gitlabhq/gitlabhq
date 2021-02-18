@@ -97,7 +97,8 @@ $ide-commit-header-height: 48px;
     border-right: 1px solid var(--ide-border-color, $white-dark);
     border-bottom: 1px solid var(--ide-border-color, $white-dark);
 
-    &.active {
+    &.active,
+    .gl-tab-nav-item-active {
       background-color: var(--ide-highlight-background, $white);
       border-bottom-color: transparent;
     }
@@ -111,6 +112,42 @@ $ide-commit-header-height: 48px;
     &.disabled {
       .multi-file-tab-close {
         cursor: default;
+      }
+    }
+  }
+
+  .gl-tab-content {
+    padding: 0;
+  }
+
+  .gl-tabs-nav {
+    border-width: 0;
+
+    li {
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+
+      a {
+        display: flex;
+        align-items: center;
+        padding: $grid-size $gl-padding !important;
+        box-shadow: none !important;
+        font-weight: normal !important;
+
+        background-color: var(--ide-background-hover, $gray-normal);
+        border-right: 1px solid var(--ide-border-color, $white-dark);
+        border-bottom: 1px solid var(--ide-border-color, $white-dark);
+
+        &.gl-tab-nav-item-active {
+          background-color: var(--ide-highlight-background, $white);
+          border-color: var(--ide-border-color, $white-dark);
+          border-bottom-color: transparent;
+        }
+
+        .multi-file-tab-close svg {
+          top: 0;
+        }
       }
     }
   }
@@ -605,6 +642,17 @@ $ide-commit-header-height: 48px;
       left: -1px;
     }
   }
+
+  .ide-commit-badge {
+    background-color: var(--ide-highlight-accent, $almost-black) !important;
+    color: var(--ide-highlight-background, $white) !important;
+    position: absolute;
+    left: 38px;
+    top: $gl-padding-8;
+    font-size: $gl-font-size-12;
+    padding: 2px $gl-padding-4;
+    font-weight: $gl-font-weight-bold !important;
+  }
 }
 
 .ide-activity-bar {
@@ -623,7 +671,8 @@ $ide-commit-header-height: 48px;
     height: 100%;
   }
 
-  .nav-links {
+  .nav-links,
+  .gl-tabs-nav {
     height: 30px;
   }
 
@@ -965,16 +1014,24 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-nav-form {
-  .nav-links li {
+  .nav-links li,
+  .gl-tabs-nav li {
     width: 50%;
     padding-left: 0;
     padding-right: 0;
 
     a {
       text-align: center;
+      font-size: 14px;
+      line-height: 30px;
 
-      &:not(.active) {
+      &:not(.active),
+      &:not(.gl-tab-nav-item-active) {
         background-color: var(--ide-dropdown-background, $gray-light);
+      }
+
+      &.gl-tab-nav-item-active {
+        font-weight: bold;
       }
     }
   }

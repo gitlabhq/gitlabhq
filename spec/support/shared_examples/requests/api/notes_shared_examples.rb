@@ -127,6 +127,12 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/notes" do
+    let(:params) { { body: 'hi!' } }
+
+    subject do
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
+    end
+
     it "creates a new note" do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: 'hi!' }
 
@@ -272,6 +278,29 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           params: { body: 'Foo' }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when request exceeds the rate limit' do
+      before do
+        stub_application_setting(notes_create_limit: 1)
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:increment).and_return(2)
+      end
+
+      it 'prevents user from creating more notes' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+
+      it 'allows user in allow-list to create notes' do
+        stub_application_setting(notes_create_limit_allowlist: ["#{user.username}"])
+        subject
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['body']).to eq('hi!')
+        expect(json_response['author']['username']).to eq(user.username)
       end
     end
   end

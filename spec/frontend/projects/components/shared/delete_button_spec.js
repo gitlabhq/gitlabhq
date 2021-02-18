@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import SharedDeleteButton from '~/projects/components/shared/delete_button.vue';
 

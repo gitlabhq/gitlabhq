@@ -1,9 +1,8 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import LogSimpleFilters from '~/logs/components/log_simple_filters.vue';
 import { createStore } from '~/logs/stores';
 import { mockPods, mockPodName } from '../mock_data';
-
-import LogSimpleFilters from '~/logs/components/log_simple_filters.vue';
 
 const module = 'environmentLogs';
 

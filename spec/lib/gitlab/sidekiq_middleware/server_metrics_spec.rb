@@ -198,6 +198,28 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       it_behaves_like "a metrics middleware"
     end
 
+    context "when a worker is wrapped into ActiveJob" do
+      before do
+        stub_const('TestWrappedWorker', Class.new)
+        TestWrappedWorker.class_eval do
+          include Sidekiq::Worker
+        end
+      end
+
+      let(:job) do
+        {
+          "class" => ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper,
+          "wrapped" => TestWrappedWorker
+        }
+      end
+
+      let(:worker) { TestWrappedWorker.new }
+      let(:worker_class) { TestWrappedWorker }
+      let(:labels) { default_labels.merge(urgency: "") }
+
+      it_behaves_like "a metrics middleware"
+    end
+
     context "when workers are attributed" do
       def create_attributed_worker_class(urgency, external_dependencies, resource_boundary, category)
         Class.new do

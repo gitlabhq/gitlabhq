@@ -91,7 +91,7 @@ _The artifacts are stored by default in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
-> - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
+> - Since version 10.6, available in [GitLab Free](https://about.gitlab.com/pricing/).
 > - Since version 11.0, we support `direct_upload` to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -339,7 +339,7 @@ an expiry for the artifacts, they are marked for deletion right after that date 
 Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
 
 Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every hour at 50 minutes (`50 * * * *`).
+runs every 7 minutes (`*/7 * * * *`).
 
 To change the default schedule on which the artifacts are expired, follow the
 steps below.
@@ -350,7 +350,7 @@ steps below.
    your schedule in cron syntax:
 
    ```ruby
-   gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
+   gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -362,20 +362,20 @@ steps below.
 
    ```yaml
    expire_build_artifacts_worker:
-     cron: "50 * * * *"
+     cron: "*/7 * * * *"
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 If the `expire` directive is not set explicitly in your pipeline, artifacts expire per the
-default artifacts expiration setting, which you can find in the [CI/CD Admin settings](../user/admin_area/settings/continuous_integration.md).
+default artifacts expiration setting, which you can find in the [CI/CD Administration settings](../user/admin_area/settings/continuous_integration.md).
 
 ## Validation for dependencies
 
 > Introduced in GitLab 10.3.
 
 To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-fails),
-you can enable the `ci_disable_validates_dependencies` feature flag from a Rails console.
+you can enable the `ci_validate_build_dependencies_override` feature flag from a Rails console.
 
 **In Omnibus installations:**
 
@@ -388,7 +388,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 **In installations from source:**
@@ -403,7 +403,7 @@ you can enable the `ci_disable_validates_dependencies` feature flag from a Rails
 1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable(:ci_disable_validates_dependencies)
+   Feature.enable(:ci_validate_build_dependencies_override)
    ```
 
 ## Set the maximum file size of the artifacts

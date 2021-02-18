@@ -46,7 +46,7 @@ RSpec.describe 'Getting Ci Cd Setting' do
     it 'fetches the settings data' do
       expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled?
       expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled?
-      expect(settings_data['keepLatestArtifact']).to eql project.ci_keep_latest_artifact?
+      expect(settings_data['keepLatestArtifact']).to eql project.keep_latest_artifacts_available?
     end
   end
 end

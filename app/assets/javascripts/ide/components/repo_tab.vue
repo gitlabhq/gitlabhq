@@ -1,10 +1,10 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { mapActions, mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileStatusIcon from './repo_file_status_icon.vue';
 
 export default {

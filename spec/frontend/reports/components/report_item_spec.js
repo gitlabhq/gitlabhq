@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import { STATUS_SUCCESS } from '~/reports/constants';
-import ReportItem from '~/reports/components/report_item.vue';
-import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import { componentNames } from '~/reports/components/issue_body';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
+import ReportItem from '~/reports/components/report_item.vue';
+import { STATUS_SUCCESS } from '~/reports/constants';
 
 describe('ReportItem', () => {
   describe('showReportSectionStatusIcon', () => {

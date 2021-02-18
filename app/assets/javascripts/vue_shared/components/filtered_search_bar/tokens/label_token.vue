@@ -9,12 +9,11 @@ import {
 import { debounce } from 'lodash';
 
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-
-import { stripQuotes } from '../filtered_search_utils';
 import { DEFAULT_LABELS, DEBOUNCE_DELAY } from '../constants';
+import { stripQuotes } from '../filtered_search_utils';
 
 export default {
   components: {

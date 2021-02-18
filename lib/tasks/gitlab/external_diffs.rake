@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :external_diffs do
     desc "Override external diffs in file storage to be in object storage instead. This does not change the actual location of the data"

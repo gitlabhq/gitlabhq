@@ -3,16 +3,14 @@
 import { GlLoadingIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '../../lib/utils/url_utility';
 import identicon from '../../vue_shared/components/identicon.vue';
-import eventHub from '../event_hub';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
+import eventHub from '../event_hub';
 
+import itemActions from './item_actions.vue';
 import itemCaret from './item_caret.vue';
-import itemTypeIcon from './item_type_icon.vue';
 import itemStats from './item_stats.vue';
 import itemStatsValue from './item_stats_value.vue';
-import itemActions from './item_actions.vue';
-
-import { showLearnGitLabGroupItemPopover } from '~/onboarding_issues';
+import itemTypeIcon from './item_type_icon.vue';
 
 export default {
   directives: {
@@ -77,11 +75,6 @@ export default {
     microdata() {
       return this.group.microdata || {};
     },
-  },
-  mounted() {
-    if (this.group.name === 'Learn GitLab') {
-      showLearnGitLabGroupItemPopover(this.group.id);
-    }
   },
   methods: {
     onClickRowGroup(e) {
@@ -179,7 +172,12 @@ export default {
         <div
           class="metadata align-items-md-center d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between"
         >
-          <item-actions v-if="isGroup" :group="group" :parent-group="parentGroup" />
+          <item-actions
+            v-if="isGroup"
+            :group="group"
+            :parent-group="parentGroup"
+            :action="action"
+          />
           <item-stats :item="group" class="group-stats gl-mt-2 d-none d-md-flex" />
         </div>
       </div>

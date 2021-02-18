@@ -1,7 +1,7 @@
 <script>
-import MarkdownViewer from './viewers/markdown_viewer.vue';
-import ImageViewer from './viewers/image_viewer.vue';
 import DownloadViewer from './viewers/download_viewer.vue';
+import ImageViewer from './viewers/image_viewer.vue';
+import MarkdownViewer from './viewers/markdown_viewer.vue';
 
 export default {
   components: {

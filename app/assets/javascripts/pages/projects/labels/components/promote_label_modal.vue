@@ -1,9 +1,9 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__, __, sprintf } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {

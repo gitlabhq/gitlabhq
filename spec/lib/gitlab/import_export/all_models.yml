@@ -146,6 +146,7 @@ merge_requests:
 - merge_user
 - merge_request_diffs
 - merge_request_diff
+- merge_head_diff
 - merge_request_context_commits
 - merge_request_context_commit_diff_files
 - events
@@ -544,7 +545,7 @@ project:
 - daily_build_group_report_results
 - jira_imports
 - compliance_framework_setting
-- compliance_management_frameworks
+- compliance_management_framework
 - metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
@@ -560,7 +561,10 @@ project:
 - alert_management_http_integrations
 - exported_protected_branches
 - incident_management_oncall_schedules
+- incident_management_oncall_rotations
 - debian_distributions
+- merge_request_metrics
+- security_orchestration_policy_configuration
 award_emoji:
 - awardable
 - user
@@ -589,6 +593,7 @@ lfs_file_locks:
 project_badges:
 - project
 metrics:
+- target_project
 - merge_request
 - latest_closed_by
 - merged_by

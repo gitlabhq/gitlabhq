@@ -1,10 +1,10 @@
+import { deprecatedCreateFlash as flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
-import { deprecatedCreateFlash as flash } from '~/flash';
-import * as types from '../mutation_types';
-import * as messages from '../messages';
 import * as terminalService from '../../../../services/terminals';
 import { STARTING, STOPPING, STOPPED } from '../constants';
+import * as messages from '../messages';
+import * as types from '../mutation_types';
 
 export const requestStartSession = ({ commit }) => {
   commit(types.SET_SESSION_STATUS, STARTING);

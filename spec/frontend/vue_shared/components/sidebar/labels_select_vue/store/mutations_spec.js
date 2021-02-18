@@ -1,5 +1,5 @@
-import mutations from '~/vue_shared/components/sidebar/labels_select_vue/store/mutations';
 import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
+import mutations from '~/vue_shared/components/sidebar/labels_select_vue/store/mutations';
 
 describe('LabelsSelect Mutations', () => {
   describe(`${types.SET_INITIAL_STATE}`, () => {

@@ -1,11 +1,11 @@
-import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createUploadLink } from 'apollo-upload-client';
+import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
+import { createUploadLink } from 'apollo-upload-client';
+import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
-import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -35,6 +35,16 @@ export default (resolvers = {}, config = {}) => {
     batchMax: config.batchMax || 10,
   };
 
+  const requestCounterLink = new ApolloLink((operation, forward) => {
+    window.pendingApolloRequests = window.pendingApolloRequests || 0;
+    window.pendingApolloRequests += 1;
+
+    return forward(operation).map((response) => {
+      window.pendingApolloRequests -= 1;
+      return response;
+    });
+  });
+
   const uploadsLink = ApolloLink.split(
     (operation) => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
     createUploadLink(httpOptions),
@@ -63,7 +73,12 @@ export default (resolvers = {}, config = {}) => {
 
   return new ApolloClient({
     typeDefs: config.typeDefs,
-    link: ApolloLink.from([performanceBarLink, new StartupJSLink(), uploadsLink]),
+    link: ApolloLink.from([
+      requestCounterLink,
+      performanceBarLink,
+      new StartupJSLink(),
+      uploadsLink,
+    ]),
     cache: new InMemoryCache({
       ...config.cacheConfig,
       freezeResults: config.assumeImmutableResults,

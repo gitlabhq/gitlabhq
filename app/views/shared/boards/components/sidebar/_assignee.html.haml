@@ -1,31 +1,9 @@
+- dropdown_options = assignees_dropdown_options('issue')
+
 .block.assignee{ ref: "assigneeBlock" }
   %template{ "v-if" => "issue.assignees" }
-    %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
-      ":loading" => "loadingAssignees",
-      ":editable" => can_admin_issue? }
-    %assignees.value{ "root-path" => "#{root_url}",
-      ":users" => "issue.assignees",
-      ":editable" => can_admin_issue?,
-      "@assign-self" => "assignSelf" }
-
-  - if can_admin_issue?
-    .selectbox.hide-collapsed
-      %input.js-vue{ type: "hidden",
-        name: "issue[assignee_ids][]",
-        ":value" => "assignee.id",
-        "v-if" => "issue.assignees",
-        "v-for" => "assignee in issue.assignees",
-        ":data-avatar_url" => "assignee.avatar",
-        ":data-name" => "assignee.name",
-        ":data-username" => "assignee.username" }
-      .dropdown
-        - dropdown_options = assignees_dropdown_options('issue')
-        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: board_sidebar_user_data,
-          ":data-issuable-id" => "issue.iid" }
-          = dropdown_options[:title]
-          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
-        .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
-          = dropdown_title("Assign to")
-          = dropdown_filter("Search users")
-          = dropdown_content
-          = dropdown_loading
+    %sidebar-assignees-widget{ ":iid" => "String(issue.iid)",
+      ":full-path" => "issue.path.split('/-/')[0].substring(1)",
+      ":initial-assignees" => "issue.assignees",
+      ":multiple-assignees" => "!Boolean(#{dropdown_options[:data][:"max-select"]})",
+      "@assignees-updated" => "setAssignees" }

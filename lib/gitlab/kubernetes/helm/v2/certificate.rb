@@ -59,7 +59,7 @@ module Gitlab
               cert.add_extension(extension_factory.create_extension('keyUsage', 'cRLSign,keyCertSign', true))
             end
 
-            cert.sign(signed_by&.key || key, OpenSSL::Digest::SHA256.new)
+            cert.sign(signed_by&.key || key, OpenSSL::Digest.new('SHA256'))
 
             new(key, cert)
           end

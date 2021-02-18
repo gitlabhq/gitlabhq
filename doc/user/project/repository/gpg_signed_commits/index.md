@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Signing commits with GPG
+# Signing commits with GPG **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9546) in GitLab 9.5.
 > - Subkeys support was added in GitLab 10.1.
@@ -138,27 +138,25 @@ started:
    gpg --armor --export 30F2B65B9246B6CA
    ```
 
-1. Finally, copy the public key and [add it in your profile settings](#adding-a-gpg-key-to-your-account)
+1. Finally, copy the public key and [add it in your user settings](#adding-a-gpg-key-to-your-account)
 
 ## Adding a GPG key to your account
 
 NOTE:
-Once you add a key, you cannot edit it, only remove it. In case the paste
-didn't work, you'll have to remove the offending key and re-add it.
+After you add a key, you cannot edit it, only remove it. In case the paste
+didn't work, you have to remove the offending key and re-add it.
 
-You can add a GPG key in your profile's settings:
+You can add a GPG key in your user settings:
 
-1. On the upper right corner, click on your avatar and go to your **Settings**.
-
-   ![Settings dropdown](../../../profile/img/profile_settings_dropdown.png)
-
-1. Navigate to the **GPG keys** tab and paste your _public_ key in the 'Key'
-   box.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **GPG Keys**.
+1. Paste your _public_ key in the **Key** text box.
 
    ![Paste GPG public key](img/profile_settings_gpg_keys_paste_pub.png)
 
-1. Finally, click on **Add key** to add it to GitLab. You will be able to see
-   its fingerprint, the corresponding email address and creation date.
+1. Select **Add key** to add it to GitLab. You can see the key's fingerprint, the corresponding
+   email address, and creation date.
 
    ![GPG key single page](img/profile_settings_gpg_keys_single_key.png)
 
@@ -248,22 +246,24 @@ in case your key has been compromised.
 
 To revoke a GPG key:
 
-1. On the upper right corner, click on your avatar and go to your **Settings**.
-1. Navigate to the **GPG keys** tab.
-1. Click on **Revoke** besides the GPG key you want to delete.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **GPG Keys**.
+1. Select **Revoke** next to the GPG key you want to delete.
 
 ## Removing a GPG key
 
 Removing a key **does not unverify** already signed commits. Commits that were
-verified by using this key will stay verified. Only unpushed commits will stay
-unverified once you remove this key. To unverify already signed commits, you need
+verified by using this key stay verified. Only unpushed commits stay
+unverified after you remove this key. To unverify already signed commits, you need
 to [revoke the associated GPG key](#revoking-a-gpg-key) from your account.
 
 To remove a GPG key from your account:
 
-1. On the upper right corner, click on your avatar and go to your **Settings**.
-1. Navigate to the **GPG keys** tab.
-1. Click on the trash icon besides the GPG key you want to delete.
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **GPG Keys**.
+1. Select the trash icon (**{remove}**) next to the GPG key you want to delete.
 
 ## Rejecting commits that are not signed **(PREMIUM)**
 

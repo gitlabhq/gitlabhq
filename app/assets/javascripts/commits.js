@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import { n__ } from '~/locale';
+import axios from './lib/utils/axios_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
-import axios from './lib/utils/axios_utils';
 
 export default class CommitsList {
   constructor(limit = 0) {

@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import LeaveModal from '../modals/leave_modal.vue';
 import { LEAVE_MODAL_ID } from '../../constants';
+import LeaveModal from '../modals/leave_modal.vue';
 
 export default {
   name: 'LeaveButton',

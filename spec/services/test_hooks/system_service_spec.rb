@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe TestHooks::SystemService do
-  let(:current_user) { create(:user) }
+  include AfterNextHelpers
 
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:hook)    { create(:system_hook) }
-    let(:service) { described_class.new(hook, current_user, trigger) }
+    let(:service) { described_class.new(hook, project.owner, trigger) }
     let(:success_result) { { status: :success, http_status: 200, message: 'ok' } }
 
     before do
@@ -63,6 +63,9 @@ RSpec.describe TestHooks::SystemService do
 
     context 'merge_requests_events' do
       let(:trigger) { 'merge_requests_events' }
+      let(:trigger_key) { :merge_request_hooks }
+      let(:merge_request) { build(:merge_request) }
+      let(:sample_data) { { data: 'sample' } }
 
       it 'returns error message if the user does not have any repository with a merge request' do
         expect(hook).not_to receive(:execute)
@@ -70,12 +73,8 @@ RSpec.describe TestHooks::SystemService do
       end
 
       it 'executes hook' do
-        trigger_key = :merge_request_hooks
-        sample_data = { data: 'sample' }
-        create(:project_member, user: current_user, project: project)
-        create(:merge_request, source_project: project)
-        allow_any_instance_of(MergeRequest).to receive(:to_hook_data).and_return(sample_data)
-
+        expect(MergeRequest).to receive(:of_projects).and_return([merge_request])
+        expect(merge_request).to receive(:to_hook_data).and_return(sample_data)
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
       end

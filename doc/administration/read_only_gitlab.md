@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Place GitLab into a read-only state **(CORE ONLY)**
+# Place GitLab into a read-only state **(FREE SELF)**
 
 WARNING:
 This document should be used as a temporary solution.
@@ -68,7 +68,7 @@ the database is read-only:
 
 1. Take a [GitLab backup](../raketasks/backup_restore.md#back-up-gitlab)
    in case things don't go as expected.
-1. Enter PostgreSQL on the console as an admin user:
+1. Enter PostgreSQL on the console as an administrator user:
 
     ```shell
     sudo \

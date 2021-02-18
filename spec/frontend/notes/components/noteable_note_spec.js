@@ -1,21 +1,12 @@
-import { escape } from 'lodash';
 import { mount, createLocalVue } from '@vue/test-utils';
-import createStore from '~/notes/stores';
-import issueNote from '~/notes/components/noteable_note.vue';
-import NoteHeader from '~/notes/components/note_header.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { escape } from 'lodash';
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
+import NoteHeader from '~/notes/components/note_header.vue';
+import issueNote from '~/notes/components/noteable_note.vue';
+import createStore from '~/notes/stores';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
-
-jest.mock('~/vue_shared/mixins/gl_feature_flags_mixin', () => () => ({
-  inject: {
-    glFeatures: {
-      from: 'glFeatures',
-      default: () => ({ multilineComments: true }),
-    },
-  },
-}));
 
 describe('issue_note', () => {
   let store;

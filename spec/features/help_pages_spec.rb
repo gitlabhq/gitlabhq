@@ -23,7 +23,7 @@ RSpec.describe 'Help Pages' do
       it 'opens shortcuts help dialog' do
         find('.js-trigger-shortcut').click
 
-        expect(page).to have_selector('#modal-shortcuts')
+        expect(page).to have_selector('[data-testid="modal-shortcuts"]')
       end
     end
   end

@@ -1,11 +1,11 @@
-import Visibility from 'visibilityjs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Visibility from 'visibilityjs';
 import { getJSONFixture } from 'helpers/fixtures';
-import Poll from '~/lib/utils/poll';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import Poll from '~/lib/utils/poll';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 jest.mock('~/lib/utils/poll');
 jest.mock('visibilityjs');
@@ -141,8 +141,8 @@ describe('Commit pipeline status component', () => {
         expect(findLink().attributes('href')).toEqual(mockCiStatus.details_path);
       });
 
-      it('renders CI icon', () => {
-        expect(findCiIcon().attributes('title')).toEqual('Pipeline: pending');
+      it('renders CI icon with the correct title and status', () => {
+        expect(findCiIcon().attributes('title')).toEqual('Pipeline: passed');
         expect(findCiIcon().props('status')).toEqual(mockCiStatus);
       });
     });

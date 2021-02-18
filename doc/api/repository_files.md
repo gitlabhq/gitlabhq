@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Repository files API
+# Repository files API **(FREE)**
 
 **CRUD for repository files**
 

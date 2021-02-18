@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import store from './store';
 import ErrorTrackingList from './components/error_tracking_list.vue';
+import store from './store';
 
 export default () => {
   const selector = '#js-error_tracking';

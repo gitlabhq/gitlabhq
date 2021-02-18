@@ -1,10 +1,10 @@
 import { pick } from 'lodash';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
-import { truncateSha } from '~/lib/utils/text_utility';
 import {
   convertObjectPropsToCamelCase,
   convertObjectPropsToSnakeCase,
 } from '~/lib/utils/common_utils';
+import { truncateSha } from '~/lib/utils/text_utility';
 
 /**
  * Converts a release object into a JSON object that can sent to the public

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Functions from './components/functions.vue';
 import FunctionDetails from './components/function_details.vue';
+import Functions from './components/functions.vue';
 import { createStore } from './store';
 
 export default class Serverless {

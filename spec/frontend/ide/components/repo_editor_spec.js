@@ -1,22 +1,22 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import '~/behaviors/markdown/render_gfm';
 import { Range } from 'monaco-editor';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import '~/behaviors/markdown/render_gfm';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import waitUsingRealTimer from 'helpers/wait_using_real_timer';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import axios from '~/lib/utils/axios_utils';
-import service from '~/ide/services';
-import { createStoreOptions } from '~/ide/stores';
 import RepoEditor from '~/ide/components/repo_editor.vue';
-import Editor from '~/ide/lib/editor';
 import {
   leftSidebarViews,
   FILE_VIEW_MODE_EDITOR,
   FILE_VIEW_MODE_PREVIEW,
   viewerTypes,
 } from '~/ide/constants';
+import Editor from '~/ide/lib/editor';
+import service from '~/ide/services';
+import { createStoreOptions } from '~/ide/stores';
+import axios from '~/lib/utils/axios_utils';
 import { file } from '../helpers';
 import { exampleConfigs, exampleFiles } from '../lib/editorconfig/mock_data';
 

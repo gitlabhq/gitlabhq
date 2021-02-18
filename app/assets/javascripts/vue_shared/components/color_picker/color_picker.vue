@@ -3,12 +3,16 @@
  * Renders a color picker input with preset colors to choose from
  *
  * @example
- * <color-picker :label="__('Background color')" set-color="#FF0000" />
+ * <color-picker
+     :invalid-feedback="__('Please enter a valid hex (#RRGGBB or #RGB) color value')"
+     :label="__('Background color')"
+     :value="#FF0000"
+     state="isValidColor"
+   />
  */
 import { GlFormGroup, GlFormInput, GlFormInputGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
-const VALID_RGB_HEX_COLOR = /^#([0-9A-F]{3}){1,2}$/i;
 const PREVIEW_COLOR_DEFAULT_CLASSES =
   'gl-relative gl-w-7 gl-bg-gray-10 gl-rounded-top-left-base gl-rounded-bottom-left-base';
 
@@ -24,21 +28,26 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    invalidFeedback: {
+      type: String,
+      required: false,
+      default: __('Please enter a valid hex (#RRGGBB or #RGB) color value'),
+    },
     label: {
       type: String,
       required: false,
       default: '',
     },
-    setColor: {
+    value: {
       type: String,
       required: false,
       default: '',
     },
-  },
-  data() {
-    return {
-      selectedColor: this.setColor.trim() || '',
-    };
+    state: {
+      type: Boolean,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     description() {
@@ -50,46 +59,30 @@ export default {
       return gon.suggested_label_colors;
     },
     previewColor() {
-      if (this.isValidColor) {
-        return { backgroundColor: this.selectedColor };
+      if (this.state) {
+        return { backgroundColor: this.value };
       }
 
       return {};
     },
     previewColorClasses() {
-      const borderStyle = this.isInvalidColor
-        ? 'gl-inset-border-1-red-500'
-        : 'gl-inset-border-1-gray-400';
+      const borderStyle =
+        this.state === false ? 'gl-inset-border-1-red-500' : 'gl-inset-border-1-gray-400';
 
       return `${PREVIEW_COLOR_DEFAULT_CLASSES} ${borderStyle}`;
     },
     hasSuggestedColors() {
       return Object.keys(this.suggestedColors).length;
     },
-    isInvalidColor() {
-      return this.isValidColor === false;
-    },
-    isValidColor() {
-      if (this.selectedColor === '') {
-        return null;
-      }
-
-      return VALID_RGB_HEX_COLOR.test(this.selectedColor);
-    },
   },
   methods: {
     handleColorChange(color) {
-      this.selectedColor = color.trim();
-
-      if (this.isValidColor) {
-        this.$emit('input', this.selectedColor);
-      }
+      this.$emit('input', color.trim());
     },
   },
   i18n: {
     fullDescription: __('Choose any color. Or you can choose one of the suggested colors below'),
     shortDescription: __('Choose any color'),
-    invalid: __('Please enter a valid hex (#RRGGBB or #RGB) color value'),
   },
 };
 </script>
@@ -100,17 +93,17 @@ export default {
       :label="label"
       label-for="color-picker"
       :description="description"
-      :invalid-feedback="this.$options.i18n.invalid"
-      :state="isValidColor"
+      :invalid-feedback="invalidFeedback"
+      :state="state"
       :class="{ 'gl-mb-3!': hasSuggestedColors }"
     >
       <gl-form-input-group
         id="color-picker"
-        :state="isValidColor"
         max-length="7"
         type="text"
         class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base"
-        :value="selectedColor"
+        :value="value"
+        :state="state"
         @input="handleColorChange"
       >
         <template #prepend>
@@ -119,7 +112,7 @@ export default {
               type="color"
               class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-cursor-pointer gl-opacity-0"
               tabindex="-1"
-              :value="selectedColor"
+              :value="value"
               @input="handleColorChange"
             />
           </div>

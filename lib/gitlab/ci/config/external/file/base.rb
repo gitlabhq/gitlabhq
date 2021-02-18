@@ -60,7 +60,7 @@ module Gitlab
 
             def content_hash
               strong_memoize(:content_yaml) do
-                Gitlab::Config::Loader::Yaml.new(content).load!
+                ::Gitlab::Ci::Config::Yaml.load!(content)
               end
             rescue Gitlab::Config::Loader::FormatError
               nil

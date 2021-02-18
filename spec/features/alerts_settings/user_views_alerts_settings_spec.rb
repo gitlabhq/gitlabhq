@@ -19,13 +19,14 @@ RSpec.describe 'Alert integrations settings form', :js do
   describe 'when viewing alert integrations as a maintainer' do
     context 'with the default page permissions' do
       before do
+        stub_feature_flags(multiple_http_integrations_custom_mapping: false)
         visit project_settings_operations_path(project, anchor: 'js-alert-management-settings')
         wait_for_requests
       end
 
       it 'shows the alerts setting form title' do
         page.within('#js-alert-management-settings') do
-          expect(find('h3')).to have_content('Alerts')
+          expect(find('h4')).to have_content('Alerts')
         end
       end
 

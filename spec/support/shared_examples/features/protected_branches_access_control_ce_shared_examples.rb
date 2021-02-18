@@ -56,6 +56,8 @@ RSpec.shared_examples "protected branches > access control > CE" do
           expect(first("li")).to have_content("Roles")
           find(:link, access_type_name).click
         end
+
+        find(".js-allowed-to-push").click
       end
 
       wait_for_requests

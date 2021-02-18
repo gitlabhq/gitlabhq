@@ -4,6 +4,8 @@ require 'securerandom'
 
 module Clusters
   module Applications
+    # DEPRECATED for removal in %14.0
+    # See https://gitlab.com/groups/gitlab-org/-/epics/4280
     class Jupyter < ApplicationRecord
       VERSION = '0.9.0'
 

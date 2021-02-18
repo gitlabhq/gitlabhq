@@ -1,5 +1,5 @@
-import createState from '~/admin/statistics_panel/store/state';
 import * as getters from '~/admin/statistics_panel/store/getters';
+import createState from '~/admin/statistics_panel/store/state';
 
 describe('Admin statistics panel getters', () => {
   let state;

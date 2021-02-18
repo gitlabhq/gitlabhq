@@ -58,7 +58,7 @@ Java 8 and Gradle 1.x projects are not supported. The minimum supported version 
 | JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/)                                    |       |
 | Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |       |
 | Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)                            |       |
-| .NET       | [Nuget](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
+| .NET       | [NuGet](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
 | Python     | [pip](https://pip.pypa.io/en/stable/)                                                        | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). |
 | Ruby       | [gem](https://rubygems.org/) |  |
 
@@ -70,7 +70,7 @@ The reported licenses might be incomplete or inaccurate.
 | Language   | Package managers                                                                                              |
 |------------|---------------------------------------------------------------------------------------------------------------|
 | JavaScript | [Yarn](https://yarnpkg.com/)                                                                                  |
-| Go         | go get, gvt, glide, dep, trash, govendor                                                                      |
+| Go         | `go get`, `gvt`, `glide`, `dep`, `trash`, `govendor`                                                          |
 | Erlang     | [Rebar](https://www.rebar3.org/)                                                                              |
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
@@ -118,7 +118,7 @@ always take the latest License Compliance artifact available. Behind the scenes,
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
-The License Compliance settings can be changed through [environment variables](#available-variables) by using the
+The License Compliance settings can be changed through [CI/CD variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 
 ### When License Compliance runs
@@ -128,20 +128,20 @@ wait for other stages to complete.
 
 ### Available variables
 
-License Compliance can be configured using environment variables.
+License Compliance can be configured using CI/CD variables.
 
-| Environment variable        | Required | Description |
+| CI/CD variable              | Required | Description |
 |-----------------------------|----------|-------------|
-| `ADDITIONAL_CA_CERT_BUNDLE` | no       | Bundle of trusted CA certificates (currently supported in Pip, Pipenv, Maven, Gradle, Yarn, and NPM projects). |
+| `ADDITIONAL_CA_CERT_BUNDLE` | no       | Bundle of trusted CA certificates (currently supported in Pip, Pipenv, Maven, Gradle, Yarn, and npm projects). |
 | `ASDF_JAVA_VERSION`         | no       | Version of Java to use for the scan. |
 | `ASDF_NODEJS_VERSION`       | no       | Version of Node.js to use for the scan. |
 | `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. |
 | `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
-| `GRADLE_CLI_OPTS`           | no       | Additional arguments for the gradle executable. If not supplied, defaults to `--exclude-task=test`. |
+| `GRADLE_CLI_OPTS`           | no       | Additional arguments for the Gradle executable. If not supplied, defaults to `--exclude-task=test`. |
 | `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci-yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
 | `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
 | `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
-| `MAVEN_CLI_OPTS`            | no       | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
+| `MAVEN_CLI_OPTS`            | no       | Additional arguments for the `mvn` executable. If not supplied, defaults to `-DskipTests`. |
 | `PIP_INDEX_URL`             | no       | Base URL of Python Package Index (default: `https://pypi.org/simple/`). |
 | `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
 | `SETUP_CMD`                 | no       | Custom setup for the dependency installation (experimental). |
@@ -154,7 +154,7 @@ The `license_management` image already embeds many auto-detection scripts, langu
 and packages. Nevertheless, it's almost impossible to cover all cases for all projects.
 That's why sometimes it's necessary to install extra packages, or to have extra steps
 in the project automated setup, like the download and installation of a certificate.
-For that, a `LICENSE_MANAGEMENT_SETUP_CMD` environment variable can be passed to the container,
+For that, a `LICENSE_MANAGEMENT_SETUP_CMD` CI/CD variable can be passed to the container,
 with the required commands to run before the license detection.
 
 If present, this variable overrides the setup step necessary to install all the packages
@@ -195,7 +195,7 @@ license_scanning:
 
 ### Configuring Maven projects
 
-The License Compliance tool provides a `MAVEN_CLI_OPTS` environment variable which can hold
+The License Compliance tool provides a `MAVEN_CLI_OPTS` CI/CD variable which can hold
 the command line arguments to pass to the `mvn install` command which is executed under the hood.
 Feel free to use it for the customization of Maven execution. For example:
 
@@ -217,12 +217,12 @@ to explicitly add `-DskipTests` to your options.
 If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 `MAVEN_CLI_OPTS`.
 
-#### Using private Maven repos
+#### Using private Maven repositories
 
 If you have a private Maven repository which requires login credentials,
-you can use the `MAVEN_CLI_OPTS` environment variable.
+you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
-Read more on [how to use private Maven repos](../../application_security/index.md#using-private-maven-repos).
+Read more on [how to use private Maven repositories](../../application_security/index.md#using-private-maven-repositories).
 
 You can also use `MAVEN_CLI_OPTS` to connect to a trusted Maven repository that uses a self-signed
 or internally trusted certificate. For example:
@@ -248,7 +248,7 @@ generate a key store file, see the
 
 License Compliance uses Python 3.8 and pip 19.1 by default.
 If your project requires Python 2, you can switch to Python 2.7 and pip 10.0
-by setting the `LM_PYTHON_VERSION` environment variable to `2`.
+by setting the `LM_PYTHON_VERSION` CI/CD variable to `2`.
 
 ```yaml
 include:
@@ -262,21 +262,21 @@ license_scanning:
 ### Custom root certificates for Python
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
 
-#### Using private Python repos
+#### Using private Python repositories
 
-If you have a private Python repository you can use the `PIP_INDEX_URL` [environment variable](#available-variables)
+If you have a private Python repository you can use the `PIP_INDEX_URL` [CI/CD variable](#available-variables)
 to specify its location.
 
-### Configuring NPM projects
+### Configuring npm projects
 
-You can configure NPM projects by using an [`.npmrc`](https://docs.npmjs.com/configuring-npm/npmrc.html/)
+You can configure npm projects by using an [`.npmrc`](https://docs.npmjs.com/configuring-npm/npmrc.html/)
 file.
 
-#### Using private NPM registries
+#### Using private npm registries
 
-If you have a private NPM registry you can use the
+If you have a private npm registry you can use the
 [`registry`](https://docs.npmjs.com/using-npm/config/#registry)
 setting to specify its location.
 
@@ -286,10 +286,10 @@ For example:
 registry = https://npm.example.com
 ```
 
-#### Custom root certificates for NPM
+#### Custom root certificates for npm
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
 
 To disable TLS verification you can provide the [`strict-ssl`](https://docs.npmjs.com/using-npm/config/#strict-ssl)
 setting.
@@ -320,7 +320,7 @@ npmRegistryServer: "https://npm.example.com"
 #### Custom root certificates for Yarn
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
 
 ### Configuring Bower projects
 
@@ -344,7 +344,7 @@ For example:
 #### Custom root certificates for Bower
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
@@ -365,9 +365,9 @@ source "https://gems.example.com"
 #### Custom root certificates for Bundler
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
-[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+[variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Cargo projects
@@ -389,9 +389,9 @@ my-registry = { index = "https://my-intranet:8080/git/index" }
 
 To supply a custom root certificate to complete TLS verification, do one of the following:
 
-- Use the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+- Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
-  [environment variable](../../../ci/variables/README.md#custom-environment-variables)
+  [variable](../../../ci/variables/README.md#custom-cicd-variables)
   in the job definition.
 
 ### Configuring Composer projects
@@ -422,9 +422,9 @@ For example:
 #### Custom root certificates for Composer
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
-[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+[variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Conan projects
@@ -487,7 +487,7 @@ example:
 }
 ```
 
-If credentials are required to authenticate then you can configure a [protected variable](../../../ci/variables/README.md#protect-a-custom-variable)
+If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/README.md#protect-a-custom-variable)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
 #### Custom root certificates for Conan
@@ -496,14 +496,14 @@ You can provide custom certificates by adding a `.conan/cacert.pem` file to the 
 setting [`CA_CERT_PATH`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-cacert-path)
 to `.conan/cacert.pem`.
 
-If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), this
+If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), this
 variable's X.509 certificates are installed in the Docker image's default trust store and Conan is
 configured to use this as the default `CA_CERT_PATH`.
 
 ### Configuring Go projects
 
 To configure [Go modules](https://github.com/golang/go/wiki/Modules)
-based projects, specify [environment variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+based projects, specify [CI/CD variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
 in the `license_scanning` job's [variables](#available-variables) section in `.gitlab-ci.yml`.
 
 If a project has [vendored](https://golang.org/pkg/cmd/go/#hdr-Vendor_Directories) its modules,
@@ -553,18 +553,18 @@ For example:
 #### Custom root certificates for NuGet
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
 
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
 GitLab 13.0 drops support for `license_management`.
 If you're using a custom setup for License Compliance, you're required
-to update your CI config accordingly:
+to update your CI configuration accordingly:
 
 1. Change the CI template to `License-Scanning.gitlab-ci.yml`.
 1. Change the job name to `license_scanning` (if you mention it in `.gitlab-ci.yml`).
-1. Change the artifact name to `license_scanning`, and the file name to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
+1. Change the artifact name to `license_scanning`, and the filename to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
 
 For example, the following `.gitlab-ci.yml`:
 
@@ -640,7 +640,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
-### Set License Compliance CI job variables to use local License Compliance analyzers
+### Set License Compliance CI/CD variables to use local License Compliance analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer to
 the License Compliance Docker image hosted on your local Docker container registry:
@@ -657,15 +657,16 @@ license_scanning:
 The License Compliance job should now use local copies of the License Compliance analyzers to scan
 your code and generate security reports, without requiring internet access.
 
-Additional configuration may be needed for connecting to
-[private Bower registries](#using-private-bower-registries),
-[private Bundler registries](#using-private-bundler-registries),
-[private Conan registries](#using-private-bower-registries),
-[private Go registries](#using-private-go-registries),
-[private Maven repositories](#using-private-maven-repos),
-[private NPM registries](#using-private-npm-registries),
-[private Python repositories](#using-private-python-repos),
-and [private Yarn registries](#using-private-yarn-registries).
+Additional configuration may be needed for connecting to private registries for:
+
+- [Bower](#using-private-bower-registries),
+- [Bundler](#using-private-bundler-registries),
+- [Conan](#using-private-bower-registries),
+- [Go](#using-private-go-registries),
+- [Maven repositories](#using-private-maven-repositories),
+- [npm](#using-private-npm-registries),
+- [Python repositories](#using-private-python-repositories),
+- [Yarn](#using-private-yarn-registries).
 
 ### SPDX license list name matching
 
@@ -776,7 +777,7 @@ nodejs 12.16.3
 ruby 2.7.2
 ```
 
-The next example shows how to activate the same versions of the tools mentioned above by using environment variables defined in your
+The next example shows how to activate the same versions of the tools mentioned above by using CI/CD variables defined in your
 project's `.gitlab-ci.yml` file.
 
 ```yaml
@@ -789,7 +790,7 @@ license_scanning:
     ASDF_RUBY_VERSION: '2.7.2'
 ```
 
-A full list of variables can be found in [environment variables](#available-variables).
+A full list of variables can be found in [CI/CD variables](#available-variables).
 
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 

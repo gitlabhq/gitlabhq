@@ -14,7 +14,8 @@ class ContainerRepositoriesFinder
     return unless authorized?
 
     repositories = @subject.is_a?(Project) ? project_repositories : group_repositories
-    filter_by_image_name(repositories)
+    repositories = filter_by_image_name(repositories)
+    sort(repositories)
   end
 
   private
@@ -37,6 +38,12 @@ class ContainerRepositoriesFinder
     return repositories unless @params[:name]
 
     repositories.search_by_name(@params[:name])
+  end
+
+  def sort(repositories)
+    return repositories unless @params[:sort]
+
+    repositories.order_by(@params[:sort])
   end
 
   def authorized?

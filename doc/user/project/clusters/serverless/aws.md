@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deploying AWS Lambda function using GitLab CI/CD
+# Deploying AWS Lambda function using GitLab CI/CD **(FREE)**
 
 GitLab allows users to easily deploy AWS Lambda functions and create rich serverless applications.
 
@@ -25,7 +25,7 @@ Additionally, in the [How To section](#how-to), you can read about different use
 - Working with secrets.
 - Setting up CORS.
 
-Alternatively, you can quickly [create a new project with a template](../../../../gitlab-basics/create-project.md#project-templates). The [`Serverless Framework/JS` template](https://gitlab.com/gitlab-org/project-templates/serverless-framework/) already includes all parts described below.
+Alternatively, you can quickly [create a new project with a template](../../working_with_projects.md#create-a-project). The [`Serverless Framework/JS` template](https://gitlab.com/gitlab-org/project-templates/serverless-framework/) already includes all parts described below.
 
 ### Example
 
@@ -74,7 +74,7 @@ Place this code in the file `src/handler.js`.
 
 In our case, `module.exports.hello` defines the `hello` handler to reference later in the `serverless.yml`.
 
-You can learn more about the AWS Lambda Node.js function handler and all its various options here: <https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html>
+You can learn more about the [AWS Lambda Node.js function handler](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html) and all its various options in its documentation.
 
 #### Creating a `serverless.yml` file
 
@@ -290,7 +290,7 @@ The example code is available:
 - As a [clonable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
 - In a version with [tests and secret variables](https://gitlab.com/gitlab-org/project-templates/serverless-framework/).
 
-You can also use a [template](../../../../gitlab-basics/create-project.md#project-templates)
+You can also use a [template](../../working_with_projects.md#project-templates)
 (based on the version with tests and secret variables) from within the GitLab UI (see
 the `Serverless Framework/JS` template).
 

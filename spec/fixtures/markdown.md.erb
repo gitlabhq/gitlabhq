@@ -170,6 +170,8 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Ignores invalid: <%= User.reference_prefix %>fake_user
 - Ignored in code: `<%= user.to_reference %>`
 - Ignored in links: [Link to <%= user.to_reference %>](#user-link)
+- Ignored when backslash escaped: \<%= user.to_reference %>
+- Ignored when backslash escaped: \<%= group.to_reference %>
 - Link to user by reference: [User](<%= user.to_reference %>)
 
 #### IssueReferenceFilter
@@ -178,6 +180,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Issue in another project: <%= xissue.to_reference(project) %>
 - Ignored in code: `<%= issue.to_reference %>`
 - Ignored in links: [Link to <%= issue.to_reference %>](#issue-link)
+- Ignored when backslash escaped: \<%= issue.to_reference %>
 - Issue by URL: <%= urls.project_issue_url(issue.project, issue) %>
 - Link to issue by reference: [Issue](<%= issue.to_reference %>)
 - Link to issue by URL: [Issue](<%= urls.project_issue_url(issue.project, issue) %>)
@@ -188,6 +191,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Merge request in another project: <%= xmerge_request.to_reference(project) %>
 - Ignored in code: `<%= merge_request.to_reference %>`
 - Ignored in links: [Link to <%= merge_request.to_reference %>](#merge-request-link)
+- Ignored when backslash escaped: \<%= merge_request.to_reference %>
 - Merge request by URL: <%= urls.project_merge_request_url(merge_request.project, merge_request) %>
 - Link to merge request by reference: [Merge request](<%= merge_request.to_reference %>)
 - Link to merge request by URL: [Merge request](<%= urls.project_merge_request_url(merge_request.project, merge_request) %>)
@@ -198,6 +202,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Snippet in another project: <%= xsnippet.to_reference(project) %>
 - Ignored in code: `<%= snippet.to_reference %>`
 - Ignored in links: [Link to <%= snippet.to_reference %>](#snippet-link)
+- Ignored when backslash escaped: \<%= snippet.to_reference %>
 - Snippet by URL: <%= urls.project_snippet_url(snippet.project, snippet) %>
 - Link to snippet by reference: [Snippet](<%= snippet.to_reference %>)
 - Link to snippet by URL: [Snippet](<%= urls.project_snippet_url(snippet.project, snippet) %>)
@@ -229,6 +234,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Label by name in quotes: <%= label.to_reference(format: :name) %>
 - Ignored in code: `<%= simple_label.to_reference %>`
 - Ignored in links: [Link to <%= simple_label.to_reference %>](#label-link)
+- Ignored when backslash escaped: \<%= simple_label.to_reference %>
 - Link to label by reference: [Label](<%= label.to_reference %>)
 
 #### MilestoneReferenceFilter
@@ -239,6 +245,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Milestone in another project: <%= xmilestone.to_reference(project) %>
 - Ignored in code: `<%= simple_milestone.to_reference %>`
 - Ignored in links: [Link to <%= simple_milestone.to_reference %>](#milestone-link)
+- Ignored when backslash escaped: \<%= simple_milestone.to_reference %>
 - Milestone by URL: <%= urls.milestone_url(milestone) %>
 - Link to milestone by URL: [Milestone](<%= milestone.to_reference %>)
 - Group milestone by name: <%= Milestone.reference_prefix %><%= group_milestone.name %>
@@ -250,6 +257,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Alert in another project: <%= xalert.to_reference(project) %>
 - Ignored in code: `<%= alert.to_reference %>`
 - Ignored in links: [Link to <%= alert.to_reference %>](#alert-link)
+- Ignored when backslash escaped: \<%= alert.to_reference %>
 - Alert by URL: <%= alert.details_url %>
 - Link to alert by reference: [Alert](<%= alert.to_reference %>)
 - Link to alert by URL: [Alert](<%= alert.details_url %>)
@@ -350,3 +358,17 @@ For details see the [Mermaid official page][mermaid].
 
 [mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 
+### PLantUML
+
+```plantuml
+Bob -> Sara : Hello
+```
+
+### Kroki
+
+```nomnoml
+[Pirate|eyeCount: Int|raid();pillage()|
+  [beard]--[parrot]
+  [beard]-:>[foul mouth]
+]
+```

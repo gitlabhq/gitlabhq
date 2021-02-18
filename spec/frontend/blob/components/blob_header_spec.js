@@ -1,8 +1,8 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import BlobHeader from '~/blob/components/blob_header.vue';
-import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
+import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 
 import { Blob } from './mock_data';
 

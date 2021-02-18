@@ -5,7 +5,7 @@ module Types
     class PackageTypeEnum < BaseEnum
       PACKAGE_TYPE_NAMES = {
         pypi: 'PyPI',
-        npm: 'NPM'
+        npm: 'npm'
       }.freeze
 
       ::Packages::Package.package_types.keys.each do |package_type|

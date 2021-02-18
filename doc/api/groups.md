@@ -18,12 +18,12 @@ Parameters:
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ---------- |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (admins only) |
-| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `statistics`             | boolean           | no       | Include group statistics (administrators only) |
+| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 | `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
@@ -62,7 +62,7 @@ GET /groups
 ]
 ```
 
-When adding the parameter `statistics=true` and the authenticated user is an admin, additional group statistics are returned.
+When adding the parameter `statistics=true` and the authenticated user is an administrator, additional group statistics are returned.
 
 ```plaintext
 GET /groups?statistics=true
@@ -130,12 +130,12 @@ Parameters:
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (admins only) |
-| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `statistics`             | boolean           | no       | Include group statistics (administrators only) |
+| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 
@@ -188,12 +188,12 @@ Parameters:
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin). Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (admins only) |
-| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `statistics`             | boolean           | no       | Include group statistics (administrators only) |
+| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 
@@ -284,7 +284,7 @@ Parameters:
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
 | `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
-| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
 1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
@@ -366,7 +366,7 @@ Parameters:
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
-| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
 Example response:
 
@@ -479,7 +479,7 @@ Example response:
 ## Details of a group
 
 Get all details of a group. This endpoint can be accessed without authentication
-if the group is publicly accessible. In case the user that requests is admin of the group, it returns the `runners_token` for the group too.
+if the group is publicly accessible. In case the user that requests is administrator of the group, it returns the `runners_token` for the group too.
 
 ```plaintext
 GET /groups/:id
@@ -490,7 +490,7 @@ Parameters:
 | Attribute                | Type           | Required | Description |
 | ------------------------ | -------------- | -------- | ----------- |
 | `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only). |
+| `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects within a group, use the [list a group's projects endpoint](#list-a-groups-projects).)  |
 
 NOTE:
@@ -670,7 +670,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) also see
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters:
 
 Additional response parameters:
@@ -685,7 +685,7 @@ Additional response parameters:
 }
 ```
 
-Users on GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/) also see
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `marked_for_deletion_on` attribute:
 
 ```json
@@ -764,8 +764,8 @@ Parameters:
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
 ### Options for `default_branch_protection`
 
@@ -838,8 +838,8 @@ PUT /groups/:id
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 | `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
 | `shared_runners_setting`             | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 
@@ -941,6 +941,19 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 | `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 | `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
 
+### Upload a group avatar
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) in GitLab 12.9.
+
+To upload an avatar file from your file system, use the `--form` argument. This causes
+curl to post data using the header `Content-Type: multipart/form-data`. The
+`file=` parameter must point to a file on your file system and be preceded by
+`@`. For example:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" --form "avatar=@/tmp/example.png"
+```
+
 ## Remove group
 
 Only available to group owners and administrators.
@@ -948,7 +961,7 @@ Only available to group owners and administrators.
 This endpoint either:
 
 - Removes group, and queues a background job to delete all projects in the group as well.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 ```plaintext
 DELETE /groups/:id
@@ -997,7 +1010,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## Hooks
+## Hooks **(PREMIUM)**
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1044,6 +1057,7 @@ GET /groups/:id/hooks/:hook_id
   "wiki_page_events": true,
   "deployment_events": true,
   "releases_events": true,
+  "subgroup_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1073,6 +1087,7 @@ POST /groups/:id/hooks
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 
@@ -1101,6 +1116,7 @@ PUT /groups/:id/hooks/:hook_id
 | `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 
@@ -1122,7 +1138,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
-## Sync group with LDAP **(STARTER ONLY)**
+## Sync group with LDAP **(PREMIUM SELF)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1142,7 +1158,7 @@ Please consult the [Group Members](members.md) documentation.
 
 List, add, and delete LDAP group links.
 
-### List LDAP group links **(STARTER ONLY)**
+### List LDAP group links **(PREMIUM SELF)**
 
 Lists LDAP group links.
 
@@ -1154,7 +1170,7 @@ GET /groups/:id/ldap_group_links
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-### Add LDAP group link with CN or filter **(STARTER ONLY)**
+### Add LDAP group link with CN or filter **(PREMIUM SELF)**
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1173,7 +1189,7 @@ POST /groups/:id/ldap_group_links
 NOTE:
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-### Delete LDAP group link **(STARTER ONLY)**
+### Delete LDAP group link **(PREMIUM SELF)**
 
 Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
 
@@ -1198,7 +1214,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-### Delete LDAP group link with CN or filter **(STARTER ONLY)**
+### Delete LDAP group link with CN or filter **(PREMIUM SELF)**
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 
@@ -1306,7 +1322,7 @@ GET /groups/:id/push_rule
 }
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) also see
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
 the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json

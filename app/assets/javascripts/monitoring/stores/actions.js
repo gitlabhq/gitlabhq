@@ -1,23 +1,23 @@
-import * as Sentry from '~/sentry/wrapper';
-import * as types from './mutation_types';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import * as Sentry from '~/sentry/wrapper';
+import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
+import { s__, sprintf } from '../../locale';
+import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
+import trackDashboardLoad from '../monitoring_tracking_helper';
+import getAnnotations from '../queries/getAnnotations.query.graphql';
+import getDashboardValidationWarnings from '../queries/getDashboardValidationWarnings.query.graphql';
+import getEnvironments from '../queries/getEnvironments.query.graphql';
+import { getDashboard, getPrometheusQueryData } from '../requests';
+
+import * as types from './mutation_types';
 import {
   gqClient,
   parseEnvironmentsResponse,
   parseAnnotationsResponse,
   removeLeadingSlash,
 } from './utils';
-import trackDashboardLoad from '../monitoring_tracking_helper';
-import getEnvironments from '../queries/getEnvironments.query.graphql';
-import getAnnotations from '../queries/getAnnotations.query.graphql';
-import getDashboardValidationWarnings from '../queries/getDashboardValidationWarnings.query.graphql';
-import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
-import { s__, sprintf } from '../../locale';
-import { getDashboard, getPrometheusQueryData } from '../requests';
-
-import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
 
 const axiosCancelToken = axios.CancelToken;
 let cancelTokenSource;

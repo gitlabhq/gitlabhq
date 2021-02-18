@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/scalability/idempotent_worker'
 
 RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   before do
@@ -16,21 +14,18 @@ RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker do
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE)
+    expect_offense(<<~CODE)
       class SomeWorker
+      ^^^^^^^^^^^^^^^^ Avoid adding not idempotent workers.[...]
       end
     CODE
-
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
         idempotent!
       end
     CODE
-
-    expect(cop.offenses.size).to be_zero
   end
 end

@@ -1,8 +1,8 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { secondsToHours } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
-import { secondsToHours } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'TimezoneDropdown',

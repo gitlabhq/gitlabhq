@@ -2,7 +2,10 @@
 
 # PagesDeployment stores a zip archive containing GitLab Pages web-site
 class PagesDeployment < ApplicationRecord
+  include EachBatch
   include FileStoreMounter
+
+  MIGRATED_FILE_NAME = "_migrated.zip"
 
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
@@ -10,6 +13,7 @@ class PagesDeployment < ApplicationRecord
   belongs_to :ci_build, class_name: 'Ci::Build', optional: true
 
   scope :older_than, -> (id) { where('id < ?', id) }
+  scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -23,6 +27,10 @@ class PagesDeployment < ApplicationRecord
 
   def log_geo_deleted_event
     # this is to be adressed in https://gitlab.com/groups/gitlab-org/-/epics/589
+  end
+
+  def migrated?
+    file.filename == MIGRATED_FILE_NAME
   end
 
   private

@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import VariablesSection from '~/monitoring/components/variables_section.vue';
+import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
 import TextField from '~/monitoring/components/variables/text_field.vue';
-import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
+import VariablesSection from '~/monitoring/components/variables_section.vue';
 import { createStore } from '~/monitoring/stores';
 import { convertVariablesForURL } from '~/monitoring/utils';
 import { storeVariables } from '../mock_data';

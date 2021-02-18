@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -17,3 +17,6 @@ feedback, and suggestions.
 - [GraphQL API documentation style guide](../documentation/graphql_styleguide.md): documentation
   style guide for GraphQL.
 - [GraphQL API](../../api/graphql/index.md): user documentation for the GitLab GraphQL API.
+- [GraphQL BatchLoader](batchloader.md): development documentation on the batchloader.
+- [GraphQL pagination](pagination.md): development documentation on pagination.
+- [GraphQL Pro](graphql_pro.md): information on our GraphQL Pro subscription.

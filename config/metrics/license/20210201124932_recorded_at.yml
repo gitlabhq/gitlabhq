@@ -1,0 +1,20 @@
+---
+key_path: recorded_at
+description: When the Usage Ping computation was started
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: string
+status: data_available
+milestone: 8.10
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557
+time_frame: none
+data_source: ruby
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate

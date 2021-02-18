@@ -30,7 +30,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
 
     context 'merge requests select' do
       it 'hides merge requests section' do
-        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
 
         expect(page).to have_selector('.merge-requests-feature', visible: false)
       end
@@ -46,7 +46,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
 
     context 'builds select' do
       it 'hides builds select section' do
-        find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
+        find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
 
         expect(page).to have_selector('.builds-feature', visible: false)
       end

@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { mapState, mapActions } from 'vuex';
 import { sprintf, n__, s__ } from '~/locale';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import { parseIssuableData } from '../../issue_show/utils/parse_data';

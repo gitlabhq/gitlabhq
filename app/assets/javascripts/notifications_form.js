@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { __ } from './locale';
-import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
+import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
 
 export default class NotificationsForm {
   constructor() {

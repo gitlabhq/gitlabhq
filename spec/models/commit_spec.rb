@@ -400,6 +400,19 @@ eos
       allow(commit).to receive(:safe_message).and_return(message + "\n" + message)
       expect(commit.full_title).to eq(message)
     end
+
+    it 'truncates html representation if more than 1KiB' do
+      # Commit title is over 2KiB on a single line
+      huge_commit_title = ('panic ' * 350) + 'trailing text'
+
+      allow(commit).to receive(:safe_message).and_return(huge_commit_title)
+
+      commit.refresh_markdown_cache
+      full_title_html = commit.full_title_html
+
+      expect(full_title_html.bytesize).to be < 2.kilobytes
+      expect(full_title_html).not_to include('trailing text')
+    end
   end
 
   describe 'description' do

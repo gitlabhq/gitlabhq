@@ -159,9 +159,10 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a project milestone
 
-## Get all burndown chart events for a single milestone **(STARTER)**
+## Get all burndown chart events for a single milestone **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
+> - Moved to GitLab Premium in 13.9.
 
 Gets all burndown chart events for a single milestone.
 

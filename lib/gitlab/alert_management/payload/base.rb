@@ -12,7 +12,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include Gitlab::Routing
 
-        attr_accessor :project, :payload
+        attr_accessor :project, :payload, :integration
 
         # Any attribute expected to be specifically read from
         # or derived from an alert payload should be defined.
@@ -44,10 +44,24 @@ module Gitlab
           :title
         ].freeze
 
+        private_constant :EXPECTED_PAYLOAD_ATTRIBUTES
+
         # Define expected API for a payload
         EXPECTED_PAYLOAD_ATTRIBUTES.each do |key|
           define_method(key) {}
         end
+
+        SEVERITY_MAPPING = {
+          'critical' => :critical,
+          'high' => :high,
+          'medium' => :medium,
+          'low' => :low,
+          'info' => :info
+        }.freeze
+
+        # Handle an unmapped severity value the same way we treat missing values
+        # so we can fallback to alert's default severity `critical`.
+        UNMAPPED_SEVERITY = nil
 
         # Defines a method which allows access to a given
         # value within an alert payload
@@ -131,9 +145,21 @@ module Gitlab
           true
         end
 
+        def severity
+          severity_mapping.fetch(severity_raw.to_s.downcase, UNMAPPED_SEVERITY)
+        end
+
         private
 
-        def plain_gitlab_fingerprint; end
+        def plain_gitlab_fingerprint
+        end
+
+        def severity_raw
+        end
+
+        def severity_mapping
+          SEVERITY_MAPPING
+        end
 
         def truncate_hosts(hosts)
           return hosts if hosts.join.length <= ::AlertManagement::Alert::HOSTS_MAX_LENGTH
@@ -147,6 +173,7 @@ module Gitlab
           end
         end
 
+        # Overriden in EE::Gitlab::AlertManagement::Payload::Generic
         def value_for_paths(paths)
           target_path = paths.find { |path| payload&.dig(*path) }
 

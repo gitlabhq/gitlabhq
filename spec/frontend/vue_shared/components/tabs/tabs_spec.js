@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Tabs from '~/vue_shared/components/tabs/tabs';
 import Tab from '~/vue_shared/components/tabs/tab.vue';
+import Tabs from '~/vue_shared/components/tabs/tabs';
 
 describe('Tabs component', () => {
   let vm;

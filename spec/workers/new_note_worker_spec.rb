@@ -65,4 +65,24 @@ RSpec.describe NewNoteWorker do
       subject.perform(note.id)
     end
   end
+
+  context 'when Note author has been blocked' do
+    let_it_be(:note) { create(:note, author: create(:user, :blocked)) }
+
+    it "does not call NotificationService" do
+      expect(NotificationService).not_to receive(:new)
+
+      described_class.new.perform(note.id)
+    end
+  end
+
+  context 'when Note author has been deleted' do
+    let_it_be(:note) { create(:note, author: User.ghost) }
+
+    it "does not call NotificationService" do
+      expect(NotificationService).not_to receive(:new)
+
+      described_class.new.perform(note.id)
+    end
+  end
 end

@@ -1,8 +1,8 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
-import UserAvailabilityStatus from '~/set_status_modal/components/user_availability_status.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
+import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
+import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 
 const DEFAULT_PROPS = {
   user: {
@@ -36,7 +36,7 @@ describe('User Popover Component', () => {
   const findByTestId = (testid) => wrapper.find(`[data-testid="${testid}"]`);
   const findUserStatus = () => wrapper.find('.js-user-status');
   const findTarget = () => document.querySelector('.js-user-link');
-  const findAvailabilityStatus = () => wrapper.find(UserAvailabilityStatus);
+  const findUserName = () => wrapper.find(UserNameWithStatus);
 
   const createWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(UserPopover, {
@@ -47,7 +47,7 @@ describe('User Popover Component', () => {
       },
       stubs: {
         GlSprintf,
-        UserAvailabilityStatus,
+        UserNameWithStatus,
       },
       ...options,
     });
@@ -213,7 +213,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(findAvailabilityStatus().exists()).toBe(true);
+      expect(findUserName().exists()).toBe(true);
       expect(wrapper.text()).toContain(user.name);
       expect(wrapper.text()).toContain('(Busy)');
     });

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import katex from 'katex';
+import Vue from 'vue';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
 
 const Component = Vue.extend(MarkdownComponent);

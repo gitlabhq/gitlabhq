@@ -13,7 +13,7 @@ To effectively use GitLab CI/CD, you need:
   of your project.
 - A [runner](runners/README.md) properly set up.
 
-You can read our [quick start guide](quick_start/README.md) to get you started.
+You can read our [quick start guide](quick_start/index.md) to get you started.
 
 If you are using an external CI/CD server like Jenkins or Drone CI, it is advised
 to disable GitLab CI/CD in order to not have any conflicts with the commits status

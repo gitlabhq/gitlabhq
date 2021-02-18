@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Gitaly timeouts **(CORE ONLY)**
+# Gitaly timeouts **(FREE SELF)**
 
 [Gitaly](../../../administration/gitaly/index.md) timeouts are configurable. The timeouts can be
 configured to make sure that long running Gitaly calls don't needlessly take up resources.

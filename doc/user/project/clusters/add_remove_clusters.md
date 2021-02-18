@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Adding and removing Kubernetes clusters
+# Adding and removing Kubernetes clusters **(FREE)**
 
 GitLab offers integrated cluster creation for the following Kubernetes providers:
 
@@ -40,7 +40,7 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
   - [Maintainer access to a group](../../permissions.md#group-members-permissions) for a
     group-level cluster.
   - [Admin Area access](../../admin_area/index.md) for a self-managed instance-level
-    cluster. **(CORE ONLY)**
+    cluster. **(FREE SELF)**
 
 ## Access controls
 
@@ -387,3 +387,13 @@ If you encounter this error while adding a Kubernetes cluster, ensure you're
 properly pasting the service token. Some shells may add a line break to the
 service token, making it invalid. Ensure that there are no line breaks by
 pasting your token into an editor and removing any additional spaces.
+
+You may also experience this error if your certificate is not valid. To check that your certificate's
+subject alternative names contain the correct domain for your cluster's API, run this:
+
+```shell
+echo | openssl s_client -showcerts -connect kubernetes.example.com:443 2>/dev/null |
+openssl x509 -inform pem -noout -text
+```
+
+Note that the `-connect` argument expects a `host:port` combination. For example, `https://kubernetes.example.com` would be `kubernetes.example.com:443`.

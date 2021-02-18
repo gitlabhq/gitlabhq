@@ -43,6 +43,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
       end
 
       context 'with a tag' do
@@ -66,6 +67,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
       end
     end
 

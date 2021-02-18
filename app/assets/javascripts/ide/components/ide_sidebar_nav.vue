@@ -1,7 +1,8 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { otherSide } from '../utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { SIDE_RIGHT } from '../constants';
+import { otherSide } from '../utils';
 
 export default {
   directives: {
@@ -50,7 +51,7 @@ export default {
     },
     clickTab(e, tab) {
       e.currentTarget.blur();
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
 
       if (this.isActiveTab(tab)) {
         this.$emit('close');

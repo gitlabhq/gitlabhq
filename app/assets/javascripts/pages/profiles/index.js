@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import '~/profile/gl_crop';
 import Profile from '~/profile/profile';
+import initSearchSettings from '~/search_settings';
 
 document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line func-names
@@ -17,4 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   new Profile(); // eslint-disable-line no-new
+
+  initSearchSettings();
 });

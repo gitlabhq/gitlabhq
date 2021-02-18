@@ -1,61 +1,55 @@
-import Vue from 'vue';
-import sidebarDetailRow from '~/jobs/components/sidebar_detail_row.vue';
+import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import SidebarDetailRow from '~/jobs/components/sidebar_detail_row.vue';
 
 describe('Sidebar detail row', () => {
-  let SidebarDetailRow;
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    SidebarDetailRow = Vue.extend(sidebarDetailRow);
-  });
+  const title = 'this is the title';
+  const value = 'this is the value';
+  const helpUrl = '/help/ci/runners/README.html';
+
+  const findHelpLink = () => wrapper.findComponent(GlLink);
+
+  const createComponent = (props) => {
+    wrapper = shallowMount(SidebarDetailRow, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('should render no title', () => {
-    vm = new SidebarDetailRow({
-      propsData: {
-        value: 'this is the value',
-      },
-    }).$mount();
+  describe('with title/value and without helpUrl', () => {
+    beforeEach(() => {
+      createComponent({ title, value });
+    });
 
-    expect(vm.$el.textContent.replace(/\s+/g, ' ').trim()).toEqual('this is the value');
-  });
+    it('should render the provided title and value', () => {
+      expect(wrapper.text()).toBe(`${title}: ${value}`);
+    });
 
-  beforeEach(() => {
-    vm = new SidebarDetailRow({
-      propsData: {
-        title: 'this is the title',
-        value: 'this is the value',
-      },
-    }).$mount();
-  });
-
-  it('should render provided title and value', () => {
-    expect(vm.$el.textContent.replace(/\s+/g, ' ').trim()).toEqual(
-      'this is the title: this is the value',
-    );
-  });
-
-  describe('when helpUrl not provided', () => {
-    it('should not render help', () => {
-      expect(vm.$el.querySelector('.help-button')).toBeNull();
+    it('should not render the help link', () => {
+      expect(findHelpLink().exists()).toBe(false);
     });
   });
 
   describe('when helpUrl provided', () => {
     beforeEach(() => {
-      vm = new SidebarDetailRow({
-        propsData: {
-          helpUrl: 'help url',
-          value: 'foo',
-        },
-      }).$mount();
+      createComponent({
+        helpUrl,
+        title,
+        value,
+      });
     });
 
-    it('should render help', () => {
-      expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
+    it('should render the help link', () => {
+      expect(findHelpLink().exists()).toBe(true);
+      expect(findHelpLink().attributes('href')).toBe(helpUrl);
     });
   });
 });

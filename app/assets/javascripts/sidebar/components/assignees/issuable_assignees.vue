@@ -8,11 +8,15 @@ export default {
     GlButton,
     UncollapsedAssigneeList,
   },
-  inject: ['rootPath'],
   props: {
     users: {
       type: Array,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: 'issue',
     },
   },
   computed: {
@@ -36,9 +40,9 @@ export default {
         variant="link"
         @click="$emit('assign-self')"
       >
-        <span class="gl-text-gray-400">{{ __('assign yourself') }}</span>
+        <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>
       </gl-button>
     </div>
-    <uncollapsed-assignee-list v-else :users="users" :root-path="rootPath" />
+    <uncollapsed-assignee-list v-else :users="users" :issuable-type="issuableType" />
   </div>
 </template>

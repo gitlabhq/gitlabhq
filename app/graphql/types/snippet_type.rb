@@ -14,15 +14,15 @@ module Types
     expose_permissions Types::PermissionTypes::Snippet
 
     field :id, Types::GlobalIDType[::Snippet],
-          description: 'ID of the snippet',
+          description: 'ID of the snippet.',
           null: false
 
     field :title, GraphQL::STRING_TYPE,
-          description: 'Title of the snippet',
+          description: 'Title of the snippet.',
           null: false
 
     field :project, Types::ProjectType,
-          description: 'The project the snippet is associated with',
+          description: 'The project the snippet is associated with.',
           null: true,
           authorize: :read_project
 
@@ -30,56 +30,56 @@ module Types
     # when the admin setting restricted visibility
     # level is set to public
     field :author, Types::UserType,
-          description: 'The owner of the snippet',
+          description: 'The owner of the snippet.',
           null: true
 
     field :file_name, GraphQL::STRING_TYPE,
-          description: 'File Name of the snippet',
+          description: 'File Name of the snippet.',
           null: true
 
     field :description, GraphQL::STRING_TYPE,
-          description: 'Description of the snippet',
+          description: 'Description of the snippet.',
           null: true
 
     field :visibility_level, Types::VisibilityLevelsEnum,
-          description: 'Visibility Level of the snippet',
+          description: 'Visibility Level of the snippet.',
           null: false
 
     field :created_at, Types::TimeType,
-          description: 'Timestamp this snippet was created',
+          description: 'Timestamp this snippet was created.',
           null: false
 
     field :updated_at, Types::TimeType,
-          description: 'Timestamp this snippet was updated',
+          description: 'Timestamp this snippet was updated.',
           null: false
 
     field :web_url, type: GraphQL::STRING_TYPE,
-          description: 'Web URL of the snippet',
+          description: 'Web URL of the snippet.',
           null: false
 
     field :raw_url, type: GraphQL::STRING_TYPE,
-          description: 'Raw URL of the snippet',
+          description: 'Raw URL of the snippet.',
           null: false
 
     field :blob, type: Types::Snippets::BlobType,
-          description: 'Snippet blob',
+          description: 'Snippet blob.',
           calls_gitaly: true,
           null: false,
           deprecated: { reason: 'Use `blobs`', milestone: '13.3' }
 
     field :blobs, type: Types::Snippets::BlobType.connection_type,
-          description: 'Snippet blobs',
+          description: 'Snippet blobs.',
           calls_gitaly: true,
           null: true,
           resolver: Resolvers::Snippets::BlobsResolver
 
     field :ssh_url_to_repo, type: GraphQL::STRING_TYPE,
-          description: 'SSH URL to the snippet repository',
+          description: 'SSH URL to the snippet repository.',
           calls_gitaly: true,
           null: true
 
     field :http_url_to_repo, type: GraphQL::STRING_TYPE,
-          description: 'HTTP URL to the snippet repository',
+          description: 'HTTP URL to the snippet repository.',
           calls_gitaly: true,
           null: true
 

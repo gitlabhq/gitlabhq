@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import {
   queryToObject,
   redirectTo,
@@ -8,14 +9,13 @@ import {
   mergeUrlParams,
   updateHistory,
 } from '~/lib/utils/url_utility';
-import axios from '~/lib/utils/axios_utils';
-import { mockProjectDir } from '../mock_data';
-import { dashboardProps } from '../fixture_data';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import { createStore } from '~/monitoring/stores';
 import { defaultTimeRange } from '~/vue_shared/constants';
+import { dashboardProps } from '../fixture_data';
+import { mockProjectDir } from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility');

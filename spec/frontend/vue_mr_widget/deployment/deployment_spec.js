@@ -1,7 +1,4 @@
 import { mount } from '@vue/test-utils';
-import DeploymentComponent from '~/vue_merge_request_widget/components/deployment/deployment.vue';
-import DeploymentInfo from '~/vue_merge_request_widget/components/deployment/deployment_info.vue';
-import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
 import {
   CREATED,
   RUNNING,
@@ -10,6 +7,9 @@ import {
   CANCELED,
   SKIPPED,
 } from '~/vue_merge_request_widget/components/deployment/constants';
+import DeploymentComponent from '~/vue_merge_request_widget/components/deployment/deployment.vue';
+import DeploymentInfo from '~/vue_merge_request_widget/components/deployment/deployment_info.vue';
+import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
 import { deploymentMockData, playDetails, retryDetails } from './deployment_mock_data';
 
 describe('Deployment component', () => {

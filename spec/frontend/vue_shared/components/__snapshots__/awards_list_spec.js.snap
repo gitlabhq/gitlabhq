@@ -18,13 +18,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="thumbsup"
       />
-      
-  
     </span>
      
     <span
@@ -52,13 +48,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="thumbsdown"
       />
-      
-  
     </span>
      
     <span
@@ -86,13 +78,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="smile"
       />
-      
-  
     </span>
      
     <span
@@ -120,13 +108,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="ok_hand"
       />
-      
-  
     </span>
      
     <span
@@ -154,13 +138,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="cactus"
       />
-      
-  
     </span>
      
     <span
@@ -188,13 +168,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="a"
       />
-      
-  
     </span>
      
     <span
@@ -222,13 +198,9 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       class="award-emoji-block"
       data-testid="award-html"
     >
-      
-    
       <gl-emoji
         data-name="b"
       />
-      
-  
     </span>
      
     <span

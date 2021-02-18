@@ -75,8 +75,7 @@ types. If you want to use local storage for specific object types, you can
 
 Most types of objects, such as CI artifacts, LFS files, upload
 attachments, and so on can be saved in object storage by specifying a single
-credential for object storage with multiple buckets. A [different bucket
-for each type must be used](#use-separate-buckets).
+credential for object storage with multiple buckets.
 
 When the consolidated form is:
 
@@ -551,19 +550,18 @@ supported by consolidated configuration form, refer to the following guides:
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
-| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | Yes |
+| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](terraform_state.md#using-object-storage) | Yes |
 | [GitLab Pages content](pages/index.md#using-object-storage) | Yes |
 
-### Other alternatives to filesystem storage
+### Other alternatives to file system storage
 
 If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
 or add fault tolerance and redundancy, you may be
-looking at removing dependencies on block or network filesystems.
-See the following additional guides and
-[note that Pages requires disk storage](#gitlab-pages-requires-nfs):
+looking at removing dependencies on block or network file systems.
+See the following additional guides:
 
 1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
 1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
@@ -572,22 +570,13 @@ See the following additional guides and
 
 ## Warnings, limitations, and known issues
 
-### Use separate buckets
+### Separate buckets required when using Helm
 
-Using separate buckets for each data type is the recommended approach for GitLab.
+Generally, using the same bucket for your Object Storage is fine to do
+for convenience.
 
-A limitation of our configuration is that each use of object storage is separately configured.
-[We have an issue for improving this](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-and easily using one bucket with separate folders is one improvement that this might bring.
-
-There is at least one specific issue with using the same bucket:
-when GitLab is deployed with the Helm chart restore from backup
-[will not properly function](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
-unless separate buckets are used.
-
-One risk of using a single bucket would be that if your organisation decided to
-migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
-backups might not be realised until the organisation had a critical requirement for the backups to work.
+However, if you're using or planning to use Helm, separate buckets will
+be required as there is a [known limitation with restorations of Helm chart backups](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
 
 ### S3 API compatibility issues
 
@@ -597,17 +586,6 @@ with the Fog library that GitLab uses. Symptoms include an error in `production.
 ```plaintext
 411 Length Required
 ```
-
-### GitLab Pages requires NFS
-
-If you're working to add more GitLab servers for [scaling or fault tolerance](reference_architectures/index.md)
-and one of your requirements is [GitLab Pages](../user/project/pages/index.md) this currently requires
-NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196)
-to remove this dependency. In the future, GitLab Pages may use
-[object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/208135).
-
-The dependency on disk storage also prevents Pages being deployed using the
-[GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37).
 
 ### Incremental logging is required for CI to use object storage
 

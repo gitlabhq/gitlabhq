@@ -720,7 +720,8 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       committer_name: "Dmitriy Zaporozhets",
       id: SeedRepo::Commit::ID,
       message: "tree css fixes",
-      parent_ids: ["874797c3a73b60d2187ed6e2fcabd289ff75171e"]
+      parent_ids: ["874797c3a73b60d2187ed6e2fcabd289ff75171e"],
+      trailers: {}
     }
   end
 end

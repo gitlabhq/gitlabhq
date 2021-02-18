@@ -19,8 +19,6 @@
 
   .discussion-reply-holder
     - if can_create_note?
-      %a.user-avatar-link.d-none.d-sm-block{ href: user_path(current_user) }
-        = image_tag avatar_icon_for_user(current_user), alt: current_user.to_reference, class: 'avatar s40'
       .discussion-with-resolve-btn
         = link_to_reply_discussion(discussion)
     - elsif !current_user

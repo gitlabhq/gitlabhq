@@ -1,6 +1,6 @@
+import * as types from '~/search/store/mutation_types';
 import mutations from '~/search/store/mutations';
 import createState from '~/search/store/state';
-import * as types from '~/search/store/mutation_types';
 import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECTS } from '../mock_data';
 
 describe('Global Search Store Mutations', () => {

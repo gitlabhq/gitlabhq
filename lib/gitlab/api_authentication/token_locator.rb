@@ -10,7 +10,7 @@ module Gitlab
 
       attr_reader :location
 
-      validates :location, inclusion: { in: %i[http_basic_auth] }
+      validates :location, inclusion: { in: %i[http_basic_auth http_token] }
 
       def initialize(location)
         @location = location
@@ -21,6 +21,8 @@ module Gitlab
         case @location
         when :http_basic_auth
           extract_from_http_basic_auth request
+        when :http_token
+          extract_from_http_token request
         end
       end
 
@@ -31,6 +33,13 @@ module Gitlab
         return unless username.present? && password.present?
 
         UsernameAndPassword.new(username, password)
+      end
+
+      def extract_from_http_token(request)
+        password = request.headers['Authorization']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password)
       end
     end
   end

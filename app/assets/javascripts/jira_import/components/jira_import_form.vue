@@ -15,10 +15,11 @@ import {
   GlTable,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import getJiraUserMappingMutation from '../queries/get_jira_user_mapping.mutation.graphql';
 import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';
+import searchProjectMembersQuery from '../queries/search_project_members.query.graphql';
 import { addInProgressImportToStore } from '../utils/cache_update';
 import {
   debounceWait,
@@ -155,19 +156,23 @@ export default {
         });
     },
     searchUsers() {
-      const params = {
-        active: true,
-        project_id: this.projectId,
-        search: this.searchTerm,
-      };
-
       this.isFetching = true;
 
-      return axios
-        .get('/-/autocomplete/users.json', { params })
+      return this.$apollo
+        .query({
+          query: searchProjectMembersQuery,
+          variables: {
+            fullPath: this.projectPath,
+            search: this.searchTerm,
+          },
+        })
         .then(({ data }) => {
-          this.users = data;
-          return data;
+          this.users =
+            data?.project?.projectMembers?.nodes?.map(({ user }) => ({
+              ...user,
+              id: getIdFromGraphQLId(user.id),
+            })) || [];
+          return this.users;
         })
         .finally(() => {
           this.isFetching = false;

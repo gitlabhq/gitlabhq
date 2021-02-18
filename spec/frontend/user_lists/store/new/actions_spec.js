@@ -1,9 +1,9 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createState from '~/user_lists/store/new/state';
-import * as types from '~/user_lists/store/new/mutation_types';
-import * as actions from '~/user_lists/store/new/actions';
 import { redirectTo } from '~/lib/utils/url_utility';
+import * as actions from '~/user_lists/store/new/actions';
+import * as types from '~/user_lists/store/new/mutation_types';
+import createState from '~/user_lists/store/new/state';
 import { userList } from '../../../feature_flags/mock_data';
 
 jest.mock('~/api');

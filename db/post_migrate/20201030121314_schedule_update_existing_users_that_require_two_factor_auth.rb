@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # # frozen_string_literal: true
 
 class ScheduleUpdateExistingUsersThatRequireTwoFactorAuth < ActiveRecord::Migration[6.0]

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Git Attributes
+# Git Attributes **(FREE)**
 
 GitLab supports defining custom [Git attributes](https://git-scm.com/docs/gitattributes) such as what
 files to treat as binary, and what language to use for syntax highlighting

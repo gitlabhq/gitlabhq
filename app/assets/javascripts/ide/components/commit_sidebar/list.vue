@@ -1,6 +1,6 @@
 <script>
-import { mapActions } from 'vuex';
 import { GlModal, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import ListItem from './list_item.vue';
 

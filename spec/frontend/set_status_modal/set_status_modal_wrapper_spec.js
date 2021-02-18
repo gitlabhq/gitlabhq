@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { initEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';

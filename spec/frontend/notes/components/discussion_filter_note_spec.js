@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import DiscussionFilterNote from '~/notes/components/discussion_filter_note.vue';
 import eventHub from '~/notes/event_hub';
 

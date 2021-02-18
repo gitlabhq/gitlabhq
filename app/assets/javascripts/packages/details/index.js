@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import PackagesApp from './components/app.vue';
 import Translate from '~/vue_shared/translate';
+import PackagesApp from './components/app.vue';
 import createStore from './store';
 
 Vue.use(Translate);

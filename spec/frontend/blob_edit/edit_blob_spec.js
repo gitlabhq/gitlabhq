@@ -1,8 +1,8 @@
 import waitForPromises from 'helpers/wait_for_promises';
 import EditBlob from '~/blob_edit/edit_blob';
 import EditorLite from '~/editor/editor_lite';
-import { EditorMarkdownExtension } from '~/editor/extensions/editor_markdown_ext';
 import { FileTemplateExtension } from '~/editor/extensions/editor_file_template_ext';
+import { EditorMarkdownExtension } from '~/editor/extensions/editor_markdown_ext';
 
 jest.mock('~/editor/editor_lite');
 jest.mock('~/editor/extensions/editor_markdown_ext');

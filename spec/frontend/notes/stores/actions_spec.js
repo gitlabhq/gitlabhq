@@ -1,13 +1,18 @@
-import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import * as actions from '~/notes/stores/actions';
-import mutations from '~/notes/stores/mutations';
-import * as mutationTypes from '~/notes/stores/mutation_types';
+import axios from '~/lib/utils/axios_utils';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
+import * as actions from '~/notes/stores/actions';
+import * as mutationTypes from '~/notes/stores/mutation_types';
+import mutations from '~/notes/stores/mutations';
+import * as utils from '~/notes/stores/utils';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { resetStore } from '../helpers';
 import {
@@ -18,11 +23,6 @@ import {
   individualNote,
   batchSuggestionsInfoMock,
 } from '../mock_data';
-import axios from '~/lib/utils/axios_utils';
-import * as utils from '~/notes/stores/utils';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
-import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
-import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 jest.mock('~/flash');
@@ -291,8 +291,44 @@ describe('Actions Notes Store', () => {
           [
             { type: 'updateOrCreateNotes', payload: discussionMock.notes },
             { type: 'startTaskList' },
+            { type: 'updateResolvableDiscussionsCounts' },
           ],
         ));
+    });
+
+    describe('paginated notes feature flag enabled', () => {
+      const lastFetchedAt = '12358';
+
+      beforeEach(() => {
+        window.gon = { features: { paginatedNotes: true } };
+
+        axiosMock.onGet(notesDataMock.notesPath).replyOnce(200, {
+          notes: discussionMock.notes,
+          more: false,
+          last_fetched_at: lastFetchedAt,
+        });
+      });
+
+      afterEach(() => {
+        window.gon = null;
+      });
+
+      it('should dispatch setFetchingState, setNotesFetchedState, setLoadingState, updateOrCreateNotes, startTaskList and commit SET_LAST_FETCHED_AT', () => {
+        return testAction(
+          actions.fetchData,
+          null,
+          { notesData: notesDataMock, isFetching: true },
+          [{ type: 'SET_LAST_FETCHED_AT', payload: lastFetchedAt }],
+          [
+            { type: 'setFetchingState', payload: false },
+            { type: 'setNotesFetchedState', payload: true },
+            { type: 'setLoadingState', payload: false },
+            { type: 'updateOrCreateNotes', payload: discussionMock.notes },
+            { type: 'startTaskList' },
+            { type: 'updateResolvableDiscussionsCounts' },
+          ],
+        );
+      });
     });
   });
 
@@ -1276,10 +1312,27 @@ describe('Actions Notes Store', () => {
         return actions
           .updateConfidentialityOnIssuable({ commit: commitSpy, state, getters }, actionArgs)
           .then(() => {
+            expect(Flash).not.toHaveBeenCalled();
             expect(commitSpy).toHaveBeenCalledWith(
               mutationTypes.SET_ISSUE_CONFIDENTIAL,
               confidential,
             );
+          });
+      });
+    });
+
+    describe('on user recoverable error', () => {
+      it('sends the error to Flash', () => {
+        const error = 'error';
+
+        jest
+          .spyOn(utils.gqClient, 'mutate')
+          .mockResolvedValue({ data: { issueSetConfidential: { errors: [error] } } });
+
+        return actions
+          .updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs)
+          .then(() => {
+            expect(Flash).toHaveBeenCalledWith(error, 'alert');
           });
       });
     });
@@ -1350,6 +1403,19 @@ describe('Actions Notes Store', () => {
         updatedPosition,
         { state: { discussions: [] } },
         [{ type: mutationTypes.UPDATE_DISCUSSION_POSITION, payload: updatedPosition }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setFetchingState', () => {
+    it('commits SET_NOTES_FETCHING_STATE', (done) => {
+      testAction(
+        actions.setFetchingState,
+        true,
+        null,
+        [{ type: mutationTypes.SET_NOTES_FETCHING_STATE, payload: true }],
         [],
         done,
       );

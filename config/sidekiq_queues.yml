@@ -158,6 +158,12 @@
   - 1
 - - group_saml_group_sync
   - 1
+- - group_wikis_git_garbage_collect
+  - 1
+- - groups_schedule_bulk_repository_shard_moves
+  - 1
+- - groups_update_repository_storage
+  - 1
 - - hashed_storage
   - 1
 - - import_issues_csv
@@ -165,6 +171,8 @@
 - - incident_management
   - 2
 - - incident_management_apply_incident_sla_exceeded_label
+  - 1
+- - incident_management_oncall_rotations_persist_shifts_job
   - 1
 - - invalid_gpg_signature_update
   - 2
@@ -270,6 +278,8 @@
   - 1
 - - project_update_repository_storage
   - 1
+- - projects_git_garbage_collect
+  - 1
 - - prometheus_create_default_alerts
   - 1
 - - propagate_integration
@@ -359,6 +369,8 @@
 - - web_hook
   - 1
 - - web_hooks_destroy
+  - 1
+- - wikis_git_garbage_collect
   - 1
 - - x509_certificate_revoke
   - 1

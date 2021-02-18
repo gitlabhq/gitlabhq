@@ -1,9 +1,9 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import { visitUrl } from './lib/utils/url_utility';
-import { parseBoolean } from './lib/utils/common_utils';
 import { hide, initTooltips, show } from '~/tooltips';
+import { parseBoolean } from './lib/utils/common_utils';
+import { visitUrl } from './lib/utils/url_utility';
 
 export default class BuildArtifacts {
   constructor() {

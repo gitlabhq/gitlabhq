@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import { textColorForBackground } from '~/lib/utils/color_utils';
+import { __ } from '~/locale';
 
 export default () => {
   const $broadcastMessageColor = $('.js-broadcast-message-color');

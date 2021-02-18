@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBarChart } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import Bar from '~/monitoring/components/charts/bar.vue';
 import { barGraphData } from '../../graph_data';
 

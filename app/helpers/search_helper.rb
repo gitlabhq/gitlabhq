@@ -129,6 +129,27 @@ module SearchHelper
     @search_service ||= ::SearchService.new(current_user, params.merge(confidential: Gitlab::Utils.to_boolean(params[:confidential])))
   end
 
+  def search_sort_options
+    [
+      {
+        title: _('Created date'),
+        sortable: true,
+        sortParam: {
+          asc: 'created_asc',
+          desc: 'created_desc'
+        }
+      },
+      {
+        title: _('Last updated'),
+        sortable: true,
+        sortParam: {
+          asc: 'updated_asc',
+          desc: 'updated_desc'
+        }
+      }
+    ]
+  end
+
   private
 
   # Autocomplete results for various settings pages

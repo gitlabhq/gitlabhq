@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import UploadButton from '~/design_management/components/upload/button.vue';
 
 describe('Design management upload button component', () => {

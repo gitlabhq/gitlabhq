@@ -1,14 +1,7 @@
 .feature-highlight {
-  position: relative;
-  margin-left: $gl-padding;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-
   &::before {
     content: '';
     display: block;
-    position: absolute;
     top: 6px;
     left: 6px;
     width: 8px;
@@ -29,54 +22,20 @@
   }
 }
 
-.feature-highlight-popover-content {
-  display: none;
 
-  hr {
-    margin: $gl-padding 0;
-  }
-
-  .btn-link {
-    svg {
-      @include btn-svg;
-
-      path {
-        fill: currentColor;
-      }
-    }
-  }
-
-  .feature-highlight-illustration {
-    width: 100%;
-    height: 100px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-
-    background-color: $indigo-50;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom: 1px solid darken($gray-normal, 8%);
-  }
-}
-
-.popover .feature-highlight-popover-content {
-  display: block;
+.feature-highlight-illustration {
+  background-color: $indigo-50;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  border-bottom: 1px solid darken($gray-normal, 8%);
 }
 
 .feature-highlight-popover {
   width: 240px;
 
-  &.right > .arrow {
-    border-right-color: $border-color;
-  }
-
   .popover-body {
     padding: 0;
   }
-}
-
-.feature-highlight-popover-sub-content {
-  padding: $gl-padding $gl-padding-12;
 }
 
 @include keyframes(pulse-highlight) {

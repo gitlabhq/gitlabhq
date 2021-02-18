@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
 import Heatmap from '~/monitoring/components/charts/heatmap.vue';
 import { heatmapGraphData } from '../../graph_data';

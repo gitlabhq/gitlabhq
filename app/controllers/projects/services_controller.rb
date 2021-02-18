@@ -14,7 +14,7 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action only: :edit do
     push_frontend_feature_flag(:jira_issues_integration, @project, type: :licensed, default_enabled: true)
     push_frontend_feature_flag(:jira_vulnerabilities_integration, @project, type: :licensed, default_enabled: true)
-    push_frontend_feature_flag(:jira_for_vulnerabilities, @project, type: :development, default_enabled: false)
+    push_frontend_feature_flag(:jira_for_vulnerabilities, @project, type: :development, default_enabled: :yaml)
   end
 
   respond_to :html

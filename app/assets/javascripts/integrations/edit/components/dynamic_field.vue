@@ -1,10 +1,10 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapGetters } from 'vuex';
-import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
-import eventHub from '../event_hub';
+import { capitalize, lowerCase, isEmpty } from 'lodash';
+import { mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
+import eventHub from '../event_hub';
 
 export default {
   name: 'DynamicField',

@@ -3,33 +3,21 @@
 require 'fast_spec_helper'
 
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../rubocop/cop/include_sidekiq_worker'
 
 RSpec.describe RuboCop::Cop::IncludeSidekiqWorker do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'when `Sidekiq::Worker` is included' do
-    let(:source) { 'include Sidekiq::Worker' }
-    let(:correct_source) { 'include ApplicationWorker' }
+    it 'registers an offense and corrects', :aggregate_failures do
+      expect_offense(<<~CODE)
+        include Sidekiq::Worker
+                ^^^^^^^^^^^^^^^ Include `ApplicationWorker`, not `Sidekiq::Worker`.
+      CODE
 
-    it 'registers an offense' do
-      inspect_source(source)
-
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.map(&:line)).to eq([1])
-        expect(cop.highlights).to eq(['Sidekiq::Worker'])
-      end
-    end
-
-    it 'autocorrects to the right version' do
-      autocorrected = autocorrect_source(source)
-
-      expect(autocorrected).to eq(correct_source)
+      expect_correction(<<~CODE)
+        include ApplicationWorker
+      CODE
     end
   end
 end

@@ -1,6 +1,7 @@
 import { TEST_HOST } from 'helpers/test_constants';
-import * as getters from '~/ide/stores/getters';
 import { createStore } from '~/ide/stores';
+import * as getters from '~/ide/stores/getters';
+import { DEFAULT_PERMISSIONS } from '../../../../app/assets/javascripts/ide/constants';
 import { file } from '../helpers';
 
 const TEST_PROJECT_ID = 'test_project';
@@ -386,7 +387,9 @@ describe('IDE store getters', () => {
 
   describe('findProjectPermissions', () => {
     it('returns false if project not found', () => {
-      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toEqual({});
+      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toEqual(
+        DEFAULT_PERMISSIONS,
+      );
     });
 
     it('finds permission in given project', () => {

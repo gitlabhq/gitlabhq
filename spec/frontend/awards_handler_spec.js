@@ -1,10 +1,10 @@
+import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import MockAdapter from 'axios-mock-adapter';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
-import axios from '~/lib/utils/axios_utils';
 import loadAwardsHandler from '~/awards_handler';
 import { EMOJI_VERSION } from '~/emoji';
+import axios from '~/lib/utils/axios_utils';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};
@@ -51,6 +51,12 @@ describe('AwardsHandler', () => {
       c: 'people',
       e: '😎',
       d: 'smiling face with sunglasses',
+      u: '6.0',
+    },
+    grey_question: {
+      c: 'symbols',
+      e: '❔',
+      d: 'white question mark ornament',
       u: '6.0',
     },
   };
@@ -283,16 +289,6 @@ describe('AwardsHandler', () => {
       expect($('[data-name=anger]').is(':visible')).toBe(true);
       expect($('[data-name=alien]').is(':visible')).toBe(true);
       expect($('.js-emoji-menu-search').val()).toBe('');
-    });
-
-    it('should fuzzy filter the emoji', async () => {
-      await openAndWaitForEmojiMenu();
-
-      awardsHandler.searchEmojis('sgls');
-
-      expect($('[data-name=angel]').is(':visible')).toBe(false);
-      expect($('[data-name=anger]').is(':visible')).toBe(false);
-      expect($('[data-name=sunglasses]').is(':visible')).toBe(true);
     });
 
     it('should filter by emoji description', async () => {

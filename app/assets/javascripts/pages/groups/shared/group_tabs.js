@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import { removeParams } from '~/lib/utils/url_utility';
 import createGroupTree from '~/groups';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
@@ -9,8 +8,9 @@ import {
   GROUPS_LIST_HOLDER_CLASS,
   GROUPS_FILTER_FORM_CLASS,
 } from '~/groups/constants';
-import UserTabs from '~/pages/users/user_tabs';
 import GroupFilterableList from '~/groups/groups_filterable_list';
+import { removeParams } from '~/lib/utils/url_utility';
+import UserTabs from '~/pages/users/user_tabs';
 
 export default class GroupTabs extends UserTabs {
   constructor({ defaultAction = 'subgroups_and_projects', action, parentEl }) {

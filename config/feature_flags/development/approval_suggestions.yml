@@ -1,8 +1,0 @@
----
-name: approval_suggestions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38992
-rollout_issue_url: 
-milestone: '13.3'
-type: development
-group: group::composition analysis
-default_enabled: true

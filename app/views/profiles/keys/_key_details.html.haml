@@ -38,4 +38,4 @@
   .col-md-12
     .float-right
       - if @key.can_delete?
-        = button_to _('Delete'), '#', class: "btn btn-danger gl-button delete-key js-confirm-modal-button", data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))
+        = render 'shared/ssh_keys/key_delete', text: _('Delete'), html_class: "btn btn-danger gl-button delete-key js-confirm-modal-button", button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))

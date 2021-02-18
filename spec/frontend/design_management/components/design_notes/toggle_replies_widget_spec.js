@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { shallowMount } from '@vue/test-utils';
 import ToggleRepliesWidget from '~/design_management/components/design_notes/toggle_replies_widget.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import notes from '../../mock_data/notes';
 
 describe('Toggle replies widget component', () => {

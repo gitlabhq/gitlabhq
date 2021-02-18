@@ -6,14 +6,15 @@ module Gitlab
       DEFAULT_SUGGESTION_COMMIT_MESSAGE =
         'Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)'
 
-      def initialize(user, suggestion_set)
+      def initialize(user, suggestion_set, custom_message = nil)
         @user = user
         @suggestion_set = suggestion_set
+        @custom_message = custom_message
       end
 
       def message
         project = suggestion_set.project
-        user_defined_message = project.suggestion_commit_message.presence
+        user_defined_message = @custom_message.presence || project.suggestion_commit_message.presence
         message = user_defined_message || DEFAULT_SUGGESTION_COMMIT_MESSAGE
 
         Gitlab::StringPlaceholderReplacer

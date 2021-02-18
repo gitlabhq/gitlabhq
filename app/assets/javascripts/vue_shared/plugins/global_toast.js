@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import Vue from 'vue';
 
 Vue.use(GlToast);
 const instance = new Vue();

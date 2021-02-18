@@ -27,18 +27,28 @@ module Gitlab
       end
 
       def log_sql_queries(id, data)
-        return [] unless queries = data.dig('data', 'active-record', 'details')
+        queries_by_location(data).each do |location, queries|
+          next unless location
 
-        queries.each do |query|
-          next unless location = parse_backtrace(query['backtrace'])
-
-          log_info = location.merge(
+          duration = queries.sum { |query| query['duration'].to_f }
+          log_info = {
+            method_path: "#{location[:filename]}:#{location[:method]}",
+            filename: location[:filename],
             type: :sql,
             request_id: id,
-            duration_ms: query['duration'].to_f
-          )
+            count: queries.count,
+            duration_ms: duration
+          }
 
           logger.info(log_info)
+        end
+      end
+
+      def queries_by_location(data)
+        return [] unless queries = data.dig('data', 'active-record', 'details')
+
+        queries.group_by do |query|
+          parse_backtrace(query['backtrace'])
         end
       end
 
@@ -47,7 +57,10 @@ module Gitlab
 
         {
           filename: match[:filename],
-          filenum: match[:filenum].to_i,
+          # filenum may change quite frequently with every change in the file,
+          # because the intention is to aggregate these queries, we group
+          # them rather by method name which should not change so frequently
+          # filenum: match[:filenum].to_i,
           method: match[:method]
         }
       end

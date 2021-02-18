@@ -3,7 +3,7 @@
 class JiraConnect::UsersController < ApplicationController
   feature_category :integrations
 
-  layout 'devise_experimental_onboarding_issues'
+  layout 'signup_onboarding'
 
   def show
     @jira_app_link = params.delete(:return_to)

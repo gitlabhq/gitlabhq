@@ -2,6 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import {
+  NEW_VERSION_FLAG,
+  LEGACY_FLAG,
+  ROLLOUT_STRATEGY_ALL_USERS,
+} from '~/feature_flags/constants';
+import {
   updateFeatureFlag,
   requestUpdateFeatureFlag,
   receiveUpdateFeatureFlagSuccess,
@@ -12,14 +17,9 @@ import {
   receiveFeatureFlagError,
   toggleActive,
 } from '~/feature_flags/store/edit/actions';
+import * as types from '~/feature_flags/store/edit/mutation_types';
 import state from '~/feature_flags/store/edit/state';
 import { mapStrategiesToRails, mapFromScopesViewModel } from '~/feature_flags/store/helpers';
-import {
-  NEW_VERSION_FLAG,
-  LEGACY_FLAG,
-  ROLLOUT_STRATEGY_ALL_USERS,
-} from '~/feature_flags/constants';
-import * as types from '~/feature_flags/store/edit/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/url_utility');

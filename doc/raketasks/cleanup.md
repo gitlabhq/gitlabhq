@@ -1,10 +1,10 @@
 ---
-stage: none
-group: unassigned
+stage: Enablement
+group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Clean up **(CORE ONLY)**
+# Clean up **(FREE SELF)**
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 
@@ -74,7 +74,7 @@ I, [2020-01-08T20:51:17.148765 #43765]  INFO -- : Removed unreferenced LFS files
 
 Clean up project upload files if they don't exist in GitLab database.
 
-### Clean up project upload files from filesystem
+### Clean up project upload files from file system
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
 
@@ -173,7 +173,7 @@ delete the files:
 sudo gitlab-rake gitlab:cleanup:orphan_job_artifact_files DRY_RUN=false
 ```
 
-You can also limit the number of files to delete with `LIMIT`:
+You can also limit the number of files to delete with `LIMIT` (default `100`):
 
 ```shell
 sudo gitlab-rake gitlab:cleanup:orphan_job_artifact_files LIMIT=100

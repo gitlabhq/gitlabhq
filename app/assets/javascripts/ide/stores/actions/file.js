@@ -1,16 +1,16 @@
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { performanceMarkAndMeasure } from '~/performance/utils';
 import {
   WEBIDE_MARK_FETCH_FILE_DATA_START,
   WEBIDE_MARK_FETCH_FILE_DATA_FINISH,
   WEBIDE_MEASURE_FETCH_FILE_DATA,
 } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import { viewerTypes, stageKeys, commitActionTypes } from '../../constants';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import { setPageTitleForFile } from '../utils';
-import { viewerTypes, stageKeys, commitActionTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch, getters }, file) => {
   const { path } = file;
@@ -118,10 +118,6 @@ export const getFileData = (
     .finally(() => {
       if (toggleLoading) commit(types.TOGGLE_LOADING, { entry: file, forceValue: false });
     });
-};
-
-export const setFileMrChange = ({ commit }, { file, mrChange }) => {
-  commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
 export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {

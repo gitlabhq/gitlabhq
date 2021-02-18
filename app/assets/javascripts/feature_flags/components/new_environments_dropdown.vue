@@ -1,5 +1,4 @@
 <script>
-import { debounce } from 'lodash';
 import {
   GlDropdown,
   GlDropdownDivider,
@@ -8,9 +7,10 @@ import {
   GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 export default {
   components: {

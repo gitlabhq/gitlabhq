@@ -1,29 +1,22 @@
-import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('ReplyButton', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(localVue.extend(ReplyButton), {
-      localVue,
-    });
+    wrapper = shallowMount(ReplyButton);
   });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   it('emits startReplying on click', () => {
-    const button = wrapper.find({ ref: 'button' });
+    wrapper.find(GlButton).vm.$emit('click');
 
-    button.trigger('click');
-
-    expect(wrapper.emitted().startReplying).toBeTruthy();
-    expect(wrapper.emitted().startReplying.length).toBe(1);
+    expect(wrapper.emitted('startReplying')).toEqual([[]]);
   });
 });

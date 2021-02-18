@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { difference, intersection, union } from 'lodash';
-import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as Flash } from './flash';
+import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
 
 export default {
@@ -50,6 +50,7 @@ export default {
         subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
         health_status: this.form.find('input[name="update[health_status]"]').val(),
         epic_id: this.form.find('input[name="update[epic_id]"]').val(),
+        sprint_id: this.form.find('input[name="update[iteration_id]"]').val(),
         add_label_ids: [],
         remove_label_ids: [],
       },

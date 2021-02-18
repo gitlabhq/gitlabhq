@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import GroupedAccessibilityReportsApp from '~/reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import AccessibilityIssueBody from '~/reports/accessibility_report/components/accessibility_issue_body.vue';
+import GroupedAccessibilityReportsApp from '~/reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import { getStoreConfig } from '~/reports/accessibility_report/store';
 import { mockReport } from './mock_data';
 

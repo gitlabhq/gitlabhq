@@ -1,8 +1,8 @@
 <script>
 import { GlToggle, GlLoadingIcon, GlTooltip, GlAlert } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
 import {
   DEBOUNCE_TOGGLE_DELAY,
   ERROR_MESSAGE,

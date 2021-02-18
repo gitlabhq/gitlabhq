@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Standalone PostgreSQL using Omnibus GitLab **(CORE ONLY)**
+# Standalone PostgreSQL using Omnibus GitLab **(FREE SELF)**
 
 If you wish to have your database service hosted separately from your GitLab
 application servers, you can do this using the PostgreSQL binaries packaged

@@ -52,6 +52,6 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
   end
 
   def second_row
-    page.all('table.import-table tbody tr')[1]
+    page.all('table tbody tr')[1]
   end
 end

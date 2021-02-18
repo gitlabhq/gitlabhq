@@ -1,13 +1,13 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import AccessorUtilities from '~/lib/utils/accessor';
-import eventHub from '../event_hub';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
+import eventHub from '../event_hub';
 import { isMobile, updateExistingFrequentItem, sanitizeItem } from '../utils';
-import FrequentItemsSearchInput from './frequent_items_search_input.vue';
 import FrequentItemsList from './frequent_items_list.vue';
 import frequentItemsMixin from './frequent_items_mixin';
+import FrequentItemsSearchInput from './frequent_items_search_input.vue';
 
 export default {
   components: {

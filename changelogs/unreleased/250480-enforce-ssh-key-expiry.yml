@@ -1,0 +1,5 @@
+---
+title: Add enforced SSH key expiration
+merge_request: 51921
+author:
+type: added

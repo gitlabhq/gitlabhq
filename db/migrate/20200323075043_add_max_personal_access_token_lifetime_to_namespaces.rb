@@ -7,7 +7,7 @@ class AddMaxPersonalAccessTokenLifetimeToNamespaces < ActiveRecord::Migration[6.
 
   def up
     with_lock_retries do
-      add_column :namespaces, :max_personal_access_token_lifetime, :integer
+      add_column :namespaces, :max_personal_access_token_lifetime, :integer # rubocop:disable Migration/AddColumnsToWideTables
     end
   end
 

@@ -11,6 +11,7 @@ module UserCalloutsHelper
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
   FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
   REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
+  UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
 
   def show_admin_integrations_moved?
     !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
@@ -54,6 +55,10 @@ module UserCalloutsHelper
 
   def show_feature_flags_new_version?
     !user_dismissed?(FEATURE_FLAGS_NEW_VERSION)
+  end
+
+  def show_unfinished_tag_cleanup_callout?
+    !user_dismissed?(UNFINISHED_TAG_CLEANUP_CALLOUT)
   end
 
   def show_registration_enabled_user_callout?

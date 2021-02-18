@@ -20,7 +20,7 @@ The Package Registry supports the following formats:
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/conan_repository/index.html">Conan</a></td><td>12.6+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/go_proxy/index.html">Go</a></td><td>13.1+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/maven_repository/index.html">Maven</a></td><td>11.3+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/npm_registry/index.html">NPM</a></td><td>11.7+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/npm_registry/index.html">npm</a></td><td>11.7+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
@@ -34,6 +34,8 @@ You can also use the [API](../../api/packages.md) to administer the Package Regi
 
 The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md)
 guides you through the process.
+
+<!-- vale gitlab.Spelling = NO -->
 
 | Format | Status |
 | ------ | ------ |
@@ -51,6 +53,7 @@ guides you through the process.
 | Terraform | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
+<!-- vale gitlab.Spelling = YES -->
 ## Container Registry
 
 The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images. It's built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to manage the registry across groups and projects.

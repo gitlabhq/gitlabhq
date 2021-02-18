@@ -1,4 +1,10 @@
-/* eslint-disable global-require, import/no-unresolved */
+/* eslint-disable global-require */
+// We use "require" rather than `fs` so that this works in a browser environment.
+
+/* eslint "import/no-unresolved": 0 */
+// We don't want to require *all* fixtures to be generated (especailly in a local environment).
+// We use `eslint` instead of `eslint-disable`, so that we also don't trigger an `Unused eslint-disable directive` when all fixtures are present.
+
 import { memoize } from 'lodash';
 
 const createFactoryWithDefault = (fn, defaultValue) => () => {
@@ -24,6 +30,12 @@ export const getBranch = factory.json(() =>
 );
 export const getMergeRequests = factory.json(() =>
   require('test_fixtures/api/merge_requests/get.json'),
+);
+export const getMergeRequestWithChanges = factory.json(() =>
+  require('test_fixtures/api/merge_requests/changes.json'),
+);
+export const getMergeRequestVersions = factory.json(() =>
+  require('test_fixtures/api/merge_requests/versions.json'),
 );
 export const getRepositoryFiles = factory.json(() =>
   require('test_fixtures/projects_json/files.json'),

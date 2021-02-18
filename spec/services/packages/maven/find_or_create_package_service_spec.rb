@@ -36,10 +36,11 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
         expect(pkg.version).to eq(version)
       end
 
-      context 'with a build' do
+      context 'with optional attributes' do
         subject { service.execute.payload[:package] }
 
         it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
       end
     end
 
@@ -109,6 +110,13 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
       it 'returns an error', :aggregate_failures do
         expect(subject.payload).to be_empty
         expect(subject.errors).to include('Duplicate package is not allowed')
+      end
+
+      context 'when uploading to the versionless package which contains metadata about all versions' do
+        let(:version) { nil }
+        let(:param_path) { path }
+
+        it_behaves_like 'reuse existing package'
       end
 
       context 'when uploading different non-duplicate files to the same package' do

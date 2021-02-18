@@ -492,6 +492,28 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isExternal', () => {
+    const gitlabUrl = 'https://gitlab.com/';
+
+    beforeEach(() => {
+      gon.gitlab_url = gitlabUrl;
+    });
+
+    afterEach(() => {
+      gon.gitlab_url = '';
+    });
+
+    it.each`
+      url                                        | urlType                    | external
+      ${'/gitlab-org/gitlab-test/-/issues/2'}    | ${'relative'}              | ${false}
+      ${gitlabUrl}                               | ${'absolute and internal'} | ${false}
+      ${`${gitlabUrl}/gitlab-org/gitlab-test`}   | ${'absolute and internal'} | ${false}
+      ${'http://jira.atlassian.net/browse/IG-1'} | ${'absolute and external'} | ${true}
+    `('returns $external for $url ($urlType)', ({ url, external }) => {
+      expect(urlUtils.isExternal(url)).toBe(external);
+    });
+  });
+
   describe('isBase64DataUrl', () => {
     it.each`
       url                                                      | valid
@@ -856,6 +878,39 @@ describe('URL utility', () => {
       ${'https://foo.bar/foo/bar'} | ${'https://foo.bar'}
     `('returns correct origin for $url', ({ url, expectation }) => {
       expect(urlUtils.getURLOrigin(url)).toBe(expectation);
+    });
+  });
+
+  describe('encodeSaferUrl', () => {
+    it.each`
+      character | input                 | output
+      ${' '}    | ${'/url/hello 1.jpg'} | ${'/url/hello%201.jpg'}
+      ${'#'}    | ${'/url/hello#1.jpg'} | ${'/url/hello%231.jpg'}
+      ${'!'}    | ${'/url/hello!.jpg'}  | ${'/url/hello%21.jpg'}
+      ${'~'}    | ${'/url/hello~.jpg'}  | ${'/url/hello%7E.jpg'}
+      ${'*'}    | ${'/url/hello*.jpg'}  | ${'/url/hello%2A.jpg'}
+      ${"'"}    | ${"/url/hello'.jpg"}  | ${'/url/hello%27.jpg'}
+      ${'('}    | ${'/url/hello(.jpg'}  | ${'/url/hello%28.jpg'}
+      ${')'}    | ${'/url/hello).jpg'}  | ${'/url/hello%29.jpg'}
+      ${'?'}    | ${'/url/hello?.jpg'}  | ${'/url/hello%3F.jpg'}
+      ${'='}    | ${'/url/hello=.jpg'}  | ${'/url/hello%3D.jpg'}
+      ${'+'}    | ${'/url/hello+.jpg'}  | ${'/url/hello%2B.jpg'}
+      ${'&'}    | ${'/url/hello&.jpg'}  | ${'/url/hello%26.jpg'}
+    `(
+      'properly escapes `$character` characters while retaining the integrity of the URL',
+      ({ input, output }) => {
+        expect(urlUtils.encodeSaferUrl(input)).toBe(output);
+      },
+    );
+
+    it.each`
+      character | input
+      ${'/, .'} | ${'/url/hello.png'}
+      ${'\\d'}  | ${'/url/hello123.png'}
+      ${'-'}    | ${'/url/hello-123.png'}
+      ${'_'}    | ${'/url/hello_123.png'}
+    `('makes no changes to unproblematic characters ($character)', ({ input }) => {
+      expect(urlUtils.encodeSaferUrl(input)).toBe(input);
     });
   });
 });

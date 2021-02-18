@@ -54,6 +54,7 @@ export const mockCiConfigQueryResponse = {
   data: {
     ciConfig: {
       errors: [],
+      mergedYaml: mockCiYml,
       status: CI_CONFIG_STATUS_VALID,
       stages: {
         __typename: 'CiConfigStageConnection',
@@ -139,6 +140,8 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
 
 export const mockLintResponse = {
   valid: true,
+  mergedYaml: mockCiYml,
+  status: CI_CONFIG_STATUS_VALID,
   errors: [],
   warnings: [],
   jobs: [

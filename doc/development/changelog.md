@@ -45,7 +45,7 @@ the `author` field. GitLab team members **should not**.
   **must** have a changelog entry, without `merge_request` value
   and with `type` set to `security`.
 - Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
-- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
+- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry. This includes modifying complexity of GraphQL fields.
 - Performance improvements **should** have a changelog entry.
 - Changes that need to be documented in the Product Intelligence [Event Dictionary](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary)
   also require a changelog entry.
@@ -168,6 +168,7 @@ type:
 | [`--dry-run`](#--dry-run-or--n)       | `-n`      | Don't actually write anything, just print                                                                                               |
 | [`--git-username`](#--git-username-or--u)  | `-u`      | Use Git user.name configuration as the author                                                                                           |
 | [`--type`](#--type-or--t)          | `-t`      | The category of the change, valid options are: `added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other` |
+| [`--ee`](#how-to-generate-a-changelog-entry)          |       | Create an EE changelog
 | `--help`          | `-h`      | Print help message                                                                                                                      |
 
 #### `--amend`
@@ -267,6 +268,20 @@ Use the **`--type`** or **`-t`** argument to provide the `type` value:
 ```plaintext
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!' -t added
 create changelogs/unreleased/feature-hey-dz.yml
+---
+title: Hey DZ, I added a feature to GitLab!
+merge_request:
+author:
+type: added
+```
+
+#### `--ee`
+
+Use the **`--ee`** argument to create an EE changelog:
+
+```plaintext
+$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -ee
+create ee/changelogs/unreleased/feature-hey-dz.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
 merge_request:

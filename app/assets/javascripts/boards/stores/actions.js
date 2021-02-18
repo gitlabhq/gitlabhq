@@ -1,11 +1,9 @@
 import { pick } from 'lodash';
-
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import { BoardType, ListType, inactiveId, flashAnimationDuration } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
-import { BoardType, ListType, inactiveId } from '~/boards/constants';
-import * as types from './mutation_types';
 import {
   formatBoardLists,
   formatListIssues,
@@ -14,23 +12,22 @@ import {
   formatIssue,
   formatIssueInput,
   updateListPosition,
+  transformNotFilters,
 } from '../boards_util';
-import createFlash from '~/flash';
-import { __ } from '~/locale';
-import updateAssigneesMutation from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
-import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import createBoardListMutation from '../graphql/board_list_create.mutation.graphql';
-import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
-import issueMoveListMutation from '../graphql/issue_move_list.mutation.graphql';
 import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
-import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
-import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
-import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
-import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
-import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
-import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
+import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
+import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
+import issueMoveListMutation from '../graphql/issue_move_list.mutation.graphql';
+import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
+import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
+import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
+import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
+import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
+import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
+import * as types from './mutation_types';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -66,6 +63,7 @@ export default {
       'releaseTag',
       'search',
     ]);
+    filterParams.not = transformNotFilters(filters);
     commit(types.SET_FILTERS, filterParams);
   },
 
@@ -108,8 +106,30 @@ export default {
       .catch(() => commit(types.RECEIVE_BOARD_LISTS_FAILURE));
   },
 
-  createList: ({ state, commit, dispatch }, { backlog, labelId, milestoneId, assigneeId }) => {
+  highlightList: ({ commit, state }, listId) => {
+    if ([ListType.backlog, ListType.closed].includes(state.boardLists[listId].listType)) {
+      return;
+    }
+
+    commit(types.ADD_LIST_TO_HIGHLIGHTED_LISTS, listId);
+
+    setTimeout(() => {
+      commit(types.REMOVE_LIST_FROM_HIGHLIGHTED_LISTS, listId);
+    }, flashAnimationDuration);
+  },
+
+  createList: (
+    { state, commit, dispatch, getters },
+    { backlog, labelId, milestoneId, assigneeId },
+  ) => {
     const { boardId } = state;
+
+    const existingList = getters.getListByLabelId(labelId);
+
+    if (existingList) {
+      dispatch('highlightList', existingList.id);
+      return;
+    }
 
     gqlClient
       .mutate({
@@ -128,6 +148,7 @@ export default {
         } else {
           const list = data.boardListCreate?.list;
           dispatch('addList', list);
+          dispatch('highlightList', list.id);
         }
       })
       .catch(() => commit(types.CREATE_LIST_FAILURE));
@@ -153,10 +174,10 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const labels = data[boardType]?.labels;
-        return labels.nodes;
-      })
-      .catch(() => commit(types.RECEIVE_LABELS_FAILURE));
+        const labels = data[boardType]?.labels.nodes;
+        commit(types.RECEIVE_LABELS_SUCCESS, labels);
+        return labels;
+      });
   },
 
   moveList: (
@@ -308,34 +329,11 @@ export default {
   },
 
   setAssignees: ({ commit, getters }, assigneeUsernames) => {
-    commit(types.SET_ASSIGNEE_LOADING, true);
-
-    return gqlClient
-      .mutate({
-        mutation: updateAssigneesMutation,
-        variables: {
-          iid: getters.activeIssue.iid,
-          projectPath: getters.activeIssue.referencePath.split('#')[0],
-          assigneeUsernames,
-        },
-      })
-      .then(({ data }) => {
-        const { nodes } = data.issueSetAssignees?.issue?.assignees || [];
-
-        commit('UPDATE_ISSUE_BY_ID', {
-          issueId: getters.activeIssue.id,
-          prop: 'assignees',
-          value: nodes,
-        });
-
-        return nodes;
-      })
-      .catch(() => {
-        createFlash({ message: __('An error occurred while updating assignees.') });
-      })
-      .finally(() => {
-        commit(types.SET_ASSIGNEE_LOADING, false);
-      });
+    commit('UPDATE_ISSUE_BY_ID', {
+      issueId: getters.activeIssue.id,
+      prop: 'assignees',
+      value: assigneeUsernames,
+    });
   },
 
   setActiveIssueMilestone: async ({ commit, getters }, input) => {
@@ -532,6 +530,21 @@ export default {
 
   setSelectedProject: ({ commit }, project) => {
     commit(types.SET_SELECTED_PROJECT, project);
+  },
+
+  toggleBoardItemMultiSelection: ({ commit, state }, boardItem) => {
+    const { selectedBoardItems } = state;
+    const index = selectedBoardItems.indexOf(boardItem);
+
+    if (index === -1) {
+      commit(types.ADD_BOARD_ITEM_TO_SELECTION, boardItem);
+    } else {
+      commit(types.REMOVE_BOARD_ITEM_FROM_SELECTION, boardItem);
+    }
+  },
+
+  setAddColumnFormVisibility: ({ commit }, visible) => {
+    commit(types.SET_ADD_COLUMN_FORM_VISIBLE, visible);
   },
 
   fetchBacklog: () => {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 commit = @repository.commit(tag.dereferenced_target)
 release = @releases.find { |r| r.tag == tag.name }
 tag_url = project_tag_url(@project, tag.name)

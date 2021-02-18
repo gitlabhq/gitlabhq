@@ -11,8 +11,11 @@ across the GitLab frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org) using [Haml](https://haml.info/) and also a JavaScript based Frontend with [Vue.js](https://vuejs.org).
-Be wary of [the limitations that come with using Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations). We also use [SCSS](https://sass-lang.com) and plain JavaScript with
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript0based frontend with [Vue.js](https://vuejs.org).
+<!-- vale gitlab.Spelling = NO -->
+Be wary of [the limitations that come with using Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations).
+<!-- vale gitlab.Spelling = YES -->
+We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 
 Working with our frontend assets requires Node (v10.13.0 or greater) and Yarn
@@ -21,7 +24,7 @@ Working with our frontend assets requires Node (v10.13.0 or greater) and Yarn
 
 ### Browser Support
 
-For our currently-supported browsers, see our [requirements](../../install/requirements.md#supported-web-browsers).
+For supported browsers, see our [requirements](../../install/requirements.md#supported-web-browsers).
 
 Use [BrowserStack](https://www.browserstack.com/) to test with our supported browsers.
 Sign in to BrowserStack with the credentials saved in the **Engineering** vault of the GitLab
@@ -56,7 +59,11 @@ Reusable components with technical and usage guidelines can be found in our
 
 ## Design Patterns
 
-Common JavaScript [design patterns](design_patterns.md) in the GitLab codebase.
+JavaScript [design patterns](design_patterns.md) in the GitLab codebase.
+
+## Design Anti-patterns
+
+JavaScript [design anti-patterns](design_anti_patterns.md) we try to avoid.
 
 ## Vue.js Best Practices
 
@@ -121,3 +128,7 @@ Our accessibility standards and resources.
 
 Frontend internationalization support is described in [this document](../i18n/).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
+
+## [Troubleshooting](troubleshooting.md)
+
+Running into a Frontend development problem? Check out [this guide](troubleshooting.md) to help resolve your issue.

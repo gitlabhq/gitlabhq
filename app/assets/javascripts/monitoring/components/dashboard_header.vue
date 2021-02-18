@@ -1,6 +1,4 @@
 <script>
-import { debounce } from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlButton,
   GlDropdown,
@@ -12,17 +10,18 @@ import {
   GlTooltipDirective,
   GlIcon,
 } from '@gitlab/ui';
-import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
+import { debounce } from 'lodash';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import invalidUrl from '~/lib/utils/invalid_url';
+import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
-import DashboardsDropdown from './dashboards_dropdown.vue';
-import RefreshButton from './refresh_button.vue';
-import ActionsMenu from './dashboard_actions_menu.vue';
-
-import { timeRangeToUrl } from '../utils';
 import { timeRanges } from '~/vue_shared/constants';
 import { timezones } from '../format_date';
+import { timeRangeToUrl } from '../utils';
+import ActionsMenu from './dashboard_actions_menu.vue';
+import DashboardsDropdown from './dashboards_dropdown.vue';
+import RefreshButton from './refresh_button.vue';
 
 export default {
   components: {

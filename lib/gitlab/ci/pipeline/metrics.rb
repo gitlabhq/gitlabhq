@@ -45,6 +45,15 @@ module Gitlab
             Gitlab::Metrics.counter(name, comment)
           end
         end
+
+        def legacy_update_jobs_counter
+          strong_memoize(:legacy_update_jobs_counter) do
+            name = :ci_legacy_update_jobs_as_retried_total
+            comment = 'Counter of occurrences when jobs were not being set as retried before update_retried'
+
+            Gitlab::Metrics.counter(name, comment)
+          end
+        end
       end
     end
   end

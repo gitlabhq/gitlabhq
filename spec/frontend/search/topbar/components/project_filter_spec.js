@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MOCK_PROJECT, MOCK_QUERY } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
@@ -99,7 +99,7 @@ describe('ProjectFilter', () => {
 
         it('calls setUrlParams with project id, group id, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
-            [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace_id,
+            [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace.id,
             [PROJECT_DATA.queryParam]: MOCK_PROJECT.id,
           });
           expect(visitUrl).toHaveBeenCalled();

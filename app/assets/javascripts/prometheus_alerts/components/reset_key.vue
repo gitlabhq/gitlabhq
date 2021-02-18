@@ -1,10 +1,10 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@gitlab/ui';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   copyToClipboard: __('Copy'),

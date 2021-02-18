@@ -11,6 +11,7 @@ link: https://about.gitlab.com/handbook/communication/#top-misused-terms
 level: error
 ignorecase: true
 swap:
+  codequality: code quality
   Customer [Pp]ortal: Customers Portal
   frontmatter: front matter
   GitLabber: GitLab team member
@@ -20,7 +21,7 @@ swap:
   param: parameter
   params: parameters
   pg: PostgreSQL
-  postgres: PostgreSQL
+  'postgres$': PostgreSQL
   raketask: Rake task
   raketasks: Rake tasks
   rspec: RSpec

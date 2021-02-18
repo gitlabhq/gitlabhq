@@ -82,6 +82,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
         it 'skips the repository' do
           expect(ContainerExpirationPolicies::CleanupService).not_to receive(:new)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:project_id, repository.project.id)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :skipped)
 
           expect { subject }.to change { ContainerRepository.waiting_for_cleanup.count }.from(1).to(0)
@@ -198,7 +199,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
     end
 
-    def cleanup_service_response(status: :finished, repository:, cleanup_tags_service_original_size: 100, cleanup_tags_service_before_truncate_size: 80, cleanup_tags_service_after_truncate_size: 80, cleanup_tags_service_before_delete_size: 50)
+    def cleanup_service_response(status: :finished, repository:, cleanup_tags_service_original_size: 100, cleanup_tags_service_before_truncate_size: 80, cleanup_tags_service_after_truncate_size: 80, cleanup_tags_service_before_delete_size: 50, cleanup_tags_service_deleted_size: 50)
       ServiceResponse.success(
         message: "cleanup #{status}",
         payload: {
@@ -213,13 +214,16 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
     end
 
     def expect_log_extra_metadata(service_response:, cleanup_status: :finished, truncated: false)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, cleanup_status)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
-      %i[cleanup_tags_service_original_size cleanup_tags_service_before_truncate_size cleanup_tags_service_after_truncate_size cleanup_tags_service_before_delete_size].each do |field|
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:project_id, repository.project.id)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, cleanup_status)
+
+      %i[cleanup_tags_service_original_size cleanup_tags_service_before_truncate_size cleanup_tags_service_after_truncate_size cleanup_tags_service_before_delete_size cleanup_tags_service_deleted_size].each do |field|
         value = service_response.payload[field]
         expect(worker).to receive(:log_extra_metadata_on_done).with(field, value) unless value.nil?
       end
       expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_truncated, truncated)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:running_jobs_count, 0)
     end
   end
 

@@ -1,12 +1,12 @@
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
+import Vue from 'vue';
+import eventHub from '~/ide/eventhub';
+import { createRouter } from '~/ide/ide_router';
+import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
-import service from '~/ide/services';
-import { createRouter } from '~/ide/ide_router';
-import eventHub from '~/ide/eventhub';
+import axios from '~/lib/utils/axios_utils';
 import { file, createTriggerRenameAction, createTriggerUpdatePayload } from '../../helpers';
 
 const ORIGINAL_CONTENT = 'original content';

@@ -28,19 +28,18 @@ class RecentSearchesRoot {
     const { state } = this.store;
     this.vm = new Vue({
       el: this.wrapperElement,
-      components: {
-        RecentSearchesDropdownContent,
-      },
       data() {
         return state;
       },
-      template: `
-        <recent-searches-dropdown-content
-          :items="recentSearches"
-          :is-local-storage-available="isLocalStorageAvailable"
-          :allowed-keys="allowedKeys"
-          />
-      `,
+      render(h) {
+        return h(RecentSearchesDropdownContent, {
+          props: {
+            items: this.recentSearches,
+            isLocalStorageAvailable: this.isLocalStorageAvailable,
+            allowedKeys: this.allowedKeys,
+          },
+        });
+      },
     });
   }
 

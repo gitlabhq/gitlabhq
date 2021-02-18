@@ -1,7 +1,7 @@
+import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import Api from '~/api';
 import * as types from './mutation_types';
 
 export const setEndpoints = ({ commit }, params) => {

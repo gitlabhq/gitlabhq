@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disaster Recovery (Geo) **(PREMIUM ONLY)**
+# Disaster Recovery (Geo) **(PREMIUM SELF)**
 
 Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
@@ -145,6 +145,13 @@ Note the following when promoting a secondary:
    a point-in-time recovery to the last known state.
    Data that was created on the primary while the secondary was paused will be lost.
 
+   NOTE:
+   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
+   this command reports `ERROR - Replication is not up-to-date` even if
+   replication is actually up-to-date. If replication and verification output
+   shows that it is complete, you can add `--skip-preflight-checks` to make the
+   command complete promotion. This bug was fixed in GitLab 13.8 and later.
+
    To promote the secondary node to primary along with preflight checks:
 
    ```shell
@@ -245,12 +252,6 @@ Data that was created on the primary while the secondary was paused will be lost
    sudo gitlab-ctl promote-db
    ```
 
-1. Disable Patroni auto-failover:
-
-   ```shell
-   sudo gitlab-ctl patroni pause
-   ```
-
 1. Edit `/etc/gitlab/gitlab.rb` on every application and Sidekiq nodes in the secondary to reflect its new status as primary by removing any lines that enabled the `geo_secondary_role`:
 
    ```ruby
@@ -271,12 +272,6 @@ Data that was created on the primary while the secondary was paused will be lost
 
    ```shell
    sudo gitlab-ctl reconfigure
-   ```
-
-1. Resume Patroni auto-failover:
-
-   ```shell
-   sudo gitlab-ctl patroni resume
    ```
 
 1. Promote the **secondary** to **primary**. SSH into a single application server and execute:

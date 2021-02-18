@@ -1,13 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlBadge, GlButton, GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_groups_list_item.vue';
 
 describe('Fork groups list item component', () => {
   let wrapper;
-
-  const DEFAULT_PROPS = {
-    hasReachedProjectLimit: false,
-  };
 
   const DEFAULT_GROUP_DATA = {
     id: 22,
@@ -33,7 +29,6 @@ describe('Fork groups list item component', () => {
   const createWrapper = (propsData) => {
     wrapper = shallowMount(ForkGroupsListItem, {
       propsData: {
-        ...DEFAULT_PROPS,
         ...propsData,
       },
     });

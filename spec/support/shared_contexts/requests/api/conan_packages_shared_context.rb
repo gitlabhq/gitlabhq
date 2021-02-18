@@ -22,7 +22,7 @@ RSpec.shared_context 'conan api setup' do
 
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
-      OpenSSL::Digest::SHA256.new,
+      OpenSSL::Digest.new('SHA256'),
       base_secret,
       Gitlab::ConanToken::HMAC_KEY
     )
@@ -67,9 +67,9 @@ RSpec.shared_context 'conan file upload endpoints' do
   include WorkhorseHelpers
   include HttpBasicAuthHelpers
 
+  include_context 'workhorse headers'
+
   let(:jwt) { build_jwt(personal_access_token) }
-  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
-  let(:headers_with_token) { build_token_auth_header(jwt.encoded).merge(workhorse_header) }
+  let(:headers_with_token) { build_token_auth_header(jwt.encoded).merge(workhorse_headers) }
   let(:recipe_path) { "foo/bar/#{project.full_path.tr('/', '+')}/baz"}
 end

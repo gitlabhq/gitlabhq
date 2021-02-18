@@ -1140,7 +1140,7 @@ RSpec.describe API::Projects do
     let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
-      get api('/users/0/projects/')
+      get api("/users/#{non_existing_record_id}/projects/")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1540,6 +1540,35 @@ RSpec.describe API::Projects do
     end
 
     context 'when authenticated as an admin' do
+      let(:project_attributes_file) { 'spec/requests/api/project_attributes.yml' }
+      let(:project_attributes) { YAML.load_file(project_attributes_file) }
+
+      let(:expected_keys) do
+        keys = project_attributes.map do |relation, relation_config|
+          begin
+            actual_keys = project.send(relation).attributes.keys
+          rescue NoMethodError
+            actual_keys = ["#{relation} is nil"]
+          end
+          unexposed_attributes = relation_config['unexposed_attributes'] || []
+          remapped_attributes = relation_config['remapped_attributes'] || {}
+          computed_attributes = relation_config['computed_attributes'] || []
+          actual_keys - unexposed_attributes - remapped_attributes.keys + remapped_attributes.values + computed_attributes
+        end.flatten
+
+        unless Gitlab.ee?
+          keys -= %w[
+            approvals_before_merge
+            compliance_frameworks
+            mirror
+            requirements_enabled
+            security_and_compliance_enabled
+          ]
+        end
+
+        keys
+      end
+
       it 'returns a project by id' do
         project
         project_member
@@ -1587,6 +1616,27 @@ RSpec.describe API::Projects do
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['operations_access_level']).to be_present
+      end
+
+      it 'exposes all necessary attributes' do
+        create(:project_group_link, project: project)
+
+        get api("/projects/#{project.id}", admin)
+
+        diff = Set.new(json_response.keys) ^ Set.new(expected_keys)
+
+        expect(diff).to be_empty, failure_message(diff)
+      end
+
+      def failure_message(diff)
+        <<~MSG
+          It looks like project's set of exposed attributes is different from the expected set.
+
+          The following attributes are missing or newly added:
+          #{diff.to_a.to_sentence}
+
+          Please update #{project_attributes_file} file"
+        MSG
       end
     end
 
@@ -2155,7 +2205,7 @@ RSpec.describe API::Projects do
         end
 
         it 'fails if forked_from project which does not exist' do
-          post api("/projects/#{project_fork_target.id}/fork/0", admin)
+          post api("/projects/#{project_fork_target.id}/fork/#{non_existing_record_id}", admin)
           expect(response).to have_gitlab_http_status(:not_found)
         end
 
@@ -2399,7 +2449,7 @@ RSpec.describe API::Projects do
     end
 
     it 'returns a 404 error when project does not exist' do
-      delete api("/projects/123/share/#{non_existing_record_id}", user)
+      delete api("/projects/#{non_existing_record_id}/share/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2956,7 +3006,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns the proper security headers' do
-        get api('/projects/1/starrers', current_user)
+        get api("/projects/#{public_project.id}/starrers", current_user)
 
         expect(response).to include_security_headers
       end
@@ -3029,7 +3079,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns not_found(404) for not existing project' do
-        get api("/projects/0/languages", user)
+        get api("/projects/#{non_existing_record_id}/languages", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -3080,7 +3130,7 @@ RSpec.describe API::Projects do
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', user)
+        delete api("/projects/#{non_existing_record_id}", user)
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
@@ -3099,7 +3149,7 @@ RSpec.describe API::Projects do
       end
 
       it 'does not remove a non existing project' do
-        delete api('/projects/1328', admin)
+        delete api("/projects/#{non_existing_record_id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
@@ -3329,8 +3379,8 @@ RSpec.describe API::Projects do
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
-      it 'accepts a name for the target project' do
-        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
+      it 'accepts custom parameters for the target project' do
+        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project', description: 'A description', visibility: 'private' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('My Random Project')
@@ -3338,6 +3388,8 @@ RSpec.describe API::Projects do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['description']).to eq('A description')
+        expect(json_response['visibility']).to eq('private')
         expect(json_response['import_status']).to eq('scheduled')
         expect(json_response).to include("import_error")
       end
@@ -3368,6 +3420,13 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['path']).to eq(['has already been taken'])
         expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
+
+      it 'fails to fork with an unknown visibility level' do
+        post api("/projects/#{project.id}/fork", user2), params: { visibility: 'something' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('visibility does not have a valid value')
       end
     end
 

@@ -143,3 +143,42 @@ Finally if the runner can only pick jobs that are tagged, all untagged jobs are 
 At this point we loop through remaining `pending` jobs and we try to assign the first job that the runner "can pick" based on additional policies. For example, runners marked as `protected` can only pick jobs that run against protected branches (such as production deployments).
 
 As we increase the number of runners in the pool we also increase the chances of conflicts which would arise if assigning the same job to different runners. To prevent that we gracefully rescue conflict errors and assign the next job in the list.
+
+## The definition of "Job" in GitLab CI/CD
+
+"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery and Deployment.
+Typically, a pipeline contains multiple stages, and a stage contains multiple jobs.
+
+In Active Record modeling, Job is defined as `CommitStatus` class.
+On top of that, we have the following types of jobs:
+
+- `Ci::Build` ... The job to be executed by runners.
+- `Ci::Bridge` ... The job to trigger a downstream pipeline.
+- `GenericCommitStatus` ... The job to be executed in an external CI/CD system e.g. Jenkins.
+
+Please note that, when you use the "Job" terminology in codebase, readers would
+assume that the class/object is any type of above.
+If you specifically refer `Ci::Build` class, you should not name the object/class
+as "job" as this could cause some confusions. In documentation,
+we should use "Job" in general, instead of "Build".
+
+We have a few inconsistencies in our codebase that should be refactored.
+For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
+See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
+
+## CI Minutes
+
+This diagram shows how the [CI minutes](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes)
+feature and its components work.
+
+![CI Minutes architecture](img/ci_minutes.png)
+<!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
+
+Watch a walkthrough of this feature in details in the video below.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI Minutes - architectural overview</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>

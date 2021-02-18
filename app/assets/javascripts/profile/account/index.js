@@ -1,7 +1,8 @@
 import Vue from 'vue';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import UpdateUsername from './components/update_username.vue';
 import deleteAccountModal from './components/delete_account_modal.vue';
+import UpdateUsername from './components/update_username.vue';
 
 export default () => {
   Vue.use(Translate);
@@ -31,7 +32,7 @@ export default () => {
     mounted() {
       deleteAccountButton.classList.remove('disabled');
       deleteAccountButton.addEventListener('click', () => {
-        this.$root.$emit('bv::show::modal', 'delete-account-modal', '#delete-account-button');
+        this.$root.$emit(BV_SHOW_MODAL, 'delete-account-modal', '#delete-account-button');
       });
     },
     render(createElement) {

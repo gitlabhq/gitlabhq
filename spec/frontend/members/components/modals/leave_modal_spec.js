@@ -1,7 +1,7 @@
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import { GlModal, GlForm } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { within } from '@testing-library/dom';
+import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import { LEAVE_MODAL_ID } from '~/members/constants';

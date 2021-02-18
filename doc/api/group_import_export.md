@@ -19,7 +19,8 @@ Group exports include the following:
 - Group labels
 - Group badges
 - Group members
-- Sub-groups. Each sub-group includes all data above
+- Subgroups. Each subgroup includes all data above
+- Group wikis **(PREMIUM SELF)**
 
 ## Schedule new export
 
@@ -94,7 +95,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "name=i
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
 
 ## Important notes
 

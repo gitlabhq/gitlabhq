@@ -1,9 +1,7 @@
-import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initRelatedIssues from '~/related_issues';
+import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initShow from '../../issues/show';
 
 initShow();
-if (!gon.features?.vueIssuableSidebar) {
-  initSidebarBundle();
-}
+initSidebarBundle();
 initRelatedIssues();

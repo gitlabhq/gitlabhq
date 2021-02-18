@@ -26,7 +26,7 @@ module Ci
     end
 
     def valid_statuses_for_build(build)
-      if ::Feature.enabled?(:skip_dag_manual_and_delayed_jobs, default_enabled: :yaml)
+      if ::Feature.enabled?(:skip_dag_manual_and_delayed_jobs, build.project, default_enabled: :yaml)
         current_valid_statuses_for_build(build)
       else
         legacy_valid_statuses_for_build(build)

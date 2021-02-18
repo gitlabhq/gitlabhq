@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :grape do
   desc 'Print compiled grape routes'
   task routes: :environment do

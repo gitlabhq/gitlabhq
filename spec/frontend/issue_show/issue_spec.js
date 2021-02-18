@@ -1,11 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import waitForPromises from 'helpers/wait_for_promises';
-import axios from '~/lib/utils/axios_utils';
 import { initIssuableApp } from '~/issue_show/issue';
 import * as parseData from '~/issue_show/utils/parse_data';
-import { appProps } from './mock_data';
+import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
+import { appProps } from './mock_data';
 
 const mock = new MockAdapter(axios);
 mock.onGet().reply(200);

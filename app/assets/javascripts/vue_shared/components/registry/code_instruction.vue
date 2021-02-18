@@ -1,7 +1,7 @@
 <script>
 import { uniqueId } from 'lodash';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Tracking from '~/tracking';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   name: 'CodeInstruction',

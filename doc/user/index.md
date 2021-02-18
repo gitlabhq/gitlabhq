@@ -43,7 +43,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Hosting code in repositories with version control.
 - Tracking proposals for new implementations, bug reports, and feedback with a
   fully featured [Issue Tracker](project/issues/index.md#issues-list).
-- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-boards).
+- Organizing and prioritizing with [Issue Boards](project/issue_board.md).
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/README.md).
@@ -82,6 +82,14 @@ There are several types of users in GitLab:
 - [GitLab Administrator](../administration/index.md) with full access to
   self-managed instances' features and settings.
 - [Internal users](../development/internal_users.md).
+
+## User activity
+
+You can follow or unfollow other users from their [user profiles](profile/index.md#user-profile).
+To see their activity in the top-level Activity view, select Follow or Unfollow, and select
+the Followed Users tab:
+
+![Follow users](img/activity_followed_users_v13_9.png)
 
 ## Projects
 

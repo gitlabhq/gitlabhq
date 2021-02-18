@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MonitoringComponent from '~/environments/components/environment_monitoring.vue';
 
 describe('Monitoring Component', () => {

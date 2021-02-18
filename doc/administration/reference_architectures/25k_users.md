@@ -5,7 +5,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 25,000 users **(PREMIUM ONLY)**
+# Reference architecture: up to 25,000 users **(PREMIUM SELF)**
 
 This page describes GitLab reference architecture for up to 25,000 users. For a
 full list of reference architectures, see
@@ -13,25 +13,25 @@ full list of reference architectures, see
 
 > - **Supported users (approximate):** 25,000
 > - **High Availability:** Yes
-> - **Test requests per second (RPS) rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
+> - **Test requests per second (RPS) rates:** API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS
 
 | Service                                 | Nodes       | Configuration           | GCP             | AWS         | Azure    |
 |-----------------------------------------|-------------|-------------------------|-----------------|-------------|----------|
-| External load balancing node            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
-| Consul                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
-| PostgreSQL                              | 3           | 8 vCPU, 30 GB memory    | n1-standard-8   | m5.2xlarge  | D8s v3   |
-| PgBouncer                               | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
-| Internal load balancing node            | 1           | 4 vCPU, 3.6GB memory    | n1-highcpu-4    | c5.large    | F2s v2   |
-| Redis - Cache                           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
-| Redis - Queues / Shared State           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
-| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
-| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
-| Gitaly                                  | 2 (minimum) | 32 vCPU, 120 GB memory  | n1-standard-32  | m5.8xlarge  | D32s v3  |
-| Sidekiq                                 | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
-| GitLab Rails                            | 5           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge  | F32s v2  |
-| Monitoring node                         | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
+| External load balancing node            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
+| Consul                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
+| PostgreSQL                              | 3           | 8 vCPU, 30 GB memory    | n1-standard-8   | `m5.2xlarge`  | D8s v3   |
+| PgBouncer                               | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
+| Internal load balancing node            | 1           | 4 vCPU, 3.6GB memory    | n1-highcpu-4    | `c5.large`    | F2s v2   |
+| Redis - Cache                           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
+| Redis - Queues / Shared State           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
+| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
+| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
+| Gitaly                                  | 2 (minimum) | 32 vCPU, 120 GB memory  | n1-standard-32  | `m5.8xlarge`  | D32s v3  |
+| Sidekiq                                 | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
+| GitLab Rails                            | 5           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | `c5.9xlarge`  | F32s v2  |
+| Monitoring node                         | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
 | Object storage                          | n/a         | n/a                     | n/a             | n/a         | n/a      |
-| NFS server                              | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
+| NFS server                              | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
 
 ```mermaid
 stateDiagram-v2
@@ -1512,8 +1512,9 @@ To configure Gitaly with TLS:
 
 ## Configure Sidekiq
 
-Sidekiq requires connections to the Redis, PostgreSQL and Gitaly instances.
-The following IPs will be used as an example:
+Sidekiq requires connection to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+[Object storage](#configure-the-object-storage) is also required to be configured.
 
 - `10.6.0.101`: Sidekiq 1
 - `10.6.0.102`: Sidekiq 2
@@ -1624,6 +1625,25 @@ To configure the Sidekiq nodes, on each one:
 
    # Rails Status for prometheus
    gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
+
+   #############################
+   ###     Object storage    ###
+   #############################
+
+   # This is an example for configuring Object Storage on GCP
+   # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from your Consul server, and replace
@@ -1644,6 +1664,7 @@ You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_proces
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
+[Object storage](#configure-the-object-storage) is also required to be configured.
 
 The following IPs will be used as an example:
 
@@ -1736,6 +1757,25 @@ On each node perform the following:
    # scrape the NGINX metrics
    gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
    nginx['status']['options']['allow'] = ['10.6.0.121/32', '127.0.0.0/8']
+
+   #############################
+   ###     Object storage    ###
+   #############################
+
+   # This is an example for configuring Object Storage on GCP
+   # Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1928,7 +1968,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
@@ -1957,7 +1997,7 @@ on what features you intend to use:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
 | [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) | Yes |
-| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
@@ -1983,7 +2023,7 @@ work.
   </a>
 </div>
 
-## Configure Advanced Search **(STARTER ONLY)**
+## Configure Advanced Search **(PREMIUM SELF)**
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

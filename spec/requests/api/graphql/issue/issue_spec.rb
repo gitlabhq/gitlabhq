@@ -24,6 +24,20 @@ RSpec.describe 'Query.issue(id)' do
     end
   end
 
+  it_behaves_like 'a noteable graphql type we can query' do
+    let(:noteable) { issue }
+    let(:project) { issue.project }
+    let(:path_to_noteable) { [:issue] }
+
+    before do
+      project.add_guest(current_user)
+    end
+
+    def query(fields)
+      graphql_query_for('issue', issue_params, fields)
+    end
+  end
+
   context 'when the user does not have access to the issue' do
     it 'returns nil' do
       project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)

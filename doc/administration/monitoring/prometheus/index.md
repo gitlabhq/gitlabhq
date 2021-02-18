@@ -4,7 +4,12 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Monitoring GitLab with Prometheus
+# Monitoring GitLab with Prometheus **(FREE SELF)**
+
+[Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
+platform for monitoring GitLab and other software products.
+GitLab provides out-of-the-box monitoring with Prometheus, providing easy
+access to high quality time-series monitoring of GitLab services.
 
 > **Notes:**
 >
@@ -15,11 +20,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Prometheus services are on by default with GitLab 9.0.
 > - Prometheus and its exporters don't authenticate users, and are available
 >  to anyone who can access them.
-
-[Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
-platform for monitoring GitLab and other software products.
-GitLab provides out of the box monitoring with Prometheus, providing easy
-access to high quality time-series monitoring of GitLab services.
 
 ## Overview
 

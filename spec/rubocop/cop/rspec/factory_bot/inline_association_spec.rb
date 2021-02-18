@@ -7,8 +7,6 @@ require 'rubocop'
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/inline_association'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoryBot::InlineAssociation do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |code_snippet, autocorrected|
@@ -17,27 +15,31 @@ RSpec.describe RuboCop::Cop::RSpec::FactoryBot::InlineAssociation do
     let(:offense_marker) { '^' * code_snippet.size }
     let(:offense_msg) { msg(type) }
     let(:offense) { "#{offense_marker} #{offense_msg}" }
-    let(:pristine_source) { source.sub(offense, '') }
     let(:source) do
       <<~RUBY
-          FactoryBot.define do
-            factory :project do
-              attribute { #{code_snippet} }
-                          #{offense}
-            end
+        FactoryBot.define do
+          factory :project do
+            attribute { #{code_snippet} }
+                        #{offense}
           end
+        end
       RUBY
     end
 
-    it 'registers an offense' do
-      expect_offense(source)
+    let(:corrected_source) do
+      <<~RUBY
+        FactoryBot.define do
+          factory :project do
+            attribute { #{autocorrected} }
+          end
+        end
+      RUBY
     end
 
-    it 'autocorrects the source' do
-      corrected = autocorrect_source(pristine_source)
+    it 'registers an offense and corrects', :aggregate_failures do
+      expect_offense(source)
 
-      expect(corrected).not_to include(code_snippet)
-      expect(corrected).to include(autocorrected)
+      expect_correction(corrected_source)
     end
   end
 

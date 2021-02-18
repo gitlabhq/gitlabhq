@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import { getLocationHash } from './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
-import SingleFileDiff from './single_file_diff';
 import initImageDiffHelper from './image_diff/helpers/init_image_diff';
+import { getLocationHash } from './lib/utils/url_utility';
+import SingleFileDiff from './single_file_diff';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;

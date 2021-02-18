@@ -1,13 +1,12 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlCard, GlForm, GlFormTextarea, GlAlert } from '@gitlab/ui';
-import { createStore } from '~/monitoring/stores';
+import { shallowMount } from '@vue/test-utils';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
+import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
+import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { metricsDashboardResponse } from '../fixture_data';
 import { mockTimeRange } from '../mock_data';
-
-import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
-import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 const mockPanel = metricsDashboardResponse.dashboard.panel_groups[0].panels[0];
 

@@ -123,9 +123,7 @@ module Gitlab
         end
 
         def transform_to_yaml_variables(variables)
-          variables.to_h.map do |key, value|
-            { key: key.to_s, value: value, public: true }
-          end
+          ::Gitlab::Ci::Variables::Helpers.transform_to_yaml_variables(variables)
         end
       end
     end

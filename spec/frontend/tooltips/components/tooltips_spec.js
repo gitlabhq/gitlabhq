@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlTooltip } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import Tooltips from '~/tooltips/components/tooltips.vue';
 

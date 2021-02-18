@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { mapActions, mapGetters } from 'vuex';
 import PreviewItem from './preview_item.vue';
 
 export default {

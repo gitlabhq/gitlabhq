@@ -133,7 +133,7 @@ class Feature
 
     # This method is called from config/initializers/flipper.rb and can be used
     # to register Flipper groups.
-    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
+    # See https://docs.gitlab.com/ee/development/feature_flags/index.html
     def register_feature_groups
     end
 

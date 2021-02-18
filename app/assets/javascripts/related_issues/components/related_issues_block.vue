@@ -1,13 +1,13 @@
 <script>
 import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
-import AddIssuableForm from './add_issuable_form.vue';
-import RelatedIssuesList from './related_issues_list.vue';
 import {
   issuableIconMap,
   issuableQaClassMap,
   linkedIssueTypesMap,
   linkedIssueTypesTextMap,
 } from '../constants';
+import AddIssuableForm from './add_issuable_form.vue';
+import RelatedIssuesList from './related_issues_list.vue';
 
 export default {
   name: 'RelatedIssuesBlock',
@@ -146,7 +146,7 @@ export default {
             class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
             :aria-label="__('Read more about related issues')"
           >
-            <gl-icon name="question" :size="12" role="text" />
+            <gl-icon name="question" :size="12" />
           </gl-link>
 
           <div class="gl-display-inline-flex">

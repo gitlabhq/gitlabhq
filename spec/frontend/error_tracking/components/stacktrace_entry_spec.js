@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import StackTraceEntry from '~/error_tracking/components/stacktrace_entry.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';

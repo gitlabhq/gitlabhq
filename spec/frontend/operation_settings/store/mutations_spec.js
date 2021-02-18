@@ -1,6 +1,6 @@
+import { timezones } from '~/monitoring/format_date';
 import mutations from '~/operation_settings/store/mutations';
 import createState from '~/operation_settings/store/state';
-import { timezones } from '~/monitoring/format_date';
 
 describe('operation settings mutations', () => {
   let localState;

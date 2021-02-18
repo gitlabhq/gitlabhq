@@ -2,7 +2,7 @@
 
 module Ci
   module PipelineArtifacts
-    class CodeCoveragePresenter < ProcessablePresenter
+    class CodeCoveragePresenter < Gitlab::View::Presenter::Delegated
       include Gitlab::Utils::StrongMemoize
 
       def for_files(filenames)

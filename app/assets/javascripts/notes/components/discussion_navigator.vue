@@ -1,8 +1,8 @@
 <script>
 /* global Mousetrap */
 import 'mousetrap';
-import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import eventHub from '~/notes/event_hub';
+import discussionNavigation from '~/notes/mixins/discussion_navigation';
 
 export default {
   mixins: [discussionNavigation],

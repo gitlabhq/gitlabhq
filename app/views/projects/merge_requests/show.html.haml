@@ -56,10 +56,13 @@
               = render "projects/merge_requests/widget"
               = render "projects/merge_requests/awards_block"
               - if mr_action === "show"
-                - add_page_startup_api_call discussions_path(@merge_request)
+                - if Feature.enabled?(:paginated_notes, @project)
+                  - add_page_startup_api_call notes_url
+                - else
+                  - add_page_startup_api_call discussions_path(@merge_request)
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
-              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
+              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request, Feature.enabled?(:paginated_notes, @project)).to_json,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
@@ -75,7 +78,7 @@
       - if mr_action === "diffs"
         - add_page_startup_api_call @endpoint_metadata_url
       - params = request.query_parameters
-      - if Feature.enabled?(:default_merge_ref_for_diffs, @project)
+      - if Feature.enabled?(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
         - params = params.merge(diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: { "is-locked": @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', params),
@@ -100,8 +103,8 @@
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
 - if @merge_request.can_be_reverted?(current_user)
-  = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
+  = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit
 - if @merge_request.can_be_cherry_picked?
-  = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title
+  = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
 #js-review-bar

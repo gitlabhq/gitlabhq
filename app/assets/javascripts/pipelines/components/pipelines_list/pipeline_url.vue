@@ -77,6 +77,15 @@ export default {
         >{{ __('latest') }}</gl-badge
       >
       <gl-badge
+        v-if="pipeline.flags.merge_train_pipeline"
+        v-gl-tooltip
+        :title="__('This is a merge train pipeline')"
+        variant="info"
+        size="sm"
+        data-testid="pipeline-url-train"
+        >{{ __('train') }}</gl-badge
+      >
+      <gl-badge
         v-if="pipeline.flags.yaml_errors"
         v-gl-tooltip
         :title="pipeline.yaml_errors"

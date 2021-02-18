@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import store from '~/mr_notes/stores';
-import notesApp from '../notes/components/notes_app.vue';
-import discussionNavigator from '../notes/components/discussion_navigator.vue';
-import initWidget from '../vue_merge_request_widget';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import store from '~/mr_notes/stores';
+import discussionNavigator from '../notes/components/discussion_navigator.vue';
+import notesApp from '../notes/components/notes_app.vue';
+import initWidget from '../vue_merge_request_widget';
 
 export default () => {
   // eslint-disable-next-line no-new

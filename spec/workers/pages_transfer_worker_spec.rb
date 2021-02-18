@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PagesTransferWorker do
   describe '#perform' do
-    Gitlab::PagesTransfer::Async::METHODS.each do |meth|
+    Gitlab::PagesTransfer::METHODS.each do |meth|
       context "when method is #{meth}" do
         let(:args) { [1, 2, 3] }
 

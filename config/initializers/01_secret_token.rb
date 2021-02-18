@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # WARNING: Before you make a change to secrets.yml, read the development guide for GitLab secrets
 # doc/development/application_secrets.md.
 #

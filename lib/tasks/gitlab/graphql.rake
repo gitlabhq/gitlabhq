@@ -33,7 +33,43 @@ namespace :gitlab do
   )
 
   namespace :graphql do
-    desc 'Gitlab | GraphQL | Validate queries'
+    desc 'GitLab | GraphQL | Analyze queries'
+    task analyze: [:environment, :enable_feature_flags] do |t, args|
+      queries = if args.to_a.present?
+                  args.to_a.flat_map { |path| Gitlab::Graphql::Queries.find(path) }
+                else
+                  Gitlab::Graphql::Queries.all
+                end
+
+      queries.each do |defn|
+        $stdout.puts defn.file
+        summary, errs = defn.validate(GitlabSchema)
+
+        if summary == :client_query
+          $stdout.puts " - client query"
+        elsif errs.present?
+          $stdout.puts " - invalid query".color(:red)
+        else
+          complexity = defn.complexity(GitlabSchema)
+          color = case complexity
+                  when 0..GitlabSchema::DEFAULT_MAX_COMPLEXITY
+                    :green
+                  when GitlabSchema::DEFAULT_MAX_COMPLEXITY..GitlabSchema::AUTHENTICATED_COMPLEXITY
+                    :yellow
+                  when GitlabSchema::AUTHENTICATED_COMPLEXITY..GitlabSchema::ADMIN_COMPLEXITY
+                    :orange
+                  else
+                    :red
+                  end
+
+          $stdout.puts " - complexity: #{complexity}".color(color)
+        end
+
+        $stdout.puts ""
+      end
+    end
+
+    desc 'GitLab | GraphQL | Validate queries'
     task validate: [:environment, :enable_feature_flags] do |t, args|
       queries = if args.to_a.present?
                   args.to_a.flat_map { |path| Gitlab::Graphql::Queries.find(path) }
@@ -48,10 +84,10 @@ namespace :gitlab do
         when :client_query
           warn("SKIP  #{defn.file}: client query")
         else
-          warn("OK    #{defn.file}") if errs.empty?
+          warn("#{'OK'.color(:green)}    #{defn.file}") if errs.empty?
           errs.each do |err|
             warn(<<~MSG)
-            ERROR #{defn.file}: #{err.message} (at #{err.path.join('.')})
+            #{'ERROR'.color(:red)} #{defn.file}: #{err.message} (at #{err.path.join('.')})
             MSG
           end
         end

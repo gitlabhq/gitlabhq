@@ -1,7 +1,7 @@
+import { ASC } from '../../constants';
 import * as actions from '../actions';
 import * as getters from '../getters';
 import mutations from '../mutations';
-import { ASC } from '../../constants';
 
 export default () => ({
   state: {
@@ -47,6 +47,7 @@ export default () => ({
     unresolvedDiscussionsCount: 0,
     descriptionVersions: {},
     isTimelineEnabled: false,
+    isFetching: false,
   },
   actions,
   getters,

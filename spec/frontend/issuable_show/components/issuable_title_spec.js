@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import IssuableTitle from '~/issuable_show/components/issuable_title.vue';

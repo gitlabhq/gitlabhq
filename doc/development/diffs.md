@@ -14,12 +14,20 @@ We rely on different sources to present diffs. These include:
 
 ## Deep Dive
 
+<!-- vale gitlab.Spelling = NO -->
+
 In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only:
 `https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab Diffs and Commenting on Diffs
-functionality to share his domain specific knowledge with anyone who may work in this part of the
-codebase in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek),
-and the slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
-and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/).
+functionality to share domain-specific knowledge with anyone who may work in this part of the
+codebase in the future:
+
+<!-- vale gitlab.Spelling = YES -->
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  [Recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek)
+- Slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
+- [PDF slides](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/)
+
 Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details may
 have changed since then, it should still serve as a good introduction.
 
@@ -125,7 +133,7 @@ Gitaly only returns `Diff.Collapsed` (RPC) when surpassing collection limits.
 #### Not expandable patches (too large)
 
 The patch not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
-Users see a `This source diff could not be displayed because it is too large` message.
+Users see a `Changes are too large to be shown.` message and a button to view only that file in that commit.
 
 ```ruby
 Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000
@@ -180,8 +188,8 @@ has been introduced.
 
 One of the key challenges to deal with when working on merge ref diffs are merge
 conflicts. If the target and source branch contains a merge conflict, the branches
-cannot be automatically merged. The [recording on
-YouTube](https://www.youtube.com/watch?v=GFXIFA4ZuZw&feature=youtu.be&ab_channel=GitLabUnfiltered)
+cannot be automatically merged. The
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=GFXIFA4ZuZw&feature=youtu.be&ab_channel=GitLabUnfiltered)
 is a quick introduction to the problem and the motivation behind the [epic](https://gitlab.com/groups/gitlab-org/-/epics/854).
 
 In 13.5 a solution for both-modified merge

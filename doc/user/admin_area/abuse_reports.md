@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Abuse reports **(CORE ONLY)**
+# Abuse reports **(FREE SELF)**
 
 View and resolve abuse reports from GitLab users.
 

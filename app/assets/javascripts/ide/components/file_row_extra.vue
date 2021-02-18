@@ -1,10 +1,10 @@
 <script>
-import { mapGetters } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { n__ } from '~/locale';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
-import NewDropdown from './new_dropdown/index.vue';
 import MrFileIcon from './mr_file_icon.vue';
+import NewDropdown from './new_dropdown/index.vue';
 
 export default {
   name: 'FileRowExtra',

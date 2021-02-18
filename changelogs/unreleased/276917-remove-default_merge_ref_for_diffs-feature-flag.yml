@@ -1,0 +1,5 @@
+---
+title: Make merge-ref base the default comparison mode
+merge_request: 54017
+author:
+type: added

@@ -18,15 +18,15 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
   end
 
-  around do |example|
-    freeze_time { example.run }
-  end
-
   describe '.generate_update_sequence_id' do
-    it 'returns monotonic_time converted it to integer' do
-      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1.0)
+    it 'returns unix time in microseconds as integer', :aggregate_failures do
+      travel_to(Time.utc(1970, 1, 1, 0, 0, 1)) do
+        expect(described_class.generate_update_sequence_id).to eq(1000)
+      end
 
-      expect(described_class.generate_update_sequence_id).to eq(1)
+      travel_to(Time.utc(1970, 1, 1, 0, 0, 5)) do
+        expect(described_class.generate_update_sequence_id).to eq(5000)
+      end
     end
   end
 
@@ -238,22 +238,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
         expect(response['errorMessages']).to eq(%w(X Y Z))
       end
     end
-
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_deployments: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_deploy_info, project: project, deployments: deployments)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_deployments: project)
-
-      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: Array }).and_call_original
-
-      subject.send(:store_deploy_info, project: project, deployments: deployments)
-    end
   end
 
   describe '#store_ff_info' do
@@ -319,24 +303,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
         expect(response['errorMessages']).to eq(['a: X', 'a: Y', 'b: Z'])
       end
     end
-
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_feature_flags: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_feature_flags: project)
-
-      expect(subject).to receive(:post).with('/rest/featureflags/0.1/bulk', {
-        flags: Array, properties: Hash
-      }).and_call_original
-
-      subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
-    end
   end
 
   describe '#store_build_info' do
@@ -382,24 +348,6 @@ RSpec.describe Atlassian::JiraConnect::Client do
       expect(subject).not_to receive(:post)
 
       subject.send(:store_build_info, project: project, pipelines: pipelines.take(1))
-    end
-
-    it 'does not call the API if the feature flag is not enabled' do
-      stub_feature_flags(jira_sync_builds: false)
-
-      expect(subject).not_to receive(:post)
-
-      subject.send(:store_build_info, project: project, pipelines: pipelines)
-    end
-
-    it 'does call the API if the feature flag enabled for the project' do
-      stub_feature_flags(jira_sync_builds: project)
-
-      expect(subject).to receive(:post)
-        .with('/rest/builds/0.1/bulk', { builds: Array })
-        .and_call_original
-
-      subject.send(:store_build_info, project: project, pipelines: pipelines)
     end
 
     context 'there are errors' do

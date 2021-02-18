@@ -1,5 +1,5 @@
-import mutations from '~/serverless/store/mutations';
 import * as types from '~/serverless/store/mutation_types';
+import mutations from '~/serverless/store/mutations';
 import { mockServerlessFunctions, mockMetrics } from '../mock_data';
 
 describe('ServerlessMutations', () => {

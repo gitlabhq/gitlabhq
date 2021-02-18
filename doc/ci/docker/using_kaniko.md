@@ -49,7 +49,7 @@ In the following example, kaniko is used to:
 
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
-[environment variables](../variables/README.md#predefined-environment-variables)
+[predefined CI/CD variables](../variables/README.md#predefined-cicd-variables)
 GitLab CI/CD provides.
 
 In the last step, kaniko uses the `Dockerfile` under the
@@ -76,7 +76,7 @@ If you use a custom GitLab Runner behind an http(s) proxy, kaniko needs to be se
 up accordingly. This means:
 
 - Adding the proxy to `/kaniko/.docker/config.json`
-- Passing the `http_proxy` environment variables as build args so the Dockerfile
+- Passing the `http_proxy` environment variables as build arguments so the Dockerfile
   instructions can use the proxy when building the image.
 
 The previous example can be extended as follows:

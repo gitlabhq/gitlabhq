@@ -133,11 +133,28 @@ In the pipeline, the result is a group named `build ruby` with three jobs:
 
 ![Job group](img/job_group_v12_10.png)
 
-The jobs are be ordered by comparing the numbers from left to right. You
+The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
 
 [This regular expression](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
 evaluates the job names: `\d+[\s:\/\\]+\d+\s*`.
+
+### Improved job grouping
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52644) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../administration/feature_flags.md). **(FREE SELF)**
+
+Job grouping is evaluated with an improved regular expression to group jobs by name:
+
+- `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z`.
+
+The new implementation removes one or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences
+from the **end** of job names only.
+
+Matching substrings occuring at the beginning or in the middle of build names are
+no longer removed.
 
 ## Specifying variables when running manual jobs
 
@@ -150,9 +167,9 @@ additional variables. To access this page, click on the **name** of the manual j
 the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
-[custom environment variables](../variables/README.md#custom-environment-variables).
+[custom CI/CD variables](../variables/README.md#custom-cicd-variables).
 Add a variable name (key) and value here to override the value defined in
-[the UI or `.gitlab-ci.yml`](../variables/README.md#custom-environment-variables),
+[the UI or `.gitlab-ci.yml`](../variables/README.md#custom-cicd-variables),
 for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables.png)
@@ -196,8 +213,8 @@ You can create [collapsible sections in job logs](#expand-and-collapse-job-log-s
 by manually outputting special codes
 that GitLab uses to determine what sections to collapse:
 
-- Section start marker: `section_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
-- Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+- Section start marker: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 You must add these codes to the script section of the CI configuration. For example,
 using `echo`:
@@ -205,9 +222,9 @@ using `echo`:
 ```yaml
 job1:
   script:
-    - echo -e "section_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
     - echo 'this line should be hidden when collapsed'
-    - echo -e "section_end:`date +%s`:my_first_section\r\e[0K"
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
 
 In the example above:
@@ -223,9 +240,9 @@ In the example above:
 Sample raw job log:
 
 ```plaintext
-section_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
+\e[0Ksection_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
 this line should be hidden when collapsed
-section_end:1560896353:my_first_section\r\e[0K
+\e[0Ksection_end:1560896353:my_first_section\r\e[0K
 ```
 
 ### Pre-collapse sections
@@ -236,7 +253,7 @@ You can make the job log automatically collapse collapsible sections by adding t
 Add `[collapsed=true]` after the section name and before the `\r`. The section end marker
 remains unchanged:
 
-- Section start marker with `[collapsed=true]`: `section_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
 - Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 Add the updated section start text to the CI configuration. For example,
@@ -245,7 +262,7 @@ using `echo`:
 ```yaml
 job1:
   script:
-    - echo -e "section_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
     - echo 'this line should be hidden automatically after loading the job log'
-    - echo -e "section_end:`date +%s`:my_first_section\r\e[0K"
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```

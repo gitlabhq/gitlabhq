@@ -1,18 +1,16 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapActions } from 'vuex';
 import { GlButtonGroup, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { mapActions } from 'vuex';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import initUserPopovers from '../../user_popovers';
 import { setUrlParams } from '../../lib/utils/url_utility';
+import initUserPopovers from '../../user_popovers';
 
 /**
  * CommitItem

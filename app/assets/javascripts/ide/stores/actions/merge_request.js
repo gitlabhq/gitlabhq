@@ -1,8 +1,8 @@
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
+import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '../../constants';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { leftSidebarViews, PERMISSION_READ_MR } from '../../constants';
 
 export const getMergeRequestsForBranch = (
   { commit, state, getters },
@@ -147,70 +147,96 @@ export const getMergeRequestVersions = (
     }
   });
 
-export const openMergeRequest = (
-  { dispatch, state, getters },
-  { projectId, targetProjectId, mergeRequestId } = {},
-) =>
-  dispatch('getMergeRequestData', {
-    projectId,
-    targetProjectId,
-    mergeRequestId,
-  })
-    .then((mr) => {
-      dispatch('setCurrentBranchId', mr.source_branch);
+export const openMergeRequestChanges = async ({ dispatch, getters, state, commit }, changes) => {
+  const entryChanges = changes
+    .map((change) => ({ entry: state.entries[change.new_path], change }))
+    .filter((x) => x.entry);
 
-      return dispatch('getBranchData', {
-        projectId,
-        branchId: mr.source_branch,
-      }).then(() => {
-        const branch = getters.findBranch(projectId, mr.source_branch);
+  const pathsToOpen = entryChanges
+    .slice(0, MAX_MR_FILES_AUTO_OPEN)
+    .map(({ change }) => change.new_path);
 
-        return dispatch('getFiles', {
-          projectId,
-          branchId: mr.source_branch,
-          ref: branch.commit.id,
+  // If there are no changes with entries, do nothing.
+  if (!entryChanges.length) {
+    return;
+  }
+
+  dispatch('updateActivityBarView', leftSidebarViews.review.name);
+
+  entryChanges.forEach(({ change, entry }) => {
+    commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file: entry, mrChange: change });
+  });
+
+  // Open paths in order as they appear in MR changes
+  pathsToOpen.forEach((path) => {
+    commit(types.TOGGLE_FILE_OPEN, path);
+  });
+
+  // Activate first path.
+  // We don't `getFileData` here since the editor component kicks that off. Otherwise, we'd fetch twice.
+  const [firstPath, ...remainingPaths] = pathsToOpen;
+  await dispatch('router/push', getters.getUrlForPath(firstPath));
+  await dispatch('setFileActive', firstPath);
+
+  // Lastly, eagerly fetch the remaining paths for improved user experience.
+  await Promise.all(
+    remainingPaths.map(async (path) => {
+      try {
+        await dispatch('getFileData', {
+          path,
+          makeFileActive: false,
         });
-      });
-    })
-    .then(() =>
-      dispatch('getMergeRequestVersions', {
-        projectId,
-        targetProjectId,
-        mergeRequestId,
-      }),
-    )
-    .then(() =>
-      dispatch('getMergeRequestChanges', {
-        projectId,
-        targetProjectId,
-        mergeRequestId,
-      }),
-    )
-    .then((mrChanges) => {
-      if (mrChanges.changes.length) {
-        dispatch('updateActivityBarView', leftSidebarViews.review.name);
+        await dispatch('getRawFileData', { path });
+      } catch (e) {
+        // If one of the file fetches fails, we dont want to blow up the rest of them.
+        // eslint-disable-next-line no-console
+        console.error('[gitlab] An unexpected error occurred fetching MR file data', e);
       }
+    }),
+  );
+};
 
-      mrChanges.changes.forEach((change, ind) => {
-        const changeTreeEntry = state.entries[change.new_path];
-
-        if (changeTreeEntry) {
-          dispatch('setFileMrChange', {
-            file: changeTreeEntry,
-            mrChange: change,
-          });
-
-          if (ind < 10) {
-            dispatch('getFileData', {
-              path: change.new_path,
-              makeFileActive: ind === 0,
-              openFile: true,
-            });
-          }
-        }
-      });
-    })
-    .catch((e) => {
-      flash(__('Error while loading the merge request. Please try again.'));
-      throw e;
+export const openMergeRequest = async (
+  { dispatch, getters },
+  { projectId, targetProjectId, mergeRequestId } = {},
+) => {
+  try {
+    const mr = await dispatch('getMergeRequestData', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
     });
+
+    dispatch('setCurrentBranchId', mr.source_branch);
+
+    await dispatch('getBranchData', {
+      projectId,
+      branchId: mr.source_branch,
+    });
+
+    const branch = getters.findBranch(projectId, mr.source_branch);
+
+    await dispatch('getFiles', {
+      projectId,
+      branchId: mr.source_branch,
+      ref: branch.commit.id,
+    });
+
+    await dispatch('getMergeRequestVersions', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    });
+
+    const { changes } = await dispatch('getMergeRequestChanges', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    });
+
+    await dispatch('openMergeRequestChanges', changes);
+  } catch (e) {
+    flash(__('Error while loading the merge request. Please try again.'));
+    throw e;
+  }
+};

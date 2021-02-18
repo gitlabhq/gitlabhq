@@ -51,7 +51,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         expect(page).to have_content 'All discussions must be resolved'
 
         within('.sharing-permissions-form') do
-          find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+          find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
           find('input[value="Save changes"]').send_keys(:return)
         end
 
@@ -71,7 +71,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         expect(page).to have_content 'All discussions must be resolved'
 
         within('.sharing-permissions-form') do
-          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
+          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
           find('input[value="Save changes"]').send_keys(:return)
         end
 
@@ -92,7 +92,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
       expect(page).not_to have_content 'All discussions must be resolved'
 
       within('.sharing-permissions-form') do
-        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
         find('input[value="Save changes"]').send_keys(:return)
       end
 

@@ -1,14 +1,16 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
+import { escape } from 'lodash';
+import { mapActions, mapGetters, mapState } from 'vuex';
+
 import '~/behaviors/markdown/render_gfm';
-import noteEditedText from './note_edited_text.vue';
-import noteAwardsList from './note_awards_list.vue';
-import noteAttachment from './note_attachment.vue';
-import noteForm from './note_form.vue';
-import autosave from '../mixins/autosave';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
+import autosave from '../mixins/autosave';
+import noteAttachment from './note_attachment.vue';
+import noteAwardsList from './note_awards_list.vue';
+import noteEditedText from './note_edited_text.vue';
+import noteForm from './note_form.vue';
 
 export default {
   components: {
@@ -25,6 +27,11 @@ export default {
       required: true,
     },
     line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    file: {
       type: Object,
       required: false,
       default: null,
@@ -46,6 +53,7 @@ export default {
   },
   computed: {
     ...mapGetters(['getDiscussion', 'suggestionsCount']),
+    ...mapGetters('diffs', ['suggestionCommitMessage']),
     discussion() {
       if (!this.note.isDraft) return {};
 
@@ -54,7 +62,6 @@ export default {
     ...mapState({
       batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
     }),
-    ...mapState('diffs', ['defaultSuggestionCommitMessage']),
     noteBody() {
       return this.note.note;
     },
@@ -63,6 +70,21 @@ export default {
     },
     lineType() {
       return this.line ? this.line.type : null;
+    },
+    commitMessage() {
+      // Please see this issue comment for why these
+      //  are hard-coded to 1:
+      //  https://gitlab.com/gitlab-org/gitlab/-/issues/291027#note_468308022
+      const suggestionsCount = 1;
+      const filesCount = 1;
+      const filePaths = this.file ? [this.file.file_path] : [];
+      const suggestion = this.suggestionCommitMessage({
+        file_paths: filePaths.join(', '),
+        suggestions_count: suggestionsCount,
+        files_count: filesCount,
+      });
+
+      return escape(suggestion);
     },
   },
   mounted() {
@@ -135,7 +157,7 @@ export default {
       :note-html="note.note_html"
       :line-type="lineType"
       :help-page-path="helpPagePath"
-      :default-commit-message="defaultSuggestionCommitMessage"
+      :default-commit-message="commitMessage"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"
       @addToBatch="addSuggestionToBatch"
@@ -156,6 +178,7 @@ export default {
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
+    <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -163,6 +186,7 @@ export default {
       class="hidden js-task-list-field"
       dir="auto"
     ></textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
     <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"

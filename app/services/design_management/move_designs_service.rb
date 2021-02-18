@@ -16,7 +16,6 @@ module DesignManagement
       return error(:cannot_move) unless current_user.can?(:move_design, current_design)
       return error(:no_neighbors) unless neighbors.present?
       return error(:not_distinct) unless all_distinct?
-      return error(:not_adjacent) if any_in_gap?
       return error(:not_same_issue) unless all_same_issue?
 
       move_nulls_to_end
@@ -52,12 +51,6 @@ module DesignManagement
 
     def all_distinct?
       ids.uniq.size == ids.size
-    end
-
-    def any_in_gap?
-      return false unless previous_design&.relative_position && next_design&.relative_position
-
-      !previous_design.immediately_before?(next_design)
     end
 
     def all_same_issue?

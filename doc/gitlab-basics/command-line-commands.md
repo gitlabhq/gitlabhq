@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto, reference
 ---
 
-# Edit files through the command line
+# Edit files through the command line **(FREE)**
 
 When [working with Git from the command line](start-using-git.md), you need to
 use more than just the Git commands. There are several basic commands that you should
@@ -106,9 +106,9 @@ WARNING:
 Be careful of the commands you run with `sudo`. Certain commands may cause
 damage to your data or system.
 
-## Sample Git taskflow
+## Sample Git task flow
 
-If you're completely new to Git, looking through some [sample taskflows](https://rogerdudler.github.io/git-guide/)
+If you're completely new to Git, looking through some [sample task flows](https://rogerdudler.github.io/git-guide/)
 may help you understand the best practices for using these commands as you work.
 
 <!-- ## Troubleshooting

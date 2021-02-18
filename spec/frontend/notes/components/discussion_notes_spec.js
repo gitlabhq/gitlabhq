@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
 import { getByRole } from '@testing-library/dom';
+import { shallowMount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
-import { SYSTEM_NOTE } from '~/notes/constants';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
+import { SYSTEM_NOTE } from '~/notes/constants';
+import createStore from '~/notes/stores';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
-import createStore from '~/notes/stores';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 const LINE_RANGE = {};
@@ -23,7 +23,7 @@ describe('DiscussionNotes', () => {
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
-  const createComponent = (props, features = {}) => {
+  const createComponent = (props) => {
     wrapper = shallowMount(DiscussionNotes, {
       store,
       propsData: {
@@ -37,9 +37,6 @@ describe('DiscussionNotes', () => {
       },
       slots: {
         'avatar-badge': '<span class="avatar-badge-slot-content" />',
-      },
-      provide: {
-        glFeatures: { multilineComments: true, ...features },
       },
     });
   };
@@ -177,16 +174,14 @@ describe('DiscussionNotes', () => {
   });
 
   describe.each`
-    desc                               | props                                         | features                        | event           | expectedCalls
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseenter'} | ${[]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseleave'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseenter'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseleave'} | ${[]}
-  `('$desc and features $features', ({ props, event, features, expectedCalls }) => {
+    desc                               | props                                         | event           | expectedCalls
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${[]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${[]}
+  `('$desc', ({ props, event, expectedCalls }) => {
     beforeEach(() => {
-      createComponent(props, features);
+      createComponent(props);
       jest.spyOn(store, 'dispatch');
     });
 

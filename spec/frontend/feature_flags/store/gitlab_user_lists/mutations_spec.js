@@ -1,7 +1,7 @@
-import statuses from '~/feature_flags/store/gitlab_user_list/status';
-import createState from '~/feature_flags/store/gitlab_user_list/state';
 import * as types from '~/feature_flags/store/gitlab_user_list/mutation_types';
 import mutations from '~/feature_flags/store/gitlab_user_list/mutations';
+import createState from '~/feature_flags/store/gitlab_user_list/state';
+import statuses from '~/feature_flags/store/gitlab_user_list/status';
 import { userList } from '../../mock_data';
 
 describe('~/feature_flags/store/gitlab_user_list/mutations', () => {

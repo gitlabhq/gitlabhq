@@ -1,7 +1,7 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
-import { differenceBy } from 'lodash';
 import produce from 'immer';
+import { differenceBy } from 'lodash';
 import createFlash from '~/flash';
 import { extractCurrentDiscussion, extractDesign, extractDesigns } from './design_management_utils';
 import {

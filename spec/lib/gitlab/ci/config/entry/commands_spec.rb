@@ -87,18 +87,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Commands do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors)
-          .to include 'commands config should be a string or an array containing strings and arrays of strings'
+          .to include 'commands config should be a string or a nested array of strings up to 10 levels deep'
       end
     end
   end
 
   context 'when entry value is multi-level nested array' do
-    let(:config) { [['ls', ['echo 1']], 'pwd'] }
+    let(:config) do
+      ['ls 0', ['ls 1', ['ls 2', ['ls 3', ['ls 4', ['ls 5', ['ls 6', ['ls 7', ['ls 8', ['ls 9', ['ls 10']]]]]]]]]]]
+    end
 
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors)
-          .to include 'commands config should be a string or an array containing strings and arrays of strings'
+          .to include 'commands config should be a string or a nested array of strings up to 10 levels deep'
       end
     end
 

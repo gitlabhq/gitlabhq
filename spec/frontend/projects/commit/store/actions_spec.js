@@ -1,12 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
-import getInitialState from '~/projects/commit/store/state';
+import axios from '~/lib/utils/axios_utils';
+import { PROJECT_BRANCHES_ERROR } from '~/projects/commit/constants';
 import * as actions from '~/projects/commit/store/actions';
 import * as types from '~/projects/commit/store/mutation_types';
+import getInitialState from '~/projects/commit/store/state';
 import mockData from '../mock_data';
-import { PROJECT_BRANCHES_ERROR } from '~/projects/commit/constants';
 
 jest.mock('~/flash.js');
 

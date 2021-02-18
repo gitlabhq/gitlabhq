@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Learn GitLab Design B should render the loading state 1`] = `
+<ul>
+  <li>
+    <span>
+      Create a repository
+    </span>
+  </li>
+  <li>
+    <span>
+      Invite your colleagues
+    </span>
+  </li>
+  <li>
+    <span>
+      Set-up CI/CD
+    </span>
+  </li>
+  <li>
+    <span>
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Start a free trial of GitLab Gold
+      </gl-link-stub>
+    </span>
+  </li>
+  <li>
+    <span>
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Add code owners
+      </gl-link-stub>
+    </span>
+  </li>
+  <li>
+    <span>
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Enable require merge approvals
+      </gl-link-stub>
+    </span>
+  </li>
+  <li>
+    <span>
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Submit a merge request (MR)
+      </gl-link-stub>
+    </span>
+  </li>
+  <li>
+    <span>
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Run a Security scan using CI/CD
+      </gl-link-stub>
+    </span>
+  </li>
+</ul>
+`;

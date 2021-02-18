@@ -24,10 +24,8 @@ class Projects::TemplatesController < Projects::ApplicationController
   end
 
   def names
-    templates = @template_type.dropdown_names(project)
-
     respond_to do |format|
-      format.json { render json: templates }
+      format.json { render json: TemplateFinder.all_template_names_array(project, params[:template_type].to_s.pluralize) }
     end
   end
 

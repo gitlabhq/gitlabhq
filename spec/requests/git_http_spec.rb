@@ -382,6 +382,14 @@ RSpec.describe 'Git HTTP requests' do
                 end
               end
             end
+
+            context 'but the service parameter is missing' do
+              it 'rejects clones with 403 Forbidden' do
+                get("/#{path}/info/refs", headers: auth_env(*env.values_at(:user, :password), nil))
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
           end
 
           context 'and not a member of the team' do
@@ -408,6 +416,14 @@ RSpec.describe 'Git HTTP requests' do
               end
 
               it_behaves_like 'pushes are allowed'
+            end
+
+            context 'but the service parameter is missing' do
+              it 'rejects clones with 401 Unauthorized' do
+                get("/#{path}/info/refs")
+
+                expect(response).to have_gitlab_http_status(:unauthorized)
+              end
             end
           end
         end

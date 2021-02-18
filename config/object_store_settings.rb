@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Set default values for object_store settings
 class ObjectStoreSettings
   SUPPORTED_TYPES = %w(artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages).freeze
@@ -78,7 +80,7 @@ class ObjectStoreSettings
   #   "background_upload" => false,
   #   "proxy_download" => false,
   #   "remote_directory" => "artifacts"
-  #  }
+  # }
   #
   # Settings.lfs['object_store'] = {
   #   "enabled" => true,
@@ -97,7 +99,7 @@ class ObjectStoreSettings
   #   "background_upload" => false,
   #   "proxy_download" => true,
   #   "remote_directory" => "lfs-objects"
-  #  }
+  # }
   #
   # Note that with the common config:
   # 1. Only one object store credentials can now be used. This is
@@ -124,6 +126,9 @@ class ObjectStoreSettings
       target_config = common_config.merge(overrides.slice(*ALLOWED_OBJECT_STORE_OVERRIDES))
       section = settings.try(store_type)
 
+      # Admins can selectively disable object storage for a specific
+      # type as an override in the consolidated settings.
+      next unless overrides.fetch('enabled', true)
       next unless section
 
       if section['enabled'] && target_config['bucket'].blank?
@@ -140,6 +145,8 @@ class ObjectStoreSettings
       target_config['consolidated_settings'] = true
       section['object_store'] = target_config
     end
+
+    settings
   end
 
   private
@@ -152,8 +159,9 @@ class ObjectStoreSettings
     return false unless settings.dig('object_store', 'connection').present?
 
     WORKHORSE_ACCELERATED_TYPES.each do |store|
-      # to_h is needed because something strange happens to
-      # Settingslogic#dig when stub_storage_settings is run in tests:
+      # to_h is needed because we define `default` as a Gitaly storage name
+      # in stub_storage_settings. This causes Settingslogic to redefine Hash#default,
+      # which causes Hash#dig to fail when the key doesn't exist: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
       #
       # (byebug) section.dig
       # *** ArgumentError Exception: wrong number of arguments (given 0, expected 1+)

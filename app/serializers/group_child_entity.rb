@@ -20,7 +20,7 @@ class GroupChildEntity < Grape::Entity
     # We know `type` will be one either `project` or `group`.
     # The `edit_polymorphic_path` helper would try to call the path helper
     # with a plural: `edit_groups_path(instance)` or `edit_projects_path(instance)`
-    # while our methods are `edit_group_path` or `edit_group_path`
+    # while our methods are `edit_group_path` or `edit_project_path`
     public_send("edit_#{type}_path", instance) # rubocop:disable GitlabSecurity/PublicSend
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if Gitlab::Sherlock.enabled?
   namespace :sherlock do
     resources :transactions, only: [:index, :show] do

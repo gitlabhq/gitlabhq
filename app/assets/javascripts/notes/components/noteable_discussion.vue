@@ -1,22 +1,22 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
-import { s__, __ } from '~/locale';
-import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
-import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
+import { s__, __ } from '~/locale';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import diffDiscussionHeader from './diff_discussion_header.vue';
-import noteSignedOutWidget from './note_signed_out_widget.vue';
-import noteForm from './note_form.vue';
-import diffWithNote from './diff_with_note.vue';
+import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import eventHub from '../event_hub';
-import DiscussionNotes from './discussion_notes.vue';
+import diffDiscussionHeader from './diff_discussion_header.vue';
+import diffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
+import DiscussionNotes from './discussion_notes.vue';
+import noteForm from './note_form.vue';
+import noteSignedOutWidget from './note_signed_out_widget.vue';
 
 export default {
   name: 'NoteableDiscussion',
@@ -265,16 +265,8 @@ export default {
                 <div
                   v-else-if="showReplies"
                   :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder clearfix"
+                  class="discussion-reply-holder gl-border-t-0! clearfix"
                 >
-                  <user-avatar-link
-                    v-if="!isReplying && userCanReply"
-                    :link-href="currentUser.path"
-                    :img-src="currentUser.avatar_url"
-                    :img-alt="currentUser.name"
-                    :img-size="40"
-                    class="d-none d-sm-block"
-                  />
                   <discussion-actions
                     v-if="!isReplying && userCanReply"
                     :discussion="discussion"
@@ -285,27 +277,18 @@ export default {
                     @showReplyForm="showReplyForm"
                     @resolve="resolveHandler"
                   />
-                  <div v-if="isReplying" class="avatar-note-form-holder">
-                    <user-avatar-link
-                      v-if="currentUser"
-                      :link-href="currentUser.path"
-                      :img-src="currentUser.avatar_url"
-                      :img-alt="currentUser.name"
-                      :img-size="40"
-                      class="d-none d-sm-block"
-                    />
-                    <note-form
-                      ref="noteForm"
-                      :discussion="discussion"
-                      :is-editing="false"
-                      :line="diffLine"
-                      save-button-title="Comment"
-                      :autosave-key="autosaveKey"
-                      @handleFormUpdateAddToReview="addReplyToReview"
-                      @handleFormUpdate="saveReply"
-                      @cancelForm="cancelReplyForm"
-                    />
-                  </div>
+                  <note-form
+                    v-if="isReplying"
+                    ref="noteForm"
+                    :discussion="discussion"
+                    :is-editing="false"
+                    :line="diffLine"
+                    save-button-title="Comment"
+                    :autosave-key="autosaveKey"
+                    @handleFormUpdateAddToReview="addReplyToReview"
+                    @handleFormUpdate="saveReply"
+                    @cancelForm="cancelReplyForm"
+                  />
                   <note-signed-out-widget v-if="!isLoggedIn" />
                 </div>
               </template>

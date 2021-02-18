@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlCard,
   GlForm,
@@ -10,6 +9,7 @@ import {
   GlAlert,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
 import DashboardPanel from './dashboard_panel.vue';

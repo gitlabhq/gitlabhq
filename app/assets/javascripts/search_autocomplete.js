@@ -2,8 +2,10 @@
 
 import $ from 'jquery';
 import { escape, throttle } from 'lodash';
-import { s__, __, sprintf } from '~/locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
+import { s__, __, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import axios from './lib/utils/axios_utils';
 import {
   isInGroupsPage,
@@ -12,8 +14,6 @@ import {
   getProjectSlug,
   spriteIcon,
 } from './lib/utils/common_utils';
-import Tracking from '~/tracking';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 /**
  * Search input in top navigation bar.

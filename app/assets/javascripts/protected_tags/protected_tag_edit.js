@@ -1,7 +1,7 @@
 import { deprecatedCreateFlash as flash } from '../flash';
 import axios from '../lib/utils/axios_utils';
+import { FAILED_TO_UPDATE_TAG_MESSAGE } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
-import { __ } from '~/locale';
 
 export default class ProtectedTagEdit {
   constructor(options) {
@@ -48,11 +48,8 @@ export default class ProtectedTagEdit {
       .catch(() => {
         this.$allowedToCreateDropdownButton.enable();
 
-        flash(
-          __('Failed to update tag!'),
-          'alert',
-          document.querySelector('.js-protected-tags-list'),
-        );
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        flash(FAILED_TO_UPDATE_TAG_MESSAGE);
       });
   }
 }

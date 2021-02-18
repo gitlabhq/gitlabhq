@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import AlertManagementEmptyState from '~/alert_management/components/alert_management_empty_state.vue';
 import defaultProvideValues from '../mocks/alerts_provide_config.json';
 

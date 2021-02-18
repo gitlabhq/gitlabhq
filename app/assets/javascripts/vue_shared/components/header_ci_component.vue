@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton, GlTooltip } from '@gitlab/ui';
+import { glEmojiTag } from '../../emoji';
+import { __, sprintf } from '../../locale';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
-import { glEmojiTag } from '../../emoji';
-import { __, sprintf } from '../../locale';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -105,7 +105,7 @@ export default {
     <section class="header-main-content">
       <ci-icon-badge :status="status" />
 
-      <strong> {{ itemName }} #{{ itemId }} </strong>
+      <strong data-testid="ci-header-item-text"> {{ itemName }} #{{ itemId }} </strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('triggered') }}</template>
       <template v-else>{{ __('created') }}</template>
@@ -142,13 +142,13 @@ export default {
       </template>
     </section>
 
-    <section v-if="$slots.default" data-testid="headerButtons" class="gl-display-flex">
+    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-button
       v-if="hasSidebarButton"
       class="d-sm-none js-sidebar-build-toggle gl-ml-auto"
-      icon="angle-double-left"
+      icon="chevron-double-lg-left"
       :aria-label="__('Toggle sidebar')"
       @click="onClickSidebarButton"
     />

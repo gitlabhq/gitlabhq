@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { __ } from '~/locale';
 
 export default {
   props: {

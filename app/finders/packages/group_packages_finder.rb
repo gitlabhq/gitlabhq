@@ -2,9 +2,7 @@
 
 module Packages
   class GroupPackagesFinder
-    attr_reader :current_user, :group, :params
-
-    InvalidPackageTypeError = Class.new(StandardError)
+    include ::Packages::FinderHelper
 
     def initialize(current_user, group, params = { exclude_subgroups: false, order_by: 'created_at', sort: 'asc' })
       @current_user = current_user
@@ -20,6 +18,8 @@ module Packages
 
     private
 
+    attr_reader :current_user, :group, :params
+
     def packages_for_group_projects
       packages = ::Packages::Package
         .including_build_info
@@ -32,6 +32,7 @@ module Packages
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
+      packages = filter_by_status(packages)
       packages
     end
 
@@ -46,10 +47,6 @@ module Packages
         .with_feature_available_for_user(:repository, current_user)
     end
 
-    def package_type
-      params[:package_type].presence
-    end
-
     def groups
       return [group] if exclude_subgroups?
 
@@ -58,25 +55,6 @@ module Packages
 
     def exclude_subgroups?
       params[:exclude_subgroups]
-    end
-
-    def filter_by_package_type(packages)
-      return packages unless package_type
-      raise InvalidPackageTypeError unless Package.package_types.key?(package_type)
-
-      packages.with_package_type(package_type)
-    end
-
-    def filter_by_package_name(packages)
-      return packages unless params[:package_name].present?
-
-      packages.search_by_name(params[:package_name])
-    end
-
-    def filter_with_version(packages)
-      return packages if params[:include_versionless].present?
-
-      packages.has_version
     end
   end
 end

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo **(PREMIUM ONLY)**
+# Geo **(PREMIUM SELF)**
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with

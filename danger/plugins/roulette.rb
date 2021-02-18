@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/gitlab/danger/roulette'
+require_relative '../../tooling/danger/roulette'
 
 module Danger
   class Roulette < Plugin
     # Put the helper code somewhere it can be tested
-    include Gitlab::Danger::Roulette
+    include Tooling::Danger::Roulette
   end
 end

@@ -1,9 +1,9 @@
 <script>
-import { mapState } from 'vuex';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import { s__ } from '~/locale';
-import { DASHBOARD_PAGE } from '../router/constants';
 import DashboardPanelBuilder from '../components/dashboard_panel_builder.vue';
+import { DASHBOARD_PAGE } from '../router/constants';
 
 export default {
   components: {

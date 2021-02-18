@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { initEmojiMap, EMOJI_VERSION } from '~/emoji';
+import axios from '~/lib/utils/axios_utils';
 
 export const emojiFixtureMap = {
   atom: {
@@ -29,10 +29,6 @@ export const emojiFixtureMap = {
     unicodeVersion: '6.0',
     description: 'white question mark ornament',
   },
-
-  // used for regression tests
-  // black_heart MUST come before heart
-  // custard MUST come before star
   black_heart: {
     moji: '🖤',
     unicodeVersion: '1.1',
@@ -55,34 +51,18 @@ export const emojiFixtureMap = {
   },
 };
 
-Object.keys(emojiFixtureMap).forEach((k) => {
-  emojiFixtureMap[k].name = k;
-  if (!emojiFixtureMap[k].aliases) {
-    emojiFixtureMap[k].aliases = [];
-  }
-});
+export const mockEmojiData = Object.keys(emojiFixtureMap).reduce((acc, k) => {
+  const { moji: e, unicodeVersion: u, category: c, description: d } = emojiFixtureMap[k];
+  acc[k] = { name: k, e, u, c, d };
 
-export async function initEmojiMock() {
-  const emojiData = Object.fromEntries(
-    Object.values(emojiFixtureMap).map((m) => {
-      const { name: n, moji: e, unicodeVersion: u, category: c, description: d } = m;
-      return [n, { c, e, d, u }];
-    }),
-  );
+  return acc;
+}, {});
 
+export async function initEmojiMock(mockData = mockEmojiData) {
   const mock = new MockAdapter(axios);
-  mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, JSON.stringify(emojiData));
+  mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, JSON.stringify(mockData));
 
   await initEmojiMap();
 
   return mock;
-}
-
-export function describeEmojiFields(label, tests) {
-  describe.each`
-    field            | accessor
-    ${'name'}        | ${(e) => e.name}
-    ${'alias'}       | ${(e) => e.aliases[0]}
-    ${'description'} | ${(e) => e.description}
-  `(label, tests);
 }

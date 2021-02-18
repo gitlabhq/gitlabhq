@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
 import { GlLabel } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import DropdownValueComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value.vue';
 
 import { mockConfig, mockLabels } from './mock_data';

@@ -1,6 +1,6 @@
 <script>
-import $ from 'jquery';
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
+import $ from 'jquery';
 
 /**
  * Given an array of tabs, renders non linked bootstrap tabs.

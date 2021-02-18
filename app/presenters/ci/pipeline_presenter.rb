@@ -11,6 +11,9 @@ module Ci
       { unknown_failure: 'Unknown pipeline failure!',
         config_error: 'CI/CD YAML configuration error!',
         external_validation_failure: 'External pipeline validation failed!',
+        activity_limit_exceeded: 'Pipeline activity limit exceeded!',
+        size_limit_exceeded: 'Pipeline size limit exceeded!',
+        job_activity_limit_exceeded: 'Pipeline job activity limit exceeded!',
         deployments_limit_exceeded: 'Pipeline deployments limit exceeded!' }
     end
 

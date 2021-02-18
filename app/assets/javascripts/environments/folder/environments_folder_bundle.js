@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import environmentsFolderApp from './environments_folder_view.vue';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '../../lib/utils/common_utils';
 import Translate from '../../vue_shared/translate';
-import createDefaultClient from '~/lib/graphql';
+import environmentsFolderApp from './environments_folder_view.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);

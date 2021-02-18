@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :container_registry do
     desc "GitLab | Container Registry | Configure"

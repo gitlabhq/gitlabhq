@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import UserListForm from './user_list_form.vue';
 

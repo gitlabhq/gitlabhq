@@ -1,8 +1,8 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlModal, GlModalDirective, GlFormInput, GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { uniqueId } from 'lodash';
 import csrf from '~/lib/utils/csrf';
+import { __ } from '~/locale';
 
 export default {
   components: {

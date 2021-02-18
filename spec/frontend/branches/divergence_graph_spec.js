@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import init from '~/branches/divergence_graph';
+import axios from '~/lib/utils/axios_utils';
 
 describe('Divergence graph', () => {
   let mock;

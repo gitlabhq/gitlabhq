@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
-import { __ } from '../locale';
 import { dasherize } from '../lib/utils/text_utility';
+import { __ } from '../locale';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
 
 const EMPTY_STAGE_TEXTS = {

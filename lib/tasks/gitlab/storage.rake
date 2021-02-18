@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gitlab do
   namespace :storage do
     desc 'GitLab | Storage | Migrate existing projects to Hashed Storage'

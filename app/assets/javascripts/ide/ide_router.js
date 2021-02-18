@@ -1,14 +1,14 @@
 import Vue from 'vue';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import IdeRouter from '~/ide/ide_router_extension';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
-import { performanceMarkAndMeasure } from '~/performance/utils';
 import {
   WEBIDE_MARK_FETCH_PROJECT_DATA_START,
   WEBIDE_MARK_FETCH_PROJECT_DATA_FINISH,
   WEBIDE_MEASURE_FETCH_PROJECT_DATA,
 } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { syncRouterAndStore } from './sync_router_and_store';
 
 Vue.use(IdeRouter);

@@ -220,6 +220,7 @@ MergeRequestDiff:
 - commits_count
 - files_count
 - sorted
+- diff_type
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order
@@ -231,6 +232,7 @@ MergeRequestDiffCommit:
 - committer_name
 - committer_email
 - message
+- trailers
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -255,6 +257,7 @@ MergeRequestContextCommit:
 - committer_email
 - message
 - merge_request_id
+- trailers
 MergeRequestContextCommitDiffFile:
 - sha
 - relative_order
@@ -580,6 +583,7 @@ ProjectFeature:
 - requirements_access_level
 - analytics_access_level
 - operations_access_level
+- security_and_compliance_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

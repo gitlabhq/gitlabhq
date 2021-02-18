@@ -1,7 +1,7 @@
 <script>
 import { GlFormRadio, GlFormRadioGroup, GlLink, GlSprintf } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
+import { s__, sprintf } from '~/locale';
 
 const KEY_EVERY_DAY = 'everyDay';
 const KEY_EVERY_WEEK = 'everyWeek';

@@ -1,0 +1,18 @@
+---
+key_path: database.adapter
+description: This metric only returns a value of PostgreSQL in supported versions of GitLab. It could be removed from the usage ping. Historically MySQL was also supported.
+product_section: enablement
+product_stage: enablement
+product_group: group::enablement distribution
+product_category: collection
+value_type: string
+status: data_available
+time_frame: none
+data_source: database
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate

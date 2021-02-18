@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlIcon } from '@gitlab/ui';
-import eventHub from '~/environments/event_hub';
+import { shallowMount } from '@vue/test-utils';
 import PinComponent from '~/environments/components/environment_pin.vue';
+import eventHub from '~/environments/event_hub';
 
 describe('Pin Component', () => {
   let wrapper;

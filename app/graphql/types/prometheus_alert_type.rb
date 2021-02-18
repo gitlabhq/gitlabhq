@@ -10,11 +10,11 @@ module Types
     present_using PrometheusAlertPresenter
 
     field :id, GraphQL::ID_TYPE, null: false,
-          description: 'ID of the alert condition'
+          description: 'ID of the alert condition.'
 
     field :humanized_text,
           GraphQL::STRING_TYPE,
           null: false,
-          description: 'The human-readable text of the alert condition'
+          description: 'The human-readable text of the alert condition.'
   end
 end

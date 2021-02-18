@@ -1,21 +1,19 @@
 /* eslint-disable no-new */
-
 import $ from 'jquery';
-import Diff from '~/diff';
-import ZenMode from '~/zen_mode';
-import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import initNotes from '~/init_notes';
-import initChangesDropdown from '~/init_changes_dropdown';
-import '~/sourcegraph/load';
-import { handleLocationHash } from '~/lib/utils/common_utils';
-import axios from '~/lib/utils/axios_utils';
-import syntaxHighlight from '~/syntax_highlight';
-import flash from '~/flash';
-import { __ } from '~/locale';
 import loadAwardsHandler from '~/awards_handler';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import Diff from '~/diff';
+import flash from '~/flash';
+import initChangesDropdown from '~/init_changes_dropdown';
+import initNotes from '~/init_notes';
+import axios from '~/lib/utils/axios_utils';
+import { handleLocationHash } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
+import initCommitActions from '~/projects/commit';
 import { initCommitBoxInfo } from '~/projects/commit_box/info';
-import initRevertCommitTrigger from '~/projects/commit/init_revert_commit_trigger';
-import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
+import syntaxHighlight from '~/syntax_highlight';
+import ZenMode from '~/zen_mode';
+import '~/sourcegraph/load';
 
 const hasPerfBar = document.querySelector('.with-performance-bar');
 const performanceHeight = hasPerfBar ? 35 : 0;
@@ -47,5 +45,4 @@ if (filesContainer.length) {
   new Diff();
 }
 loadAwardsHandler();
-initRevertCommitModal();
-initRevertCommitTrigger();
+initCommitActions();

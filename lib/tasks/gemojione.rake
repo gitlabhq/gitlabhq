@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
 

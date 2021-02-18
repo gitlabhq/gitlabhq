@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
-import ProjectDropdown from './project_dropdown.vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import ErrorTrackingForm from './error_tracking_form.vue';
+import ProjectDropdown from './project_dropdown.vue';
 
 export default {
   components: { ProjectDropdown, ErrorTrackingForm, GlButton },

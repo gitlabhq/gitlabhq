@@ -79,7 +79,7 @@ describe('DropdownCreateLabelComponent', () => {
       const colorItemEl = colorsListContainerEl.querySelectorAll('a')[0];
 
       expect(colorItemEl.dataset.color).toBe(vm.suggestedColors[0].colorCode);
-      expect(colorItemEl.getAttribute('style')).toBe('background-color: rgb(0, 51, 204);');
+      expect(colorItemEl.getAttribute('style')).toBe('background-color: rgb(0, 153, 102);');
     });
 
     it('renders color input element', () => {

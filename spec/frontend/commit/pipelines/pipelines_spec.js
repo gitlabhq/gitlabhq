@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
+import axios from '~/lib/utils/axios_utils';
 
 describe('Pipelines table in Commits and Merge requests', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';

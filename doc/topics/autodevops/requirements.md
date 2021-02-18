@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Requirements for Auto DevOps
+# Requirements for Auto DevOps **(FREE)**
 
 You can set up Auto DevOps for [Kubernetes](#auto-devops-requirements-for-kubernetes),
 [Amazon Elastic Container Service (ECS)](#auto-devops-requirements-for-amazon-ecs),
@@ -46,12 +46,9 @@ To make full use of Auto DevOps with Kubernetes, you need:
 - **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps),
   [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring))
 
-  You need a domain configured with wildcard DNS, which all of your Auto DevOps
-  applications use. If you're using the
-  [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
-  the URL endpoint is automatically configured for you.
-
-  You must also [specify the Auto DevOps base domain](index.md#auto-devops-base-domain).
+  You must [specify the Auto DevOps base domain](index.md#auto-devops-base-domain),
+  which all of your Auto DevOps applications use. This domain must be configured
+  with wildcard DNS.
 
 - **GitLab Runner** (for all stages)
 

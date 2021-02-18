@@ -1,17 +1,18 @@
 <script>
-import { Sortable, MultiDrag } from 'sortablejs';
 import { GlLoadingIcon } from '@gitlab/ui';
-import boardNewIssue from './board_new_issue_deprecated.vue';
-import boardCard from './board_card.vue';
-import eventHub from '../eventhub';
-import boardsStore from '../stores/boards_store';
-import { sprintf, __ } from '~/locale';
+import { Sortable, MultiDrag } from 'sortablejs';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { sprintf, __ } from '~/locale';
+import eventHub from '../eventhub';
 import {
   getBoardSortableDefaultOptions,
   sortableStart,
   sortableEnd,
 } from '../mixins/sortable_default_options';
+import boardsStore from '../stores/boards_store';
+import boardCard from './board_card.vue';
+import boardNewIssue from './board_new_issue_deprecated.vue';
 
 // This component is being replaced in favor of './board_list.vue' for GraphQL boards
 
@@ -63,6 +64,7 @@ export default {
   watch: {
     filters: {
       handler() {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = false;
         this.$refs.list.scrollTop = 0;
       },
@@ -75,6 +77,7 @@ export default {
           this.list.issuesSize > this.list.issues.length &&
           this.list.isExpanded
         ) {
+          // eslint-disable-next-line vue/no-mutating-props
           this.list.page += 1;
           this.list.getIssues(false).catch(() => {
             // TODO: handle request error
@@ -165,7 +168,7 @@ export default {
 
         boardsStore.startMoving(list, issue);
 
-        this.$root.$emit('bv::hide::tooltip');
+        this.$root.$emit(BV_HIDE_TOOLTIP);
 
         sortableStart();
       },
@@ -283,6 +286,7 @@ export default {
                * issue indexes are far apart, this logic should ever kick in.
                */
               setTimeout(() => {
+                // eslint-disable-next-line vue/no-mutating-props
                 this.list.issues.splice(i, 1);
               }, 0);
             });
@@ -386,10 +390,12 @@ export default {
     loadNextPage() {
       const getIssues = this.list.nextPage();
       const loadingDone = () => {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = false;
       };
 
       if (getIssues) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.list.loadingMore = true;
         getIssues.then(loadingDone).catch(loadingDone);
       }

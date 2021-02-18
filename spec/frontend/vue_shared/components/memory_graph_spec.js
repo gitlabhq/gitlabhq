@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlSparklineChart } from '@gitlab/ui/dist/charts';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
 
 describe('MemoryGraph', () => {

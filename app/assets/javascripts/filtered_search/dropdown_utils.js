@@ -1,7 +1,7 @@
 import { last } from 'lodash';
 import FilteredSearchContainer from './container';
-import FilteredSearchTokenizer from './filtered_search_tokenizer';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
+import FilteredSearchTokenizer from './filtered_search_tokenizer';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class DropdownUtils {

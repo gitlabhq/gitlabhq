@@ -1,11 +1,11 @@
 <script>
 import { GlLink, GlTable } from '@gitlab/ui';
 import { last } from 'lodash';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'PackageFiles',

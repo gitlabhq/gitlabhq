@@ -1,11 +1,11 @@
 <script>
-import $ from 'jquery';
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import $ from 'jquery';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import animateMixin from '../mixins/animate';
+import { s__, sprintf } from '~/locale';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
+import animateMixin from '../mixins/animate';
 
 export default {
   directives: {
@@ -154,6 +154,7 @@ export default {
       }"
       class="md"
     ></div>
+    <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="descriptionText"
       ref="textarea"
@@ -163,6 +164,7 @@ export default {
       dir="auto"
     >
     </textarea>
+    <!-- eslint-enable vue/no-mutating-props -->
 
     <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>

@@ -17,7 +17,7 @@ FactoryBot.define do
       attrs[:design] ||= association(:design, issue: issue)
       attrs[:version] ||= association(:design_version, issue: issue)
 
-      new(attrs)
+      new(**attrs)
     end
   end
 end

@@ -1,16 +1,16 @@
 <script>
-import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
+import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { some, every } from 'lodash';
-import * as Sentry from '~/sentry/wrapper';
-import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import {
   differenceInMonths,
   formatDateAsMonth,
   getDayDifference,
 } from '~/lib/utils/datetime_utility';
-import { getAverageByMonth, getEarliestDate, generateDataKeys } from '../utils';
+import * as Sentry from '~/sentry/wrapper';
+import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import { TODAY, START_DATE } from '../constants';
+import { getAverageByMonth, getEarliestDate, generateDataKeys } from '../utils';
 
 const QUERY_DATA_KEY = 'instanceStatisticsMeasurements';
 

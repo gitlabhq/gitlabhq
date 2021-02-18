@@ -1,8 +1,8 @@
-import Vue from 'vue';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 
 import { mockMilestone } from 'jest/boards/mock_data';
-import { GlIcon } from '@gitlab/ui';
 import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
 
 const createComponent = (milestone = mockMilestone) => {

@@ -2,8 +2,8 @@
 import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 
-import savedContentMetaQuery from '../graphql/queries/saved_content_meta.query.graphql';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
+import savedContentMetaQuery from '../graphql/queries/saved_content_meta.query.graphql';
 import { HOME_ROUTE } from '../router/constants';
 
 export default {

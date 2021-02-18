@@ -1,5 +1,5 @@
-import SentryConfig from '~/sentry/sentry_config';
 import index from '~/sentry/index';
+import SentryConfig from '~/sentry/sentry_config';
 
 describe('SentryConfig options', () => {
   const dsn = 'https://123@sentry.gitlab.test/123';

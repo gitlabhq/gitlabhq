@@ -5,7 +5,7 @@
   $bs-input-focus-border: #80bdff;
   $bs-input-focus-box-shadow: rgba(0, 123, 255, 0.25);
 
-  a:not(.btn):not(.gl-tab-nav-item),
+  a:not(.btn),
   .gl-button.btn-link,
   .gl-button.btn-link:hover,
   .gl-button.btn-link:focus,
@@ -34,6 +34,7 @@
   .ide-pipeline .top-bar .controllers .controllers-buttons,
   .controllers-buttons svg,
   .nav-links li a.active,
+  .gl-tabs-nav li a.gl-tab-nav-item-active,
   .md-area.is-focused {
     color: var(--ide-text-color, $gl-text-color);
   }
@@ -44,13 +45,15 @@
   }
 
   .nav-links:not(.quick-links) li:not(.md-header-toolbar) a,
+  .gl-tabs-nav li a,
   .dropdown-menu-inner-content,
   .file-row .file-row-icon svg,
   .file-row:hover .file-row-icon svg {
     color: var(--ide-text-color-secondary, $gl-text-color-secondary);
   }
 
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) {
+  .nav-links:not(.quick-links) li:not(.md-header-toolbar),
+  .gl-tabs-nav li {
     &:hover a,
     &.active a,
     a:hover,
@@ -60,6 +63,10 @@
         color: var(--ide-text-color, $black);
         border-color: var(--ide-input-border, $gray-darkest);
       }
+    }
+
+    a.gl-tab-nav-item-active {
+      box-shadow: inset 0 -2px 0 0 var(--ide-input-border, $gray-darkest);
     }
   }
 
@@ -142,6 +149,7 @@
   .md table:not(.code) tbody td,
   .md table:not(.code) tr th,
   .nav-links:not(.quick-links),
+  .gl-tabs-nav,
   .common-note-form .md-area.is-focused .nav-links {
     border-color: var(--ide-border-color-alt, $white-dark);
   }
@@ -173,6 +181,10 @@
 
     .dropdown-menu .nav-links li a.active {
       border-color: var(--ide-highlight-accent, $gl-text-color);
+    }
+
+    .gl-tabs-nav li a.gl-tab-nav-item-active {
+      box-shadow: inset 0 -2px 0 0 var(--ide-highlight-accent, $gl-text-color);
     }
 
     // for other themes, suppress different avatar default colors for simplicity
@@ -241,7 +253,6 @@
   .btn-default:not(.gl-button),
   .dropdown,
   .dropdown-menu-toggle {
-    background-color: var(--ide-input-background, $white) !important;
     color: var(--ide-input-color, $gl-text-color) !important;
     border-color: var(--ide-btn-default-border, $border-color);
   }
@@ -302,6 +313,11 @@
     .nav-links:not(.quick-links) {
       background-color: var(--ide-dropdown-hover-background, $white);
       border-color: var(--ide-dropdown-hover-background, $border-color);
+    }
+
+    .gl-tabs-nav {
+      background-color: var(--ide-dropdown-hover-background, $white);
+      box-shadow: inset 0 -2px 0 0 var(--ide-dropdown-hover-background, $border-color);
     }
 
     .divider {

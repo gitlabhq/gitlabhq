@@ -43,5 +43,5 @@
     = render "shared/tokens/scopes_list", token: @application
 
 .form-actions
-  = link_to _('Edit'), edit_oauth_application_path(@application), class: 'gl-button btn btn-primary wide float-left'
-  = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger gl-ml-3'
+  = link_to _('Edit'), edit_oauth_application_path(@application), class: 'gl-button btn btn-confirm wide float-left'
+  = render 'delete_form', application: @application, submit_btn_css: 'gl-button btn btn-danger gl-ml-3'

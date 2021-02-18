@@ -20,7 +20,6 @@ module Ci
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
-    belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :builds
     belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
 
     RUNNER_FEATURES = {
@@ -38,7 +37,6 @@ module Ci
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
-    has_one :resource, class_name: 'Ci::Resource', inverse_of: :build
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
@@ -230,25 +228,18 @@ module Ci
       end
 
       def with_preloads
-        preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
+        preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
       end
     end
 
     state_machine :status do
       event :enqueue do
-        transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :requires_resource?
         transition [:created, :skipped, :manual, :scheduled] => :preparing, if: :any_unmet_prerequisites?
       end
 
       event :enqueue_scheduled do
-        transition scheduled: :waiting_for_resource, if: :requires_resource?
         transition scheduled: :preparing, if: :any_unmet_prerequisites?
         transition scheduled: :pending
-      end
-
-      event :enqueue_waiting_for_resource do
-        transition waiting_for_resource: :preparing, if: :any_unmet_prerequisites?
-        transition waiting_for_resource: :pending
       end
 
       event :enqueue_preparing do
@@ -277,23 +268,6 @@ module Ci
 
       before_transition created: :scheduled do |build|
         build.scheduled_at = build.options_scheduled_at
-      end
-
-      before_transition any => :waiting_for_resource do |build|
-        build.waiting_for_resource_at = Time.current
-      end
-
-      before_transition on: :enqueue_waiting_for_resource do |build|
-        next unless build.requires_resource?
-
-        build.resource_group.assign_resource_to(build) # If false is returned, it stops the transition
-      end
-
-      after_transition any => :waiting_for_resource do |build|
-        build.run_after_commit do
-          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
-            .perform_async(build.resource_group_id)
-        end
       end
 
       before_transition on: :enqueue_preparing do |build|
@@ -325,16 +299,6 @@ module Ci
           build.pipeline.persistent_ref.create
 
           BuildHooksWorker.perform_async(id)
-        end
-      end
-
-      after_transition any => ::Ci::Build.completed_statuses do |build|
-        next unless build.resource_group_id.present?
-        next unless build.resource_group.release_resource_from(build)
-
-        build.run_after_commit do
-          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
-            .perform_async(build.resource_group_id)
         end
       end
 
@@ -403,7 +367,7 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
-        .new(self, current_user)
+        .new(self.present, current_user)
         .fabricate!
     end
 
@@ -467,6 +431,11 @@ module Ci
       pipeline.builds.retried.where(name: self.name).count
     end
 
+    override :all_met_to_become_pending?
+    def all_met_to_become_pending?
+      super && !any_unmet_prerequisites?
+    end
+
     def any_unmet_prerequisites?
       prerequisites.present?
     end
@@ -499,10 +468,6 @@ module Ci
           ExpandVariables.expand(namespace, -> { simple_variables })
         end
       end
-    end
-
-    def requires_resource?
-      self.resource_group_id.present?
     end
 
     def has_environment?
@@ -821,7 +786,9 @@ module Ci
     end
 
     def artifacts_file_for_type(type)
-      job_artifacts.find_by(file_type: Ci::JobArtifact.file_types[type])&.file
+      file_types = Ci::JobArtifact.associated_file_types_for(type)
+      file_types_ids = file_types&.map { |file_type| Ci::JobArtifact.file_types[file_type] }
+      job_artifacts.find_by(file_type: file_types_ids)&.file
     end
 
     def coverage_regex
@@ -941,19 +908,12 @@ module Ci
     end
 
     def collect_coverage_reports!(coverage_report)
-      project_path, worktree_paths = if Feature.enabled?(:smart_cobertura_parser, project)
-                                       # If the flag is disabled, we intentionally pass nil
-                                       # for both project_path and worktree_paths to fallback
-                                       # to the non-smart behavior of the parser
-                                       [project.full_path, pipeline.all_worktree_paths]
-                                     end
-
       each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
           blob,
           coverage_report,
-          project_path: project_path,
-          worktree_paths: worktree_paths
+          project_path: project.full_path,
+          worktree_paths: pipeline.all_worktree_paths
         )
       end
 
@@ -1122,7 +1082,6 @@ module Ci
     end
 
     def conditionally_allow_failure!(exit_code)
-      return unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
       return unless exit_code
 
       if allowed_to_fail_with_code?(exit_code)

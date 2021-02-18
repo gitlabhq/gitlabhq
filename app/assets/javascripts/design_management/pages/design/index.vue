@@ -1,21 +1,27 @@
 <script>
-import Mousetrap from 'mousetrap';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import Mousetrap from 'mousetrap';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import allVersionsMixin from '../../mixins/all_versions';
-import Toolbar from '../../components/toolbar/index.vue';
 import DesignDestroyer from '../../components/design_destroyer.vue';
-import DesignScaler from '../../components/design_scaler.vue';
-import DesignPresentation from '../../components/design_presentation.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';
+import DesignPresentation from '../../components/design_presentation.vue';
+import DesignScaler from '../../components/design_scaler.vue';
 import DesignSidebar from '../../components/design_sidebar.vue';
-import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
+import Toolbar from '../../components/toolbar/index.vue';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES, DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../../constants';
 import createImageDiffNoteMutation from '../../graphql/mutations/create_image_diff_note.mutation.graphql';
 import repositionImageDiffNoteMutation from '../../graphql/mutations/reposition_image_diff_note.mutation.graphql';
 import updateActiveDiscussionMutation from '../../graphql/mutations/update_active_discussion.mutation.graphql';
+import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
+import allVersionsMixin from '../../mixins/all_versions';
+import { DESIGNS_ROUTE_NAME } from '../../router/constants';
+import {
+  updateStoreAfterAddImageDiffNote,
+  updateStoreAfterRepositionImageDiffNote,
+} from '../../utils/cache_update';
 import {
   extractDiscussions,
   extractDesign,
@@ -24,10 +30,6 @@ import {
   extractDesignNoteId,
   getPageLayoutElement,
 } from '../../utils/design_management_utils';
-import {
-  updateStoreAfterAddImageDiffNote,
-  updateStoreAfterRepositionImageDiffNote,
-} from '../../utils/cache_update';
 import {
   ADD_DISCUSSION_COMMENT_ERROR,
   ADD_IMAGE_DIFF_NOTE_ERROR,
@@ -39,8 +41,6 @@ import {
   designDeletionError,
 } from '../../utils/error_messages';
 import { trackDesignDetailView, usagePingDesignDetailView } from '../../utils/tracking';
-import { DESIGNS_ROUTE_NAME } from '../../router/constants';
-import { ACTIVE_DISCUSSION_SOURCE_TYPES, DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../../constants';
 
 const DEFAULT_SCALE = 1;
 

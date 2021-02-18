@@ -1,0 +1,5 @@
+---
+title: 'gitaly: Fix access checks with transactions and quarantine environments'
+merge_request: 53449
+author:
+type: fixed

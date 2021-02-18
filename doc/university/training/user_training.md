@@ -102,7 +102,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQEL17Ufacg8cDhlQMS5NhV8z3GHZdhCrZbl4gz you@example.
 ## Create a project
 
 - Create a project in your user namespace.
-  - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>.
+  - Choose to import from **Any Repository by URL** and use <https://gitlab.com/gitlab-org/training-examples.git>.
 - Create a '`development`' or '`workspace`' directory in your home directory.
 - Clone the '`training-examples`' project.
 
@@ -214,8 +214,12 @@ Create your first merge request:
 
 ## Feedback and Collaboration resources
 
+<!-- vale gitlab.Spelling = NO -->
+
 Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:
 <https://github.com/thoughtbot/guides/tree/master/code-review>.
+
+<!-- vale gitlab.Spelling = YES -->
 
 See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests>.
 

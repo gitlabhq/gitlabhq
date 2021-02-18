@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab managed Terraform State
+# GitLab managed Terraform State **(FREE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 
@@ -18,9 +18,13 @@ The GitLab managed Terraform state backend can store your Terraform state easily
 securely, and spares you from setting up additional remote resources like
 Amazon S3 or Google Cloud Storage. Its features include:
 
+- Versioning of Terraform state files.
 - Supporting encryption of the state file both in transit and at rest.
 - Locking and unlocking state.
 - Remote Terraform plan and apply execution.
+
+A GitLab **administrator** must [setup the Terraform state storage configuration](../../administration/terraform_state.md)
+before using this feature.
 
 ## Permissions for using Terraform
 

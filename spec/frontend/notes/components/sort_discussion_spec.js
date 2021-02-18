@@ -1,10 +1,10 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import SortDiscussion from '~/notes/components/sort_discussion.vue';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import createStore from '~/notes/stores';
 import { ASC, DESC } from '~/notes/constants';
+import createStore from '~/notes/stores';
 import Tracking from '~/tracking';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -1,8 +1,8 @@
 <script>
 import { GlButton, GlModal } from '@gitlab/ui';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 export default {
   name: 'DesignReplyForm',

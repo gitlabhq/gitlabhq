@@ -1,5 +1,5 @@
-import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import '~/commons/bootstrap';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';

@@ -5,11 +5,10 @@ import { uniqueId } from 'lodash';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
-import IssuableTabs from './issuable_tabs.vue';
-import IssuableItem from './issuable_item.vue';
-import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
-
 import { DEFAULT_SKELETON_COUNT } from '../constants';
+import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
+import IssuableItem from './issuable_item.vue';
+import IssuableTabs from './issuable_tabs.vue';
 
 export default {
   components: {
@@ -230,7 +229,7 @@ export default {
       :initial-sort-by="initialSortBy"
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
-      class="gl-flex-grow-1 row-content-block"
+      class="gl-flex-grow-1 gl-border-t-none row-content-block"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"

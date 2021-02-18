@@ -4,7 +4,7 @@ module Atlassian
   module JiraConnect
     class Client < Gitlab::HTTP
       def self.generate_update_sequence_id
-        Gitlab::Metrics::System.monotonic_time.to_i
+        (Time.now.utc.to_f * 1000).round
       end
 
       def initialize(base_uri, shared_secret)
@@ -33,8 +33,6 @@ module Atlassian
       private
 
       def store_ff_info(project:, feature_flags:, **opts)
-        return unless Feature.enabled?(:jira_sync_feature_flags, project)
-
         items = feature_flags.map { |flag| ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts) }
         items.reject! { |item| item.issue_keys.empty? }
 
@@ -57,8 +55,6 @@ module Atlassian
       end
 
       def store_deploy_info(project:, deployments:, **opts)
-        return unless Feature.enabled?(:jira_sync_deployments, project)
-
         items = deployments.map { |d| ::Atlassian::JiraConnect::Serializers::DeploymentEntity.represent(d, opts) }
         items.reject! { |d| d.issue_keys.empty? }
 
@@ -69,8 +65,6 @@ module Atlassian
       end
 
       def store_build_info(project:, pipelines:, update_sequence_id: nil)
-        return unless Feature.enabled?(:jira_sync_builds, project)
-
         builds = pipelines.map do |pipeline|
           build = ::Atlassian::JiraConnect::Serializers::BuildEntity.represent(
             pipeline,

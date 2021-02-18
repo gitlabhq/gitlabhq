@@ -1,17 +1,17 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { visitUrl } from '~/lib/utils/url_utility';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import boardsStore from '~/boards/stores/boards_store';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { __, s__ } from '~/locale';
 import { fullLabelId, fullBoardId } from '../boards_util';
+import { formType } from '../constants';
 
-import BoardConfigurationOptions from './board_configuration_options.vue';
-import updateBoardMutation from '../graphql/board_update.mutation.graphql';
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '../graphql/board_destroy.mutation.graphql';
+import updateBoardMutation from '../graphql/board_update.mutation.graphql';
+import BoardConfigurationOptions from './board_configuration_options.vue';
 
 const boardDefaults = {
   id: false,
@@ -24,12 +24,6 @@ const boardDefaults = {
   weight: null,
   hide_backlog_list: false,
   hide_closed_list: false,
-};
-
-const formType = {
-  new: 'new',
-  delete: 'delete',
-  edit: 'edit',
 };
 
 export default {
@@ -100,11 +94,14 @@ export default {
       type: Object,
       required: true,
     },
+    currentPage: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
-      currentPage: boardsStore.state.currentPage,
       isLoading: false,
     };
   },
@@ -256,7 +253,7 @@ export default {
       }
     },
     cancel() {
-      boardsStore.showPage('');
+      this.$emit('cancel');
     },
     resetFormState() {
       if (this.isNewForm) {
@@ -308,6 +305,7 @@ export default {
       <board-configuration-options
         :hide-backlog-list.sync="board.hide_backlog_list"
         :hide-closed-list.sync="board.hide_closed_list"
+        :readonly="readonly"
       />
 
       <board-scope

@@ -6,11 +6,11 @@ import {
   issuable1,
   issuable2,
 } from 'jest/vue_shared/components/issue/related_issuable_mock_data';
-import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
-import relatedIssuesService from '~/related_issues/services/related_issues_service';
-import { linkedIssueTypesMap } from '~/related_issues/constants';
-import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
+import { linkedIssueTypesMap } from '~/related_issues/constants';
+import relatedIssuesService from '~/related_issues/services/related_issues_service';
 
 jest.mock('~/flash');
 

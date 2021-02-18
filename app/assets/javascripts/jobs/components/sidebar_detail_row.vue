@@ -34,12 +34,12 @@ export default {
 };
 </script>
 <template>
-  <p class="build-detail-row">
-    <span v-if="hasTitle" class="font-weight-bold">{{ title }}:</span> {{ value }}
-    <span v-if="hasHelpURL" class="help-button float-right">
-      <gl-link :href="helpUrl" target="_blank" rel="noopener noreferrer nofollow">
-        <gl-icon name="question-o" />
-      </gl-link>
-    </span>
+  <p class="gl-display-flex gl-justify-content-space-between gl-mb-2">
+    <span v-if="hasTitle"
+      ><b>{{ title }}:</b> {{ value }}</span
+    >
+    <gl-link v-if="hasHelpURL" :href="helpUrl" target="_blank">
+      <gl-icon name="question-o" />
+    </gl-link>
   </p>
 </template>

@@ -55,19 +55,6 @@
   image_url: https://about.gitlab.com/images/13_4/instance_vulnerability_report.png
   published_at: 2020-09-22
   release: 13.4
-- title: Feature Flags made available in GitLab Starter
-  body: |
-    Earlier this year, GitLab committed to [moving 18 features](https://about.gitlab.com/blog/2020/03/30/new-features-to-core/) to our open source core product. With this release of GitLab we've finished moving Feature Flags to Starter, and we are continuing to migrate our Feature Flag service to Core in [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/212318).
-
-    We're excited about bringing these features to more users and seeing what use cases and workflows you use them for.
-  stage: Release
-  self-managed: true
-  gitlab-com: true
-  packages: [Starter, Premium, Ultimate]
-  url: https://www.youtube.com/embed/1FBRaBQTQZk
-  image_url: https://img.youtube.com/vi/1FBRaBQTQZk/hqdefault.jpg
-  published_at: 2020-09-22
-  release: 13.4
 - title: Quick navigation using the Search bar
   body: |
     When navigating through GitLab, sometimes you just want to go to a specific project and not a search result page. Using the Global search bar, you can now quickly jump to recent issues, groups, projects, settings, and help topics.
@@ -76,7 +63,7 @@
   stage: Enablement
   self-managed: true
   gitlab-com: true
-  packages: [Core, Starter, Premium, Ultimate]
+  packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/search/#autocomplete-suggestions
   image_url: https://about.gitlab.com/images/13_4/enablement_global_search.gif
   published_at: 2020-09-22

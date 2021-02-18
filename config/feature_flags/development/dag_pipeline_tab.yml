@@ -1,8 +1,0 @@
----
-name: dag_pipeline_tab
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30310
-rollout_issue_url: 
-milestone: '13.0'
-type: development
-group: group::pipeline authoring
-default_enabled: true

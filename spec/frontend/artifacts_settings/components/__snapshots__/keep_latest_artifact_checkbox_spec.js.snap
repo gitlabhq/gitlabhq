@@ -1,29 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Keep latest artifact checkbox sets correct setting value in checkbox with query result 1`] = `
+exports[`Keep latest artifact checkbox when application keep latest artifact setting is disabled checkbox is disabled when application setting is disabled 1`] = `
 <div>
   <!---->
    
-  <gl-form-checkbox-stub
+  <b-form-checkbox-stub
     checked="true"
+    class="gl-form-checkbox"
+    disabled="true"
+    plain="true"
+    value="true"
   >
-    <b
+    <strong
       class="gl-mr-3"
     >
       Keep artifacts from most recent successful jobs
-    </b>
+    </strong>
      
     <gl-link-stub
       href="/help/ci/pipelines/job_artifacts"
     >
       More information
     </gl-link-stub>
-  </gl-form-checkbox-stub>
+     
+    <p
+      class="help-text"
+    >
+      This feature is disabled at the instance level.
+    </p>
+  </b-form-checkbox-stub>
+</div>
+`;
+
+exports[`Keep latest artifact checkbox when application keep latest artifact setting is enabled sets correct setting value in checkbox with query result 1`] = `
+<div>
+  <!---->
    
-  <p>
-    
-    The latest artifacts created by jobs in the most recent successful pipeline will be stored.
-  
-  </p>
+  <b-form-checkbox-stub
+    checked="true"
+    class="gl-form-checkbox"
+    plain="true"
+    value="true"
+  >
+    <strong
+      class="gl-mr-3"
+    >
+      Keep artifacts from most recent successful jobs
+    </strong>
+     
+    <gl-link-stub
+      href="/help/ci/pipelines/job_artifacts"
+    >
+      More information
+    </gl-link-stub>
+     
+    <p
+      class="help-text"
+    >
+      The latest artifacts created by jobs in the most recent successful pipeline will be stored.
+    </p>
+  </b-form-checkbox-stub>
 </div>
 `;

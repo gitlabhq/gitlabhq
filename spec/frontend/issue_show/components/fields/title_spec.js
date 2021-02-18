@@ -1,48 +1,42 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import TitleField from '~/issue_show/components/fields/title.vue';
 import eventHub from '~/issue_show/event_hub';
-import Store from '~/issue_show/stores';
-import titleField from '~/issue_show/components/fields/title.vue';
-import { keyboardDownEvent } from '../../helpers';
 
 describe('Title field component', () => {
-  let vm;
-  let store;
+  let wrapper;
+
+  const findInput = () => wrapper.find({ ref: 'input' });
 
   beforeEach(() => {
-    const Component = Vue.extend(titleField);
-    store = new Store({
-      titleHtml: '',
-      descriptionHtml: '',
-      issuableRef: '',
-    });
-    store.formState.title = 'test';
+    jest.spyOn(eventHub, '$emit');
 
-    jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-    vm = new Component({
+    wrapper = shallowMount(TitleField, {
       propsData: {
-        formState: store.formState,
+        formState: {
+          title: 'test',
+        },
       },
-    }).$mount();
+    });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders form control with formState title', () => {
-    expect(vm.$el.querySelector('.form-control').value).toBe('test');
+    expect(findInput().element.value).toBe('test');
   });
 
   it('triggers update with meta+enter', () => {
-    vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, true));
+    findInput().trigger('keydown.enter', { metaKey: true });
 
-    expect(eventHub.$emit).toHaveBeenCalled();
+    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 
   it('triggers update with ctrl+enter', () => {
-    vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, false, true));
+    findInput().trigger('keydown.enter', { ctrlKey: true });
 
-    expect(eventHub.$emit).toHaveBeenCalled();
-  });
-
-  it('has a ref named `input`', () => {
-    expect(vm.$refs.input).not.toBeNull();
+    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 });

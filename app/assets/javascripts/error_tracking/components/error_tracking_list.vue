@@ -1,5 +1,4 @@
 <script>
-import { mapActions, mapState } from 'vuex';
 import {
   GlEmptyState,
   GlButton,
@@ -15,12 +14,14 @@ import {
   GlPagination,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { mapActions, mapState } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import ErrorTrackingActions from './error_tracking_actions.vue';
 import Tracking from '~/tracking';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
+import ErrorTrackingActions from './error_tracking_actions.vue';
 
 export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
 
@@ -137,6 +138,9 @@ export default {
     ]),
     paginationRequired() {
       return !isEmpty(this.pagination);
+    },
+    errorTrackingHelpUrl() {
+      return helpPagePath('operations/error_tracking');
     },
   },
   watch: {
@@ -404,7 +408,7 @@ export default {
         <template #description>
           <div>
             <span>{{ __('Monitor your errors by integrating with Sentry.') }}</span>
-            <gl-link target="_blank" href="/help/user/project/operations/error_tracking.html">{{
+            <gl-link target="_blank" :href="errorTrackingHelpUrl">{{
               __('More information')
             }}</gl-link>
           </div>

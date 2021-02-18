@@ -5,21 +5,21 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Push event activities limit and bulk push events
+# Push event activities limit and bulk push events **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
 
-This allows you to set the number of changes (branches or tags) in a single push
-to determine whether individual push events or bulk push event will be created.
-Bulk push events will be created if it surpasses that value.
+Set the number of branches or tags to limit the number of single push events
+allowed at once. If the number of events is greater than this, GitLab creates
+bulk push event instead.
 
 For example, if 4 branches are pushed and the limit is currently set to 3,
 you'll see the following in the activity feed:
 
 ![Bulk push event](img/bulk_push_event_v12_4.png)
 
-With this feature, when a single push includes a lot of changes (e.g. 1,000
-branches), only 1 bulk push event will be created instead of creating 1,000 push
+With this feature, when a single push includes a lot of changes (for example, 1,000
+branches), only 1 bulk push event is created instead of 1,000 push
 events. This helps in maintaining good system performance and preventing spam on
 the activity feed.
 

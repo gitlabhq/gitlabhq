@@ -3,20 +3,32 @@
 module Snippets
   class CreateService < Snippets::BaseService
     def execute
+      # NOTE: disable_spam_action_service can be removed when the ':snippet_spam' feature flag is removed.
+      disable_spam_action_service = params.delete(:disable_spam_action_service) == true
+      @request = params.delete(:request)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+
       @snippet = build_from_params
 
       return invalid_params_error(@snippet) unless valid_params?
 
-      unless visibility_allowed?(@snippet, @snippet.visibility_level)
-        return forbidden_visibility_error(@snippet)
+      unless visibility_allowed?(snippet, snippet.visibility_level)
+        return forbidden_visibility_error(snippet)
       end
 
       @snippet.author = current_user
 
-      spam_check(@snippet, current_user, action: :create)
+      unless disable_spam_action_service
+        Spam::SpamActionService.new(
+          spammable: @snippet,
+          request: request,
+          user: current_user,
+          action: :create
+        ).execute(spam_params: spam_params)
+      end
 
       if save_and_commit
-        UserAgentDetailService.new(@snippet, @request).create
+        UserAgentDetailService.new(@snippet, request).create
         Gitlab::UsageDataCounters::SnippetCounter.count(:create)
 
         move_temporary_files
@@ -28,6 +40,8 @@ module Snippets
     end
 
     private
+
+    attr_reader :snippet, :request, :spam_params
 
     def build_from_params
       if project

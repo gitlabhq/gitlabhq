@@ -1,12 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
+import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
+import ConanInstallation from '~/packages/details/components/conan_installation.vue';
 import InstallationCommands from '~/packages/details/components/installation_commands.vue';
 
-import NpmInstallation from '~/packages/details/components/npm_installation.vue';
 import MavenInstallation from '~/packages/details/components/maven_installation.vue';
-import ConanInstallation from '~/packages/details/components/conan_installation.vue';
+import NpmInstallation from '~/packages/details/components/npm_installation.vue';
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
-import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
 
 import {
   conanPackage,

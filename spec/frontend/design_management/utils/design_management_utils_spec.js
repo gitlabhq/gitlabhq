@@ -8,9 +8,9 @@ import {
   extractDesign,
   extractDesignNoteId,
 } from '~/design_management/utils/design_management_utils';
-import mockResponseNoDesigns from '../mock_data/no_designs';
-import mockResponseWithDesigns from '../mock_data/designs';
 import mockDesign from '../mock_data/design';
+import mockResponseWithDesigns from '../mock_data/designs';
+import mockResponseNoDesigns from '../mock_data/no_designs';
 
 jest.mock('lodash/uniqueId', () => () => 1);
 

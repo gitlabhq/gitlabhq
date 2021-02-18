@@ -1,6 +1,6 @@
 <script>
-import $ from 'jquery';
 import { GlIcon } from '@gitlab/ui';
+import $ from 'jquery';
 import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
 
 export default {
@@ -21,6 +21,10 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: Number,
+      required: true,
+    },
     projectNamespace: {
       type: String,
       required: true,
@@ -35,6 +39,7 @@ export default {
     // Create the editor for the template
     const editor = document.querySelector('.detail-page-description .note-textarea') || {};
     editor.setValue = (val) => {
+      // eslint-disable-next-line vue/no-mutating-props
       this.formState.description = val;
     };
     editor.getValue = () => this.formState.description;
@@ -48,11 +53,12 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown js-issuable-selector-wrap" data-issuable-type="issue">
+  <div class="dropdown js-issuable-selector-wrap" data-issuable-type="issues">
     <button
       ref="toggle"
       :data-namespace-path="projectNamespace"
       :data-project-path="projectPath"
+      :data-project-id="projectId"
       :data-data="issuableTemplatesJson"
       class="dropdown-menu-toggle js-issuable-selector"
       type="button"

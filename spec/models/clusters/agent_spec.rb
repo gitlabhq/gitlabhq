@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Clusters::Agent do
   subject { create(:cluster_agent) }
 
+  it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:project).class_name('::Project') }
   it { is_expected.to have_many(:agent_tokens).class_name('Clusters::AgentToken') }
 

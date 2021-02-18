@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 default_url_options = {
   host:        Gitlab.config.gitlab.host,
   protocol:    Gitlab.config.gitlab.protocol,

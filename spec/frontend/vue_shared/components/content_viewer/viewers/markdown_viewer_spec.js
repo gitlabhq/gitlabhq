@@ -1,6 +1,6 @@
-import $ from 'jquery';
-import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
+import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownViewer from '~/vue_shared/components/content_viewer/viewers/markdown_viewer.vue';

@@ -268,17 +268,16 @@ module Gitlab
           end
         end
 
-        class StringOrNestedArrayOfStringsValidator < NestedArrayOfStringsValidator
+        class StringOrNestedArrayOfStringsValidator < ActiveModel::EachValidator
+          include LegacyValidationHelpers
+          include NestedArrayHelpers
+
           def validate_each(record, attribute, value)
-            unless validate_string_or_nested_array_of_strings(value)
-              record.errors.add(attribute, 'should be a string or an array containing strings and arrays of strings')
+            max_level = options.fetch(:max_level, 1)
+
+            unless validate_string(value) || validate_nested_array(value, max_level, &method(:validate_string))
+              record.errors.add(attribute, "should be a string or a nested array of strings up to #{max_level} levels deep")
             end
-          end
-
-          private
-
-          def validate_string_or_nested_array_of_strings(values)
-            validate_string(values) || validate_nested_array_of_strings(values)
           end
         end
 

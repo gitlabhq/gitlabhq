@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auto DevOps
+# Auto DevOps **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
 > - Generally available on GitLab 11.0.
@@ -36,6 +36,19 @@ For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://yo
 For requirements, read [Requirements for Auto DevOps](requirements.md) for more information.
 
 For a developer's guide, read [Auto DevOps development guide](../../development/auto_devops.md).
+
+### Share your feedback
+
+As Auto DevOps continues to gain popularity, and lowers the barrier to entry for
+getting started with DevOps and CI/CD, see what our wider community is saying:
+
+From [AlexJonesax](https://twitter.com/AlexJonesax) and [KaiPMDH](https://twitter.com/KaiPMDH) on Twitter:
+
+![Alex on Twitter: Auto DevOps in GitLab doesn't just lower the bar to entry, it removes the bar and holds your hand.](img/alexj_autodevops_min_v13_8.png)
+
+![Kai on Twitter: When I saw this on the Auto DevOps stuff, my mind was blown...](img/kai_autodevops_min_v13_8.png)
+
+We welcome everyone to [share your experience by tagging GitLab on Twitter](https://twitter.com/gitlab).
 
 ## Enabled by default
 
@@ -153,19 +166,9 @@ any of the following places:
   **Continuous Integration and Delivery** section
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
-as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
+as other environment [variables](../../ci/variables/README.md#priority-of-cicd-variables).
 If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
 setting is used if set.
-
-NOTE:
-If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
-the URL endpoint should be automatically configured for you. All you must do
-is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
-
-NOTE:
-`AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52363)
-and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
-[GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56959).
 
 Auto DevOps requires a wildcard DNS A record matching the base domain(s). For
 a base domain of `example.com`, you'd need a DNS entry like:
@@ -283,7 +286,7 @@ used by Auto DevOps currently defines 3 environment names:
 Those environments are tied to jobs using [Auto Deploy](stages.md#auto-deploy), so
 except for the environment scope, they must have a different deployment domain.
 You must define a separate `KUBE_INGRESS_BASE_DOMAIN` variable for each of the above
-[based on the environment](../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables).
+[based on the environment](../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables).
 
 The following table is an example of how to configure the three different clusters:
 
