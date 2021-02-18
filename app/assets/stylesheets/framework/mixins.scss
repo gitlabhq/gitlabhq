@@ -433,7 +433,6 @@
 @mixin middle-dot-divider {
   &::after {
     // Duplicate `content` property used as a fallback
-    // scss-lint:disable DuplicateProperty
     content: '\00B7'; // middle dot fallback if browser does not support alternative content
     content: '\00B7' / ''; // tell screen readers to ignore the content https://www.w3.org/TR/css-content-3/#accessibility
     padding: 0 0.375rem;

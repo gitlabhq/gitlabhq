@@ -699,13 +699,11 @@ textarea {
     opacity: 1; // FF defaults to 0.54
   }
 
-  // scss-lint:disable PseudoElement
   // support Edge vendor prefix
   &::-ms-input-placeholder {
     color: $gl-text-color-tertiary;
   }
 
-  // scss-lint:disable PseudoElement
   // support IE vendor prefix
   &:-ms-input-placeholder {
     color: $gl-text-color-tertiary;

@@ -7,12 +7,13 @@ Parameters:
   KubernetesVersion:
     Description: The Kubernetes version to install
     Type: String
-    Default: 1.16
+    Default: 1.19
     AllowedValues:
-      - 1.14
       - 1.15
       - 1.16
       - 1.17
+      - 1.18
+      - 1.19
 
   KeyName:
     Description: The EC2 Key Pair to allow SSH access to the node instances
@@ -20,7 +21,7 @@ Parameters:
 
   NodeImageIdSSMParam:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
-    Default: /aws/service/eks/optimized-ami/1.14/amazon-linux-2/recommended/image_id
+    Default: /aws/service/eks/optimized-ami/1.15/amazon-linux-2/recommended/image_id
     Description: AWS Systems Manager Parameter Store parameter of the AMI ID for the worker node instances.
 
   NodeInstanceType:

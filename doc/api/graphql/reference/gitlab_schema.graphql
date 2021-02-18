@@ -9405,6 +9405,16 @@ Represents an epic board
 """
 type EpicBoard {
   """
+  Whether or not backlog list is hidden.
+  """
+  hideBacklogList: Boolean
+
+  """
+  Whether or not closed list is hidden.
+  """
+  hideClosedList: Boolean
+
+  """
   Global ID of the board.
   """
   id: BoardsEpicBoardID!

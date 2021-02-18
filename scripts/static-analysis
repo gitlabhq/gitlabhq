@@ -29,7 +29,6 @@ class StaticAnalysis
     %w[yarn run lint:prettier] => 124,
     %w[bin/rake gettext:lint] => 96,
     %w[bundle exec license_finder] => 49,
-    %w[bin/rake scss_lint] => 38,
     %w[bin/rake lint:static_verification] => 22,
     %w[bin/rake gitlab:sidekiq:all_queues_yml:check] => 13,
     (Gitlab.ee? ? %w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check] : nil) => 13,

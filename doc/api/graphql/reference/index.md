@@ -1683,6 +1683,8 @@ Represents an epic board.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `hideBacklogList` | Boolean | Whether or not backlog list is hidden. |
+| `hideClosedList` | Boolean | Whether or not closed list is hidden. |
 | `id` | BoardsEpicBoardID! | Global ID of the board. |
 | `lists` | EpicListConnection | Epic board lists. |
 | `name` | String | Name of the board. |

@@ -18,12 +18,11 @@ pre-push:
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "doc/*.md"
       run: yarn markdownlint {files}
-    scss-lint:
+    stylelint:
       tags: stylesheet css style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "*.scss{,.css}"
-      exclude: "app/assets/stylesheets/pages/emojis.scss"
-      run: bundle exec scss-lint --config .scss-lint.yml {files}
+      run: yarn stylelint -q {files}
     prettier:
       tags: frontend style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD

@@ -317,6 +317,8 @@ class MergeRequest < ApplicationRecord
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, -> (relation) { preload(metrics: relation) }
+  scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
+  scope :preload_latest_diff_comment, -> { preload(latest_merge_request_diff: :merge_request_diff_commits) }
   scope :with_web_entity_associations, -> { preload(:author, :target_project) }
 
   scope :with_auto_merge_enabled, -> do

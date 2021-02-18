@@ -2297,6 +2297,9 @@ msgstr ""
 msgid "AdminUsers|Active"
 msgstr ""
 
+msgid "AdminUsers|Adjust the user cap setting on your instance"
+msgstr ""
+
 msgid "AdminUsers|Admin"
 msgstr ""
 
@@ -2390,6 +2393,15 @@ msgstr ""
 msgid "AdminUsers|For more information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
 msgstr ""
 
+msgid "AdminUsers|Here are some helpful links to help you manage your instance:"
+msgstr ""
+
+msgid "AdminUsers|If you have any questions about this process please consult our %{doc_link} or %{support_link}."
+msgstr ""
+
+msgid "AdminUsers|Important information about usage on your GitLab instance"
+msgstr ""
+
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
@@ -2397,6 +2409,9 @@ msgid "AdminUsers|It's you!"
 msgstr ""
 
 msgid "AdminUsers|Log in"
+msgstr ""
+
+msgid "AdminUsers|Manage (accept/reject) pending user sign ups"
 msgstr ""
 
 msgid "AdminUsers|New user"
@@ -2498,6 +2513,18 @@ msgstr ""
 msgid "AdminUsers|Users"
 msgstr ""
 
+msgid "AdminUsers|Users can still be invited to your instance and/or add themselves if permitted based on your settings. They will not have access to your instance, nor count towards your subscribed seat count until you %{approve_link}."
+msgstr ""
+
+msgid "AdminUsers|View pending member requests"
+msgstr ""
+
+msgid "AdminUsers|What can I do?"
+msgstr ""
+
+msgid "AdminUsers|What does this mean?"
+msgstr ""
+
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
 msgstr ""
 
@@ -2529,6 +2556,21 @@ msgid "AdminUsers|You cannot remove your own admin rights."
 msgstr ""
 
 msgid "AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account"
+msgstr ""
+
+msgid "AdminUsers|Your GitLab instance has reached the maximum allowed %{user_doc_link} set by an instance admin."
+msgstr ""
+
+msgid "AdminUsers|approve them"
+msgstr ""
+
+msgid "AdminUsers|contact our support team"
+msgstr ""
+
+msgid "AdminUsers|docs"
+msgstr ""
+
+msgid "AdminUsers|user cap"
 msgstr ""
 
 msgid "Administration"

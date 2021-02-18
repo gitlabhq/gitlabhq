@@ -132,16 +132,14 @@ Before adding a new variable for a color or a size, guarantee:
 
 ## Linting
 
-We use [SCSS Lint](https://github.com/sds/scss-lint) to check for style guide conformity. It uses the
-ruleset in `.scss-lint.yml`, which is located in the home directory of the
-project.
+We use [stylelint](https://stylelint.io) to check for style guide conformity. It uses the
+ruleset in `.stylelintrc` and rules from [our SCSS configuration](https://gitlab.com/gitlab-org/frontend/gitlab-stylelint-config). `.stylelintrc` is located in the home directory of the project.
 
-To check if any warnings are produced by your changes, run `rake
-scss_lint` in the GitLab directory. SCSS Lint also runs in GitLab CI/CD to
+To check if any warnings are produced by your changes, run `yarn stylelint` in the GitLab directory. Stylelint also runs in GitLab CI/CD to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
-documentation includes [a full list of their linters](https://github.com/sds/scss-lint/blob/master/lib/scss_lint/linter/README.md).
+documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/list).
 
 ### Fixing issues
 

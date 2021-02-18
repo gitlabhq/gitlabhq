@@ -8,9 +8,8 @@ html {
 
 body {
   // Improves readability for dyslexic users; supported only in Chrome/Safari so far
-  // scss-lint:disable PropertySpelling
   text-decoration-skip: ink;
-  // scss-lint:enable PropertySpelling
+
   &.navless {
     background-color: $white !important;
   }

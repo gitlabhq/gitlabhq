@@ -1,36 +1,37 @@
 {
+   "extends": ["@gitlab/stylelint-config"],
    "ignoreFiles": [
      "app/assets/stylesheets/pages/emojis.scss",
      "app/assets/stylesheets/startup/startup-*.scss",
      "app/assets/stylesheets/lazy_bundles/select2.scss",
-     "app/assets/stylesheets/highlight/themes/*.scss"
+     "app/assets/stylesheets/highlight/themes/*.scss",
+     "app/assets/stylesheets/lazy_bundles/cropper.css"
    ],
    "plugins":[
       "./scripts/frontend/stylelint/stylelint-duplicate-selectors.js",
       "./scripts/frontend/stylelint/stylelint-utility-classes.js",
-      "stylelint-scss"
    ],
    "rules":{
-      "at-rule-blacklist":[
+      "at-rule-disallowed-list": [
          "debug"
       ],
-      "at-rule-no-unknown":null,
-      "at-rule-no-vendor-prefix":true,
-      "block-no-empty":true,
-      "block-opening-brace-space-before":"always",
-      "color-hex-case":"lower",
-      "color-hex-length":"short",
-      "color-named":"never",
-      "color-no-invalid-hex":true,
-      "declaration-bang-space-after":"never",
-      "declaration-bang-space-before":"always",
-      "declaration-block-semicolon-newline-after":"always",
-      "declaration-block-semicolon-space-before":"never",
-      "declaration-block-single-line-max-declarations":1,
-      "declaration-block-trailing-semicolon":"always",
-      "declaration-colon-space-after":"always-single-line",
-      "declaration-colon-space-before":"never",
-      "declaration-property-value-blacklist":{
+      "at-rule-no-unknown": null,
+      "at-rule-no-vendor-prefix": true,
+      "block-no-empty": true,
+      "block-opening-brace-space-before": "always",
+      "color-hex-case": "lower",
+      "color-hex-length": "short",
+      "color-named": "never",
+      "color-no-invalid-hex": true,
+      "declaration-bang-space-after": "never",
+      "declaration-bang-space-before": "always",
+      "declaration-block-semicolon-newline-after": "always",
+      "declaration-block-semicolon-space-before": "never",
+      "declaration-block-single-line-max-declarations": 1,
+      "declaration-block-trailing-semicolon": "always",
+      "declaration-colon-space-after": "always-single-line",
+      "declaration-colon-space-before": "never",
+      "declaration-property-value-disallowed-list": {
          "border":[
             "none"
          ],
@@ -47,12 +48,12 @@
             "none"
          ]
       },
-      "function-comma-space-after":"always-single-line",
-      "function-parentheses-space-inside":"never",
-      "function-url-quotes":"always",
-      "indentation":2,
-      "length-zero-no-unit":true,
-      "max-nesting-depth":[
+      "function-comma-space-after": "always-single-line",
+      "function-parentheses-space-inside": "never",
+      "function-url-quotes": "always",
+      "indentation": 2,
+      "length-zero-no-unit": true,
+      "max-nesting-depth": [
          6,
          {
             "ignoreAtRules":[
@@ -111,7 +112,6 @@
       "shorthand-property-no-redundant-values":true,
       "string-quotes":"single",
       "value-no-vendor-prefix": [true, { "ignoreValues": ["sticky"] }],
-      "stylelint-gitlab/duplicate-selectors":[true,{ "severity": "warning" }],
       "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],
       "declaration-block-no-duplicate-properties": [
         true,
