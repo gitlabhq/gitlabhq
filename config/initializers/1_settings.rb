@@ -710,7 +710,10 @@ Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret'
 # GitLab KAS
 #
 Settings['gitlab_kas'] ||= Settingslogic.new({})
+Settings.gitlab_kas['enabled'] ||= false
 Settings.gitlab_kas['secret_file'] ||= Rails.root.join('.gitlab_kas_secret')
+Settings.gitlab_kas['external_url'] ||= 'wss://kas.example.com'
+Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 
 #
 # Repositories

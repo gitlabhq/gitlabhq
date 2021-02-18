@@ -5,6 +5,11 @@ import { __ } from '~/locale';
 export default {
   components: { GlButton },
   props: {
+    slideAnimated: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
     defaultExpanded: {
       type: Boolean,
       default: false,
@@ -28,7 +33,7 @@ export default {
 </script>
 
 <template>
-  <section class="settings no-animate" :class="{ expanded }">
+  <section class="settings" :class="{ 'no-animate': !slideAnimated, expanded }">
     <div class="settings-header">
       <h4><slot name="title"></slot></h4>
       <gl-button @click="sectionExpanded = !sectionExpanded">

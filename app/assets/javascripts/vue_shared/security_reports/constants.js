@@ -18,6 +18,7 @@ export const REPORT_FILE_TYPES = {
  */
 export const REPORT_TYPE_SAST = 'sast';
 export const REPORT_TYPE_DAST = 'dast';
+export const REPORT_TYPE_DAST_PROFILES = 'dast_profiles';
 export const REPORT_TYPE_SECRET_DETECTION = 'secret_detection';
 export const REPORT_TYPE_DEPENDENCY_SCANNING = 'dependency_scanning';
 export const REPORT_TYPE_CONTAINER_SCANNING = 'container_scanning';

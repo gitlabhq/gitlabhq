@@ -2,7 +2,7 @@
 
 exports[`Settings Block renders the correct markup 1`] = `
 <section
-  class="settings no-animate"
+  class="settings"
 >
   <div
     class="settings-header"

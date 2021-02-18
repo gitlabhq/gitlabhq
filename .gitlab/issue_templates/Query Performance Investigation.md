@@ -1,6 +1,6 @@
 ## Description
 
-As the name implies, the purpose of the template is to detail underperforming queries for futher investigation.
+As the name implies, the purpose of the template is to detail underperforming queries for further investigation.
 
 ### Steps
 
@@ -14,8 +14,10 @@ As the name implies, the purpose of the template is to detail underperforming qu
 
 Please provide as many of these fields as possible when submitting a query performance report.
 
-- TPS
-- Duration
+- Queries per second (on average or peak)
+- Number of calls per second and relative to total number of calls
+- Query timings (on average or peak)
+- Database time relative to total database time
 - Source of calls (Sidekiq, WebAPI, etc)
 - Query ID
 - SQL Statement

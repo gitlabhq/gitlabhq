@@ -158,6 +158,18 @@ export default {
     cancel() {
       this.showPage('');
     },
+    boardUpdate(data) {
+      if (!data?.[this.parentType]) {
+        return [];
+      }
+      return data[this.parentType].boards.edges.map(({ node }) => ({
+        id: getIdFromGraphQLId(node.id),
+        name: node.name,
+      }));
+    },
+    boardQuery() {
+      return this.groupId ? groupQuery : projectQuery;
+    },
     loadBoards(toggleDropdown = true) {
       if (toggleDropdown && this.boards.length > 0) {
         return;
@@ -167,21 +179,14 @@ export default {
         variables() {
           return { fullPath: this.fullPath };
         },
-        query() {
-          return this.groupId ? groupQuery : projectQuery;
-        },
+        query: this.boardQuery,
         loadingKey: 'loadingBoards',
-        update(data) {
-          if (!data?.[this.parentType]) {
-            return [];
-          }
-          return data[this.parentType].boards.edges.map(({ node }) => ({
-            id: getIdFromGraphQLId(node.id),
-            name: node.name,
-          }));
-        },
+        update: this.boardUpdate,
       });
 
+      this.loadRecentBoards();
+    },
+    loadRecentBoards() {
       this.loadingRecentBoards = true;
       // Follow up to fetch recent boards using GraphQL
       // https://gitlab.com/gitlab-org/gitlab/-/issues/300985

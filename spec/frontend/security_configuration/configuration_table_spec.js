@@ -6,6 +6,7 @@ import { features, UPGRADE_CTA } from '~/security_configuration/components/featu
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
+  REPORT_TYPE_DAST_PROFILES,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
@@ -36,6 +37,7 @@ describe('Configuration Table Component', () => {
     } else if (
       [
         REPORT_TYPE_DAST,
+        REPORT_TYPE_DAST_PROFILES,
         REPORT_TYPE_DEPENDENCY_SCANNING,
         REPORT_TYPE_CONTAINER_SCANNING,
         REPORT_TYPE_COVERAGE_FUZZING,

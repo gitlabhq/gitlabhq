@@ -3046,9 +3046,6 @@ msgstr ""
 msgid "All projects selected"
 msgstr ""
 
-msgid "All security scans are enabled because %{linkStart}Auto DevOps%{linkEnd} is enabled on this project"
-msgstr ""
-
 msgid "All threads resolved"
 msgstr ""
 
@@ -5075,9 +5072,6 @@ msgstr ""
 msgid "BulkImport|Importing the group failed"
 msgstr ""
 
-msgid "BulkImport|No groups available for import"
-msgstr ""
-
 msgid "BulkImport|Showing %{start}-%{end} of %{total} from %{link}"
 msgstr ""
 
@@ -5088,6 +5082,9 @@ msgid "BulkImport|To new group"
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
+msgstr ""
+
+msgid "BulkImport|You have no groups to import"
 msgstr ""
 
 msgid "BulkImport|destination group cannot be part of the source group tree"
@@ -5648,6 +5645,9 @@ msgid "Check the elasticsearch.log file to debug why the migration was halted an
 msgstr ""
 
 msgid "Check your Docker images for known vulnerabilities."
+msgstr ""
+
+msgid "Check your source instance permissions."
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -27028,6 +27028,9 @@ msgstr ""
 msgid "Setup"
 msgstr ""
 
+msgid "Several security scans are enabled because %{linkStart}Auto DevOps%{linkEnd} is enabled on this project"
+msgstr ""
+
 msgid "Severity"
 msgstr ""
 
@@ -30908,6 +30911,9 @@ msgid "To view instance-level analytics, ask an admin to turn on %{docLinkStart}
 msgstr ""
 
 msgid "To widen your search, change or remove filters above"
+msgstr ""
+
+msgid "To widen your search, change or remove filters above."
 msgstr ""
 
 msgid "To widen your search, change or remove filters."

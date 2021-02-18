@@ -48,17 +48,17 @@
     .col-lg-8
       = f.fields_for :status, @user.status do |status_form|
         - emoji_button = button_tag type: :button,
-          class: 'js-toggle-emoji-menu emoji-menu-toggle-button gl-button btn has-tooltip',
+          class: 'js-toggle-emoji-menu emoji-menu-toggle-button btn gl-button btn-default has-tooltip',
           title: s_("Profiles|Add status emoji") do
           - if custom_emoji
-            = emoji_icon @user.status.emoji
+            = emoji_icon(@user.status.emoji, class: 'gl-mr-0!')
           %span#js-no-emoji-placeholder.no-emoji-placeholder{ class: ('hidden' if custom_emoji) }
             = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral')
             = sprite_icon('smiley', css_class: 'award-control-icon-positive')
             = sprite_icon('smile', css_class: 'award-control-icon-super-positive')
         - reset_message_button = button_tag type: :button,
           id: 'js-clear-user-status-button',
-          class: 'clear-user-status gl-button btn has-tooltip',
+          class: 'clear-user-status btn gl-button btn-default has-tooltip',
           title: s_("Profiles|Clear status") do
           = sprite_icon("close")
 

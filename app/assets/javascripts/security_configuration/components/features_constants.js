@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
+  REPORT_TYPE_DAST_PROFILES,
   REPORT_TYPE_SECRET_DETECTION,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
@@ -21,6 +22,10 @@ export const SAST_HELP_PATH = helpPagePath('user/application_security/sast/index
 export const DAST_NAME = s__('Dynamic Application Security Testing (DAST)');
 export const DAST_DESCRIPTION = s__('Analyze a review version of your web application.');
 export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index');
+
+export const DAST_PROFILES_NAME = s__('DAST Scans');
+export const DAST_PROFILES_DESCRIPTION = s__('Analyze a review version of your web application.');
+export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
 
 export const SECRET_DETECTION_NAME = s__('Secret Detection');
 export const SECRET_DETECTION_DESCRIPTION = s__(
@@ -78,6 +83,12 @@ export const features = [
     description: DAST_DESCRIPTION,
     helpPath: DAST_HELP_PATH,
     type: REPORT_TYPE_DAST,
+  },
+  {
+    name: DAST_PROFILES_NAME,
+    description: DAST_PROFILES_DESCRIPTION,
+    helpPath: DAST_PROFILES_HELP_PATH,
+    type: REPORT_TYPE_DAST_PROFILES,
   },
   {
     name: SECRET_DETECTION_NAME,

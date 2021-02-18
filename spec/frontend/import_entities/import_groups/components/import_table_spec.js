@@ -80,7 +80,7 @@ describe('import table', () => {
     });
     await waitForPromises();
 
-    expect(wrapper.find(GlEmptyState).props().title).toBe('No groups available for import');
+    expect(wrapper.find(GlEmptyState).props().title).toBe('You have no groups to import');
   });
 
   it('renders import row for each group in response', async () => {

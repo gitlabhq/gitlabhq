@@ -2,6 +2,7 @@ import { inactiveId } from '~/boards/constants';
 
 export default () => ({
   boardType: null,
+  fullPath: null,
   disabled: false,
   isShowingLabels: true,
   activeId: inactiveId,

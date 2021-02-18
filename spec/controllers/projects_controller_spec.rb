@@ -430,7 +430,8 @@ RSpec.describe ProjectsController do
         path: 'foo',
         description: 'bar',
         namespace_id: user.namespace.id,
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+        initialize_with_readme: 1
       }
     end
 
@@ -439,9 +440,11 @@ RSpec.describe ProjectsController do
     end
 
     it 'tracks a created event for the new_project_readme experiment', :experiment do
-      expect(experiment(:new_project_readme)).to track(:created, property: 'blank').on_any_instance.with_context(
-        actor: user
-      )
+      expect(experiment(:new_project_readme)).to track(
+        :created,
+        property: 'blank',
+        value: 1
+      ).on_any_instance.with_context(actor: user)
 
       post :create, params: { project: project_params }
     end
