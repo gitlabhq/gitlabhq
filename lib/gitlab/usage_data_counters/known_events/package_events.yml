@@ -99,6 +99,16 @@
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
+- name: i_package_rubygems_deploy_token
+  category: deploy_token_packages
+  aggregation: weekly
+  redis_slot: package
+  feature_flag: collect_package_events_redis
+- name: i_package_rubygems_user
+  category: user_packages
+  aggregation: weekly
+  redis_slot: package
+  feature_flag: collect_package_events_redis
 - name: i_package_tag_deploy_token
   category: deploy_token_packages
   aggregation: weekly

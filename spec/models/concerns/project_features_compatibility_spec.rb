@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProjectFeaturesCompatibility do
   let(:project) { create(:project) }
-  let(:features_enabled) { %w(issues wiki builds merge_requests snippets) }
+  let(:features_enabled) { %w(issues wiki builds merge_requests snippets security_and_compliance) }
   let(:features) { features_enabled + %w(repository pages operations) }
 
   # We had issues_enabled, snippets_enabled, builds_enabled, merge_requests_enabled and issues_enabled fields on projects table

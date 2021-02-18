@@ -101,7 +101,7 @@ function generateEntries() {
 
   const manualEntries = {
     default: defaultEntries,
-    // sentry: './sentry/index.js', Temporarily commented out to investigate performance: https://gitlab.com/gitlab-org/gitlab/-/issues/251179
+    sentry: './sentry/index.js',
     performance_bar: './performance_bar/index.js',
     chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
     jira_connect_app: './jira_connect/index.js',

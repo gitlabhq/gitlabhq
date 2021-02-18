@@ -1,13 +1,13 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
+import * as Sentry from '@sentry/browser';
 import { some, every } from 'lodash';
 import {
   differenceInMonths,
   formatDateAsMonth,
   getDayDifference,
 } from '~/lib/utils/datetime_utility';
-import * as Sentry from '~/sentry/wrapper';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import { TODAY, START_DATE } from '../constants';
 import { getAverageByMonth, getEarliestDate, generateDataKeys } from '../utils';

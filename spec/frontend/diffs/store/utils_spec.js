@@ -275,24 +275,28 @@ describe('DiffsStoreUtils', () => {
 
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
+      // eslint-disable-next-line import/no-deprecated
       expect(utils.trimFirstCharOfLineContent({ rich_text: ' diff' })).toEqual({
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a +', () => {
+      // eslint-disable-next-line import/no-deprecated
       expect(utils.trimFirstCharOfLineContent({ rich_text: '+diff' })).toEqual({
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a -', () => {
+      // eslint-disable-next-line import/no-deprecated
       expect(utils.trimFirstCharOfLineContent({ rich_text: '-diff' })).toEqual({
         rich_text: 'diff',
       });
     });
 
     it('does not trims the line when it starts with a letter', () => {
+      // eslint-disable-next-line import/no-deprecated
       expect(utils.trimFirstCharOfLineContent({ rich_text: 'diff' })).toEqual({
         rich_text: 'diff',
       });
@@ -303,12 +307,14 @@ describe('DiffsStoreUtils', () => {
         rich_text: ' diff',
       };
 
+      // eslint-disable-next-line import/no-deprecated
       utils.trimFirstCharOfLineContent(lineObj);
 
       expect(lineObj).toEqual({ rich_text: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
+      // eslint-disable-next-line import/no-deprecated
       expect(utils.trimFirstCharOfLineContent()).toEqual({});
     });
   });

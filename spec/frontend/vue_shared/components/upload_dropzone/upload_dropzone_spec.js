@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
@@ -14,6 +14,7 @@ describe('Upload dropzone component', () => {
   const findDropzoneCard = () => wrapper.find('.upload-dropzone-card');
   const findDropzoneArea = () => wrapper.find('[data-testid="dropzone-area"]');
   const findIcon = () => wrapper.find(GlIcon);
+  const findUploadText = () => wrapper.find('[data-testid="upload-text"]').text();
 
   function createComponent({ slots = {}, data = {}, props = {} } = {}) {
     wrapper = shallowMount(UploadDropzone, {
@@ -21,6 +22,9 @@ describe('Upload dropzone component', () => {
       propsData: {
         displayAsCard: true,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
       data() {
         return data;
@@ -30,6 +34,7 @@ describe('Upload dropzone component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('when slot provided', () => {
@@ -57,6 +62,18 @@ describe('Upload dropzone component', () => {
 
       findDropzoneCard().trigger('click');
       expect(clickSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('upload text', () => {
+    it.each`
+      collection    | description                   | props                            | expected
+      ${'multiple'} | ${'by default'}               | ${null}                          | ${'files to attach'}
+      ${'singular'} | ${'when singleFileSelection'} | ${{ singleFileSelection: true }} | ${'file to attach'}
+    `('displays $collection version $description', ({ props, expected }) => {
+      createComponent({ props });
+
+      expect(findUploadText()).toContain(expected);
     });
   });
 
@@ -140,6 +157,21 @@ describe('Upload dropzone component', () => {
 
         wrapper.vm.ondrop(mockEvent);
         expect(wrapper.emitted()).not.toHaveProperty('error');
+      });
+
+      describe('singleFileSelection = true', () => {
+        it('emits a single file on drop', () => {
+          createComponent({
+            data: mockData,
+            props: { singleFileSelection: true },
+          });
+
+          const mockFile = { type: 'image/jpg' };
+          const mockEvent = mockDragEvent({ files: [mockFile] });
+
+          wrapper.vm.ondrop(mockEvent);
+          expect(wrapper.emitted().change[0]).toEqual([mockFile]);
+        });
       });
     });
   });

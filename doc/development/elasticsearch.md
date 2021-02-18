@@ -242,6 +242,27 @@ class BatchedMigrationName < Elastic::Migration
 end
 ```
 
+### Multi-version compatibility
+
+These Elasticsearch migrations, like any other GitLab changes, need to support the case where
+[multiple versions of the application are running at the same time](multi_version_compatibility.md).
+
+Depending on the order of deployment, it's possible that the migration
+has started or finished and there's still a server running the application code from before the
+migration. We need to take this into consideration until we can [ensure all Elasticsearch migrations
+start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
+
+### Reverting a migration
+
+Because Elasticsearch does not support transactions, we always need to design our
+migrations to accommodate a situation where the application
+code is reverted after the migration has started or after it is finished.
+
+For this reason we generally defer destructive actions (for example, deletions after
+some data is moved) to a later merge request after the migrations have
+completed successfully. To be safe, for self-managed customers we should also
+defer it to another release if there is risk of important data loss.
+
 ## Performance Monitoring
 
 ### Prometheus

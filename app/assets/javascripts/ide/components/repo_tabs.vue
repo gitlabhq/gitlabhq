@@ -1,10 +1,12 @@
 <script>
+import { GlTabs } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import RepoTab from './repo_tab.vue';
 
 export default {
   components: {
     RepoTab,
+    GlTabs,
   },
   props: {
     activeFile: {
@@ -42,8 +44,8 @@ export default {
 
 <template>
   <div class="multi-file-tabs">
-    <ul ref="tabsScroller" class="list-unstyled gl-mb-0">
+    <gl-tabs>
       <repo-tab v-for="tab in files" :key="tab.key" :tab="tab" />
-    </ul>
+    </gl-tabs>
   </div>
 </template>

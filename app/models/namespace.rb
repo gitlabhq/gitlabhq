@@ -164,6 +164,10 @@ class Namespace < ApplicationRecord
       name = host.delete_suffix(gitlab_host)
       Namespace.where(parent_id: nil).by_path(name)
     end
+
+    def top_most
+      where(parent_id: nil)
+    end
   end
 
   def package_settings

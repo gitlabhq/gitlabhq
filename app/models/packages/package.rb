@@ -98,12 +98,12 @@ class Packages::Package < ApplicationRecord
   end
   scope :preload_composer, -> { preload(:composer_metadatum) }
 
-  scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+  scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
   scope :processed, -> do
     where.not(package_type: :nuget).or(
-      where.not(name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME)
+      where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME)
     )
   end
   scope :preload_files, -> { preload(:package_files) }

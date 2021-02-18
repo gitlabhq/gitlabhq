@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/browser';
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import * as Sentry from '~/sentry/wrapper';
 import { unwrapStagesWithNeeds } from '../unwrapping_utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {

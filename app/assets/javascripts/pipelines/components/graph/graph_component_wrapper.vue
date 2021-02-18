@@ -14,6 +14,9 @@ export default {
     PipelineGraph,
   },
   inject: {
+    metricsPath: {
+      default: '',
+    },
     pipelineIid: {
       default: '',
     },
@@ -108,6 +111,7 @@ export default {
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />
     <pipeline-graph
       v-if="pipeline"
+      :metrics-path="metricsPath"
       :pipeline="pipeline"
       @error="reportFailure"
       @refreshPipelineGraph="refreshPipelineGraph"

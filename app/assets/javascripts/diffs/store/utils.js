@@ -283,7 +283,7 @@ export function addContextLines(options) {
  * Trims the first char of the `richText` property when it's either a space or a diff symbol.
  * @param {Object} line
  * @returns {Object}
- * @deprecated
+ * @deprecated Use `line.rich_text = line.rich_text ? line.rich_text.replace(/^[+ -]/, '') : undefined;` instead!. For more information, see https://gitlab.com/gitlab-org/gitlab/-/issues/299329
  */
 export function trimFirstCharOfLineContent(line = {}) {
   // eslint-disable-next-line no-param-reassign

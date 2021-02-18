@@ -172,6 +172,7 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
                     -e FUZZAPI_POSTMAN_COLLECTION \
+                    -e FUZZAPI_POSTMAN_COLLECTION_VARIABLES \
                     -e FUZZAPI_TARGET_URL \
                     -e FUZZAPI_OVERRIDES_FILE \
                     -e FUZZAPI_OVERRIDES_ENV \
@@ -214,6 +215,7 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
                     -e FUZZAPI_POSTMAN_COLLECTION \
+                    -e FUZZAPI_POSTMAN_COLLECTION_VARIABLES \
                     -e FUZZAPI_TARGET_URL \
                     -e FUZZAPI_OVERRIDES_FILE \
                     -e FUZZAPI_OVERRIDES_ENV \

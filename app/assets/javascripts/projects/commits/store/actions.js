@@ -1,8 +1,8 @@
+import * as Sentry from '@sentry/browser';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import * as Sentry from '~/sentry/wrapper';
 import * as types from './mutation_types';
 
 export default {

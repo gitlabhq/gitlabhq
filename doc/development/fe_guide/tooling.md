@@ -98,6 +98,57 @@ When declaring multiple globals, always use one `/* global [name] */` line per v
 /* global jQuery */
 ```
 
+### Deprecating functions with `import/no-deprecated`
+
+Our `@gitlab/eslint-plugin` Node module contains the [`eslint-plugin-import`](https://gitlab.com/gitlab-org/frontend/eslint-plugin) package.
+
+We can use the [`import/no-deprecated`](https://github.com/benmosher/eslint-plugin-import/blob/HEAD/docs/rules/no-deprecated.md) rule to deprecate functions using a JSDoc block with a `@deprecated` tag:
+
+```javascript
+/**
+ * Convert search query into an object
+ *
+ * @param {String} query from "document.location.search"
+ * @param {Object} options
+ * @param {Boolean} options.gatherArrays - gather array values into an Array
+ * @returns {Object}
+ *
+ * ex: "?one=1&two=2" into {one: 1, two: 2}
+ * @deprecated Please use `queryToObject` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/283982 for more information
+ */
+export function queryToObject(query, options = {}) {
+  ...
+}
+```
+
+It is strongly encouraged that you:
+
+- Put in an **alternative path for developers** looking to use this function.
+- **Provide a link to the issue** that tracks the migration process.
+
+NOTE:
+Uses are detected if you import the deprecated function into another file. They are not detected when the function is used in the same file.
+
+Running `$ yarn eslint` after this will give us the list of deprecated usages:
+
+```shell
+$ yarn eslint
+
+./app/assets/javascripts/issuable_form.js
+   9:10  error  Deprecated: Please use `queryToObject` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/283982 for more information  import/no-deprecated
+  33:23  error  Deprecated: Please use `queryToObject` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/283982 for more information  import/no-deprecated
+...
+```
+
+Grep for disabled cases of this rule to generate a working list to create issues from, so you can track the effort of removing deprecated uses:
+
+```shell
+$ grep "eslint-disable.*import/no-deprecated" -r .
+
+./app/assets/javascripts/issuable_form.js:import { queryToObject, objectToQuery } from './lib/utils/url_utility'; // eslint-disable-line import/no-deprecate
+./app/assets/javascripts/issuable_form.js:  // eslint-disable-next-line import/no-deprecated
+```
+
 ## Formatting with Prettier
 
 > Support for `.graphql` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227280) in GitLab 13.2.

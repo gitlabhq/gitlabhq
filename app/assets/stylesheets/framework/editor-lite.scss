@@ -3,6 +3,11 @@
   @include gl-display-flex;
   @include gl-justify-content-center;
   @include gl-align-items-center;
+  @include gl-z-index-0;
+
+  > * {
+    filter: blur(5px);
+  }
 
   &::before {
     content: '';

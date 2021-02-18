@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTab } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 
@@ -13,6 +13,7 @@ export default {
     FileIcon,
     GlIcon,
     ChangedFileIcon,
+    GlTab,
   },
   props: {
     tab: {
@@ -71,29 +72,30 @@ export default {
 </script>
 
 <template>
-  <li
-    :class="{
-      active: tab.active,
-      disabled: tab.pending,
-    }"
+  <gl-tab
+    :active="tab.active"
+    :disabled="tab.pending"
+    :title="tab.name"
     @click="clickFile(tab)"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
-    <div :title="getUrlForPath(tab.path)" class="multi-file-tab">
-      <file-icon :file-name="tab.name" :size="16" />
-      {{ tab.name }}
-      <file-status-icon :file="tab" />
-    </div>
-    <button
-      :aria-label="closeLabel"
-      :disabled="tab.pending"
-      type="button"
-      class="multi-file-tab-close"
-      @click.stop.prevent="closeFile(tab)"
-    >
-      <gl-icon v-if="!showChangedIcon" :size="12" name="close" />
-      <changed-file-icon v-else :file="tab" />
-    </button>
-  </li>
+    <template #title>
+      <div :title="getUrlForPath(tab.path)" class="multi-file-tab">
+        <file-icon :file-name="tab.name" :size="16" />
+        {{ tab.name }}
+        <file-status-icon :file="tab" />
+      </div>
+      <button
+        :aria-label="closeLabel"
+        :disabled="tab.pending"
+        type="button"
+        class="multi-file-tab-close"
+        @click.stop.prevent="closeFile(tab)"
+      >
+        <gl-icon v-if="!showChangedIcon" :size="12" name="close" />
+        <changed-file-icon v-else :file="tab" />
+      </button>
+    </template>
+  </gl-tab>
 </template>

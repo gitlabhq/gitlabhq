@@ -1,11 +1,11 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
+import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import { sortBy } from 'lodash';
 import { formatDateAsMonth } from '~/lib/utils/datetime_utility';
 import { s__, __ } from '~/locale';
-import * as Sentry from '~/sentry/wrapper';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import latestGroupsQuery from '../graphql/queries/groups.query.graphql';
 import latestProjectsQuery from '../graphql/queries/projects.query.graphql';

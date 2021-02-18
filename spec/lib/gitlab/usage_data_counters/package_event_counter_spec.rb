@@ -14,7 +14,7 @@ RSpec.describe Gitlab::UsageDataCounters::PackageEventCounter, :clean_gitlab_red
   end
 
   it 'includes the right events' do
-    expect(described_class::KNOWN_EVENTS.size).to eq 45
+    expect(described_class::KNOWN_EVENTS.size).to eq 48
   end
 
   described_class::KNOWN_EVENTS.each do |event|

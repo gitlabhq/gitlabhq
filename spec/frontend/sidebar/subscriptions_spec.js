@@ -84,6 +84,15 @@ describe('Subscriptions', () => {
     spy.mockRestore();
   });
 
+  it('has visually hidden label', () => {
+    wrapper = mountComponent();
+
+    expect(findToggleButton().props()).toMatchObject({
+      label: 'Notifications',
+      labelPosition: 'hidden',
+    });
+  });
+
   describe('given project emails are disabled', () => {
     const subscribeDisabledDescription = 'Notifications have been disabled';
 

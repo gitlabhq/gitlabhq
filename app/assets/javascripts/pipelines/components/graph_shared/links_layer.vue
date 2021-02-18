@@ -70,6 +70,7 @@ export default {
     v-if="showLinkedLayers"
     :container-measurements="containerMeasurements"
     :pipeline-data="pipelineData"
+    :total-groups="numGroups"
     v-bind="$attrs"
     v-on="$listeners"
   >

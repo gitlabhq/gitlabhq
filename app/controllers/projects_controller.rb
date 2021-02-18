@@ -395,6 +395,7 @@ class ProjectsController < Projects::ApplicationController
       metrics_dashboard_access_level
       analytics_access_level
       operations_access_level
+      security_and_compliance_access_level
     ]
   end
 

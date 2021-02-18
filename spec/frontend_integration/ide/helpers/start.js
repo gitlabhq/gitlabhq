@@ -1,6 +1,7 @@
+/* global monaco */
+
 import { TEST_HOST } from 'helpers/test_constants';
 import { initIde } from '~/ide';
-import Editor from '~/ide/lib/editor';
 import extendStore from '~/ide/stores/extend';
 import { IDE_DATASET } from './mock_data';
 
@@ -18,13 +19,7 @@ export default (container, { isRepoEmpty = false, path = '', mrId = '' } = {}) =
   const vm = initIde(el, { extendStore });
 
   // We need to dispose of editor Singleton things or tests will bump into eachother
-  vm.$on('destroy', () => {
-    if (Editor.editorInstance) {
-      Editor.editorInstance.modelManager.dispose();
-      Editor.editorInstance.dispose();
-      Editor.editorInstance = null;
-    }
-  });
+  vm.$on('destroy', () => monaco.editor.getModels().forEach((model) => model.dispose()));
 
   return vm;
 };

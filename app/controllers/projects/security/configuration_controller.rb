@@ -3,6 +3,8 @@
 module Projects
   module Security
     class ConfigurationController < Projects::ApplicationController
+      include SecurityAndCompliancePermissions
+
       feature_category :static_application_security_testing
 
       def show

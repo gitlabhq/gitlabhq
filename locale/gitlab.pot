@@ -10772,6 +10772,9 @@ msgstr ""
 msgid "Drop or %{linkStart}upload%{linkEnd} designs to attach"
 msgstr ""
 
+msgid "Drop or %{linkStart}upload%{linkEnd} file to attach"
+msgstr ""
+
 msgid "Drop or %{linkStart}upload%{linkEnd} files to attach"
 msgstr ""
 

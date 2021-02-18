@@ -1603,7 +1603,7 @@ enum BlobViewersType {
 }
 
 """
-Represents a project or group board
+Represents a project or group issue board
 """
 type Board {
   """
@@ -9490,7 +9490,7 @@ type EpicBoard {
   hideClosedList: Boolean
 
   """
-  Global ID of the board.
+  Global ID of the epic board.
   """
   id: BoardsEpicBoardID!
 
@@ -9525,9 +9525,19 @@ type EpicBoard {
   ): EpicListConnection
 
   """
-  Name of the board.
+  Name of the epic board.
   """
   name: String
+
+  """
+  Web path of the epic board.
+  """
+  webPath: String!
+
+  """
+  Web URL of the epic board.
+  """
+  webUrl: String!
 }
 
 """
@@ -23855,8 +23865,19 @@ type SastCiConfigurationOptionsEntityEdge {
 Size of UI component in SAST configuration page
 """
 enum SastUiComponentSize {
+  """
+  The size of UI component in SAST configuration page is large.
+  """
   LARGE
+
+  """
+  The size of UI component in SAST configuration page is medium.
+  """
   MEDIUM
+
+  """
+  The size of UI component in SAST configuration page is small.
+  """
   SMALL
 }
 
@@ -28452,7 +28473,7 @@ type VulnerabilityDetailBase {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28462,7 +28483,7 @@ type VulnerabilityDetailBase {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 }
 
 """
@@ -28472,7 +28493,7 @@ type VulnerabilityDetailBoolean {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28482,7 +28503,7 @@ type VulnerabilityDetailBoolean {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Value of the field.
@@ -28497,7 +28518,7 @@ type VulnerabilityDetailCode {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28512,7 +28533,7 @@ type VulnerabilityDetailCode {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Source code.
@@ -28527,7 +28548,7 @@ type VulnerabilityDetailCommit {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28537,7 +28558,7 @@ type VulnerabilityDetailCommit {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   The commit SHA value.
@@ -28562,7 +28583,7 @@ type VulnerabilityDetailDiff {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28572,7 +28593,7 @@ type VulnerabilityDetailDiff {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 }
 
 """
@@ -28582,7 +28603,7 @@ type VulnerabilityDetailFileLocation {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28607,7 +28628,7 @@ type VulnerabilityDetailFileLocation {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 }
 
 """
@@ -28617,7 +28638,7 @@ type VulnerabilityDetailInt {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28627,7 +28648,7 @@ type VulnerabilityDetailInt {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Value of the field.
@@ -28642,7 +28663,7 @@ type VulnerabilityDetailList {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28657,7 +28678,7 @@ type VulnerabilityDetailList {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 }
 
 """
@@ -28667,7 +28688,7 @@ type VulnerabilityDetailMarkdown {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28677,7 +28698,7 @@ type VulnerabilityDetailMarkdown {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Value of the Markdown field.
@@ -28692,7 +28713,7 @@ type VulnerabilityDetailModuleLocation {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28707,7 +28728,7 @@ type VulnerabilityDetailModuleLocation {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Offset of the module location.
@@ -28722,7 +28743,7 @@ type VulnerabilityDetailTable {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28737,7 +28758,7 @@ type VulnerabilityDetailTable {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Table rows.
@@ -28752,7 +28773,7 @@ type VulnerabilityDetailText {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28762,7 +28783,7 @@ type VulnerabilityDetailText {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Value of the text field.
@@ -28777,7 +28798,7 @@ type VulnerabilityDetailUrl {
   """
   Description of the field.
   """
-  description: String!
+  description: String
 
   """
   Name of the field.
@@ -28792,7 +28813,7 @@ type VulnerabilityDetailUrl {
   """
   Name of the field.
   """
-  name: String!
+  name: String
 
   """
   Text of the URL.

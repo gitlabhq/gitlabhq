@@ -34,6 +34,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_boolean(:snippets_access_level, value)
   end
 
+  def security_and_compliance_enabled=(value)
+    write_feature_attribute_boolean(:security_and_compliance_access_level, value)
+  end
+
   def repository_access_level=(value)
     write_feature_attribute_string(:repository_access_level, value)
   end
@@ -76,6 +80,10 @@ module ProjectFeaturesCompatibility
 
   def operations_access_level=(value)
     write_feature_attribute_string(:operations_access_level, value)
+  end
+
+  def security_and_compliance_access_level=(value)
+    write_feature_attribute_string(:security_and_compliance_access_level, value)
   end
 
   private

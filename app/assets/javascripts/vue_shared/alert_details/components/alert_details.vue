@@ -11,12 +11,12 @@ import {
   GlButton,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { fetchPolicies } from '~/lib/graphql';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import * as Sentry from '~/sentry/wrapper';
 import Tracking from '~/tracking';
 import initUserPopovers from '~/user_popovers';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';

@@ -15,14 +15,19 @@ export default {
     StageColumnComponent,
   },
   props: {
+    pipeline: {
+      type: Object,
+      required: true,
+    },
     isLinkedPipeline: {
       type: Boolean,
       required: false,
       default: false,
     },
-    pipeline: {
-      type: Object,
-      required: true,
+    metricsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     type: {
       type: String,
@@ -65,6 +70,12 @@ export default {
     },
     hasUpstreamPipelines() {
       return Boolean(this.pipeline?.upstream?.length > 0);
+    },
+    metricsConfig() {
+      return {
+        path: this.metricsPath,
+        collectMetrics: true,
+      };
     },
     // The show downstream check prevents showing redundant linked columns
     showDownstreamPipelines() {
@@ -145,6 +156,7 @@ export default {
               :container-id="containerId"
               :container-measurements="measurements"
               :highlighted-job="hoveredJobName"
+              :metrics-config="metricsConfig"
               default-link-color="gl-stroke-transparent"
               @error="onError"
               @highlightedJobsChange="updateHighlightedJobs"

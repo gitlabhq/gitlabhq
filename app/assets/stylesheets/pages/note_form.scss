@@ -313,8 +313,9 @@ table {
     resize: none;
     padding: $gl-padding-8 $gl-padding-12;
     line-height: 1;
-    border-color: $border-color;
+    border: 1px solid $border-color;
     background-color: $white;
+    overflow: hidden;
 
     @include media-breakpoint-down(xs) {
       margin-bottom: $gl-padding-8;

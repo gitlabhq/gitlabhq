@@ -93,8 +93,13 @@ export default async function initPipelineDetailsBundle() {
         /* webpackChunkName: 'createPipelinesDetailApp' */ './pipeline_details_graph'
       );
 
-      const { pipelineProjectPath, pipelineIid } = dataset;
-      createPipelinesDetailApp(SELECTORS.PIPELINE_GRAPH, pipelineProjectPath, pipelineIid);
+      const { metricsPath, pipelineProjectPath, pipelineIid } = dataset;
+      createPipelinesDetailApp(
+        SELECTORS.PIPELINE_GRAPH,
+        pipelineProjectPath,
+        pipelineIid,
+        metricsPath,
+      );
     } catch {
       Flash(__('An error occurred while loading the pipeline.'));
     }

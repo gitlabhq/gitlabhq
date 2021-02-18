@@ -513,7 +513,7 @@ RSpec.describe Packages::Package, type: :model do
 
   describe '.without_nuget_temporary_name' do
     let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:nuget_package, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+    let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
     subject { described_class.without_nuget_temporary_name }
 
@@ -532,7 +532,7 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to match_array([package1, package2, package3]) }
 
     context 'with temporary packages' do
-      let!(:package1) { create(:nuget_package, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+      let!(:package1) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
       it { is_expected.to match_array([package2, package3]) }
     end
