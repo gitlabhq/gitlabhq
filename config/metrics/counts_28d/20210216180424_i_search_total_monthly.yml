@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.search.i_search_total_monthly
-description: Caluated unique users to visit Global Search by month
+description: Calculated unique users to perform Basic or Advanced searches by month
 product_section: enablement
 product_stage: enablement
 product_group: group::global search
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

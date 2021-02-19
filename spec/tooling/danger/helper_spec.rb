@@ -325,8 +325,6 @@ RSpec.describe Tooling::Danger::Helper do
 
       'db/fixtures/foo.rb'                                 | [:backend]
       'ee/db/fixtures/foo.rb'                              | [:backend]
-      'doc/api/graphql/reference/gitlab_schema.graphql'    | [:backend]
-      'doc/api/graphql/reference/gitlab_schema.json'       | [:backend]
 
       'qa/foo' | [:qa]
       'ee/qa/foo' | [:qa]

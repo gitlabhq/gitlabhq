@@ -1,5 +1,11 @@
 import { buildSchema, graphql } from 'graphql';
-import gitlabSchemaStr from '../../../../doc/api/graphql/reference/gitlab_schema.graphql';
+
+/* eslint-disable import/no-unresolved */
+// This rule is disabled for the following line.
+// The graphql schema is dynamically generated in CI
+// during the `graphql-schema-dump` job.
+import gitlabSchemaStr from '../../../../tmp/tests/graphql/gitlab_schema.graphql';
+/* eslint-enable import/no-unresolved */
 
 const graphqlSchema = buildSchema(gitlabSchemaStr.loc.source.body);
 const graphqlResolvers = {

@@ -31,11 +31,11 @@ module Groups
 
       # If any other groups are shared with the group that is being destroyed,
       # we should specifically trigger update of all project authorizations
-      # for users that are the members of this group.
+      # for users that are the direct members of this group.
       # If not, the project authorization records of these users to projects within the shared groups
       # will never be removed, causing inconsistencies with access permissions.
       if any_other_groups_are_shared_with_this_group?
-        user_ids_for_project_authorizations_refresh = group.user_ids_for_project_authorizations
+        user_ids_for_project_authorizations_refresh = group.users_ids_of_direct_members
       end
 
       group.destroy

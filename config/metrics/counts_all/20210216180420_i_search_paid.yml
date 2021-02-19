@@ -1,7 +1,6 @@
 ---
 key_path: search_unique_visits.i_search_paid
-description: 'Caluated unique users to visit Global Search from users with available
-  paid license enabled by week '
+description: Calculated unique users to perform a search with a paid license enabled by week
 product_section: enablement
 product_stage: enablement
 product_group: group::global search
@@ -9,7 +8,7 @@ product_category: global_search
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: redis_hll
 distribution:
 - ce
 - ee
@@ -17,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

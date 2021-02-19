@@ -613,10 +613,9 @@ Total Searches for All Basic Search and Advanced Search in self-managed and SaaS
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
-| `data_source` | Database |
+| `data_source` | Redis |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `counts.api_fuzzing_dnd_jobs`
 
@@ -4667,7 +4666,7 @@ Missing description
 
 ## `counts.navbar_searches`
 
-Total Searches for All Basic Search and Advanced Search in self-managed and SaaS
+Total Searches using the navbar for All Basic Search and Advanced Search in self-managed and SaaS
 
 | field | value |
 | --- | --- |
@@ -4679,10 +4678,9 @@ Total Searches for All Basic Search and Advanced Search in self-managed and SaaS
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
-| `data_source` | Database |
+| `data_source` | Redis |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `counts.network_policy_drops`
 
@@ -19355,7 +19353,7 @@ Missing description
 
 ## `redis_hll_counters.search.i_search_advanced_monthly`
 
-Caluated unique users to visit Global Search with AGS enabled by month
+Calculated unique users to perform Advanced searches by month
 
 | field | value |
 | --- | --- |
@@ -19370,11 +19368,10 @@ Caluated unique users to visit Global Search with AGS enabled by month
 | `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.search.i_search_advanced_weekly`
 
-Caluated unique users to visit Global Search with AGS enabled by week 
+Calculated unique users to perform Advanced searches by week
 
 | field | value |
 | --- | --- |
@@ -19389,7 +19386,6 @@ Caluated unique users to visit Global Search with AGS enabled by week
 | `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.search.i_search_paid_monthly`
 
@@ -19431,7 +19427,7 @@ Missing description
 
 ## `redis_hll_counters.search.i_search_total_monthly`
 
-Caluated unique users to visit Global Search by month
+Calculated unique users to perform Basic or Advanced searches by month
 
 | field | value |
 | --- | --- |
@@ -19446,11 +19442,10 @@ Caluated unique users to visit Global Search by month
 | `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.search.i_search_total_weekly`
 
-Caluated unique users to visit Global Search by week 
+Calculated unique users to perform Basic or Advanced searches by week
 
 | field | value |
 | --- | --- |
@@ -19465,11 +19460,10 @@ Caluated unique users to visit Global Search by week
 | `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.search.search_total_unique_counts_monthly`
 
-Caluated unique users to visit Global Search by month
+Calculated unique users to perform Basic or Advanced searches by month
 
 | field | value |
 | --- | --- |
@@ -19484,11 +19478,10 @@ Caluated unique users to visit Global Search by month
 | `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.search.search_total_unique_counts_weekly`
 
-Caluated unique users to visit Global Search by week 
+Calculated unique users to perform Basic or Advanced searches by week
 
 | field | value |
 | --- | --- |
@@ -19503,7 +19496,6 @@ Caluated unique users to visit Global Search by week
 | `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `redis_hll_counters.snippets.i_snippets_show_monthly`
 
@@ -20628,7 +20620,7 @@ Whether incoming email is setup
 
 ## `search_unique_visits.i_search_advanced`
 
-Caluated unique users to visit Global Search with AGS enabled by week 
+Calculated unique users to perform Advanced searches by week
 
 | field | value |
 | --- | --- |
@@ -20640,14 +20632,13 @@ Caluated unique users to visit Global Search with AGS enabled by week
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
-| `data_source` |  |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
-| `skip_validation` | true |
 
 ## `search_unique_visits.i_search_paid`
 
-Caluated unique users to visit Global Search from users with available paid license enabled by week 
+Calculated unique users to perform a search with a paid license enabled by week
 
 | field | value |
 | --- | --- |
@@ -20659,14 +20650,13 @@ Caluated unique users to visit Global Search from users with available paid lice
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
-| `data_source` |  |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `search_unique_visits.i_search_total`
 
-Caluated unique users to visit Global Search by week 
+Calculated unique users to perform Basic or Advanced searches by week
 
 | field | value |
 | --- | --- |
@@ -20678,10 +20668,9 @@ Caluated unique users to visit Global Search by week
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | all |
-| `data_source` |  |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
-| `skip_validation` | true |
 
 ## `search_unique_visits.search_unique_visits_for_any_target_monthly`
 

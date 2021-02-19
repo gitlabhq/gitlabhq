@@ -52,11 +52,11 @@ GitLab as described in our [reference architecture documentation](../administrat
 
 [**> Install GitLab using the Omnibus GitLab package.**](https://about.gitlab.com/install/)
 
-### GitLab Environment Toolkit (alpha)
+### GitLab Environment Toolkit (GET)
 
-The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) provides a set of automation tools to easily deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers.
+The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) (GET) provides a set of automation tools to easily deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers.
 
-It is currently in alpha, and is not recommended for production use.
+It is currently in beta, and is not yet recommended for production use.
 
 [**> Install a GitLab reference architecture using the GitLab Environment Toolkit.**](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit#documentation)
 

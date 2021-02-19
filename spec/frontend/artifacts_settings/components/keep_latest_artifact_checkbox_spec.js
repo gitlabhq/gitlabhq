@@ -120,23 +120,4 @@ describe('Keep latest artifact checkbox', () => {
       expect(findCheckbox().attributes('disabled')).toBeUndefined();
     });
   });
-
-  describe('when application keep latest artifact setting is disabled', () => {
-    it('checkbox is disabled when application setting is disabled', async () => {
-      createComponent({
-        keepLatestArtifactApplicationQueryHandler: jest.fn().mockResolvedValue({
-          data: {
-            ciApplicationSettings: {
-              keepLatestArtifact: false,
-            },
-          },
-        }),
-      });
-
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.element).toMatchSnapshot();
-      expect(findCheckbox().attributes('disabled')).toBe('true');
-    });
-  });
 });

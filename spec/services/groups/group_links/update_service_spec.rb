@@ -8,7 +8,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:shared_group) { create(:group, :private) }
   let_it_be(:project) { create(:project, group: shared_group) }
-  let(:group_member) { create(:user) }
+  let(:group_member_user) { create(:user) }
   let!(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
 
   let(:expiry_date) { 1.month.from_now.to_date }
@@ -20,7 +20,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
   subject { described_class.new(link).execute(group_link_params) }
 
   before do
-    group.add_developer(group_member)
+    group.add_developer(group_member_user)
   end
 
   it 'updates existing link' do
@@ -36,11 +36,11 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
   end
 
   it 'updates project permissions' do
-    expect { subject }.to change { group_member.can?(:create_release, project) }.from(true).to(false)
+    expect { subject }.to change { group_member_user.can?(:create_release, project) }.from(true).to(false)
   end
 
   it 'executes UserProjectAccessChangedService' do
-    expect_next_instance_of(UserProjectAccessChangedService) do |service|
+    expect_next_instance_of(UserProjectAccessChangedService, [group_member_user.id]) do |service|
       expect(service).to receive(:execute)
     end
 

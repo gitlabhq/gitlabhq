@@ -83,7 +83,8 @@ export default {
           {{ item.description }}
           <gl-link
             target="_blank"
-            :href="item.link"
+            data-testid="help-link"
+            :href="item.helpPath"
             :aria-label="getFeatureDocumentationLinkLabel(item)"
           >
             {{ s__('SecurityConfiguration|More information') }}

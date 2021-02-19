@@ -162,7 +162,7 @@ export default {
         <rect x="250" y="7" width="84" height="16" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <div v-else class="media-body space-children">
+    <div v-else class="media-body space-children gl-display-flex gl-align-items-center">
       <span v-if="shouldBeRebased" class="bold">
         {{
           s__(`mrWidget|Fast-forward merge is not possible.
