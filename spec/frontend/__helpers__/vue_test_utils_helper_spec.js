@@ -88,5 +88,22 @@ describe('Vue test utils helpers', () => {
         expect(mockComponent.findByTestId(testId).exists()).toBe(true);
       });
     });
+
+    describe('findAllByTestId', () => {
+      const testId = 'a-component';
+      let mockComponent;
+
+      beforeEach(() => {
+        mockComponent = extendedWrapper(
+          shallowMount({
+            template: `<div><div data-testid="${testId}"></div><div data-testid="${testId}"></div></div>`,
+          }),
+        );
+      });
+
+      it('should find all components by test id', () => {
+        expect(mockComponent.findAllByTestId(testId)).toHaveLength(2);
+      });
+    });
   });
 });

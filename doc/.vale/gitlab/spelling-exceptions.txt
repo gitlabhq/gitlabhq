@@ -57,6 +57,7 @@ backtracing
 badging
 Bamboo
 Bazel
+Bhyve
 Bitbucket
 blockquote
 blockquoted
@@ -90,6 +91,7 @@ Certbot
 changeset
 changesets
 chai
+ChaosKube
 chatbot
 chatbots
 ChatOps
@@ -125,6 +127,8 @@ CrowdIn
 CSV
 cybersecurity
 Dangerfile
+datasource
+datasources
 datetime
 Debian
 Decompressor
@@ -410,6 +414,7 @@ Poedit
 polyfill
 polyfills
 pooler
+postfixed
 postgres.ai
 PostgreSQL
 precompile
@@ -550,6 +555,7 @@ Sidekiq
 Silverlight
 Sisense
 Sitespeed
+skippable
 Slack
 Slackbot
 Slony
@@ -575,6 +581,8 @@ strikethrough
 strikethroughs
 stunnel
 stylelint
+subchart
+subcharts
 subfolder
 subfolders
 subgraph
@@ -634,6 +642,7 @@ todos
 tokenizer
 Tokenizers
 tokenizing
+tolerations
 toolchain
 toolchains
 toolkit
@@ -740,6 +749,7 @@ unstash
 unstashed
 unstashing
 unsynced
+unsynchronized
 untarred
 untracked
 untrusted

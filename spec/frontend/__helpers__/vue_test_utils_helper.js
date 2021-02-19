@@ -45,9 +45,16 @@ export const extendedWrapper = (wrapper) => {
     return wrapper;
   }
 
-  return Object.defineProperty(wrapper, 'findByTestId', {
-    value(id) {
-      return this.find(`[data-testid="${id}"]`);
+  return Object.defineProperties(wrapper, {
+    findByTestId: {
+      value(id) {
+        return this.find(`[data-testid="${id}"]`);
+      },
+    },
+    findAllByTestId: {
+      value(id) {
+        return this.findAll(`[data-testid="${id}"]`);
+      },
     },
   });
 };

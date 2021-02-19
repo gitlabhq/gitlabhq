@@ -154,6 +154,13 @@ resolved and place it in the `.rubocop_manual_todo.yml`. In this scenario, do no
 changes to the `.rubocop_todo.yml` as an `exclude limit` that is higher than 15 will make the
 `.rubocop_todo.yml` hard to parse.
 
+### Reveal existing RuboCop exceptions
+
+To reveal existing RuboCop exceptions in the code that have been excluded via `.rubocop_todo.yml` and
+`.rubocop_manual_todo.yml`, set the environment variable `REVEAL_RUBOCOP_TODO` to `1`.
+
+This allows you to reveal existing RuboCop exceptions during your daily work cycle and fix them along the way.
+
 ## Database migrations
 
 See the dedicated [Database Migrations Style Guide](../migration_style_guide.md).
