@@ -63,8 +63,8 @@ Visits to any of the pages listed above per week
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.analytics_unique_visits_for_any_target_monthly`
@@ -82,8 +82,8 @@ Visits to any of the pages listed above per month
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_contribution`
@@ -101,8 +101,8 @@ Visits to /groups/:group/-/contribution_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_insights`
@@ -120,8 +120,8 @@ Visits to /groups/:group/-/insights
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_issues`
@@ -139,8 +139,8 @@ Visits to /groups/:group/-/issues_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_merge_request`
@@ -158,8 +158,8 @@ Visits to /groups/:group/-/analytics/merge_request_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_productivity`
@@ -177,8 +177,8 @@ Visits to /groups/:group/-/analytics/productivity_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.g_analytics_valuestream`
@@ -196,8 +196,8 @@ Visits to /groups/:group/-/analytics/value_stream_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.i_analytics_cohorts`
@@ -215,8 +215,8 @@ Visits to /-/instance_statistics/cohorts
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.i_analytics_dev_ops_score`
@@ -234,8 +234,8 @@ Visits to /-/instance_statistics/dev_ops_score
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.i_analytics_instance_statistics`
@@ -253,8 +253,8 @@ Visit to /admin/instance_statistics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_code_reviews`
@@ -272,8 +272,8 @@ Visits to /:group/:project/-/analytics/code_reviews
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_insights`
@@ -291,8 +291,8 @@ Visits to /:group/:project/insights
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_issues`
@@ -310,8 +310,8 @@ Visits to /:group/:project/-/analytics/issues_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_merge_request`
@@ -329,8 +329,8 @@ Visits to /:group/:project/-/analytics/merge_request_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_pipelines`
@@ -348,8 +348,8 @@ Visits to /:group/:project/pipelines/charts
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_repo`
@@ -367,8 +367,8 @@ Visits to /:group/:project/-/graphs/master/charts
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `analytics_unique_visits.p_analytics_valuestream`
@@ -386,8 +386,8 @@ Visits to /:group/:project/-/value_stream_analytics
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.a_compliance_audit_events_api`
@@ -405,8 +405,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.compliance_unique_visits_for_any_target`
@@ -424,8 +424,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.compliance_unique_visits_for_any_target_monthly`
@@ -443,8 +443,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.g_compliance_audit_events`
@@ -462,8 +462,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.g_compliance_dashboard`
@@ -481,8 +481,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.i_compliance_audit_events`
@@ -500,8 +500,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `compliance_unique_visits.i_compliance_credential_inventory`
@@ -519,8 +519,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `container_registry_enabled`
@@ -538,8 +538,8 @@ Whether container registry is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `container_registry_server.vendor`
@@ -557,8 +557,8 @@ Identifies if a user is using an external container registry and what type
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `container_registry_server.version`
@@ -576,8 +576,8 @@ Identifies the version of the external registry being used
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.alert_bot_incident_issues`
@@ -633,8 +633,8 @@ Count of API Fuzzing `docker-in-docker` jobs run by job name
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.api_fuzzing_jobs`
@@ -652,8 +652,8 @@ Count of API Fuzzing jobs run by job name
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.assignee_lists`
@@ -690,8 +690,8 @@ Projects with Auto DevOps template disabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.auto_devops_enabled`
@@ -709,8 +709,8 @@ Projects with Auto DevOps template enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.boards`
@@ -728,8 +728,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_builds`
@@ -747,8 +747,8 @@ Unique builds in project
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_external_pipelines`
@@ -766,8 +766,8 @@ Total pipelines in external repositories
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_internal_pipelines`
@@ -785,8 +785,8 @@ Total pipelines in GitLab repositories
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_pipeline_config_auto_devops`
@@ -804,8 +804,8 @@ Total pipelines from an Auto DevOps template
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_pipeline_config_repository`
@@ -823,8 +823,8 @@ Total Pipelines from templates in repository
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_pipeline_schedules`
@@ -842,8 +842,8 @@ Pipeline schedules in GitLab
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_runners`
@@ -861,8 +861,8 @@ Total configured Runners in project
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.ci_triggers`
@@ -880,8 +880,8 @@ Total configured Triggers in project
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.clusters`
@@ -1222,8 +1222,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.confidential_epics`
@@ -1241,8 +1241,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.container_scanning_jobs`
@@ -1279,8 +1279,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.cycle_analytics_views`
@@ -1298,8 +1298,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.dast_jobs`
@@ -1317,8 +1317,8 @@ Count of DAST jobs run
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.dast_on_demand_pipelines`
@@ -1336,8 +1336,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.dependency_list_usages_total`
@@ -1393,8 +1393,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.deployments`
@@ -1431,8 +1431,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.design_management_designs_delete`
@@ -1450,8 +1450,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.design_management_designs_update`
@@ -1469,8 +1469,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.environments`
@@ -1488,8 +1488,8 @@ Total available and stopped environments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.epic_issues`
@@ -1526,8 +1526,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.epics_deepest_relationship_level`
@@ -1564,8 +1564,8 @@ Total failed deployments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.feature_flags`
@@ -1583,8 +1583,8 @@ Number of feature flag toggles
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.geo_event_log_max_id`
@@ -1617,7 +1617,7 @@ Total number of sites in a Geo deployment
 | `product_stage` | enablement |
 | `product_group` | `group::geo` |
 | `product_category` | `disaster_recovery` |
-| `value_type` | integer |
+| `value_type` | number |
 | `status` | data_available |
 | `milestone` | 11.2 |
 | `time_frame` | all |
@@ -1640,8 +1640,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.group_clusters_disabled`
@@ -1868,8 +1868,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_discord_active`
@@ -1944,8 +1944,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_external_wiki_active`
@@ -2210,8 +2210,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_inheriting_discord_active`
@@ -2286,8 +2286,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_inheriting_external_wiki_active`
@@ -2514,8 +2514,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_inheriting_mock_monitoring_active`
@@ -2533,8 +2533,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_inheriting_packagist_active`
@@ -2894,8 +2894,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_mock_monitoring_active`
@@ -2913,8 +2913,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.groups_packagist_active`
@@ -3160,8 +3160,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.incident_issues`
@@ -3540,8 +3540,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.instances_discord_active`
@@ -3616,8 +3616,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.instances_external_wiki_active`
@@ -3844,8 +3844,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.instances_mock_monitoring_active`
@@ -3863,8 +3863,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.instances_packagist_active`
@@ -4148,8 +4148,8 @@ Count of issues manually created from the GitLab UI on Sentry errors
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.issues_created_gitlab_alerts`
@@ -4262,8 +4262,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.jira_imports_projects_count`
@@ -4338,8 +4338,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.kubernetes_agent_gitops_sync`
@@ -4414,8 +4414,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.labels`
@@ -4509,8 +4509,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.license_management_jobs`
@@ -4528,7 +4528,7 @@ Name on the GitLab license
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` | Database |
-| `distribution` |  |
+| `distribution` | ce |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
 
@@ -4566,8 +4566,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.merge_request_create`
@@ -4585,8 +4585,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.merge_requests`
@@ -4604,8 +4604,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.merged_merge_requests_using_approval_rules`
@@ -4623,8 +4623,8 @@ Count of merge requests merged using approval rules
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.milestone_lists`
@@ -4642,8 +4642,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.milestones`
@@ -4661,8 +4661,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.navbar_searches`
@@ -4756,8 +4756,8 @@ Active users with enabled operations dashboard
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.operations_dashboard_users_with_projects_added`
@@ -4775,8 +4775,8 @@ Active users with projects on operations dashboard
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_composer_delete_package`
@@ -4794,8 +4794,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_composer_pull_package`
@@ -4813,8 +4813,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_composer_push_package`
@@ -4832,8 +4832,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_conan_delete_package`
@@ -4851,8 +4851,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_conan_pull_package`
@@ -4870,8 +4870,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_conan_push_package`
@@ -4889,8 +4889,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_container_delete_package`
@@ -4908,8 +4908,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_container_pull_package`
@@ -4927,8 +4927,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_container_push_package`
@@ -4946,8 +4946,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_debian_delete_package`
@@ -4965,8 +4965,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_debian_pull_package`
@@ -4984,8 +4984,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_debian_push_package`
@@ -5003,8 +5003,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_delete_package`
@@ -5022,8 +5022,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_delete_package_by_deploy_token`
@@ -5041,8 +5041,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_delete_package_by_guest`
@@ -5060,8 +5060,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_delete_package_by_user`
@@ -5079,8 +5079,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_generic_delete_package`
@@ -5098,8 +5098,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_generic_pull_package`
@@ -5117,8 +5117,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_generic_push_package`
@@ -5136,8 +5136,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_golang_delete_package`
@@ -5155,8 +5155,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_golang_pull_package`
@@ -5174,8 +5174,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_golang_push_package`
@@ -5193,8 +5193,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_maven_delete_package`
@@ -5212,8 +5212,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_maven_pull_package`
@@ -5231,8 +5231,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_maven_push_package`
@@ -5250,8 +5250,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_npm_delete_package`
@@ -5269,8 +5269,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_npm_pull_package`
@@ -5288,8 +5288,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_npm_push_package`
@@ -5307,8 +5307,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_nuget_delete_package`
@@ -5326,8 +5326,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_nuget_pull_package`
@@ -5345,8 +5345,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_nuget_push_package`
@@ -5364,8 +5364,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pull_package`
@@ -5383,8 +5383,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pull_package_by_deploy_token`
@@ -5402,8 +5402,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pull_package_by_guest`
@@ -5421,8 +5421,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pull_package_by_user`
@@ -5440,8 +5440,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_push_package`
@@ -5459,8 +5459,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_push_package_by_deploy_token`
@@ -5478,8 +5478,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_push_package_by_guest`
@@ -5497,8 +5497,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_push_package_by_user`
@@ -5516,8 +5516,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pypi_delete_package`
@@ -5535,8 +5535,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pypi_pull_package`
@@ -5554,8 +5554,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_pypi_push_package`
@@ -5573,8 +5573,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_tag_delete_package`
@@ -5592,8 +5592,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_tag_pull_package`
@@ -5611,8 +5611,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.package_events_i_package_tag_push_package`
@@ -5630,8 +5630,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.packages`
@@ -5650,7 +5650,7 @@ Number of packages
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ce |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.pages_domains`
@@ -5668,8 +5668,8 @@ Total GitLab Pages domains
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.personal_snippets`
@@ -5744,8 +5744,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.project_clusters_disabled`
@@ -5820,8 +5820,8 @@ Count of Projects
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_asana_active`
@@ -5972,8 +5972,8 @@ Counts of Projects that have created incidents
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_custom_issue_tracker_active`
@@ -6010,8 +6010,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_discord_active`
@@ -6086,8 +6086,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_external_wiki_active`
@@ -6200,8 +6200,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_inheriting_asana_active`
@@ -6371,8 +6371,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_inheriting_discord_active`
@@ -6447,8 +6447,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_inheriting_external_wiki_active`
@@ -6675,8 +6675,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_inheriting_mock_monitoring_active`
@@ -6694,8 +6694,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_inheriting_packagist_active`
@@ -7150,8 +7150,8 @@ Projects with repository mirroring enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_mock_ci_active`
@@ -7169,8 +7169,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_mock_monitoring_active`
@@ -7188,8 +7188,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_packagist_active`
@@ -7435,8 +7435,8 @@ Count of projects with alerts created in given time period
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_alerts_service_enabled`
@@ -7473,8 +7473,8 @@ Count of projects with at least 1 enabled integration
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_error_tracking_enabled`
@@ -7511,8 +7511,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled`
@@ -7530,8 +7530,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_14d`
@@ -7549,8 +7549,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1d`
@@ -7568,8 +7568,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_1month`
@@ -7587,8 +7587,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_3month`
@@ -7606,8 +7606,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_cadence_set_to_7d`
@@ -7625,8 +7625,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_1`
@@ -7777,8 +7777,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_30d`
@@ -7796,8 +7796,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_7d`
@@ -7815,8 +7815,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_90d`
@@ -7834,8 +7834,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_expiration_policy_enabled_with_older_than_unset`
@@ -7853,8 +7853,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_packages`
@@ -7891,8 +7891,8 @@ Projects with Prometheus alerting enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_repositories_enabled`
@@ -7910,8 +7910,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_terraform_reports`
@@ -7929,8 +7929,8 @@ Count of projects with Terraform MR reports
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_terraform_states`
@@ -7948,8 +7948,8 @@ Count of projects with GitLab Managed Terraform State
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_with_tracing_enabled`
@@ -7967,8 +7967,8 @@ Projects with tracing enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.projects_youtrack_active`
@@ -8005,8 +8005,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.protected_branches_except_default`
@@ -8024,8 +8024,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.releases`
@@ -8043,8 +8043,8 @@ Unique release tags
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.remote_mirrors`
@@ -8062,8 +8062,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.requirement_test_reports_ci`
@@ -8119,8 +8119,8 @@ Count of requirements created
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.requirements_with_test_report`
@@ -8196,7 +8196,7 @@ Count of service desk enabled projects
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.service_desk_issues`
@@ -8215,7 +8215,7 @@ Count of service desk issues
 | `time_frame` | all |
 | `data_source` | Database |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.snippet_comment`
@@ -8309,8 +8309,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.static_site_editor_commits`
@@ -8328,8 +8328,8 @@ Count of commits created via Static Site Editor
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.static_site_editor_merge_requests`
@@ -8347,8 +8347,8 @@ Count of merge requests created via Static Site Editor
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.static_site_editor_views`
@@ -8385,8 +8385,8 @@ Cumulative count of usages of publish operation
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.status_page_incident_unpublishes`
@@ -8404,8 +8404,8 @@ Cumulative count of usages of unpublish operation
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.status_page_issues`
@@ -8423,8 +8423,8 @@ Issues published to a Status Page
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.status_page_projects`
@@ -8442,8 +8442,8 @@ Projects with status page enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.successful_deployments`
@@ -8461,8 +8461,8 @@ Total successful deployments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.suggestions`
@@ -8480,8 +8480,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.template_repositories`
@@ -8499,8 +8499,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.templates_asana_active`
@@ -8670,8 +8670,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.templates_discord_active`
@@ -8746,8 +8746,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.templates_external_wiki_active`
@@ -8974,8 +8974,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.templates_mock_monitoring_active`
@@ -8993,8 +8993,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.templates_packagist_active`
@@ -9240,8 +9240,8 @@ Count of Terraform MR reports generated
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.terraform_states`
@@ -9259,8 +9259,8 @@ Count of GitLab Managed Terraform States used
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.todos`
@@ -9373,8 +9373,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.web_ide_commits`
@@ -9506,8 +9506,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.wiki_pages_delete`
@@ -9525,8 +9525,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.wiki_pages_update`
@@ -9544,8 +9544,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts.wiki_pages_view`
@@ -9563,8 +9563,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.compliance_features_track_unique_visits_union`
@@ -9582,8 +9582,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
@@ -9601,8 +9601,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.incident_management_alerts_total_unique_counts`
@@ -9620,8 +9620,8 @@ Count of unique users per month to take an action on an alert
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.incident_management_incidents_total_unique_counts`
@@ -9639,8 +9639,8 @@ Count of unique users per month to take an action on an incident
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection`
@@ -9658,8 +9658,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.aggregated_metrics.product_analytics_test_metrics_union`
@@ -9677,8 +9677,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.deployments`
@@ -9716,8 +9716,8 @@ Total failed deployments
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.packages`
@@ -9736,7 +9736,7 @@ Monthly count of Packages
 | `time_frame` | 28d |
 | `data_source` | Database |
 | `distribution` | ce |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.personal_snippets`
@@ -9792,8 +9792,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_monthly.snippets`
@@ -9830,8 +9830,8 @@ Total successful deployments
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Database |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `counts_weekly.aggregated_metrics.compliance_features_track_unique_visits_union`
@@ -9981,8 +9981,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `database.version`
@@ -10000,8 +10000,8 @@ The version of the PostgreSQL database.
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `dependency_proxy_enabled`
@@ -10019,8 +10019,8 @@ Whether dependency proxy is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `edition`
@@ -10057,8 +10057,8 @@ Whether Elasticsearch is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `geo_enabled`
@@ -10095,8 +10095,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitaly.clusters`
@@ -10114,8 +10114,8 @@ Total GitLab Managed clusters both enabled and disabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitaly.filesystems`
@@ -10133,8 +10133,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitaly.servers`
@@ -10152,8 +10152,8 @@ Total Gitalty Servers
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitaly.version`
@@ -10171,8 +10171,8 @@ Version of Gitaly
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitlab_pages.enabled`
@@ -10190,8 +10190,8 @@ Whether GitLab Pages is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitlab_pages.version`
@@ -10209,8 +10209,8 @@ The version number of GitLab Pages
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitlab_shared_runners_enabled`
@@ -10228,8 +10228,8 @@ Whether shared runners is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gitpod_enabled`
@@ -10266,8 +10266,8 @@ Whether Grafana is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `gravatar_enabled`
@@ -10285,8 +10285,8 @@ Whether gravatar is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `historical_max_users`
@@ -10380,8 +10380,8 @@ Whether auto DevOps is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `ldap_enabled`
@@ -10399,8 +10399,8 @@ Whether LDAP is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `license_expires_at`
@@ -10551,8 +10551,8 @@ Date the license ends on
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `license_user_count`
@@ -10665,8 +10665,8 @@ Whether Mattermost is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `object_store.artifacts.enabled`
@@ -11159,8 +11159,8 @@ Whether OmniAuth is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `prometheus_enabled`
@@ -11178,8 +11178,8 @@ Whether the bundled Prometheus is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `prometheus_metrics_enabled`
@@ -11197,8 +11197,8 @@ Whether Prometheus Metrics endpoint is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `recorded_at`
@@ -11237,7 +11237,7 @@ When the core features were computed
 | `time_frame` | none |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `recording_ee_finished_at`
@@ -11273,9 +11273,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.analytics_total_unique_counts_weekly`
@@ -11292,7 +11292,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11311,9 +11311,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_contribution_weekly`
@@ -11330,7 +11330,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11349,9 +11349,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_insights_weekly`
@@ -11368,7 +11368,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11387,9 +11387,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_issues_weekly`
@@ -11406,7 +11406,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11425,9 +11425,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_merge_request_weekly`
@@ -11444,7 +11444,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11463,9 +11463,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_productivity_weekly`
@@ -11482,7 +11482,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11501,9 +11501,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.g_analytics_valuestream_weekly`
@@ -11520,7 +11520,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11539,9 +11539,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.i_analytics_cohorts_weekly`
@@ -11558,7 +11558,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11577,9 +11577,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.i_analytics_dev_ops_score_weekly`
@@ -11596,7 +11596,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11615,9 +11615,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.i_analytics_instance_statistics_weekly`
@@ -11634,7 +11634,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11653,9 +11653,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_code_reviews_weekly`
@@ -11672,7 +11672,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11691,9 +11691,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_insights_weekly`
@@ -11710,7 +11710,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11729,9 +11729,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_issues_weekly`
@@ -11748,7 +11748,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11767,9 +11767,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_merge_request_weekly`
@@ -11786,7 +11786,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11805,9 +11805,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_pipelines_weekly`
@@ -11824,7 +11824,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11843,9 +11843,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_repo_weekly`
@@ -11862,7 +11862,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11881,9 +11881,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.analytics.p_analytics_valuestream_weekly`
@@ -11900,7 +11900,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11919,9 +11919,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_weekly`
@@ -11938,7 +11938,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11957,9 +11957,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekly`
@@ -11976,7 +11976,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -11995,9 +11995,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_weekly`
@@ -12014,7 +12014,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12033,9 +12033,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_weekly`
@@ -12052,7 +12052,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12071,9 +12071,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_weekly`
@@ -12090,7 +12090,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12109,9 +12109,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_weekly`
@@ -12128,7 +12128,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12147,9 +12147,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_weekly`
@@ -12166,7 +12166,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12185,9 +12185,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_weekly`
@@ -12204,7 +12204,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12223,9 +12223,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly`
@@ -12242,7 +12242,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12261,9 +12261,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_weekly`
@@ -12280,7 +12280,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12299,9 +12299,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_weekly`
@@ -12318,7 +12318,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12337,9 +12337,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_weekly`
@@ -12356,7 +12356,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12375,9 +12375,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_weekly`
@@ -12394,7 +12394,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12413,9 +12413,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_weekly`
@@ -12432,7 +12432,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12451,9 +12451,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_security_sast_weekly`
@@ -12470,7 +12470,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12489,9 +12489,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_weekly`
@@ -12508,7 +12508,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12527,9 +12527,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_weekly`
@@ -12546,7 +12546,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12565,9 +12565,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.code_review_total_unique_counts_weekly`
@@ -12584,7 +12584,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12603,9 +12603,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_edit_mr_desc_weekly`
@@ -12622,7 +12622,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12641,9 +12641,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_edit_mr_title_weekly`
@@ -12660,7 +12660,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12679,9 +12679,9 @@ Count of unique merge requests per week|month with diffs viewed
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_mr_diffs_weekly`
@@ -12698,7 +12698,7 @@ Count of unique merge requests per week|month with diffs viewed
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12717,9 +12717,9 @@ Count of unique merge requests per week|month with diffs viewed file by file
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_weekly`
@@ -12736,7 +12736,7 @@ Count of unique merge requests per week|month with diffs viewed file by file
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12755,9 +12755,9 @@ Count of unique users per month who added a suggestion
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_add_suggestion_weekly`
@@ -12774,7 +12774,7 @@ Count of unique users per week who added a suggestion
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12793,9 +12793,9 @@ Count of unique users per month who applied a suggestion
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_weekly`
@@ -12812,7 +12812,7 @@ Count of unique users per week who applied a suggestion
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12831,9 +12831,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_weekly`
@@ -12850,7 +12850,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12869,9 +12869,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_weekly`
@@ -12888,7 +12888,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12907,9 +12907,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_weekly`
@@ -12926,7 +12926,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12945,9 +12945,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_approve_mr_weekly`
@@ -12964,7 +12964,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -12983,9 +12983,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_assigned_weekly`
@@ -13002,7 +13002,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13021,9 +13021,9 @@ Count of unique users per week|month who closed a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_close_mr_weekly`
@@ -13040,7 +13040,7 @@ Count of unique users per week|month who closed a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13059,9 +13059,9 @@ Count of unique users per week|month who commented on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_weekly`
@@ -13078,7 +13078,7 @@ Count of unique users per week|month who commented on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13097,9 +13097,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_weekly`
@@ -13116,7 +13116,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13135,9 +13135,9 @@ Count of unique users per week|month who created a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_create_mr_weekly`
@@ -13154,7 +13154,7 @@ Count of unique users per week|month who created a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13173,9 +13173,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_weekly`
@@ -13192,7 +13192,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13211,9 +13211,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_create_review_note_weekly`
@@ -13230,7 +13230,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13249,9 +13249,9 @@ Count of unique users per week|month who edited a comment on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly`
@@ -13268,7 +13268,7 @@ Count of unique users per week|month who edited a comment on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13287,9 +13287,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly`
@@ -13306,7 +13306,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13325,9 +13325,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_weekly`
@@ -13344,7 +13344,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13363,9 +13363,9 @@ Count of unique users per week|month who merged a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_merge_mr_weekly`
@@ -13382,7 +13382,7 @@ Count of unique users per week|month who merged a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13401,9 +13401,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_publish_review_weekly`
@@ -13420,7 +13420,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13439,9 +13439,9 @@ Count of unique users per week|month who removed a comment on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_weekly`
@@ -13458,7 +13458,7 @@ Count of unique users per week|month who removed a comment on a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13477,9 +13477,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_weekly`
@@ -13496,7 +13496,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13515,9 +13515,9 @@ Count of unique users per week|month who reopened a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_reopen_mr_weekly`
@@ -13534,7 +13534,7 @@ Count of unique users per week|month who reopened a MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13553,9 +13553,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_resolve_thread_weekly`
@@ -13572,7 +13572,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13591,9 +13591,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_review_requested_weekly`
@@ -13610,7 +13610,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13629,9 +13629,9 @@ Count of unique users per week|month with diffs viewed file by file
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_weekly`
@@ -13648,7 +13648,7 @@ Count of unique users per week|month with diffs viewed file by file
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13667,9 +13667,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_weekly`
@@ -13686,7 +13686,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13705,9 +13705,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_weekly`
@@ -13724,7 +13724,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13743,9 +13743,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_weekly`
@@ -13762,7 +13762,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13781,9 +13781,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_weekly`
@@ -13800,7 +13800,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13819,9 +13819,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_weekly`
@@ -13838,7 +13838,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13857,9 +13857,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.a_compliance_audit_events_api_weekly`
@@ -13876,7 +13876,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13895,9 +13895,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.compliance_total_unique_counts_weekly`
@@ -13914,7 +13914,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13933,9 +13933,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.g_compliance_audit_events_weekly`
@@ -13952,7 +13952,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -13971,9 +13971,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.g_compliance_dashboard_weekly`
@@ -13990,7 +13990,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14009,9 +14009,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.i_compliance_audit_events_weekly`
@@ -14028,7 +14028,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14047,9 +14047,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.compliance.i_compliance_credential_inventory_weekly`
@@ -14066,7 +14066,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14085,9 +14085,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly`
@@ -14104,7 +14104,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14123,9 +14123,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_weekly`
@@ -14142,7 +14142,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14161,9 +14161,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_weekly`
@@ -14180,7 +14180,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14199,9 +14199,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly`
@@ -14218,7 +14218,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14237,9 +14237,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_weekly`
@@ -14256,7 +14256,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14275,9 +14275,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_weekly`
@@ -14294,7 +14294,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14313,9 +14313,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_weekly`
@@ -14332,7 +14332,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14351,9 +14351,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_weekly`
@@ -14370,7 +14370,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14389,9 +14389,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_weekly`
@@ -14408,7 +14408,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14427,9 +14427,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_weekly`
@@ -14446,7 +14446,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14465,9 +14465,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_weekly`
@@ -14484,7 +14484,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14503,9 +14503,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_weekly`
@@ -14522,7 +14522,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14541,9 +14541,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ecosystem.ecosystem_total_unique_counts_weekly`
@@ -14560,7 +14560,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14579,9 +14579,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_weekly`
@@ -14598,7 +14598,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14617,9 +14617,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_weekly`
@@ -14636,7 +14636,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14655,9 +14655,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_weekly`
@@ -14674,7 +14674,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14693,9 +14693,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_weekly`
@@ -14712,7 +14712,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14731,9 +14731,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ide_edit.g_edit_by_sfe_weekly`
@@ -14750,7 +14750,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14769,9 +14769,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ide_edit.g_edit_by_snippet_ide_weekly`
@@ -14788,7 +14788,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14807,9 +14807,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ide_edit.g_edit_by_sse_weekly`
@@ -14826,7 +14826,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14845,9 +14845,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ide_edit.g_edit_by_web_ide_weekly`
@@ -14864,7 +14864,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14883,9 +14883,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.ide_edit.ide_edit_total_unique_counts_weekly`
@@ -14902,7 +14902,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14921,9 +14921,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_alert_assigned_weekly`
@@ -14940,7 +14940,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14959,9 +14959,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_alert_status_changed_weekly`
@@ -14978,7 +14978,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -14997,9 +14997,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_alert_todo_weekly`
@@ -15016,7 +15016,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15035,9 +15035,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_assigned_weekly`
@@ -15054,7 +15054,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15073,9 +15073,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_change_confidential_weekly`
@@ -15092,7 +15092,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15111,9 +15111,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_closed_weekly`
@@ -15130,7 +15130,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15149,9 +15149,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_comment_weekly`
@@ -15168,7 +15168,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15187,9 +15187,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_created_weekly`
@@ -15206,7 +15206,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15225,9 +15225,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_published_weekly`
@@ -15244,7 +15244,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15263,9 +15263,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_relate_weekly`
@@ -15282,7 +15282,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15301,9 +15301,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_reopened_weekly`
@@ -15320,7 +15320,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15339,9 +15339,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_todo_weekly`
@@ -15358,7 +15358,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15377,9 +15377,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly`
@@ -15396,7 +15396,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15415,7 +15415,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15434,7 +15434,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15453,9 +15453,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management.incident_management_total_unique_counts_weekly`
@@ -15472,7 +15472,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15491,9 +15491,9 @@ Count of unique users per month to create an incident corresponding to an alert
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_weekly`
@@ -15510,7 +15510,7 @@ Count of unique users per week to create an incident corresponding to an alert
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15529,9 +15529,9 @@ Count of MAU adding an issue to an epic
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_weekly`
@@ -15548,7 +15548,7 @@ Count of WAU adding an issue to an epic
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15567,7 +15567,7 @@ Count of MAU changing issue assignees
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15586,7 +15586,7 @@ Count of WAU changing issue assignees
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15605,9 +15605,9 @@ Count of MAU changing the epic on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_weekly`
@@ -15624,7 +15624,7 @@ Count of WAU changing the epic on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15643,9 +15643,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly`
@@ -15662,7 +15662,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15681,9 +15681,9 @@ Count of MAU closing an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_closed_weekly`
@@ -15700,7 +15700,7 @@ Count of WAU closing an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15719,9 +15719,9 @@ Count of MAU commenting on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_weekly`
@@ -15738,7 +15738,7 @@ Count of WAU commenting on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15757,9 +15757,9 @@ Count of MAU editing a comment on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly`
@@ -15776,7 +15776,7 @@ Count of WAU editing a comment on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15795,9 +15795,9 @@ Count of MAU deleting a comment from an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_weekly`
@@ -15814,7 +15814,7 @@ Count of WAU deleting a comment from an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15833,9 +15833,9 @@ Count of MAU creating new issues
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_created_weekly`
@@ -15852,7 +15852,7 @@ Count of WAU creating issues
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15871,9 +15871,9 @@ Count of MAU referencing an issue from somewhere else
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_weekly`
@@ -15890,7 +15890,7 @@ Count of WAU referncing an issue from somewhere else
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15909,9 +15909,9 @@ Count of MAU editing an issue description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_weekly`
@@ -15928,7 +15928,7 @@ Count of WAU editing an issue description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15947,9 +15947,9 @@ Count of MAU adding a design to an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly`
@@ -15966,7 +15966,7 @@ Count of WAU adding a design to an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -15985,9 +15985,9 @@ Count of MAU modifying a design on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly`
@@ -16004,7 +16004,7 @@ Count of WAU modifying a design on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16023,9 +16023,9 @@ Count of MAU removing a design from an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly`
@@ -16042,7 +16042,7 @@ Count of WAU removing a design from an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16061,9 +16061,9 @@ Count of MAU changing an issue due date
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_weekly`
@@ -16080,7 +16080,7 @@ Count of WAU changing an issue due date
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16099,9 +16099,9 @@ Count of MAU changing the health status on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_weekly`
@@ -16118,7 +16118,7 @@ Count of WAU changing the health status on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16137,9 +16137,9 @@ Count of MAU changing an issue's iteration
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_weekly`
@@ -16156,7 +16156,7 @@ Count of WAU changing an issue's iteration
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16175,9 +16175,9 @@ Count of MAU changing an issue's label
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_weekly`
@@ -16194,7 +16194,7 @@ Count of WAU changing an issue's label
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16213,9 +16213,9 @@ Count of MAU locking an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_locked_weekly`
@@ -16232,7 +16232,7 @@ Count of WAU locking an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16251,9 +16251,9 @@ Count of MAU making an issue confidential
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_weekly`
@@ -16270,7 +16270,7 @@ Count of WAU making an issue confidential
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16289,9 +16289,9 @@ Count of MAU making an issue not confidential
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_weekly`
@@ -16308,7 +16308,7 @@ Count of WAU making an issue not confidential
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16327,9 +16327,9 @@ Count of MAU marking an issue as a duplicate
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_weekly`
@@ -16346,7 +16346,7 @@ Count of WAU marking an issue as a duplicate
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16365,9 +16365,9 @@ Count of MAU changing an issue's milestone
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_weekly`
@@ -16384,7 +16384,7 @@ Count of WAU changing an issue's milestone
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16403,9 +16403,9 @@ Count of MAU moving an issue to another project
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_moved_weekly`
@@ -16422,7 +16422,7 @@ Count of WAU moving an issue to another project
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16441,9 +16441,9 @@ Count of MAU relating an issue to another issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_related_weekly`
@@ -16460,7 +16460,7 @@ Count of WAU relating an issue to another issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16479,9 +16479,9 @@ Count of MAU removing an issue from an epic
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_weekly`
@@ -16498,7 +16498,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16517,9 +16517,9 @@ Count of MAU re-opening a closed issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_reopened_weekly`
@@ -16536,7 +16536,7 @@ Count of WAU re-opening a closed issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16555,9 +16555,9 @@ Count of MAU changing an issue time estimate
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_weekly`
@@ -16574,7 +16574,7 @@ Count of WAU changing an issue time estimate
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16593,9 +16593,9 @@ Count of MAU recording time spent on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_weekly`
@@ -16612,7 +16612,7 @@ Count of WAU recording time spent on an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16631,9 +16631,9 @@ Count of MAU editing an issue title
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly`
@@ -16669,9 +16669,9 @@ Count of MAU marking an issue as blocked or blocked by
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_unlocked_weekly`
@@ -16688,7 +16688,7 @@ Count of WAU marking an issue as blocked or blocked by
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16707,9 +16707,9 @@ Count of MAU unrelating an issue to another issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_weekly`
@@ -16726,7 +16726,7 @@ Count of WAU unrelating an issue to another issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16745,9 +16745,9 @@ Count of MAU changing an issue's weight
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_weekly`
@@ -16764,7 +16764,7 @@ Count of WAU changing an issue's weight
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16783,9 +16783,9 @@ Count of MAU taking an action related to an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly`
@@ -16802,7 +16802,7 @@ Count of WAU taking an action related to an issue
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16821,9 +16821,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly`
@@ -16840,7 +16840,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16859,9 +16859,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_approve_weekly`
@@ -16878,7 +16878,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16897,9 +16897,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_assign_multiple_weekly`
@@ -16916,7 +16916,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16935,9 +16935,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_weekly`
@@ -16954,7 +16954,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -16973,9 +16973,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_assign_self_weekly`
@@ -16992,7 +16992,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17011,9 +17011,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_assign_single_weekly`
@@ -17030,7 +17030,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17049,9 +17049,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_award_weekly`
@@ -17068,7 +17068,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17087,9 +17087,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_board_move_weekly`
@@ -17106,7 +17106,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17125,9 +17125,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_child_epic_weekly`
@@ -17144,7 +17144,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17163,9 +17163,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_clear_weight_weekly`
@@ -17182,7 +17182,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17201,9 +17201,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_clone_weekly`
@@ -17220,7 +17220,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17239,9 +17239,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_close_weekly`
@@ -17258,7 +17258,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17277,9 +17277,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_confidential_weekly`
@@ -17296,7 +17296,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17315,9 +17315,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_weekly`
@@ -17334,7 +17334,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17353,9 +17353,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_weekly`
@@ -17372,7 +17372,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17391,9 +17391,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_create_merge_request_weekly`
@@ -17410,7 +17410,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17429,9 +17429,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_done_weekly`
@@ -17448,7 +17448,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17467,9 +17467,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_draft_weekly`
@@ -17486,7 +17486,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17505,9 +17505,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_due_weekly`
@@ -17524,7 +17524,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17543,9 +17543,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_duplicate_weekly`
@@ -17562,7 +17562,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17581,9 +17581,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_epic_weekly`
@@ -17600,7 +17600,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17619,9 +17619,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_estimate_weekly`
@@ -17638,7 +17638,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17657,9 +17657,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_iteration_weekly`
@@ -17676,7 +17676,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17695,9 +17695,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_label_weekly`
@@ -17714,7 +17714,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17733,9 +17733,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_lock_weekly`
@@ -17752,7 +17752,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17771,9 +17771,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_merge_weekly`
@@ -17790,7 +17790,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17809,9 +17809,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_milestone_weekly`
@@ -17828,7 +17828,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17847,9 +17847,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_move_weekly`
@@ -17866,7 +17866,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17885,9 +17885,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_parent_epic_weekly`
@@ -17904,7 +17904,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17923,9 +17923,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_promote_weekly`
@@ -17942,7 +17942,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17961,9 +17961,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_publish_weekly`
@@ -17980,7 +17980,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -17999,9 +17999,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_monthly`
@@ -18018,9 +18018,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_weekly`
@@ -18037,7 +18037,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18056,7 +18056,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18075,9 +18075,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_rebase_weekly`
@@ -18094,7 +18094,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18113,9 +18113,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_relabel_weekly`
@@ -18132,7 +18132,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18151,9 +18151,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_relate_weekly`
@@ -18170,7 +18170,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18189,9 +18189,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_weekly`
@@ -18208,7 +18208,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18227,9 +18227,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_due_date_weekly`
@@ -18246,7 +18246,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18265,9 +18265,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_epic_weekly`
@@ -18284,7 +18284,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18303,9 +18303,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_estimate_weekly`
@@ -18322,7 +18322,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18341,9 +18341,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_iteration_weekly`
@@ -18360,7 +18360,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18379,9 +18379,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_milestone_weekly`
@@ -18398,7 +18398,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18417,9 +18417,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_weekly`
@@ -18436,7 +18436,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18455,9 +18455,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_weekly`
@@ -18474,7 +18474,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18493,9 +18493,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_remove_zoom_weekly`
@@ -18512,7 +18512,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18531,9 +18531,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_reopen_weekly`
@@ -18550,7 +18550,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18569,9 +18569,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_shrug_weekly`
@@ -18588,7 +18588,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18607,9 +18607,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_spend_add_weekly`
@@ -18626,7 +18626,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18645,9 +18645,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_spend_subtract_weekly`
@@ -18664,7 +18664,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18683,9 +18683,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_submit_review_weekly`
@@ -18702,7 +18702,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18721,9 +18721,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_subscribe_weekly`
@@ -18740,7 +18740,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18759,9 +18759,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_tableflip_weekly`
@@ -18778,7 +18778,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18797,9 +18797,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_tag_weekly`
@@ -18816,7 +18816,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18835,9 +18835,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_target_branch_weekly`
@@ -18854,7 +18854,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18873,9 +18873,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_title_weekly`
@@ -18892,7 +18892,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18911,9 +18911,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_todo_weekly`
@@ -18930,7 +18930,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18949,9 +18949,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unassign_all_weekly`
@@ -18968,7 +18968,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -18987,9 +18987,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_weekly`
@@ -19006,7 +19006,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19025,9 +19025,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unassign_specific_weekly`
@@ -19044,7 +19044,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19063,9 +19063,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unlabel_all_weekly`
@@ -19082,7 +19082,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19101,9 +19101,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_weekly`
@@ -19120,7 +19120,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19139,9 +19139,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unlock_weekly`
@@ -19158,7 +19158,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19177,9 +19177,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_unsubscribe_weekly`
@@ -19196,7 +19196,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19215,9 +19215,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_weight_weekly`
@@ -19234,7 +19234,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19253,9 +19253,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_wip_weekly`
@@ -19272,7 +19272,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19291,9 +19291,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.i_quickactions_zoom_weekly`
@@ -19310,7 +19310,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19329,9 +19329,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.quickactions.quickactions_total_unique_counts_weekly`
@@ -19348,7 +19348,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19367,7 +19367,7 @@ Caluated unique users to visit Global Search with AGS enabled by month
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19386,7 +19386,7 @@ Caluated unique users to visit Global Search with AGS enabled by week
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19405,9 +19405,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.search.i_search_paid_weekly`
@@ -19424,7 +19424,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19443,7 +19443,7 @@ Caluated unique users to visit Global Search by month
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -19462,7 +19462,7 @@ Caluated unique users to visit Global Search by week
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -19481,7 +19481,7 @@ Caluated unique users to visit Global Search by month
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -19500,7 +19500,7 @@ Caluated unique users to visit Global Search by week
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -19519,9 +19519,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.snippets.i_snippets_show_weekly`
@@ -19538,7 +19538,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19557,9 +19557,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.design_action_weekly`
@@ -19576,7 +19576,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19595,9 +19595,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.git_write_action_weekly`
@@ -19614,7 +19614,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19633,9 +19633,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.i_source_code_code_intelligence_weekly`
@@ -19652,7 +19652,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19671,9 +19671,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.merge_request_action_weekly`
@@ -19690,7 +19690,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19709,9 +19709,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.project_action_weekly`
@@ -19728,7 +19728,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19747,9 +19747,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.source_code.wiki_action_weekly`
@@ -19766,7 +19766,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19785,9 +19785,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.terraform.p_terraform_state_api_unique_users_weekly`
@@ -19804,7 +19804,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19823,7 +19823,7 @@ Count of unique users per week|month who visit the full code quality report
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19842,7 +19842,7 @@ Count of unique users per week|month who visit the full code quality report
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19861,7 +19861,7 @@ Count of unique users per week|month who click on a project link in the group co
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19880,7 +19880,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -19899,7 +19899,7 @@ Count of unique users per week|month who visited the group code coverage page
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19918,7 +19918,7 @@ Count of unique users per week|month who visited the group code coverage page
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19937,7 +19937,7 @@ Count of unique users per week|month who expanded the load performance report MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19956,7 +19956,7 @@ Count of unique users per week|month who expanded the load performance report MR
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -19975,7 +19975,7 @@ Internal Tracking to count number of unit tests parsed for planning of future co
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -19994,7 +19994,7 @@ Internal Tracking to count number of unit tests parsed for planning of future co
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -20013,7 +20013,7 @@ Count of unique users per week|month who expanded the metrics report MR widget
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -20032,7 +20032,7 @@ Count of unique users per week|month who expanded the metrics report MR widget
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -20051,7 +20051,7 @@ Internal Tracking to count number of unit tests parsed for planning of future co
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -20070,7 +20070,7 @@ Internal Tracking to count number of unit tests parsed for planning of future co
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee, ce |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
@@ -20089,7 +20089,7 @@ Count of unique users per week|month who expanded the browser performance report
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -20108,7 +20108,7 @@ Count of unique users per week|month who expanded the browser performance report
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` | premium, ultimate |
 | `skip_validation` | true |
@@ -20127,9 +20127,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.testing.testing_total_unique_counts_weekly`
@@ -20146,7 +20146,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20165,9 +20165,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_composer_user_weekly`
@@ -20184,7 +20184,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20203,9 +20203,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_conan_user_weekly`
@@ -20222,7 +20222,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20241,9 +20241,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_container_user_weekly`
@@ -20260,7 +20260,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20279,9 +20279,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_debian_user_weekly`
@@ -20298,7 +20298,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20317,9 +20317,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_generic_user_weekly`
@@ -20336,7 +20336,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20355,9 +20355,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_golang_user_weekly`
@@ -20374,7 +20374,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20393,9 +20393,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_maven_user_weekly`
@@ -20412,7 +20412,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20431,9 +20431,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_npm_user_weekly`
@@ -20450,7 +20450,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20469,9 +20469,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_nuget_user_weekly`
@@ -20488,7 +20488,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20507,9 +20507,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_pypi_user_weekly`
@@ -20526,7 +20526,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20545,9 +20545,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.i_package_tag_user_weekly`
@@ -20564,7 +20564,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20583,9 +20583,9 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` | Redis |
-| `distribution` |  |
-| `tier` |  |
+| `data_source` | Redis_hll |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly`
@@ -20602,7 +20602,7 @@ Missing description
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` | Redis |
+| `data_source` | Redis_hll |
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
@@ -20622,8 +20622,8 @@ Whether incoming email is setup
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `search_unique_visits.i_search_advanced`
@@ -20698,8 +20698,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `search_unique_visits.search_unique_visits_for_any_target_weekly`
@@ -20755,8 +20755,8 @@ Whether public signup is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `topology.duration_s`
@@ -21192,8 +21192,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.approval_project_rules_with_less_approvers_than_required`
@@ -21211,8 +21211,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.approval_project_rules_with_more_approvers_than_required`
@@ -21230,8 +21230,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.approval_project_rules_with_target_branch`
@@ -21268,8 +21268,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.keys`
@@ -21287,8 +21287,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.merge_requests`
@@ -21306,8 +21306,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.merge_requests_with_added_rules`
@@ -21363,8 +21363,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.merge_requests_with_required_codeowners`
@@ -21401,8 +21401,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.projects_imported_from_github`
@@ -21420,8 +21420,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.projects_with_disable_overriding_approvers_per_merge_request`
@@ -21440,7 +21440,7 @@ Missing description
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.projects_with_repositories_enabled`
@@ -21458,8 +21458,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.projects_with_sectional_code_owner_rules`
@@ -21477,8 +21477,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.projects_without_disable_overriding_approvers_per_merge_request`
@@ -21497,7 +21497,7 @@ Missing description
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.protected_branches`
@@ -21515,8 +21515,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.remote_mirrors`
@@ -21534,8 +21534,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.snippets`
@@ -21572,8 +21572,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.total_number_of_locked_files`
@@ -21591,8 +21591,8 @@ The total number of exclusive file locks (through the CLI)
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.total_number_of_path_locks`
@@ -21610,8 +21610,8 @@ The total number of default branch locks done through the GitLab UI
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.users_using_lfs_locks`
@@ -21629,8 +21629,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.create.users_using_path_locks`
@@ -21648,8 +21648,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.bulk_imports.gitlab`
@@ -21667,8 +21667,8 @@ Distinct count of users that triggered an import using the Group Migration tool
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.bulk_imports.gitlab_v1`
@@ -21686,8 +21686,8 @@ Count of imports using GitLab Migration
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.events`
@@ -21706,7 +21706,7 @@ Missing description
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.group_imports.gitlab_migration`
@@ -21724,8 +21724,8 @@ Count of groups imported using GitLab Migration
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.group_imports.group_import`
@@ -21743,8 +21743,8 @@ Count of group imports using Group Import/Export
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.group_saml_enabled`
@@ -21781,8 +21781,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.groups_imported`
@@ -21800,8 +21800,8 @@ Distinct count of users that imported groups using Group Import
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issue_imports.csv`
@@ -21819,8 +21819,8 @@ Count of (attempted) imports from csv files
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issue_imports.fogbugz`
@@ -21838,8 +21838,8 @@ Count of projects imported from fogbugz
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issue_imports.jira`
@@ -21857,8 +21857,8 @@ Count of projects imported from Jira
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issue_imports.phabricator`
@@ -21876,8 +21876,8 @@ Count of projects imported from phabricator
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issues_imported.csv`
@@ -21895,8 +21895,8 @@ Distinct count of users that imported issues into projects using CSV upload
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issues_imported.fogbugz`
@@ -21914,8 +21914,8 @@ Distinct count of users that imported issues into projects using FogBugz
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issues_imported.jira`
@@ -21933,8 +21933,8 @@ Distinct count of users that imported issues into projects using Jira
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.issues_imported.phabricator`
@@ -21952,8 +21952,8 @@ Distinct count of users that imported issues into projects using Phabricator
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.ldap_admin_sync_enabled`
@@ -22009,8 +22009,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.ldap_servers`
@@ -22047,8 +22047,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.omniauth_providers`
@@ -22066,8 +22066,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.bitbucket`
@@ -22085,8 +22085,8 @@ Count of projects imported from Bitbucket
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.bitbucket_server`
@@ -22104,8 +22104,8 @@ Count of projects imported from Bitbucket Server
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.git`
@@ -22123,8 +22123,8 @@ Count of projects imported by URL
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.gitea`
@@ -22142,8 +22142,8 @@ Count of projects imported from Gitea
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.github`
@@ -22161,8 +22161,8 @@ Count of projects imported from GitHub
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.gitlab`
@@ -22180,8 +22180,8 @@ Count of projects imported from GitLab.com
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.gitlab_migration`
@@ -22199,8 +22199,8 @@ Count of projects imported using GitLab Migration
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.gitlab_project`
@@ -22218,8 +22218,8 @@ Count of projects imported using Project Import/Export
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.project_imports.manifest`
@@ -22237,8 +22237,8 @@ Count of projects imported using manifst file
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.bitbucket`
@@ -22256,8 +22256,8 @@ Distinct count of users that imported projects from Bitbucket Cloud
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.bitbucket_server`
@@ -22275,8 +22275,8 @@ Distinct count of users that imported projects from Bitbucket Server
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.git`
@@ -22294,8 +22294,8 @@ Distinct count of users that imported projects using Import by URL
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.gitea`
@@ -22313,8 +22313,8 @@ Distinct count of users that imported projects from Gitea
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.github`
@@ -22332,8 +22332,8 @@ Distinct count of users that imported projects from GitHub
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.gitlab`
@@ -22351,8 +22351,8 @@ Distinct count of users that imported projects from GitLab.com
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.gitlab_project`
@@ -22370,8 +22370,8 @@ Distinct count of users that imported projects using Project Import/Export
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.manifest`
@@ -22389,8 +22389,8 @@ Distinct count of users that imported projects using Manifest file
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_imported.total`
@@ -22408,8 +22408,8 @@ Total count of all projects imported with import_source NOT NULL
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.projects_with_compliance_framework`
@@ -22446,8 +22446,8 @@ Distinct count of users that triggered any kind of import
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2`
@@ -22465,8 +22465,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.user_auth_by_provider.standard`
@@ -22484,8 +22484,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor`
@@ -22503,8 +22503,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-u2f-device`
@@ -22522,8 +22522,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-webauthn-device`
@@ -22541,8 +22541,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.users_created`
@@ -22560,8 +22560,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.manage.value_stream_management_customized_group_stages`
@@ -22598,8 +22598,8 @@ Total GitLab Managed clusters both enabled and disabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.clusters_applications_prometheus`
@@ -22617,8 +22617,8 @@ Total GitLab Managed clusters with Prometheus enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.operations_dashboard_default_dashboard`
@@ -22636,8 +22636,8 @@ Active users with enabled operations dashboard
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.operations_dashboard_users_with_projects_added`
@@ -22655,8 +22655,8 @@ Active users with projects on operations dashboard
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.projects_incident_sla_enabled`
@@ -22674,8 +22674,8 @@ Projects where Incident SLA is enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.projects_with_alert_incidents`
@@ -22693,8 +22693,8 @@ Count of unique projects with an incident from an alert
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.projects_with_error_tracking_enabled`
@@ -22712,8 +22712,8 @@ Projects where error tracking is enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.projects_with_incidents`
@@ -22731,8 +22731,8 @@ Count of unique projects with an incident
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.monitor.projects_with_tracing_enabled`
@@ -22750,8 +22750,8 @@ Projects with tracing enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.package.projects_with_packages`
@@ -22770,7 +22770,7 @@ Projects with package registry configured
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.assignee_lists`
@@ -22807,8 +22807,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.issues`
@@ -22826,8 +22826,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.label_lists`
@@ -22845,8 +22845,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.milestone_lists`
@@ -22864,8 +22864,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.notes`
@@ -22883,8 +22883,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.projects`
@@ -22902,8 +22902,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.projects_jira_active`
@@ -22921,8 +22921,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.projects_jira_dvcs_cloud_active`
@@ -22940,8 +22940,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.projects_jira_dvcs_server_active`
@@ -22959,8 +22959,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.service_desk_enabled_projects`
@@ -22979,7 +22979,7 @@ Missing description
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.service_desk_issues`
@@ -22998,7 +22998,7 @@ Missing description
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.plan.todos`
@@ -23016,8 +23016,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.release.deployments`
@@ -23035,8 +23035,8 @@ Unique users triggering deployments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.release.failed_deployments`
@@ -23054,8 +23054,8 @@ Total failed deployments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.release.projects_mirrored_with_pipelines_enabled`
@@ -23073,8 +23073,8 @@ Projects with repository mirroring enabled
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.release.releases`
@@ -23092,8 +23092,8 @@ Unique users creating release tags
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.release.successful_deployments`
@@ -23111,8 +23111,8 @@ Total successful deployments
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.secure.api_fuzzing_scans`
@@ -23263,8 +23263,8 @@ Count of API Fuzzing `docker-in-docker` jobs by job name
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.secure.user_api_fuzzing_jobs`
@@ -23282,8 +23282,8 @@ Count of API Fuzzing jobs by job name
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.secure.user_container_scanning_jobs`
@@ -23320,8 +23320,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.secure.user_dast_jobs`
@@ -23339,8 +23339,8 @@ Count of DAST jobs
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.secure.user_dependency_scanning_jobs`
@@ -23453,8 +23453,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_builds`
@@ -23472,8 +23472,8 @@ Unique builds in project
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_external_pipelines`
@@ -23491,8 +23491,8 @@ Total pipelines in external repositories
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_internal_pipelines`
@@ -23510,8 +23510,8 @@ Total pipelines in GitLab repositories
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_pipeline_config_auto_devops`
@@ -23529,8 +23529,8 @@ Total pipelines from an Auto DevOps template
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_pipeline_config_repository`
@@ -23548,8 +23548,8 @@ Total Pipelines from templates in repository
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_pipeline_schedules`
@@ -23567,8 +23567,8 @@ Pipeline schedules in GitLab
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_pipelines`
@@ -23587,7 +23587,7 @@ Distinct Users triggering Total pipelines
 | `time_frame` | all |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.ci_triggers`
@@ -23605,8 +23605,8 @@ Total configured Triggers in project
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage.verify.clusters_applications_runner`
@@ -24004,8 +24004,8 @@ Projects with Prometheus alerting enabled
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management`
@@ -24023,8 +24023,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_git_write`
@@ -24042,8 +24042,8 @@ Aggregated value for wiki, design and project repo actions
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit`
@@ -24061,8 +24061,8 @@ Count unique edit actions when users used an IDE, no matter which one
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo`
@@ -24080,8 +24080,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit`
@@ -24099,8 +24099,8 @@ Count unique edit actions using the single file editor
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_snippet_editor_edit`
@@ -24118,8 +24118,8 @@ Count unique edit actions using the snippet editor
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_sse_edit`
@@ -24137,8 +24137,8 @@ Count unique edit actions using the static site editor
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_web_ide_edit`
@@ -24156,8 +24156,8 @@ Count unique edit actions using the web IDE
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.action_monthly_active_users_wiki_repo`
@@ -24175,8 +24175,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.approval_project_rules`
@@ -24213,8 +24213,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.approval_project_rules_with_less_approvers_than_required`
@@ -24232,8 +24232,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.approval_project_rules_with_more_approvers_than_required`
@@ -24251,8 +24251,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.approval_project_rules_with_target_branch`
@@ -24289,8 +24289,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.keys`
@@ -24308,8 +24308,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.merge_requests`
@@ -24327,8 +24327,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.merge_requests_users`
@@ -24346,8 +24346,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.merge_requests_with_added_rules`
@@ -24441,8 +24441,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.projects_imported_from_github`
@@ -24460,8 +24460,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.projects_with_disable_overriding_approvers_per_merge_request`
@@ -24480,7 +24480,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.projects_with_repositories_enabled`
@@ -24498,8 +24498,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.projects_with_sectional_code_owner_rules`
@@ -24517,8 +24517,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.projects_without_disable_overriding_approvers_per_merge_request`
@@ -24537,7 +24537,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.protected_branches`
@@ -24555,8 +24555,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.remote_mirrors`
@@ -24574,8 +24574,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.snippets`
@@ -24612,8 +24612,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.total_number_of_locked_files`
@@ -24631,8 +24631,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.total_number_of_path_locks`
@@ -24650,8 +24650,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.create.users_using_lfs_locks`
@@ -24707,8 +24707,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.bulk_imports.gitlab_v1`
@@ -24726,8 +24726,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.events`
@@ -24746,7 +24746,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.group_imports.gitlab_migration`
@@ -24764,8 +24764,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.group_imports.group_import`
@@ -24783,8 +24783,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.group_saml_enabled`
@@ -24821,8 +24821,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.groups_imported`
@@ -24840,8 +24840,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issue_imports.csv`
@@ -24859,8 +24859,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issue_imports.fogbugz`
@@ -24878,8 +24878,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issue_imports.jira`
@@ -24897,8 +24897,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issue_imports.phabricator`
@@ -24916,8 +24916,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issues_imported.csv`
@@ -24935,8 +24935,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issues_imported.fogbugz`
@@ -24954,8 +24954,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issues_imported.jira`
@@ -24973,8 +24973,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.issues_imported.phabricator`
@@ -24992,8 +24992,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.ldap_admin_sync_enabled`
@@ -25049,8 +25049,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.ldap_servers`
@@ -25087,8 +25087,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.omniauth_providers`
@@ -25106,8 +25106,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.bitbucket`
@@ -25125,8 +25125,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.bitbucket_server`
@@ -25144,8 +25144,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.git`
@@ -25163,8 +25163,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.gitea`
@@ -25182,8 +25182,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.github`
@@ -25201,8 +25201,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.gitlab`
@@ -25220,8 +25220,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.gitlab_migration`
@@ -25239,8 +25239,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.gitlab_project`
@@ -25258,8 +25258,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.project_imports.manifest`
@@ -25277,8 +25277,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket`
@@ -25296,8 +25296,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket_server`
@@ -25315,8 +25315,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.git`
@@ -25334,8 +25334,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.gitea`
@@ -25353,8 +25353,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.github`
@@ -25372,8 +25372,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.gitlab`
@@ -25391,8 +25391,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.gitlab_project`
@@ -25410,8 +25410,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.manifest`
@@ -25429,8 +25429,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_imported.total`
@@ -25448,8 +25448,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.projects_with_compliance_framework`
@@ -25486,8 +25486,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.google_oauth2`
@@ -25505,8 +25505,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.standard`
@@ -25524,8 +25524,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor`
@@ -25543,8 +25543,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-u2f-device`
@@ -25562,8 +25562,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-webauthn-device`
@@ -25581,8 +25581,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.users_created`
@@ -25601,7 +25601,7 @@ Number of users created in the month
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.manage.value_stream_management_customized_group_stages`
@@ -25638,8 +25638,8 @@ Total GitLab Managed clusters both enabled and disabled
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.clusters_applications_prometheus`
@@ -25657,8 +25657,8 @@ Total GitLab Managed clusters with Prometheus enabled
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.operations_dashboard_default_dashboard`
@@ -25676,8 +25676,8 @@ Active users with enabled operations dashboard
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.operations_dashboard_users_with_projects_added`
@@ -25695,8 +25695,8 @@ Active users with projects on operations dashboard
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.projects_incident_sla_enabled`
@@ -25714,8 +25714,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents`
@@ -25733,8 +25733,8 @@ Count of unique projects with an incident from an alert created in the last mont
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled`
@@ -25752,8 +25752,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_incidents`
@@ -25771,8 +25771,8 @@ Count of unique projects with an incident created in the last month
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_tracing_enabled`
@@ -25790,8 +25790,8 @@ Projects with tracing enabled
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.package.projects_with_packages`
@@ -25810,7 +25810,7 @@ Incident confidential status changed event
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.assignee_lists`
@@ -25847,8 +25847,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.issues`
@@ -25867,7 +25867,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.label_lists`
@@ -25885,8 +25885,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.milestone_lists`
@@ -25904,8 +25904,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.notes`
@@ -25923,8 +25923,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.projects`
@@ -25942,8 +25942,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.projects_jira_active`
@@ -25961,8 +25961,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.projects_jira_dvcs_cloud_active`
@@ -25980,8 +25980,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.projects_jira_dvcs_server_active`
@@ -25999,8 +25999,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.service_desk_enabled_projects`
@@ -26019,7 +26019,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.service_desk_issues`
@@ -26038,7 +26038,7 @@ Missing description
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.plan.todos`
@@ -26056,8 +26056,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.release.deployments`
@@ -26075,8 +26075,8 @@ Unique users triggering deployments
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.release.failed_deployments`
@@ -26094,8 +26094,8 @@ Total failed deployments
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.release.projects_mirrored_with_pipelines_enabled`
@@ -26113,8 +26113,8 @@ Projects with repository mirroring enabled
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.release.releases`
@@ -26132,8 +26132,8 @@ Unique users creating release tags
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.release.successful_deployments`
@@ -26151,8 +26151,8 @@ Total successful deployments
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.api_fuzzing_pipeline`
@@ -26189,8 +26189,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.container_scanning_pipeline`
@@ -26227,8 +26227,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.coverage_fuzzing_pipeline`
@@ -26265,8 +26265,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.dast_pipeline`
@@ -26284,7 +26284,7 @@ Count of pipelines that have at least 1 DAST job
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
+| `distribution` | ce |
 | `tier` | ultimate |
 | `skip_validation` | true |
 
@@ -26303,8 +26303,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.dependency_scanning_pipeline`
@@ -26341,8 +26341,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.sast_pipeline`
@@ -26379,8 +26379,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.secret_detection_pipeline`
@@ -26417,8 +26417,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.user_api_fuzzing_dnd_jobs`
@@ -26436,8 +26436,8 @@ Count of API Fuzzing `docker-in-docker` jobs by job names
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.user_api_fuzzing_jobs`
@@ -26455,8 +26455,8 @@ Count of API Fuzzing jobs by job name
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.user_container_scanning_jobs`
@@ -26493,8 +26493,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.user_dast_jobs`
@@ -26512,8 +26512,8 @@ Users who run a DAST job
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.secure.user_dependency_scanning_jobs`
@@ -26626,8 +26626,8 @@ Missing description
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_builds`
@@ -26645,8 +26645,8 @@ Unique builds in project
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_external_pipelines`
@@ -26664,8 +26664,8 @@ Total pipelines in external repositories
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_internal_pipelines`
@@ -26683,8 +26683,8 @@ Total pipelines in GitLab repositories
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops`
@@ -26702,8 +26702,8 @@ Total pipelines from an Auto DevOps template
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_pipeline_config_repository`
@@ -26721,8 +26721,8 @@ Total Pipelines from templates in repository
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_pipeline_schedules`
@@ -26740,8 +26740,8 @@ Pipeline schedules in GitLab
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_pipelines`
@@ -26760,7 +26760,7 @@ Pipeline schedules in GitLab
 | `time_frame` | 28d |
 | `data_source` |  |
 | `distribution` | ce, ee |
-| `tier` |  |
+| `tier` | free |
 | `skip_validation` | true |
 
 ## `usage_activity_by_stage_monthly.verify.ci_triggers`
@@ -26874,6 +26874,6 @@ Whether web ide clientside preview is enabled
 | `status` | data_available |
 | `time_frame` | none |
 | `data_source` |  |
-| `distribution` |  |
-| `tier` |  |
+| `distribution` | ce |
+| `tier` | free |
 | `skip_validation` | true |

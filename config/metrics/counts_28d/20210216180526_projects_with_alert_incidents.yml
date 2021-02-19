@@ -10,6 +10,8 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source:
-distribution: []
-tier: []
+distribution:
+- ce
+tier:
+- free
 skip_validation: true

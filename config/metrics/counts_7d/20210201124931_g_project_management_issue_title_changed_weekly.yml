@@ -1,6 +1,7 @@
 ---
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly
-description: Distinct users count that changed issue title in a group for last recent week
+description: Distinct users count that changed issue title in a group for last recent
+  week
 product_stage: plan
 product_group: group::project management
 product_category: issue_tracking
@@ -17,4 +18,3 @@ tier:
 - free
 - premium
 - ultimate
-

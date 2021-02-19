@@ -8,7 +8,9 @@ product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: 28d
-data_source: redis
-distribution: []
-tier: []
+data_source: redis_hll
+distribution:
+- ce
+tier:
+- free
 skip_validation: true

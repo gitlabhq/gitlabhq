@@ -78,7 +78,7 @@
   code {
     font-family: $monospace-font;
     white-space: pre-wrap;
-    word-wrap: normal;
+    overflow-wrap: break-word;
     word-break: keep-all;
   }
 

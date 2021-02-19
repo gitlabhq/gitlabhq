@@ -1,6 +1,6 @@
 ---
 key_path: usage_activity_by_stage.manage.issues_imported.jira
-description: 'Distinct count of users that imported issues into projects using Jira'
+description: Distinct count of users that imported issues into projects using Jira
 product_section: dev
 product_stage: manage
 product_group: group::import
@@ -9,6 +9,8 @@ value_type: number
 status: data_available
 time_frame: all
 data_source:
-distribution: []
-tier: []
+distribution:
+- ce
+tier:
+- free
 skip_validation: true

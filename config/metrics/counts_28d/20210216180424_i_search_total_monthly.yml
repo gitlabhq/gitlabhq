@@ -8,7 +8,7 @@ product_category: global_search
 value_type: number
 status: data_available
 time_frame: 28d
-data_source: redis
+data_source: redis_hll
 distribution:
 - ce
 - ee

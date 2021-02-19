@@ -9,7 +9,8 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source:
-distribution: []
+distribution:
+- ce
 tier:
 - ultimate
 skip_validation: true

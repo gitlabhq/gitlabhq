@@ -570,13 +570,15 @@ See the following additional guides:
 
 ## Warnings, limitations, and known issues
 
-### Separate buckets required when using Helm
+### Use separate buckets
 
-Generally, using the same bucket for your Object Storage is fine to do
-for convenience.
+Using separate buckets for each data type is the recommended approach for GitLab.
+This ensures there are no collisions across the various types of data GitLab stores.
+There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
+in the future.
 
-However, if you're using or planning to use Helm, separate buckets will
-be required as there is a [known limitation with restorations of Helm chart backups](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
+Helm-based installs require separate buckets to
+[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
 
 ### S3 API compatibility issues
 

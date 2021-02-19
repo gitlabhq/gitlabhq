@@ -14826,6 +14826,11 @@ type Label {
   color: String!
 
   """
+  When this label was created.
+  """
+  createdAt: Time!
+
+  """
   Description of the label (Markdown rendered as HTML for caching).
   """
   description: String
@@ -14849,6 +14854,11 @@ type Label {
   Content of the label.
   """
   title: String!
+
+  """
+  When this label was last updated.
+  """
+  updatedAt: Time!
 }
 
 """

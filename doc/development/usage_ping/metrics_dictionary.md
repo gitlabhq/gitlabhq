@@ -50,18 +50,19 @@ instance unique identifier.
 ```yaml
 key_path: uuid
 description: GitLab instance unique identifier
-value_type: string
 product_category: collection
+product_section: growth
 product_stage: growth
+product_group: group::product intelligence
+value_type: string
 status: data_available
 milestone: 9.1
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
-product_group: group::product intelligence
 time_frame: none
 data_source: database
 distribution:
-- ee
 - ce
+- ee
 tier:
 - free
 - premium

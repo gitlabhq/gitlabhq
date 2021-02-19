@@ -12,5 +12,6 @@ data_source:
 distribution:
 - ce
 - ee
-tier: []
+tier:
+- free
 skip_validation: true

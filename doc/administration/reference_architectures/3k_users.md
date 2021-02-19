@@ -1322,13 +1322,14 @@ To configure the Sidekiq nodes, one each one:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
+
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -1489,13 +1490,13 @@ On each node perform the following:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-tls-support), make sure the
@@ -1697,20 +1698,9 @@ on what features you intend to use:
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
 Using separate buckets for each data type is the recommended approach for GitLab.
-
-A limitation of our configuration is that each use of object storage is separately configured.
-[We have an issue for improving this](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-and easily using one bucket with separate folders is one improvement that this might bring.
-
-There is at least one specific issue with using the same bucket:
-when GitLab is deployed with the Helm chart restore from backup
-[will not properly function](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
-unless separate buckets are used.
-
-One risk of using a single bucket would be if your organization decided to
-migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
-backups might not be realized until the organization had a critical requirement for the backups to
-work.
+This ensures there are no collisions across the various types of data GitLab stores.
+There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
+in the future.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
