@@ -232,6 +232,12 @@ The following Elasticsearch settings are available:
 | `Bulk request concurrency`                            | The Bulk request concurrency indicates how many of the GitLab Golang-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to Elasticsearch’s Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the Maximum bulk request size setting (see above) and needs to accommodate the resource constraints of both the Elasticsearch host(s) and the host(s) running the GitLab Golang-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
 | `Client request timeout` | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |
 
+WARNING:
+Increasing the values of `Maximum bulk request size (MiB)` and `Bulk request concurrency` can negatively impact
+Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
+in your Sidekiq logs. For more information, see
+[issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
+
 ### Limiting namespaces and projects
 
 If you select `Limit namespaces and projects that can be indexed`, more options will become available.

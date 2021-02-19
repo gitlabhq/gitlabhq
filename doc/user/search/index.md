@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: index, reference, howto
 ---
 
-# Search through GitLab
+# Search through GitLab **(FREE)**
 
 ## Issues and merge requests
 

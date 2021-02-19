@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Snippets API
+# Snippets API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6373) in GitLab 8.15.
 
@@ -230,7 +230,7 @@ curl --request POST "https://gitlab.example.com/api/v4/snippets" \
       "content": "Hello world",
       "file_path": "test.txt"
     }
-  ]  
+  ]
 }
 ```
 

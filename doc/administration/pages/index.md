@@ -178,12 +178,15 @@ outside world.
    pages_external_url 'https://example.io'
 
    pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. If you haven’t named your certificate and key `example.io.crt` and `example.io.key`
+then you'll need to also add the full paths as shown below:
+
+   ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
    ```
-
-   where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
-   respectively.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 

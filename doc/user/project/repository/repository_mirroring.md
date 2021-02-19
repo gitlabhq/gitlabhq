@@ -219,16 +219,20 @@ to be able to browse its content and its activity using the familiar GitLab inte
 
 To configure mirror pulling for an existing project:
 
-1. Navigate to your project's **Settings > Repository** and expand the **Mirroring repositories**
-   section.
-1. Enter a repository URL.
-1. Select **Pull** from the **Mirror direction** dropdown.
-1. Select an authentication method from the **Authentication method** dropdown, if necessary.
-1. If necessary, check the following boxes:
-   - **Overwrite diverged branches**.
-   - **Trigger pipelines for mirror updates**.
-   - **Only mirror protected branches**.
-1. Click the **Mirror repository** button to save the configuration.
+1. If you [configured two-factor authentication (2FA)](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa)
+   for GitHub, create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+   with the `read_repository` scope. If 2FA is enabled, this personal access
+   token serves as your GitHub password.
+1. In your project, go to **Settings > Repository**, and then expand the
+   **Mirroring repositories** section.
+1. In the **Git repository URL** field, enter a repository URL.
+1. In the **Mirror direction** dropdown, select **Pull**.
+1. In the **Authentication method** dropdown, select your authentication method.
+1. Select from the following checkboxes, if needed:
+   - **Overwrite diverged branches**
+   - **Trigger pipelines for mirror updates**
+   - **Only mirror protected branches**
+1. Select **Mirror repository** to save the configuration.
 
 ![Repository mirroring pull settings screen - upper part](img/repository_mirroring_pull_settings_upper.png)
 

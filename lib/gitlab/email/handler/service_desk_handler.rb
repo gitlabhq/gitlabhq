@@ -79,7 +79,7 @@ module Gitlab
           @issue = Issues::CreateService.new(
             project,
             User.support_bot,
-            title: issue_title,
+            title: mail.subject,
             description: message_including_template,
             confidential: true,
             external_author: from_address
@@ -135,12 +135,6 @@ module Gitlab
 
         def from_address
           (mail.reply_to || []).first || mail.from.first || mail.sender
-        end
-
-        def issue_title
-          from = "(from #{from_address})" if from_address
-
-          "Service Desk #{from}: #{mail.subject}"
         end
 
         def can_handle_legacy_format?

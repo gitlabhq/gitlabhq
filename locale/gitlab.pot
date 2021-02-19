@@ -8666,6 +8666,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Default stages"
 msgstr ""
 
+msgid "CreateValueStreamForm|Default stages can only be hidden or re-ordered"
+msgstr ""
+
 msgid "CreateValueStreamForm|Edit Value Stream"
 msgstr ""
 

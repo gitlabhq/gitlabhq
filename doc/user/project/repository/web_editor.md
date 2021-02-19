@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# GitLab Web Editor
+# GitLab Web Editor **(FREE)**
 
 Sometimes it's easier to make quick changes directly from the GitLab interface
 than to clone the project and use the Git command-line tool. In this feature

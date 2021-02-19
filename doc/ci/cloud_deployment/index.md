@@ -20,6 +20,11 @@ CI/CD pipeline, you can interact with your chosen cloud provider more easily.
 GitLab provides Docker images that you can use to [run AWS commands from GitLab CI/CD](#run-aws-commands-from-gitlab-cicd), and a template to make
 it easier to [deploy to AWS](#deploy-your-application-to-the-aws-elastic-container-service-ecs).
 
+### Quick start
+
+If you're using GitLab.com, see the [quick start guide](ecs/quick_start_guide.md)
+for setting up Continuous Deployment to [AWS Elastic Container Service](https://aws.amazon.com/ecs) (ECS).
+
 ### Run AWS commands from GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31167) in GitLab 12.6.
