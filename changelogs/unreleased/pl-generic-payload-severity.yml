@@ -1,5 +1,0 @@
----
-title: Handle severity for generic payloads more gracefully
-merge_request: 53999
-author:
-type: fixed

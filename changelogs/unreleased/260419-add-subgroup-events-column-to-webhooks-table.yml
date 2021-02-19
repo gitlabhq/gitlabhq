@@ -1,5 +1,0 @@
----
-title: Add subgroup_events column to web_hooks table
-merge_request: 52648
-author:
-type: added

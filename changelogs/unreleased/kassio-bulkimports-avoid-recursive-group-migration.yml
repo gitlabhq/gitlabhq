@@ -1,5 +1,0 @@
----
-title: 'BulkImports: avoid infinity recursion on group migration'
-merge_request: 52931
-author:
-type: fixed

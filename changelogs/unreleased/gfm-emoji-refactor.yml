@@ -1,5 +1,0 @@
----
-title: Remove fuzzy search for awards emoji and refactor GFM autocomplete emoji support
-merge_request: 51972
-author: Ethan Reesor (@firelizzard)
-type: other

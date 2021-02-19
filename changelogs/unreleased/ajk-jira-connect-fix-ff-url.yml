@@ -1,5 +1,0 @@
----
-title: Fix URL in JiraConnect feature flag serializer
-merge_request: 52221
-author:
-type: fixed

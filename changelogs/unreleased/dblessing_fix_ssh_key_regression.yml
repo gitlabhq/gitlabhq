@@ -1,5 +1,0 @@
----
-title: Allow user SSH public key endpoint to be publicly accessible again
-merge_request: 52227
-author:
-type: fixed

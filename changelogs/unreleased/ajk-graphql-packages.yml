@@ -1,5 +1,0 @@
----
-title: 'Breaking change: Prevent mutual recursion in GraphQL Package'
-merge_request: 52131
-author:
-type: fixed

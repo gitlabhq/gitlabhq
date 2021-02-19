@@ -1,5 +1,0 @@
----
-title: Fix action button alignment for application inside the table in oauth/applications
-merge_request: 52465
-author: Yogi (@yo)
-type: fixed

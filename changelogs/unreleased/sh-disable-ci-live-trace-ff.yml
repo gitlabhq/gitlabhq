@@ -1,5 +1,0 @@
----
-title: Remove ci_live_trace_use_fog_attributes feature flag
-merge_request: 52939
-author:
-type: changed

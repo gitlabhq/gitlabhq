@@ -1,5 +1,0 @@
----
-title: Add unique index on services project_id and type
-merge_request: 52563
-author:
-type: changed

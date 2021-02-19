@@ -1,5 +1,0 @@
----
-title: Add database index to improve performance of usage ping metrics calculation
-merge_request: 48671
-author:
-type: performance

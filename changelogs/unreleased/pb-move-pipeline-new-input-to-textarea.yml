@@ -1,6 +1,0 @@
----
-title: Support multi-line string variable values when running a manual pipeline in
-  the UI.
-merge_request: 53292
-author:
-type: fixed

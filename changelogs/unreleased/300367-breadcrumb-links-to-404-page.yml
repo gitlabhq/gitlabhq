@@ -1,5 +1,0 @@
----
-title: Fix incorrect breadcrumb path for import groups page
-merge_request: 54211
-author:
-type: fixed

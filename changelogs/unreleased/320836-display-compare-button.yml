@@ -1,5 +1,0 @@
----
-title: Safe guard repo compare when data is undefined
-merge_request: 54371
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix "Stay on Page" alert showing in empty snippet
-merge_request: 50400
-author: Kev @KevSlashNull
-type: fixed

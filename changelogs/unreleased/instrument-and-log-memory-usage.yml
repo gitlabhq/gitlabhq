@@ -1,5 +1,0 @@
----
-title: Use a custom Ruby patch to instrument memory usage
-merge_request: 52306
-author:
-type: added

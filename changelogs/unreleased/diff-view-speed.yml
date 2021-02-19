@@ -1,5 +1,0 @@
----
-title: Lower allocations in _collapsed partial
-merge_request: 53233
-author:
-type: performance

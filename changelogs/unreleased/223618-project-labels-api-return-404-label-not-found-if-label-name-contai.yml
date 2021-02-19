@@ -1,5 +1,0 @@
----
-title: Allow dots in label names through REST API
-merge_request: 52591
-author:
-type: fixed

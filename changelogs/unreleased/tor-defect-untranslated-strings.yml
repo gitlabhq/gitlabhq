@@ -1,5 +1,0 @@
----
-title: Switch to correct localization function that strips namespaces
-merge_request: 53244
-author:
-type: fixed

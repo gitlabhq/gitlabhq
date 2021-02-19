@@ -1,5 +1,0 @@
----
-title: Fix bad request error when applying suggestions
-merge_request: 52735
-author:
-type: fixed

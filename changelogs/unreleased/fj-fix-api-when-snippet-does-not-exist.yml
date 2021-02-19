@@ -1,5 +1,0 @@
----
-title: Fix snippet repository storage move API when snippet does not exist
-merge_request: 53211
-author:
-type: fixed

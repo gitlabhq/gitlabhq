@@ -1,5 +1,0 @@
----
-title: Support Project variables in `include` section of `gitlab-ci.yml`
-merge_request: 52108
-author:
-type: added

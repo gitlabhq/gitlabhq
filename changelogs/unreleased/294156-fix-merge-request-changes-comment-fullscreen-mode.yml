@@ -1,5 +1,0 @@
----
-title: Fix fullscreen mode not working for comments in merge request changes view
-merge_request: 53009
-author: Simon Stieger @sim0
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix exclude path for backup rsync command
-merge_request: 52503
-author:
-type: fixed

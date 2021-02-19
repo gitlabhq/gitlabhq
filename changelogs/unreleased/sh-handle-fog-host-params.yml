@@ -1,5 +1,0 @@
----
-title: Support fog-aws host options for Workhorse S3 client
-merge_request: 53326
-author:
-type: fixed

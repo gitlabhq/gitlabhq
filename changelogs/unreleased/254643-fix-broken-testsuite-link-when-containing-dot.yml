@@ -1,5 +1,0 @@
----
-title: Fix broken testsuite link if the suite contains a dot
-merge_request: 51828
-author: Michael Aigner @tonka3000
-type: fixed

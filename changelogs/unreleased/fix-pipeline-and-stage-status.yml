@@ -1,5 +1,0 @@
----
-title: Fix pipeline and stage show success without considering bridge status
-merge_request: 52192
-author: Cong Chen @gentcys
-type: fixed

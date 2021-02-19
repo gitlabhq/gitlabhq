@@ -1,5 +1,0 @@
----
-title: Fix gitlab:cleanup:orphan_job_artifact_files rake task limit
-merge_request: 52056
-author:
-type: fixed

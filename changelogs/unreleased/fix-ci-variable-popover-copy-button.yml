@@ -1,5 +1,0 @@
----
-title: Prevent long variable names from overflowing the popover in CI/CD settings
-merge_request: 51018
-author: Kev @KevSlashNull
-type: fixed

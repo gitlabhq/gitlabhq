@@ -1,5 +1,0 @@
----
-title: Drop repository_read_only column from namespaces table
-merge_request: 52181
-author:
-type: changed

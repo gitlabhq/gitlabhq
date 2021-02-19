@@ -1,5 +1,0 @@
----
-title: Run pipeline_schedule_worker at every 10th minute from 3 through 59
-merge_request: 52756
-author: Ben Bodenmiller (@bbodenmiller)
-type: changed

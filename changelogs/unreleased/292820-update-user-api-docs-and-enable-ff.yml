@@ -1,5 +1,0 @@
----
-title: Schedule user status cleanup after a given time interval via the REST API
-merge_request: 54207
-author:
-type: added

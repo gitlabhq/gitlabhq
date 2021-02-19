@@ -1,5 +1,0 @@
----
-title: Rename asset_proxy_whitelist column on application_settings
-merge_request: 50824
-author:
-type: changed

@@ -1,6 +1,0 @@
----
-title: Improve overall copy, remove redundant reassurance in the form, and fix empty
-  %p rendered in the DOM of the welcome page.
-merge_request: 52660
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Show correct ref name in code coverage statistics header
-merge_request: 51385
-author: Andreas Schmidt
-type: fixed

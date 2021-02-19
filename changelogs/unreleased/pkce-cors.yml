@@ -1,5 +1,0 @@
----
-title: Allow cross-origin requests on /oauth/token
-merge_request: 52641
-author:
-type: fixed

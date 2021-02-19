@@ -1,6 +1,0 @@
----
-title: Stop notifying users of acknowledged alerts and stop changing the status of
-  acknowledged Prometheus alerts to Triggered
-merge_request: 53330
-author:
-type: changed

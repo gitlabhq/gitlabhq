@@ -1,5 +1,0 @@
----
-title: Send only latest jobs in pipeline webhook payload.
-merge_request: 53159
-author:
-type: fixed

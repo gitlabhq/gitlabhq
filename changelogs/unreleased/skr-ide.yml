@@ -1,5 +1,0 @@
----
-title: Removed ugly border around ellipsis dropdown Gitlab IDE
-merge_request: 53963
-author: Shubham Kumar @imskr
-type: fixed

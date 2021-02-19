@@ -1,5 +1,0 @@
----
-title: Add sort argument to container_repositories graphql resolver
-merge_request: 53404
-author:
-type: changed

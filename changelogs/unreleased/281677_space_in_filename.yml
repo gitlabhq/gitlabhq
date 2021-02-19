@@ -1,5 +1,0 @@
----
-title: Improve search filter by taking space in file path into account
-merge_request: 52392
-author:
-type: fixed

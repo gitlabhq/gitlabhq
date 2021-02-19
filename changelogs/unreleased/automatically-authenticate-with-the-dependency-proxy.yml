@@ -1,5 +1,0 @@
----
-title: Pass dependency proxy credentials to runners to log in automatically
-merge_request: 51927
-author:
-type: added

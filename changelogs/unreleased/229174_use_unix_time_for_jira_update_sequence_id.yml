@@ -1,5 +1,0 @@
----
-title: Change Jira Connect update sequence id to use Unix Time
-merge_request: 51697
-author:
-type: fixed

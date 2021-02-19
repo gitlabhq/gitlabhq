@@ -1,5 +1,0 @@
----
-title: Improve the performance of merge request and issue search by label(s)
-merge_request: 52495
-author:
-type: performance

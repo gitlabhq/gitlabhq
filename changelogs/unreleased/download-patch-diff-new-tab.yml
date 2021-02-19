@@ -1,5 +1,0 @@
----
-title: Fix bug, where the download email patches and plain diffs links did not download from the commit page
-merge_request: 52899
-author: Yogi (@yo)
-type: changed

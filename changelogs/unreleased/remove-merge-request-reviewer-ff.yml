@@ -1,5 +1,0 @@
----
-title: Remove merge_request_reviewers feature flag
-merge_request: 52468
-author:
-type: removed

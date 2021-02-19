@@ -1,6 +1,0 @@
----
-title: Allow versionless maven-metadata.xml file duplicates even when maven duplicates
-  are disabled
-merge_request: 51758
-author:
-type: fixed

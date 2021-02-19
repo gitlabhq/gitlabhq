@@ -1,5 +1,0 @@
----
-title: Fix /-/readiness probe for Puma Single
-merge_request: 53708
-author:
-type: other

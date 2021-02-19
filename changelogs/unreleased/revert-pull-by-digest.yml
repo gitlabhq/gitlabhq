@@ -1,6 +1,0 @@
----
-title: Remove dependency_proxy_manifests records with content_type to prevent Dependency
-  Proxy failures
-merge_request: 53506
-author:
-type: fixed

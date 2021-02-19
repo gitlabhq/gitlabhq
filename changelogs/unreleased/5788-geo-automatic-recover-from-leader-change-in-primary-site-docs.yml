@@ -1,6 +1,0 @@
----
-title: Geo - Update Patroni replication docs to automatic recover from a leader change
-  on the primary site
-merge_request: 53424
-author:
-type: other

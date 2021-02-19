@@ -1,5 +1,0 @@
----
-title: Add clear_status_at column to user_status table
-merge_request: 53620
-author:
-type: other
