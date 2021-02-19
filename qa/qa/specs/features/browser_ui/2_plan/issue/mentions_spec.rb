@@ -13,6 +13,7 @@ module QA
 
       before do
         Flow::Login.sign_in
+        Runtime::Feature.enable(:invite_members_group_modal, project: project)
 
         project.add_member(user)
 

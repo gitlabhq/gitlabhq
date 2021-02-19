@@ -122,7 +122,7 @@ Requesting a code review is an important part of contributing code. However, dec
 your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
 reviewers makes it hard for others to determine who's doing what on a merge request.
 
-GitLab Merge Request Reviewers enable you to request a review of your work, and
+The Merge Request Reviewers feature enables you to request a review of your work, and
 see the status of the review. Reviewers help distinguish the roles of the users
 involved in the merge request. In comparison to an **Assignee**, who is directly
 responsible for creating or merging a merge request, a **Reviewer** is a team member

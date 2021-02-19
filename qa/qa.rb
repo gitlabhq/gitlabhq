@@ -489,6 +489,7 @@ module QA
       autoload :ProjectSelector, 'qa/page/component/project_selector'
       autoload :Snippet, 'qa/page/component/snippet'
       autoload :NewSnippet, 'qa/page/component/new_snippet'
+      autoload :InviteMembersModal, 'qa/page/component/invite_members_modal'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

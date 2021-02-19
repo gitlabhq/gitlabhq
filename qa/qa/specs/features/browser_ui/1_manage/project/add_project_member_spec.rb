@@ -6,7 +6,6 @@ module QA
       before do
         Runtime::Feature.enable('vue_project_members_list')
       end
-
       after do
         Runtime::Feature.disable('vue_project_members_list')
       end
@@ -16,9 +15,13 @@ module QA
 
         user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
 
-        Resource::Project.fabricate_via_api! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'add-member-project'
-        end.visit!
+        end
+
+        Runtime::Feature.enable(:invite_members_group_modal)
+
+        project.visit!
 
         Page::Project::Menu.perform(&:click_members)
         Page::Project::Members.perform do |members|

@@ -29,6 +29,7 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable(:invite_members_group_modal, group: group)
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 

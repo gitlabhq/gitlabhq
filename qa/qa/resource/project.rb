@@ -272,10 +272,6 @@ module QA
         parse_body(get(Runtime::API::Request.new(api_client, api_pipelines_path).url))
       end
 
-      def share_with_group(invitee, access_level = Resource::Members::AccessLevel::DEVELOPER)
-        post Runtime::API::Request.new(api_client, "/projects/#{id}/share").url, { group_id: invitee.id, group_access: access_level }
-      end
-
       private
 
       def transform_api_resource(api_resource)

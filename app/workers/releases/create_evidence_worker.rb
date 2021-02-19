@@ -3,7 +3,6 @@
 module Releases
   class CreateEvidenceWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
-    include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :release_evidence
 

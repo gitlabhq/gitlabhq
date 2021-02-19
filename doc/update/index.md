@@ -138,6 +138,33 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
+## Checking for pending Elasticsearch migrations
+
+This section is only applicable if you have enabled the [Elasticsearch
+integration](../integration/elasticsearch.md).
+
+Certain major releases might require [Elasticsearch
+migrations](../integration/elasticsearch.md#background-migrations) to be
+finished. You can find pending migrations by running the following command:
+
+**For Omnibus installations**
+
+```shell
+sudo gitlab-rake gitlab:elastic:list_pending_migrations
+```
+
+**For installations from source**
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
+```
+
+### What do I do if my Elasticsearch migrations are stuck?
+
+See [how to retry a halted
+migration](../integration/elasticsearch.md#retry-a-halted-migration).
+
 ## Upgrade paths
 
 Although you can generally upgrade through multiple GitLab versions in one go,

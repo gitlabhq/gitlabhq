@@ -13756,6 +13756,9 @@ msgstr ""
 msgid "GitLab metadata URL"
 msgstr ""
 
+msgid "GitLab namespace"
+msgstr ""
+
 msgid "GitLab project export"
 msgstr ""
 
@@ -14477,6 +14480,15 @@ msgid "GroupSAML|should be \"persistent\""
 msgstr ""
 
 msgid "GroupSAML|should be a random persistent ID, emails are discouraged"
+msgstr ""
+
+msgid "GroupSelect|No matching results"
+msgstr ""
+
+msgid "GroupSelect|Search groups"
+msgstr ""
+
+msgid "GroupSelect|Select a group"
 msgstr ""
 
 msgid "GroupSettings|Apply integration settings to all Projects"
@@ -16042,10 +16054,16 @@ msgstr ""
 msgid "Integrations|Add namespace"
 msgstr ""
 
+msgid "Integrations|Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use %{firefox_link_start}Firefox%{firefox_link_end} or enable cross‑site cookies in your browser when adding a namespace."
+msgstr ""
+
 msgid "Integrations|All details"
 msgstr ""
 
 msgid "Integrations|All projects inheriting these settings will also be reset."
+msgstr ""
+
+msgid "Integrations|Browser limitations"
 msgstr ""
 
 msgid "Integrations|Comment detail:"
@@ -16087,6 +16105,9 @@ msgstr ""
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
+msgid "Integrations|Link namespace to Jira"
+msgstr ""
+
 msgid "Integrations|Link namespaces"
 msgstr ""
 
@@ -16097,6 +16118,12 @@ msgid "Integrations|Namespaces are your GitLab groups and subgroups that will be
 msgstr ""
 
 msgid "Integrations|No available namespaces."
+msgstr ""
+
+msgid "Integrations|No linked namespaces"
+msgstr ""
+
+msgid "Integrations|Note: this integration only works with accounts on GitLab.com (SaaS)."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings will not be affected."
@@ -16303,6 +16330,9 @@ msgstr ""
 msgid "Invite Members"
 msgstr ""
 
+msgid "Invite a group"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -16399,19 +16429,40 @@ msgstr ""
 msgid "InviteMembersModal|Invite"
 msgstr ""
 
+msgid "InviteMembersModal|Invite a group"
+msgstr ""
+
 msgid "InviteMembersModal|Invite team members"
 msgstr ""
 
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
+msgid "InviteMembersModal|Search for a group to invite"
+msgstr ""
+
 msgid "InviteMembersModal|Search for members to invite"
+msgstr ""
+
+msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
 msgid "InviteMembersModal|Some of the members could not be added"
 msgstr ""
 
-msgid "InviteMembersModal|You're inviting members to the %{name} %{type}"
+msgid "InviteMembersModal|You're inviting a group to the %{name} group"
+msgstr ""
+
+msgid "InviteMembersModal|You're inviting a group to the %{name} project"
+msgstr ""
+
+msgid "InviteMembersModal|You're inviting members to the %{name} group"
+msgstr ""
+
+msgid "InviteMembersModal|You're inviting members to the %{name} project"
+msgstr ""
+
+msgid "InviteMembers|Invite a group"
 msgstr ""
 
 msgid "InviteMembers|Invite team members"

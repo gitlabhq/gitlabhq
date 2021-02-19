@@ -12,5 +12,4 @@
     = Gon::Base.render_data(nonce: content_security_policy_nonce)
     = yield :head
   %body
-    .ac-content
-      = yield
+    = yield

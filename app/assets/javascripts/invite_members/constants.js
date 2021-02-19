@@ -1,1 +1,1 @@
-export const USER_SEARCH_DELAY = 200;
+export const SEARCH_DELAY = 200;

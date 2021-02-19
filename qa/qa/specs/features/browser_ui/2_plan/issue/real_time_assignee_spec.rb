@@ -14,6 +14,7 @@ module QA
       before do
         Runtime::Feature.enable('real_time_issue_sidebar', project: project)
         Runtime::Feature.enable('broadcast_issue_updates', project: project)
+        Runtime::Feature.enable(:invite_members_group_modal, project: project)
 
         Flow::Login.sign_in
 

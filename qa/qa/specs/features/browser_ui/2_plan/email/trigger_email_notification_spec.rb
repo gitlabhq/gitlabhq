@@ -17,6 +17,7 @@ module QA
 
       before do
         Runtime::Feature.enable('vue_project_members_list', project: project)
+        Runtime::Feature.enable(:invite_members_group_modal)
         Flow::Login.sign_in
       end
 

@@ -355,14 +355,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:releases_create_evidence
-  :feature_category: :release_evidence
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: cronjob:releases_manage_evidence
   :feature_category: :release_evidence
   :has_external_dependencies:
@@ -2098,6 +2090,14 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
+  :idempotent:
+  :tags: []
+- :name: releases_create_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent:
   :tags: []
 - :name: remote_mirror_notification
