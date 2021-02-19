@@ -1,5 +1,0 @@
----
-title: Fix Net::HTTP proxy encoding username and password
-merge_request: 52368
-author:
-type: fixed

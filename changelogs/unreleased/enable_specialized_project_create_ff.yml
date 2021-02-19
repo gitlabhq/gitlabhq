@@ -1,5 +1,0 @@
----
-title: Project creation to use specialized worker to calculate project authorizations
-merge_request: 52719
-author:
-type: performance

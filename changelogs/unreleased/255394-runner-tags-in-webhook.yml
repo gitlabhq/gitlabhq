@@ -1,5 +1,0 @@
----
-title: Add 'tags' field to runners in job/pipeline webhook payloads
-merge_request: 51633
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Remove extra border-top on pipeline quota in the settings page
-merge_request: 52059
-author: Yogi (@yo)
-type: fixed

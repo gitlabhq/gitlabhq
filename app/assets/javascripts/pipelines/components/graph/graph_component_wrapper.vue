@@ -32,7 +32,7 @@ export default {
     };
   },
   errorTexts: {
-    [DRAW_FAILURE]: __('An error ocurred while drawing job relationship links.'),
+    [DRAW_FAILURE]: __('An error occurred while drawing job relationship links.'),
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this pipeline.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },

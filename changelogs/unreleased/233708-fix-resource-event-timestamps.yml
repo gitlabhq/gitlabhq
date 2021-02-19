@@ -1,6 +1,0 @@
----
-title: Use user-provided timestamp when updating issue and merge request milestones,
-  iterations, and weights using the API
-merge_request: 53237
-author:
-type: fixed

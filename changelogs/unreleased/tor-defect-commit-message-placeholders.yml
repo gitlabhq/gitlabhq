@@ -1,6 +1,0 @@
----
-title: Fill default commit message values in the placeholder instead of showing the
-  variable slugs
-merge_request: 52851
-author:
-type: fixed

@@ -140,7 +140,7 @@ RSpec.describe 'Pages edits pages settings', :js do
 
       before do
         allow(Projects::UpdateService).to receive(:new).and_return(service)
-        allow(service).to receive(:execute).and_return(status: :error, message: 'Some error has occured')
+        allow(service).to receive(:execute).and_return(status: :error, message: 'Some error has occurred')
       end
 
       it 'tries to change the setting' do
@@ -150,7 +150,7 @@ RSpec.describe 'Pages edits pages settings', :js do
 
         click_button 'Save'
 
-        expect(page).to have_text('Some error has occured')
+        expect(page).to have_text('Some error has occurred')
       end
     end
 

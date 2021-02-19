@@ -1,5 +1,0 @@
----
-title: Monitor RackAttack redis usage and enrich auth structured logs
-merge_request: 52471
-author:
-type: changed

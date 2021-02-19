@@ -1,5 +1,0 @@
----
-title: Fixed notes polling incorrectly overwriting suggestions in the DOM
-merge_request: 51988
-author:
-type: fixed

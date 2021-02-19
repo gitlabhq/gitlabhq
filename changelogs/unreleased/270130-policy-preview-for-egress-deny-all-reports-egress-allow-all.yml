@@ -1,5 +1,0 @@
----
-title: Correct the egress 'deny all' policy preview from Allow to Deny
-merge_request: 52370
-author:
-type: fixed

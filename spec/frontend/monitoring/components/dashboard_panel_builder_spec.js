@@ -188,7 +188,7 @@ describe('dashboard invalid url parameters', () => {
   });
 
   describe('when there is an error', () => {
-    const mockError = 'an error ocurred!';
+    const mockError = 'an error occurred!';
 
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.RECEIVE_PANEL_PREVIEW_FAILURE}`, mockError);

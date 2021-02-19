@@ -1,5 +1,0 @@
----
-title: Remove container_class in project activity which removes extra padding
-merge_request: 51878
-author: Yogi (@yo)
-type: fixed

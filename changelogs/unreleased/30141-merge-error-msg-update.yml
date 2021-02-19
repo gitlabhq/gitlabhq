@@ -1,5 +1,0 @@
----
-title: Show more appropriate error message when merging fails
-merge_request: 52671
-author:
-type: fixed

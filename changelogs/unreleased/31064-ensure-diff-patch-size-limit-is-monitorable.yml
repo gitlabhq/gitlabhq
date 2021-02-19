@@ -1,5 +1,0 @@
----
-title: Add `patch_hard_limit_bytes_hit` metric for monitoring diff patch size limit hits
-merge_request: 52456
-author:
-type: added

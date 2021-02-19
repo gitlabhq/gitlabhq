@@ -4,8 +4,6 @@ module BulkImports
   module Groups
     module Transformers
       class SubgroupToEntityTransformer
-        def initialize(*args); end
-
         def transform(context, entry)
           {
             source_type: :group_entity,

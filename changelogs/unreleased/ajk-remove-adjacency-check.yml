@@ -1,5 +1,0 @@
----
-title: Fix spurious not-adjacent error when moving designs
-merge_request: 53771
-author:
-type: fixed

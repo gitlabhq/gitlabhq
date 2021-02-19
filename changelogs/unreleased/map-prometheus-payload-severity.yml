@@ -1,5 +1,0 @@
----
-title: Map common severity values from a Prometheus alert payload
-merge_request: 50871
-author:
-type: added

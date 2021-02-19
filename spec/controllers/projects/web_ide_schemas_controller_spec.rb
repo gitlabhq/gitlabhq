@@ -53,13 +53,13 @@ RSpec.describe Projects::WebIdeSchemasController do
     end
 
     context 'when an error occurs parsing the schema' do
-      let(:result) { { status: :error, message: 'Some error occured' } }
+      let(:result) { { status: :error, message: 'Some error occurred' } }
 
       it 'returns 422 with the error' do
         subject
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(response.body).to eq('{"status":"error","message":"Some error occured"}')
+        expect(response.body).to eq('{"status":"error","message":"Some error occurred"}')
       end
     end
   end

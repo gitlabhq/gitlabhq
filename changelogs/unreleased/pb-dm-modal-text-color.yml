@@ -1,6 +1,0 @@
----
-title: Remove gl-text-black-normal from detailed metric which is not visible in dark
-  mode
-merge_request: 53563
-author: Yogi (@yo)
-type: other

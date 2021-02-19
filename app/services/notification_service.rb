@@ -665,7 +665,12 @@ class NotificationService
   end
 
   def merge_when_pipeline_succeeds(merge_request, current_user)
-    recipients = ::NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: 'merge_when_pipeline_succeeds')
+    recipients = ::NotificationRecipients::BuildService.build_recipients(
+      merge_request,
+      current_user,
+      action: 'merge_when_pipeline_succeeds',
+      custom_action: :merge_when_pipeline_succeeds
+    )
 
     recipients.each do |recipient|
       mailer.merge_when_pipeline_succeeds_email(recipient.user.id, merge_request.id, current_user.id).deliver_later

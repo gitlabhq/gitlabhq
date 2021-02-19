@@ -1,5 +1,0 @@
----
-title: Speed up update merge request worker by memoizing whether a push is a force or not
-merge_request: 53536
-author:
-type: performance

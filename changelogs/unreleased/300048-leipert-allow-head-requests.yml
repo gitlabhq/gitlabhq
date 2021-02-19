@@ -1,5 +1,0 @@
----
-title: Allow HEAD requests for read_api and read_user scope tokens
-merge_request: 53088
-author:
-type: fixed

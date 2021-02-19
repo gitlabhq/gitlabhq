@@ -1,5 +1,0 @@
----
-title: Use Gitaly keyset pagination to optimize branches page
-merge_request: 53409
-author:
-type: performance

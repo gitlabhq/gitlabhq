@@ -1,5 +1,0 @@
----
-title: Fix long CI variable name overflows on origin
-merge_request: 51021
-author: Kev @KevSlashNull
-type: fixed

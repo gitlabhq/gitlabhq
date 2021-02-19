@@ -1,5 +1,0 @@
----
-title: Include submodule information for files in diff metadata
-merge_request: 50346
-author: Simon Stieger @sim0
-type: fixed

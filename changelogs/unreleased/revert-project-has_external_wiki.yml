@@ -1,5 +1,0 @@
----
-title: Set projects.has_external_wiki default to null if default value is present
-merge_request: 53216
-author:
-type: other

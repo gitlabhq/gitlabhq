@@ -11284,7 +11284,7 @@
             },
             {
               "name": "pipelineConfigurationFullPath",
-              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.",
+              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**.",
               "args": [
 
               ],
@@ -11454,7 +11454,7 @@
             },
             {
               "name": "pipelineConfigurationFullPath",
-              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.",
+              "description": "Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

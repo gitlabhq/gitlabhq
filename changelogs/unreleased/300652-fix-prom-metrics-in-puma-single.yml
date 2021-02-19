@@ -1,5 +1,0 @@
----
-title: Move CleanupMultiprocDirService out of config.ru
-merge_request: 53139
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Add repository_read_only column to NamespaceSettings table
-merge_request: 52300
-author:
-type: added

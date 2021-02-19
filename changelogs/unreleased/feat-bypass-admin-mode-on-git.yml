@@ -1,5 +1,0 @@
----
-title: Bypass admin mode for internal api operations (ssh git & http rails)
-merge_request: 52697
-author: Diego Louzán
-type: changed

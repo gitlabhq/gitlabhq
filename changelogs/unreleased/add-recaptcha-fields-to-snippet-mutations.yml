@@ -1,5 +1,0 @@
----
-title: Add captcha-related fields to snippet GraphQL mutations
-merge_request: 51956
-author:
-type: added

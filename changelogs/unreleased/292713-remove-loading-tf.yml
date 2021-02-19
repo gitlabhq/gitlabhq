@@ -1,5 +1,0 @@
----
-title: Display loading when removing Terraform state
-merge_request: 53897
-author:
-type: changed

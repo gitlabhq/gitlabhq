@@ -1,6 +1,0 @@
----
-title: Populate the `uuid` attributes of the `security_findings` records and the `finding_uuid`
-  attribute of the related `vulnerability_feedback` records
-merge_request: 51472
-author:
-type: added

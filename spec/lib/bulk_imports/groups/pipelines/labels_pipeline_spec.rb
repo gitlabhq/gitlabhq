@@ -90,6 +90,24 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
     end
   end
 
+  describe '#load' do
+    it 'creates the label' do
+      data = {
+        'title' => 'label',
+        'description' => 'description',
+        'color' => '#FFFFFF'
+      }
+
+      expect { subject.load(context, data) }.to change(Label, :count).by(1)
+
+      label = group.labels.first
+
+      expect(label.title).to eq(data['title'])
+      expect(label.description).to eq(data['description'])
+      expect(label.color).to eq(data['color'])
+    end
+  end
+
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
@@ -109,10 +127,6 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
         .to contain_exactly(
           { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil }
         )
-    end
-
-    it 'has loaders' do
-      expect(described_class.get_loader).to eq(klass: BulkImports::Groups::Loaders::LabelsLoader, options: nil)
     end
   end
 end

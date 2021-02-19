@@ -22,10 +22,10 @@ export const i18n = {
     owner_disabled: __('Notifications have been disabled by the project or group owner'),
   },
   updateNotificationLevelErrorMessage: __(
-    'An error occured while updating the notification settings. Please try again.',
+    'An error occurred while updating the notification settings. Please try again.',
   ),
   loadNotificationLevelErrorMessage: __(
-    'An error occured while loading the notification settings. Please try again.',
+    'An error occurred while loading the notification settings. Please try again.',
   ),
   customNotificationsModal: {
     title: __('Custom notification events'),

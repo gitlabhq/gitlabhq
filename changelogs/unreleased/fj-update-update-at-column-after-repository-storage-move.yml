@@ -1,5 +1,0 @@
----
-title: Update column 'updated_at' in container after repository storage move
-merge_request: 53821
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix batch query issue when primary key is -1
-merge_request: 51716
-author:
-type: fixed

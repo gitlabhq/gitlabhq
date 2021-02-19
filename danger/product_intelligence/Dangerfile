@@ -45,8 +45,23 @@ usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
 metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
 
+def matching_files?(file, extension:, pattern:)
+  return unless file.end_with?(extension)
+
+  helper.changed_lines(file).grep(pattern).any?
+end
+
+js_patterns = Regexp.union(
+  'Tracking.event',
+  /\btrack\(/,
+  'data-track-event'
+)
+
 snowplow_changed_files = all_changed_files.select do |file|
-  helper.changed_lines(file).grep(%r{Gitlab::Tracking\.event}).any?
+  matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.event}) ||
+    matching_files?(file, extension: '.js', pattern: js_patterns) ||
+    matching_files?(file, extension: '.vue', pattern: js_patterns) ||
+    matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})
 end
 
 matching_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file + snowplow_changed_files

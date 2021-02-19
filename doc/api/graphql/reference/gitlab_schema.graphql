@@ -4129,7 +4129,8 @@ type ComplianceFramework {
 
   """
   Full path of the compliance pipeline configuration stored in a project
-  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.
+  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa`
+  **(ULTIMATE)**.
   """
   pipelineConfigurationFullPath: String
 }
@@ -4187,7 +4188,8 @@ input ComplianceFrameworkInput {
 
   """
   Full path of the compliance pipeline configuration stored in a project
-  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hippa`.
+  repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa`
+  **(ULTIMATE)**.
   """
   pipelineConfigurationFullPath: String
 }

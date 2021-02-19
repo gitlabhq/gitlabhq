@@ -1,6 +1,0 @@
----
-title: Adds only_group_labels and include_ancestor_labels and include_descendant_groups
-  arguments to the project and group labels resolvers respectively
-merge_request: 53639
-author:
-type: fixed

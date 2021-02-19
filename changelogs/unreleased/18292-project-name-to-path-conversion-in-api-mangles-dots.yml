@@ -1,5 +1,0 @@
----
-title: "API: do not mangle dots when creating project with a name"
-merge_request: 52725
-author:
-type: fixed

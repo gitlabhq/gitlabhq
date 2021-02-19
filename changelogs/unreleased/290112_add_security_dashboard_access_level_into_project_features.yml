@@ -1,6 +1,0 @@
----
-title: Add `security_and_compliance_access_level` column into the `project_features`
-  table
-merge_request: 52551
-author:
-type: added

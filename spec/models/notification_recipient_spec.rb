@@ -337,6 +337,39 @@ RSpec.describe NotificationRecipient do
             expect(recipient.suitable_notification_level?).to eq true
           end
         end
+
+        context 'with merge_when_pipeline_succeeds' do
+          let(:notification_setting) { user.notification_settings_for(project) }
+          let(:recipient) do
+            described_class.new(
+              user,
+              :watch,
+              custom_action: :merge_when_pipeline_succeeds,
+              target: target,
+              project: project
+            )
+          end
+
+          context 'custom event enabled' do
+            before do
+              notification_setting.update!(merge_when_pipeline_succeeds: true)
+            end
+
+            it 'returns true' do
+              expect(recipient.suitable_notification_level?).to eq true
+            end
+          end
+
+          context 'custom event disabled' do
+            before do
+              notification_setting.update!(merge_when_pipeline_succeeds: false)
+            end
+
+            it 'returns false' do
+              expect(recipient.suitable_notification_level?).to eq false
+            end
+          end
+        end
       end
     end
 

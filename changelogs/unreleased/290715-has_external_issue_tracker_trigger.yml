@@ -1,5 +1,0 @@
----
-title: Add PostgreSQL trigger to maintain projects.has_external_issue_tracker
-merge_request: 51852
-author:
-type: changed

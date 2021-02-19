@@ -3,9 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, path: 'group') }
+  let_it_be(:parent) { create(:group, name: 'imported-group', path: 'imported-group') }
+  let(:context) { BulkImports::Pipeline::Context.new(parent_entity) }
+
+  subject { described_class.new(context) }
+
   describe '#run' do
-    let_it_be(:user) { create(:user) }
-    let(:parent) { create(:group, name: 'imported-group', path: 'imported-group') }
     let!(:parent_entity) do
       create(
         :bulk_import_entity,
@@ -13,8 +18,6 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
         group: parent
       )
     end
-
-    let(:context) { BulkImports::Pipeline::Context.new(parent_entity) }
 
     let(:subgroup_data) do
       [
@@ -24,8 +27,6 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
         }
       ]
     end
-
-    subject { described_class.new(context) }
 
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
@@ -47,6 +48,29 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
     end
   end
 
+  describe '#load' do
+    let(:parent_entity) { create(:bulk_import_entity, group: group, bulk_import: create(:bulk_import)) }
+
+    it 'creates entities for the given data' do
+      data = {
+        source_type: :group_entity,
+        source_full_path: 'parent/subgroup',
+        destination_name: 'subgroup',
+        destination_namespace: parent_entity.group.full_path,
+        parent_id: parent_entity.id
+      }
+
+      expect { subject.load(context, data) }.to change(BulkImports::Entity, :count).by(1)
+
+      subgroup_entity = BulkImports::Entity.last
+
+      expect(subgroup_entity.source_full_path).to eq 'parent/subgroup'
+      expect(subgroup_entity.destination_namespace).to eq 'group'
+      expect(subgroup_entity.destination_name).to eq 'subgroup'
+      expect(subgroup_entity.parent_id).to eq parent_entity.id
+    end
+  end
+
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
@@ -60,10 +84,6 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
         { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil },
         { klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer, options: nil }
       )
-    end
-
-    it 'has loaders' do
-      expect(described_class.get_loader).to eq(klass: BulkImports::Common::Loaders::EntityLoader, options: nil)
     end
   end
 end

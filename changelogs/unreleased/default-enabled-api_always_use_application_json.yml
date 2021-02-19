@@ -1,0 +1,5 @@
+---
+title: Change default API content_type to JSON
+merge_request: 54479
+author:
+type: changed

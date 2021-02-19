@@ -23,4 +23,4 @@
           = yield :push_access_levels
       = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form', f: f
     .card-footer
-      = f.submit s_('ProtectedBranch|Protect'), class: 'btn-success btn', disabled: true, data: { qa_selector: 'protect_button' }
+      = f.submit s_('ProtectedBranch|Protect'), class: 'btn-success gl-button btn', disabled: true, data: { qa_selector: 'protect_button' }

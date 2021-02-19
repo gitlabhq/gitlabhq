@@ -3214,15 +3214,6 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occured while loading the notification settings. Please try again."
-msgstr ""
-
-msgid "An error occured while saving changes: %{error}"
-msgstr ""
-
-msgid "An error occured while updating the notification settings. Please try again."
-msgstr ""
-
 msgid "An error occurred adding a draft to the thread."
 msgstr ""
 
@@ -3299,6 +3290,9 @@ msgid "An error occurred while dismissing the alert. Refresh the page and try ag
 msgstr ""
 
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
+msgstr ""
+
+msgid "An error occurred while drawing job relationship links."
 msgstr ""
 
 msgid "An error occurred while enabling Service Desk."
@@ -3457,10 +3451,16 @@ msgstr ""
 msgid "An error occurred while loading the merge request."
 msgstr ""
 
+msgid "An error occurred while loading the notification settings. Please try again."
+msgstr ""
+
 msgid "An error occurred while loading the pipeline."
 msgstr ""
 
 msgid "An error occurred while loading the pipelines jobs."
+msgstr ""
+
+msgid "An error occurred while loading your content. Please try again."
 msgstr ""
 
 msgid "An error occurred while making the request."
@@ -3505,6 +3505,9 @@ msgstr ""
 msgid "An error occurred while retrieving projects."
 msgstr ""
 
+msgid "An error occurred while saving changes: %{error}"
+msgstr ""
+
 msgid "An error occurred while searching users."
 msgstr ""
 
@@ -3544,6 +3547,9 @@ msgstr ""
 msgid "An error occurred while updating the milestone."
 msgstr ""
 
+msgid "An error occurred while updating the notification settings. Please try again."
+msgstr ""
+
 msgid "An error occurred while validating group path"
 msgstr ""
 
@@ -3554,12 +3560,6 @@ msgid "An error occurred. Please sign in again."
 msgstr ""
 
 msgid "An error occurred. Please try again."
-msgstr ""
-
-msgid "An error ocurred while drawing job relationship links."
-msgstr ""
-
-msgid "An error ocurred while loading your content. Please try again."
 msgstr ""
 
 msgid "An example project for managing Kubernetes clusters integrated with GitLab"
@@ -10359,10 +10359,10 @@ msgstr ""
 msgid "DevopsAdoption|Adopted"
 msgstr ""
 
-msgid "DevopsAdoption|An error occured while removing the group. Please try again."
+msgid "DevopsAdoption|An error occurred while removing the group. Please try again."
 msgstr ""
 
-msgid "DevopsAdoption|An error occured while saving the group. Please try again."
+msgid "DevopsAdoption|An error occurred while saving the group. Please try again."
 msgstr ""
 
 msgid "DevopsAdoption|Approvals"
@@ -16807,7 +16807,7 @@ msgstr ""
 msgid "JiraService|%{user_link} mentioned this issue in %{entity_link} of %{project_link}%{branch}:{quote}%{entity_message}{quote}"
 msgstr ""
 
-msgid "JiraService|An error occured while fetching issue list"
+msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
 msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
@@ -18215,9 +18215,6 @@ msgstr ""
 msgid "Maximum Maven package file size in bytes"
 msgstr ""
 
-msgid "Maximum NPM package file size in bytes"
-msgstr ""
-
 msgid "Maximum NuGet package file size in bytes"
 msgstr ""
 
@@ -18273,6 +18270,9 @@ msgid "Maximum job timeout has a value which could not be accepted"
 msgstr ""
 
 msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
+msgstr ""
+
+msgid "Maximum npm package file size in bytes"
 msgstr ""
 
 msgid "Maximum number of %{name} (%{count}) exceeded"
@@ -20466,6 +20466,9 @@ msgstr ""
 msgid "NotificationEvent|Merge merge request"
 msgstr ""
 
+msgid "NotificationEvent|Merge when pipeline succeeds"
+msgstr ""
+
 msgid "NotificationEvent|Moved project"
 msgstr ""
 
@@ -21263,9 +21266,6 @@ msgstr ""
 msgid "PackageRegistry|Maven XML"
 msgstr ""
 
-msgid "PackageRegistry|NPM"
-msgstr ""
-
 msgid "PackageRegistry|NuGet"
 msgstr ""
 
@@ -21350,6 +21350,9 @@ msgstr ""
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
 msgstr ""
 
+msgid "PackageRegistry|npm"
+msgstr ""
+
 msgid "PackageRegistry|npm command"
 msgstr ""
 
@@ -21371,13 +21374,13 @@ msgstr ""
 msgid "PackageType|Maven"
 msgstr ""
 
-msgid "PackageType|NPM"
-msgstr ""
-
 msgid "PackageType|NuGet"
 msgstr ""
 
 msgid "PackageType|PyPI"
+msgstr ""
+
+msgid "PackageType|npm"
 msgstr ""
 
 msgid "Packages"
@@ -21695,10 +21698,10 @@ msgstr ""
 msgid "Pipeline: %{status}"
 msgstr ""
 
-msgid "PipelineCharts|An error has ocurred when retrieving the analytics data"
+msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr ""
 
-msgid "PipelineCharts|An error has ocurred when retrieving the pipelines data"
+msgid "PipelineCharts|An error has occurred when retrieving the pipelines data"
 msgstr ""
 
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
@@ -24925,10 +24928,10 @@ msgstr ""
 msgid "Reports|Activity"
 msgstr ""
 
-msgid "Reports|An error occured while loading report"
+msgid "Reports|An error occurred while loading %{name} results"
 msgstr ""
 
-msgid "Reports|An error occurred while loading %{name} results"
+msgid "Reports|An error occurred while loading report"
 msgstr ""
 
 msgid "Reports|Class"
@@ -26435,6 +26438,9 @@ msgid "SecurityReports|You must sign in as an authorized user to see this report
 msgstr ""
 
 msgid "SecurityReports|[No reason]"
+msgstr ""
+
+msgid "Security|Policies"
 msgstr ""
 
 msgid "See GitLab's %{password_policy_guidelines}"
@@ -33259,7 +33265,7 @@ msgstr ""
 msgid "When enabled, any user visiting %{host} will be able to create an account."
 msgstr ""
 
-msgid "When enabled, if an NPM package isn't found in the GitLab Registry, we will attempt to pull from the global NPM registry."
+msgid "When enabled, if an npm package isn't found in the GitLab Registry, we will attempt to pull from the global npm registry."
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."

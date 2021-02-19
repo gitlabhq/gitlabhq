@@ -86,7 +86,7 @@ export default {
       }
 
       if (!report.name) {
-        return s__('Reports|An error occured while loading report');
+        return s__('Reports|An error occurred while loading report');
       }
 
       return reportTextBuilder(name, summary);

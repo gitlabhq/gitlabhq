@@ -1,5 +1,0 @@
----
-title: Add git_two_factor_session_expiry column to application_settings table
-merge_request: 52761
-author:
-type: added

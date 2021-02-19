@@ -35,9 +35,8 @@ RSpec.describe 'Commit' do
       end
     end
 
-    context "pagination enabled" do
+    describe "pagination" do
       before do
-        stub_feature_flags(paginate_commit_view: true)
         stub_const("Projects::CommitController::COMMIT_DIFFS_PER_PAGE", 1)
 
         visit project_commit_path(project, commit)
@@ -58,19 +57,6 @@ RSpec.describe 'Commit' do
         end
 
         expect(page).not_to have_selector(".files ##{files[0].file_hash}")
-        expect(page).to have_selector(".files ##{files[1].file_hash}")
-      end
-    end
-
-    context "pagination disabled" do
-      before do
-        stub_feature_flags(paginate_commit_view: false)
-
-        visit project_commit_path(project, commit)
-      end
-
-      it "shows both diffs on the page" do
-        expect(page).to have_selector(".files ##{files[0].file_hash}")
         expect(page).to have_selector(".files ##{files[1].file_hash}")
       end
     end

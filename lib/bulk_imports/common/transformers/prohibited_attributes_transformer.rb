@@ -14,10 +14,6 @@ module BulkImports
           /\Aremote_\w+_(url|urls|request_header)\Z/ # carrierwave automatically creates these attribute methods for uploads
         ).freeze
 
-        def initialize(options = {})
-          @options = options
-        end
-
         def transform(context, data)
           data.each_with_object({}) do |(key, value), result|
             prohibited = prohibited_key?(key)

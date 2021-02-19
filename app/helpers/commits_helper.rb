@@ -127,7 +127,7 @@ module CommitsHelper
   end
 
   def conditionally_paginate_diff_files(diffs, paginate:, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
-    if paginate && Feature.enabled?(:paginate_commit_view, @project, type: :development)
+    if paginate
       Kaminari.paginate_array(diffs.diff_files.to_a).page(params[:page]).per(per)
     else
       diffs.diff_files

@@ -1,5 +1,0 @@
----
-title: Remove MR List counts if they cannot be generated
-merge_request: 52698
-author:
-type: fixed

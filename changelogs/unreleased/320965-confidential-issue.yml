@@ -1,5 +1,0 @@
----
-title: Add an allowlist to exclude users from the rate limit on notes creation
-merge_request: 53866
-author:
-type: added

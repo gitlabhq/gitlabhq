@@ -1,5 +1,0 @@
----
-title: Fix viewing blobs for broken MRs
-merge_request: 52483
-author:
-type: fixed

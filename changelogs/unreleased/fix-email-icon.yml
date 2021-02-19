@@ -1,5 +1,0 @@
----
-title: Remove space next to the icon in email button on admin/users page
-merge_request: 52451
-author: Yogi (@yo)
-type: fixed

@@ -1,6 +1,0 @@
----
-title: Add converted_at(timestamp) & context(jsonb) columns to the experiment_subjects
-  table
-merge_request: 51659
-author:
-type: changed

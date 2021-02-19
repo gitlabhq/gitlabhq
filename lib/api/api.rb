@@ -147,7 +147,7 @@ module API
 
       # Only overwrite `text/plain+deprecated`
       if content_types[api_format] == 'text/plain+deprecated'
-        if Feature.enabled?(:api_always_use_application_json)
+        if Feature.enabled?(:api_always_use_application_json, default_enabled: :yaml)
           content_type 'application/json'
         else
           content_type 'text/plain'
