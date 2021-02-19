@@ -319,4 +319,4 @@ For a video walkthrough of this configuration process, see [Auto Deploy to EC2](
 
 ## Deploy to Google Cloud
 
-- [Deploying with GitLab on Google Cloud](https://about.gitlab.com/solutions/google-cloud-platform/)
+- [Deploying with GitLab on Google Cloud](https://about.gitlab.com/partners/technology-partners/google-cloud-platform/)

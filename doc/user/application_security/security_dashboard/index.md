@@ -175,7 +175,7 @@ lock files. Python projects can have lock files, but GitLab Secure tools don't s
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/customize.md#environment-variables)
+[special environment variables](../../../topics/autodevops/customize.md#cicd-variables)
 to configure daily security scans.
 
 <!-- ## Troubleshooting

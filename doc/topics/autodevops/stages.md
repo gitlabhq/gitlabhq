@@ -53,7 +53,7 @@ For the requirements of other languages and frameworks, read the
 
 NOTE:
 If Auto Build fails despite the project meeting the buildpack requirements, set
-a project variable `TRACE=true` to enable verbose logging, which may help you
+a project CI/CD variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.
 
 ### Auto Build using Cloud Native Buildpacks (beta)
@@ -62,9 +62,9 @@ troubleshoot.
 
 Auto Build supports building your application using [Cloud Native Buildpacks](https://buildpacks.io)
 through the [`pack` command](https://github.com/buildpacks/pack). To use Cloud Native Buildpacks,
-set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty
+set the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty
 value. The default builder is `heroku/buildpacks:18` but a different builder
-can be selected using the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
+can be selected using the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
 GitLab expects them to eventually supersede Herokuish-based builds within Auto DevOps. For more
@@ -103,7 +103,9 @@ NOTE:
 Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
 Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
 Cloud Native Buildpacks, and only buildpacks that implement the
+<!-- vale gitlab.Spelling = NO -->
 [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
+<!-- vale gitlab.Spelling = YES -->
 
 ### Currently supported languages
 
@@ -284,7 +286,7 @@ see the documentation.
 ### Overriding the DAST target
 
 To use a custom target instead of the auto-deployed review apps,
-set a `DAST_WEBSITE` environment variable to the URL for DAST to scan.
+set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
 WARNING:
 If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is
@@ -297,10 +299,10 @@ data loss or corruption.
 
 You can disable DAST:
 
-- On all branches by setting the `DAST_DISABLED` environment variable to `"true"`.
+- On all branches by setting the `DAST_DISABLED` CI/CD variable to `"true"`.
 - Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH`
-  environment variable to `"true"`.
-- Only on feature branches by setting `REVIEW_DISABLED` environment variable to
+  variable to `"true"`.
+- Only on feature branches by setting `REVIEW_DISABLED` variable to
   `"true"`. This also disables the Review App.
 
 ## Auto Browser Performance Testing **(PREMIUM)**
@@ -336,7 +338,7 @@ uploads the report as an artifact.
 
 Some initial setup is required. A [k6](https://k6.io/) test needs to be
 written that's tailored to your specific application. The test also needs to be
-configured so it can pick up the environment's dynamic URL via an environment variable.
+configured so it can pick up the environment's dynamic URL via a CI/CD variable.
 
 Any load performance test result differences between the source and target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/load_performance_testing.md).
@@ -356,7 +358,7 @@ default, but the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 contains job definitions for these tasks if you want to enable them.
 
-You can use [environment variables](customize.md#environment-variables) to automatically
+You can use [CI/CD variables](customize.md#cicd-variables) to automatically
 scale your pod replicas, and to apply custom arguments to the Auto DevOps `helm upgrade`
 commands. This is an easy way to
 [customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
@@ -440,7 +442,7 @@ On GitLab 12.9 and 12.10, opting into
 `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes the version `1` PostgreSQL
 database. Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
 to back up and restore your database before opting into version `2` (On
-GitLab 13.0, an additional variable is required to trigger the database
+GitLab 13.0, an additional CI/CD variable is required to trigger the database
 deletion).
 
 ### Migrations
@@ -448,7 +450,7 @@ deletion).
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955) in GitLab 11.4
 
 You can configure database initialization and migrations for PostgreSQL to run
-within the application pod by setting the project variables `DB_INITIALIZE` and
+within the application pod by setting the project CI/CD variables `DB_INITIALIZE` and
 `DB_MIGRATE` respectively.
 
 If present, `DB_INITIALIZE` is run as a shell command within an application pod
@@ -500,7 +502,7 @@ access to a Redis instance. Auto DevOps doesn't deploy this instance for you, so
 you must:
 
 - Maintain your own Redis instance.
-- Set a CI variable `K8S_SECRET_REDIS_URL`, which is the URL of this instance,
+- Set a CI/CD variable `K8S_SECRET_REDIS_URL`, which is the URL of this instance,
   to ensure it's passed into your deployments.
 
 After configuring your worker to respond to health checks, run a Sidekiq
@@ -686,5 +688,5 @@ You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org
 for updates.
 
 This stage is enabled by default. You can disable it by adding the
-`CODE_INTELLIGENCE_DISABLED` environment variable. Read more about
+`CODE_INTELLIGENCE_DISABLED` CI/CD variable. Read more about
 [disabling Auto DevOps jobs](../../topics/autodevops/customize.md#disable-jobs).

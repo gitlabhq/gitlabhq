@@ -41,6 +41,7 @@ autoscales
 autoscaling
 awardable
 awardables
+Ayoa
 Axios
 Azure
 B-tree
@@ -111,6 +112,8 @@ Contentful
 Corosync
 Coursier
 cron
+cronjob
+cronjobs
 crons
 crontab
 crontabs
@@ -280,6 +283,7 @@ kaniko
 Karma
 Kerberos
 keyset
+keyspace
 keytab
 keytabs
 Kibana
@@ -350,6 +354,7 @@ mixins
 mockup
 mockups
 ModSecurity
+Monokai
 monorepo
 monorepos
 multiline
@@ -408,6 +413,7 @@ pooler
 postgres.ai
 PostgreSQL
 precompile
+precompiled
 preconfigure
 preconfigured
 preconfigures
@@ -445,6 +451,7 @@ queryable
 Quicktime
 Rackspace
 Raspbian
+rbtrace
 Rdoc
 reachability
 Realplayer
@@ -479,6 +486,7 @@ reinitialize
 reinitializing
 relicensing
 remediations
+replicables
 repmgr
 repmgrd
 repurposing
@@ -521,6 +529,7 @@ Salesforce
 sandboxing
 sanitization
 sbt
+scalers
 scatterplot
 scatterplots
 Schemastore
@@ -546,6 +555,7 @@ Slackbot
 Slony
 smartcard
 smartcards
+snapshotting
 Sobelow
 Solarized
 Sourcegraph
@@ -564,6 +574,7 @@ strace
 strikethrough
 strikethroughs
 stunnel
+stylelint
 subfolder
 subfolders
 subgraph
@@ -629,6 +640,7 @@ toolkit
 toolkits
 tooltip
 tooltips
+transactionally
 transpile
 transpiled
 transpiles
@@ -637,6 +649,7 @@ Trello
 triaged
 triages
 triaging
+Trivy
 truthy
 Truststore
 Twilio

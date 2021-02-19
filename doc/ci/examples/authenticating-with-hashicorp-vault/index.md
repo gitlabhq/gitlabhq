@@ -7,8 +7,6 @@ type: tutorial
 
 # Authenticating and Reading Secrets With HashiCorp Vault
 
-> HashiCorp Vault JWT token support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9.
-
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
 NOTE:
@@ -56,8 +54,8 @@ The JWT's payload looks like this:
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job
   "ref_type": "branch",                          # Git ref type, branch or tag
   "ref_protected": "true",                       # true if this git ref is protected, false otherwise
-  "environment": "production",                   # Environment this job deploys to, if present
-  "environment_protected": "true"                # true if deployed environment is protected, false otherwise
+  "environment": "production",                   # Environment this job deploys to, if present (GitLab 13.9 and later)
+  "environment_protected": "true"                # true if deployed environment is protected, false otherwise (GitLab 13.9 and later)
 }
 ```
 

@@ -256,7 +256,7 @@ The following configuration options can be configured:
 - `STACKPROF_MODE`: See [sampling modes](https://github.com/tmm1/stackprof#sampling).
   Defaults to `cpu`.
 - `STACKPROF_INTERVAL`: Sampling interval. Unit semantics depend on `STACKPROF_MODE`.
-  For `object` mode this is a per-event interval (every `n`th event is sampled)
+  For `object` mode this is a per-event interval (every `nth` event is sampled)
   and defaults to `1000`.
   For other modes such as `cpu` this is a frequency and defaults to `10000` μs (100hz).
 - `STACKPROF_FILE_PREFIX`: File path prefix where profiles are stored. Defaults
@@ -293,7 +293,7 @@ worker processes), selecting the latter.
 
 For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
 -USR2 bin/sidekiq-cluster`, which forwards the signal to all Sidekiq
-children. Alternatively, you can also select a specific pid of interest.
+children. Alternatively, you can also select a specific PID of interest.
 
 Production profiles can be especially noisy. It can be helpful to visualize them
 as a [flame graph](https://github.com/brendangregg/FlameGraph). This can be done
@@ -306,7 +306,7 @@ bundle exec stackprof --stackcollapse /tmp/stackprof.55769.c6c3906452.profile | 
 ## RSpec profiling
 
 The GitLab development environment also includes the
-[rspec_profiling](https://github.com/foraker/rspec_profiling) gem, which is used
+[`rspec_profiling`](https://github.com/foraker/rspec_profiling) gem, which is used
 to collect data on spec execution times. This is useful for analyzing the
 performance of the test suite itself, or seeing how the performance of a spec
 may have changed over time.
@@ -409,7 +409,7 @@ Fragmented Ruby heap snapshot could look like this:
 
 ![Ruby heap fragmentation](img/memory_ruby_heap_fragmentation.png)
 
-Memory fragmentation could be reduced by tuning GC parameters as described in [this post by Nate Berkopec](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html). This should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
+Memory fragmentation could be reduced by tuning GC parameters [as described in this post](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html). This should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
 
 ## Importance of Changes
 

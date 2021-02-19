@@ -15,7 +15,7 @@ applications through GMAv2 exclusively when using Container Network Security.
 The following steps are recommended to install and use Container Host Security through GitLab:
 
 1. [Install at least one runner and connect it to GitLab](https://docs.gitlab.com/runner/).
-1. [Create a group](../../../../group/#create-a-new-group).
+1. [Create a group](../../../../group/#create-a-group).
 1. [Connect a Kubernetes cluster to the group](../../add_remove_clusters.md).
 1. [Create a cluster management project and associate it with the Kubernetes cluster](../../../../clusters/management_project.md).
 

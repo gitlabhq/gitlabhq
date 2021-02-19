@@ -13,7 +13,7 @@ guidelines so you can build an integration that fits with the workflow GitLab
 users are already familiar with.
 
 This page also provides resources for the technical work associated
-with [onboarding as a partner](https://about.gitlab.com/partners/integrate/).
+with [onboarding as a partner](https://about.gitlab.com/partners/technology-partners/integrate/).
 The steps below are a high-level view of what needs to be done to complete an
 integration as well as linking to more detailed resources for how to do so.
 

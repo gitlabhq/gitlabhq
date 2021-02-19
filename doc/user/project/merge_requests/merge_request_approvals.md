@@ -138,14 +138,14 @@ to push or merge code to any branches.
 
 To enable this access:
 
-1. [Create a new group](../../group/index.md#create-a-new-group), and then
+1. [Create a new group](../../group/index.md#create-a-group), and then
    [add the user to the group](../../group/index.md#add-users-to-a-group),
    ensuring you select the Reporter role for the user.
 1. [Share the project with your group](../members/share_project_with_groups.md#sharing-a-project-with-a-group-of-users),
    based on the Reporter role.
 1. Navigate to your project's **Settings > General**, and in the
    **Merge request approvals** section, click **Expand**.
-1. [Add the group](../../group/index.md#create-a-new-group) to the permission list
+1. [Add the group](../../group/index.md#create-a-group) to the permission list
    for the protected branch.
 
 ![Update approval rule](img/update_approval_rule_v13_4.png)

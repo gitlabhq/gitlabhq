@@ -372,7 +372,7 @@ For GitLab Runner to function, you _must_ specify the following:
 - `runnerRegistrationToken`: The registration token for adding new runners to GitLab.
   This must be [retrieved from your GitLab instance](../../ci/runners/README.md).
 
-These values can be specified using [CI variables](../../ci/variables/README.md):
+These values can be specified using [CI/CD variables](../../ci/variables/README.md):
 
 - `GITLAB_RUNNER_GITLAB_URL` is used for `gitlabUrl`.
 - `GITLAB_RUNNER_REGISTRATION_TOKEN` is used for `runnerRegistrationToken`
@@ -730,7 +730,7 @@ Set:
 - "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`.
 - "Scope" to `api read_repository write_repository`.
 
-In addition, the following variables must be specified using [CI variables](../../ci/variables/README.md):
+In addition, the following variables must be specified using [CI/CD variables](../../ci/variables/README.md):
 
 - `JUPYTERHUB_PROXY_SECRET_TOKEN` - Secure string used for signing communications
   from the hub. Read [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference/reference.html#proxy-secrettoken).

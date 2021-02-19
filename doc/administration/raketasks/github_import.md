@@ -19,8 +19,8 @@ before/after the brackets. Also, some shells (for example, `zsh`) can interpret 
 
 ## Caveats
 
-If the GitHub [rate limit](https://docs.github.com/v3/#rate-limiting) is reached while importing,
-the importing process waits (`sleep()`) until it can continue importing.
+If the GitHub [rate limit](https://docs.github.com/en/rest/reference/rate-limit) is reached while
+importing, the importing process waits (`sleep()`) until it can continue importing.
 
 ## Importing multiple projects
 

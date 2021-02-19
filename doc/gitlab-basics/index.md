@@ -23,7 +23,7 @@ The following are guides to basic GitLab functionality:
 
 - [Create and add your SSH public key](../ssh/README.md), for enabling Git over SSH.
 - [Create a project](../user/project/working_with_projects.md#create-a-project), to start using GitLab.
-- [Create a group](../user/group/index.md#create-a-new-group), to combine and administer
+- [Create a group](../user/group/index.md#create-a-group), to combine and administer
   projects together.
 - [Create a branch](create-branch.md), to make changes to files stored in a project's repository.
 - [Feature branch workflow](feature_branch_workflow.md).

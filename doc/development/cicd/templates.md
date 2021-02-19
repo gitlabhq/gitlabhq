@@ -88,7 +88,7 @@ for example `Jobs/Deploy.gitlab-ci.yml`.
 You can make a new stable template by copying [the latest template](#latest-version)
 available in a major milestone release of GitLab like `13.0`. All breaking changes
 must be announced in a blog post before the official release, for example
-[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/releases/2020/05/06/gitlab-com-13-0-breaking-changes/)
+[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/blog/2020/05/06/gitlab-com-13-0-breaking-changes/)
 
 You can change a stable template version in a minor GitLab release like `13.1` if:
 

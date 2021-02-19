@@ -10,6 +10,7 @@ description: 'Confidence checking your entire app every time a new feature is ad
 ---
 
 <!-- vale off -->
+<!-- Needs review for fixing the broken Webdriver links, which link to a deprecated version of Webdriver. -->
 
 # End-to-end testing with GitLab CI/CD and WebdriverIO
 
@@ -83,7 +84,7 @@ multiple tests, such as making sure you are logged in.
 The function `it` defines an individual test.
 
 [The `browser` object](https://webdriver.io/guide/testrunner/browserobject.html) is WebdriverIO's
-special sauce. It provides most of [the WebdriverIO API methods](https://webdriver.io/api.html) that are the key to
+special sauce. It provides most of [the WebdriverIO API methods](https://webdriver.io/docs/api/) that are the key to
 steering the browser. In this case, we can use
 [`browser.url`](https://webdriver.io/api/protocol/url.html) to visit `/page-that-does-not-exist` to
 hit our 404 page. We can then use [`browser.getUrl`](https://webdriver.io/api/property/getUrl.html)

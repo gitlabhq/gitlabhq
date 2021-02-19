@@ -146,7 +146,7 @@ sudo gitlab-ctl restart consul
 ### Consul nodes unable to communicate
 
 By default, Consul will attempt to
-[bind](https://www.consul.io/docs/agent/options.html#_bind) to `0.0.0.0`, but
+[bind](https://www.consul.io/docs/agent/options#_bind) to `0.0.0.0`, but
 it will advertise the first private IP address on the node for other Consul nodes
 to communicate with it. If the other nodes cannot communicate with a node on
 this address, then the cluster will have a failed status.

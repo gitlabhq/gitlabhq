@@ -109,8 +109,8 @@ After all requirements are met, you can [enable Auto DevOps](index.md#enablingdi
 
 You can choose to target [AWS ECS](../../ci/cloud_deployment/index.md) as a deployment platform instead of using Kubernetes.
 
-To get started on Auto DevOps to AWS ECS, you must add a specific Environment
-Variable. To do so, follow these steps:
+To get started on Auto DevOps to AWS ECS, you must add a specific CI/CD variable.
+To do so, follow these steps:
 
 1. In your project, go to **Settings > CI / CD** and expand the **Variables**
    section.
@@ -121,7 +121,7 @@ Variable. To do so, follow these steps:
    - `ECS` if you're not enforcing any launch type check when deploying to ECS.
 
 When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
-[entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
+[entered AWS credentials as variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
 your application is deployed to AWS ECS.
 
 [GitLab Managed Apps](../../user/clusters/applications.md) are not available when deploying to AWS ECS.
@@ -145,7 +145,7 @@ own pipeline, as the override stops working when the name changes.
 
 You can target [AWS EC2](../../ci/cloud_deployment/index.md)
 as a deployment platform instead of Kubernetes. To use Auto DevOps with AWS EC2, you must add a
-specific environment variable.
+specific CI/CD variable.
 
 For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#custom-build-job-for-auto-devops)
 for deployments to AWS EC2.

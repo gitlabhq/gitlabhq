@@ -195,7 +195,7 @@
         #js-board-labels-toggle
         - if current_user
           #js-board-epics-swimlanes-toggle
-        .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
+        .js-board-config{ data: { can_admin_list: user_can_admin_list.to_s, has_scope: board.scoped?.to_s } }
         - if user_can_admin_list
           - if Feature.enabled?(:board_new_list, board.resource_parent, default_enabled: :yaml)
             .js-create-column-trigger{ data: board_list_data }

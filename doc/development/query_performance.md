@@ -25,7 +25,7 @@ When you are optimizing your SQL queries, there are two dimensions to pay attent
 
 - When analyzing your query's performance, pay attention to if the time you are seeing is on a [cold or warm cache](#cold-and-warm-cache). These guidelines apply for both cache types.
 - When working with batched queries, change the range and batch size to see how it effects the query timing and caching.
-- If an existing query is already underperforming, make an effort to improve it. If it is too complex or would stall development, create a follow-up so it can be addressed in a timely manner. You can always ask the database reviewer or maintainer for help and guidance.
+- If an existing query is not performing well, make an effort to improve it. If it is too complex or would stall development, create a follow-up so it can be addressed in a timely manner. You can always ask the database reviewer or maintainer for help and guidance.
 
 ## Cold and warm cache
 

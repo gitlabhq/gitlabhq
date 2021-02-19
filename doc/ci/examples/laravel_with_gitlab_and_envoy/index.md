@@ -619,7 +619,7 @@ deploy_production:
     - master
 ```
 
-You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/), to final test your application before deploying to production.
+You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/), to final test your application before deploying to production.
 
 ### Turn on GitLab CI/CD
 

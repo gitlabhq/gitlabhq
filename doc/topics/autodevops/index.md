@@ -31,24 +31,11 @@ management of processes, and faster creation of new projects: push your code,
 and GitLab does the rest, improving your productivity and efficiency.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4).
+For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4) or see this [overview](https://about.gitlab.com/stages-devops-lifecycle/auto-devops/).
 
 For requirements, read [Requirements for Auto DevOps](requirements.md) for more information.
 
 For a developer's guide, read [Auto DevOps development guide](../../development/auto_devops.md).
-
-### Share your feedback
-
-As Auto DevOps continues to gain popularity, and lowers the barrier to entry for
-getting started with DevOps and CI/CD, see what our wider community is saying:
-
-From [AlexJonesax](https://twitter.com/AlexJonesax) and [KaiPMDH](https://twitter.com/KaiPMDH) on Twitter:
-
-![Alex on Twitter: Auto DevOps in GitLab doesn't just lower the bar to entry, it removes the bar and holds your hand.](img/alexj_autodevops_min_v13_8.png)
-
-![Kai on Twitter: When I saw this on the Auto DevOps stuff, my mind was blown...](img/kai_autodevops_min_v13_8.png)
-
-We welcome everyone to [share your experience by tagging GitLab on Twitter](https://twitter.com/gitlab).
 
 ## Enabled by default
 

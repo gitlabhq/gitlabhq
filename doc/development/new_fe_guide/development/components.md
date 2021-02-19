@@ -19,7 +19,7 @@ D3 is very popular across many projects outside of GitLab:
 
 - [The New York Times](https://archive.nytimes.com/www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html)
 - [plot.ly](https://plotly.com/)
-- [Droptask](https://www.ayoa.com/previously-droptask/)
+- [Ayoa](https://www.ayoa.com/previously-droptask/)
 
 Within GitLab, D3 has been used for the following notable features
 

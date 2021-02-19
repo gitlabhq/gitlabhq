@@ -840,7 +840,9 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 
 ### 5. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary).
+[Check Metrics Dictionary Guide](usage_ping/metrics_dictionary.md)
+
+When adding, updating, or removing metrics, please update the [Metrics Dictionary](usage_ping/dictionary.md).
 
 ### 6. Add new metric to Versions Application
 

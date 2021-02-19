@@ -426,7 +426,7 @@ We are using a custom mapping between source file to test files, maintained in t
 
 ### PostgreSQL versions testing
 
-Even though [Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.md),
+Even though [Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html),
 our test suite is currently running against PG11, since GitLab.com still runs on PG11.
 
 We do run our test suite against PG12 on nightly scheduled pipelines as well as upon specific
