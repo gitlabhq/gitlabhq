@@ -62,7 +62,7 @@ must meet one of the following conditions prior to the import:
 
 - Have previously logged in to a GitLab account using the GitHub icon.
 - Have a GitHub account with a publicly visible
-  [primary email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user)
+  [primary email address](https://docs.github.com/en/rest/reference/users#get-a-user)
   on their profile that matches their GitLab account's primary or secondary email address.
 
 If a user referenced in the project is not found in the GitLab database, the project creator (typically the user
@@ -91,7 +91,7 @@ Before you begin, ensure that any GitHub users who you want to map to GitLab use
 
 - A GitLab account that has logged in using the GitHub icon
   \- or -
-- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user) in the profile of the GitHub user
+- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/rest/reference/users#get-a-user) in the profile of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.

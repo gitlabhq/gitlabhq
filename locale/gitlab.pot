@@ -3148,6 +3148,9 @@ msgstr ""
 msgid "Almost there"
 msgstr ""
 
+msgid "Almost there..."
+msgstr ""
+
 msgid "Already blocked"
 msgstr ""
 
@@ -20148,6 +20151,9 @@ msgstr ""
 msgid "No compliance frameworks are in use. Create one using the GraphQL API."
 msgstr ""
 
+msgid "No confirmation email received? Please check your spam folder or"
+msgstr ""
+
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
@@ -22179,6 +22185,9 @@ msgid "Please check the configuration file to ensure that it is available and th
 msgstr ""
 
 msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
+msgstr ""
+
+msgid "Please check your email to confirm your account"
 msgstr ""
 
 msgid "Please choose a file"
@@ -25194,6 +25203,9 @@ msgid "Request Access"
 msgstr ""
 
 msgid "Request details"
+msgstr ""
+
+msgid "Request new confirmation email"
 msgstr ""
 
 msgid "Request parameter %{param} is missing."

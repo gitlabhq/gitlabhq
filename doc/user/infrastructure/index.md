@@ -52,9 +52,9 @@ This video from January 2021 walks you through all the GitLab Terraform integrat
 
 ## GitLab Managed Terraform state
 
-[Terraform remote backends](https://www.terraform.io/docs/backends/index.html)
+[Terraform remote backends](https://www.terraform.io/docs/language/settings/backends/index.html)
 enable you to store the state file in a remote, shared store. GitLab uses the
-[Terraform HTTP backend](https://www.terraform.io/docs/backends/types/http.html)
+[Terraform HTTP backend](https://www.terraform.io/docs/language/settings/backends/http.html)
 to securely store the state files in local storage (the default) or
 [the remote store of your choice](../../administration/terraform_state.md).
 

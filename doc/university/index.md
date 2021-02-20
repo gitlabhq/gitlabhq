@@ -120,7 +120,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [GitLab and Docker - Video](https://www.youtube.com/watch?v=ugOrCcbdHko&index=12&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
 1. [How we scale GitLab with built in Docker](https://about.gitlab.com/blog/2016/06/21/how-we-scale-gitlab-by-having-docker-built-in/)
 1. [Continuous Integration, Delivery, and Deployment with GitLab](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/)
-1. [Deployments and Environments](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
+1. [Deployments and Environments](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 1. [Sequential, Parallel or Custom Pipelines](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/)
 1. [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/blog/2016/03/01/gitlab-runner-with-docker/)
 1. [Setting up GitLab Runner on DigitalOcean](https://about.gitlab.com/blog/2016/04/19/how-to-set-up-gitlab-runner-on-digitalocean/)
@@ -134,7 +134,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [GitLab Flow - Video](https://youtu.be/enMumwvLAug?list=PLFGfElNsQthZnwMUFi6rqkyUZkI00OxIV)
 1. [GitLab Flow vs Forking in GitLab - Video](https://www.youtube.com/watch?v=UGotqAUACZA)
-1. [GitLab Flow Overview](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
+1. [GitLab Flow Overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/)
 1. [Always Start with an Issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/)
 1. [GitLab Flow Documentation](../topics/gitlab_flow.md)
 

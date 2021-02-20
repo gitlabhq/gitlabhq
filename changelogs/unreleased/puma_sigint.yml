@@ -1,0 +1,5 @@
+---
+title: Send SIGINT instead of SIGQUIT to puma
+merge_request: 54446
+author: Jörg Behrmann @behrmann
+type: fixed

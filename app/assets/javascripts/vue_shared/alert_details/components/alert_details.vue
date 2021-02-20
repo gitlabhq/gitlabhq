@@ -368,7 +368,7 @@ export default {
           <alert-details-table :alert="alert" :loading="loading" />
         </gl-tab>
         <gl-tab
-          v-if="isThreatMonitoringPage"
+          v-if="!isThreatMonitoringPage"
           :data-testid="$options.tabsConfig[1].id"
           :title="$options.tabsConfig[1].title"
         >

@@ -14,7 +14,7 @@ large projects with speed and efficiency.
 [GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
 software development. Besides Git's functionalities, GitLab has a lot of
 powerful [features](https://about.gitlab.com/features/) to enhance your
-[workflow](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/).
+[workflow](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/).
 
 We've gathered some resources to help you to get the best from Git with GitLab.
 

@@ -7,9 +7,11 @@ module Clusters
 
     self.table_name = 'cluster_agent_tokens'
 
-    belongs_to :agent, class_name: 'Clusters::Agent'
+    belongs_to :agent, class_name: 'Clusters::Agent', optional: false
     belongs_to :created_by_user, class_name: 'User', optional: true
 
     before_save :ensure_token
+
+    validates :description, length: { maximum: 1024 }
   end
 end

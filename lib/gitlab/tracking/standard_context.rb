@@ -15,9 +15,13 @@ module Gitlab
       end
 
       def environment
-        return 'production' if Gitlab.com_and_canary?
-
         return 'staging' if Gitlab.staging?
+
+        return 'production' if Gitlab.com?
+
+        return 'org' if Gitlab.org?
+
+        return 'self-managed' if Rails.env.production?
 
         'development'
       end
