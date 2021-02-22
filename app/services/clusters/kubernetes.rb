@@ -14,5 +14,7 @@ module Clusters
     GITLAB_CROSSPLANE_DATABASE_ROLE_BINDING_NAME = 'gitlab-crossplane-database-rolebinding'
     KNATIVE_SERVING_NAMESPACE = 'knative-serving'
     ISTIO_SYSTEM_NAMESPACE = 'istio-system'
+    GITLAB_CILIUM_ROLE_NAME = 'gitlab-cilium-role'
+    GITLAB_CILIUM_ROLE_BINDING_NAME = 'gitlab-cilium-rolebinding'
   end
 end

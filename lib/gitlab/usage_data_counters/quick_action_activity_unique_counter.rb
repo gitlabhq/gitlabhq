@@ -34,6 +34,8 @@ module Gitlab
             event_name_for_unassign(args)
           when 'unlabel', 'remove_label'
             event_name_for_unlabel(args)
+          when 'invite_email'
+            'invite_email' + event_name_quantifier(args.split)
           else
             name
           end
@@ -44,10 +46,8 @@ module Gitlab
 
           if args.count == 1 && args.first == 'me'
             'assign_self'
-          elsif args.count == 1
-            'assign_single'
           else
-            'assign_multiple'
+            'assign' + event_name_quantifier(args)
           end
         end
 
@@ -80,6 +80,14 @@ module Gitlab
             'unlabel_specific'
           else
             'unlabel_all'
+          end
+        end
+
+        def event_name_quantifier(args)
+          if args.count == 1
+            '_single'
+          else
+            '_multiple'
           end
         end
       end

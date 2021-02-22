@@ -35,12 +35,11 @@ module BulkImports
         end
 
         def transform_parent(context, import_entity, data)
-          current_user = context.current_user
-          namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
+          unless import_entity.destination_namespace.blank?
+            namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
+            data['parent_id'] = namespace.id
+          end
 
-          return data if namespace == current_user.namespace
-
-          data['parent_id'] = namespace.id
           data
         end
 

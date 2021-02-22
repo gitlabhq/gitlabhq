@@ -235,6 +235,35 @@ module Gitlab
           @execution_message[:remove_zoom] = result.message
         end
 
+        desc _('Add email participant(s)')
+        explanation _('Adds email participant(s)')
+        params 'email1@example.com email2@example.com (up to 6 emails)'
+        types Issue
+        condition do
+          Feature.enabled?(:issue_email_participants, parent) &&
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
+        end
+        command :invite_email do |emails = ""|
+          MAX_NUMBER_OF_EMAILS = 6
+
+          existing_emails = quick_action_target.email_participants_downcase
+          emails_to_add = emails.split(' ').index_by { |email| [email.downcase, email] }.except(*existing_emails).each_value.first(MAX_NUMBER_OF_EMAILS)
+          added_emails = []
+
+          emails_to_add.each do |email|
+            new_participant = quick_action_target.issue_email_participants.create(email: email)
+            added_emails << email if new_participant.persisted?
+          end
+
+          if added_emails.any?
+            message = _("added %{emails}") % { emails: added_emails.to_sentence }
+            SystemNoteService.add_email_participants(quick_action_target, quick_action_target.project, current_user, message)
+            @execution_message[:invite_email] = message.upcase_first << "."
+          else
+            @execution_message[:invite_email] = _("No email participants were added. Either none were provided, or they already exist.")
+          end
+        end
+
         private
 
         def zoom_link_service

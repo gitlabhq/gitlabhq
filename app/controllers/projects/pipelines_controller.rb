@@ -14,7 +14,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
     push_frontend_feature_flag(:pipelines_security_report_summary, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
+    push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details_users, current_user, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, project, type: :development, default_enabled: :yaml)

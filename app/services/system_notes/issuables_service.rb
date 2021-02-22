@@ -354,6 +354,10 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
     end
 
+    def add_email_participants(body)
+      create_note(NoteSummary.new(noteable, project, author, body))
+    end
+
     def discussion_lock
       action = noteable.discussion_locked? ? 'locked' : 'unlocked'
       body = "#{action} this #{noteable.class.to_s.titleize.downcase}"

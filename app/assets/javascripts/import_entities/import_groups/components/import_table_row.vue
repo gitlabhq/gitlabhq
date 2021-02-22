@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlFormInput } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import Select2Select from '~/vue_shared/components/select2_select.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
@@ -23,6 +24,11 @@ export default {
       type: Array,
       required: true,
     },
+    canCreateGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isDisabled() {
@@ -34,11 +40,23 @@ export default {
     },
 
     select2Options() {
+      const availableNamespacesData = this.availableNamespaces.map((namespace) => ({
+        id: namespace.full_path,
+        text: namespace.full_path,
+      }));
+
+      if (!this.canCreateGroup) {
+        return { data: availableNamespacesData };
+      }
+
       return {
-        data: this.availableNamespaces.map((namespace) => ({
-          id: namespace.full_path,
-          text: namespace.full_path,
-        })),
+        data: [
+          { id: '', text: s__('BulkImport|No parent') },
+          {
+            text: s__('BulkImport|Existing groups'),
+            children: availableNamespacesData,
+          },
+        ],
       };
     },
   },

@@ -24,7 +24,7 @@ RSpec.describe Member do
       it { is_expected.to allow_value(nil).for(:expires_at) }
     end
 
-    it_behaves_like 'an object with email-formated attributes', :invite_email do
+    it_behaves_like 'an object with email-formatted attributes', :invite_email do
       subject { build(:project_member) }
     end
 

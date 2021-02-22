@@ -80,14 +80,14 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         expect(transformed_data['parent_id']).to eq(parent.id)
       end
 
-      context 'when destination namespace is user namespace' do
+      context 'when destination namespace is empty' do
         it 'does not set parent id' do
           entity = create(
             :bulk_import_entity,
             bulk_import: bulk_import,
             source_full_path: 'source/full/path',
             destination_name: group.name,
-            destination_namespace: user.namespace.full_path
+            destination_namespace: ''
           )
           context = BulkImports::Pipeline::Context.new(entity)
 

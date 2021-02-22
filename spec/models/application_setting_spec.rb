@@ -377,7 +377,7 @@ RSpec.describe ApplicationSetting do
       end
     end
 
-    it_behaves_like 'an object with email-formated attributes', :abuse_notification_email do
+    it_behaves_like 'an object with email-formatted attributes', :abuse_notification_email do
       subject { setting }
     end
 

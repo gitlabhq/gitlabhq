@@ -381,11 +381,11 @@ RSpec.describe User do
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
     it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
-    it_behaves_like 'an object with email-formated attributes', :email do
+    it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:user) }
     end
 
-    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :public_email, :notification_email do
+    it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :public_email, :notification_email do
       subject { create(:user).tap { |user| user.emails << build(:email, email: email_value, confirmed_at: Time.current) } }
     end
 

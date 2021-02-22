@@ -21,9 +21,13 @@ describe('import table', () => {
   let apolloProvider;
 
   const FAKE_GROUP = generateFakeEntry({ id: 1, status: STATUSES.NONE });
+  const FAKE_GROUPS = [
+    generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+    generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
+  ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
 
-  const createComponent = ({ bulkImportSourceGroups }) => {
+  const createComponent = ({ bulkImportSourceGroups, canCreateGroup }) => {
     apolloProvider = createMockApollo([], {
       Query: {
         availableNamespaces: () => availableNamespacesFixture,
@@ -39,6 +43,7 @@ describe('import table', () => {
     wrapper = shallowMount(ImportTable, {
       propsData: {
         sourceUrl: 'https://demo.host',
+        canCreateGroup,
       },
       stubs: {
         GlSprintf,
@@ -84,10 +89,6 @@ describe('import table', () => {
   });
 
   it('renders import row for each group in response', async () => {
-    const FAKE_GROUPS = [
-      generateFakeEntry({ id: 1, status: STATUSES.NONE }),
-      generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
-    ];
     createComponent({
       bulkImportSourceGroups: () => ({
         nodes: FAKE_GROUPS,
@@ -97,6 +98,25 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(wrapper.findAll(ImportTableRow)).toHaveLength(FAKE_GROUPS.length);
+  });
+
+  it.each`
+    canCreateGroup | userPermissions
+    ${true}        | ${'user can create new top-level group'}
+    ${false}       | ${'user cannot create new top-level group'}
+  `('correctly passes canCreateGroup to rows when $userPermissions', async ({ canCreateGroup }) => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: FAKE_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+      }),
+      canCreateGroup,
+    });
+    await waitForPromises();
+
+    wrapper.findAllComponents(ImportTableRow).wrappers.forEach((w) => {
+      expect(w.props().canCreateGroup).toBe(canCreateGroup);
+    });
   });
 
   it('does not render status string when result list is empty', async () => {

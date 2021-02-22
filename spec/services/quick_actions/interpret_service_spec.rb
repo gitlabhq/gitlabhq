@@ -1949,6 +1949,100 @@ RSpec.describe QuickActions::InterpretService do
         end
       end
     end
+
+    context 'invite_email command' do
+      let_it_be(:issuable) { issue }
+
+      it_behaves_like 'empty command', "No email participants were added. Either none were provided, or they already exist." do
+        let(:content) { '/invite_email' }
+      end
+
+      context 'with existing email participant' do
+        let(:content) { '/invite_email a@gitlab.com' }
+
+        before do
+          issuable.issue_email_participants.create!(email: "a@gitlab.com")
+        end
+
+        it_behaves_like 'empty command', "No email participants were added. Either none were provided, or they already exist."
+      end
+
+      context 'with new email participants' do
+        let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+
+        subject(:add_emails) { service.execute(content, issuable) }
+
+        it 'returns message' do
+          _, _, message = add_emails
+
+          expect(message).to eq('Added a@gitlab.com and b@gitlab.com.')
+        end
+
+        it 'adds 2 participants' do
+          expect { add_emails }.to change { issue.issue_email_participants.count }.by(2)
+        end
+
+        context 'with mixed case email' do
+          let(:content) { '/invite_email FirstLast@GitLab.com' }
+
+          it 'returns correctly cased message' do
+            _, _, message = add_emails
+
+            expect(message).to eq('Added FirstLast@GitLab.com.')
+          end
+        end
+
+        context 'with invalid email' do
+          let(:content) { '/invite_email a@gitlab.com bad_email' }
+
+          it 'only adds valid emails' do
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+        end
+
+        context 'with existing email' do
+          let(:content) { '/invite_email a@gitlab.com existing@gitlab.com' }
+
+          it 'only adds new emails' do
+            issue.issue_email_participants.create!(email: 'existing@gitlab.com')
+
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+
+          it 'only adds new (case insensitive) emails' do
+            issue.issue_email_participants.create!(email: 'EXISTING@gitlab.com')
+
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+        end
+
+        context 'with duplicate email' do
+          let(:content) { '/invite_email a@gitlab.com a@gitlab.com' }
+
+          it 'only adds unique new emails' do
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+        end
+
+        context 'with more than 6 emails' do
+          let(:content) { '/invite_email a@gitlab.com b@gitlab.com c@gitlab.com d@gitlab.com e@gitlab.com f@gitlab.com g@gitlab.com' }
+
+          it 'only adds 6 new emails' do
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(6)
+          end
+        end
+
+        context 'with feature flag disabled' do
+          before do
+            stub_feature_flags(issue_email_participants: false)
+          end
+
+          it 'does not add any participants' do
+            expect { add_emails }.not_to change { issue.issue_email_participants.count }
+          end
+        end
+      end
+    end
   end
 
   describe '#explain' do

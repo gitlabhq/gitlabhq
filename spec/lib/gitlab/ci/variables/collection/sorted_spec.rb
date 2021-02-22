@@ -3,6 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
+  describe '#initialize with non-Collection value' do
+    let_it_be(:project_with_flag_disabled) { create(:project) }
+    let_it_be(:project_with_flag_enabled) { create(:project) }
+
+    before do
+      stub_feature_flags(variable_inside_variable: [project_with_flag_enabled])
+    end
+
+    context 'when FF :variable_inside_variable is disabled' do
+      subject { Gitlab::Ci::Variables::Collection::Sorted.new([], project_with_flag_disabled) }
+
+      it 'raises ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
+      end
+    end
+
+    context 'when FF :variable_inside_variable is enabled' do
+      subject { Gitlab::Ci::Variables::Collection::Sorted.new([], project_with_flag_enabled) }
+
+      it 'raises ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
+      end
+    end
+  end
+
   describe '#errors' do
     context 'when FF :variable_inside_variable is disabled' do
       let_it_be(:project_with_flag_disabled) { create(:project) }
@@ -56,7 +81,9 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project_with_flag_disabled) }
+          let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
+
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(collection, project_with_flag_disabled) }
 
           it 'does not report error' do
             expect(subject.errors).to eq(nil)
@@ -106,7 +133,9 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
         end
 
         with_them do
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project_with_flag_enabled) }
+          let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
+
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(collection, project_with_flag_enabled) }
 
           it 'errors matches expected validation result' do
             expect(subject.errors).to eq(validation_result)
@@ -171,10 +200,12 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
 
         with_them do
           let_it_be(:project) { create(:project) }
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project) }
+          let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
+
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(collection, project).sort }
 
           it 'does not expand variables' do
-            expect(subject.sort).to eq(variables)
+            is_expected.to be(collection)
           end
         end
       end
@@ -247,10 +278,12 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sorted do
 
         with_them do
           let_it_be(:project) { create(:project) }
-          subject { Gitlab::Ci::Variables::Collection::Sorted.new(variables, project) }
+          let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
 
-          it 'sort returns correctly sorted variables' do
-            expect(subject.sort.map { |var| var[:key] }).to eq(result)
+          subject { Gitlab::Ci::Variables::Collection::Sorted.new(collection, project).sort }
+
+          it 'returns correctly sorted variables' do
+            expect(subject.map { |var| var[:key] }).to eq(result)
           end
         end
       end
