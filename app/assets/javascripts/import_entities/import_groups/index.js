@@ -21,6 +21,7 @@ export function mountImportGroupsApp(mountElement) {
   } = mountElement.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createApolloClient({
+      sourceUrl,
       endpoints: {
         status: statusPath,
         availableNamespaces: availableNamespacesPath,

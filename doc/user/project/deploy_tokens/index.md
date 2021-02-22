@@ -169,7 +169,7 @@ apply consistently when cloning the repository of related projects.
 
 There's a special case when it comes to Deploy Tokens. If a user creates one
 named `gitlab-deploy-token`, the username and token of the Deploy Token is
-automatically exposed to the CI/CD jobs as environment variables: `CI_DEPLOY_USER`
+automatically exposed to the CI/CD jobs as CI/CD variables: `CI_DEPLOY_USER`
 and `CI_DEPLOY_PASSWORD`, respectively.
 
 After you create the token, you can sign in to the Container Registry by using

@@ -33,11 +33,6 @@ export default {
       type: String,
       required: true,
     },
-    canCreateGroup: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   data() {
@@ -176,7 +171,6 @@ export default {
                 :key="group.id"
                 :group="group"
                 :available-namespaces="availableNamespaces"
-                :can-create-group="canCreateGroup"
                 @update-target-namespace="updateTargetNamespace(group.id, $event)"
                 @update-new-name="updateNewName(group.id, $event)"
                 @import-group="importGroup(group.id)"

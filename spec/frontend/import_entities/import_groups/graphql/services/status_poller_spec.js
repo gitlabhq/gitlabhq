@@ -2,7 +2,6 @@ import MockAdapter from 'axios-mock-adapter';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
-import { SourceGroupsManager } from '~/import_entities/import_groups/graphql/services/source_groups_manager';
 import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
@@ -18,24 +17,21 @@ jest.mock('~/import_entities/import_groups/graphql/services/source_groups_manage
 }));
 
 const FAKE_POLL_PATH = '/fake/poll/path';
-const CLIENT_MOCK = {};
 
 describe('Bulk import status poller', () => {
   let poller;
   let mockAdapter;
+  let groupManager;
 
   const getPollHistory = () => mockAdapter.history.get.filter((x) => x.url === FAKE_POLL_PATH);
 
   beforeEach(() => {
     mockAdapter = new MockAdapter(axios);
     mockAdapter.onGet(FAKE_POLL_PATH).reply(200, {});
-    poller = new StatusPoller({ client: CLIENT_MOCK, pollPath: FAKE_POLL_PATH });
-  });
-
-  it('creates source group manager with proper client', () => {
-    expect(SourceGroupsManager.mock.calls).toHaveLength(1);
-    const [[{ client }]] = SourceGroupsManager.mock.calls;
-    expect(client).toBe(CLIENT_MOCK);
+    groupManager = {
+      setImportStatusByImportId: jest.fn(),
+    };
+    poller = new StatusPoller({ groupManager, pollPath: FAKE_POLL_PATH });
   });
 
   it('creates poller with proper config', () => {
@@ -100,14 +96,9 @@ describe('Bulk import status poller', () => {
   it('when success response arrives updates relevant group status', () => {
     const FAKE_ID = 5;
     const [[pollConfig]] = Poll.mock.calls;
-    const [managerInstance] = SourceGroupsManager.mock.instances;
-    managerInstance.findByImportId.mockReturnValue({ id: FAKE_ID });
 
     pollConfig.successCallback({ data: [{ id: FAKE_ID, status_name: STATUSES.FINISHED }] });
 
-    expect(managerInstance.setImportStatus).toHaveBeenCalledWith(
-      expect.objectContaining({ id: FAKE_ID }),
-      STATUSES.FINISHED,
-    );
+    expect(groupManager.setImportStatusByImportId).toHaveBeenCalledWith(FAKE_ID, STATUSES.FINISHED);
   });
 });

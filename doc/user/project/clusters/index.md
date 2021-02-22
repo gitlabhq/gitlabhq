@@ -86,7 +86,7 @@ differentiates the new cluster from the rest.
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables) work.
+[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster
@@ -200,7 +200,7 @@ To clear the cache:
 You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
 is specified as part of the Knative installation. See [Installing Applications](#installing-applications).
 
-Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an environment variable.
+Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
@@ -288,7 +288,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use the GitLab cluster integration, you can still deploy to your
   cluster. However, you must configure Kubernetes tools yourself
-  using [environment variables](../../../ci/variables/README.md#custom-cicd-variables)
+  using [CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables)
   before you can interact with the cluster from your jobs.
 
 ### Deployment variables
@@ -314,7 +314,7 @@ The Kubernetes cluster integration exposes these
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 [defined a target environment](../../../ci/environments/index.md#defining-environments).
 
-| Variable                   | Description |
+| Deployment Variable        | Description |
 |----------------------------|-------------|
 | `KUBE_URL`                 | Equal to the API URL. |
 | `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
@@ -352,7 +352,7 @@ When you customize the namespace, existing environments remain linked to their c
 namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
 
 WARNING:
-By default, anyone who can create a deployment job can access any CI variable in
+By default, anyone who can create a deployment job can access any CI/CD variable in
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
@@ -406,7 +406,7 @@ deployments, replica sets, and pods are annotated with:
 - `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG`
 
 `$CI_ENVIRONMENT_SLUG` and `$CI_PROJECT_PATH_SLUG` are the values of
-the CI variables.
+the CI/CD variables.
 
 You must be the project owner or have `maintainer` permissions to use terminals.
 Support is limited to the first container in the first pod of your environment.
@@ -431,7 +431,7 @@ Reasons for failure include:
 
 - The token you gave GitLab does not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
   privileges required by GitLab.
-- Missing `KUBECONFIG` or `KUBE_TOKEN` variables. To be passed to your job, they must have a matching
+- Missing `KUBECONFIG` or `KUBE_TOKEN` deployment variables. To be passed to your job, they must have a matching
   [`environment:name`](../../../ci/environments/index.md#defining-environments). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 

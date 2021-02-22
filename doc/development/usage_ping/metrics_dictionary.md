@@ -28,15 +28,16 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 |---------------------|----------|----------------------------------------------------------------|
 | `key_path`          | yes      | JSON key path for the metric, location in Usage Ping payload.  |
 | `description`       | yes      |                                                                |
-| `value_type`        | yes      |                                                                |
-| `status`            | yes      |                                                                |
-| `product_group`     | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the metric. |
-| `time_frame`        | yes      | `string`; may be set to a value like "7d"                             |
-| `data_source`       | yes      | `string`: may be set to a value like `database` or `redis_hll`.       |
+| `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
+| `product_stage`     | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
+| `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
+| `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
+| `value_type`        | yes      | `string`; one of `string`, `number`, `boolean`.                                                               |
+| `status`            | yes      | `string`; status of the metric, may be set to `data_available`, `implemented`. |
+| `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
+| `data_source`       | yes      | `string`: may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `ruby`. |
 | `distribution`      | yes      | The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the metric applies. |
 | `tier`              | yes      | The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the metric applies. |
-| `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
-| `product_stage`     | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |

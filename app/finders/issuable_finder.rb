@@ -47,6 +47,7 @@ class IssuableFinder
   NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
 
   attr_accessor :current_user, :params
+  attr_reader :original_params
   attr_writer :parent
 
   delegate(*%i[assignee milestones], to: :params)
@@ -87,7 +88,7 @@ class IssuableFinder
     end
 
     def valid_params
-      @valid_params ||= scalar_params + [array_params.merge(not: {})]
+      @valid_params ||= scalar_params + [array_params.merge(or: {}, not: {})]
     end
   end
 
@@ -101,6 +102,7 @@ class IssuableFinder
 
   def initialize(current_user, params = {})
     @current_user = current_user
+    @original_params = params
     @params = params_class.new(params, current_user, klass)
   end
 
@@ -142,7 +144,7 @@ class IssuableFinder
   end
 
   def should_filter_negated_args?
-    return false unless Feature.enabled?(:not_issuable_queries, params.group || params.project, default_enabled: true)
+    return false unless not_filters_enabled?
 
     # API endpoints send in `nil` values so we test if there are any non-nil
     not_params.present? && not_params.values.any?
@@ -150,7 +152,6 @@ class IssuableFinder
 
   # Negates all params found in `negatable_params`
   def filter_negated_items(items)
-    items = by_negated_author(items)
     items = by_negated_assignee(items)
     items = by_negated_label(items)
     items = by_negated_milestone(items)
@@ -372,31 +373,14 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
-    if params.author
-      items.where(author_id: params.author.id)
-    elsif params.no_author?
-      items.where(author_id: nil)
-    elsif params.author_id? || params.author_username? # author not found
-      items.none
-    else
-      items
-    end
+    Issuables::AuthorFilter.new(
+      items,
+      params: original_params,
+      or_filters_enabled: or_filters_enabled?,
+      not_filters_enabled: not_filters_enabled?
+    ).filter
   end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_negated_author(items)
-    if not_params.author
-      items.where.not(author_id: not_params.author.id)
-    elsif not_params.author_id? || not_params.author_username? # author not found
-      items.none
-    else
-      items
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_assignee(items)
     if params.filter_by_no_assignee?
@@ -513,5 +497,21 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
+  end
+
+  def or_filters_enabled?
+    strong_memoize(:or_filters_enabled) do
+      Feature.enabled?(:or_issuable_queries, feature_flag_scope, default_enabled: :yaml)
+    end
+  end
+
+  def not_filters_enabled?
+    strong_memoize(:not_filters_enabled) do
+      Feature.enabled?(:not_issuable_queries, feature_flag_scope, default_enabled: :yaml)
+    end
+  end
+
+  def feature_flag_scope
+    params.group || params.project
   end
 end

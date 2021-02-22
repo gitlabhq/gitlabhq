@@ -7,6 +7,12 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: {
+    upgradePath: {
+      from: 'upgradePath',
+      default: '#',
+    },
+  },
   i18n: {
     UPGRADE_CTA,
   },
@@ -17,7 +23,7 @@ export default {
   <span>
     <gl-sprintf :message="$options.i18n.UPGRADE_CTA">
       <template #link="{ content }">
-        <gl-link target="_blank" href="https://about.gitlab.com/pricing/">
+        <gl-link target="_blank" :href="upgradePath">
           {{ content }}
         </gl-link>
       </template>

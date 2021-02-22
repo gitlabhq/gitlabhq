@@ -78,6 +78,34 @@ describe('Tracking', () => {
       navigator.msDoNotTrack = undefined;
     });
 
+    describe('builds the standard context', () => {
+      let standardContext;
+
+      beforeAll(async () => {
+        window.gl = window.gl || {};
+        window.gl.snowplowStandardContext = {
+          schema: 'iglu:com.gitlab/gitlab_standard',
+          data: {
+            environment: 'testing',
+            source: 'unknown',
+          },
+        };
+
+        jest.resetModules();
+
+        ({ STANDARD_CONTEXT: standardContext } = await import('~/tracking'));
+      });
+
+      it('uses server data', () => {
+        expect(standardContext.schema).toBe('iglu:com.gitlab/gitlab_standard');
+        expect(standardContext.data.environment).toBe('testing');
+      });
+
+      it('overrides schema source', () => {
+        expect(standardContext.data.source).toBe('gitlab-javascript');
+      });
+    });
+
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event('_category_', '_eventName_', { label: '_label_' });
 

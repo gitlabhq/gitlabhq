@@ -1,9 +1,6 @@
 <script>
 import { GlButtonGroup, GlButton, GlDropdown, GlFormCheckbox } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-
-import { EVT_VIEW_FILE_BY_FILE } from '../constants';
-import eventHub from '../event_hub';
 import { SETTINGS_DROPDOWN } from '../i18n';
 
 export default {
@@ -24,9 +21,10 @@ export default {
       'setParallelDiffViewType',
       'setRenderTreeList',
       'setShowWhitespace',
+      'setFileByFile',
     ]),
     toggleFileByFile() {
-      eventHub.$emit(EVT_VIEW_FILE_BY_FILE, { setting: !this.viewDiffsFileByFile });
+      this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
     },
   },
 };

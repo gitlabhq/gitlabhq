@@ -421,7 +421,7 @@ terminal:
   See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/-/issues/7) for
   more information.
 - `$CI_PROJECT_DIR` is a
-  [predefined environment variable](../../../ci/variables/predefined_variables.md)
+  [predefined CI/CD variable](../../../ci/variables/predefined_variables.md)
   for GitLab Runners. This is where your project's repository resides.
 
 After you have configured the web terminal for file syncing, then when the web

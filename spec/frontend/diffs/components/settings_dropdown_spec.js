@@ -1,11 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
-import {
-  EVT_VIEW_FILE_BY_FILE,
-  PARALLEL_DIFF_VIEW_TYPE,
-  INLINE_DIFF_VIEW_TYPE,
-} from '~/diffs/constants';
+import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
 import diffModule from '~/diffs/store/modules';
 
@@ -48,6 +44,7 @@ describe('Diff settings dropdown component', () => {
       setParallelDiffViewType: jest.fn(),
       setRenderTreeList: jest.fn(),
       setShowWhitespace: jest.fn(),
+      setFileByFile: jest.fn(),
     };
   });
 
@@ -196,12 +193,12 @@ describe('Diff settings dropdown component', () => {
     );
 
     it.each`
-      start    | emit
+      start    | setting
       ${true}  | ${false}
       ${false} | ${true}
     `(
-      'when the file by file setting starts as $start, toggling the checkbox should emit an event set to $emit',
-      async ({ start, emit }) => {
+      'when the file by file setting starts as $start, toggling the checkbox should call setFileByFile with $setting',
+      async ({ start, setting }) => {
         createComponent((store) => {
           Object.assign(store.state.diffs, {
             viewDiffsFileByFile: start,
@@ -214,7 +211,9 @@ describe('Diff settings dropdown component', () => {
 
         await vm.$nextTick();
 
-        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_VIEW_FILE_BY_FILE, { setting: emit });
+        expect(actions.setFileByFile).toHaveBeenLastCalledWith(expect.anything(), {
+          fileByFile: setting,
+        });
       },
     );
   });

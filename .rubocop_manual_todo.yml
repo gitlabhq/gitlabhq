@@ -1977,7 +1977,6 @@ Gitlab/NamespacedClass:
     - 'app/validators/untrusted_regexp_validator.rb'
     - 'app/validators/nested_attributes_duplicates_validator.rb'
     - 'app/validators/x509_certificate_credentials_validator.rb'
-    - 'app/validators/zoom_url_validator.rb'
     - 'app/workers/admin_email_worker.rb'
     - 'app/workers/approve_blocked_pending_approval_users_worker.rb'
     - 'app/workers/archive_trace_worker.rb'

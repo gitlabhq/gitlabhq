@@ -116,7 +116,7 @@ and the CI YAML file:
    image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
    ```
 
-1. In the `.gitlab-ci.yml` file, define some environment variables to ease
+1. In the `.gitlab-ci.yml` file, define some CI/CD variables to ease
    development. In this example, `TF_ROOT` is the directory where the Terraform
    commands must be executed, `TF_ADDRESS` is the URL to the state on the GitLab
    instance where this pipeline runs, and the final path segment in `TF_ADDRESS`
@@ -212,7 +212,7 @@ as [Terraform input variables](https://www.terraform.io/docs/language/values/var
 - **username**: The username to authenticate with the data source. If you are using a [Personal Access Token](../profile/personal_access_tokens.md) for
   authentication, this is your GitLab username. If you are using GitLab CI, this is `'gitlab-ci-token'`.
 - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
-  authentication, this is the token value. If you are using GitLab CI, it is the contents of the `${CI_JOB_TOKEN}` CI variable.
+  authentication, this is the token value. If you are using GitLab CI, it is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
 
 An example setup is shown below:
 

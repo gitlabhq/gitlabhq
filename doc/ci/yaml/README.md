@@ -355,8 +355,8 @@ You can also store template files in a central repository and `include` them in 
 otherwise the external file is not included.
 
 You can't use [YAML anchors](#anchors) across different YAML files sourced by `include`.
-You can only refer to anchors in the same file. Instead of YAML anchors, you can
-use the [`extends` keyword](#extends).
+You can only refer to anchors in the same file. To reuse configuration from different
+YAML files, use [`!reference` tags](#reference-tags) or the [`extends` keyword](#extends).
 
 `include` supports the following inclusion methods:
 
@@ -4391,9 +4391,10 @@ Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](#
 to provide templates for your jobs. When there are duplicate keys, GitLab
 performs a reverse deep merge based on the keys.
 
-You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
-feature. Anchors are only valid in the file they were defined in. Instead
-of using YAML anchors, you can use the [`extends` keyword](#extends).
+You can't use YAML anchors across multiple files when using the [`include`](#include)
+keyword. Anchors are only valid in the file they were defined in. To reuse configuration
+from different YAML files, use [`!reference` tags](#reference-tags) or the
+[`extends` keyword](#extends).
 
 The following example uses anchors and map merging. It creates two jobs,
 `test1` and `test2`, that inherit the `.job_template` configuration, each

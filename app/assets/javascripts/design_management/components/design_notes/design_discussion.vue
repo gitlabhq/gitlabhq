@@ -253,7 +253,7 @@ export default {
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       />
-      <li v-show="isReplyPlaceholderVisible" class="reply-wrapper">
+      <li v-show="isReplyPlaceholderVisible" class="reply-wrapper discussion-reply-holder">
         <reply-placeholder
           v-if="!isFormVisible"
           class="qa-discussion-reply"

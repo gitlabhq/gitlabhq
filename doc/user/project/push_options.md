@@ -34,12 +34,12 @@ git push -o <push_option>
 
 ## Push options for GitLab CI/CD
 
-You can use push options to skip a CI/CD pipeline, or pass environment variables.
+You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
 | Push option                    | Description                                                                                 | Introduced in version |
 | ------------------------------ | ------------------------------------------------------------------------------------------- |---------------------- |
 | `ci.skip`                      | Do not create a CI pipeline for the latest push.                                            | [11.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) |
-| `ci.variable="<name>=<value>"` | Provide [environment variables](../../ci/variables/README.md) to be used in a CI pipeline, if one is created due to the push. | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/README.md) to be used in a CI pipeline, if one is created due to the push. | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
 
 An example of using `ci.skip`:
 
@@ -47,7 +47,7 @@ An example of using `ci.skip`:
 git push -o ci.skip
 ```
 
-An example of passing some environment variables for a pipeline:
+An example of passing some CI/CD variables for a pipeline:
 
 ```shell
 git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"

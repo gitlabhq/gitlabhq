@@ -75,23 +75,24 @@ describe('import table row', () => {
     });
   });
 
-  it('renders only namespaces if user cannot create new group', () => {
+  it('renders only no parent option if available namespaces list is empty', () => {
     createComponent({
-      canCreateGroup: false,
       group: getFakeGroup(STATUSES.NONE),
+      availableNamespaces: [],
     });
 
     const dropdownData = findNamespaceDropdown().props().options.data;
     const noParentOption = dropdownData.find((o) => o.text === 'No parent');
+    const existingGroupOption = dropdownData.find((o) => o.text === 'Existing groups');
 
-    expect(noParentOption).toBeUndefined();
-    expect(dropdownData).toHaveLength(availableNamespacesFixture.length);
+    expect(noParentOption.id).toBe('');
+    expect(existingGroupOption).toBeUndefined();
   });
 
-  it('renders no parent option in available namespaces if user can create new group', () => {
+  it('renders both no parent option and available namespaces list when available namespaces list is not empty', () => {
     createComponent({
-      canCreateGroup: true,
       group: getFakeGroup(STATUSES.NONE),
+      availableNamespaces: availableNamespacesFixture,
     });
 
     const dropdownData = findNamespaceDropdown().props().options.data;

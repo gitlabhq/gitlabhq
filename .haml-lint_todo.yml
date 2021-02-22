@@ -216,8 +216,6 @@ linters:
       - 'app/views/projects/merge_requests/conflicts/_commit_stats.html.haml'
       - 'app/views/projects/merge_requests/conflicts/_file_actions.html.haml'
       - 'app/views/projects/merge_requests/conflicts/_submit_form.html.haml'
-      - 'app/views/projects/merge_requests/conflicts/components/_diff_file_editor.html.haml'
-      - 'app/views/projects/merge_requests/conflicts/components/_inline_conflict_lines.html.haml'
       - 'app/views/projects/merge_requests/conflicts/show.html.haml'
       - 'app/views/projects/merge_requests/creations/_diffs.html.haml'
       - 'app/views/projects/merge_requests/creations/_new_compare.html.haml'

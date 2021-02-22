@@ -103,7 +103,6 @@ export const RENAMED_DIFF_TRANSITIONS = {
 
 // MR Diffs known events
 export const EVT_EXPAND_ALL_FILES = 'mr:diffs:expandAllFiles';
-export const EVT_VIEW_FILE_BY_FILE = 'mr:diffs:preference:fileByFile';
 export const EVT_PERF_MARK_FILE_TREE_START = 'mr:diffs:perf:fileTreeStart';
 export const EVT_PERF_MARK_FILE_TREE_END = 'mr:diffs:perf:fileTreeEnd';
 export const EVT_PERF_MARK_DIFF_FILES_START = 'mr:diffs:perf:filesStart';

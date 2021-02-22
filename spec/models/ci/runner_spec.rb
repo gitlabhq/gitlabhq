@@ -40,41 +40,39 @@ RSpec.describe Ci::Runner do
     context 'runner_type validations' do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project) }
-      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-      let(:instance_runner) { create(:ci_runner, :instance) }
 
       it 'disallows assigning group to project_type runner' do
-        project_runner.groups << build(:group)
+        project_runner = build(:ci_runner, :project, groups: [group])
 
         expect(project_runner).not_to be_valid
         expect(project_runner.errors.full_messages).to include('Runner cannot have groups assigned')
       end
 
       it 'disallows assigning group to instance_type runner' do
-        instance_runner.groups << build(:group)
+        instance_runner = build(:ci_runner, :instance, groups: [group])
 
         expect(instance_runner).not_to be_valid
         expect(instance_runner.errors.full_messages).to include('Runner cannot have groups assigned')
       end
 
       it 'disallows assigning project to group_type runner' do
-        group_runner.projects << build(:project)
+        group_runner = build(:ci_runner, :instance, projects: [project])
 
         expect(group_runner).not_to be_valid
         expect(group_runner.errors.full_messages).to include('Runner cannot have projects assigned')
       end
 
       it 'disallows assigning project to instance_type runner' do
-        instance_runner.projects << build(:project)
+        instance_runner = build(:ci_runner, :instance, projects: [project])
 
         expect(instance_runner).not_to be_valid
         expect(instance_runner.errors.full_messages).to include('Runner cannot have projects assigned')
       end
 
       it 'fails to save a group assigned to a project runner even if the runner is already saved' do
-        group.runners << project_runner
-        expect { group.save! }
+        project_runner = create(:ci_runner, :project, projects: [project])
+
+        expect { create(:group, runners: [project_runner]) }
           .to raise_error(ActiveRecord::RecordInvalid)
       end
     end

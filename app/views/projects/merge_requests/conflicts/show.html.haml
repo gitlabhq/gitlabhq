@@ -27,10 +27,10 @@
           = render partial: 'projects/merge_requests/conflicts/file_actions'
         .diff-content.diff-wrap-lines
           .file-content{ "v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
-            = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
+            %inline-conflict-lines{ ":file" => "file" }
           .file-content{ "v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
             %parallel-conflict-lines{ ":file" => "file" }
           %div{ "v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'" }
-            = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"
+            %diff-file-editor{ ":file" => "file", ":on-cancel-discard-confirmation" => "cancelDiscardConfirmation", ":on-accept-discard-confirmation" => "acceptDiscardConfirmation" }
 
     = render partial: "projects/merge_requests/conflicts/submit_form"

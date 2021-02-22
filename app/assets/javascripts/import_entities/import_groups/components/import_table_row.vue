@@ -24,11 +24,6 @@ export default {
       type: Array,
       required: true,
     },
-    canCreateGroup: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     isDisabled() {
@@ -45,19 +40,18 @@ export default {
         text: namespace.full_path,
       }));
 
-      if (!this.canCreateGroup) {
-        return { data: availableNamespacesData };
+      const select2Config = {
+        data: [{ id: '', text: s__('BulkImport|No parent') }],
+      };
+
+      if (availableNamespacesData.length) {
+        select2Config.data.push({
+          text: s__('BulkImport|Existing groups'),
+          children: availableNamespacesData,
+        });
       }
 
-      return {
-        data: [
-          { id: '', text: s__('BulkImport|No parent') },
-          {
-            text: s__('BulkImport|Existing groups'),
-            children: availableNamespacesData,
-          },
-        ],
-      };
+      return select2Config;
     },
   },
   methods: {

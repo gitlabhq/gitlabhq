@@ -67,8 +67,6 @@ class Namespace < ApplicationRecord
   validate :changing_shared_runners_enabled_is_allowed
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
 
-  validates_associated :runners
-
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
 
