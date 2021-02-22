@@ -16,7 +16,18 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
     result = DependencyProxy::FindOrCreateManifestService.new(group, image, tag, token).execute
 
     if result[:status] == :success
-      send_upload(result[:manifest].file)
+      response.headers['Docker-Content-Digest'] = result[:manifest].digest
+      response.headers['Content-Length'] = result[:manifest].size
+      response.headers['Docker-Distribution-Api-Version'] = DependencyProxy::DISTRIBUTION_API_VERSION
+      response.headers['Etag'] = "\"#{result[:manifest].digest}\""
+      content_type = result[:manifest].content_type
+
+      send_upload(
+        result[:manifest].file,
+        proxy: true,
+        redirect_params: { query: { 'response-content-type' => content_type } },
+        send_params: { type: content_type }
+      )
     else
       render status: result[:http_status], json: result[:message]
     end

@@ -37,8 +37,13 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
-    result = BulkImportService.new(current_user, create_params, credentials).execute
-    render json: result.to_json(only: [:id])
+    response = BulkImportService.new(current_user, create_params, credentials).execute
+
+    if response.success?
+      render json: response.payload.to_json(only: [:id])
+    else
+      render json: { error: response.message }, status: response.http_status
+    end
   end
 
   def realtime_changes

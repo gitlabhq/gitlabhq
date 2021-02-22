@@ -117,4 +117,27 @@ RSpec.describe BulkImports::Pipeline do
       end
     end
   end
+
+  describe '#transformers' do
+    before do
+      klass = Class.new do
+        include BulkImports::Pipeline
+
+        transformer BulkImports::Transformer
+
+        def transform; end
+      end
+
+      stub_const('BulkImports::TransformersPipeline', klass)
+    end
+
+    it 'has instance transform method first to run' do
+      transformer = double
+      allow(BulkImports::Transformer).to receive(:new).and_return(transformer)
+
+      pipeline = BulkImports::TransformersPipeline.new(nil)
+
+      expect(pipeline.send(:transformers)).to eq([pipeline, transformer])
+    end
+  end
 end

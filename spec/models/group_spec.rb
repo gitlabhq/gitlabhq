@@ -1045,6 +1045,29 @@ RSpec.describe Group do
           include(group_user.id))
       end
     end
+
+    context 'distinct user ids' do
+      let_it_be(:subgroup) { create(:group, :nested) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:shared_with_group) { create(:group) }
+      let_it_be(:other_subgroup_user) { create(:user) }
+
+      before do
+        create(:group_group_link, shared_group: subgroup, shared_with_group: shared_with_group)
+        subgroup.add_maintainer(other_subgroup_user)
+
+        # `user` is added as a direct member of the parent group, the subgroup
+        # and another group shared with the subgroup.
+        subgroup.parent.add_maintainer(user)
+        subgroup.add_developer(user)
+        shared_with_group.add_guest(user)
+      end
+
+      it 'returns only distinct user ids of users for which to refresh authorizations' do
+        expect(subgroup.user_ids_for_project_authorizations).to(
+          contain_exactly(user.id, other_subgroup_user.id))
+      end
+    end
   end
 
   describe '#update_two_factor_requirement' do

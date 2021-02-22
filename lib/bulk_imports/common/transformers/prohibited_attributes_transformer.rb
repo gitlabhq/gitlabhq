@@ -15,6 +15,8 @@ module BulkImports
         ).freeze
 
         def transform(context, data)
+          return unless data
+
           data.each_with_object({}) do |(key, value), result|
             prohibited = prohibited_key?(key)
 

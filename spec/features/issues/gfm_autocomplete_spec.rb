@@ -6,6 +6,7 @@ RSpec.describe 'GFM autocomplete', :js do
   let_it_be(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let_it_be(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
   let_it_be(:group) { create(:group, name: 'Ancestor') }
   let_it_be(:child_group) { create(:group, parent: group, name: 'My group') }
   let_it_be(:project) { create(:project, group: child_group) }
@@ -16,6 +17,7 @@ RSpec.describe 'GFM autocomplete', :js do
   before_all do
     project.add_maintainer(user)
     project.add_maintainer(user_xss)
+    project.add_maintainer(user2)
   end
 
   describe 'when tribute_autocomplete feature flag is off' do
@@ -86,11 +88,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       wait_for_requests
 
-      expect(page).to have_selector('.atwho-container')
-
-      page.within '.atwho-container #at-view-users' do
-        expect(find('li').text).to have_content(user_xss.username)
-      end
+      expect(find_highlighted_autocomplete_item).to have_content(user_xss.username)
     end
 
     it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
@@ -190,7 +188,30 @@ RSpec.describe 'GFM autocomplete', :js do
 
       wait_for_requests
 
-      expect(find('.atwho-view li', visible: true)).to have_content(user.name)
+      expect(find_highlighted_autocomplete_item).to have_content(user.name)
+    end
+
+    it 'shows names that start with the query as the top result' do
+      type(find('#note-body'), '@mar')
+
+      wait_for_requests
+
+      expect(find_highlighted_autocomplete_item).to have_content(user2.name)
+    end
+
+    it 'shows usernames that start with the query as the top result' do
+      type(find('#note-body'), '@msi')
+
+      wait_for_requests
+
+      expect(find_highlighted_autocomplete_item).to have_content(user2.name)
+    end
+
+    # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/321925
+    it 'shows username when pasting then pressing Enter' do
+      fill_in 'Description', with: "@#{user.username}\n"
+
+      expect(find_field('Description').value).to have_content "@#{user.username}"
     end
 
     it 'selects the first item for non-assignee dropdowns if a query is entered' do
@@ -1003,5 +1024,9 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     wait_for_requests
+  end
+
+  def find_highlighted_autocomplete_item
+    find('.atwho-view li.cur', visible: true)
   end
 end

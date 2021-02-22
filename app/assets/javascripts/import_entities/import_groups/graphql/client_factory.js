@@ -122,10 +122,8 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
           });
           groupManager.startImport({ group, importId: response.data.id });
         } catch (e) {
-          createFlash({
-            message: s__('BulkImport|Importing the group failed'),
-          });
-
+          const message = e?.response?.data?.error ?? s__('BulkImport|Importing the group failed');
+          createFlash({ message });
           groupManager.setImportStatus(group, STATUSES.NONE);
           throw e;
         }

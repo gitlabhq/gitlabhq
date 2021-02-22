@@ -18,11 +18,11 @@ module DependencyProxyHelpers
       .to_return(status: status, body: body || manifest, headers: headers)
   end
 
-  def stub_manifest_head(image, tag, status: 200, body: nil, digest: '123456')
+  def stub_manifest_head(image, tag, status: 200, body: nil, headers: {})
     manifest_url = registry.manifest_url(image, tag)
 
     stub_full_request(manifest_url, method: :head)
-      .to_return(status: status, body: body, headers: { 'docker-content-digest' => digest } )
+      .to_return(status: status, body: body, headers: headers )
   end
 
   def stub_blob_download(image, blob_sha, status = 200, body = '123456')

@@ -25,7 +25,7 @@ module Projects
 
     override :schedule_bulk_worker_klass
     def self.schedule_bulk_worker_klass
-      ::ProjectScheduleBulkRepositoryShardMovesWorker
+      ::Projects::ScheduleBulkRepositoryShardMovesWorker
     end
   end
 end

@@ -388,7 +388,7 @@ class Group < Namespace
   end
 
   def user_ids_for_project_authorizations
-    members_with_parents.pluck(:user_id)
+    members_with_parents.pluck(Arel.sql('DISTINCT members.user_id'))
   end
 
   def self_and_ancestors_ids

@@ -282,6 +282,10 @@
   - 1
 - - projects_git_garbage_collect
   - 1
+- - projects_schedule_bulk_repository_shard_moves
+  - 1
+- - projects_update_repository_storage
+  - 1
 - - prometheus_create_default_alerts
   - 1
 - - propagate_integration

@@ -406,6 +406,8 @@ all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/423) in GitLab 13.10.
+
 By default, the Pages daemon uses the `api` scope to authenticate. You can configure this. For
 example, this reduces the scope to `read_api` in `/etc/gitlab/gitlab.rb`:
 

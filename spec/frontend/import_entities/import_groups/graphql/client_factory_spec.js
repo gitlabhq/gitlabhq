@@ -2,6 +2,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockClient } from 'mock-apollo-client';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import {
   clientTypenames,
@@ -18,6 +19,7 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { statusEndpointFixture, availableNamespacesFixture } from './fixtures';
 
+jest.mock('~/flash');
 jest.mock('~/import_entities/import_groups/graphql/services/status_poller', () => ({
   StatusPoller: jest.fn().mockImplementation(function mock() {
     this.startPolling = jest.fn();
@@ -286,6 +288,40 @@ describe('Bulk import resolvers', () => {
         await waitForPromises();
 
         expect(results[0].status).toBe(STATUSES.NONE);
+      });
+
+      it('shows default error message when server error is not provided', async () => {
+        axiosMockAdapter
+          .onPost(FAKE_ENDPOINTS.createBulkImport)
+          .reply(httpStatus.INTERNAL_SERVER_ERROR);
+
+        client
+          .mutate({
+            mutation: importGroupMutation,
+            variables: { sourceGroupId: GROUP_ID },
+          })
+          .catch(() => {});
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenCalledWith({ message: 'Importing the group failed' });
+      });
+
+      it('shows provided error message when error is included in backend response', async () => {
+        const CUSTOM_MESSAGE = 'custom message';
+
+        axiosMockAdapter
+          .onPost(FAKE_ENDPOINTS.createBulkImport)
+          .reply(httpStatus.INTERNAL_SERVER_ERROR, { error: CUSTOM_MESSAGE });
+
+        client
+          .mutate({
+            mutation: importGroupMutation,
+            variables: { sourceGroupId: GROUP_ID },
+          })
+          .catch(() => {});
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenCalledWith({ message: CUSTOM_MESSAGE });
       });
     });
   });

@@ -59,7 +59,7 @@ Before you push your changes, Lefthook automatically runs the following checks:
 - ES lint: Run `yarn run internal:eslint` checks (with the [`.eslintrc.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.eslintrc.yml) configuration) on the modified `*.{js,vue}` files. Tags: `frontend`, `style`.
 - HAML lint: Run `bundle exec haml-lint` checks (with the [`.haml-lint.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.haml-lint.yml) configuration) on the modified `*.html.haml` files. Tags: `view`, `haml`, `style`.
 - Markdown lint: Run `yarn markdownlint` checks on the modified `*.md` files. Tags: `documentation`, `style`.
-- SCSS lint: Run `yarn stylelint` checks (with the [`.stylelintrc`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.stylelintrc) configuration) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
+- SCSS lint: Run `yarn lint:stylelint` checks (with the [`.stylelintrc`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.stylelintrc) configuration) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
 - RuboCop: Run `bundle exec rubocop` checks (with the [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml) configuration) on the modified `*.rb` files. Tags: `backend`, `style`.
 - Vale: Run `vale` checks (with the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) configuration) on the modified `*.md` files. Tags: `documentation`, `style`.
 

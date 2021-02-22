@@ -29,22 +29,30 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     end
   end
 
-  describe '.find_or_initialize_by_file_name' do
-    subject { DependencyProxy::Manifest.find_or_initialize_by_file_name(file_name) }
+  describe '.find_or_initialize_by_file_name_or_digest' do
+    let_it_be(:file_name) { 'foo' }
+    let_it_be(:digest) { 'bar' }
+
+    subject { DependencyProxy::Manifest.find_or_initialize_by_file_name_or_digest(file_name: file_name, digest: digest) }
 
     context 'no manifest exists' do
-      let_it_be(:file_name) { 'foo' }
-
       it 'initializes a manifest' do
-        expect(DependencyProxy::Manifest).to receive(:new).with(file_name: file_name)
+        expect(DependencyProxy::Manifest).to receive(:new).with(file_name: file_name, digest: digest)
 
         subject
       end
     end
 
-    context 'manifest exists' do
+    context 'manifest exists and matches file_name' do
       let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest) }
       let_it_be(:file_name) { dependency_proxy_manifest.file_name }
+
+      it { is_expected.to eq(dependency_proxy_manifest) }
+    end
+
+    context 'manifest exists and matches digest' do
+      let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest) }
+      let_it_be(:digest) { dependency_proxy_manifest.digest }
 
       it { is_expected.to eq(dependency_proxy_manifest) }
     end

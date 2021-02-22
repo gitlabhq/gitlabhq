@@ -475,7 +475,7 @@ terminal.
 Read the [Release CLI documentation](https://gitlab.com/gitlab-org/release-cli/-/blob/master/docs/index.md)
 for details.
 
-## Release Metrics **(PREMIUM)**
+## Release Metrics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 

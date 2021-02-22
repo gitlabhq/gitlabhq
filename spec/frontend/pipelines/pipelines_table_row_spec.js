@@ -153,11 +153,10 @@ describe('Pipelines Table Row', () => {
     });
 
     it('should render an icon for each stage', () => {
-      expect(
-        wrapper.findAll(
-          '.table-section:nth-child(5) [data-testid="mini-pipeline-graph-dropdown-toggle"]',
-        ).length,
-      ).toEqual(pipeline.details.stages.length);
+      const stages = wrapper.findAll(
+        '.table-section:nth-child(5) [data-testid="mini-pipeline-graph-dropdown"]',
+      );
+      expect(stages).toHaveLength(pipeline.details.stages.length);
     });
   });
 

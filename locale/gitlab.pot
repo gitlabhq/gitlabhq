@@ -7960,9 +7960,6 @@ msgstr ""
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
-msgid "ContainerRegistry|Expiration policies help manage the storage space used by the Container Registry, but the expiration policies for this registry are disabled. Contact your administrator to enable. %{docLinkStart}More information%{docLinkEnd}"
-msgstr ""
-
 msgid "ContainerRegistry|Expiration policy is disabled"
 msgstr ""
 
@@ -17559,9 +17556,6 @@ msgstr ""
 msgid "Learn more about signing commits"
 msgstr ""
 
-msgid "Learn more about the dependency list"
-msgstr ""
-
 msgid "Learn more in the"
 msgstr ""
 
@@ -17782,9 +17776,6 @@ msgid "Licenses|Displays licenses detected in the project, based on the %{linkSt
 msgstr ""
 
 msgid "Licenses|Error fetching the license list. Please check your network connection and try again."
-msgstr ""
-
-msgid "Licenses|Learn more about license compliance"
 msgstr ""
 
 msgid "Licenses|License Compliance"

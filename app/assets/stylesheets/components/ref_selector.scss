@@ -11,7 +11,12 @@
   .dropdown-menu.show {
     // Make the dropdown a little wider and longer than usual
     // since it contains quite a bit of content.
+    overflow: hidden;
     width: 20rem;
-    max-height: $dropdown-max-height-lg;
+
+    &,
+    .gl-new-dropdown-inner {
+      max-height: $dropdown-max-height-lg;
+    }
   }
 }

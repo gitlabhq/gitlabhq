@@ -135,7 +135,7 @@ Before adding a new variable for a color or a size, guarantee:
 We use [stylelint](https://stylelint.io) to check for style guide conformity. It uses the
 ruleset in `.stylelintrc` and rules from [our SCSS configuration](https://gitlab.com/gitlab-org/frontend/gitlab-stylelint-config). `.stylelintrc` is located in the home directory of the project.
 
-To check if any warnings are produced by your changes, run `yarn stylelint` in the GitLab directory. Stylelint also runs in GitLab CI/CD to
+To check if any warnings are produced by your changes, run `yarn lint:stylelint` in the GitLab directory. Stylelint also runs in GitLab CI/CD to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's

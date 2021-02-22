@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Transformers::AwardEmojiTransformer do
+RSpec.describe BulkImports::Common::Transformers::UserReferenceTransformer do
   describe '#transform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
@@ -12,7 +12,6 @@ RSpec.describe BulkImports::Common::Transformers::AwardEmojiTransformer do
 
     let(:hash) do
       {
-        'name' => 'thumbs up',
         'user' => {
           'public_email' => email
         }
@@ -43,6 +42,28 @@ RSpec.describe BulkImports::Common::Transformers::AwardEmojiTransformer do
       let(:email) { nil }
 
       include_examples 'sets user_id and removes user key'
+    end
+
+    context 'when there is no data to transform' do
+      it 'returns' do
+        expect(subject.transform(nil, nil)).to be_nil
+      end
+    end
+
+    context 'when custom reference is provided' do
+      it 'updates provided reference' do
+        hash = {
+          'author' => {
+            'public_email' => user.email
+          }
+        }
+
+        transformer = described_class.new(reference: 'author')
+        result = transformer.transform(context, hash)
+
+        expect(result['author']).to be_nil
+        expect(result['author_id']).to eq(user.id)
+      end
     end
   end
 end

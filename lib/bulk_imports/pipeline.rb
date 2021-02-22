@@ -3,6 +3,7 @@
 module BulkImports
   module Pipeline
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
     include Gitlab::ClassAttributes
     include Runner
 
@@ -60,12 +61,17 @@ module BulkImports
       #   end
       # end
       #
-      # In the example above `MyTransformerOne` is the first to run and
-      # the instance `#transform` method is the last.
+      # In the example above `#transform` is the first to run and
+      # `MyTransformerTwo` method is the last.
       def transformers
-        @transformers ||= self.class.transformers.map(&method(:instantiate))
-        @transformers << self if respond_to?(:transform) && @transformers.exclude?(self)
-        @transformers
+        strong_memoize(:transformers) do
+          defined_transformers = self.class.transformers.map(&method(:instantiate))
+
+          transformers = []
+          transformers << self if respond_to?(:transform)
+          transformers.concat(defined_transformers)
+          transformers
+        end
       end
 
       # Fetch pipeline loader.
@@ -126,7 +132,7 @@ module BulkImports
       end
 
       def transformers
-        class_attributes[:transformers]
+        class_attributes[:transformers] || []
       end
 
       def get_loader

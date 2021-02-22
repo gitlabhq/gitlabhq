@@ -48,6 +48,7 @@ The following resources are migrated to the target instance:
   - author ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/298745))
   - parent epic ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297459))
   - emoji award ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297466))
+  - events ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/297465))
 
 Any other items are **not** migrated.
 

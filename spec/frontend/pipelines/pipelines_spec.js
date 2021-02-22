@@ -69,7 +69,8 @@ describe('Pipelines', () => {
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
-  const findStagesDropdown = () => wrapper.findByTestId('mini-pipeline-graph-dropdown-toggle');
+  const findStagesDropdownToggle = () =>
+    wrapper.find('[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = (props = defaultProps) => {
@@ -642,7 +643,7 @@ describe('Pipelines', () => {
           // Mock init a polling cycle
           wrapper.vm.poll.options.notificationCallback(true);
 
-          findStagesDropdown().trigger('click');
+          findStagesDropdownToggle().trigger('click');
 
           await waitForPromises();
 
@@ -652,7 +653,9 @@ describe('Pipelines', () => {
         });
 
         it('stops polling & restarts polling', async () => {
-          findStagesDropdown().trigger('click');
+          findStagesDropdownToggle().trigger('click');
+
+          await waitForPromises();
 
           expect(cancelMock).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();

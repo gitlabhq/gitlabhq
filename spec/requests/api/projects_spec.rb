@@ -2818,7 +2818,7 @@ RSpec.describe API::Projects do
             Sidekiq::Testing.fake! do
               put(api("/projects/#{new_project.id}", user), params: { repository_storage: unknown_storage, issues_enabled: false })
             end
-          end.not_to change(ProjectUpdateRepositoryStorageWorker.jobs, :size)
+          end.not_to change(Projects::UpdateRepositoryStorageWorker.jobs, :size)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['issues_enabled']).to eq(false)
@@ -2845,7 +2845,7 @@ RSpec.describe API::Projects do
             Sidekiq::Testing.fake! do
               put(api("/projects/#{new_project.id}", admin), params: { repository_storage: 'test_second_storage' })
             end
-          end.to change(ProjectUpdateRepositoryStorageWorker.jobs, :size).by(1)
+          end.to change(Projects::UpdateRepositoryStorageWorker.jobs, :size).by(1)
 
           expect(response).to have_gitlab_http_status(:ok)
         end

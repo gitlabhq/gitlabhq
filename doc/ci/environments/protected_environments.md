@@ -125,7 +125,9 @@ they have the following privileges:
 ## Deployment-only access to protected environments
 
 Users granted access to a protected environment, but not push or merge access
-to the branch deployed to it, are only granted access to deploy the environment.
+to the branch deployed to it, are only granted access to deploy the environment. An individual in a
+group with the Reporter permission, or in groups added to the project with Reporter permissions,
+appears in the dropdown menu for deployment-only access.
 
 Note that deployment-only access is the only possible access level for users with
 [Reporter permissions](../../user/permissions.md).

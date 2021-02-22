@@ -4,7 +4,6 @@ import Component from '~/registry/explorer/components/list_page/registry_header.
 import {
   CONTAINER_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
-  EXPIRATION_POLICY_DISABLED_MESSAGE,
   EXPIRATION_POLICY_DISABLED_TEXT,
 } from '~/registry/explorer/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -130,42 +129,6 @@ describe('registry_header', () => {
         expect(findTitleArea().props('infoMessages')).toEqual([
           { text: LIST_INTRO_TEXT, link: 'foo' },
         ]);
-      });
-    });
-
-    describe('expiration policy info message', () => {
-      describe('when there are images', () => {
-        describe('when expiration policy is disabled', () => {
-          beforeEach(() => {
-            return mountComponent({
-              expirationPolicy: { enabled: false },
-              expirationPolicyHelpPagePath: 'foo',
-              imagesCount: 1,
-            });
-          });
-
-          it('the prop is correctly bound', () => {
-            expect(findTitleArea().props('infoMessages')).toEqual([
-              { text: LIST_INTRO_TEXT, link: '' },
-              { text: EXPIRATION_POLICY_DISABLED_MESSAGE, link: 'foo' },
-            ]);
-          });
-        });
-
-        describe.each`
-          desc                                                   | props
-          ${'when there are no images'}                          | ${{ expirationPolicy: { enabled: false }, imagesCount: 0 }}
-          ${'when expiration policy is enabled'}                 | ${{ expirationPolicy: { enabled: true }, imagesCount: 1 }}
-          ${'when the expiration policy is completely disabled'} | ${{ expirationPolicy: { enabled: false }, imagesCount: 1, hideExpirationPolicyData: true }}
-        `('$desc', ({ props }) => {
-          it('message does not exist', () => {
-            mountComponent(props);
-
-            expect(findTitleArea().props('infoMessages')).toEqual([
-              { text: LIST_INTRO_TEXT, link: '' },
-            ]);
-          });
-        });
       });
     });
   });

@@ -96,20 +96,20 @@ Depending on your target platform, some features might not be available to you.
 Comprised of a set of [stages](stages.md), Auto DevOps brings these best practices to your
 project in a simple and automatic way:
 
-1. [Auto Build](stages.md#auto-build)
-1. [Auto Test](stages.md#auto-test)
-1. [Auto Code Quality](stages.md#auto-code-quality)
-1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast)
-1. [Auto Secret Detection](stages.md#auto-secret-detection)
-1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning) **(ULTIMATE)**
-1. [Auto License Compliance](stages.md#auto-license-compliance) **(ULTIMATE)**
-1. [Auto Container Scanning](stages.md#auto-container-scanning) **(ULTIMATE)**
-1. [Auto Review Apps](stages.md#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](stages.md#auto-dast) **(ULTIMATE)**
-1. [Auto Deploy](stages.md#auto-deploy)
-1. [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) **(PREMIUM)**
-1. [Auto Monitoring](stages.md#auto-monitoring)
-1. [Auto Code Intelligence](stages.md#auto-code-intelligence)
+- [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing)
+- [Auto Build](stages.md#auto-build)
+- [Auto Code Intelligence](stages.md#auto-code-intelligence)
+- [Auto Code Quality](stages.md#auto-code-quality)
+- [Auto Container Scanning](stages.md#auto-container-scanning)
+- [Auto DAST (Dynamic Application Security Testing)](stages.md#auto-dast)
+- [Auto Dependency Scanning](stages.md#auto-dependency-scanning)
+- [Auto Deploy](stages.md#auto-deploy)
+- [Auto License Compliance](stages.md#auto-license-compliance)
+- [Auto Monitoring](stages.md#auto-monitoring)
+- [Auto Review Apps](stages.md#auto-review-apps)
+- [Auto SAST (Static Application Security Testing)](stages.md#auto-sast)
+- [Auto Secret Detection](stages.md#auto-secret-detection)
+- [Auto Test](stages.md#auto-test)
 
 As Auto DevOps relies on many different components, you should have a basic
 knowledge of the following:
@@ -334,3 +334,6 @@ spec:
     - name: https_proxy
       value: "PUT_YOUR_HTTPS_PROXY_HERE"
 ```
+
+<!-- DO NOT ADD TROUBLESHOOTING INFO HERE -->
+<!-- Troubleshooting information has moved to troubleshooting.md -->

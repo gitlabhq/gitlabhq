@@ -1,38 +1,16 @@
 {
-   "schemaVersion": 1,
-   "name": "library/alpine",
-   "tag": "latest",
-   "architecture": "amd64",
-   "fsLayers": [
+   "schemaVersion": 2,
+   "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+   "config": {
+      "mediaType": "application/vnd.docker.container.image.v1+json",
+      "size": 1472,
+      "digest": "sha256:7731472c3f2a25edbb9c085c78f42ec71259f2b83485aa60648276d408865839"
+   },
+   "layers": [
       {
-         "blobSum": "sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4"
-      },
-      {
-         "blobSum": "sha256:188c0c94c7c576fff0792aca7ec73d67a2f7f4cb3a6e53a84559337260b36964"
-      }
-   ],
-   "history": [
-      {
-         "v1Compatibility": "{\"architecture\":\"amd64\",\"config\":{\"Hostname\":\"\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":[\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"],\"Cmd\":[\"/bin/sh\"],\"ArgsEscaped\":true,\"Image\":\"sha256:3543079adc6fb5170279692361be8b24e89ef1809a374c1b4429e1d560d1459c\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":null},\"container\":\"8c59eb170e19b8c3768b8d06c91053b0debf4a6fa6a452df394145fe9b885ea5\",\"container_config\":{\"Hostname\":\"8c59eb170e19\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":[\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"],\"Cmd\":[\"/bin/sh\",\"-c\",\"#(nop) \",\"CMD [\\\"/bin/sh\\\"]\"],\"ArgsEscaped\":true,\"Image\":\"sha256:3543079adc6fb5170279692361be8b24e89ef1809a374c1b4429e1d560d1459c\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":{}},\"created\":\"2020-10-22T02:19:24.499382102Z\",\"docker_version\":\"18.09.7\",\"id\":\"c5f1aab5bb88eaf1aa62bea08ea6654547d43fd4d15b1a476c77e705dd5385ba\",\"os\":\"linux\",\"parent\":\"dc0b50cc52bc340d7848a62cfe8a756f4420592f4984f7a680ef8f9d258176ed\",\"throwaway\":true}"
-      },
-      {
-         "v1Compatibility": "{\"id\":\"dc0b50cc52bc340d7848a62cfe8a756f4420592f4984f7a680ef8f9d258176ed\",\"created\":\"2020-10-22T02:19:24.33416307Z\",\"container_config\":{\"Cmd\":[\"/bin/sh -c #(nop) ADD file:f17f65714f703db9012f00e5ec98d0b2541ff6147c2633f7ab9ba659d0c507f4 in / \"]}}"
-      }
-   ],
-   "signatures": [
-      {
-         "header": {
-            "jwk": {
-               "crv": "P-256",
-               "kid": "XOTE:DZ4C:YBPJ:3O3L:YI4B:NYXU:T4VR:USH6:CXXN:SELU:CSCC:FVPE",
-               "kty": "EC",
-               "x": "cR1zye_3354mdbD7Dn-mtXNXvtPtmLlUVDa5vH6Lp74",
-               "y": "rldUXSllLit6_2BW6AV8aqkwWJXHoYPG9OwkIBouwxQ"
-            },
-            "alg": "ES256"
-         },
-         "signature": "DYB2iB-XKIisqp5Q0OXFOBIOlBOuRV7pnZuKy0cxVB2Qj1VFRhWX4Tq336y0VMWbF6ma1he5A1E_Vk4jazrJ9g",
-         "protected": "eyJmb3JtYXRMZW5ndGgiOjIxMzcsImZvcm1hdFRhaWwiOiJDbjAiLCJ0aW1lIjoiMjAyMC0xMS0yNFQyMjowMTo1MVoifQ"
+         "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+         "size": 2810825,
+         "digest": "sha256:596ba82af5aaa3e2fd9d6f955b8b94f0744a2b60710e3c243ba3e4a467f051d1"
       }
    ]
 }

@@ -10,7 +10,12 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
   let(:manifest) { dependency_proxy_manifest.file.read }
   let(:group) { dependency_proxy_manifest.group }
   let(:token) { Digest::SHA256.hexdigest('123') }
-  let(:headers) { { 'docker-content-digest' => dependency_proxy_manifest.digest } }
+  let(:headers) do
+    {
+      'docker-content-digest' => dependency_proxy_manifest.digest,
+      'content-type' => dependency_proxy_manifest.content_type
+    }
+  end
 
   describe '#execute' do
     subject { described_class.new(group, image, tag, token).execute }
@@ -18,22 +23,37 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
     context 'when no manifest exists' do
       let_it_be(:image) { 'new-image' }
 
-      before do
-        stub_manifest_head(image, tag, digest: dependency_proxy_manifest.digest)
-        stub_manifest_download(image, tag, headers: headers)
+      shared_examples 'downloading the manifest' do
+        it 'downloads manifest from remote registry if there is no cached one', :aggregate_failures do
+          expect { subject }.to change { group.dependency_proxy_manifests.count }.by(1)
+          expect(subject[:status]).to eq(:success)
+          expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
+          expect(subject[:manifest]).to be_persisted
+        end
       end
 
-      it 'downloads manifest from remote registry if there is no cached one', :aggregate_failures do
-        expect { subject }.to change { group.dependency_proxy_manifests.count }.by(1)
-        expect(subject[:status]).to eq(:success)
-        expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
-        expect(subject[:manifest]).to be_persisted
+      context 'successful head request' do
+        before do
+          stub_manifest_head(image, tag, headers: headers)
+          stub_manifest_download(image, tag, headers: headers)
+        end
+
+        it_behaves_like 'downloading the manifest'
+      end
+
+      context 'failed head request' do
+        before do
+          stub_manifest_head(image, tag, status: :error)
+          stub_manifest_download(image, tag, headers: headers)
+        end
+
+        it_behaves_like 'downloading the manifest'
       end
     end
 
     context 'when manifest exists' do
       before do
-        stub_manifest_head(image, tag, digest: dependency_proxy_manifest.digest)
+        stub_manifest_head(image, tag, headers: headers)
       end
 
       shared_examples 'using the cached manifest' do
@@ -48,15 +68,17 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
 
       context 'when digest is stale' do
         let(:digest) { 'new-digest' }
+        let(:content_type) { 'new-content-type' }
 
         before do
-          stub_manifest_head(image, tag, digest: digest)
-          stub_manifest_download(image, tag, headers: { 'docker-content-digest' => digest })
+          stub_manifest_head(image, tag, headers: { 'docker-content-digest' => digest, 'content-type' => content_type })
+          stub_manifest_download(image, tag, headers: { 'docker-content-digest' => digest, 'content-type' => content_type })
         end
 
         it 'downloads the new manifest and updates the existing record', :aggregate_failures do
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to eq(dependency_proxy_manifest)
+          expect(subject[:manifest].content_type).to eq(content_type)
           expect(subject[:manifest].digest).to eq(digest)
         end
       end
