@@ -3,7 +3,9 @@
 module QA
   module Resource
     class Snippet < Base
-      attr_accessor :title, :description, :file_content, :visibility, :file_name, :snippet_id
+      attr_accessor :title, :description, :file_content, :visibility, :file_name
+
+      attribute :id
 
       def initialize
         @title = 'New snippet title'
@@ -44,7 +46,7 @@ module QA
       end
 
       def api_get_path
-        "/snippets/#{snippet_id}"
+        "/snippets/#{id}"
       end
 
       def api_post_path
@@ -58,6 +60,10 @@ module QA
             visibility: visibility.downcase,
             files: all_file_contents
         }
+      end
+
+      def api_delete_path
+        "/snippets/#{id}"
       end
 
       def all_file_contents

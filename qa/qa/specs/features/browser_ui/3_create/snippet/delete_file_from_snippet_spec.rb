@@ -31,6 +31,11 @@ module QA
         Flow::Login.sign_in
       end
 
+      after do
+        personal_snippet&.remove_via_api!
+        project_snippet&.remove_via_api!
+      end
+
       shared_examples 'deleting file from snippet' do |snippet_type|
         it "deletes second file from an existing #{snippet_type} to make it single-file" do
           send(snippet_type).visit!

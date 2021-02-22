@@ -25,12 +25,14 @@ module MergeRequests
       update_task_event(merge_request) || update(merge_request)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def handle_changes(merge_request, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
       old_reviewers = old_associations.fetch(:reviewers, [])
+      changed_fields = merge_request.previous_changes.keys
 
       if has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
         todo_service.resolve_todos_for_target(merge_request, current_user)
@@ -52,15 +54,11 @@ module MergeRequests
       end
 
       handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
-
       handle_reviewers_change(merge_request, old_reviewers) if merge_request.reviewers != old_reviewers
-
-      if merge_request.previous_changes.include?('target_branch') ||
-          merge_request.previous_changes.include?('source_branch')
-        merge_request.mark_as_unchecked
-      end
-
       handle_milestone_change(merge_request)
+      handle_draft_status_change(merge_request, changed_fields)
+
+      track_title_and_desc_edits(changed_fields)
 
       added_labels = merge_request.labels - old_labels
       if added_labels.present?
@@ -80,7 +78,17 @@ module MergeRequests
           current_user
         )
       end
+
+      # Since #mark_as_unchecked triggers an update action through the MR's
+      #   state machine, we want to push this as far down in the process so we
+      #   avoid resetting #ActiveModel::Dirty
+      #
+      if merge_request.previous_changes.include?('target_branch') ||
+          merge_request.previous_changes.include?('source_branch')
+        merge_request.mark_as_unchecked
+      end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def handle_task_changes(merge_request)
       todo_service.resolve_todos_for_target(merge_request, current_user)
@@ -95,50 +103,46 @@ module MergeRequests
       MergeRequests::CloseService
     end
 
-    def before_update(issuable, skip_spam_check: false)
-      return unless issuable.changed?
-
-      @issuable_changes = issuable.changes
-    end
-
     def after_update(issuable)
       issuable.cache_merge_request_closes_issues!(current_user)
-
-      return unless @issuable_changes
-
-      %w(title description).each do |action|
-        next unless @issuable_changes.key?(action)
-
-        # Track edits to title or description
-        #
-        merge_request_activity_counter
-          .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
-
-        # Track changes to Draft/WIP status
-        #
-        if action == "title"
-          old_title, new_title = @issuable_changes["title"]
-          old_title_wip = MergeRequest.work_in_progress?(old_title)
-          new_title_wip = MergeRequest.work_in_progress?(new_title)
-
-          if !old_title_wip && new_title_wip
-            # Marked as Draft/WIP
-            #
-            merge_request_activity_counter
-              .track_marked_as_draft_action(user: current_user)
-          elsif old_title_wip && !new_title_wip
-            # Unmarked as Draft/WIP
-            #
-            merge_request_activity_counter
-              .track_unmarked_as_draft_action(user: current_user)
-          end
-        end
-      end
     end
 
     private
 
     attr_reader :target_branch_was_deleted
+
+    def track_title_and_desc_edits(changed_fields)
+      tracked_fields = %w(title description)
+
+      return unless changed_fields.any? { |field| tracked_fields.include?(field) }
+
+      tracked_fields.each do |action|
+        next unless changed_fields.include?(action)
+
+        merge_request_activity_counter
+          .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+
+    def handle_draft_status_change(merge_request, changed_fields)
+      return unless changed_fields.include?("title")
+
+      old_title, new_title = merge_request.previous_changes["title"]
+      old_title_wip = MergeRequest.work_in_progress?(old_title)
+      new_title_wip = MergeRequest.work_in_progress?(new_title)
+
+      if !old_title_wip && new_title_wip
+        # Marked as Draft/WIP
+        #
+        merge_request_activity_counter
+          .track_marked_as_draft_action(user: current_user)
+      elsif old_title_wip && !new_title_wip
+        # Unmarked as Draft/WIP
+        #
+        merge_request_activity_counter
+          .track_unmarked_as_draft_action(user: current_user)
+      end
+    end
 
     def handle_milestone_change(merge_request)
       return if skip_milestone_email

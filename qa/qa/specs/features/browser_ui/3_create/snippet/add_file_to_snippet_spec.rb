@@ -23,6 +23,11 @@ module QA
         Flow::Login.sign_in
       end
 
+      after do
+        personal_snippet&.remove_via_api!
+        project_snippet&.remove_via_api!
+      end
+
       shared_examples 'adding file to snippet' do |snippet_type|
         it "adds second file to an existing #{snippet_type} to make it multi-file" do
           send(snippet_type).visit!

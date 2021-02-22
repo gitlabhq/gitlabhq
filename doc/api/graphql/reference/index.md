@@ -2096,6 +2096,7 @@ Describes an incident management on-call rotation.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `endsAt` | Time | End date and time of the on-call rotation. |
 | `id` | IncidentManagementOncallRotationID! | ID of the on-call rotation. |
 | `length` | Int | Length of the on-call schedule, in the units specified by lengthUnit. |
 | `lengthUnit` | OncallRotationUnitEnum | Unit of the on-call rotation length. |

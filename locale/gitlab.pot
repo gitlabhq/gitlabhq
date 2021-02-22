@@ -20733,6 +20733,12 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
+msgid "OnCallSchedules|1 day"
+msgstr ""
+
+msgid "OnCallSchedules|2 weeks"
+msgstr ""
+
 msgid "OnCallSchedules|Add a rotation"
 msgstr ""
 
@@ -20788,6 +20794,9 @@ msgid "OnCallSchedules|On-call schedule"
 msgstr ""
 
 msgid "OnCallSchedules|On-call schedule for the %{timezone}"
+msgstr ""
+
+msgid "OnCallSchedules|Please note, rotations with shifts that are less than four hours are currently not supported in the weekly view."
 msgstr ""
 
 msgid "OnCallSchedules|Restrict to time intervals"
@@ -35608,6 +35617,9 @@ msgid "must be a root namespace"
 msgstr ""
 
 msgid "must be a valid IPv4 or IPv6 address"
+msgstr ""
+
+msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"

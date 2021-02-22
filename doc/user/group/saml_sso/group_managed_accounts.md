@@ -37,17 +37,7 @@ Since use of the group-managed account requires the use of SSO, users of group-m
 - The user is unable to access the group (their credentials no longer work on the identity provider when prompted to use SSO).
 - Contributions in the group (for example, issues and merge requests) remains intact.
 
-## Assertions
-
-When using group-managed accounts, the following user details need to be passed to GitLab as SAML
-assertions to be able to create a user.
-
-| Field           | Supported keys |
-|-----------------|----------------|
-| Email (required)| `email`, `mail` |
-| Full Name       | `name` |
-| First Name      | `first_name`, `firstname`, `firstName` |
-| Last Name       | `last_name`, `lastname`, `lastName` |
+Please refer to our [SAML SSO for Groups page](../index.md) for information on how to configure SAML.
 
 ## Feature flag **(PREMIUM SELF)**
 

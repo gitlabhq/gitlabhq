@@ -186,6 +186,10 @@ The following totals are also included:
 
 GitLab billing is based on the number of [**Billable users**](../../subscriptions/self_managed/index.md#billable-users).
 
+### User cohorts
+
+The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
+
 ### Administering Groups
 
 You can administer all groups in the GitLab instance from the Admin Area's Groups page.

@@ -742,12 +742,23 @@ Arguments:
 - or a `block`: which is evaluated
 - `fallback: -1`: the common value used for any metrics that are failing.
 
-Example of usage:
+Usage:
 
 ```ruby
 alt_usage_data { Gitlab::VERSION }
 alt_usage_data { Gitlab::CurrentSettings.uuid }
 alt_usage_data(999)
+```
+
+### Adding counters to build new metrics
+
+When adding the results of two counters, use the `add` usage data method that 
+handles fallback values and exceptions. It also generates a valid SQL export.
+
+Example usage:
+
+```ruby
+add(User.active, User.bot)
 ```
 
 ### Prometheus Queries

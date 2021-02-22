@@ -37,6 +37,11 @@
   &.gl-modal .modal-md {
     max-width: 640px;
   }
+
+  .dropdown-menu {
+    max-height: $dropdown-max-height;
+    @include gl-overflow-y-auto;
+  }
 }
 
 //// Copied from roadmaps.scss - adapted for on-call schedules
@@ -180,12 +185,5 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
     background-color: var(--red-500, $red-500);
     @include gl-pointer-events-none;
     transform: translateX(-50%);
-  }
-}
-
-.gl-token {
-  .gl-avatar-labeled-label {
-    @include gl-text-white;
-    @include gl-font-weight-normal;
   }
 }

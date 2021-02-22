@@ -1133,6 +1133,10 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
+         },
+         "environment": {
+           "name": "production",
+           "action": "start"
          }
       },
       {
@@ -1167,7 +1171,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 378,
@@ -1200,7 +1205,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 376,
@@ -1233,7 +1239,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 379,
@@ -1257,6 +1264,10 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
+         },
+         "environment": {
+           "name": "staging",
+           "action": "start"
          }
       }
    ]
@@ -1329,7 +1340,8 @@ X-Gitlab-Event: Job Hook
       "linux",
       "docker"
     ]
-  }
+  },
+  "environment": null
 }
 ```
 

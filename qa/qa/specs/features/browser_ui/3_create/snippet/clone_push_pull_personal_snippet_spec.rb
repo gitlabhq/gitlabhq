@@ -66,6 +66,8 @@ module QA
           expect(repository.commits.first).to include('Update snippet')
           expect(repository.file_content(new_file)).to include("#{added_content}#{changed_content}")
         end
+
+        snippet.remove_via_api!
       end
 
       it 'clones, pushes, and pulls a snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/825' do

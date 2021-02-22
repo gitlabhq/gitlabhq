@@ -186,7 +186,7 @@ There are two ways to create policy alerts:
 
 Once added, the UI updates and displays a warning about the dangers of too many alerts.
 
-#### Enable or disable Policy Alerts **(FREE SELF)**
+#### Enable or disable Policy Alerts **(ULTIMATE)**
 
 Policy Alerts is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
