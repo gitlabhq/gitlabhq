@@ -23,7 +23,7 @@ module Gitlab
           # own caching mechanism to avoid the back and forth call jumps between finder and model.
           #
           # follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300279
-          project.repository.issue_template_names_by_category
+          project.repository.issue_template_names_hash
         end
 
         def by_category(category, project = nil, empty_category_title: nil)

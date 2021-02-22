@@ -470,7 +470,7 @@ curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "A
 
 ## Subscriptions
 
-The subscriptions endpoint is used by `[customers.gitlab.com](https://gitlab.com/gitlab-org/customers-gitlab-com)` (CustomersDot)
+The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 in order to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating a subscription
