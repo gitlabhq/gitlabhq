@@ -159,10 +159,12 @@ averaged.
 To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data. From your project:
 
-1. Go to **{chart}** **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
+1. Go to **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
 1. If you want a CSV file of that data, click **Download raw data (`.csv`)**
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
+
+Code coverage data is also [available at the group level](../../user/group/repositories_analytics/index.md).
 
 ### Removing color codes
 

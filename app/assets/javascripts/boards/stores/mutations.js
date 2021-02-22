@@ -111,6 +111,7 @@ export default {
   [mutationTypes.RECEIVE_ITEMS_FOR_LIST_SUCCESS]: (state, { listIssues, listPageInfo, listId }) => {
     const { listData, issues } = listIssues;
     Vue.set(state, 'issues', { ...state.issues, ...issues });
+
     Vue.set(
       state.issuesByListId,
       listId,
@@ -279,5 +280,9 @@ export default {
 
   [mutationTypes.REMOVE_LIST_FROM_HIGHLIGHTED_LISTS]: (state, listId) => {
     state.highlightedLists = state.highlightedLists.filter((id) => id !== listId);
+  },
+
+  [mutationTypes.RESET_BOARD_ITEM_SELECTION]: (state) => {
+    state.selectedBoardItems = [];
   },
 };

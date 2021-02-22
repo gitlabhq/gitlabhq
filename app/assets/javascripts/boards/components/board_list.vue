@@ -230,7 +230,11 @@ export default {
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
-        <gl-loading-icon v-if="loadingMore" :label="$options.i18n.loadingMoreissues" />
+        <gl-loading-icon
+          v-if="loadingMore"
+          :label="$options.i18n.loadingMoreissues"
+          data-testid="count-loading-icon"
+        />
         <span v-if="showingAllIssues">{{ $options.i18n.showingAllIssues }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>

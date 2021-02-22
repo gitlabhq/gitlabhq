@@ -11609,6 +11609,7 @@ CREATE TABLE custom_emoji (
     name text NOT NULL,
     file text NOT NULL,
     external boolean DEFAULT true NOT NULL,
+    creator_id bigint NOT NULL,
     CONSTRAINT check_8c586dd507 CHECK ((char_length(name) <= 36)),
     CONSTRAINT check_dd5d60f1fb CHECK ((char_length(file) <= 255))
 );
@@ -21970,6 +21971,8 @@ CREATE INDEX index_csv_issue_imports_on_project_id ON csv_issue_imports USING bt
 
 CREATE INDEX index_csv_issue_imports_on_user_id ON csv_issue_imports USING btree (user_id);
 
+CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
+
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
@@ -24688,6 +24691,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_cff7185ad2 FOREIGN KEY (reset_checksum_event_id) REFERENCES geo_reset_checksum_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_emoji
+    ADD CONSTRAINT fk_custom_emoji_creator_id FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_d06d023c30 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

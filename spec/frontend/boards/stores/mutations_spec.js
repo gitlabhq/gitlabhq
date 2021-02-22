@@ -610,12 +610,19 @@ describe('Board Store Mutations', () => {
 
   describe('REMOVE_BOARD_ITEM_FROM_SELECTION', () => {
     it('Should remove boardItem to selectedBoardItems state', () => {
-      state = {
-        ...state,
-        selectedBoardItems: [mockIssue],
-      };
+      state.selectedBoardItems = [mockIssue];
 
       mutations[types.REMOVE_BOARD_ITEM_FROM_SELECTION](state, mockIssue);
+
+      expect(state.selectedBoardItems).toEqual([]);
+    });
+  });
+
+  describe('RESET_BOARD_ITEM_SELECTION', () => {
+    it('Should reset selectedBoardItems state', () => {
+      state.selectedBoardItems = [mockIssue];
+
+      mutations[types.RESET_BOARD_ITEM_SELECTION](state, mockIssue);
 
       expect(state.selectedBoardItems).toEqual([]);
     });

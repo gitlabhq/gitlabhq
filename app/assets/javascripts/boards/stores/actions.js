@@ -1,6 +1,12 @@
 import { pick } from 'lodash';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { BoardType, ListType, inactiveId, flashAnimationDuration } from '~/boards/constants';
+import {
+  BoardType,
+  ListType,
+  inactiveId,
+  flashAnimationDuration,
+  ISSUABLE,
+} from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
@@ -536,9 +542,16 @@ export default {
     commit(types.SET_SELECTED_PROJECT, project);
   },
 
-  toggleBoardItemMultiSelection: ({ commit, state }, boardItem) => {
+  toggleBoardItemMultiSelection: ({ commit, state, dispatch, getters }, boardItem) => {
     const { selectedBoardItems } = state;
     const index = selectedBoardItems.indexOf(boardItem);
+
+    // If user already selected an item (activeIssue) without using mult-select,
+    // include that item in the selection and unset state.ActiveId to hide the sidebar.
+    if (getters.activeIssue) {
+      commit(types.ADD_BOARD_ITEM_TO_SELECTION, getters.activeIssue);
+      dispatch('unsetActiveId');
+    }
 
     if (index === -1) {
       commit(types.ADD_BOARD_ITEM_TO_SELECTION, boardItem);
@@ -549,6 +562,20 @@ export default {
 
   setAddColumnFormVisibility: ({ commit }, visible) => {
     commit(types.SET_ADD_COLUMN_FORM_VISIBLE, visible);
+  },
+
+  resetBoardItemMultiSelection: ({ commit }) => {
+    commit(types.RESET_BOARD_ITEM_SELECTION);
+  },
+
+  toggleBoardItem: ({ state, dispatch }, { boardItem, sidebarType = ISSUABLE }) => {
+    dispatch('resetBoardItemMultiSelection');
+
+    if (boardItem.id === state.activeId) {
+      dispatch('unsetActiveId');
+    } else {
+      dispatch('setActiveId', { id: boardItem.id, sidebarType });
+    }
   },
 
   fetchBacklog: () => {
