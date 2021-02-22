@@ -2627,14 +2627,18 @@ to change the job without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
 
-- `when` - [reference](#when)
+- `when`, defined at either:
+  - [The job level](#when).
+  - [In a rules clause](#rules). If you use `rules:` and `when: manual`, you should
+    also set [`allow_failure: true`](#allow_failure) so the pipeline can complete
+    even if the job doesn't run.
 - `environment:name`
 - `environment:action`
 
 Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
 or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration.
 
-In the example above, if the configuration is not identical:
+In the examples above, if the configuration is not identical:
 
 - The `stop_review_app` job might not be included in all pipelines that include the `review_app` job.
 - It is not possible to trigger the `action: stop` to stop the environment automatically.
