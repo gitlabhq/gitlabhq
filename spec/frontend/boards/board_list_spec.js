@@ -29,8 +29,8 @@ const createComponent = ({
   state = {},
 } = {}) => {
   const store = createStore({
-    issuesByListId: mockIssuesByListId,
-    issues,
+    boardItemsByListId: mockIssuesByListId,
+    boardItems: issues,
     pageInfoByListId: {
       'gid://gitlab/List/1': { hasNextPage: true },
       'gid://gitlab/List/2': {},
@@ -65,7 +65,7 @@ const createComponent = ({
     propsData: {
       disabled: false,
       list,
-      issues: [issue],
+      boardItems: [issue],
       canAdminList: true,
       ...componentProps,
     },

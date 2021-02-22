@@ -159,7 +159,7 @@ RSpec.describe SnippetPresenter do
       let(:snippet) { create(:snippet, :repository, author: user) }
 
       it 'returns repository first blob' do
-        expect(subject).to eq snippet.blobs.first
+        expect(subject.name).to eq snippet.blobs.first.name
       end
     end
   end

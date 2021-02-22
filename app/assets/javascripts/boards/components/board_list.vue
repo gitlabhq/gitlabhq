@@ -12,8 +12,8 @@ import BoardNewIssue from './board_new_issue.vue';
 export default {
   name: 'BoardList',
   i18n: {
-    loadingIssues: __('Loading issues'),
-    loadingMoreissues: __('Loading more issues'),
+    loading: __('Loading'),
+    loadingMoreboardItems: __('Loading more'),
     showingAllIssues: __('Showing all issues'),
   },
   components: {
@@ -30,7 +30,7 @@ export default {
       type: Object,
       required: true,
     },
-    issues: {
+    boardItems: {
       type: Array,
       required: true,
     },
@@ -51,11 +51,11 @@ export default {
     ...mapState(['pageInfoByListId', 'listsFlags']),
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} issues'), {
-        pageSize: this.issues.length,
+        pageSize: this.boardItems.length,
         total: this.list.issuesCount,
       });
     },
-    issuesSizeExceedsMax() {
+    boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.list.issuesCount > this.list.maxIssueCount;
     },
     hasNextPage() {
@@ -72,7 +72,7 @@ export default {
       return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllIssues() {
-      return this.issues.length === this.list.issuesCount;
+      return this.boardItems.length === this.list.issuesCount;
     },
     treeRootWrapper() {
       return this.canAdminList ? Draggable : 'ul';
@@ -85,14 +85,14 @@ export default {
         tag: 'ul',
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
-        value: this.issues,
+        value: this.boardItems,
       };
 
       return this.canAdminList ? options : {};
     },
   },
   watch: {
-    issues() {
+    boardItems() {
       this.$nextTick(() => {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
@@ -201,7 +201,7 @@ export default {
     <div
       v-if="loading"
       class="gl-mt-4 gl-text-center"
-      :aria-label="$options.i18n.loadingIssues"
+      :aria-label="$options.i18n.loading"
       data-testid="board_list_loading"
     >
       <gl-loading-icon />
@@ -214,25 +214,25 @@ export default {
       v-bind="treeRootOptions"
       :data-board="list.id"
       :data-board-type="list.listType"
-      :class="{ 'bg-danger-100': issuesSizeExceedsMax }"
+      :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
       class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
     >
       <board-card
-        v-for="(issue, index) in issues"
+        v-for="(item, index) in boardItems"
         ref="issue"
-        :key="issue.id"
+        :key="item.id"
         :index="index"
         :list="list"
-        :issue="issue"
+        :issue="item"
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
         <gl-loading-icon
           v-if="loadingMore"
-          :label="$options.i18n.loadingMoreissues"
+          :label="$options.i18n.loadingMoreboardItems"
           data-testid="count-loading-icon"
         />
         <span v-if="showingAllIssues">{{ $options.i18n.showingAllIssues }}</span>

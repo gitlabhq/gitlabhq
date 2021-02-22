@@ -36,11 +36,11 @@ export function formatIssue(issue) {
 }
 
 export function formatListIssues(listIssues) {
-  const issues = {};
-  let listIssuesCount;
+  const boardItems = {};
+  let listItemsCount;
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    listIssuesCount = list.issues.count;
+    listItemsCount = list.issues.count;
     let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
@@ -58,14 +58,14 @@ export function formatListIssues(listIssues) {
           assignees: i.assignees?.nodes || [],
         };
 
-        issues[id] = listIssue;
+        boardItems[id] = listIssue;
 
         return id;
       }),
     };
   }, {});
 
-  return { listData, issues, listIssuesCount };
+  return { listData, boardItems, listItemsCount };
 }
 
 export function formatListsPageInfo(lists) {

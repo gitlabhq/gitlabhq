@@ -19,6 +19,8 @@ module BulkImports
                   title
                   description
                   color
+                  created_at: createdAt
+                  updated_at: updatedAt
                 }
               }
             }

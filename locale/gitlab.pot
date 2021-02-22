@@ -4808,6 +4808,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching the board epics. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching the board issues. Please reload the page."
 msgstr ""
 
@@ -17897,7 +17900,7 @@ msgstr ""
 msgid "Loading issues"
 msgstr ""
 
-msgid "Loading more issues"
+msgid "Loading more"
 msgstr ""
 
 msgid "Loading snippet"

@@ -249,9 +249,6 @@ RSpec.configure do |config|
       unstub_all_feature_flags
     end
 
-    # Enable Marginalia feature for all specs in the test suite.
-    Gitlab::Marginalia.enabled = true
-
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #

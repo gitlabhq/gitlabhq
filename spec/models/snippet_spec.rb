@@ -496,6 +496,16 @@ RSpec.describe Snippet do
       it 'returns array of blobs' do
         expect(snippet.blobs).to all(be_a(Blob))
       end
+
+      context 'when file does not exist' do
+        it 'removes nil values from the blobs array' do
+          allow(snippet).to receive(:list_files).and_return(%w(LICENSE non_existent_snippet_file))
+
+          blobs = snippet.blobs
+          expect(blobs.count).to eq 1
+          expect(blobs.first.name).to eq 'LICENSE'
+        end
+      end
     end
   end
 

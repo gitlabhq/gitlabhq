@@ -3,6 +3,10 @@
 module Gitlab
   module CurrentSettings
     class << self
+      def signup_disabled?
+        !signup_enabled?
+      end
+
       def current_application_settings
         Gitlab::SafeRequestStore.fetch(:current_application_settings) { ensure_application_settings! }
       end

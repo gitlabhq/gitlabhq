@@ -24,7 +24,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
 
   const createWrapper = ({ dueDate = null } = {}) => {
     store = createStore();
-    store.state.issues = { [TEST_ISSUE.id]: { ...TEST_ISSUE, dueDate } };
+    store.state.boardItems = { [TEST_ISSUE.id]: { ...TEST_ISSUE, dueDate } };
     store.state.activeId = TEST_ISSUE.id;
 
     wrapper = shallowMount(BoardSidebarDueDate, {
@@ -61,7 +61,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
       createWrapper();
 
       jest.spyOn(wrapper.vm, 'setActiveIssueDueDate').mockImplementation(() => {
-        store.state.issues[TEST_ISSUE.id].dueDate = TEST_DUE_DATE;
+        store.state.boardItems[TEST_ISSUE.id].dueDate = TEST_DUE_DATE;
       });
       findDatePicker().vm.$emit('input', TEST_PARSED_DATE);
       await wrapper.vm.$nextTick();
@@ -86,7 +86,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
       createWrapper();
 
       jest.spyOn(wrapper.vm, 'setActiveIssueDueDate').mockImplementation(() => {
-        store.state.issues[TEST_ISSUE.id].dueDate = null;
+        store.state.boardItems[TEST_ISSUE.id].dueDate = null;
       });
       findDatePicker().vm.$emit('clear');
       await wrapper.vm.$nextTick();
@@ -104,7 +104,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
       createWrapper({ dueDate: TEST_DUE_DATE });
 
       jest.spyOn(wrapper.vm, 'setActiveIssueDueDate').mockImplementation(() => {
-        store.state.issues[TEST_ISSUE.id].dueDate = null;
+        store.state.boardItems[TEST_ISSUE.id].dueDate = null;
       });
       findResetButton().vm.$emit('click');
       await wrapper.vm.$nextTick();

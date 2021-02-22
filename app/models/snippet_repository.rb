@@ -115,10 +115,8 @@ class SnippetRepository < ApplicationRecord
   end
 
   def invalid_path_error?(err)
-    (err.is_a?(Gitlab::Git::Index::IndexError) &&
-      err.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')) ||
-    (err.is_a?(Gitlab::Git::CommandError) &&
-      err.message.include?('CreateFile: invalid path'))
+    err.is_a?(Gitlab::Git::Index::IndexError) &&
+      err.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
   end
 
   def invalid_signature_error?(err)

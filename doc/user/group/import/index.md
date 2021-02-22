@@ -24,7 +24,12 @@ The following resources are migrated to the target instance:
   - description
   - attributes
   - subgroups
-- Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
+- Group Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
+  - title
+  - description
+  - color
+  - created_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
+  - updated_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
 - Members ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415))
   Group members are associated with the imported group if:
   - The user already exists in the target GitLab instance and

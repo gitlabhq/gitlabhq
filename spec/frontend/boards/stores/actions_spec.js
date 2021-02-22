@@ -573,7 +573,7 @@ describe('fetchItemsForList', () => {
         },
         {
           type: types.RECEIVE_ITEMS_FOR_LIST_SUCCESS,
-          payload: { listIssues: formattedIssues, listPageInfo, listId },
+          payload: { listItems: formattedIssues, listPageInfo, listId },
         },
       ],
       [],
@@ -624,8 +624,8 @@ describe('moveIssue', () => {
     boardType: 'group',
     disabled: false,
     boardLists: mockLists,
-    issuesByListId: listIssues,
-    issues,
+    boardItemsByListId: listIssues,
+    boardItems: issues,
   };
 
   it('should commit MOVE_ISSUE mutation and MOVE_ISSUE_SUCCESS mutation when successful', (done) => {
@@ -905,7 +905,7 @@ describe('addListIssue', () => {
 });
 
 describe('setActiveIssueLabels', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testLabelIds = labels.map((label) => label.id);
   const input = {
@@ -950,7 +950,7 @@ describe('setActiveIssueLabels', () => {
 });
 
 describe('setActiveIssueDueDate', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testDueDate = '2020-02-20';
   const input = {
@@ -1001,7 +1001,7 @@ describe('setActiveIssueDueDate', () => {
 });
 
 describe('setActiveIssueSubscribed', () => {
-  const state = { issues: { [mockActiveIssue.id]: mockActiveIssue } };
+  const state = { boardItems: { [mockActiveIssue.id]: mockActiveIssue } };
   const getters = { activeIssue: mockActiveIssue };
   const subscribedState = true;
   const input = {
@@ -1052,7 +1052,7 @@ describe('setActiveIssueSubscribed', () => {
 });
 
 describe('setActiveIssueMilestone', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testMilestone = {
     ...mockMilestone,
@@ -1106,7 +1106,7 @@ describe('setActiveIssueMilestone', () => {
 });
 
 describe('setActiveIssueTitle', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testTitle = 'Test Title';
   const input = {

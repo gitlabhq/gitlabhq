@@ -10,6 +10,7 @@
 # - guidelines for use found in
 #   https://docs.gitlab.com/ee/development/contributing/style_guides.html#resolving-rubocop-exceptions.
 
+# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
 FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
@@ -28,6 +29,7 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/uploads.rb'
     - 'spec/factories/wiki_pages.rb'
 
+# WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
@@ -1174,22 +1176,9 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/wait_for_cluster_creation_worker_spec.rb'
     - 'ee/spec/workers/security/auto_fix_worker_spec.rb'
 
+# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/321982
 Gitlab/NamespacedClass:
   Exclude:
-    - 'config/**/*.rb'
-    - 'db/**/*.rb'
-    - 'ee/bin/**/*'
-    - 'ee/db/**/*.rb'
-    - 'ee/elastic/**/*.rb'
-    - 'scripts/**/*'
-    - 'spec/migrations/**/*.rb'
-    # The list above represents the permanent exclusions for this rule
-    # due to the fact these files are related to infrastructure code.
-    # This list should eventually be moved to .rubocop.yml after all TODOs
-    # are addressed.
-    #
-    # The list below represents the classes that require
-    # a namespace as they make the domain related code.
     - 'app/channels/issues_channel.rb'
     - 'app/controllers/abuse_reports_controller.rb'
     - 'app/controllers/acme_challenges_controller.rb'

@@ -1,5 +1,0 @@
----
-title: Fix snippet commit bug because of different Gitaly error
-merge_request: 54662
-author:
-type: fixed

@@ -37,26 +37,9 @@ RSpec.describe 'Marginalia spec' do
       }
     end
 
-    context 'when the feature is enabled' do
-      before do
-        stub_feature(true)
-      end
-
-      it 'generates a query that includes the component and value' do
-        component_map.each do |component, value|
-          expect(recorded.log.last).to include("#{component}:#{value}")
-        end
-      end
-    end
-
-    context 'when the feature is disabled' do
-      before do
-        stub_feature(false)
-      end
-
-      it 'excludes annotations in generated queries' do
-        expect(recorded.log.last).not_to include("/*")
-        expect(recorded.log.last).not_to include("*/")
+    it 'generates a query that includes the component and value' do
+      component_map.each do |component, value|
+        expect(recorded.log.last).to include("#{component}:#{value}")
       end
     end
   end
@@ -90,9 +73,27 @@ RSpec.describe 'Marginalia spec' do
       }
     end
 
-    context 'when the feature is enabled' do
-      before do
-        stub_feature(true)
+    it 'generates a query that includes the component and value' do
+      component_map.each do |component, value|
+        expect(recorded.log.last).to include("#{component}:#{value}")
+      end
+    end
+
+    describe 'for ActionMailer delivery jobs' do
+      let(:delivery_job) { MarginaliaTestMailer.first_user.deliver_later }
+
+      let(:recorded) do
+        ActiveRecord::QueryRecorder.new do
+          delivery_job.perform_now
+        end
+      end
+
+      let(:component_map) do
+        {
+          "application"  => "sidekiq",
+          "jid"          => delivery_job.job_id,
+          "job_class"    => delivery_job.arguments.first
+        }
       end
 
       it 'generates a query that includes the component and value' do
@@ -100,47 +101,7 @@ RSpec.describe 'Marginalia spec' do
           expect(recorded.log.last).to include("#{component}:#{value}")
         end
       end
-
-      describe 'for ActionMailer delivery jobs' do
-        let(:delivery_job) { MarginaliaTestMailer.first_user.deliver_later }
-
-        let(:recorded) do
-          ActiveRecord::QueryRecorder.new do
-            delivery_job.perform_now
-          end
-        end
-
-        let(:component_map) do
-          {
-            "application"  => "sidekiq",
-            "jid"          => delivery_job.job_id,
-            "job_class"    => delivery_job.arguments.first
-          }
-        end
-
-        it 'generates a query that includes the component and value' do
-          component_map.each do |component, value|
-            expect(recorded.log.last).to include("#{component}:#{value}")
-          end
-        end
-      end
     end
-
-    context 'when the feature is disabled' do
-      before do
-        stub_feature(false)
-      end
-
-      it 'excludes annotations in generated queries' do
-        expect(recorded.log.last).not_to include("/*")
-        expect(recorded.log.last).not_to include("*/")
-      end
-    end
-  end
-
-  def stub_feature(value)
-    stub_feature_flags(marginalia: value)
-    Gitlab::Marginalia.set_enabled_from_feature_flag
   end
 
   def make_request(correlation_id)

@@ -376,8 +376,7 @@ class MergeRequest < ApplicationRecord
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 
-  delegate :active?, :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
-  delegate :success?, :active?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+  delegate :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
 
   RebaseLockTimeout = Class.new(StandardError)
 
@@ -435,6 +434,18 @@ class MergeRequest < ApplicationRecord
     # either the squash commit (if the MR was squashed) or the diff head commit.
     sha = merge_commit_sha || squash_commit_sha || diff_head_sha
     target_project.latest_pipeline(target_branch, sha)
+  end
+
+  def head_pipeline_active?
+    !!head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_active?
+    !!actual_head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_success?
+    !!actual_head_pipeline&.success?
   end
 
   # Pattern used to extract `!123` merge request references from text

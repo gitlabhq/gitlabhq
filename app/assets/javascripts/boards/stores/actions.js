@@ -289,9 +289,9 @@ export default {
       })
       .then(({ data }) => {
         const { lists } = data[boardType]?.board;
-        const listIssues = formatListIssues(lists);
+        const listItems = formatListIssues(lists);
         const listPageInfo = formatListsPageInfo(lists);
-        commit(types.RECEIVE_ITEMS_FOR_LIST_SUCCESS, { listIssues, listPageInfo, listId });
+        commit(types.RECEIVE_ITEMS_FOR_LIST_SUCCESS, { listItems, listPageInfo, listId });
       })
       .catch(() => commit(types.RECEIVE_ITEMS_FOR_LIST_FAILURE, listId));
   },
@@ -304,8 +304,8 @@ export default {
     { state, commit },
     { issueId, issueIid, issuePath, fromListId, toListId, moveBeforeId, moveAfterId },
   ) => {
-    const originalIssue = state.issues[issueId];
-    const fromList = state.issuesByListId[fromListId];
+    const originalIssue = state.boardItems[issueId];
+    const fromList = state.boardItemsByListId[fromListId];
     const originalIndex = fromList.indexOf(Number(issueId));
     commit(types.MOVE_ISSUE, { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId });
 
