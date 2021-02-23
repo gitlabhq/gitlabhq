@@ -19,7 +19,6 @@ describe('IDE pipelines list', () => {
   let wrapper;
 
   const defaultState = {
-    links: { ciHelpPagePath: TEST_HOST },
     pipelinesEmptyStateSvgPath: TEST_HOST,
   };
   const defaultPipelinesState = {

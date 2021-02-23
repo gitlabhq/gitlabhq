@@ -64,7 +64,7 @@ To avoid chaos with
 development workflows have to be followed. It depends on your internal
 workflow how certain changes or commits can be undone or changed.
 
-[GitLab Flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/) provides a good
+[GitLab Flow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/) provides a good
 balance between developers clashing with each other while
 developing the same feature and cooperating seamlessly. However, it does not enable
 joined development of the same feature by multiple developers by default.

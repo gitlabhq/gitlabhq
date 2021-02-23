@@ -1,0 +1,16 @@
+---
+key_path: counts.api_fuzzing_jobs
+description: Count of API Fuzzing jobs run by job name
+product_section: sec
+product_stage: secure
+product_group: group::fuzz testing
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

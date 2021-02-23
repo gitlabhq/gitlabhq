@@ -432,41 +432,7 @@ must be unique. It's advised to use `kebab-case` namespaces.
 Useful links:
 
 1. [`key`](https://vuejs.org/v2/guide/list.html#key)
-1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential )
-
-## Vue and Bootstrap
-
-1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
-
-   ```html
-   // bad
-   <span
-     class="has-tooltip"
-     title="Some tooltip text">
-     Text
-   </span>
-
-   // good
-   <span
-     v-tooltip
-     title="Some tooltip text">
-     Text
-   </span>
-   ```
-
-1. Tooltips: When using a tooltip, include the tooltip directive, `./app/assets/javascripts/vue_shared/directives/tooltip.js`
-
-1. Don't change `data-original-title`.
-
-   ```html
-   // bad
-   <span data-original-title="tooltip text">Foo</span>
-
-   // good
-   <span title="tooltip text">Foo</span>
-
-   $('span').tooltip('_fixTitle');
-   ```
+1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential)
 
 ## Vue testing
 

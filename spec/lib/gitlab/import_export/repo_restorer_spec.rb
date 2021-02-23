@@ -46,7 +46,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
     context 'when the repository already exists' do
       it 'deletes the existing repository before importing' do
         allow(project.repository).to receive(:exists?).and_return(true)
-        allow(project.repository).to receive(:path).and_return('repository_path')
+        allow(project.repository).to receive(:disk_path).and_return('repository_path')
 
         expect_next_instance_of(Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original

@@ -3,6 +3,7 @@
 module NotesActions
   include RendersNotes
   include Gitlab::Utils::StrongMemoize
+  include CheckRateLimit
   extend ActiveSupport::Concern
 
   # last_fetched_at is an integer number of microseconds, which is the same
@@ -15,6 +16,7 @@ module NotesActions
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
+    before_action -> { check_rate_limit(:notes_create) }, only: [:create]
   end
 
   def index
@@ -31,9 +33,9 @@ module NotesActions
     # We know there's more data, so tell the frontend to poll again after 1ms
     set_polling_interval_header(interval: 1) if meta[:more]
 
-    # We might still want to investigate further adjusting ETag caching with paginated notes, but
-    # let's avoid ETag caching for now until we confirm the viability of paginated notes.
-    ::Gitlab::EtagCaching::Middleware.skip!(response)
+    # Only present an ETag for the empty response to ensure pagination works
+    # as expected
+    ::Gitlab::EtagCaching::Middleware.skip!(response) if notes.present?
 
     render json: meta.merge(notes: notes)
   end

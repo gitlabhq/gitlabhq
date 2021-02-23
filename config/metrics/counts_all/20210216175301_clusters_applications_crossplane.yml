@@ -1,0 +1,19 @@
+---
+key_path: counts.clusters_applications_crossplane
+description: Total GitLab Managed clusters with GitLab Managed App:Crossplane installed
+product_section: ops
+product_stage:
+product_group: group::configure
+product_category: kubernetes_management
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

@@ -32,10 +32,6 @@ export default {
       required: false,
       default: false,
     },
-    autoDevopsHelpPath: {
-      type: String,
-      required: true,
-    },
     viewType: {
       type: String,
       required: true,
@@ -102,7 +98,6 @@ export default {
       :pipeline="model"
       :pipeline-schedule-url="pipelineScheduleUrl"
       :update-graph-dropdown="updateGraphDropdown"
-      :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
       :canceling-pipeline="cancelingPipeline"
     />

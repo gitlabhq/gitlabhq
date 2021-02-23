@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MattermostService < ChatNotificationService
-  include ::SlackService::Notifier
+  include SlackMattermost::Notifier
 
   def title
     'Mattermost notifications'

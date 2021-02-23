@@ -95,6 +95,7 @@ export default class Profile {
 
   updateHeaderAvatar() {
     $('.header-user-avatar').attr('src', this.avatarGlCrop.dataURL);
+    $('.js-sidebar-user-avatar').attr('src', this.avatarGlCrop.dataURL);
   }
 
   setRepoRadio() {

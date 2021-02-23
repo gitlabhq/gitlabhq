@@ -78,7 +78,7 @@
   code {
     font-family: $monospace-font;
     white-space: pre-wrap;
-    word-wrap: normal;
+    overflow-wrap: break-word;
     word-break: keep-all;
   }
 
@@ -604,7 +604,7 @@ pre {
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  font-size: 13px;
+  font-size: $gl-font-size-monospace;
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
@@ -646,7 +646,7 @@ code {
  */
 textarea.js-gfm-input {
   font-family: $monospace-font;
-  font-size: 13px;
+  font-size: $gl-font-size-monospace;
 }
 
 .strikethrough {
@@ -699,13 +699,11 @@ textarea {
     opacity: 1; // FF defaults to 0.54
   }
 
-  // scss-lint:disable PseudoElement
   // support Edge vendor prefix
   &::-ms-input-placeholder {
     color: $gl-text-color-tertiary;
   }
 
-  // scss-lint:disable PseudoElement
   // support IE vendor prefix
   &:-ms-input-placeholder {
     color: $gl-text-color-tertiary;

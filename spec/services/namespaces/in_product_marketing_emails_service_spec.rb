@@ -35,7 +35,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     end
   end
 
-  context 'for each track and series with the right conditions' do
+  context 'for each track and series with the right conditions', :quarantine do # https://gitlab.com/gitlab-org/gitlab/-/issues/322092
     using RSpec::Parameterized::TableSyntax
 
     where(:track, :interval, :actions_completed) do

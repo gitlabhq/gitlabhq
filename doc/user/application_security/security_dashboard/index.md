@@ -52,7 +52,7 @@ To use the security dashboards and vulnerability reports:
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_3.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_10.png)
 
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.
@@ -175,7 +175,7 @@ lock files. Python projects can have lock files, but GitLab Secure tools don't s
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/customize.md#environment-variables)
+[special environment variables](../../../topics/autodevops/customize.md#cicd-variables)
 to configure daily security scans.
 
 <!-- ## Troubleshooting

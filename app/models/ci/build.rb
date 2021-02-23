@@ -564,7 +564,10 @@ module Ci
     end
 
     def features
-      { trace_sections: true }
+      {
+        trace_sections: true,
+        failure_reasons: self.class.failure_reasons.keys
+      }
     end
 
     def merge_request

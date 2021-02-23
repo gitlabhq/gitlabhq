@@ -47,6 +47,10 @@ To enable the dependency proxy feature:
 Since Puma is already the default web server for installations from source as of GitLab 12.9,
 no further changes are needed.
 
+**Multi-node GitLab installations**
+
+Follow the steps for **Omnibus GitLab installation** for each Web and Sidekiq nodes.
+
 ## Changing the storage path
 
 By default, the dependency proxy files are stored locally, but you can change the default

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrate your GitLab instance with GitHub
+# Integrate your GitLab instance with GitHub **(FREE)**
 
 You can integrate your GitLab instance with GitHub.com and GitHub Enterprise. This integration
 enables users to import projects from GitHub, or sign in to your GitLab instance
@@ -12,7 +12,7 @@ with their GitHub account.
 
 ## Enabling GitHub OAuth
 
-To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/apps/building-oauth-apps/creating-an-oauth-app/).
+To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
 
 When you create an OAuth 2 app in GitHub, you need the following information:
 

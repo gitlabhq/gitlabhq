@@ -9,7 +9,10 @@ module BulkImports
         extractor BulkImports::Groups::Extractors::SubgroupsExtractor
         transformer Common::Transformers::ProhibitedAttributesTransformer
         transformer BulkImports::Groups::Transformers::SubgroupToEntityTransformer
-        loader BulkImports::Common::Loaders::EntityLoader
+
+        def load(context, data)
+          context.bulk_import.entities.create!(data)
+        end
       end
     end
   end

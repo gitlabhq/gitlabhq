@@ -83,8 +83,9 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Objective-C (iOS)                                                                                                                                | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                          |
 | PHP                                                                                                                                              | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit)                        | 10.8                                          |
 | Python ([pip](https://pip.pypa.io/en/stable/))                                                                                                   | [bandit](https://github.com/PyCQA/bandit)                                                                     | 10.3                                          |
-| Python                                                                                                                                           | [semgrep](https://semgrep.dev)                                                                                | 13.9                                          |
+| Python                                                                                                                                           | [Semgrep](https://semgrep.dev)                                                                                | 13.9                                          |
 | React                                                                                                                                            | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                       | 12.5                                          |
+| Ruby                                                                                                                                             | [brakeman](https://brakemanscanner.org)                                                                       | 13.9                                          |
 | Ruby on Rails                                                                                                                                    | [brakeman](https://brakemanscanner.org)                                                                       | 10.3                                          |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/))  | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven)        |
 | Swift (iOS)                                                                                                                                      | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                          |
@@ -149,7 +150,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To configure SAST for a project you can:
 
-- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast) provided by
+- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 - [Configure SAST manually](#configure-sast-manually).
 - [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).

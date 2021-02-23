@@ -154,7 +154,7 @@ describe('ServiceDeskRoot', () => {
         });
 
         it('shows an error message', () => {
-          expect(getAlertText()).toContain('An error occured while saving changes:');
+          expect(getAlertText()).toContain('An error occurred while saving changes:');
         });
       });
     });

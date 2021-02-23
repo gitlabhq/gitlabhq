@@ -7,8 +7,10 @@ require:
   - rubocop-rspec
 
 inherit_from:
-  - .rubocop_manual_todo.yml
-  - .rubocop_todo.yml
+  <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
+  - '.rubocop_manual_todo.yml'
+  - '.rubocop_todo.yml'
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -16,6 +18,7 @@ inherit_from:
 inherit_mode:
   merge:
     - Include
+    - Exclude
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -595,3 +598,14 @@ FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
     - 'ee/spec/factories/**/*.rb'
+
+# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/321982
+Gitlab/NamespacedClass:
+  Exclude:
+    - 'config/**/*.rb'
+    - 'db/**/*.rb'
+    - 'ee/bin/**/*'
+    - 'ee/db/**/*.rb'
+    - 'ee/elastic/**/*.rb'
+    - 'scripts/**/*'
+    - 'spec/migrations/**/*.rb'

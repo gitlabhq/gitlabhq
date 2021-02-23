@@ -6,6 +6,7 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:cursor) { 'cursor' }
+  let(:timestamp) { Time.new(2020, 01, 01).utc }
   let(:entity) do
     create(
       :bulk_import_entity,
@@ -20,21 +21,23 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
 
   subject { described_class.new(context) }
 
-  def extractor_data(title:, has_next_page:, cursor: nil)
-    data = [
-      {
-        'title' => title,
-        'description' => 'desc',
-        'color' => '#428BCA'
-      }
-    ]
+  def label_data(title)
+    {
+      'title' => title,
+      'description' => 'desc',
+      'color' => '#428BCA',
+      'created_at' => timestamp.to_s,
+      'updated_at' => timestamp.to_s
+    }
+  end
 
+  def extractor_data(title:, has_next_page:, cursor: nil)
     page_info = {
       'end_cursor' => cursor,
       'has_next_page' => has_next_page
     }
 
-    BulkImports::Pipeline::ExtractedData.new(data: data, page_info: page_info)
+    BulkImports::Pipeline::ExtractedData.new(data: [label_data(title)], page_info: page_info)
   end
 
   describe '#run' do
@@ -55,6 +58,8 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
       expect(label.title).to eq('label2')
       expect(label.description).to eq('desc')
       expect(label.color).to eq('#428BCA')
+      expect(label.created_at).to eq(timestamp)
+      expect(label.updated_at).to eq(timestamp)
     end
   end
 
@@ -90,6 +95,20 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
     end
   end
 
+  describe '#load' do
+    it 'creates the label' do
+      data = label_data('label')
+
+      expect { subject.load(context, data) }.to change(Label, :count).by(1)
+
+      label = group.labels.first
+
+      data.each do |key, value|
+        expect(label[key]).to eq(value)
+      end
+    end
+  end
+
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
@@ -109,10 +128,6 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
         .to contain_exactly(
           { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil }
         )
-    end
-
-    it 'has loaders' do
-      expect(described_class.get_loader).to eq(klass: BulkImports::Groups::Loaders::LabelsLoader, options: nil)
     end
   end
 end

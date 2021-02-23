@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrate your server with GitLab.com
+# Integrate your server with GitLab.com **(FREE)**
 
 Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
 

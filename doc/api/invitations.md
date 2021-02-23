@@ -38,7 +38,7 @@ POST /projects/:id/invitations
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `email` | integer/string | yes | The email of the new member or multiple emails separated by commas |
+| `email` | string | yes | The email of the new member or multiple emails separated by commas |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 

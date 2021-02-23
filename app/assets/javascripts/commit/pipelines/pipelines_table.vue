@@ -25,14 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
-    autoDevopsHelpPath: {
-      type: String,
-      required: true,
-    },
     errorStateSvgPath: {
       type: String,
       required: true,
@@ -212,7 +204,6 @@ export default {
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
-        :auto-devops-help-path="autoDevopsHelpPath"
         :view-type="viewType"
       >
         <template #table-header-actions>

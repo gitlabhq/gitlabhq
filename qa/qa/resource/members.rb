@@ -26,8 +26,21 @@ module QA
         JSON.parse(get(Runtime::API::Request.new(api_client, api_members_path).url).body)
       end
 
+      def invite_group(group, access_level = AccessLevel::GUEST)
+        Support::Retrier.retry_until do
+          QA::Runtime::Logger.debug(%Q[Sharing #{self.class.name} with #{group.name}])
+
+          response = post Runtime::API::Request.new(api_client, api_share_path).url, { group_id: group.id, group_access: access_level }
+          response.code == QA::Support::Api::HTTP_STATUS_CREATED
+        end
+      end
+
       def api_members_path
         "#{api_get_path}/members"
+      end
+
+      def api_share_path
+        "#{api_get_path}/share"
       end
 
       class AccessLevel

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::Docs::Renderer do
   describe 'contents' do
     let(:dictionary_path) { Gitlab::Usage::Docs::Renderer::DICTIONARY_PATH }
-    let(:items) { Gitlab::Usage::MetricDefinition.definitions }
+    let(:items) { Gitlab::Usage::MetricDefinition.definitions.first(10).to_h }
 
     it 'generates dictionary for given items' do
       generated_dictionary = described_class.new(items).contents

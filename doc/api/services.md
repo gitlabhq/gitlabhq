@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Services API
+# Services API **(FREE)**
 
 NOTE:
 This API requires an access token with Maintainer or Owner permissions
@@ -814,7 +814,7 @@ Parameters:
 | `username`      | string | yes  | The username of the user created to be used with GitLab/Jira. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/Jira. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
-| `jira_issue_transition_id` | string | no | The ID of a transition that moves issues to a closed state. You can find this number under the Jira workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the transitions ID column. By default, this ID is set to `2`. |
+| `jira_issue_transition_id` | string | no | The ID of one or more transitions to move issues to a closed state. Read [custom issue transitions](../user/project/integrations/jira.md#custom-issue-transitions) for details. Defaults to a blank string, which enables [automatic issue transitions](../user/project/integrations/jira.md#automatic-issue-transitions). |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `comment_on_event_enabled` | boolean | false | Enable comments inside Jira issues on each GitLab event (commit / merge request) |

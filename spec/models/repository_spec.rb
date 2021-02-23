@@ -1949,8 +1949,8 @@ RSpec.describe Repository do
         :root_ref,
         :merged_branch_names,
         :has_visible_content?,
-        :issue_template_names_by_category,
-        :merge_request_template_names_by_category,
+        :issue_template_names_hash,
+        :merge_request_template_names_hash,
         :user_defined_metrics_dashboard_paths,
         :xcode_project?,
         :has_ambiguous_refs?

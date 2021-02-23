@@ -5,11 +5,11 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/complex_indexes_require_name'
 
 RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
-  context 'in migration' do
+  context 'when in migration' do
+    let(:msg) { 'indexes added with custom options must be explicitly named' }
+
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
@@ -29,9 +29,9 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
 
                   t.index :column1, unique: true
                   t.index :column2, where: 'column1 = 0'
-                    ^^^^^ #{described_class::MSG}
+                    ^^^^^ #{msg}
                   t.index :column3, using: :gin
-                    ^^^^^ #{described_class::MSG}
+                    ^^^^^ #{msg}
                 end
               end
 
@@ -40,8 +40,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
               end
             end
           RUBY
-
-          expect(cop.offenses.map(&:cop_name)).to all(eq("Migration/#{described_class.name.demodulize}"))
         end
       end
 
@@ -85,20 +83,18 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
                 add_index :test_indexes, :column1
 
                 add_index :test_indexes, :column2, where: "column2 = 'value'", order: { column4: :desc }
-                ^^^^^^^^^ #{described_class::MSG}
+                ^^^^^^^^^ #{msg}
               end
 
               def down
                 add_index :test_indexes, :column4, 'unique' => true, where: 'column4 IS NOT NULL'
-                ^^^^^^^^^ #{described_class::MSG}
+                ^^^^^^^^^ #{msg}
 
                 add_concurrent_index :test_indexes, :column6, using: :gin, opclass: :gin_trgm_ops
-                ^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG}
+                ^^^^^^^^^^^^^^^^^^^^ #{msg}
               end
             end
           RUBY
-
-          expect(cop.offenses.map(&:cop_name)).to all(eq("Migration/#{described_class.name.demodulize}"))
         end
       end
 
@@ -132,7 +128,7 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
     end
   end
 
-  context 'outside migration' do
+  context 'when outside migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(false)
     end

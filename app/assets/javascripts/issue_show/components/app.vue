@@ -307,7 +307,7 @@ export default {
         });
     },
 
-    updateAndShowForm(templates = []) {
+    updateAndShowForm(templates = {}) {
       if (!this.showForm) {
         this.showForm = true;
         this.store.setFormState({

@@ -30,8 +30,8 @@ RSpec.describe 'admin/application_settings/_package_registry' do
       expect(rendered).to have_field('Maximum Maven package file size in bytes', type: 'number')
       expect(page.find_field('Maximum Maven package file size in bytes').value).to eq(default_plan_limits.maven_max_file_size.to_s)
 
-      expect(rendered).to have_field('Maximum NPM package file size in bytes', type: 'number')
-      expect(page.find_field('Maximum NPM package file size in bytes').value).to eq(default_plan_limits.npm_max_file_size.to_s)
+      expect(rendered).to have_field('Maximum npm package file size in bytes', type: 'number')
+      expect(page.find_field('Maximum npm package file size in bytes').value).to eq(default_plan_limits.npm_max_file_size.to_s)
 
       expect(rendered).to have_field('Maximum NuGet package file size in bytes', type: 'number')
       expect(page.find_field('Maximum NuGet package file size in bytes').value).to eq(default_plan_limits.nuget_max_file_size.to_s)

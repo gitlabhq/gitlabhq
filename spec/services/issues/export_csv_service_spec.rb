@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Issues::ExportCsvService do
   let_it_be(:user) { create(:user) }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, :public, group: group) }
-  let!(:issue) { create(:issue, project: project, author: user) }
-  let!(:bad_issue) { create(:issue, project: project, author: user) }
-  let(:subject) { described_class.new(Issue.all, project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:issue) { create(:issue, project: project, author: user) }
+  let_it_be(:bad_issue) { create(:issue, project: project, author: user) }
+  subject { described_class.new(Issue.all, project) }
 
   it 'renders csv to string' do
     expect(subject.csv_data).to be_a String
@@ -33,11 +33,11 @@ RSpec.describe Issues::ExportCsvService do
   end
 
   context 'includes' do
-    let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
-    let(:idea_label) { create(:label, project: project, title: 'Idea') }
-    let(:feature_label) { create(:label, project: project, title: 'Feature') }
+    let_it_be(:milestone) { create(:milestone, title: 'v1.0', project: project) }
+    let_it_be(:idea_label) { create(:label, project: project, title: 'Idea') }
+    let_it_be(:feature_label) { create(:label, project: project, title: 'Feature') }
 
-    before do
+    before_all do
       # Creating a timelog touches the updated_at timestamp of issue,
       # so create these first.
       issue.timelogs.create!(time_spent: 360, user: user)
@@ -58,6 +58,10 @@ RSpec.describe Issues::ExportCsvService do
 
     it 'includes the columns required for import' do
       expect(csv.headers).to include('Title', 'Description')
+    end
+
+    it 'returns two issues' do
+      expect(csv.count).to eq(2)
     end
 
     specify 'iid' do
@@ -150,7 +154,7 @@ RSpec.describe Issues::ExportCsvService do
     end
 
     context 'with issues filtered by labels and project' do
-      let(:subject) do
+      subject do
         described_class.new(
           IssuesFinder.new(user,
                            project_id: project.id,
@@ -160,6 +164,27 @@ RSpec.describe Issues::ExportCsvService do
       it 'returns only filtered objects' do
         expect(csv.count).to eq(1)
         expect(csv[0]['Issue ID']).to eq issue.iid.to_s
+      end
+    end
+
+    context 'with label links' do
+      let(:labeled_issues) { create_list(:labeled_issue, 2, project: project, author: user, labels: [feature_label, idea_label]) }
+
+      it 'does not run a query for each label link' do
+        control_count = ActiveRecord::QueryRecorder.new { csv }.count
+
+        labeled_issues
+
+        expect { csv }.not_to exceed_query_limit(control_count)
+        expect(csv.count).to eq(4)
+      end
+
+      it 'returns the labels in sorted order' do
+        labeled_issues
+
+        labeled_rows = csv.select { |entry| labeled_issues.map(&:iid).include?(entry['Issue ID'].to_i) }
+        expect(labeled_rows.count).to eq(2)
+        expect(labeled_rows.map { |entry| entry['Labels'] }).to all( eq("Feature,Idea") )
       end
     end
   end

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create an API token in Jira on Atlassian cloud
+# Create an API token in Jira on Atlassian cloud **(FREE)**
 
 For [integrations with Jira](jira.md), an API token is needed when integrating with Jira
 on Atlassian cloud. To create an API token:

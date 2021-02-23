@@ -37,6 +37,34 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
     end
   end
 
+  describe '#load' do
+    it 'does nothing when there is no data' do
+      expect { subject.load(context, nil) }.not_to change(GroupMember, :count)
+    end
+
+    it 'creates the member' do
+      data = {
+        'user_id' => member_user1.id,
+        'created_by_id' => member_user2.id,
+        'access_level' => 30,
+        'created_at' => '2020-01-01T00:00:00Z',
+        'updated_at' => '2020-01-01T00:00:00Z',
+        'expires_at' => nil
+      }
+
+      expect { subject.load(context, data) }.to change(GroupMember, :count).by(1)
+
+      member = group.members.last
+
+      expect(member.user).to eq(member_user1)
+      expect(member.created_by).to eq(member_user2)
+      expect(member.access_level).to eq(30)
+      expect(member.created_at).to eq('2020-01-01T00:00:00Z')
+      expect(member.updated_at).to eq('2020-01-01T00:00:00Z')
+      expect(member.expires_at).to eq(nil)
+    end
+  end
+
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
@@ -57,10 +85,6 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
           { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil },
           { klass: BulkImports::Groups::Transformers::MemberAttributesTransformer, options: nil }
         )
-    end
-
-    it 'has loaders' do
-      expect(described_class.get_loader).to eq(klass: BulkImports::Groups::Loaders::MembersLoader, options: nil)
     end
   end
 

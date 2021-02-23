@@ -34,6 +34,7 @@ class Group < Namespace
 
   has_many :milestones
   has_many :iterations
+  has_many :iterations_cadences, class_name: 'Iterations::Cadence'
   has_many :services
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
   has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
@@ -364,12 +365,27 @@ class Group < Namespace
   # rubocop: enable CodeReuse/ServiceClass
 
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_members_authorized_projects(blocking: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+  def refresh_members_authorized_projects(
+    blocking: true,
+    priority: UserProjectAccessChangedService::HIGH_PRIORITY,
+    direct_members_only: false
+  )
+
+    user_ids = if direct_members_only
+                 users_ids_of_direct_members
+               else
+                 user_ids_for_project_authorizations
+               end
+
     UserProjectAccessChangedService
-      .new(user_ids_for_project_authorizations)
+      .new(user_ids)
       .execute(blocking: blocking, priority: priority)
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def users_ids_of_direct_members
+    direct_members.pluck(:user_id)
+  end
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
@@ -379,6 +395,12 @@ class Group < Namespace
     strong_memoize(:self_and_ancestors_ids) do
       self_and_ancestors.pluck(:id)
     end
+  end
+
+  def direct_members
+    GroupMember.active_without_invites_and_requests
+               .non_minimal_access
+               .where(source_id: id)
   end
 
   def members_with_parents

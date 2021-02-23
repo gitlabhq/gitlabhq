@@ -1,5 +1,4 @@
 // Disabled to use the color map for creating color schemes
-// scss-lint:disable ColorVariable
 $conflict-colors: (
   white-header-head-neutral   : #e1fad7,
   white-line-head-neutral     : #effdec,
@@ -116,4 +115,3 @@ $conflict-colors: (
   none_line_not_chosen       : $gray-light
 
 );
-// scss-lint:enable ColorVariable

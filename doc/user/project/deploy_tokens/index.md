@@ -20,7 +20,7 @@ Deploy tokens can be managed by [maintainers only](../../permissions.md).
 
 Deploy tokens cannot be used with the GitLab API.
 
-If you have a key pair, you might want to use [deploy keys](../../../ssh/README.md#deploy-keys)
+If you have a key pair, you might want to use [deploy keys](../../project/deploy_keys/index.md)
 instead.
 
 ## Creating a Deploy Token
@@ -180,7 +180,6 @@ docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 ```
 
 NOTE:
-The special handling for the `gitlab-deploy-token` deploy token is not currently
-implemented for group deploy tokens. For the deploy token to be available for
-CI/CD jobs, it must be created at the project level. For details, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214014).
+The special handling for the `gitlab-deploy-token` deploy token is not
+implemented for group deploy tokens. To make the group-level deploy token available for
+CI/CD jobs, use the workaround in [issue 214014](https://gitlab.com/gitlab-org/gitlab/-/issues/214014).

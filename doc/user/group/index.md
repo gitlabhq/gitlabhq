@@ -7,54 +7,34 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Groups
 
-With GitLab Groups, you can:
+In GitLab, you can put related projects together in a group.
 
-- Assemble related projects together.
-- Grant members access to several projects at once.
+For example, you might create a group for your company members and a subgroup for each individual team.
+You can name the group `company-team`, and the subgroups `backend-team`, `frontend-team`, and `production-team`.
 
-For a video introduction to GitLab Groups, see [GitLab University: Repositories, Projects and Groups](https://www.youtube.com/watch?v=4TWfh1aKHHw).
+Then you can:
 
-Groups can also be nested in [subgroups](subgroups/index.md).
+- Grant members access to multiple projects at once.
+- Add to-do items for all of the group members at once.
+- View the [issues](../project/issues/index.md#issues-list) and
+  [merge requests](../project/merge_requests/reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group)
+  for all projects in the group, together in a single list view.
+- [Bulk edit](../group/bulk_editing/index.md) issues, epics, and merge requests.
 
-Find your groups by clicking **Groups > Your Groups** in the top navigation.
+You can also create [subgroups](subgroups/index.md).
 
-![GitLab Groups](img/groups.png)
+## View groups
 
-> The **Groups** dropdown in the top navigation was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36234) in [GitLab 11.1](https://about.gitlab.com/releases/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
+To view groups:
 
-The **Groups** page displays:
+1. In the top menu, select **Groups > Your Groups**. All groups you are a member of are displayed.
+1. To view a list of public groups, select **Explore public groups**.
 
-- All groups you are a member of, when **Your groups** is selected.
-- A list of public groups, when **Explore public groups** is selected.
+You can also view groups by namespace.
 
-Each group on the **Groups** page is listed with:
+### Namespaces
 
-- How many subgroups it has.
-- How many projects it contains.
-- How many members the group has, not including members inherited from parent group(s).
-- The group's visibility.
-- A link to the group's settings, if you have sufficient permissions.
-- A link to leave the group, if you are a member.
-
-## Use cases
-
-You can create groups for numerous reasons. To name a couple:
-
-- Grant access to multiple projects and multiple team members in fewer steps by organizing related projects under the same [namespace](#namespaces) and adding members to the top-level group.
-- Make it easier to `@mention` all of your team at once in issues and merge requests by creating a group and including the appropriate members.
-
-For example, you could create a group for your company members, and create a [subgroup](subgroups/index.md) for each individual team. Let's say you create a group called `company-team`, and you create subgroups in this group for the individual teams `backend-team`, `frontend-team`, and `production-team`.
-
-- When you start a new implementation from an issue, you add a comment:
-  _"`@company-team`, let's do it! `@company-team/backend-team` you're good to go!"_
-- When your backend team needs help from frontend, they add a comment:
-  _"`@company-team/frontend-team` could you help us here please?"_
-- When the frontend team completes their implementation, they comment:
-  _"`@company-team/backend-team`, it's done! Let's ship it `@company-team/production-team`!"_
-
-## Namespaces
-
-In GitLab, a namespace is a unique name to be used as a user name, a group name, or a subgroup name.
+In GitLab, a namespace is a unique name and URL for a user, a group, or subgroup.
 
 - `http://gitlab.example.com/username`
 - `http://gitlab.example.com/groupname`
@@ -62,35 +42,19 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 
 For example, consider a user named Alex:
 
-1. Alex creates an account on GitLab.com with the username `alex`;
-   their profile will be accessed under `https://gitlab.example.com/alex`
-1. Alex creates a group for their team with the group name `alex-team`;
-   the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
-1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`;
-   this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
+1. Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`
+1. Alex creates a group for their team with the group name `alex-team`.
+   The group and its projects are available at: `https://gitlab.example.com/alex-team`
+1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`.
+   The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`
 
-By doing so:
+## Create a group
 
-- Any team member mentions Alex with `@alex`
-- Alex mentions everyone from their team with `@alex-team`
-- Alex mentions only the marketing team with `@alex-team/marketing`
+NOTE:
+For a list of words that can not be used as group names, see
+[reserved names](../reserved_names.md).
 
-## Issues and merge requests within a group
-
-Issues and merge requests are part of projects. For a given group, you can view all of the
-[issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group) across all projects in that group,
-together in a single list view.
-
-### Bulk editing issues and merge requests
-
-For details, see [bulk editing issues and merge requests](../group/bulk_editing/index.md).
-
-## Create a new group
-
-> For a list of words that are not allowed to be used as group names see the
-> [reserved names](../reserved_names.md).
-
-To create a new Group, either:
+To create a new group, either:
 
 - In the top menu, click **Groups** and then **Your Groups**, and click the green button **New group**.
 
@@ -166,7 +130,7 @@ If you change your mind before your request is approved, just click the
 
 ![Withdraw access request button](img/withdraw_access_request_button.png)
 
-## Changing the owner of a group
+## Change the owner of a group
 
 Ownership of a group means at least one of its members has
 [Owner permission](../permissions.md#group-members-permissions). Groups must have at
@@ -265,6 +229,18 @@ You can search for members by name, username, or email.
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
 
 ![Group members sort](img/group_members_sort_13_7.png)
+
+## Mention a group in an issue or merge request
+
+When you mention a group in a comment, every member of the group gets a to-do item
+added to their To-do list.
+
+1. Open the MR or issue.
+1. In a comment, type `@` followed by the user, group, or subgroup namespace.
+   For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
+1. Select **Comment**.
+
+A to-do item is created for all the group and subgroup members.
 
 ## Changing the default branch protection of a group
 
@@ -520,7 +496,7 @@ the group's dashboard, and clicking **Settings**.
 ### General settings
 
 In addition to editing any settings you previously
-set when [creating the group](#create-a-new-group), you can also
+set when [creating the group](#create-a-group), you can also
 access further configurations for your group.
 
 #### Changing a group's path
@@ -641,8 +617,8 @@ request to add a new user to a project through API will not be possible.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.1.
 
 NOTE:
-IP Access Restrictions are currently not functioning as expected on GitLab.com. Some users
-may experience blocked Git operations or have difficulties accessing projects. Please
+IP Access Restrictions are currently not functioning as expected on GitLab.com. If enabled,
+users cannot perform Git operations through SSH, or access projects via the UI. Please
 review the [following bug report](https://gitlab.com/gitlab-org/gitlab/-/issues/271673) for
 more information.
 

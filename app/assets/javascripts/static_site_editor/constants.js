@@ -12,7 +12,7 @@ export const SUBMIT_CHANGES_MERGE_REQUEST_ERROR = s__(
   'StaticSiteEditor|Could not create merge request.',
 );
 export const LOAD_CONTENT_ERROR = __(
-  'An error ocurred while loading your content. Please try again.',
+  'An error occurred while loading your content. Please try again.',
 );
 
 export const DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE = s__(

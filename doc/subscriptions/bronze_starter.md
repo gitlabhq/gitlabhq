@@ -20,7 +20,7 @@ the tiers are no longer mentioned in GitLab documentation:
   [per-group charts](../user/project/milestones/index.md#group-burndown-charts)
 - [Code owners](../user/project/code_owners.md)
 - Description templates:
-  - [Setting a default template for merge requests and issues](../user/project/description_templates.md#setting-a-default-template-for-merge-requests-and-issues)
+  - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../tools/email.md)
 - Groups:
   - [Creating group memberships via CN](../user/group/index.md#creating-group-links-via-cn)

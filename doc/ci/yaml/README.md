@@ -267,14 +267,14 @@ Some example `if` clauses for `workflow: rules`:
 See the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more examples.
 
 For example, in the following configuration, pipelines run for all `push` events (changes to
-branches and new tags). Pipelines for push events with `-wip` in the commit message
+branches and new tags). Pipelines for push events with `-draft` in the commit message
 don't run, because they are set to `when: never`. Pipelines for schedules or merge requests
 don't run either, because no rules evaluate to true for them:
 
 ```yaml
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-wip$/
+    - if: $CI_COMMIT_MESSAGE =~ /-draft$/
       when: never
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```
@@ -2627,14 +2627,18 @@ to change the job without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
 
-- `when` - [reference](#when)
+- `when`, defined at either:
+  - [The job level](#when).
+  - [In a rules clause](#rules). If you use `rules:` and `when: manual`, you should
+    also set [`allow_failure: true`](#allow_failure) so the pipeline can complete
+    even if the job doesn't run.
 - `environment:name`
 - `environment:action`
 
 Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
 or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration.
 
-In the example above, if the configuration is not identical:
+In the examples above, if the configuration is not identical:
 
 - The `stop_review_app` job might not be included in all pipelines that include the `review_app` job.
 - It is not possible to trigger the `action: stop` to stop the environment automatically.

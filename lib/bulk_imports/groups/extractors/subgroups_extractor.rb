@@ -4,8 +4,6 @@ module BulkImports
   module Groups
     module Extractors
       class SubgroupsExtractor
-        def initialize(*args); end
-
         def extract(context)
           encoded_parent_path = ERB::Util.url_encode(context.entity.source_full_path)
 

@@ -588,7 +588,7 @@ the `.with_route` scope defined on all `Routable`s.
 
 ### Cron workers
 
-The context is automatically cleared for workers in the Cronjob queue
+The context is automatically cleared for workers in the cronjob queue
 (`include CronjobQueue`), even when scheduling them from
 requests. We do this to avoid incorrect metadata when other jobs are
 scheduled from the cron worker.

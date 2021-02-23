@@ -422,7 +422,18 @@ describe('Issuable output', () => {
       formSpy = jest.spyOn(wrapper.vm, 'updateAndShowForm');
     });
 
-    it('shows the form if template names request is successful', () => {
+    it('shows the form if template names as hash request is successful', () => {
+      const mockData = {
+        test: [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }],
+      };
+      mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
+
+      return wrapper.vm.requestTemplatesAndShowForm().then(() => {
+        expect(formSpy).toHaveBeenCalledWith(mockData);
+      });
+    });
+
+    it('shows the form if template names as array request is successful', () => {
       const mockData = [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }];
       mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
 

@@ -1,5 +1,5 @@
 import { setHTMLFixture } from 'helpers/fixtures';
-import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
+import Tracking, { initUserTracking, initDefaultTrackers, STANDARD_CONTEXT } from '~/tracking';
 
 describe('Tracking', () => {
   let snowplowSpy;
@@ -45,7 +45,7 @@ describe('Tracking', () => {
     it('should activate features based on what has been enabled', () => {
       initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [STANDARD_CONTEXT]);
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
@@ -88,7 +88,7 @@ describe('Tracking', () => {
         '_label_',
         undefined,
         undefined,
-        undefined,
+        [STANDARD_CONTEXT],
       );
     });
 

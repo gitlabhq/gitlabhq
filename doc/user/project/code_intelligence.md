@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
@@ -18,6 +18,9 @@ development environments (IDE), including:
 Code Intelligence is built into GitLab and powered by [LSIF](https://lsif.dev/)
 (Language Server Index Format), a file format for precomputed code
 intelligence data.
+
+NOTE:
+You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/index.md).
 
 ## Configuration
 

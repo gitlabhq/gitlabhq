@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
       context 'staging' do
         before do
-          allow(Gitlab).to receive(:staging?).and_return(true)
+          stub_config_setting(url: 'https://staging.gitlab.com')
         end
 
         include_examples 'contains environment', 'staging'
@@ -30,10 +30,26 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
       context 'production' do
         before do
-          allow(Gitlab).to receive(:com_and_canary?).and_return(true)
+          stub_config_setting(url: 'https://gitlab.com')
         end
 
         include_examples 'contains environment', 'production'
+      end
+
+      context 'org' do
+        before do
+          stub_config_setting(url: 'https://dev.gitlab.org')
+        end
+
+        include_examples 'contains environment', 'org'
+      end
+
+      context 'other self-managed instance' do
+        before do
+          stub_rails_env('production')
+        end
+
+        include_examples 'contains environment', 'self-managed'
       end
     end
 

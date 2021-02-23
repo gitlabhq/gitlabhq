@@ -59,10 +59,32 @@ const populateUserInfo = (user) => {
 };
 
 const initializedPopovers = new Map();
+let domObservedForChanges = false;
 
-export default (elements = document.querySelectorAll('.js-user-link')) => {
+const addPopoversToModifiedTree = new MutationObserver(() => {
+  const userLinks = document?.querySelectorAll('.js-user-link, .gfm-project_member');
+
+  if (userLinks) {
+    addPopovers(userLinks); /* eslint-disable-line no-use-before-define */
+  }
+});
+
+function observeBody() {
+  if (!domObservedForChanges) {
+    addPopoversToModifiedTree.observe(document.body, {
+      subtree: true,
+      childList: true,
+    });
+
+    domObservedForChanges = true;
+  }
+}
+
+export default function addPopovers(elements = document.querySelectorAll('.js-user-link')) {
   const userLinks = Array.from(elements);
   const UserPopoverComponent = Vue.extend(UserPopover);
+
+  observeBody();
 
   return userLinks
     .filter(({ dataset }) => dataset.user || dataset.userId)
@@ -105,4 +127,4 @@ export default (elements = document.querySelectorAll('.js-user-link')) => {
 
       return renderedPopover;
     });
-};
+}

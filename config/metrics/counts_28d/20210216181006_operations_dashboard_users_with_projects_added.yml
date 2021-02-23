@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage_monthly.monitor.operations_dashboard_users_with_projects_added
+description: Active users with projects on operations dashboard
+product_section: ops
+product_stage:
+product_group: group::monitor
+product_category:
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

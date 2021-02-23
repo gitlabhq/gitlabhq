@@ -4,11 +4,6 @@ require 'marginalia'
 
 ::Marginalia::Comment.extend(::Gitlab::Marginalia::Comment)
 
-# Patch to modify 'Marginalia::ActiveRecordInstrumentation.annotate_sql' method with feature check.
-# Orignal Marginalia::ActiveRecordInstrumentation is included to ActiveRecord::ConnectionAdapters::PostgreSQLAdapter in the Marginalia Railtie.
-# Refer: https://github.com/basecamp/marginalia/blob/v1.8.0/lib/marginalia/railtie.rb#L67
-ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Gitlab::Marginalia::ActiveRecordInstrumentation)
-
 # By default, PostgreSQL only tracks the first 1024 bytes of a SQL
 # query. Prepending the comment allows us to trace the source of the
 # query without having to increase the `track_activity_query_size`
@@ -25,5 +20,3 @@ Marginalia::Comment.components << :line if Rails.env.development?
 Gitlab::Marginalia.set_application_name
 
 Gitlab::Marginalia.enable_sidekiq_instrumentation
-
-Gitlab::Marginalia.set_enabled_from_feature_flag

@@ -27,7 +27,7 @@ and example server responses. Some parameters include a default or a list of all
 
 ![API viewer screenshot](img/apiviewer04-fs8.png)
 
-## Starting an interactive sesssion
+## Starting an interactive session
 
 A [Personal access token](../../user/profile/personal_access_tokens.md) (PAT) is one way to
 start an interactive session. To do this, select **Authorize** from the main page, and a

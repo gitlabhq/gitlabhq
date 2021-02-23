@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2
+description: ''
+product_section: ''
+product_stage: ''
+product_group: ''
+product_category: ''
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

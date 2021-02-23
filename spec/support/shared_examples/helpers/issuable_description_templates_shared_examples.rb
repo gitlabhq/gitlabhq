@@ -23,11 +23,11 @@ RSpec.shared_examples 'project issuable templates' do
     end
 
     it 'returns only md files as issue templates' do
-      expect(helper.issuable_templates(project, 'issue')).to eq(templates('issue', project))
+      expect(helper.issuable_templates(project, 'issue')).to eq(expected_templates('issue'))
     end
 
     it 'returns only md files as merge_request templates' do
-      expect(helper.issuable_templates(project, 'merge_request')).to eq(templates('merge_request', project))
+      expect(helper.issuable_templates(project, 'merge_request')).to eq(expected_templates('merge_request'))
     end
   end
 

@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_timestamps'
 
 RSpec.describe RuboCop::Cop::Migration::AddTimestamps do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   let(:migration_with_add_timestamps) do
@@ -47,44 +45,39 @@ RSpec.describe RuboCop::Cop::Migration::AddTimestamps do
     )
   end
 
-  context 'in migration' do
+  context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
     it 'registers an offense when the "add_timestamps" method is used' do
-      inspect_source(migration_with_add_timestamps)
+      expect_offense(<<~RUBY)
+        class Users < ActiveRecord::Migration[4.2]
+          DOWNTIME = false
 
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.map(&:line)).to eq([7])
-      end
+          def change
+            add_column(:users, :username, :text)
+            add_timestamps(:users)
+            ^^^^^^^^^^^^^^ Do not use `add_timestamps`, use `add_timestamps_with_timezone` instead
+          end
+        end
+      RUBY
     end
 
     it 'does not register an offense when the "add_timestamps" method is not used' do
-      inspect_source(migration_without_add_timestamps)
-
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(0)
-      end
+      expect_no_offenses(migration_without_add_timestamps)
     end
 
     it 'does not register an offense when the "add_timestamps_with_timezone" method is used' do
-      inspect_source(migration_with_add_timestamps_with_timezone)
-
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(0)
-      end
+      expect_no_offenses(migration_with_add_timestamps_with_timezone)
     end
   end
 
-  context 'outside of migration' do
-    it 'registers no offense' do
-      inspect_source(migration_with_add_timestamps)
-      inspect_source(migration_without_add_timestamps)
-      inspect_source(migration_with_add_timestamps_with_timezone)
-
-      expect(cop.offenses.size).to eq(0)
+  context 'when outside of migration' do
+    it 'registers no offense', :aggregate_failures do
+      expect_no_offenses(migration_with_add_timestamps)
+      expect_no_offenses(migration_without_add_timestamps)
+      expect_no_offenses(migration_with_add_timestamps_with_timezone)
     end
   end
 end

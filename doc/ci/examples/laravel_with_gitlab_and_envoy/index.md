@@ -128,7 +128,7 @@ We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our 
 
 ![variables page](img/variables_page.png)
 
-We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../ssh/README.md#deploy-keys), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
+We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../user/project/deploy_keys/index.md), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 ```shell
 # As the deployer user on the server
@@ -619,7 +619,7 @@ deploy_production:
     - master
 ```
 
-You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/), to final test your application before deploying to production.
+You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/), to final test your application before deploying to production.
 
 ### Turn on GitLab CI/CD
 

@@ -317,6 +317,8 @@ class MergeRequest < ApplicationRecord
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, -> (relation) { preload(metrics: relation) }
+  scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
+  scope :preload_latest_diff_comment, -> { preload(latest_merge_request_diff: :merge_request_diff_commits) }
   scope :with_web_entity_associations, -> { preload(:author, :target_project) }
 
   scope :with_auto_merge_enabled, -> do
@@ -374,8 +376,7 @@ class MergeRequest < ApplicationRecord
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 
-  delegate :active?, :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
-  delegate :success?, :active?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+  delegate :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
 
   RebaseLockTimeout = Class.new(StandardError)
 
@@ -433,6 +434,18 @@ class MergeRequest < ApplicationRecord
     # either the squash commit (if the MR was squashed) or the diff head commit.
     sha = merge_commit_sha || squash_commit_sha || diff_head_sha
     target_project.latest_pipeline(target_branch, sha)
+  end
+
+  def head_pipeline_active?
+    !!head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_active?
+    !!actual_head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_success?
+    !!actual_head_pipeline&.success?
   end
 
   # Pattern used to extract `!123` merge request references from text

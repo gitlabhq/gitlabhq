@@ -4,10 +4,6 @@ module BulkImports
   module Groups
     module Loaders
       class GroupLoader
-        def initialize(options = {})
-          @options = options
-        end
-
         def load(context, data)
           return unless user_can_create_group?(context.current_user, data)
 

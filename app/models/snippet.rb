@@ -216,8 +216,10 @@ class Snippet < ApplicationRecord
   def blobs
     return [] unless repository_exists?
 
-    branch = default_branch
-    list_files(branch).map { |file| Blob.lazy(repository, branch, file) }
+    files = list_files(default_branch)
+    items = files.map { |file| [default_branch, file] }
+
+    repository.blobs_at(items).compact
   end
 
   def hook_attrs

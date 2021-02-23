@@ -123,11 +123,7 @@ RSpec.describe RootController do
           expect(response).to render_template 'dashboard/projects/index'
         end
 
-        context 'when experiment is enabled' do
-          before do
-            stub_experiment_for_subject(customize_homepage: true)
-          end
-
+        context 'when customize_homepage is enabled' do
           it 'renders the default dashboard' do
             get :index
 
@@ -135,9 +131,9 @@ RSpec.describe RootController do
           end
         end
 
-        context 'when experiment not enabled' do
+        context 'when customize_homepage is not enabled' do
           before do
-            stub_experiment(customize_homepage: false)
+            stub_feature_flags(customize_homepage: false)
           end
 
           it 'renders the default dashboard' do

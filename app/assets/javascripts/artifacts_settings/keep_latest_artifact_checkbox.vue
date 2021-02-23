@@ -2,7 +2,6 @@
 import { GlAlert, GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import UpdateKeepLatestArtifactProjectSetting from './graphql/mutations/update_keep_latest_artifact_project_setting.mutation.graphql';
-import GetKeepLatestArtifactApplicationSetting from './graphql/queries/get_keep_latest_artifact_application_setting.query.graphql';
 import GetKeepLatestArtifactProjectSetting from './graphql/queries/get_keep_latest_artifact_project_setting.query.graphql';
 
 export default {
@@ -14,7 +13,6 @@ export default {
     enabledHelpText: __(
       'The latest artifacts created by jobs in the most recent successful pipeline will be stored.',
     ),
-    disabledHelpText: __('This feature is disabled at the instance level.'),
     helpLinkText: __('More information'),
     checkboxText: __('Keep artifacts from most recent successful jobs'),
   },
@@ -46,19 +44,12 @@ export default {
         this.reportError(this.$options.errors.fetchError);
       },
     },
-    projectSettingDisabled: {
-      query: GetKeepLatestArtifactApplicationSetting,
-      update(data) {
-        return !data.ciApplicationSettings?.keepLatestArtifact;
-      },
-    },
   },
   data() {
     return {
       keepLatestArtifact: null,
       errorMessage: '',
       isAlertDismissed: false,
-      projectSettingDisabled: true,
     };
   },
   computed: {
@@ -66,9 +57,7 @@ export default {
       return this.errorMessage && !this.isAlertDismissed;
     },
     helpText() {
-      return this.projectSettingDisabled
-        ? this.$options.i18n.disabledHelpText
-        : this.$options.i18n.enabledHelpText;
+      return this.$options.i18n.enabledHelpText;
     },
   },
   methods: {
@@ -106,10 +95,7 @@ export default {
       @dismiss="isAlertDismissed = true"
       >{{ errorMessage }}</gl-alert
     >
-    <gl-form-checkbox
-      v-model="keepLatestArtifact"
-      :disabled="projectSettingDisabled"
-      @change="updateSetting"
+    <gl-form-checkbox v-model="keepLatestArtifact" @change="updateSetting"
       ><strong class="gl-mr-3">{{ $options.i18n.checkboxText }}</strong>
       <gl-link :href="helpPagePath">{{ $options.i18n.helpLinkText }}</gl-link>
       <template v-if="!$apollo.loading" #help>{{ helpText }}</template>

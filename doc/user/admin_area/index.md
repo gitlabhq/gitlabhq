@@ -33,7 +33,7 @@ The Admin Area is made up of the following sections:
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md).                                                                                                                                                                                                   |
 | **{push-rules}** Push rules **(STARTER ONLY)** | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). **(PREMIUM SELF)**                                                                                                   |
 | **{location-dot}** Geo **(PREMIUM SELF)**      | Configure and maintain [Geo nodes](geo_nodes.md).                                                                                                                                                                                                                                        |
-| **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../../ssh/README.md#deploy-keys).                                                                                                                                                                                                                 |
+| **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md).                                                                                                                                                                                                                 |
 | **{lock}** Credentials **(ULTIMATE SELF)**     | View [credentials](credentials_inventory.md) that can be used to access your instance.                                                                                                                                                                                                   |
 | **{template}** Service Templates               | Create [service templates](../project/integrations/services_templates.md) for projects.                                                                                                                                                                                                  |
 | **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance.                                                                                                                                                                                                                        |
@@ -157,6 +157,22 @@ All impersonation activities are [captured with audit events](../../administrati
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
+#### User Permission Export **(PREMIUM SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
+
+An administrator can export user permissions for all users in the GitLab instance from the Admin Area's Users page.
+The export lists direct membership the users have in groups and projects.
+
+The following data is included in the export:
+
+- Username
+- Email
+- Type
+- Path
+- Access level ([Project](../permissions.md#project-members-permissions) and [Group](../permissions.md#group-members-permissions))
+
 #### Users statistics
 
 The **Users statistics** page provides an overview of user accounts by role. These statistics are
@@ -187,7 +203,7 @@ sort order is by **Last created**.
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../group/index.md#create-a-new-group) click **New group**.
+To [Create a new group](../group/index.md#create-a-group) click **New group**.
 
 ### Administering Jobs
 

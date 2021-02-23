@@ -9,7 +9,6 @@ describe('Pipelines Table', () => {
 
   const defaultProps = {
     pipelines: [],
-    autoDevopsHelpPath: 'foo',
     viewType: 'root',
   };
 
@@ -58,7 +57,7 @@ describe('Pipelines Table', () => {
 
   describe('with data', () => {
     it('should render rows', () => {
-      createComponent({ pipelines: [pipeline], autoDevopsHelpPath: 'foo', viewType: 'root' });
+      createComponent({ pipelines: [pipeline], viewType: 'root' });
 
       expect(findRows()).toHaveLength(1);
     });

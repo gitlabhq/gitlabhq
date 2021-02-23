@@ -4,8 +4,6 @@ module BulkImports
   module Groups
     module Transformers
       class MemberAttributesTransformer
-        def initialize(*); end
-
         def transform(context, data)
           data
             .then { |data| add_user(data) }

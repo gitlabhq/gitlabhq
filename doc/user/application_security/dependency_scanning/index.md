@@ -19,10 +19,13 @@ vulnerable. You can then take action to protect your application.
 If you're using [GitLab CI/CD](../../../ci/README.md), you can use dependency scanning to analyze
 your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
 dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
-either [including the dependency scanning template](#configuration)
-in your existing `.gitlab-ci.yml` file, or by implicitly using
-the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
-provided by [Auto DevOps](../../../topics/autodevops/index.md).
+either:
+
+- [Including the dependency scanning template](#configuration)
+  in your existing `.gitlab-ci.yml` file.
+- Implicitly using
+  the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
+  provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the dependency scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the

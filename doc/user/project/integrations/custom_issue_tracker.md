@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Custom Issue Tracker service
+# Custom Issue Tracker service **(FREE)**
 
 To enable the Custom Issue Tracker integration in a project:
 

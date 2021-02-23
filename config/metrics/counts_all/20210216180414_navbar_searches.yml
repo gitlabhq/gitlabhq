@@ -1,0 +1,19 @@
+---
+key_path: counts.navbar_searches
+description: Total Searches using the navbar for All Basic Search and Advanced Search in self-managed
+  and SaaS
+product_section: enablement
+product_stage: enablement
+product_group: group::global search
+product_category: global_search
+value_type: number
+status: data_available
+time_frame: all
+data_source: redis
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

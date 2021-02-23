@@ -14,29 +14,48 @@ import (
 	"syscall"
 
 	"github.com/sebest/xff"
-
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
+	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/mask"
 )
 
 const NginxResponseBufferHeader = "X-Accel-Buffering"
 
-func CaptureAndFail(w http.ResponseWriter, r *http.Request, err error, msg string, code int, loggerCallbacks ...log.ConfigureLogger) {
-	http.Error(w, msg, code)
-	logger := log.WithRequest(r).WithError(err)
-
-	for _, cb := range loggerCallbacks {
-		logger = cb(logger)
+func logErrorWithFields(r *http.Request, err error, fields log.Fields) {
+	if err != nil {
+		CaptureRavenError(r, err, fields)
 	}
 
-	logger.Error(msg)
+	printError(r, err, fields)
 }
 
-func Fail500(w http.ResponseWriter, r *http.Request, err error, loggerCallbacks ...log.ConfigureLogger) {
-	CaptureAndFail(w, r, err, "Internal server error", http.StatusInternalServerError, loggerCallbacks...)
+func CaptureAndFail(w http.ResponseWriter, r *http.Request, err error, msg string, code int) {
+	http.Error(w, msg, code)
+	logErrorWithFields(r, err, nil)
+}
+
+func Fail500(w http.ResponseWriter, r *http.Request, err error) {
+	CaptureAndFail(w, r, err, "Internal server error", http.StatusInternalServerError)
+}
+
+func Fail500WithFields(w http.ResponseWriter, r *http.Request, err error, fields log.Fields) {
+	http.Error(w, "Internal server error", http.StatusInternalServerError)
+	logErrorWithFields(r, err, fields)
 }
 
 func RequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
 	CaptureAndFail(w, r, err, "Request Entity Too Large", http.StatusRequestEntityTooLarge)
+}
+
+func printError(r *http.Request, err error, fields log.Fields) {
+	if r != nil {
+		entry := log.WithContextFields(r.Context(), log.Fields{
+			"method": r.Method,
+			"uri":    mask.URL(r.RequestURI),
+		})
+		entry.WithFields(fields).WithError(err).Error()
+	} else {
+		log.WithFields(fields).WithError(err).Error("unknown error")
+	}
 }
 
 func SetNoCacheHeaders(header http.Header) {
@@ -78,7 +97,7 @@ func OpenFile(path string) (file *os.File, fi os.FileInfo, err error) {
 func URLMustParse(s string) *url.URL {
 	u, err := url.Parse(s)
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{"url": s}).Error("urlMustParse")
+		log.WithError(err).WithField("url", s).Fatal("urlMustParse")
 	}
 	return u
 }

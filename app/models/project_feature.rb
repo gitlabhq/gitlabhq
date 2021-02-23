@@ -3,7 +3,8 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
-  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard analytics operations).freeze
+  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard analytics operations security_and_compliance).freeze
+  EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance]).freeze
 
   set_available_features(FEATURES)
 
@@ -37,16 +38,17 @@ class ProjectFeature < ApplicationRecord
   validate :repository_children_level
   validate :allowed_access_levels
 
-  default_value_for :builds_access_level,            value: ENABLED, allows_nil: false
-  default_value_for :issues_access_level,            value: ENABLED, allows_nil: false
-  default_value_for :forking_access_level,           value: ENABLED, allows_nil: false
-  default_value_for :merge_requests_access_level,    value: ENABLED, allows_nil: false
-  default_value_for :snippets_access_level,          value: ENABLED, allows_nil: false
-  default_value_for :wiki_access_level,              value: ENABLED, allows_nil: false
-  default_value_for :repository_access_level,        value: ENABLED, allows_nil: false
-  default_value_for :analytics_access_level,         value: ENABLED, allows_nil: false
+  default_value_for :builds_access_level, value: ENABLED, allows_nil: false
+  default_value_for :issues_access_level, value: ENABLED, allows_nil: false
+  default_value_for :forking_access_level, value: ENABLED, allows_nil: false
+  default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
+  default_value_for :snippets_access_level, value: ENABLED, allows_nil: false
+  default_value_for :wiki_access_level, value: ENABLED, allows_nil: false
+  default_value_for :repository_access_level, value: ENABLED, allows_nil: false
+  default_value_for :analytics_access_level, value: ENABLED, allows_nil: false
   default_value_for :metrics_dashboard_access_level, value: PRIVATE, allows_nil: false
-  default_value_for :operations_access_level,        value: ENABLED, allows_nil: false
+  default_value_for :operations_access_level, value: ENABLED, allows_nil: false
+  default_value_for :security_and_compliance_access_level, value: PRIVATE, allows_nil: false
 
   default_value_for(:pages_access_level, allows_nil: false) do |feature|
     if ::Gitlab::Pages.access_control_is_forced?

@@ -24,9 +24,12 @@ new UserCallout({
 });
 
 // Project show page loads different overview content based on user preferences
-const treeSlider = document.getElementById('js-tree-list');
-if (treeSlider) {
+
+if (document.querySelector('.js-upload-blob-form')) {
   initUploadForm();
+}
+
+if (document.getElementById('js-tree-list')) {
   initTree();
 }
 

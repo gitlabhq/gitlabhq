@@ -52,10 +52,6 @@ export default {
       required: false,
       default: '',
     },
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
     emptyStateSvgPath: {
       type: String,
       required: true,
@@ -65,10 +61,6 @@ export default {
       required: true,
     },
     noPipelinesSvgPath: {
-      type: String,
-      required: true,
-    },
-    autoDevopsHelpPath: {
       type: String,
       required: true,
     },
@@ -337,7 +329,6 @@ export default {
 
       <empty-state
         v-else-if="stateToRender === $options.stateMap.emptyState"
-        :help-page-path="helpPagePath"
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
       />
@@ -362,7 +353,6 @@ export default {
           :pipelines="state.pipelines"
           :pipeline-schedule-url="pipelineScheduleUrl"
           :update-graph-dropdown="updateGraphDropdown"
-          :auto-devops-help-path="autoDevopsHelpPath"
           :view-type="viewType"
         />
       </div>

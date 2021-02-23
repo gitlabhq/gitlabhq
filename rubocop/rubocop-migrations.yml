@@ -27,6 +27,7 @@ Migration/UpdateLargeTable:
     - :project_ci_cd_settings
     - :project_settings
     - :project_features
+    - :protected_branches
     - :push_event_payloads
     - :resource_label_events
     - :routes

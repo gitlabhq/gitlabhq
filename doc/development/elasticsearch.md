@@ -219,7 +219,9 @@ Any update to the Elastic index mappings should be replicated in [`Elastic::Late
 Migrations can be built with a retry limit and have the ability to be [failed and marked as halted](https://gitlab.com/gitlab-org/gitlab/-/blob/66e899b6637372a4faf61cfd2f254cbdd2fb9f6d/ee/lib/elastic/migration.rb#L40).
 Any data or index cleanup needed to support migration retries should be handled within the migration.
 
-### Migration options supported by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
+### Migration options supported by the `Elastic::MigrationWorker`
+
+[`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb) supports the following migration options:
 
 - `batched!` - Allow the migration to run in batches. If set, the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 will re-enqueue itself with a delay which is set using the `throttle_delay` option described below. The batching
@@ -229,6 +231,9 @@ must be handled within the `migrate` method, this setting controls the re-enqueu
 enough time to finish. Additionally, the time should be less than 30 minutes since that is how often the
 [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 cron worker runs. Default value is 5 minutes.
+
+- `pause_indexing!` - Pause indexing while the migration runs. This setting will record the indexing setting before
+the migration runs and set it back to that value when the migration is completed.
 
 ```ruby
 # frozen_string_literal: true
@@ -241,6 +246,45 @@ class BatchedMigrationName < Elastic::Migration
   # ...
 end
 ```
+
+### Multi-version compatibility
+
+These Elasticsearch migrations, like any other GitLab changes, need to support the case where
+[multiple versions of the application are running at the same time](multi_version_compatibility.md).
+
+Depending on the order of deployment, it's possible that the migration
+has started or finished and there's still a server running the application code from before the
+migration. We need to take this into consideration until we can [ensure all Elasticsearch migrations
+start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
+
+### Reverting a migration
+
+Because Elasticsearch does not support transactions, we always need to design our
+migrations to accommodate a situation where the application
+code is reverted after the migration has started or after it is finished.
+
+For this reason we generally defer destructive actions (for example, deletions after
+some data is moved) to a later merge request after the migrations have
+completed successfully. To be safe, for self-managed customers we should also
+defer it to another release if there is risk of important data loss.
+
+### Best practices for Elasticsearch migrations
+
+Follow these best practices for best results:
+
+- When working in batches, keep the batch size under 9,000 documents
+  and `throttle_delay` over 3 minutes. The bulk indexer is set to run
+  every 1 minute and process a batch of 10,000 documents. These limits
+  allow the bulk indexer time to process records before another migration
+  batch is attempted.
+- To ensure that document counts are up to date, it is recommended to refresh
+  the index before checking if a migration is completed.
+- Add logging statements to each migration when the migration starts, when a
+  completion check occurs, and when the migration is completed. These logs
+  are helpful when debugging issues with migrations.
+- Pause indexing if you're using any Elasticsearch Reindex API operations.
+- Consider adding a retry limit if there is potential for the migration to fail.
+  This ensures that migrations can be halted if an issue occurs.
 
 ## Performance Monitoring
 

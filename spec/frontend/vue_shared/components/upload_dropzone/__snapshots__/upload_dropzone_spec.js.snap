@@ -19,6 +19,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
         <span>
           Test %{linkStart}description%{linkEnd} message.
@@ -98,10 +99,15 @@ exports[`Upload dropzone component when dragging renders correct template when d
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>
@@ -178,10 +184,15 @@ exports[`Upload dropzone component when dragging renders correct template when d
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>
@@ -258,10 +269,15 @@ exports[`Upload dropzone component when dragging renders correct template when d
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>
@@ -337,10 +353,15 @@ exports[`Upload dropzone component when dragging renders correct template when d
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>
@@ -416,10 +437,15 @@ exports[`Upload dropzone component when dragging renders correct template when d
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>
@@ -495,10 +521,15 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
        
       <p
         class="gl-mb-0"
+        data-testid="upload-text"
       >
-        <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} files to attach"
-        />
+        Drop or 
+        <gl-link-stub>
+          
+                  upload
+                
+        </gl-link-stub>
+         files to attach
       </p>
     </div>
   </button>

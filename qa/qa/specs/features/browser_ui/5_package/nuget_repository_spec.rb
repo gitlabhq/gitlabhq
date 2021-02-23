@@ -54,7 +54,7 @@ module QA
                 {
                     file_path: '.gitlab-ci.yml',
                     content: <<~YAML
-                      image: mcr.microsoft.com/dotnet/core/sdk:3.1
+                      image: mcr.microsoft.com/dotnet/sdk:5.0
 
                       stages:
                         - deploy
@@ -102,7 +102,7 @@ module QA
 
                           <PropertyGroup>
                             <OutputType>Exe</OutputType>
-                            <TargetFramework>netcoreapp3.1</TargetFramework>
+                            <TargetFramework>net5.0</TargetFramework>
                           </PropertyGroup>
 
                         </Project>
@@ -115,7 +115,7 @@ module QA
                 {
                     file_path: '.gitlab-ci.yml',
                     content: <<~YAML
-                        image: mcr.microsoft.com/dotnet/core/sdk:3.1
+                        image: mcr.microsoft.com/dotnet/sdk:5.0
 
                         stages:
                           - install

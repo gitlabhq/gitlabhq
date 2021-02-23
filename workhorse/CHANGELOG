@@ -1,5 +1,11 @@
 # Changelog for gitlab-workhorse
 
+## v8.64.0
+
+### Other
+- Revert "Migrate to labkit error tracking"
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/685
+
 ## v8.63.0
 
 ### Added

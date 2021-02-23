@@ -1,17 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 
-const buttonText = 'Test Button Text';
+const placeholderText = 'Test Button Text';
 
 describe('ReplyPlaceholder', () => {
   let wrapper;
 
-  const findButton = () => wrapper.find({ ref: 'button' });
+  const findTextarea = () => wrapper.find({ ref: 'textarea' });
 
   beforeEach(() => {
     wrapper = shallowMount(ReplyPlaceholder, {
       propsData: {
-        buttonText,
+        placeholderText,
       },
     });
   });
@@ -20,17 +20,17 @@ describe('ReplyPlaceholder', () => {
     wrapper.destroy();
   });
 
-  it('emits onClick event on button click', () => {
-    findButton().trigger('click');
+  it('emits focus event on button click', () => {
+    findTextarea().trigger('focus');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted()).toEqual({
-        onClick: [[]],
+        focus: [[]],
       });
     });
   });
 
   it('should render reply button', () => {
-    expect(findButton().text()).toEqual(buttonText);
+    expect(findTextarea().attributes('placeholder')).toEqual(placeholderText);
   });
 });

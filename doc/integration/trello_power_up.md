@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Trello Power-Up
+# Trello Power-Up **(FREE)**
 
 The GitLab Trello Power-Up enables you to seamlessly attach
 GitLab **merge requests** to Trello cards.

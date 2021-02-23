@@ -14,7 +14,6 @@ RSpec.describe BulkImports::Entity, type: :model do
     it { is_expected.to validate_presence_of(:source_type) }
     it { is_expected.to validate_presence_of(:source_full_path) }
     it { is_expected.to validate_presence_of(:destination_name) }
-    it { is_expected.to validate_presence_of(:destination_namespace) }
 
     it { is_expected.to define_enum_for(:source_type).with_values(%i[group_entity project_entity]) }
 
@@ -38,7 +37,11 @@ RSpec.describe BulkImports::Entity, type: :model do
     context 'when associated with a group and no project' do
       it 'is valid as a group_entity' do
         entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil)
+        expect(entity).to be_valid
+      end
 
+      it 'is valid when destination_namespace is empty' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_namespace: '')
         expect(entity).to be_valid
       end
 
@@ -55,6 +58,12 @@ RSpec.describe BulkImports::Entity, type: :model do
         entity = build(:bulk_import_entity, :project_entity, group: nil, project: build(:project))
 
         expect(entity).to be_valid
+      end
+
+      it 'is invalid when destination_namespace is nil' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_namespace: nil)
+        expect(entity).not_to be_valid
+        expect(entity.errors).to include(:destination_namespace)
       end
 
       it 'is invalid as a project_entity' do

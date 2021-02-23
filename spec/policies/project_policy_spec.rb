@@ -1263,4 +1263,90 @@ RSpec.describe ProjectPolicy do
       end
     end
   end
+
+  describe 'access_security_and_compliance' do
+    context 'when the "Security & Compliance" is enabled' do
+      before do
+        project.project_feature.update!(security_and_compliance_access_level: Featurable::PRIVATE)
+      end
+
+      %w[owner maintainer developer].each do |role|
+        context "when the role is #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_allowed(:access_security_and_compliance) }
+        end
+      end
+
+      context 'with admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:access_security_and_compliance) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:access_security_and_compliance) }
+        end
+      end
+
+      %w[reporter guest].each do |role|
+        context "when the role is #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:access_security_and_compliance) }
+        end
+      end
+
+      context 'with non member' do
+        let(:current_user) { non_member }
+
+        it { is_expected.to be_disallowed(:access_security_and_compliance) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { anonymous }
+
+        it { is_expected.to be_disallowed(:access_security_and_compliance) }
+      end
+    end
+
+    context 'when the "Security & Compliance" is not enabled' do
+      before do
+        project.project_feature.update!(security_and_compliance_access_level: Featurable::DISABLED)
+      end
+
+      %w[owner maintainer developer reporter guest].each do |role|
+        context "when the role is #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:access_security_and_compliance) }
+        end
+      end
+
+      context 'with admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_disallowed(:access_security_and_compliance) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:access_security_and_compliance) }
+        end
+      end
+
+      context 'with non member' do
+        let(:current_user) { non_member }
+
+        it { is_expected.to be_disallowed(:access_security_and_compliance) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { anonymous }
+
+        it { is_expected.to be_disallowed(:access_security_and_compliance) }
+      end
+    end
+  end
 end

@@ -138,6 +138,33 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
+## Checking for pending Elasticsearch migrations
+
+This section is only applicable if you have enabled the [Elasticsearch
+integration](../integration/elasticsearch.md).
+
+Certain major releases might require [Elasticsearch
+migrations](../integration/elasticsearch.md#background-migrations) to be
+finished. You can find pending migrations by running the following command:
+
+**For Omnibus installations**
+
+```shell
+sudo gitlab-rake gitlab:elastic:list_pending_migrations
+```
+
+**For installations from source**
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
+```
+
+### What do I do if my Elasticsearch migrations are stuck?
+
+See [how to retry a halted
+migration](../integration/elasticsearch.md#retry-a-halted-migration).
+
 ## Upgrade paths
 
 Although you can generally upgrade through multiple GitLab versions in one go,
@@ -147,7 +174,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.x` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` - > `13.x (latest)`
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` - > [latest `13.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -174,7 +201,7 @@ Identify a [supported upgrade path](#upgrade-paths).
 
 More significant migrations may occur during major release upgrades. To ensure these are successful:
 
-1. Increment to the first minor version (`x.0.x`) during the major version jump.
+1. Increment to the first minor version (`X.0.Z`) during the major version jump.
 1. Proceed with upgrading to a newer release.
 
 It's also important to ensure that any background migrations have been fully completed
@@ -235,7 +262,7 @@ which is the latest patch release of 9.4. When GitLab 9.5.0 is released this
 installation can be safely upgraded to 9.5.0 without requiring downtime if the
 requirements mentioned above are met. You can also skip 9.5.0 and upgrade to
 9.5.1 after it's released, but you **can not** upgrade straight to 9.6.0; you
-_have_ to first upgrade to a 9.5.x release.
+_have_ to first upgrade to a 9.5.Z release.
 
 **Example 2:** You are running a large GitLab installation using version 9.4.2,
 which is the latest patch release of 9.4. GitLab 9.5 includes some background
@@ -243,7 +270,7 @@ migrations, and 10.0 will require these to be completed (processing any
 remaining jobs for you). Skipping 9.5 is not possible without downtime, and due
 to the background migrations would require potentially hours of downtime
 depending on how long it takes for the background migrations to complete. To
-work around this you will have to upgrade to 9.5.x first, then wait at least a
+work around this you will have to upgrade to 9.5.Z first, then wait at least a
 week before upgrading to 10.0.
 
 **Example 3:** You use MySQL as the database for GitLab. Any upgrade to a new
@@ -361,9 +388,9 @@ with the older Rails version - which could cause non-GET requests to
 fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment).
 
 So, if you are using multiple Rails servers and specifically upgrading from 13.0,
-all servers must first be upgraded to 13.1.X before upgrading to 13.2.0 or later:
+all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
 
-1. Ensure all GitLab web nodes are on GitLab 13.1.X.
+1. Ensure all GitLab web nodes are on GitLab 13.1.Z.
 1. Optionally, enable the `global_csrf_token` feature flag to enable new
    method of CSRF token generation:
 
@@ -383,33 +410,33 @@ any downgrades would result to all sessions being invalidated and users are logg
 
 ### 12.1.0
 
-If you are planning to upgrade from `12.0.x` to `12.10.x`, it is necessary to
-perform an intermediary upgrade to `12.1.x` before upgrading to `12.10.x` to
+If you are planning to upgrade from `12.0.Z` to `12.10.Z`, it is necessary to
+perform an intermediary upgrade to `12.1.Z` before upgrading to `12.10.Z` to
 avoid issues like [#215141](https://gitlab.com/gitlab-org/gitlab/-/issues/215141).
 
 ### 12.0.0
 
 In 12.0.0 we made various database related changes. These changes require that
-users first upgrade to the latest 11.11 patch release. After upgraded to 11.11.x,
-users can upgrade to 12.0.x. Failure to do so may result in database migrations
+users first upgrade to the latest 11.11 patch release. After upgraded to 11.11.Z,
+users can upgrade to 12.0.Z. Failure to do so may result in database migrations
 not being applied, which could lead to application errors.
 
-It is also required that you upgrade to 12.0.x before moving to a later version
-of 12.x.
+It is also required that you upgrade to 12.0.Z before moving to a later version
+of 12.Y.
 
 Example 1: you are currently using GitLab 11.11.8, which is the latest patch
-release for 11.11.x. You can upgrade as usual to 12.0.x.
+release for 11.11.Z. You can upgrade as usual to 12.0.Z.
 
-Example 2: you are currently using a version of GitLab 10.x. To upgrade, first
-upgrade to the last 10.x release (10.8.7) then the last 11.x release (11.11.8).
-After upgraded to 11.11.8 you can safely upgrade to 12.0.x.
+Example 2: you are currently using a version of GitLab 10.Y. To upgrade, first
+upgrade to the last 10.Y release (10.8.7) then the last 11.Y release (11.11.8).
+After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
 
 ### Upgrades from versions earlier than 8.12
 
-- `8.11.x` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
+- `8.11.Z` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
 - [CI changes prior to version 8.0](https://docs.gitlab.com/omnibus/update/README.html#updating-gitlab-ci-from-prior-540-to-version-714-via-omnibus-gitlab)
   when it was merged into GitLab.
 

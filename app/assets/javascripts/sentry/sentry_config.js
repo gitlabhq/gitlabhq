@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/browser';
 import $ from 'jquery';
 import { __ } from '~/locale';
-import * as Sentry from '~/sentry/wrapper';
 
 const IGNORE_ERRORS = [
   // Random plugins/extensions

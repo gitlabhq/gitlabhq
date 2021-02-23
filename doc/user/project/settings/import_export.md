@@ -118,6 +118,7 @@ The following items will be exported:
 - Issue boards
 - Pipelines history
 - Push Rules
+- Awards
 
 The following items will **not** be exported:
 
@@ -127,7 +128,6 @@ The following items will **not** be exported:
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
-- Awards
 
 NOTE:
 For more details on the specific data persisted in a project export, see the

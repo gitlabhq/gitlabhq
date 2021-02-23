@@ -16,7 +16,7 @@ RSpec.describe Types::Ci::PipelineType do
     ]
 
     if Gitlab.ee?
-      expected_fields << 'security_report_summary'
+      expected_fields += %w[security_report_summary security_report_findings]
     end
 
     expect(described_class).to have_graphql_fields(*expected_fields)

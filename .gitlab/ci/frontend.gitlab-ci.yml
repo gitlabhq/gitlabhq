@@ -131,6 +131,24 @@ rspec-ee frontend_fixture:
     - .frontend:rules:default-frontend-jobs
   parallel: 2
 
+graphql-schema-dump:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .rails-cache
+    - .default-before_script
+    - .frontend:rules:default-frontend-jobs
+  stage: fixtures
+  needs: []
+  script:
+    - bundle exec rake gitlab:graphql:schema:dump
+  artifacts:
+    name: graphql-schema
+    paths:
+      - tmp/tests/graphql/gitlab_schema.graphql
+      - tmp/tests/graphql/gitlab_schema.json
+
 .frontend-test-base:
   extends:
     - .frontend-base
@@ -214,7 +232,7 @@ jest-integration:
     - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
   # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
-  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
+  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture", "graphql-schema-dump"]
 
 jest-as-if-foss:
   extends:

@@ -43,7 +43,7 @@ class Repository
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
-                      has_visible_content? issue_template_names_by_category merge_request_template_names_by_category
+                      has_visible_content? issue_template_names_hash merge_request_template_names_hash
                       user_defined_metrics_dashboard_paths xcode_project? has_ambiguous_refs?).freeze
 
   # Methods that use cache_method but only memoize the value
@@ -60,8 +60,8 @@ class Repository
     gitignore: :gitignore,
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
-    issue_template: :issue_template_names_by_category,
-    merge_request_template: :merge_request_template_names_by_category,
+    issue_template: :issue_template_names_hash,
+    merge_request_template: :merge_request_template_names_hash,
     metrics_dashboard: :user_defined_metrics_dashboard_paths,
     xcode_config: :xcode_project?
   }.freeze
@@ -573,15 +573,15 @@ class Repository
   cache_method :avatar
 
   # store issue_template_names as hash
-  def issue_template_names_by_category
+  def issue_template_names_hash
     Gitlab::Template::IssueTemplate.repository_template_names(project)
   end
-  cache_method :issue_template_names_by_category, fallback: {}
+  cache_method :issue_template_names_hash, fallback: {}
 
-  def merge_request_template_names_by_category
+  def merge_request_template_names_hash
     Gitlab::Template::MergeRequestTemplate.repository_template_names(project)
   end
-  cache_method :merge_request_template_names_by_category, fallback: {}
+  cache_method :merge_request_template_names_hash, fallback: {}
 
   def user_defined_metrics_dashboard_paths
     Gitlab::Metrics::Dashboard::RepoDashboardFinder.list_dashboards(project)

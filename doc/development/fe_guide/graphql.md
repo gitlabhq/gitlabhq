@@ -63,6 +63,7 @@ see [Immutability and cache updates](#immutability-and-cache-updates) for more i
 If you use VS Code, the Apollo GraphQL extension supports autocompletion in `.graphql` files. To set up
 the GraphQL extension, follow these steps:
 
+1. Generate the schema: `bundle exec rake gitlab:graphql:schema:dump`
 1. Add an `apollo.config.js` file to the root of your `gitlab` local directory.
 1. Populate the file with the following content:
 
@@ -72,7 +73,7 @@ the GraphQL extension, follow these steps:
         includes: ['./app/assets/javascripts/**/*.graphql', './ee/app/assets/javascripts/**/*.graphql'],
         service: {
           name: 'GitLab',
-          localSchemaFile: './doc/api/graphql/reference/gitlab_schema.graphql',
+          localSchemaFile: './tmp/tests/graphql/gitlab_schema.graphql',
         },
       },
     };
@@ -767,6 +768,23 @@ export default {
 ```
 
 ### Testing
+
+#### Generating the GraphQL schema
+
+Some of our tests load the schema JSON files. To generate these files, run:
+
+```shell
+bundle exec rake gitlab:graphql:schema:dump
+```
+
+You should run this task after pulling from upstream, or when rebasing your
+branch. This is run automatically as part of `gdk update`.
+
+NOTE:
+If you use the RubyMine IDE, and have marked the `tmp` directory as
+"Excluded", you should "Mark Directory As -> Not Excluded" for
+`gitlab/tmp/tests/graphql`. This will allow the **JS GraphQL** plugin to
+automatically find and index the schema.
 
 #### Mocking response as component data
 

@@ -4,17 +4,17 @@ import { inactiveId } from '../constants';
 export default {
   isSidebarOpen: (state) => state.activeId !== inactiveId,
   isSwimlanesOn: () => false,
-  getIssueById: (state) => (id) => {
-    return state.issues[id] || {};
+  getBoardItemById: (state) => (id) => {
+    return state.boardItems[id] || {};
   },
 
-  getIssuesByList: (state, getters) => (listId) => {
-    const listIssueIds = state.issuesByListId[listId] || [];
-    return listIssueIds.map((id) => getters.getIssueById(id));
+  getBoardItemsByList: (state, getters) => (listId) => {
+    const listItemsIds = state.boardItemsByListId[listId] || [];
+    return listItemsIds.map((id) => getters.getBoardItemById(id));
   },
 
   activeIssue: (state) => {
-    return state.issues[state.activeId] || {};
+    return state.boardItems[state.activeId] || {};
   },
 
   groupPathForActiveIssue: (_, getters) => {

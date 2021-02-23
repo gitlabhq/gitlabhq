@@ -10,6 +10,7 @@
 # - guidelines for use found in
 #   https://docs.gitlab.com/ee/development/contributing/style_guides.html#resolving-rubocop-exceptions.
 
+# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
 FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
@@ -28,39 +29,7 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/uploads.rb'
     - 'spec/factories/wiki_pages.rb'
 
-InternalAffairs/DeprecateCopHelper: # issue to resolve: https://gitlab.com/gitlab-org/gitlab/-/issues/276734
-  Exclude:
-    - 'spec/rubocop/cop/migration/safer_boolean_column_spec.rb'
-    - 'spec/rubocop/cop/migration/remove_index_spec.rb'
-    - 'spec/rubocop/cop/migration/add_index_spec.rb'
-    - 'spec/rubocop/cop/migration/drop_table_spec.rb'
-    - 'spec/rubocop/cop/migration/hash_index_spec.rb'
-    - 'spec/rubocop/cop/migration/datetime_spec.rb'
-    - 'spec/rubocop/cop/migration/add_column_with_default_spec.rb'
-    - 'spec/rubocop/cop/migration/prevent_strings_spec.rb'
-    - 'spec/rubocop/cop/migration/add_timestamps_spec.rb'
-    - 'spec/rubocop/cop/migration/add_concurrent_index_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
-    - 'spec/rubocop/cop/migration/complex_indexes_require_name_spec.rb'
-    - 'spec/rubocop/cop/migration/refer_to_index_by_name_spec.rb'
-    - 'spec/rubocop/cop/migration/schedule_async_spec.rb'
-    - 'spec/rubocop/cop/migration/timestamps_spec.rb'
-    - 'spec/rubocop/cop/migration/remove_concurrent_index_spec.rb'
-    - 'spec/rubocop/cop/migration/add_columns_to_wide_tables_spec.rb'
-    - 'spec/rubocop/cop/migration/with_lock_retries_disallowed_method_spec.rb'
-    - 'spec/rubocop/cop/migration/add_reference_spec.rb'
-    - 'spec/rubocop/cop/migration/remove_column_spec.rb'
-    - 'spec/rubocop/cop/migration/create_table_with_foreign_keys_spec.rb'
-    - 'spec/rubocop/cop/migration/add_concurrent_foreign_key_spec.rb'
-    - 'spec/rubocop/cop/migration/with_lock_retries_with_change_spec.rb'
-    - 'spec/rubocop/cop/migration/add_limit_to_text_columns_spec.rb'
-    - 'spec/rubocop/cop/avoid_return_from_blocks_spec.rb'
-    - 'spec/rubocop/cop/avoid_route_redirect_leading_slash_spec.rb'
-    - 'spec/rubocop/cop/put_group_routes_under_scope_spec.rb'
-    - 'spec/rubocop/cop/sidekiq_options_queue_spec.rb'
-    - 'spec/rubocop/cop/ignored_columns_spec.rb'
-    - 'spec/rubocop/cop/prefer_class_methods_over_module_spec.rb'
-
+# WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
@@ -1207,22 +1176,9 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/wait_for_cluster_creation_worker_spec.rb'
     - 'ee/spec/workers/security/auto_fix_worker_spec.rb'
 
+# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/321982
 Gitlab/NamespacedClass:
   Exclude:
-    - 'config/**/*.rb'
-    - 'db/**/*.rb'
-    - 'ee/bin/**/*'
-    - 'ee/db/**/*.rb'
-    - 'ee/elastic/**/*.rb'
-    - 'scripts/**/*'
-    - 'spec/migrations/**/*.rb'
-    # The list above represents the permanent exclusions for this rule
-    # due to the fact these files are related to infrastructure code.
-    # This list should eventually be moved to .rubocop.yml after all TODOs
-    # are addressed.
-    #
-    # The list below represents the classes that require
-    # a namespace as they make the domain related code.
     - 'app/channels/issues_channel.rb'
     - 'app/controllers/abuse_reports_controller.rb'
     - 'app/controllers/acme_challenges_controller.rb'

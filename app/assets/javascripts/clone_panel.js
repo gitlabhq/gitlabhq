@@ -15,7 +15,6 @@ export default function initClonePanel() {
     }
 
     $('a', $cloneOptions).on('click', (e) => {
-      e.preventDefault();
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
       if (url && (url.startsWith('vscode://') || url.startsWith('xcode://'))) {

@@ -23,6 +23,14 @@ module InviteMembersHelper
     end
   end
 
+  def show_invite_members_track_event
+    if directly_invite_members?
+      'show_invite_members'
+    elsif indirectly_invite_members?
+      'show_invite_members_version_b'
+    end
+  end
+
   def invite_group_members?(group)
     experiment_enabled?(:invite_members_empty_group_version_a) && Ability.allowed?(current_user, :admin_group_member, group)
   end

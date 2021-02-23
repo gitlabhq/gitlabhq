@@ -36,7 +36,7 @@ start_foreground()
 stop()
 {
   get_puma_pid
-  kill -QUIT "$(get_puma_pid)"
+  kill -INT "$(get_puma_pid)"
 }
 
 reload()

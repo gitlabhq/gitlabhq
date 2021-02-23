@@ -22,7 +22,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
   const createComponent = (activeIssue = { ...mockActiveIssue }) => {
     store = createStore();
-    store.state.issues = { [activeIssue.id]: activeIssue };
+    store.state.boardItems = { [activeIssue.id]: activeIssue };
     store.state.activeId = activeIssue.id;
 
     wrapper = mount(BoardSidebarSubscription, {

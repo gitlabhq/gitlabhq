@@ -58,10 +58,6 @@ module Gitlab
         tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp',
         use_backwards_compatible_subject_index: true
       },
-      customize_homepage: {
-        tracking_category: 'Growth::Expansion::Experiment::CustomizeHomepage',
-        use_backwards_compatible_subject_index: true
-      },
       group_only_trials: {
         tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials',
         use_backwards_compatible_subject_index: true
@@ -81,7 +77,7 @@ module Gitlab
       trial_during_signup: {
         tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
       },
-      ci_syntax_templates: {
+      ci_syntax_templates_b: {
         tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates',
         rollout_strategy: :user
       },

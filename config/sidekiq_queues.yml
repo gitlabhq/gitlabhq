@@ -34,6 +34,8 @@
   - 1
 - - analytics_instance_statistics_counter_job
   - 1
+- - analytics_usage_trends_counter_job
+  - 1
 - - approve_blocked_pending_approval_users
   - 1
 - - authorized_keys
@@ -300,6 +302,8 @@
   - 2
 - - refresh_license_compliance_checks
   - 2
+- - releases_create_evidence
+  - 1
 - - remote_mirror_notification
   - 2
 - - repository_check

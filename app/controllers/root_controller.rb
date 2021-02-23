@@ -69,7 +69,7 @@ class RootController < Dashboard::ProjectsController
   end
 
   def customize_homepage
-    @customize_homepage = experiment_enabled?(:customize_homepage)
+    @customize_homepage = Feature.enabled?(:customize_homepage, default_enabled: :yaml)
   end
 end
 

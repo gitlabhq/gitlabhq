@@ -25,6 +25,9 @@ export const getStatusBar = () => document.querySelector('.ide-status-bar');
 export const waitForMonacoEditor = () =>
   new Promise((resolve) => window.monaco.editor.onDidCreateEditor(resolve));
 
+export const waitForEditorModelChange = (instance) =>
+  new Promise((resolve) => instance.onDidChangeModel(resolve));
+
 export const findMonacoEditor = () =>
   screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-editor'));
 

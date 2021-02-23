@@ -3,7 +3,16 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Label'] do
   it 'has the correct fields' do
-    expected_fields = [:id, :description, :description_html, :title, :color, :text_color]
+    expected_fields = [
+      :id,
+      :description,
+      :description_html,
+      :title,
+      :color,
+      :text_color,
+      :created_at,
+      :updated_at
+    ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

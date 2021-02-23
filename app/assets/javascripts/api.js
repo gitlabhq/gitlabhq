@@ -24,6 +24,7 @@ const Api = {
   projectPackagesPath: '/api/:version/projects/:id/packages',
   projectPackagePath: '/api/:version/projects/:id/packages/:package_id',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
+  groupSharePath: '/api/:version/groups/:id/share',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   forkedProjectsPath: '/api/:version/projects/:id/forks',
@@ -39,6 +40,7 @@ const Api = {
   projectRunnersPath: '/api/:version/projects/:id/runners',
   projectProtectedBranchesPath: '/api/:version/projects/:id/protected_branches',
   projectSearchPath: '/api/:version/projects/:id/search',
+  projectSharePath: '/api/:version/projects/:id/share',
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
   projectIssuePath: '/api/:version/projects/:id/issues/:issue_iid',
   mergeRequestsPath: '/api/:version/merge_requests',
@@ -365,6 +367,16 @@ const Api = {
     });
   },
 
+  projectShareWithGroup(id, options = {}) {
+    const url = Api.buildUrl(Api.projectSharePath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      expires_at: options.expires_at,
+      group_access: options.group_access,
+      group_id: options.group_id,
+    });
+  },
+
   projectMilestones(id, params = {}) {
     const url = Api.buildUrl(Api.projectMilestonesPath).replace(':id', encodeURIComponent(id));
 
@@ -424,6 +436,16 @@ const Api = {
           callback();
         }
       });
+  },
+
+  groupShareWithGroup(id, options = {}) {
+    const url = Api.buildUrl(Api.groupSharePath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      expires_at: options.expires_at,
+      group_access: options.group_access,
+      group_id: options.group_id,
+    });
   },
 
   commit(id, sha, params = {}) {

@@ -1,0 +1,6 @@
+---
+title: Fix creating the idx_on_issues_where_service_desk_reply_to_is_not_null index
+  before the post migration
+merge_request: 54346
+author:
+type: other

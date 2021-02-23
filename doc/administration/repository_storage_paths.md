@@ -23,7 +23,7 @@ several mount points. For example:
   ```ruby
    git_data_dirs({
      'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
-     'storage1' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+     'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
    })
    ```
 
@@ -31,17 +31,22 @@ several mount points. For example:
 
   ```plaintext
   default:
-    path: /mnt/git-storage-1
+    gitaly_address: tcp://gitaly1.example:8075
   storage2:
-    path: /mnt/git-storage-2
+    gitaly_address: tcp://gitaly2.example:8075
   ```
 
-For more information on
+For more information on:
 
 - Configuring Gitaly, see [Configure Gitaly](gitaly/index.md#configure-gitaly).
 - Configuring direct repository access, see the following section below.
 
 ## Configure repository storage paths
+
+WARNING:
+The following information is for configuring GitLab to directly access repositories. This
+configuration option is deprecated in favor of using [Gitaly](gitaly/index.md) and is scheduled to
+[be removed in GitLab 14.0](https://gitlab.com/gitlab-org/gitaly/-/issues/1690).
 
 To configure repository storage paths:
 
@@ -96,10 +101,6 @@ For compatibility reasons `gitlab.yml` has a different structure than Omnibus Gi
   example. Then Omnibus GitLab creates a `repositories` directory under that path to use with
   `gitlab.yml`.
 
-NOTE:
-This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab performance.
-Read the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
-
 **For installations from source**
 
 1. Edit `gitlab.yml` and add the storage paths:
@@ -111,10 +112,10 @@ Read the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-ef
      storages: # You must have at least a 'default' repository storage path.
        default:
          path: /home/git/repositories
-       nfs_1:
-         path: /mnt/nfs1/repositories
-       nfs_2:
-         path: /mnt/nfs2/repositories
+       storage1:
+         path: /mnt/storage1/repositories
+       storage2:
+         path: /mnt/storage2/repositories
    ```
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
@@ -126,8 +127,8 @@ Edit `/etc/gitlab/gitlab.rb` by appending the rest of the paths to the default o
 ```ruby
 git_data_dirs({
  "default" => { "path" => "/var/opt/gitlab/git-data" },
- "nfs_1" => { "path" => "/mnt/nfs1/git-data" },
- "nfs_2" => { "path" => "/mnt/nfs2/git-data" }
+ "storage1" => { "path" => "/mnt/storage1/git-data" },
+ "storage2" => { "path" => "/mnt/storage2/git-data" }
 })
 ```
 

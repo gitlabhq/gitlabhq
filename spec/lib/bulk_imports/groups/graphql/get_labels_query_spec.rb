@@ -3,15 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Graphql::GetLabelsQuery do
-  describe '#variables' do
-    let(:entity) { double(source_full_path: 'test', next_page_for: 'next_page', bulk_import: nil) }
-    let(:context) { BulkImports::Pipeline::Context.new(entity) }
+  it 'has a valid query' do
+    entity = create(:bulk_import_entity)
+    context = BulkImports::Pipeline::Context.new(entity)
 
-    it 'returns query variables based on entity information' do
-      expected = { full_path: entity.source_full_path, cursor: entity.next_page_for }
+    query = GraphQL::Query.new(
+      GitlabSchema,
+      described_class.to_s,
+      variables: described_class.variables(context)
+    )
+    result = GitlabSchema.static_validator.validate(query)
 
-      expect(described_class.variables(context)).to eq(expected)
-    end
+    expect(result[:errors]).to be_empty
   end
 
   describe '#data_path' do

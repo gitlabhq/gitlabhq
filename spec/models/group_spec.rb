@@ -740,6 +740,33 @@ RSpec.describe Group do
     end
   end
 
+  describe '#direct_members' do
+    let_it_be(:group) { create(:group, :nested) }
+    let_it_be(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
+    let_it_be(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+
+    it 'does not return members of the parent' do
+      expect(group.direct_members).not_to include(maintainer)
+    end
+
+    it 'returns the direct member of the group' do
+      expect(group.direct_members).to include(developer)
+    end
+
+    context 'group sharing' do
+      let!(:shared_group) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+      end
+
+      it 'does not return members of the shared_with group' do
+        expect(shared_group.direct_members).not_to(
+          include(developer))
+      end
+    end
+  end
+
   describe '#members_with_parents' do
     let!(:group) { create(:group, :nested) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
@@ -929,6 +956,65 @@ RSpec.describe Group do
       expect(group.project_users_with_descendants).to contain_exactly(user_a, user_b, user_c)
       expect(nested_group.project_users_with_descendants).to contain_exactly(user_b, user_c)
       expect(deep_nested_group.project_users_with_descendants).to contain_exactly(user_c)
+    end
+  end
+
+  describe '#refresh_members_authorized_projects' do
+    let_it_be(:group) { create(:group, :nested) }
+    let_it_be(:parent_group_user) { create(:user) }
+    let_it_be(:group_user) { create(:user) }
+
+    before do
+      group.parent.add_maintainer(parent_group_user)
+      group.add_developer(group_user)
+    end
+
+    context 'users for which authorizations refresh is executed' do
+      it 'processes authorizations refresh for all members of the group' do
+        expect(UserProjectAccessChangedService).to receive(:new).with(contain_exactly(group_user.id, parent_group_user.id)).and_call_original
+
+        group.refresh_members_authorized_projects
+      end
+
+      context 'when explicitly specified to run only for direct members' do
+        it 'processes authorizations refresh only for direct members of the group' do
+          expect(UserProjectAccessChangedService).to receive(:new).with(contain_exactly(group_user.id)).and_call_original
+
+          group.refresh_members_authorized_projects(direct_members_only: true)
+        end
+      end
+    end
+  end
+
+  describe '#users_ids_of_direct_members' do
+    let_it_be(:group) { create(:group, :nested) }
+    let_it_be(:parent_group_user) { create(:user) }
+    let_it_be(:group_user) { create(:user) }
+
+    before do
+      group.parent.add_maintainer(parent_group_user)
+      group.add_developer(group_user)
+    end
+
+    it 'does not return user ids of the members of the parent' do
+      expect(group.users_ids_of_direct_members).not_to include(parent_group_user.id)
+    end
+
+    it 'returns the user ids of the direct member of the group' do
+      expect(group.users_ids_of_direct_members).to include(group_user.id)
+    end
+
+    context 'group sharing' do
+      let!(:shared_group) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+      end
+
+      it 'does not return the user ids of members of the shared_with group' do
+        expect(shared_group.users_ids_of_direct_members).not_to(
+          include(group_user.id))
+      end
     end
   end
 

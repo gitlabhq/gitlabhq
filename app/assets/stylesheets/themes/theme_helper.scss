@@ -92,6 +92,7 @@
 
             .notification-dot {
               will-change: border-color, background-color;
+              // stylelint-disable-next-line
               border-color: $nav-svg-color + 33;
             }
 

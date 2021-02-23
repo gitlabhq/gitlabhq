@@ -278,7 +278,7 @@ databases if the module name or a prefix of it appears in `GONOPRIVATE` or
 ### Authenticate Go requests
 
 To authenticate requests to private projects made by Go, use a [`.netrc`
-file](https://ec.haxx.se/usingcurl-netrc.html) and a [personal access
+file](https://everything.curl.dev/usingcurl/netrc) and a [personal access
 token](../profile/personal_access_tokens.md) in the password field. **This only
 works if your GitLab instance can be accessed with HTTPS.** The `go` command
 does not transmit credentials over insecure connections. This authenticates

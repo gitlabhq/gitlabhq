@@ -53,7 +53,9 @@ The JWT's payload looks like this:
   "job_id": "1212",                              #
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job
   "ref_type": "branch",                          # Git ref type, branch or tag
-  "ref_protected": "true"                        # true if this git ref is protected, false otherwise
+  "ref_protected": "true",                       # true if this git ref is protected, false otherwise
+  "environment": "production",                   # Environment this job deploys to, if present (GitLab 13.9 and later)
+  "environment_protected": "true"                # true if deployed environment is protected, false otherwise (GitLab 13.9 and later)
 }
 ```
 

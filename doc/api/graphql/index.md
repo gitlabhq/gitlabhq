@@ -160,11 +160,6 @@ The GitLab GraphQL reference [is available](reference/index.md).
 
 It is automatically generated from the GitLab GraphQL schema and embedded in a Markdown file.
 
-Machine-readable versions are also available:
-
-- [JSON format](reference/gitlab_schema.json)
-- [IDL format](reference/gitlab_schema.graphql)
-
 ## Generate updates for documentation
 
 If you've changed the GraphQL schema, you should set up an MR to gain approval of your changes.

@@ -3,8 +3,6 @@ import GLForm from '../../../../gl_form';
 import RefSelectDropdown from '../../../../ref_select_dropdown';
 import ZenMode from '../../../../zen_mode';
 
-document.addEventListener('DOMContentLoaded', () => {
-  new ZenMode(); // eslint-disable-line no-new
-  new GLForm($('.tag-form')); // eslint-disable-line no-new
-  new RefSelectDropdown($('.js-branch-select')); // eslint-disable-line no-new
-});
+new ZenMode(); // eslint-disable-line no-new
+new GLForm($('.tag-form')); // eslint-disable-line no-new
+new RefSelectDropdown($('.js-branch-select')); // eslint-disable-line no-new

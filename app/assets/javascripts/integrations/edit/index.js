@@ -28,6 +28,7 @@ function parseDatasetToProps(data) {
     testPath,
     resetPath,
     vulnerabilitiesIssuetype,
+    jiraIssueTransitionId,
     ...booleanAttributes
   } = data;
   const {
@@ -59,6 +60,7 @@ function parseDatasetToProps(data) {
       initialTriggerMergeRequest: mergeRequestEvents,
       initialEnableComments: enableComments,
       initialCommentDetail: commentDetail,
+      initialJiraIssueTransitionId: jiraIssueTransitionId,
     },
     jiraIssuesProps: {
       showJiraIssuesIntegration,

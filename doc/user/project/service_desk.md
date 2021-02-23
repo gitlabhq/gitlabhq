@@ -137,13 +137,13 @@ You can use these placeholders to be automatically replaced in each email:
 
 #### New Service Desk issues
 
-You can select one [issue description template](description_templates.md#creating-issue-templates)
+You can select one [issue description template](description_templates.md#create-an-issue-template)
 **per project** to be appended to every new Service Desk issue's description.
 Issue description templates should reside in your repository's `.gitlab/issue_templates/` directory.
 
 To use a custom issue template with Service Desk, in your project:
 
-1. [Create a description template](description_templates.md#creating-issue-templates)
+1. [Create a description template](description_templates.md#create-an-issue-template)
 1. Go to **Settings > General > Service Desk**.
 1. From the dropdown **Template to append to all Service Desk issues**, select your template.
 

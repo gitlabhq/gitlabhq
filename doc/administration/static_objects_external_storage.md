@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Static objects external storage
+# Static objects external storage **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
 

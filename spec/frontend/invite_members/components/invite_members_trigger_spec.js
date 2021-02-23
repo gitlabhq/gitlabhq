@@ -23,7 +23,7 @@ describe('InviteMembersTrigger', () => {
   });
 
   describe('displayText', () => {
-    const findLink = () => wrapper.find(GlLink);
+    const findLink = () => wrapper.findComponent(GlLink);
 
     beforeEach(() => {
       wrapper = createComponent();
@@ -35,7 +35,7 @@ describe('InviteMembersTrigger', () => {
   });
 
   describe('icon', () => {
-    const findIcon = () => wrapper.find(GlIcon);
+    const findIcon = () => wrapper.findComponent(GlIcon);
 
     it('includes the correct icon when an icon is sent', () => {
       wrapper = createComponent({ icon });

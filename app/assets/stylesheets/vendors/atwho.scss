@@ -1,6 +1,7 @@
 .atwho-view {
   overflow-y: auto;
   overflow-x: hidden;
+  max-width: calc(100% - 6px);
 
   .name,
   small.aliases,
@@ -80,10 +81,6 @@
 }
 
 @include media-breakpoint-down(xs) {
-  .atwho-view-ul {
-    width: 350px;
-  }
-
   .atwho-view ul li {
     overflow: hidden;
     text-overflow: ellipsis;

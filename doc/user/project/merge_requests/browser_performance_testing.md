@@ -13,6 +13,9 @@ If your application offers a web interface and you're using
 [GitLab CI/CD](../../../ci/README.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
+NOTE:
+You can automate this feature in your applications by using [Auto DevOps](../../../topics/autodevops/index.md).
+
 ## Overview
 
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source

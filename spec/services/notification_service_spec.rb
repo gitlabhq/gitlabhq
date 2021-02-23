@@ -2159,8 +2159,38 @@ RSpec.describe NotificationService, :mailer do
     end
 
     describe '#merge_when_pipeline_succeeds' do
+      before do
+        update_custom_notification(:merge_when_pipeline_succeeds, @u_guest_custom, resource: project)
+        update_custom_notification(:merge_when_pipeline_succeeds, @u_custom_global)
+      end
+
       it 'send notification that merge will happen when pipeline succeeds' do
         notification.merge_when_pipeline_succeeds(merge_request, assignee)
+
+        should_email(merge_request.author)
+        should_email(@u_watcher)
+        should_email(@subscriber)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_disabled)
+      end
+
+      it 'does not send notification if the custom event is disabled' do
+        update_custom_notification(:merge_when_pipeline_succeeds, @u_guest_custom, resource: project, value: false)
+        update_custom_notification(:merge_when_pipeline_succeeds, @u_custom_global, resource: nil, value: false)
+        notification.merge_when_pipeline_succeeds(merge_request, assignee)
+
+        should_not_email(@u_guest_custom)
+        should_not_email(@u_custom_global)
+      end
+
+      it 'sends notification to participants even if the custom event is disabled' do
+        update_custom_notification(:merge_when_pipeline_succeeds, merge_request.author, resource: project, value: false)
+        update_custom_notification(:merge_when_pipeline_succeeds, @u_watcher, resource: project, value: false)
+        update_custom_notification(:merge_when_pipeline_succeeds, @subscriber, resource: project, value: false)
+        notification.merge_when_pipeline_succeeds(merge_request, assignee)
+
         should_email(merge_request.author)
         should_email(@u_watcher)
         should_email(@subscriber)

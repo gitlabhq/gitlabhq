@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :orchestrated, :packages do
-    describe 'NPM registry' do
+    describe 'npm registry' do
       include Runtime::Fixtures
 
       let(:registry_scope) { project.group.sandbox.path }
@@ -31,7 +31,7 @@ module QA
             {
               "name": "#{package_name}",
               "version": "1.0.0",
-              "description": "Example package for GitLab NPM registry",
+              "description": "Example package for GitLab npm registry",
               "publishConfig": {
                 "@#{registry_scope}:registry": "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/"
               }

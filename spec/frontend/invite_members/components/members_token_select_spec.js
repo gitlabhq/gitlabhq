@@ -37,7 +37,7 @@ describe('MembersTokenSelect', () => {
     wrapper = null;
   });
 
-  const findTokenSelector = () => wrapper.find(GlTokenSelector);
+  const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
 
   describe('rendering the token-selector component', () => {
     it('renders with the correct props', () => {

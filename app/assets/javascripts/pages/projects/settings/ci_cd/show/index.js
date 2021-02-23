@@ -6,6 +6,7 @@ import initDeployFreeze from '~/deploy_freeze';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
 import registrySettingsApp from '~/registry/settings/registry_settings_bundle';
+import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,4 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initInstallRunner();
+
+  initSearchSettings();
 });

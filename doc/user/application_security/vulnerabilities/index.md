@@ -64,16 +64,18 @@ This feature might not be available to you. Check the **version history** note a
 
 Prerequisites:
 
-- [Enable Jira integration for vulnerabilities](../../project/integrations/jira.md). Select
-  **Enable Jira issues creation from vulnerabilities** when configuring the integration.
+- [Enable Jira integration for vulnerabilities](../../project/integrations/jira.md).
+  Select **Enable Jira issues creation from vulnerabilities** when configuring the integration.
+- A Jira user account with permission to create issues in the target project.
 
 To create a Jira issue for a vulnerability:
 
 1. Go to the vulnerability's page.
 1. Select **Create Jira issue**.
+1. If you're not already logged in to Jira, log in.
 
-An issue is created in the linked Jira project, with the **Summary** and **Description** fields
-pre-populated. The Jira issue is then opened in a new browser tab.
+The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
+fields are pre-populated from the vulnerability's details.
 
 ### Enable or disable Jira integration for vulnerabilities **(ULTIMATE SELF)**
 

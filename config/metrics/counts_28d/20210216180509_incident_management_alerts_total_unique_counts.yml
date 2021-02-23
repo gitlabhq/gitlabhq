@@ -1,0 +1,16 @@
+---
+key_path: counts_monthly.aggregated_metrics.incident_management_alerts_total_unique_counts
+description: Count of unique users per month to take an action on an alert
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: 28d
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

@@ -16,7 +16,7 @@ module Resolvers
 
       argument :content, GraphQL::STRING_TYPE,
                required: true,
-               description: "Contents of '.gitlab-ci.yml'."
+               description: "Contents of `.gitlab-ci.yml`."
 
       argument :dry_run, GraphQL::BOOLEAN_TYPE,
                required: false,

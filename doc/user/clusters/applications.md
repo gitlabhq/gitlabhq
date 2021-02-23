@@ -372,7 +372,7 @@ For GitLab Runner to function, you _must_ specify the following:
 - `runnerRegistrationToken`: The registration token for adding new runners to GitLab.
   This must be [retrieved from your GitLab instance](../../ci/runners/README.md).
 
-These values can be specified using [CI variables](../../ci/variables/README.md):
+These values can be specified using [CI/CD variables](../../ci/variables/README.md):
 
 - `GITLAB_RUNNER_GITLAB_URL` is used for `gitlabUrl`.
 - `GITLAB_RUNNER_REGISTRATION_TOKEN` is used for `runnerRegistrationToken`
@@ -730,7 +730,7 @@ Set:
 - "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`.
 - "Scope" to `api read_repository write_repository`.
 
-In addition, the following variables must be specified using [CI variables](../../ci/variables/README.md):
+In addition, the following variables must be specified using [CI/CD variables](../../ci/variables/README.md):
 
 - `JUPYTERHUB_PROXY_SECRET_TOKEN` - Secure string used for signing communications
   from the hub. Read [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference/reference.html#proxy-secrettoken).
@@ -1655,3 +1655,17 @@ Error: Could not get apiVersions from Kubernetes: unable to retrieve the complet
 
 This is a bug that was introduced in Helm `2.15` and fixed in `3.0.2`. As a workaround,
 ensure [`cert-manager`](#cert-manager) is installed successfully prior to installing Prometheus.
+
+### Unable to create a Persistent Volume Claim with DigitalOcean
+
+Trying to create additional block storage volumes might lead to the following error when using DigitalOcean:
+
+```plaintext
+Server requested
+[Warning] pod has unbound immediate PersistentVolumeClaims (repeated 2 times)
+[Normal] pod didn't trigger scale-up (it wouldn't fit if a new node is added):
+Spawn failed: Timeout
+```
+
+This is due to DigitalOcean imposing a few limits with regards to creating additional block storage volumes.
+[Learn more about DigitalOcean Block Storage Volumes limits.](https://www.digitalocean.com/docs/volumes/#limits)

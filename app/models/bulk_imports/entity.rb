@@ -37,8 +37,9 @@ class BulkImports::Entity < ApplicationRecord
 
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
-  validates :source_type, :source_full_path, :destination_name,
-            :destination_namespace, presence: true
+  validates :source_type, :source_full_path, :destination_name, presence: true
+  validates :destination_namespace, exclusion: [nil], if: :group
+  validates :destination_namespace, presence: true, if: :project
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type

@@ -6,6 +6,7 @@ class CustomEmoji < ApplicationRecord
   belongs_to :namespace, inverse_of: :custom_emoji
 
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
+  belongs_to :creator, class_name: "User", inverse_of: :created_custom_emoji
 
   # For now only external emoji are supported. See https://gitlab.com/gitlab-org/gitlab/-/issues/230467
   validates :external, inclusion: { in: [true] }
@@ -15,6 +16,7 @@ class CustomEmoji < ApplicationRecord
   validate :valid_emoji_name
 
   validates :group, presence: true
+  validates :creator, presence: true
   validates :name,
     uniqueness: { scope: [:namespace_id, :name] },
     presence: true,

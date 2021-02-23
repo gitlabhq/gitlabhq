@@ -168,7 +168,7 @@ can be used:
 
 ```ruby
 RSpec.describe API::Search, factory_default: :keep do
-  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:namespace) { create_default(:namespace).freeze }
 ```
 
 Then every project we create uses this `namespace`, without us having to pass
@@ -176,13 +176,17 @@ it as `namespace: namespace`. In order to make it work along with `let_it_be`, `
 must be explicitly specified. That keeps the default factory for every example in a suite instead of
 recreating it for each example.
 
+Objects created inside a `factory_default: :keep`, and using
+`create_default` inside a `let_it_be` should be frozen to prevent accidental reliance
+between test examples.
+
 Maybe we don't need to create 208 different projects - we
 can create one and reuse it. In addition, we can see that only about 1/3 of the
 projects we create are ones we ask for (76/208). There is benefit in setting
 a default value for projects as well:
 
 ```ruby
-  let_it_be(:project) { create_default(:project) }
+  let_it_be(:project) { create_default(:project).freeze }
 ```
 
 In this case, the `total time` and `top-level time` numbers match more closely:
@@ -796,10 +800,11 @@ end
 ```
 
 WARNING:
-Only use simple values as input in the `where` block. Using procs, stateful
+Only use simple values as input in the `where` block. Using
+<!-- vale gitlab.Spelling = NO --> procs, stateful
 objects, FactoryBot-created objects, and similar items can lead to
 [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
-
+<!-- vale gitlab.Spelling = YES -->
 ### Prometheus tests
 
 Prometheus metrics may be preserved from one test run to another. To ensure that metrics are

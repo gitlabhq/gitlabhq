@@ -1,14 +1,14 @@
-.well-confirmation.text-center.gl-mb-6
+.well-confirmation.gl-text-center.gl-mb-6
   %h1.gl-mt-0
-    Almost there...
+    = _("Almost there...")
   %p.lead.gl-mb-6
-    Please check your email to confirm your account
+    = _("Please check your email to confirm your account")
   %hr
 - if Gitlab::CurrentSettings.after_sign_up_text.present?
-  .well-confirmation.text-center
+  .well-confirmation.gl-text-center
     = markdown_field(Gitlab::CurrentSettings, :after_sign_up_text)
 %p.text-center
-  No confirmation email received? Please check your spam folder or
-.gl-mb-6.prepend-top-20.text-center
-  %a.btn.btn-lg.btn-success{ href: new_user_confirmation_path }
-    Request new confirmation email
+  = _("No confirmation email received? Please check your spam folder or")
+.gl-mb-6.prepend-top-20.gl-text-center
+  %a.btn.gl-button.btn-confirm{ href: new_user_confirmation_path }
+    = _("Request new confirmation email")

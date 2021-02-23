@@ -252,10 +252,10 @@ export default {
   },
   errorTexts: {
     [LOAD_ANALYTICS_FAILURE]: s__(
-      'PipelineCharts|An error has ocurred when retrieving the analytics data',
+      'PipelineCharts|An error has occurred when retrieving the analytics data',
     ),
     [LOAD_PIPELINES_FAILURE]: s__(
-      'PipelineCharts|An error has ocurred when retrieving the pipelines data',
+      'PipelineCharts|An error has occurred when retrieving the pipelines data',
     ),
     [PARSE_FAILURE]: s__('PipelineCharts|There was an error parsing the data for the charts.'),
     [DEFAULT]: s__('PipelineCharts|An unknown error occurred while processing CI/CD analytics.'),

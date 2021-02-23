@@ -140,7 +140,7 @@ Even though this approach would make aggregating much easier, it has some major 
 - We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost would be significant. The background migration would take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
-### Attempt E (final): Update the namespace storage statistics in async way
+### Attempt E (final): Update the namespace storage statistics asynchronously
 
 This approach consists of continuing to use the incremental statistics updates we already have,
 but we refresh them through Sidekiq jobs and in different transactions:
@@ -149,7 +149,7 @@ but we refresh them through Sidekiq jobs and in different transactions:
 1. Whenever the statistics of a project changes, insert a row into `namespace_aggregation_schedules`
    - We don't insert a new row if there's already one related to the root namespace.
    - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab/-/issues/29070>), the insertion should be done in a different transaction and through a Sidekiq Job.
-1. After inserting the row, we schedule another worker to be executed async at two different moments:
+1. After inserting the row, we schedule another worker to be executed asynchronously at two different moments:
    - One enqueued for immediate execution and another one scheduled in `1.5h` hours.
    - We only schedule the jobs, if we can obtain a `1.5h` lease on Redis on a key based on the root namespace ID.
    - If we can't obtain the lease, it indicates there's another aggregation already in progress, or scheduled in no more than `1.5h`.
@@ -161,7 +161,7 @@ but we refresh them through Sidekiq jobs and in different transactions:
 
 This implementation has the following benefits:
 
-- All the updates are done async, so we're not increasing the length of the transactions for `project_statistics`.
+- All the updates are done asynchronously, so we're not increasing the length of the transactions for `project_statistics`.
 - We're doing the update in a single SQL query.
 - It is compatible with PostgreSQL and MySQL.
 - No background migration required.

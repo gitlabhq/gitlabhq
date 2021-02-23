@@ -1,0 +1,19 @@
+---
+key_path: usage_activity_by_stage_monthly.secure.user_sast_jobs
+description: Users who run a SAST job
+product_section: sec
+product_stage: secure
+product_group: group::static analysis
+product_category: static_application_security_testing
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

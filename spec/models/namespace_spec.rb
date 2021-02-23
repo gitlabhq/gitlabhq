@@ -285,6 +285,17 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '.top_most' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:sub_namespace) { create(:namespace, parent: namespace) }
+
+    subject { described_class.top_most.ids }
+
+    it 'only contains root namespace' do
+      is_expected.to eq([namespace.id])
+    end
+  end
+
   describe '#ancestors_upto' do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
@@ -1447,6 +1458,26 @@ RSpec.describe Namespace do
       it 'returns true' do
         is_expected.to eq(true)
       end
+    end
+  end
+
+  describe '#recent?' do
+    subject { namespace.recent? }
+
+    context 'when created more than 90 days ago' do
+      before do
+        namespace.update_attribute(:created_at, 91.days.ago)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when created less than 90 days ago' do
+      before do
+        namespace.update_attribute(:created_at, 89.days.ago)
+      end
+
+      it { is_expected.to be(true) }
     end
   end
 end

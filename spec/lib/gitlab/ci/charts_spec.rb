@@ -98,7 +98,12 @@ RSpec.describe Gitlab::Ci::Charts do
     subject { chart.total }
 
     before do
-      create(:ci_empty_pipeline, project: project, duration: 120)
+      # The created_at time used by the following execution
+      # can end up being after the creation of the 'today' time
+      # objects created above, and cause the queried counts to
+      # go to zero when the test executes close to midnight on the
+      # CI system, so we explicitly set it to a day earlier
+      create(:ci_empty_pipeline, project: project, duration: 120, created_at: today - 1.day)
     end
 
     it 'uses a utc time zone for range times' do

@@ -1,0 +1,17 @@
+---
+key_path: redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly
+description: Count of unique users per month to create an incident corresponding to
+  an alert
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: 28d
+data_source: redis_hll
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

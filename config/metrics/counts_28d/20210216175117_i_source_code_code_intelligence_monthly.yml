@@ -1,0 +1,16 @@
+---
+key_path: redis_hll_counters.source_code.i_source_code_code_intelligence_monthly
+description:
+product_section: dev
+product_stage: create
+product_group: group::code review
+product_category:
+value_type: number
+status: data_available
+time_frame: 28d
+data_source: redis_hll
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

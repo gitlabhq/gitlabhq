@@ -156,6 +156,7 @@ class ProjectPolicy < BasePolicy
     metrics_dashboard
     analytics
     operations
+    security_and_compliance
   ]
 
   features.each do |f|
@@ -638,6 +639,10 @@ class ProjectPolicy < BasePolicy
 
   rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do
     enable :set_pipeline_variables
+  end
+
+  rule { ~security_and_compliance_disabled & can?(:developer_access) }.policy do
+    enable :access_security_and_compliance
   end
 
   private

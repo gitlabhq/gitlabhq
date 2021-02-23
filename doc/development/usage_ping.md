@@ -15,7 +15,7 @@ For more information about Product Intelligence, see:
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
 - [Snowplow Guide](snowplow.md)
 
-More useful links:
+More links:
 
 - [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#data-analysis-process/)
@@ -25,7 +25,7 @@ More useful links:
 ## What is Usage Ping?
 
 - GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
-- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product. In addition to counts, other facts
+- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
     that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
 - While usage ping is enabled, GitLab gathers data from the other instances and can show usage statistics of your instance to your users.
@@ -170,7 +170,7 @@ and update existing business analysis artefacts to use `example_metric_without_a
 
 ### 3. Metrics deprecation and removal
 
-The process for deprecating and removing metrics is currently under development. For
+The process for deprecating and removing metrics is under development. For
 more information, see the following [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284637).
 
 ## Implementing Usage Ping
@@ -206,10 +206,10 @@ For GitLab.com, there are extremely large tables with 15 second query timeouts, 
 
 We have several batch counting methods available:
 
-- `Ordinary Batch Counters`
-- `Distinct Batch Counters`
-- `Sum Batch Counters`
-- `Estimated Batch Counters`
+- [Ordinary Batch Counters](#ordinary-batch-counters)
+- [Distinct Batch Counters](#distinct-batch-counters)
+- [Sum Batch Counters](#sum-batch-counters)
+- [Estimated Batch Counters](#estimated-batch-counters)
 
 Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases,
 you may need to add a specialized index on the columns involved in a counter.
@@ -218,7 +218,7 @@ you may need to add a specialized index on the columns involved in a counter.
 
 Handles `ActiveRecord::StatementInvalid` error
 
-Simple count of a given ActiveRecord_Relation, does a non-distinct batch count, smartly reduces batch_size and handles errors.
+Simple count of a given `ActiveRecord_Relation`, does a non-distinct batch count, smartly reduces `batch_size`, and handles errors.
 
 Method: `count(relation, column = nil, batch: true, start: nil, finish: nil)`
 
@@ -242,7 +242,7 @@ count(::Clusters::Cluster.aws_installed.enabled, :cluster_id, start: ::Clusters:
 
 Handles `ActiveRecord::StatementInvalid` error
 
-Distinct count of a given ActiveRecord_Relation on given column, a distinct batch count, smartly reduces batch_size and handles errors.
+Distinct count of a given `ActiveRecord_Relation` on given column, a distinct batch count, smartly reduces `batch_size`, and handles errors.
 
 Method: `distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)`
 
@@ -324,13 +324,16 @@ The highest encountered error rate is 4.9%.
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
 columns that contain non-unique values, which can not be assured by other counters.
 
-Method: [`estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/usage_data.rb#L63)
+#### estimate_batch_distinct_count method
 
-The method includes the following arguments:
+Method: `estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)`
+
+The [method](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/usage_data.rb#L63)
+includes the following arguments:
 
 - `relation`: The ActiveRecord_Relation to perform the count.
 - `column`: The column to perform the distinct count. The default is the primary key.
-- `batch_size`: The default is 10,000, from `Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE`.
+- `batch_size`: From `Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE`. Default value: 10,000.
 - `start`: The custom start of the batch count, to avoid complex minimum calculations.
 - `finish`: The custom end of the batch count to avoid complex maximum calculations.
 
@@ -658,7 +661,7 @@ Events are tracked behind [feature flags](feature_flags/index.md) due to concern
 
 For a full list of events and corresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
 
-To enable or disable tracking for specific event within <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
+To enable or disable tracking for specific event in <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
 [enable or disable the corresponding feature](feature_flags/index.md).
 
 ```shell
@@ -674,7 +677,7 @@ For each event we add metrics for the weekly and monthly time frames, and totals
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
 
-Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation and Redis slot.
+Redis HLL implementation calculates automatic total metrics, if there are more than one metric for the same category, aggregation, and Redis slot.
 
 - `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
 - `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
@@ -750,7 +753,7 @@ alt_usage_data(999)
 ### Prometheus Queries
 
 In those cases where operational metrics should be part of Usage Ping, a database or Redis query is unlikely
-to provide useful data. Instead, Prometheus might be more appropriate, since most GitLab architectural
+to provide useful data. Instead, Prometheus might be more appropriate, because most GitLab architectural
 components publish metrics to it that can be queried back, aggregated, and included as usage data.
 
 NOTE:
@@ -831,13 +834,15 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 #### Optimization recommendations and examples
 
 - Use specialized indexes [example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871), [example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445).
-- Use defined `start` and `finish`, and simple queries, because these values can be memoized and reused, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
+- Use defined `start` and `finish`, and simple queries. These values can be memoized and reused, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
 - Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
 - Set a custom `batch_size` for `distinct_count`, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
 ### 5. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary).
+[Check Metrics Dictionary Guide](usage_ping/metrics_dictionary.md)
+
+When adding, updating, or removing metrics, please update the [Metrics Dictionary](usage_ping/dictionary.md).
 
 ### 6. Add new metric to Versions Application
 
@@ -864,9 +869,9 @@ On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They
 If the data submitted includes metrics [queried from Prometheus](#prometheus-queries) that you would like to inspect and verify,
 then you need to ensure that a Prometheus server is running locally, and that furthermore the respective GitLab components
 are exporting metrics to it. If you do not need to test data coming from Prometheus, no further action
-is necessary, since Usage Ping should degrade gracefully in the absence of a running Prometheus server.
+is necessary. Usage Ping should degrade gracefully in the absence of a running Prometheus server.
 
-There are currently three kinds of components that may export data to Prometheus, and which are included in Usage Ping:
+There are three kinds of components that may export data to Prometheus, and which are included in Usage Ping:
 
 - [`node_exporter`](https://github.com/prometheus/node_exporter) - Exports node metrics from the host machine
 - [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter) - Exports process metrics from various GitLab components
@@ -890,20 +895,20 @@ build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://
 
 #### Test with GitLab development toolkits
 
-This is the less recommended approach, since it comes with a number of difficulties when emulating a real GitLab deployment.
+This is the less recommended approach, because it comes with a number of difficulties when emulating a real GitLab deployment.
 
-The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not currently set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
+The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
 like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
 
 The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Usage Ping.
 By default, it already comes with a fully configured Prometheus service that is set up to scrape a number of components,
 but with the following limitations:
 
-- It does not currently run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
+- It does not run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
 - While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it would normally report itself to not be associated
 with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
 always runs as a process alongside other GitLab components on any given node. From Usage Ping's perspective none of the node data would therefore
-appear to be associated to any of the services running, since they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Usage Ping.
+appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Usage Ping.
 
 ## Aggregated metrics
 
@@ -914,24 +919,33 @@ This feature is intended solely for internal GitLab use.
 
 To add data for aggregated metrics into Usage Ping payload you should add corresponding definition in [`aggregated_metrics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). Each aggregate definition includes following parts:
 
-- name: unique name under which aggregate metric is added to Usage Ping payload
-- operator: operator that defines how aggregated metric data is counted. Available operators are:
-  - `OR`: removes duplicates and counts all entries that triggered any of listed events
-  - `AND`: removes duplicates and counts all elements that were observed triggering all of following events
-- events: list of events names (from [`known_events/`](#known-events-are-added-automatically-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
-- feature_flag: name of [development feature flag](feature_flags/development.md#development-type) that is checked before
-metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`.
-`feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag is checked.
+- `name`: Unique name under which the aggregate metric is added to the Usage Ping payload.
+- `operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
+  - `OR`: Removes duplicates and counts all entries that triggered any of listed events.
+  - `AND`: Removes duplicates and counts all elements that were observed triggering all of following events.
+- `source`: Data source used to collect all events data included in aggregated metric. Valid data sources are:
+  - [`database`](#database-sourced-aggregated-metrics)
+  - [`redis`](#redis-sourced-aggregated-metrics)
+- `events`: list of events names to aggregate into metric. All events in this list must
+  relay on the same data source. Additional data source requirements are described in the
+  [Database sourced aggregated metrics](#database-sourced-aggregated-metrics) and
+  [Redis sourced aggregated metrics](#redis-sourced-aggregated-metrics) sections.
+- `feature_flag`: Name of [development feature flag](feature_flags/development.md#development-type)
+  that is checked before metrics aggregation is performed. Corresponding feature flag
+  should have `default_enabled` attribute set to `false`. The `feature_flag` attribute
+  is optional and can be omitted. When `feature_flag` is missing, no feature flag is checked.
 
 Example aggregated metric entries:
 
 ```yaml
-- name: product_analytics_test_metrics_union
+- name: product_analytics_test_metrics_union_redis_sourced
   operator: OR
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
-- name: product_analytics_test_metrics_intersection_with_feautre_flag
+  source: redis
+- name: product_analytics_test_metrics_intersection_with_feautre_flag_database_sourced
   operator: AND
-  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  source: database
+  events: ['dependency_scanning_pipeline_all_time', 'container_scanning_pipeline_all_time']
   feature_flag: example_aggregated_metric
 ```
 
@@ -954,6 +968,89 @@ Aggregated metrics are added under `aggregated_metrics` key in both `counts_week
     :snippets => 2513
   }
 }
+```
+
+### Redis sourced aggregated metrics
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
+
+To declare the aggregate of events collected with [Redis HLL Counters](#redis-hll-counters),
+you must fulfill the following requirements:
+
+1. All events listed at `events` attribute must come from
+   [`known_events/*.yml`](#known-events-are-added-automatically-in-usage-data-payload) files.
+1. All events listed at `events` attribute must have the same `redis_slot` attribute.
+1. All events listed at `events` attribute must have the same `aggregation` attribute.
+
+### Database sourced aggregated metrics
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+
+To declare an aggregate of metrics based on events collected from database, follow
+these steps:
+
+1. [Persist the metrics for aggregation](#persist-metrics-for-aggregation).
+1. [Add new aggregated metric definition](#add-new-aggregated-metric-definition).
+
+#### Persist metrics for aggregation
+
+Only metrics calculated with [Estimated Batch Counters](#estimated-batch-counters)
+can be persisted for database sourced aggregated metrics. To persist a metric,
+inject a Ruby block into the
+[estimate_batch_distinct_count](#estimate_batch_distinct_count-method) method.
+This block should invoke the
+`Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll.save_aggregated_metrics`
+[method](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll.rb#L21),
+which stores `estimate_batch_distinct_count` results for future use in aggregated metrics.
+
+The `Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll.save_aggregated_metrics`
+method accepts the following arguments:
+
+- `metric_name`: The name of metric to use for aggregations. Should be the same
+  as the key under which the metric is added into Usage Ping.
+- `recorded_at_timestamp`: The timestamp representing the moment when a given
+  Usage Ping payload was collected. You should use the convenience method `recorded_at`
+  to fill `recorded_at_timestamp` argument, like this: `recorded_at_timestamp: recorded_at`
+- `time_period`: The time period used to build the `relation` argument passed into
+  `estimate_batch_distinct_count`. To collect the metric with all available historical
+  data, set a `nil` value as time period: `time_period: nil`.
+- `data`: HyperLogLog buckets structure representing unique entries in `relation`.
+  The `estimate_batch_distinct_count` method always passes the correct argument
+  into the block, so `data` argument must always have a value equal to block argument,
+  like this: `data: result`
+
+Example metrics persistence:
+
+```ruby
+class UsageData
+  def count_secure_pipelines(time_period)
+    ...
+    relation = ::Security::Scan.latest_successful_by_build.by_scan_types(scan_type).where(security_scans: time_period)
+
+    pipelines_with_secure_jobs['dependency_scanning_pipeline'] = estimate_batch_distinct_count(relation, :commit_id, batch_size: 1000, start: start_id, finish: finish_id) do |result|
+      ::Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll
+        .save_aggregated_metrics(metric_name: 'dependency_scanning_pipeline', recorded_at_timestamp: recorded_at, time_period: time_period, data: result)
+    end
+  end
+end
+```
+
+#### Add new aggregated metric definition
+
+After all metrics are persisted, you can add an aggregated metric definition at
+[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). When adding definitions for metrics names listed in the
+`events:` attribute, use the same names you passed in the `metric_name` argument
+while persisting metrics in previous step.
+
+Example definition:
+
+```yaml
+- name: product_analytics_test_metrics_intersection_database_sourced
+  operator: AND
+  source: database
+  events: ['dependency_scanning_pipeline', 'container_scanning_pipeline']
 ```
 
 ## Example Usage Ping payload

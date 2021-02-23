@@ -4,6 +4,7 @@ import { s__, sprintf } from '~/locale';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
+  REPORT_TYPE_DAST_PROFILES,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
@@ -40,6 +41,7 @@ export default {
       const COMPONENTS = {
         [REPORT_TYPE_SAST]: ManageSast,
         [REPORT_TYPE_DAST]: Upgrade,
+        [REPORT_TYPE_DAST_PROFILES]: Upgrade,
         [REPORT_TYPE_DEPENDENCY_SCANNING]: Upgrade,
         [REPORT_TYPE_CONTAINER_SCANNING]: Upgrade,
         [REPORT_TYPE_COVERAGE_FUZZING]: Upgrade,
@@ -81,7 +83,8 @@ export default {
           {{ item.description }}
           <gl-link
             target="_blank"
-            :href="item.link"
+            data-testid="help-link"
+            :href="item.helpPath"
             :aria-label="getFeatureDocumentationLinkLabel(item)"
           >
             {{ s__('SecurityConfiguration|More information') }}

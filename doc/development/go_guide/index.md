@@ -202,9 +202,9 @@ code readability and test output.
 ### Better output in tests
 
 When comparing expected and actual values in tests, use
-[`testify/require.Equal`](https://godoc.org/github.com/stretchr/testify/require#Equal),
-[`testify/require.EqualError`](https://godoc.org/github.com/stretchr/testify/require#EqualError),
-[`testify/require.EqualValues`](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
+[`testify/require.Equal`](https://pkg.go.dev/github.com/stretchr/testify/require#Equal),
+[`testify/require.EqualError`](https://pkg.go.dev/github.com/stretchr/testify/require#EqualError),
+[`testify/require.EqualValues`](https://pkg.go.dev/github.com/stretchr/testify/require#EqualValues),
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
@@ -363,12 +363,12 @@ There are a few guidelines one should follow when using the
 [Logrus](https://github.com/sirupsen/logrus) package:
 
 - When printing an error use
-  [WithError](https://godoc.org/github.com/sirupsen/logrus#WithError). For
+  [WithError](https://pkg.go.dev/github.com/sirupsen/logrus#WithError). For
   example, `logrus.WithError(err).Error("Failed to do something")`.
 - Since we use [structured logging](#structured-json-logging) we can log
   fields in the context of that code path, such as the URI of the request using
-  [`WithField`](https://godoc.org/github.com/sirupsen/logrus#WithField) or
-  [`WithFields`](https://godoc.org/github.com/sirupsen/logrus#WithFields). For
+  [`WithField`](https://pkg.go.dev/github.com/sirupsen/logrus#WithField) or
+  [`WithFields`](https://pkg.go.dev/github.com/sirupsen/logrus#WithFields). For
   example, `logrus.WithField("file", "/app/go").Info("Opening dir")`. If you
   have to log multiple keys, always use `WithFields` instead of calling
   `WithField` more than once.
@@ -488,7 +488,7 @@ The following are some style guidelines that are specific to the Secure Team.
 ### Code style and format
 
 Use `goimports -local gitlab.com/gitlab-org` before committing.
-[`goimports`](https://godoc.org/golang.org/x/tools/cmd/goimports)
+[`goimports`](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 is a tool that automatically formats Go source code using
 [`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
 adding missing ones and removing unreferenced ones.

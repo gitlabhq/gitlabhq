@@ -4,6 +4,7 @@
  */
 
 $mr-widget-min-height: 69px;
+$tabs-holder-z-index: 250;
 
 .space-children {
   @include clearfix;
@@ -675,7 +676,7 @@ $mr-widget-min-height: 69px;
 
 .mr-version-controls {
   position: relative;
-  z-index: 203;
+  z-index: $tabs-holder-z-index + 10;
   background: $white;
   color: $gl-text-color;
   margin-top: -1px;
@@ -745,7 +746,7 @@ $mr-widget-min-height: 69px;
 .merge-request-tabs-holder,
 .epic-tabs-holder {
   top: $header-height;
-  z-index: 250;
+  z-index: $tabs-holder-z-index;
   background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 

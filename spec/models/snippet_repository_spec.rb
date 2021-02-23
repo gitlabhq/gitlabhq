@@ -286,6 +286,7 @@ RSpec.describe SnippetRepository do
 
     context 'with git errors' do
       it_behaves_like 'snippet repository with git errors', 'invalid://path/here', described_class::InvalidPathError
+      it_behaves_like 'snippet repository with git errors', '.git/hooks/pre-commit', described_class::InvalidPathError
       it_behaves_like 'snippet repository with git errors', '../../path/traversal/here', described_class::InvalidPathError
       it_behaves_like 'snippet repository with git errors', 'README', described_class::CommitError
 

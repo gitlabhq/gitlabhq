@@ -12,7 +12,7 @@ comments: false
 Create projects and groups.
 
 - [Create a new project](../user/project/working_with_projects.md#create-a-project)
-- [Create a new group](../user/group/index.md#create-a-new-group)
+- [Create a new group](../user/group/index.md#create-a-group)
 
 ## Prioritize
 

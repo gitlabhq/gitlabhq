@@ -193,7 +193,7 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries/#byrole)
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/queries/byrole)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
@@ -687,7 +687,7 @@ Similarly, if you really need to use the real `Date` class, then you can import 
 ```javascript
 import { useRealDate } from 'helpers/fake_date';
 
-// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.). 
+// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.).
 describe('with real date', () => {
   useRealDate();
 });
@@ -1034,7 +1034,7 @@ describe "Admin::AbuseReports", :js do
 end
 ```
 
-### Jest test timeout due to async imports
+### Jest test timeout due to asynchronous imports
 
 If a module asynchronously imports some other modules at runtime, these modules must be
 transpiled by the Jest loaders at runtime. It's possible that this can cause [Jest to timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/280809).

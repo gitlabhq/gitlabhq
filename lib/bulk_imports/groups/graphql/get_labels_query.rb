@@ -10,7 +10,7 @@ module BulkImports
           <<-'GRAPHQL'
           query ($full_path: ID!, $cursor: String) {
             group(fullPath: $full_path) {
-              labels(first: 100, after: $cursor) {
+              labels(first: 100, after: $cursor, onlyGroupLabels: true) {
                 page_info: pageInfo {
                   end_cursor: endCursor
                   has_next_page: hasNextPage
@@ -19,6 +19,8 @@ module BulkImports
                   title
                   description
                   color
+                  created_at: createdAt
+                  updated_at: updatedAt
                 }
               }
             }

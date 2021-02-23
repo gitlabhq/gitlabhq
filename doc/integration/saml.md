@@ -13,15 +13,15 @@ You should also reference the [OmniAuth documentation](omniauth.md) for general 
 
 ## Common SAML Terms
 
-| Term | Description |
-|------|-------------|
-| Identity Provider (IdP) | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
-| Service Provider (SP) | SAML considers GitLab to be a service provider. |
-| Assertion | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
-| SSO | Single Sign-On. |
+| Term                           | Description |
+|--------------------------------|-------------|
+| Identity Provider (IdP)        | The service which manages your user identities, such as ADFS, Okta, OneLogin, or Ping Identity. |
+| Service Provider (SP)          | SAML considers GitLab to be a service provider. |
+| Assertion                      | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
+| SSO                            | Single Sign-On. |
 | Assertion consumer service URL | The callback on GitLab where users will be redirected after successfully authenticating with the identity provider. |
-| Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
-| Certificate fingerprint | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
+| Issuer                         | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
+| Certificate fingerprint        | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
 
 ## General Setup
 
@@ -265,7 +265,7 @@ considered admin users.
 
 ### Auditor groups **(PREMIUM SELF)**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.4.
+> Introduced in GitLab 11.4.
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
@@ -453,8 +453,6 @@ args: {
 ```
 
 ### `uid_attribute`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17734) in GitLab 10.7.
 
 By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 

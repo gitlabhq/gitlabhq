@@ -233,6 +233,26 @@ To set the busy status indicator, either:
   1. Select **Edit profile**.
   1. Select the **Busy** checkbox.
 
+  Once selected, you can see the busy status in various locations in the user interface.
+
+  Username:
+
+  | Profile page | Settings menu | User popovers |
+  | --- | --- | --- |
+  | ![Busy status - profile page](img/busy_indicator_profile_page_v13_6.png) | ![Busy status - settings menu](img/busy_indicator_settings_menu_v13_6.png) | ![Busy status - user popovers](img/busy_indicator_user_popovers_v13_6.png) |
+
+  Issue and merge request sidebar:
+
+  | Sidebar| Collapsed sidebar | 
+  | --- | --- |
+  | ![Busy status - sidebar](img/busy_indicator_sidebar_v13_9.png) | ![Busy status - sidebar collapsed](img/busy_indicator_sidebar_collapsed_v13_9.png) | 
+
+  Notes:
+
+  | Notes | Note headers |
+  | --- | --- | 
+  | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
+
 ### Disable busy status feature
 
 The busy status feature is deployed behind a feature flag and is **enabled by default**.

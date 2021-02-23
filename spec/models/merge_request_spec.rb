@@ -9,8 +9,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:namespace) { create_default(:namespace) }
-  let_it_be(:project, refind: true) { create_default(:project, :repository) }
+  let_it_be(:namespace) { create_default(:namespace).freeze }
+  let_it_be(:project, refind: true) { create_default(:project, :repository).freeze }
 
   subject { create(:merge_request) }
 
@@ -3082,32 +3082,83 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe "#head_pipeline_active? " do
-    it do
-      is_expected
-        .to delegate_method(:active?)
-        .to(:head_pipeline)
-        .with_prefix
-        .with_arguments(allow_nil: true)
+    context 'when project lacks a head_pipeline relation' do
+      before do
+        subject.head_pipeline = nil
+      end
+
+      it 'returns false' do
+        expect(subject.head_pipeline_active?).to be false
+      end
+    end
+
+    context 'when project has a head_pipeline relation' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        allow(subject).to receive(:head_pipeline) { pipeline }
+      end
+
+      it 'accesses the value from the head_pipeline' do
+        expect(subject.head_pipeline)
+          .to receive(:active?)
+
+        subject.head_pipeline_active?
+      end
     end
   end
 
   describe "#actual_head_pipeline_success? " do
-    it do
-      is_expected
-        .to delegate_method(:success?)
-        .to(:actual_head_pipeline)
-        .with_prefix
-        .with_arguments(allow_nil: true)
+    context 'when project lacks an actual_head_pipeline relation' do
+      before do
+        allow(subject).to receive(:actual_head_pipeline) { nil }
+      end
+
+      it 'returns false' do
+        expect(subject.actual_head_pipeline_success?).to be false
+      end
+    end
+
+    context 'when project has a actual_head_pipeline relation' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+      end
+
+      it 'accesses the value from the actual_head_pipeline' do
+        expect(subject.actual_head_pipeline)
+          .to receive(:success?)
+
+        subject.actual_head_pipeline_success?
+      end
     end
   end
 
   describe "#actual_head_pipeline_active? " do
-    it do
-      is_expected
-        .to delegate_method(:active?)
-        .to(:actual_head_pipeline)
-        .with_prefix
-        .with_arguments(allow_nil: true)
+    context 'when project lacks an actual_head_pipeline relation' do
+      before do
+        allow(subject).to receive(:actual_head_pipeline) { nil }
+      end
+
+      it 'returns false' do
+        expect(subject.actual_head_pipeline_active?).to be false
+      end
+    end
+
+    context 'when project has a actual_head_pipeline relation' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+      end
+
+      it 'accesses the value from the actual_head_pipeline' do
+        expect(subject.actual_head_pipeline)
+          .to receive(:active?)
+
+        subject.actual_head_pipeline_active?
+      end
     end
   end
 

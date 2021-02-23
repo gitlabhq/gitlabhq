@@ -5,8 +5,6 @@ require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
 RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
-  include CopHelper
-
   let(:cop) { described_class.new }
 
   context 'outside of a migration' do
@@ -22,7 +20,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
     end
   end
 
-  context 'in a migration' do
+  context 'when in a migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end

@@ -21,6 +21,7 @@ tasks in a secure and cloud-native way. It enables:
 - Pull-based GitOps deployments by leveraging the
   [GitOps Engine](https://github.com/argoproj/gitops-engine).
 - Real-time access to API endpoints in a cluster.
+- Alert generation based on [Container network policy](../../application_security/threat_monitoring/index.md#container-network-policy).
 
 Many more features are planned. Please review [our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329)
 and [our development documentation](../../../development/agent/index.md).
@@ -36,7 +37,7 @@ sequenceDiagram
   participant D as Developer
   participant A as Application code repository
   participant M as Manifest repository
-  participant K as Kubernetes agent
+  participant K as Kubernetes Agent
   participant C as Agent configuration repository
   K->C: Grab the configuration
   D->>+A: Pushing code changes
@@ -49,11 +50,10 @@ sequenceDiagram
 
 There are several components that work in concert for the Agent to accomplish GitOps deployments:
 
-- A properly-configured Kubernetes cluster.
+- A properly-configured Kubernetes cluster where the Agent is running.
 - A configuration repository that contains a `config.yaml` file, which tells the
-  Agent which repositories to synchronize with.
-- A manifest repository that contains a `manifest.yaml`, which is tracked by the
-  Agent and can be auto-generated. Any changes to `manifest.yaml` are applied to the cluster.
+  Agent which repositories to synchronize with the cluster.
+- A manifest repository that contains manifest files. Any changes to manifest files are applied to the cluster.
 
 These repositories might be the same GitLab project or separate projects.
 
@@ -74,7 +74,7 @@ The setup process involves a few steps to enable GitOps deployments:
 1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
 1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
 1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
-1. [Create a `manifest.yaml`](#create-a-manifestyaml).
+1. [Create manifest files](#create-manifest-files).
 
 ### Upgrades and version compatibility
 
@@ -388,11 +388,10 @@ subjects:
   namespace: gitlab-agent
 ```
 
-### Create a `manifest.yaml`
+### Create manifest files
 
 In a previous step, you configured a `config.yaml` to point to the GitLab projects
-the Agent should synchronize. In each of those projects, you must create a `manifest.yaml`
-file for the Agent to monitor. You can auto-generate this `manifest.yaml` with a
+the Agent should synchronize. Agent monitors each of those projects for changes to the manifest files it contains. You can auto-generate manifest files with a
 templating engine or other means.
 
 The agent is authorized to download manifests for the configuration
@@ -400,13 +399,13 @@ project, and public projects. Support for other private projects is
 planned in the issue [Agent authorization for private manifest
 projects](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
-Each time you commit and push a change to this file, the Agent logs the change:
+Each time you push a change to a monitored manifest repository, the Agent logs the change:
 
 ```plaintext
 2020-09-15_14:09:04.87946 gitlab-k8s-agent      : time="2020-09-15T10:09:04-04:00" level=info msg="Config: new commit" agent_id=1 commit_id=e6a3651f1faa2e928fe6120e254c122451be4eea
 ```
 
-#### Example `manifest.yaml` file
+#### Example manifest file
 
 This file creates an NGINX deployment.
 
@@ -444,6 +443,51 @@ The following example projects can help you get started with the Kubernetes Agen
 
 You can use the Kubernetes Agent to
 [deploy GitLab Runner in a Kubernetes cluster](http://docs.gitlab.com/runner/install/kubernetes-agent.html).
+
+## Kubernetes Network Security Alerts
+
+The GitLab Agent also provides an integration with Cilium. This integration provides a simple way to
+generate network policy-related alerts and to surface those alerts in GitLab.
+
+There are several components that work in concert for the Agent to generate the alerts:
+
+- A working Kubernetes cluster.
+- Cilium integration through either of these options:
+  - Installation through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd).
+  - Enablement of [hubble-relay](https://docs.cilium.io/en/v1.8/concepts/overview/#hubble) on an
+    existing installation.
+- One or more network policies through any of these options:
+  - Use the [Container Network Policy editor](../../application_security/threat_monitoring/index.md#container-network-policy-editor) to create and manage policies.
+  - Use an [AutoDevOps](../../application_security/threat_monitoring/index.md#container-network-policy-management) configuration.
+  - Add the required labels and annotations to existing network policies. 
+- Use a configuration repository to inform the Agent through a `config.yaml` file, which
+  repositories can synchronize with. This repository might be the same, or a separate GitLab
+  project.
+
+The setup process follows the same steps as [GitOps](#get-started-with-gitops-and-the-gitlab-agent),
+with the following differences:
+
+- When you define a configuration repository, you must do so with [Cilium settings](#define-a-configuration-repository-with-cilium-settings).
+- You do not need to create a `manifest.yaml`.
+
+### Define a configuration repository with Cilium settings
+
+You need a GitLab repository to contain your Agent configuration. The minimal repository layout
+looks like this:
+
+```plaintext
+.gitlab/agents/<agent-name>/config.yaml
+```
+
+Your `config.yaml` file must specify the `host` and `port` of your Hubble Relay service. If your
+Cilium integration was performed through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd),
+you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80`:
+
+```yaml
+cilium:
+  hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
+  ...
+```
 
 ## Management interfaces
 
@@ -503,9 +547,9 @@ specified the `kas-address` correctly.
 {"level":"info","time":"2020-10-30T08:56:54.329Z","msg":"Synced","project_id":"root/kas-manifest001","resource_key":"apps/Deployment/kas-test001/nginx-deployment","sync_result":"error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"}
 ```
 
-This error is shown if your `manifest.yaml` file is malformed, and Kubernetes can't
-create specified objects. Make sure that your `manifest.yaml` file is valid. You
-may try using it to create objects in Kubernetes directly for more troubleshooting.
+This error is shown if a manifest file is malformed, and Kubernetes can't
+create specified objects. Make sure that your manifest files are valid. You
+may try using them to create objects in Kubernetes directly for more troubleshooting.
 
 ### Agent logs - Error while dialing failed to WebSocket dial: failed to send handshake request
 

@@ -1,0 +1,5 @@
+---
+title: Render version dropdowns in MR changes view above tab navbar
+merge_request: 54159
+author: Simon Stieger @sim0
+type: fixed

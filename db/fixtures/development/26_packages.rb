@@ -103,8 +103,10 @@ class Gitlab::Seeder::Packages
       name = "MyNugetApp.Package#{i}"
       version = "4.2.#{i}"
 
-      pkg = ::Packages::Nuget::CreatePackageService.new(project, project.creator, {}).execute
-      # when using ::Packages::Nuget::CreatePackageService, packages have a fixed name and a fixed version.
+      pkg = ::Packages::CreateTemporaryPackageService.new(
+        project, project.creator, {}
+      ).execute(:nuget, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME)
+      # when using ::Packages::CreateTemporaryPackageService, packages have a fixed name and a fixed version.
       pkg.update!(name: name, version: version)
 
       filename = 'package.nupkg'

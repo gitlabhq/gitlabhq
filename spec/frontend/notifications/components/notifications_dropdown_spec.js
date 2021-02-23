@@ -255,7 +255,7 @@ describe('NotificationsDropdown', () => {
       expect(
         mockToastShow,
       ).toHaveBeenCalledWith(
-        'An error occured while updating the notification settings. Please try again.',
+        'An error occurred while updating the notification settings. Please try again.',
         { type: 'error' },
       );
     });

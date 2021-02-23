@@ -16,7 +16,7 @@ const apolloProvider = new VueApollo({
   ),
 });
 
-const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid) => {
+const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid, metricsPath) => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
@@ -25,6 +25,7 @@ const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid) =>
     },
     apolloProvider,
     provide: {
+      metricsPath,
       pipelineProjectPath,
       pipelineIid,
       dataMethod: GRAPHQL,

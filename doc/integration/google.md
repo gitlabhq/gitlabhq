@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Google OAuth2 OmniAuth Provider
+# Google OAuth2 OmniAuth Provider **(FREE)**
 
 To enable the Google OAuth2 OmniAuth provider you must register your application
 with Google. Google generates a client ID and secret key for you to use.

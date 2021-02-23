@@ -1,5 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture } from 'helpers/fixtures';
+import axios from '~/lib/utils/axios_utils';
+import {
+  PIPELINES_DETAIL_LINK_DURATION,
+  PIPELINES_DETAIL_LINKS_TOTAL,
+  PIPELINES_DETAIL_LINKS_JOB_RATIO,
+} from '~/performance/constants';
+import * as perfUtils from '~/performance/utils';
+import * as sentryUtils from '~/pipelines/components/graph/utils';
+import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import { createJobsHash } from '~/pipelines/utils';
 import {
@@ -18,7 +28,9 @@ describe('Links Inner component', () => {
     containerMeasurements: { width: 1019, height: 445 },
     pipelineId: 1,
     pipelineData: [],
+    totalGroups: 10,
   };
+
   let wrapper;
 
   const createComponent = (props) => {
@@ -192,6 +204,143 @@ describe('Links Inner component', () => {
 
       expect(firstLink.classes(defaultColorClass)).toBe(false);
       expect(firstLink.classes(hoverColorClass)).toBe(true);
+    });
+  });
+
+  describe('performance metrics', () => {
+    let markAndMeasure;
+    let reportToSentry;
+    let reportPerformance;
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      markAndMeasure = jest.spyOn(perfUtils, 'performanceMarkAndMeasure');
+      reportToSentry = jest.spyOn(sentryUtils, 'reportToSentry');
+      reportPerformance = jest.spyOn(Api, 'reportPerformance');
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    describe('with no metrics config object', () => {
+      beforeEach(() => {
+        setFixtures(pipelineData);
+        createComponent({
+          pipelineData: pipelineData.stages,
+        });
+      });
+
+      it('is not called', () => {
+        expect(markAndMeasure).not.toHaveBeenCalled();
+        expect(reportToSentry).not.toHaveBeenCalled();
+        expect(reportPerformance).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with metrics config set to false', () => {
+      beforeEach(() => {
+        setFixtures(pipelineData);
+        createComponent({
+          pipelineData: pipelineData.stages,
+          metricsConfig: {
+            collectMetrics: false,
+            metricsPath: '/path/to/metrics',
+          },
+        });
+      });
+
+      it('is not called', () => {
+        expect(markAndMeasure).not.toHaveBeenCalled();
+        expect(reportToSentry).not.toHaveBeenCalled();
+        expect(reportPerformance).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with no metrics path', () => {
+      beforeEach(() => {
+        setFixtures(pipelineData);
+        createComponent({
+          pipelineData: pipelineData.stages,
+          metricsConfig: {
+            collectMetrics: true,
+            metricsPath: '',
+          },
+        });
+      });
+
+      it('is not called', () => {
+        expect(markAndMeasure).not.toHaveBeenCalled();
+        expect(reportToSentry).not.toHaveBeenCalled();
+        expect(reportPerformance).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with metrics path and collect set to true', () => {
+      const metricsPath = '/root/project/-/ci/prometheus_metrics/histograms.json';
+      const duration = 0.0478;
+      const numLinks = 1;
+      const metricsData = {
+        histograms: [
+          { name: PIPELINES_DETAIL_LINK_DURATION, value: duration },
+          { name: PIPELINES_DETAIL_LINKS_TOTAL, value: numLinks },
+          {
+            name: PIPELINES_DETAIL_LINKS_JOB_RATIO,
+            value: numLinks / defaultProps.totalGroups,
+          },
+        ],
+      };
+
+      describe('when no duration is obtained', () => {
+        beforeEach(() => {
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [];
+          });
+
+          setFixtures(pipelineData);
+
+          createComponent({
+            pipelineData: pipelineData.stages,
+            metricsConfig: {
+              collectMetrics: true,
+              path: metricsPath,
+            },
+          });
+        });
+
+        it('attempts to collect metrics', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).not.toHaveBeenCalled();
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('with duration and no error', () => {
+        beforeEach(() => {
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [{ duration }];
+          });
+
+          setFixtures(pipelineData);
+
+          createComponent({
+            pipelineData: pipelineData.stages,
+            metricsConfig: {
+              collectMetrics: true,
+              path: metricsPath,
+            },
+          });
+        });
+
+        it('it calls reportPerformance with expected arguments', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalledWith(metricsPath, metricsData);
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 });

@@ -72,6 +72,21 @@ RSpec.describe MergeRequests::RefreshService do
         allow(NotificationService).to receive(:new) { notification_service }
       end
 
+      context 'query count' do
+        it 'does not execute a lot of queries' do
+          # Hardcoded the query limit since the queries can also be reduced even
+          # if there are the same number of merge requests (e.g. by preloading
+          # associations). This should also fail in case additional queries are
+          # added elsewhere that affected this service.
+          #
+          # The limit is based on the number of queries executed at the current
+          # state of the service. As we reduce the number of queries executed in
+          # this service, the limit should be reduced as well.
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to exceed_query_limit(260)
+        end
+      end
+
       it 'executes hooks with update action' do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs

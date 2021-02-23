@@ -396,7 +396,7 @@ but also pushes with **continuous tests** to feature-branches,
 For more information, see the following blog posts.
 
 - [Use GitLab CI/CD `environments` to deploy your
-  web app to staging and production](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/).
+  web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 - Learn [how to run jobs sequentially,
   in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).
 - Learn [how to pull specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)

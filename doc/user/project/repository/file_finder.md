@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/file_finder.html'
 ---
 
-# File finder
+# File finder **(FREE)**
 
 > [Introduced](https://github.com/gitlabhq/gitlabhq/pull/9889) in GitLab 8.4.
 

@@ -4,8 +4,6 @@ module BulkImports
   module Common
     module Transformers
       class AwardEmojiTransformer
-        def initialize(*args); end
-
         def transform(context, data)
           user = find_user(context, data&.dig('user', 'public_email')) || context.current_user
 

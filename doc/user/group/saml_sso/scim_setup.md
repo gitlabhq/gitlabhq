@@ -204,6 +204,10 @@ graph TD
   B -->|Yes| D[GitLab removes user from GitLab group]
 ```
 
+During the synchronization process, all of your users get GitLab accounts, welcoming them
+to their respective groups, with an invitation email. When implementing SCIM provisioning,
+you may want to warn your security-conscious employees about this email.
+
 ## Troubleshooting
 
 This section contains possible solutions for problems you might encounter.

@@ -229,10 +229,10 @@ RSpec.describe Groups::DestroyService do
           # will still be executed for the nested group as they fall under the same hierarchy
           # and hence we need to account for this scenario.
           expect(UserProjectAccessChangedService)
-            .to receive(:new).with(shared_with_group.user_ids_for_project_authorizations).and_call_original
+            .to receive(:new).with(shared_with_group.users_ids_of_direct_members).and_call_original
 
           expect(UserProjectAccessChangedService)
-            .not_to receive(:new).with(shared_group.user_ids_for_project_authorizations)
+            .not_to receive(:new).with(shared_group.users_ids_of_direct_members)
 
           destroy_group(shared_group, user, false)
         end
@@ -246,7 +246,7 @@ RSpec.describe Groups::DestroyService do
 
         it 'makes use of a specific service to update project authorizations' do
           expect(UserProjectAccessChangedService)
-            .to receive(:new).with(shared_with_group.user_ids_for_project_authorizations).and_call_original
+            .to receive(:new).with(shared_with_group.users_ids_of_direct_members).and_call_original
 
           destroy_group(shared_with_group, user, false)
         end

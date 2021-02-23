@@ -750,7 +750,7 @@ specifically used by GitLab.com, see
 The GitLab API supports the `application/json` content type by default, though
 some API endpoints also support `text/plain`.
 
-In [GitLab 13.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
+In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
 API endpoints do not support `text/plain` by default, unless it's explicitly documented.
 
 This change is deployed behind the `:api_always_use_application_json` [feature flag](../user/feature_flags.md),

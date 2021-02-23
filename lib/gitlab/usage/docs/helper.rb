@@ -31,7 +31,9 @@ module Gitlab
         end
 
         def render_description(object)
-          object.description
+          return 'Missing description' unless object.attributes[:description].present?
+
+          object.attributes[:description]
         end
 
         def render_attribute_row(key, value)

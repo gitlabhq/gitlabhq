@@ -122,6 +122,8 @@ export default {
       :value="subscribed"
       class="hide-collapsed"
       data-testid="subscription-toggle"
+      :label="__('Notifications')"
+      label-position="hidden"
       @change="toggleSubscription"
     />
   </div>

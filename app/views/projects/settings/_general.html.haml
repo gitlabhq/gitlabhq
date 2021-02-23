@@ -7,7 +7,7 @@
       .form-group.col-md-5
         = f.label :name, class: 'label-bold', for: 'project_name_edit' do
           = _('Project name')
-        = f.text_field :name, class: 'form-control gl-form-input qa-project-name-field', id: "project_name_edit"
+        = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { qa_selector: 'project_name_field' }
 
       .form-group.col-md-7
         = f.label :id, class: 'label-bold' do
@@ -40,4 +40,4 @@
       %hr
       = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-success gl-mt-6 qa-save-naming-topics-avatar-button"
+  = f.submit _('Save changes'), class: "gl-button btn btn-success gl-mt-6", data: { qa_selector: 'save_naming_topics_avatar_button' }

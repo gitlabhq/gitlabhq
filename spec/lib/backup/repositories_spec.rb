@@ -230,6 +230,16 @@ RSpec.describe Backup::Repositories do
         expect(pool_repository).not_to be_failed
         expect(pool_repository.object_pool.exists?).to be(true)
       end
+
+      it 'skips pools with no source project, :sidekiq_might_not_need_inline' do
+        pool_repository = create(:pool_repository, state: :obsolete)
+        pool_repository.update_column(:source_project_id, nil)
+
+        subject.restore
+
+        pool_repository.reload
+        expect(pool_repository).to be_obsolete
+      end
     end
 
     it 'cleans existing repositories' do
