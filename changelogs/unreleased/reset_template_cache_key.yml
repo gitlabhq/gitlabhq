@@ -1,5 +1,0 @@
----
-title: Reset description template names cache key to reload an updated templates structure
-merge_request: 54614
-author:
-type: fixed
