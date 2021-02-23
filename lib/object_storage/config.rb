@@ -2,8 +2,6 @@
 
 module ObjectStorage
   class Config
-    include Gitlab::Utils::StrongMemoize
-
     AWS_PROVIDER = 'AWS'
     AZURE_PROVIDER = 'AzureRM'
     GOOGLE_PROVIDER = 'Google'
@@ -68,36 +66,6 @@ module ObjectStorage
     def provider
       credentials[:provider].to_s
     end
-
-    # This method converts fog-aws parameters to an endpoint for the
-    # Workhorse S3 client.
-    def s3_endpoint
-      strong_memoize(:s3_endpoint) do
-        # We could omit this line and let the following code handle this, but
-        # this will ensure that working configurations that use `endpoint`
-        # will continue to work.
-        next credentials[:endpoint] if credentials[:endpoint].present?
-
-        generate_s3_endpoint_from_credentials
-      end
-    end
-
-    def generate_s3_endpoint_from_credentials
-      # fog-aws has special handling of the host, region, scheme, etc:
-      # https://github.com/fog/fog-aws/blob/c7a11ba377a76d147861d0e921eb1e245bc11b6c/lib/fog/aws/storage.rb#L440-L449
-      # Rather than reimplement this, we derive it from a sample GET URL.
-      url = fog_connection.get_object_url(bucket, "tmp", nil)
-      uri = ::Addressable::URI.parse(url)
-
-      return unless uri&.scheme && uri&.host
-
-      endpoint = "#{uri.scheme}://#{uri.host}"
-      endpoint += ":#{uri.port}" if uri.port
-      endpoint
-    rescue ::URI::InvalidComponentError, ::Addressable::URI::InvalidURIError => e
-      Gitlab::ErrorTracking.track_exception(e)
-      nil
-    end
     # End AWS-specific options
 
     # Begin Azure-specific options
@@ -121,10 +89,6 @@ module ObjectStorage
 
         aws_server_side_encryption_headers.compact
       end
-    end
-
-    def fog_connection
-      @connection ||= ::Fog::Storage.new(credentials)
     end
 
     private

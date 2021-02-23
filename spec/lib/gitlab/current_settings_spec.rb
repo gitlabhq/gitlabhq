@@ -24,6 +24,26 @@ RSpec.describe Gitlab::CurrentSettings do
     end
   end
 
+  describe '.signup_disabled?' do
+    subject { described_class.signup_disabled? }
+
+    context 'when signup is enabled' do
+      before do
+        create(:application_setting, signup_enabled: true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when signup is disabled' do
+      before do
+        create(:application_setting, signup_enabled: false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#current_application_settings', :use_clean_rails_memory_store_caching do
     it 'allows keys to be called directly' do
       db_settings = create(:application_setting,

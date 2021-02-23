@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe API::Lint do
   describe 'POST /ci/lint' do
     context 'when signup settings are disabled' do
-      Gitlab::CurrentSettings.signup_enabled = false
+      before do
+        Gitlab::CurrentSettings.signup_enabled = false
+      end
 
       context 'when unauthenticated' do
         it 'returns authentication error' do
@@ -16,22 +18,25 @@ RSpec.describe API::Lint do
       end
 
       context 'when authenticated' do
-        it 'returns unauthorized error' do
-          post api('/ci/lint'), params: { content: 'content' }
+        let_it_be(:api_user) { create(:user) }
+        it 'returns authorized' do
+          post api('/ci/lint', api_user), params: { content: 'content' }
 
-          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
 
     context 'when signup settings are enabled' do
-      Gitlab::CurrentSettings.signup_enabled = true
+      before do
+        Gitlab::CurrentSettings.signup_enabled = true
+      end
 
       context 'when unauthenticated' do
-        it 'returns authentication error' do
+        it 'returns authorized success' do
           post api('/ci/lint'), params: { content: 'content' }
 
-          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 

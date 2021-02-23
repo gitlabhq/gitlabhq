@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'fog/core'
 
 RSpec.describe ObjectStorage::Config do
   using RSpec::Parameterized::TableSyntax
@@ -33,9 +34,7 @@ RSpec.describe ObjectStorage::Config do
     }
   end
 
-  subject do
-    described_class.new(raw_config.as_json)
-  end
+  subject { described_class.new(raw_config.as_json) }
 
   describe '#load_provider' do
     before do
@@ -45,10 +44,6 @@ RSpec.describe ObjectStorage::Config do
     context 'with AWS' do
       it 'registers AWS as a provider' do
         expect(Fog.providers.keys).to include(:aws)
-      end
-
-      describe '#fog_connection' do
-        it { expect(subject.fog_connection).to be_a_kind_of(Fog::AWS::Storage::Real) }
       end
     end
 
@@ -64,10 +59,6 @@ RSpec.describe ObjectStorage::Config do
       it 'registers Google as a provider' do
         expect(Fog.providers.keys).to include(:google)
       end
-
-      describe '#fog_connection' do
-        it { expect(subject.fog_connection).to be_a_kind_of(Fog::Storage::GoogleXML::Real) }
-      end
     end
 
     context 'with Azure' do
@@ -81,10 +72,6 @@ RSpec.describe ObjectStorage::Config do
 
       it 'registers AzureRM as a provider' do
         expect(Fog.providers.keys).to include(:azurerm)
-      end
-
-      describe '#fog_connection' do
-        it { expect(subject.fog_connection).to be_a_kind_of(Fog::Storage::AzureRM::Real) }
       end
     end
   end
@@ -183,50 +170,6 @@ RSpec.describe ObjectStorage::Config do
     it { expect(subject.provider).to eq('AWS') }
     it { expect(subject.aws?).to be true }
     it { expect(subject.google?).to be false }
-
-    it 'returns the default S3 endpoint' do
-      subject.load_provider
-
-      expect(subject.s3_endpoint).to eq("https://test-bucket.s3.amazonaws.com")
-    end
-
-    describe 'with a custom endpoint' do
-      let(:endpoint) { 'https://my.example.com' }
-
-      before do
-        credentials[:endpoint] = endpoint
-      end
-
-      it 'returns the custom endpoint' do
-        subject.load_provider
-
-        expect(subject.s3_endpoint).to eq(endpoint)
-      end
-    end
-
-    context 'with custom S3 host and port' do
-      where(:host, :port, :scheme, :expected) do
-        's3.example.com' | 8080    | nil     | 'https://test-bucket.s3.example.com:8080'
-        's3.example.com' | 443     | nil     | 'https://test-bucket.s3.example.com'
-        's3.example.com' | 443     | "https" | 'https://test-bucket.s3.example.com'
-        's3.example.com' | nil     | nil     | 'https://test-bucket.s3.example.com'
-        's3.example.com' | 80      | "http"  | 'http://test-bucket.s3.example.com'
-        's3.example.com' | "bogus" | nil     | nil
-      end
-
-      with_them do
-        before do
-          credentials[:host] = host
-          credentials[:port] = port
-          credentials[:scheme] = scheme
-          subject.load_provider
-        end
-
-        it 'returns expected host' do
-          expect(subject.s3_endpoint).to eq(expected)
-        end
-      end
-    end
   end
 
   context 'with Google credentials' do

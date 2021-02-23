@@ -5,6 +5,12 @@ module Issues
     include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
 
+    def initialize(issuables_relation, project)
+      super
+
+      @labels = @issuables.labels_hash.transform_values { |labels| labels.sort.join(',').presence }
+    end
+
     def email(user)
       Notify.issues_csv_email(user, project, csv_data, csv_builder.status).deliver_now
     end
@@ -12,7 +18,7 @@ module Issues
     private
 
     def associations_to_preload
-      %i(author assignees timelogs milestone)
+      %i(author assignees timelogs milestone project)
     end
 
     def header_to_value_hash
@@ -41,7 +47,7 @@ module Issues
     end
 
     def issue_labels(issue)
-      issuables.labels_hash[issue.id].sort.join(',').presence
+      @labels[issue.id]
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

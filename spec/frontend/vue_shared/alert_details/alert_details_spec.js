@@ -128,6 +128,10 @@ describe('AlertDetails', () => {
         expect(wrapper.findByTestId('startTimeItem').exists()).toBe(true);
         expect(wrapper.findByTestId('startTimeItem').props('time')).toBe(mockAlert.startedAt);
       });
+
+      it('renders the metrics tab', () => {
+        expect(findMetricsTab().exists()).toBe(true);
+      });
     });
 
     describe('individual alert fields', () => {
@@ -179,7 +183,8 @@ describe('AlertDetails', () => {
     describe('Threat Monitoring details', () => {
       it('should not render the metrics tab', () => {
         mountComponent({
-          data: { alert: mockAlert, provide: { isThreatMonitoringPage: true } },
+          data: { alert: mockAlert },
+          provide: { isThreatMonitoringPage: true },
         });
         expect(findMetricsTab().exists()).toBe(false);
       });
