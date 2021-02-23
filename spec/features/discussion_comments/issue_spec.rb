@@ -16,5 +16,5 @@ RSpec.describe 'Thread Comments Issue', :js do
     visit project_issue_path(project, issue)
   end
 
-  it_behaves_like 'thread comments', 'issue'
+  it_behaves_like 'thread comments for issue, epic and merge request', 'issue'
 end

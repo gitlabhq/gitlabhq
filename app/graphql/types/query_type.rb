@@ -85,7 +85,7 @@ module Types
     field :instance_statistics_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
           null: true,
           description: 'Get statistics on the instance.',
-          deprecated: { reason: 'This field was renamed. Use the `usageTrendsMeasurements` field instead.', milestone: '13.10' },
+          deprecated: { reason: 'This field was renamed. Use the `usageTrendsMeasurements` field instead', milestone: '13.10' },
           resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver
 
     field :usage_trends_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,

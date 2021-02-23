@@ -394,32 +394,6 @@ table {
 }
 
 .comment-type-dropdown {
-  .btn-success {
-    width: auto;
-  }
-
-  .dropdown-toggle {
-    float: right;
-
-    i {
-      color: $white;
-      padding-right: 2px;
-      margin-top: 2px;
-    }
-
-    &[disabled] {
-      i {
-        color: $gl-text-color-disabled;
-      }
-    }
-  }
-
-  .dropdown-menu {
-    top: initial;
-    bottom: 100%;
-    width: 298px;
-  }
-
   @include media-breakpoint-down(xs) {
     display: flex;
     width: 100%;

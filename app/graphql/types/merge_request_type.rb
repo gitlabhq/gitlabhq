@@ -108,6 +108,10 @@ module Types
           null: false, calls_gitaly: true,
           method: :target_branch_exists?,
           description: 'Indicates if the target branch of the merge request exists.'
+    field :diverged_from_target_branch, GraphQL::BOOLEAN_TYPE,
+          null: false, calls_gitaly: true,
+          method: :diverged_from_target_branch?,
+          description: 'Indicates if the source branch is behind the target branch.'
     field :mergeable_discussions_state, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'
     field :web_url, GraphQL::STRING_TYPE, null: true,

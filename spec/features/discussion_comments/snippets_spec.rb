@@ -22,7 +22,7 @@ RSpec.describe 'Thread Comments Snippet', :js do
       visit project_snippet_path(project, snippet)
     end
 
-    it_behaves_like 'thread comments', 'snippet'
+    it_behaves_like 'thread comments for commit and snippet', 'snippet'
   end
 
   context 'with personal snippets' do
@@ -32,6 +32,6 @@ RSpec.describe 'Thread Comments Snippet', :js do
       visit snippet_path(snippet)
     end
 
-    it_behaves_like 'thread comments', 'snippet'
+    it_behaves_like 'thread comments for commit and snippet', 'snippet'
   end
 end

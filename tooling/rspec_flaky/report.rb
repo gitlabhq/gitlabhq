@@ -3,8 +3,8 @@
 require 'json'
 require 'time'
 
-require_dependency 'rspec_flaky/config'
-require_dependency 'rspec_flaky/flaky_examples_collection'
+require_relative 'config'
+require_relative 'flaky_examples_collection'
 
 module RspecFlaky
   # This class is responsible for loading/saving JSON reports, and pruning
@@ -33,7 +33,7 @@ module RspecFlaky
 
     def write(file_path)
       unless RspecFlaky::Config.generate_report?
-        puts "! Generating reports is disabled. To enable it, please set the `FLAKY_RSPEC_GENERATE_REPORT=1` !" # rubocop:disable Rails/Output
+        Kernel.warn "! Generating reports is disabled. To enable it, please set the `FLAKY_RSPEC_GENERATE_REPORT=1` !"
         return
       end
 

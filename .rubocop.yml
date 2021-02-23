@@ -243,7 +243,7 @@ Gitlab/Json:
     - 'db/**/*'
     - 'qa/**/*'
     - 'scripts/**/*'
-    - 'lib/rspec_flaky/**/*'
+    - 'tooling/rspec_flaky/**/*'
     - 'lib/quality/**/*'
     - 'tooling/danger/**/*'
 

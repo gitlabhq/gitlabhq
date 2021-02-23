@@ -62,6 +62,17 @@ Get information about current user.
 
 Fields related to design management.
 
+### DevopsAdoptionSegments
+
+Get configured DevOps adoption segments on the instance.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `last` | Returns the last _n_ elements from the list. | Int |
+
 ### Echo
 
 Text to echo back.
@@ -89,6 +100,20 @@ Find a group.
 ### InstanceSecurityDashboard
 
 Fields related to Instance Security Dashboard.
+
+### InstanceStatisticsMeasurements
+
+Get statistics on the instance. Deprecated in 13.10: This field was renamed. Use the `usageTrendsMeasurements` field instead.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `identifier` | The type of measurement/statistics to retrieve. | MeasurementIdentifier! |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `recordedAfter` | Measurement recorded after this date. | Time |
+| `recordedBefore` | Measurement recorded before this date. | Time |
 
 ### Issue
 
@@ -142,6 +167,33 @@ Find a project.
 | ----- | ---- | ----------- |
 | `fullPath` | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. | ID! |
 
+### Projects
+
+Find projects visible to the current user.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `ids` | Filter projects by IDs. | ID! => Array |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `membership` | Limit projects that the current user is a member of. | Boolean |
+| `search` | Search query for project name, path, or description. | String |
+| `searchNamespaces` | Include namespace in project search. | Boolean |
+| `sort` | Sort order of results. | String |
+
+### RunnerPlatforms
+
+Supported runner platforms.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `last` | Returns the last _n_ elements from the list. | Int |
+
 ### RunnerSetup
 
 Get runner setup instructions.
@@ -153,6 +205,37 @@ Get runner setup instructions.
 | `platform` | Platform to generate the instructions for. | String! |
 | `projectId` | Project to register the runner for. | ProjectID |
 
+### Snippets
+
+Find Snippets visible to the current user.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `authorId` | The ID of an author. | UserID |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `explore` | Explore personal snippets. | Boolean |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `ids` | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. | SnippetID! => Array |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `projectId` | The ID of a project. | ProjectID |
+| `type` | The type of snippet. | TypeEnum |
+| `visibility` | The visibility of the snippet. | VisibilityScopesEnum |
+
+### UsageTrendsMeasurements
+
+Get statistics on the instance.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `identifier` | The type of measurement/statistics to retrieve. | MeasurementIdentifier! |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `recordedAfter` | Measurement recorded after this date. | Time |
+| `recordedBefore` | Measurement recorded before this date. | Time |
+
 ### User
 
 Find a user.
@@ -161,6 +244,67 @@ Find a user.
 | ----- | ---- | ----------- |
 | `id` | ID of the User. | UserID |
 | `username` | Username of the User. | String |
+
+### Users
+
+Find users.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `admins` | Return only admin users. | Boolean |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `ids` | List of user Global IDs. | ID! => Array |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `search` | Query to search users by name, username, or primary email. | String |
+| `sort` | Sort users by this criteria. | Sort |
+| `usernames` | List of usernames. | String! => Array |
+
+### Vulnerabilities
+
+Vulnerabilities reported on projects on the current user's instance security dashboard.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `hasIssues` | Returns only the vulnerabilities which have linked issues. | Boolean |
+| `hasResolution` | Returns only the vulnerabilities which have been resolved on default branch. | Boolean |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `projectId` | Filter vulnerabilities by project. | ID! => Array |
+| `reportType` | Filter vulnerabilities by report type. | VulnerabilityReportType! => Array |
+| `scanner` | Filter vulnerabilities by VulnerabilityScanner.externalId. | String! => Array |
+| `severity` | Filter vulnerabilities by severity. | VulnerabilitySeverity! => Array |
+| `sort` | List vulnerabilities by sort order. | VulnerabilitySort |
+| `state` | Filter vulnerabilities by state. | VulnerabilityState! => Array |
+
+### VulnerabilitiesCountByDay
+
+Number of vulnerabilities per day for the projects on the current user's instance security dashboard.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `endDate` | Last day for which to fetch vulnerability history. | ISO8601Date! |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `startDate` | First day for which to fetch vulnerability history. | ISO8601Date! |
+
+### VulnerabilitiesCountByDayAndSeverity
+
+Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
+
+| Name | Description | Type |
+| ----- | ---- | ----------- |
+| `after` | Returns the elements in the list that come after the specified cursor. | String |
+| `before` | Returns the elements in the list that come before the specified cursor. | String |
+| `endDate` | Last day for which to fetch vulnerability history. | ISO8601Date! |
+| `first` | Returns the first _n_ elements from the list. | Int |
+| `last` | Returns the last _n_ elements from the list. | Int |
+| `startDate` | First day for which to fetch vulnerability history. | ISO8601Date! |
 
 ### Vulnerability
 
@@ -2474,6 +2618,7 @@ Autogenerated return type of MarkAsSpamSnippet.
 | `diffStatsSummary` | DiffStatsSummary | Summary of which files were changed in this merge request. |
 | `discussionLocked` | Boolean! | Indicates if comments on the merge request are locked to members only. |
 | `discussions` | DiscussionConnection! | All discussions on this noteable. |
+| `divergedFromTargetBranch` | Boolean! | Indicates if the source branch is behind the target branch. |
 | `downvotes` | Int! | Number of downvotes for the merge request. |
 | `forceRemoveSourceBranch` | Boolean | Indicates if the project settings will lead to source branch deletion after merge. |
 | `hasCi` | Boolean! | Indicates if the merge request has CI. |
@@ -5629,8 +5774,8 @@ State of a test report.
 
 | Value | Description |
 | ----- | ----------- |
-| `done` |  |
-| `pending` |  |
+| `done` | The state of the todo is done. |
+| `pending` | The state of the todo is pending. |
 
 ### TodoTargetEnum
 

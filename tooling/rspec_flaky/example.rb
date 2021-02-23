@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+require 'digest'
+
 module RspecFlaky
   # This is a wrapper class for RSpec::Core::Example
   class Example
-    delegate :status, :exception, to: :execution_result
+    extend Forwardable
+
+    def_delegators :execution_result, :status, :exception
 
     def initialize(rspec_example)
-      @rspec_example = rspec_example.try(:example) || rspec_example
+      @rspec_example = rspec_example.respond_to?(:example) ? rspec_example.example : rspec_example
     end
 
     def uid
@@ -30,7 +35,7 @@ module RspecFlaky
     end
 
     def attempts
-      rspec_example.try(:attempts) || 1
+      rspec_example.respond_to?(:attempts) ? rspec_example.attempts : 1
     end
 
     private

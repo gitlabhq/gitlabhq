@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require_relative '../../../tooling/rspec_flaky/example'
 
 RSpec.describe RspecFlaky::Example do
   let(:example_attrs) do

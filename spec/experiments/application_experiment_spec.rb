@@ -191,15 +191,15 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   context "when caching" do
-    let(:cache) { ApplicationExperiment::Cache.new }
+    let(:cache) { Gitlab::Experiment::Configuration.cache }
 
     before do
+      allow(Gitlab::Experiment::Configuration).to receive(:cache).and_call_original
+
       cache.clear(key: subject.name)
 
       subject.use { } # setup the control
       subject.try { } # setup the candidate
-
-      allow(Gitlab::Experiment::Configuration).to receive(:cache).and_return(cache)
     end
 
     it "caches the variant determined by the variant resolver" do
@@ -207,7 +207,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       subject.run
 
-      expect(cache.read(subject.cache_key)).to eq('candidate')
+      expect(subject.cache.read).to eq('candidate')
     end
 
     it "doesn't cache a variant if we don't explicitly provide one" do
@@ -222,7 +222,7 @@ RSpec.describe ApplicationExperiment, :experiment do
 
       subject.run
 
-      expect(cache.read(subject.cache_key)).to be_nil
+      expect(subject.cache.read).to be_nil
     end
 
     it "caches a control variant if we assign it specifically" do
@@ -232,7 +232,26 @@ RSpec.describe ApplicationExperiment, :experiment do
       # write code that would specify a different variant.
       subject.run(:control)
 
-      expect(cache.read(subject.cache_key)).to eq('control')
+      expect(subject.cache.read).to eq('control')
+    end
+
+    context "arbitrary attributes" do
+      before do
+        subject.cache.store.clear(key: subject.name + '_attrs')
+      end
+
+      it "sets and gets attributes about an experiment" do
+        subject.cache.attr_set(:foo, :bar)
+
+        expect(subject.cache.attr_get(:foo)).to eq('bar')
+      end
+
+      it "increments a value for an experiment" do
+        expect(subject.cache.attr_get(:foo)).to be_nil
+
+        expect(subject.cache.attr_inc(:foo)).to eq(1)
+        expect(subject.cache.attr_inc(:foo)).to eq(2)
+      end
     end
   end
 end

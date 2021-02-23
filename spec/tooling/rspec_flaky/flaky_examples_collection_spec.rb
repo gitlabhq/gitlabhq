@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require_relative '../../../tooling/rspec_flaky/flaky_examples_collection'
 
 RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
   let(:collection_hash) do

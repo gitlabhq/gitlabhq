@@ -11966,6 +11966,9 @@ msgstr ""
 msgid "Error uploading file"
 msgstr ""
 
+msgid "Error uploading file. Please try again."
+msgstr ""
+
 msgid "Error uploading file: %{stripped}"
 msgstr ""
 
@@ -24762,6 +24765,9 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
+msgid "Remove file"
+msgstr ""
+
 msgid "Remove fork relationship"
 msgstr ""
 
@@ -28116,6 +28122,9 @@ msgid "Start a new discussion…"
 msgstr ""
 
 msgid "Start a new merge request"
+msgstr ""
+
+msgid "Start a new merge request with these changes"
 msgstr ""
 
 msgid "Start a review"
@@ -32142,31 +32151,31 @@ msgstr ""
 msgid "UsageTrends|Projects"
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the cancelled pipelines"
+msgid "UsageTrends|There was an error fetching the cancelled pipelines. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the failed pipelines"
+msgid "UsageTrends|There was an error fetching the failed pipelines. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the issues"
+msgid "UsageTrends|There was an error fetching the groups. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the merge requests"
+msgid "UsageTrends|There was an error fetching the issues. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the skipped pipelines"
+msgid "UsageTrends|There was an error fetching the merge requests. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the successful pipelines"
+msgid "UsageTrends|There was an error fetching the projects. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error fetching the total pipelines"
+msgid "UsageTrends|There was an error fetching the skipped pipelines. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error while loading the groups"
+msgid "UsageTrends|There was an error fetching the successful pipelines. Please try again."
 msgstr ""
 
-msgid "UsageTrends|There was an error while loading the projects"
+msgid "UsageTrends|There was an error fetching the total pipelines. Please try again."
 msgstr ""
 
 msgid "UsageTrends|Total groups"

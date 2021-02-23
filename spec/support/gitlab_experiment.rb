@@ -12,5 +12,9 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   end
 end
 
-# Disable all caching for experiments in tests.
-Gitlab::Experiment::Configuration.cache = nil
+RSpec.configure do |config|
+  # Disable all caching for experiments in tests.
+  config.before do
+    allow(Gitlab::Experiment::Configuration).to receive(:cache).and_return(nil)
+  end
+end

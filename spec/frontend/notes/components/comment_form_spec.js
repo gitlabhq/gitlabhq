@@ -1,3 +1,4 @@
+import { GlDropdown } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
@@ -23,9 +24,10 @@ describe('issue_comment_form component', () => {
   let axiosMock;
 
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
-  const findCommentButton = () => wrapper.findByTestId('comment-button');
   const findTextArea = () => wrapper.findByTestId('comment-field');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('confidential-note-checkbox');
+  const findCommentGlDropdown = () => wrapper.find(GlDropdown);
+  const findCommentButton = () => findCommentGlDropdown().find('button');
 
   const createNotableDataMock = (data = {}) => {
     return {
@@ -243,7 +245,7 @@ describe('issue_comment_form component', () => {
       it('should render comment button as disabled', () => {
         mountComponent();
 
-        expect(findCommentButton().props('disabled')).toBe(true);
+        expect(findCommentGlDropdown().props('disabled')).toBe(true);
       });
 
       it('should enable comment button if it has note', async () => {
@@ -251,7 +253,7 @@ describe('issue_comment_form component', () => {
 
         await wrapper.setData({ note: 'Foo' });
 
-        expect(findCommentButton().props('disabled')).toBe(false);
+        expect(findCommentGlDropdown().props('disabled')).toBe(false);
       });
 
       it('should update buttons texts when it has note', () => {
@@ -437,7 +439,7 @@ describe('issue_comment_form component', () => {
             await wrapper.vm.$nextTick();
 
             // submit comment
-            wrapper.findByTestId('comment-button').trigger('click');
+            findCommentButton().trigger('click');
 
             const [providedData] = wrapper.vm.saveNote.mock.calls[0];
             expect(providedData.data.note.confidential).toBe(shouldCheckboxBeChecked);

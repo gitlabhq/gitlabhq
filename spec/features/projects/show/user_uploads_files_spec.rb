@@ -17,11 +17,15 @@ RSpec.describe 'Projects > Show > User uploads files' do
   context 'when a user has write access' do
     before do
       visit(project_path(project))
+
+      wait_for_requests
     end
 
     include_examples 'it uploads and commit a new text file'
 
     include_examples 'it uploads and commit a new image file'
+
+    include_examples 'it uploads a file to a sub-directory'
   end
 
   context 'when a user does not have write access' do

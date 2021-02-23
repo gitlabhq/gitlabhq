@@ -86,7 +86,7 @@
             = render_if_exists 'projects/sidebar/repository_locked_files'
 
       - if project_nav_tab? :issues
-        = nav_link(controller: @project.issues_enabled? ? ['projects/issues', :labels, :milestones, :boards] : 'projects/issues') do
+        = nav_link(controller: @project.issues_enabled? ? ['projects/issues', :labels, :milestones, :boards, :iterations] : 'projects/issues') do
           = link_to project_issues_path(@project), class: 'shortcuts-issues qa-issues-item' do
             .nav-icon-container
               = sprite_icon('issues')

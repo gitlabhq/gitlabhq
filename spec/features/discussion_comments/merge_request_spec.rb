@@ -20,5 +20,5 @@ RSpec.describe 'Thread Comments Merge Request', :js do
     wait_for_requests
   end
 
-  it_behaves_like 'thread comments', 'merge request'
+  it_behaves_like 'thread comments for issue, epic and merge request', 'merge request'
 end

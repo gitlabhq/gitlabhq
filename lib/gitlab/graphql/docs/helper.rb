@@ -111,7 +111,7 @@ module Gitlab
         end
 
         def queries
-          graphql_operation_types.find { |type| type[:name] == 'Query' }.to_h[:fields]
+          graphql_operation_types.find { |type| type[:name] == 'Query' }.to_h.values_at(:fields, :connections).flatten
         end
 
         # We ignore the built-in enum types.

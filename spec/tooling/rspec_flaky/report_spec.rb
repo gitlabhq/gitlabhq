@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'tempfile'
+
+require_relative '../../../tooling/rspec_flaky/report'
 
 RSpec.describe RspecFlaky::Report, :aggregate_failures do
   let(:thirty_one_days) { 3600 * 24 * 31 }
@@ -30,10 +32,14 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
   let(:flaky_examples) { RspecFlaky::FlakyExamplesCollection.new(collection_hash) }
   let(:report) { described_class.new(flaky_examples) }
 
+  before do
+    allow(Kernel).to receive(:warn)
+  end
+
   describe '.load' do
     let!(:report_file) do
       Tempfile.new(%w[rspec_flaky_report .json]).tap do |f|
-        f.write(Gitlab::Json.pretty_generate(suite_flaky_example_report))
+        f.write(JSON.pretty_generate(suite_flaky_example_report)) # rubocop:disable Gitlab/Json
         f.rewind
       end
     end
@@ -50,7 +56,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
 
   describe '.load_json' do
     let(:report_json) do
-      Gitlab::Json.pretty_generate(suite_flaky_example_report)
+      JSON.pretty_generate(suite_flaky_example_report) # rubocop:disable Gitlab/Json
     end
 
     it 'loads the report file' do
@@ -73,7 +79,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
   end
 
   describe '#write' do
-    let(:report_file_path) { Rails.root.join('tmp', 'rspec_flaky_report.json') }
+    let(:report_file_path) { File.join('tmp', 'rspec_flaky_report.json') }
 
     before do
       FileUtils.rm(report_file_path) if File.exist?(report_file_path)
@@ -105,7 +111,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
 
         expect(File.exist?(report_file_path)).to be(true)
         expect(File.read(report_file_path))
-          .to eq(Gitlab::Json.pretty_generate(report.flaky_examples.to_h))
+          .to eq(JSON.pretty_generate(report.flaky_examples.to_h)) # rubocop:disable Gitlab/Json
       end
     end
   end

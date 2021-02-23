@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module RspecFlaky
   # This represents a flaky RSpec example and is mainly meant to be saved in a JSON file
   class FlakyExample < OpenStruct

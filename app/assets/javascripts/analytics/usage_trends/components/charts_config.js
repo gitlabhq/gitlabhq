@@ -1,12 +1,35 @@
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import query from '../graphql/queries/usage_count.query.graphql';
 
 const noDataMessage = s__('UsageTrends|No data available.');
 
 export default [
   {
-    loadChartError: sprintf(
-      s__('UsageTrends|Could not load the pipelines chart. Please refresh the page to try again.'),
+    loadChartError: s__(
+      'UsageTrends|Could not load the projects and groups chart. Please refresh the page to try again.',
+    ),
+    noDataMessage,
+    chartTitle: s__('UsageTrends|Total projects & groups'),
+    yAxisTitle: s__('UsageTrends|Total projects & groups'),
+    xAxisTitle: s__('UsageTrends|Month'),
+    queries: [
+      {
+        query,
+        title: s__('UsageTrends|Total projects'),
+        identifier: 'PROJECTS',
+        loadError: s__('UsageTrends|There was an error fetching the projects. Please try again.'),
+      },
+      {
+        query,
+        title: s__('UsageTrends|Total groups'),
+        identifier: 'GROUPS',
+        loadError: s__('UsageTrends|There was an error fetching the groups. Please try again.'),
+      },
+    ],
+  },
+  {
+    loadChartError: s__(
+      'UsageTrends|Could not load the pipelines chart. Please refresh the page to try again.',
     ),
     noDataMessage,
     chartTitle: s__('UsageTrends|Pipelines'),
@@ -17,39 +40,47 @@ export default [
         query,
         title: s__('UsageTrends|Pipelines total'),
         identifier: 'PIPELINES',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the total pipelines')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the total pipelines. Please try again.',
+        ),
       },
       {
         query,
         title: s__('UsageTrends|Pipelines succeeded'),
         identifier: 'PIPELINES_SUCCEEDED',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the successful pipelines')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the successful pipelines. Please try again.',
+        ),
       },
       {
         query,
         title: s__('UsageTrends|Pipelines failed'),
         identifier: 'PIPELINES_FAILED',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the failed pipelines')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the failed pipelines. Please try again.',
+        ),
       },
       {
         query,
         title: s__('UsageTrends|Pipelines canceled'),
         identifier: 'PIPELINES_CANCELED',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the cancelled pipelines')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the cancelled pipelines. Please try again.',
+        ),
       },
       {
         query,
         title: s__('UsageTrends|Pipelines skipped'),
         identifier: 'PIPELINES_SKIPPED',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the skipped pipelines')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the skipped pipelines. Please try again.',
+        ),
       },
     ],
   },
   {
-    loadChartError: sprintf(
-      s__(
-        'UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again.',
-      ),
+    loadChartError: s__(
+      'UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again.',
     ),
     noDataMessage,
     chartTitle: s__('UsageTrends|Issues & Merge Requests'),
@@ -60,13 +91,15 @@ export default [
         query,
         title: __('Issues'),
         identifier: 'ISSUES',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the issues')),
+        loadError: s__('UsageTrends|There was an error fetching the issues. Please try again.'),
       },
       {
         query,
         title: __('Merge requests'),
         identifier: 'MERGE_REQUESTS',
-        loadError: sprintf(s__('UsageTrends|There was an error fetching the merge requests')),
+        loadError: s__(
+          'UsageTrends|There was an error fetching the merge requests. Please try again.',
+        ),
       },
     ],
   },

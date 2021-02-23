@@ -22125,6 +22125,8 @@ CREATE INDEX index_environments_on_state_and_auto_stop_at ON environments USING 
 
 CREATE INDEX index_epic_issues_on_epic_id ON epic_issues USING btree (epic_id);
 
+CREATE INDEX index_epic_issues_on_epic_id_and_issue_id ON epic_issues USING btree (epic_id, issue_id);
+
 CREATE UNIQUE INDEX index_epic_issues_on_issue_id ON epic_issues USING btree (issue_id);
 
 CREATE INDEX index_epic_metrics ON epic_metrics USING btree (epic_id);
