@@ -49,11 +49,13 @@ To enable 2FA:
    1. Select **Enable Two-factor Authentication**.
 1. **On your device (usually your phone):**
    1. Install a compatible application, like:
-      - [Authenticator](https://mattrubin.me/authenticator/): open source app for iOS devices.
-      - [andOTP](https://github.com/andOTP/andOTP): feature rich open source app for Android which supports PGP encrypted backups.
-      - [FreeOTP](https://freeotp.github.io/): open source app for Android.
-      - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en): proprietary app for iOS and Android.
-      - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp): open source app for SailFish OS.
+      - [Authy](https://authy.com/)
+      - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
+      - [LastPass](https://lastpass.com/auth/)
+      - [Authenticator](https://mattrubin.me/authenticator/)
+      - [andOTP](https://github.com/andOTP/andOTP)
+      - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
+      - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)
    1. In the application, add a new entry in one of two ways:
       - Scan the code presented in GitLab with your device's camera to add the
         entry automatically.

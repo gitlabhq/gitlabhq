@@ -184,7 +184,7 @@ module API
           type: String,
           desc: 'The first commit in the range of commits to use for the changelog'
 
-        requires :to,
+        optional :to,
           type: String,
           desc: 'The last commit in the range of commits to use for the changelog'
 

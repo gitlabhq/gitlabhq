@@ -208,7 +208,12 @@ Then, you can run `npm publish` either locally or by using GitLab CI/CD.
 
 When you use the [instance-level endpoint](#use-the-gitlab-endpoint-for-npm-packages), only the packages with names in the format of `@scope/package-name` are available.
 
-- The `@scope` is the root namespace of the GitLab project. It must match exactly, including the case.
+- The `@scope` is the root namespace of the GitLab project. To follow npm's convention, it should be
+  lowercase. However, the GitLab package registry allows for uppercase. Before GitLab 13.10, the
+  `@scope` had to be a case-sensitive match of the GitLab project's root namespace. This was
+  problematic because the npm public registry does not allow uppercase letters. GitLab 13.10 relaxes
+  this requirement and translates uppercase in the GitLab `@scope` to lowercase for npm. For
+  example, a package `@MyScope/package-name` in GitLab becomes `@myscope/package-name` for npm.
 - The `package-name` can be whatever you want.
 
 For example, if your project is `https://gitlab.example.com/my-org/engineering-group/team-amazing/analytics`,
@@ -218,7 +223,8 @@ the root namespace is `my-org`. When you publish a package, it must have `my-org
 | ---------------------- | ----------------------- | --------- |
 | `my-org/bar`           | `@my-org/bar`           | Yes       |
 | `my-org/bar/baz`       | `@my-org/baz`           | Yes       |
-| `My-org/Bar/baz`       | `@My-org/Baz`           | Yes       |
+| `My-Org/Bar/baz`       | `@my-org/Baz`           | Yes       |
+| `My-Org/Bar/baz`       | `@My-Org/Baz`           | Yes       |
 | `my-org/bar/buz`       | `@my-org/anything`      | Yes       |
 | `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
 | `gitlab-org/gitlab`    | `@foo/bar`              | No        |
@@ -231,8 +237,7 @@ In GitLab, this regex validates all package names from all package managers:
 
 This regex allows almost all of the characters that npm allows, with a few exceptions (for example, `~` is not allowed).
 
-The regex also allows for capital letters, while npm does not. Capital letters are needed because the scope must be
-identical to the root namespace of the project.
+The regex also allows for capital letters, while npm does not.
 
 WARNING:
 When you update the path of a user or group, or transfer a subgroup or project,

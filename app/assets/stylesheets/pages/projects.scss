@@ -1008,6 +1008,18 @@ pre.light-well {
   }
 }
 
+.compare-revision-cards {
+  @media (min-width: $breakpoint-lg) {
+    .gl-card {
+      width: calc(50% - 15px);
+    }
+
+    .compare-ellipsis {
+      width: 30px;
+    }
+  }
+}
+
 .clearable-input {
   position: relative;
 

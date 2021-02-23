@@ -3,10 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
+import RevisionDropdown from '~/projects/compare/components/revision_dropdown_legacy.vue';
 
 const defaultProps = {
   refsProjectPath: 'some/refs/path',
+  revisionText: 'Target',
   paramsName: 'from',
   paramsBranch: 'master',
 };
@@ -56,6 +57,7 @@ describe('RevisionDropdown component', () => {
     createComponent();
 
     await axios.waitForAll();
+
     expect(wrapper.vm.branches).toEqual(Branches);
     expect(wrapper.vm.tags).toEqual(Tags);
   });
@@ -67,22 +69,6 @@ describe('RevisionDropdown component', () => {
 
     await wrapper.vm.fetchBranchesAndTags();
     expect(createFlash).toHaveBeenCalled();
-  });
-
-  it('makes a new request when refsProjectPath is changed', async () => {
-    jest.spyOn(axios, 'get');
-
-    const newRefsProjectPath = 'new-selected-project-path';
-
-    createComponent();
-
-    wrapper.setProps({
-      ...defaultProps,
-      refsProjectPath: newRefsProjectPath,
-    });
-
-    await axios.waitForAll();
-    expect(axios.get).toHaveBeenLastCalledWith(newRefsProjectPath);
   });
 
   describe('GlDropdown component', () => {

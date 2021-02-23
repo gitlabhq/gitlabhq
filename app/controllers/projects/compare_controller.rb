@@ -20,6 +20,10 @@ class Projects::CompareController < Projects::ApplicationController
   # Validation
   before_action :validate_refs!
 
+  before_action do
+    push_frontend_feature_flag(:compare_repo_dropdown)
+  end
+
   feature_category :source_code_management
 
   def index

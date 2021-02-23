@@ -7569,10 +7569,19 @@ msgstr ""
 msgid "CompareRevisions|Filter by Git revision"
 msgstr ""
 
+msgid "CompareRevisions|Select Git revision"
+msgstr ""
+
 msgid "CompareRevisions|Select branch/tag"
 msgstr ""
 
+msgid "CompareRevisions|Select target project"
+msgstr ""
+
 msgid "CompareRevisions|Tags"
+msgstr ""
+
+msgid "CompareRevisions|There was an error while loading the branch/tag list. Please try again."
 msgstr ""
 
 msgid "CompareRevisions|There was an error while updating the branch/tag list. Please try again."

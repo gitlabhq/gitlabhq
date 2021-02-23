@@ -162,6 +162,7 @@ export default {
         <gl-form-select
           id="service-desk-template-select"
           v-model="selectedTemplate"
+          data-qa-selector="service_desk_template_dropdown"
           :options="templateOptions"
         />
         <label for="service-desk-email-from-name" class="mt-3">
@@ -175,6 +176,7 @@ export default {
           <gl-button
             variant="success"
             class="gl-mt-5"
+            data-qa-selector="save_service_desk_settings_button"
             :disabled="isTemplateSaving"
             @click="onSaveTemplate"
           >

@@ -39,10 +39,10 @@ module Repositories
       project,
       user,
       version:,
-      to:,
-      from: nil,
-      date: DateTime.now,
       branch: project.default_branch_or_master,
+      from: nil,
+      to: branch,
+      date: DateTime.now,
       trailer: DEFAULT_TRAILER,
       file: DEFAULT_FILE,
       message: "Add changelog for version #{version}"

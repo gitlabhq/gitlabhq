@@ -154,6 +154,5 @@ often it is chosen. That is, `(storage weight) / (sum of all weights) * 100 = ch
 
 ## Move repositories
 
-To move a repository to a different repository path, use the
-[Project repository storage moves](../api/project_repository_storage_moves.md) API. Use
+To move a repository to a different repository path, use
 the same process as [migrating existing repositories to Gitaly Cluster](gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster).

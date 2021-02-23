@@ -157,3 +157,17 @@
     margin-bottom: $gl-spacing-scale-4 !important;
   }
 }
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
+.gl-sm-pr-3 {
+  @media (min-width: $breakpoint-sm) {
+    padding-right: $gl-spacing-scale-3;
+  }
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
+.gl-sm-w-half {
+  @media (min-width: $breakpoint-sm) {
+    width: 50%;
+  }
+}
