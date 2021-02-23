@@ -74,6 +74,9 @@ msgstr ""
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
+msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
+msgstr ""
+
 msgid "\"el\" parameter is required for createInstance()"
 msgstr ""
 
@@ -20110,6 +20113,9 @@ msgid "New! Suggest changes directly"
 msgstr ""
 
 msgid "New..."
+msgstr ""
+
+msgid "New: Incident %{iid}"
 msgstr ""
 
 msgid "Newest first"

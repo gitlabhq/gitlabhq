@@ -45,6 +45,30 @@ RSpec.describe Gitlab::Ci::Reports::ReportsComparer do
         expect(status).to eq('failed')
       end
     end
+
+    context 'when base_report is nil' do
+      let(:base_report) { nil }
+
+      before do
+        allow(comparer).to receive(:success?).and_return(false)
+      end
+
+      it 'returns status not_found' do
+        expect(status).to eq('not_found')
+      end
+    end
+
+    context 'when head_report is nil' do
+      let(:head_report) { nil }
+
+      before do
+        allow(comparer).to receive(:success?).and_return(false)
+      end
+
+      it 'returns status not_found' do
+        expect(status).to eq('not_found')
+      end
+    end
   end
 
   describe '#success?' do

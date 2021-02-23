@@ -79,7 +79,7 @@ to configure alerts for this integration.
 ## Customize the alert payload outside of GitLab
 
 For all integration types, you can customize the payload by sending the following
-parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Incident` will be applied.
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` will be applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |

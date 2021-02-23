@@ -1366,6 +1366,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it "doesn't detect WIP by default" do
       expect(subject.work_in_progress?).to eq false
     end
+
+    it "is aliased to #draft?" do
+      expect(subject.method(:work_in_progress?)).to eq(subject.method(:draft?))
+    end
   end
 
   describe "#wipless_title" do

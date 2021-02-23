@@ -1039,6 +1039,7 @@ class MergeRequest < ApplicationRecord
   def work_in_progress?
     self.class.work_in_progress?(title)
   end
+  alias_method :draft?, :work_in_progress?
 
   def wipless_title
     self.class.wipless_title(self.title)

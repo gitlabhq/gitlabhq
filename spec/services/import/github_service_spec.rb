@@ -54,6 +54,62 @@ RSpec.describe Import::GithubService do
 
       expect { subject.execute(access_params, :github) }.to raise_error(exception)
     end
+
+    context 'repository size validation' do
+      let(:repository_double) { double(name: 'repository', size: 99) }
+
+      before do
+        expect(client).to receive(:repository).and_return(repository_double)
+
+        allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
+          allow(creator).to receive(:execute).and_return(double(persisted?: true))
+        end
+      end
+
+      context 'when there is no repository size limit defined' do
+        it 'skips the check and succeeds' do
+          expect(subject.execute(access_params, :github)).to include(status: :success)
+        end
+      end
+
+      context 'when the target namespace repository size limit is defined' do
+        let_it_be(:group) { create(:group, repository_size_limit: 100) }
+
+        before do
+          params[:target_namespace] = group.full_path
+        end
+
+        it 'succeeds when the repository is smaller than the limit' do
+          expect(subject.execute(access_params, :github)).to include(status: :success)
+        end
+
+        it 'returns error when the repository is larger than the limit' do
+          allow(repository_double).to receive(:size).and_return(101)
+
+          expect(subject.execute(access_params, :github)).to include(size_limit_error)
+        end
+      end
+
+      context 'when target namespace repository limit is not defined' do
+        let_it_be(:group) { create(:group) }
+
+        before do
+          stub_application_setting(repository_size_limit: 100)
+        end
+
+        context 'when application size limit is defined' do
+          it 'succeeds when the repository is smaller than the limit' do
+            expect(subject.execute(access_params, :github)).to include(status: :success)
+          end
+
+          it 'returns error when the repository is larger than the limit' do
+            allow(repository_double).to receive(:size).and_return(101)
+
+            expect(subject.execute(access_params, :github)).to include(size_limit_error)
+          end
+        end
+      end
+    end
   end
 
   context 'when remove_legacy_github_client feature flag is enabled' do
@@ -70,5 +126,13 @@ RSpec.describe Import::GithubService do
     end
 
     include_examples 'handles errors', Gitlab::LegacyGithubImport::Client
+  end
+
+  def size_limit_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: '"repository" size (101 Bytes) is larger than the limit of 100 Bytes.'
+    }
   end
 end

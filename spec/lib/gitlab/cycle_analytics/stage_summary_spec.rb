@@ -230,34 +230,13 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary do
       end
 
       context 'when `from` and `to` are within a day' do
-        context 'when query_deploymenys_via_finished_at_in_vsa feature flag is off' do
-          before do
-            stub_feature_flags(query_deploymenys_via_finished_at_in_vsa: false)
-          end
+        it 'returns the number of deployments made on that day' do
+          freeze_time do
+            create(:deployment, :success, project: project, finished_at: Time.zone.now)
+            options[:from] = Time.zone.now.at_beginning_of_day
+            options[:to] = Time.zone.now.at_end_of_day
 
-          it 'returns the number of deployments made on that day' do
-            freeze_time do
-              create(:deployment, :success, project: project)
-              options[:from] = options[:to] = Time.zone.now
-
-              expect(subject).to eq('1')
-            end
-          end
-        end
-
-        context 'when query_deploymenys_via_finished_at_in_vsa feature flag is off' do
-          before do
-            stub_feature_flags(query_deploymenys_via_finished_at_in_vsa: true)
-          end
-
-          it 'returns the number of deployments made on that day' do
-            freeze_time do
-              create(:deployment, :success, project: project, finished_at: Time.zone.now)
-              options[:from] = Time.zone.now.at_beginning_of_day
-              options[:to] = Time.zone.now.at_end_of_day
-
-              expect(subject).to eq('1')
-            end
+            expect(subject).to eq('1')
           end
         end
       end

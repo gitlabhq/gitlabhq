@@ -7,51 +7,53 @@ type: reference, howto
 
 # Repository storage types **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28283) in GitLab 10.0.
-> - Hashed storage became the default for new installations in GitLab 12.0
-> - Hashed storage is enabled by default for new and renamed projects in GitLab 13.0.
+GitLab can be configured to use one or multiple repository storages. These storages can be:
 
-GitLab can be configured to use one or multiple repository storage paths/shard
-locations that can be:
+- Accessed via [Gitaly](gitaly/index.md), optionally on
+  [its own server](gitaly/index.md#run-gitaly-on-its-own-server).
+- Mounted to the local disk. This [method](repository_storage_paths.md#configure-repository-storage-paths)
+  is deprecated and [scheduled to be removed](https://gitlab.com/groups/gitlab-org/-/epics/2320) in
+  GitLab 14.0.
+- Exposed as an NFS shared volume. This method is deprecated and
+  [scheduled to be removed](https://gitlab.com/groups/gitlab-org/-/epics/3371) in GitLab 14.0.
 
-- Mounted to the local disk
-- Exposed as an NFS shared volume
-- Accessed via [Gitaly](gitaly/index.md) on its own machine.
+In GitLab:
 
-In GitLab, this is configured in `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})`
-configuration hash. The storage layouts discussed here apply to any shard
-defined in it.
+- Repository storages are configured in:
+  - `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})` configuration hash for Omnibus GitLab
+    installations.
+  - `gitlab.yml` by the `repositories.storages` key for installations from source.
+- The `default` repository storage is available in any installations that haven't customized it. By
+  default, it points to a Gitaly node.
 
-The `default` repository shard that is available in any installations
-that haven't customized it, points to the local folder: `/var/opt/gitlab/git-data`.
-Anything discussed below is expected to be part of that folder.
+The repository storage types documented here apply to any repository storage defined in
+`git_data_dirs({})` or `repositories.storages`.
 
 ## Hashed storage
 
-NOTE:
-In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
-deprecated. Support for legacy storage is scheduled to be removed in GitLab 14.0.
-If you haven't migrated yet, check the
-[migration instructions](raketasks/storage.md#migrate-to-hashed-storage).
-The option to choose between hashed and legacy storage in the admin area has
-been disabled.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28283) in GitLab 10.0.
+> - Made the default for new installations in GitLab 12.0.
+> - Enabled by default for new and renamed projects in GitLab 13.0.
 
-Hashed storage is the storage behavior we rolled out with 10.0. Instead
-of coupling project URL and the folder structure where the repository is
-stored on disk, we couple a hash based on the project's ID. This makes
-the folder structure immutable, and therefore eliminates any requirement to
-synchronize state from URLs to disk structure. This means that renaming a group,
-user, or project costs only the database transaction, and takes effect
-immediately.
+Hashed storage stores projects on disk in a location based on a hash of the project's ID. Hashed
+storage is different to [legacy storage](#legacy-storage) where a project is stored based on:
 
-The hash also helps spread the repositories more evenly on the disk. The
-top-level directory contains fewer folders than the total number of top-level
-namespaces.
+- The project's URL.
+- The folder structure where the repository is stored on disk.
 
-The hash format is based on the hexadecimal representation of SHA256:
-`SHA256(project.id)`. The top-level folder uses the first 2 characters, followed
-by another folder with the next 2 characters. They are both stored in a special
-`@hashed` folder, to be able to co-exist with existing Legacy Storage projects:
+This makes the folder structure immutable and eliminates the need to synchronize state from URLs to
+disk structure. This means that renaming a group, user, or project:
+
+- Costs only the database transaction.
+- Takes effect immediately.
+
+The hash also helps spread the repositories more evenly on the disk. The top-level directory
+contains fewer folders than the total number of top-level namespaces.
+
+The hash format is based on the hexadecimal representation of a SHA256, calculated with
+`SHA256(project.id)`. The top-level folder uses the first two characters, followed by another folder
+with the next two characters. They are both stored in a special `@hashed` folder so they can
+co-exist with existing legacy storage projects. For example:
 
 ```ruby
 # Project's repository:
@@ -61,53 +63,59 @@ by another folder with the next 2 characters. They are both stored in a special
 "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
 ```
 
-### Translating hashed storage paths
+### Translate hashed storage paths
 
-Troubleshooting problems with the Git repositories, adding hooks, and other
-tasks requires you translate between the human readable project name
-and the hashed storage path.
+Troubleshooting problems with the Git repositories, adding hooks, and other tasks requires you
+translate between the human-readable project name and the hashed storage path. You can translate:
+
+- From a [project's name to its hashed path](#from-project-name-to-hashed-path).
+- From a [hashed path to a project's name](#from-hashed-path-to-project-name).
 
 #### From project name to hashed path
 
-The hashed path is shown on the project's page in the [admin area](../user/admin_area/index.md#administering-projects).
+Administrators can look up a project's hashed path from its name or ID using:
 
-To access the Projects page, go to **Admin Area > Overview > Projects** and then
-open up the page for the project.
+- The [Admin area](../user/admin_area/index.md#administering-projects).
+- A Rails console.
 
-The "Gitaly relative path" is shown there, for example:
+To look up a project's hash path in the Admin Area:
+
+1. Go to the **Admin Area** (**{admin}**).
+1. Go to **Overview > Projects** and select the project.
+
+The **Gitaly relative path** is displayed there and looks similar to:
 
 ```plaintext
 "@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git"
 ```
 
-This is the path under `/var/opt/gitlab/git-data/repositories/` on a
-default Omnibus installation.
+To look up a project's hash path using a Rails console:
 
-In a [Rails console](operations/rails_console.md#starting-a-rails-console-session),
-get this information using either the numeric project ID or the full path:
+1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
+1. Run a command similar to this example (use either the project's ID or its name):
 
-```ruby
-Project.find(16).disk_path
-Project.find_by_full_path('group/project').disk_path
-```
+   ```ruby
+   Project.find(16).disk_path
+   Project.find_by_full_path('group/project').disk_path
+   ```
 
 #### From hashed path to project name
 
-To translate from a hashed storage path to a project name:
+Administrators can look up a project's name from its hashed storage path using a Rails console. To
+look up a project's name from its hashed storage path:
 
 1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
-1. Run the following:
+1. Run a command similar to this example:
 
-```ruby
-ProjectRepository.find_by(disk_path: '@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9').project
-```
+   ```ruby
+   ProjectRepository.find_by(disk_path: '@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9').project
+   ```
 
-The quoted string in that command is the directory tree you can find on your
-GitLab server. For example, on a default Omnibus installation this would be
-`/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
+The quoted string in that command is the directory tree you can find on your GitLab server. For
+example, on a default Omnibus installation this would be `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
 with `.git` from the end of the directory name removed.
 
-The output includes the project ID and the project name:
+The output includes the project ID and the project name. For example:
 
 ```plaintext
 => #<Project id:16 it/supportteam/ticketsystem>

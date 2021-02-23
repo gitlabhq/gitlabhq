@@ -54,7 +54,7 @@ Follow the steps below to set up a server-side hook for a repository:
 1. Navigate to **Admin area > Projects** and click on the project you want to add a server hook to.
 1. Locate the **Gitaly relative path** on the page that appears. This is where the server hook
    must be implemented. For information on interpreting the relative path, see
-   [Translating hashed storage paths](repository_storage_types.md#translating-hashed-storage-paths).
+   [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths).
 1. On the file system, create a new directory in this location called `custom_hooks`.
 1. Inside the new `custom_hooks` directory, create a file with a name matching the hook type. For
    example, for a pre-receive hook the filename should be `pre-receive` with no extension.
@@ -128,7 +128,7 @@ Any other names are ignored.
 
 Files in `.d` directories must be executable and not match the backup file pattern (`*~`).
 
-For `<project>.git` you need to [translate](repository_storage_types.md#translating-hashed-storage-paths)
+For `<project>.git` you need to [translate](repository_storage_types.md#translate-hashed-storage-paths)
 your project name into the hashed storage format that GitLab uses.
 
 ## Environment Variables
