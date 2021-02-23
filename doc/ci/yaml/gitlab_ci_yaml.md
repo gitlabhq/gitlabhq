@@ -84,7 +84,7 @@ displayed by GitLab:
 ![pipeline status](img/pipeline_status.png)
 
 If anything goes wrong, you can
-[roll back](../environments/index.md#retrying-and-rolling-back) the changes:
+[roll back](../environments/index.md#retry-or-roll-back-a-deployment) the changes:
 
 ![rollback button](img/rollback.png)
 

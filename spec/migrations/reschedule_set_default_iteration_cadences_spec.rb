@@ -16,13 +16,13 @@ RSpec.describe RescheduleSetDefaultIterationCadences do
   let(:group_7) { namespaces.create!(name: 'test_7', path: 'test_7') }
   let(:group_8) { namespaces.create!(name: 'test_8', path: 'test_8') }
 
-  let!(:iteration_1) { iterations.create!(iid: 1, title: 'iteration 1', group_id: group_1.id) }
-  let!(:iteration_2) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_3.id) }
-  let!(:iteration_3) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_4.id) }
-  let!(:iteration_4) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_5.id) }
-  let!(:iteration_5) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_6.id) }
-  let!(:iteration_6) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_7.id) }
-  let!(:iteration_7) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_8.id) }
+  let!(:iteration_1) { iterations.create!(iid: 1, title: 'iteration 1', group_id: group_1.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_2) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_3.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_3) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_4.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_4) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_5.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_5) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_6.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_6) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_7.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+  let!(:iteration_7) { iterations.create!(iid: 1, title: 'iteration 2', group_id: group_8.id, start_date: 2.days.from_now, due_date: 3.days.from_now) }
 
   around do |example|
     freeze_time { Sidekiq::Testing.fake! { example.run } }

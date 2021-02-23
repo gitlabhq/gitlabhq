@@ -14,6 +14,8 @@ import createPrometheusIntegrationMutation from '~/alerts_settings/graphql/mutat
 import destroyHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '~/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '~/alerts_settings/graphql/mutations/reset_prometheus_token.mutation.graphql';
+import updateCurrentHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/update_current_http_integration.mutation.graphql';
+import updateCurrentPrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/update_current_prometheus_integration.mutation.graphql';
 import updateHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getIntegrationsQuery from '~/alerts_settings/graphql/queries/get_integrations.query.graphql';
@@ -31,7 +33,8 @@ import {
   updateHttpVariables,
   createPrometheusVariables,
   updatePrometheusVariables,
-  ID,
+  HTTP_ID,
+  PROMETHEUS_ID,
   errorMsg,
   getIntegrationsQueryResponse,
   destroyIntegrationResponse,
@@ -50,8 +53,30 @@ describe('AlertsSettingsWrapper', () => {
   let fakeApollo;
   let destroyIntegrationHandler;
   useMockIntersectionObserver();
+  const httpMappingData = {
+    payloadExample: '{"test: : "field"}',
+    payloadAttributeMappings: [],
+    payloadAlertFields: [],
+  };
+  const httpIntegrations = {
+    list: [
+      {
+        id: mockIntegrations[0].id,
+        ...httpMappingData,
+      },
+      {
+        id: mockIntegrations[1].id,
+        ...httpMappingData,
+      },
+      {
+        id: mockIntegrations[2].id,
+        httpMappingData,
+      },
+    ],
+  };
 
-  const findLoader = () => wrapper.find(IntegrationsList).find(GlLoadingIcon);
+  const findLoader = () => wrapper.findComponent(IntegrationsList).findComponent(GlLoadingIcon);
+  const findIntegrationsList = () => wrapper.findComponent(IntegrationsList);
   const findIntegrations = () => wrapper.find(IntegrationsList).findAll('table tbody tr');
 
   async function destroyHttpIntegration(localWrapper) {
@@ -197,13 +222,13 @@ describe('AlertsSettingsWrapper', () => {
       });
       wrapper.find(AlertsSettingsForm).vm.$emit('reset-token', {
         type: typeSet.http,
-        variables: { id: ID },
+        variables: { id: HTTP_ID },
       });
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: resetHttpTokenMutation,
         variables: {
-          id: ID,
+          id: HTTP_ID,
         },
       });
     });
@@ -232,7 +257,7 @@ describe('AlertsSettingsWrapper', () => {
 
     it('calls `$apollo.mutate` with `updatePrometheusIntegrationMutation`', () => {
       createComponent({
-        data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
+        data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[3] },
         loading: false,
       });
 
@@ -261,13 +286,13 @@ describe('AlertsSettingsWrapper', () => {
       });
       wrapper.find(AlertsSettingsForm).vm.$emit('reset-token', {
         type: typeSet.prometheus,
-        variables: { id: ID },
+        variables: { id: PROMETHEUS_ID },
       });
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: resetPrometheusTokenMutation,
         variables: {
-          id: ID,
+          id: PROMETHEUS_ID,
         },
       });
     });
@@ -326,6 +351,42 @@ describe('AlertsSettingsWrapper', () => {
         expect(createFlash).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
         expect(createFlash).toHaveBeenCalledTimes(1);
         mock.restore();
+      });
+    });
+
+    it('calls `$apollo.mutate` with `updateCurrentHttpIntegrationMutation` on HTTP integration edit', () => {
+      createComponent({
+        data: {
+          integrations: { list: mockIntegrations },
+          currentIntegration: mockIntegrations[0],
+          httpIntegrations,
+        },
+        loading: false,
+      });
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+      findIntegrationsList().vm.$emit('edit-integration', updateHttpVariables);
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: updateCurrentHttpIntegrationMutation,
+        variables: { ...mockIntegrations[0], ...httpMappingData },
+      });
+    });
+
+    it('calls `$apollo.mutate` with `updateCurrentPrometheusIntegrationMutation` on PROMETHEUS integration edit', () => {
+      createComponent({
+        data: {
+          integrations: { list: mockIntegrations },
+          currentIntegration: mockIntegrations[3],
+          httpIntegrations,
+        },
+        loading: false,
+      });
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+      findIntegrationsList().vm.$emit('edit-integration', updatePrometheusVariables);
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: updateCurrentPrometheusIntegrationMutation,
+        variables: mockIntegrations[3],
       });
     });
   });

@@ -1,4 +1,4 @@
-#import "../fragments/integration_item.fragment.graphql"
+#import "../fragments/http_integration_item.fragment.graphql"
 
 mutation createHttpIntegration(
   $projectPath: ID!
@@ -18,7 +18,7 @@ mutation createHttpIntegration(
   ) {
     errors
     integration {
-      ...IntegrationItem
+      ...HttpIntegrationItem
     }
   }
 }

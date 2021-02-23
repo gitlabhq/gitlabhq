@@ -123,7 +123,7 @@ export default {
       <gl-button
         data-testid="action-delete"
         icon="remove"
-        category="primary"
+        category="secondary"
         variant="danger"
         :title="s__('PackageRegistry|Remove package')"
         :aria-label="s__('PackageRegistry|Remove package')"

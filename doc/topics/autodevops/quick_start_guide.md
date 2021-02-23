@@ -222,7 +222,7 @@ you to common environment tasks:
 - **Terminal** (**{terminal}**) - Opens a [web terminal](../../ci/environments/index.md#web-terminals)
   session inside the container where the application is running
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
-  [Retrying and rolling back](../../ci/environments/index.md#retrying-and-rolling-back)
+  [Retrying and rolling back](../../ci/environments/index.md#retry-or-roll-back-a-deployment)
 - **Stop environment** (**{stop}**) - For more information, see
   [Stopping an environment](../../ci/environments/index.md#stopping-an-environment)
 

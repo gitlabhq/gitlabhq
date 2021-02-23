@@ -33,7 +33,7 @@ module Groups
       Group.transaction do
         if @group.save
           @group.add_owner(current_user)
-          @group.create_namespace_settings
+          @group.create_namespace_settings unless @group.namespace_settings
           Service.create_from_active_default_integrations(@group, :group_id)
           OnboardingProgress.onboard(@group)
         end

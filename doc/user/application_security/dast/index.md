@@ -475,7 +475,7 @@ URLs to scan can be specified by either of the following methods:
 
 To define the URLs to scan in a file, create a plain text file with one path per line.
 
-```txt
+```plaintext
 page1.html
 /page2.html
 category/shoes/page1.html

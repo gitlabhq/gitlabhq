@@ -1,4 +1,4 @@
-mutation updateCurrentIntegration(
+mutation updateCurrentPrometheusIntegration(
   $id: String
   $name: String
   $active: Boolean
@@ -6,6 +6,7 @@ mutation updateCurrentIntegration(
   $type: String
   $url: String
   $apiUrl: String
+  $samplePayload: String
 ) {
   updateCurrentIntegration(
     id: $id
@@ -15,5 +16,6 @@ mutation updateCurrentIntegration(
     type: $type
     url: $url
     apiUrl: $apiUrl
+    samplePayload: $samplePayload
   ) @client
 }

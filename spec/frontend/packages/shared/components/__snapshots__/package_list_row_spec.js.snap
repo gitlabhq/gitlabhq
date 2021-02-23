@@ -102,7 +102,7 @@ exports[`packages_list_row renders 1`] = `
       <gl-button-stub
         aria-label="Remove package"
         buttontextclasses=""
-        category="primary"
+        category="secondary"
         data-testid="action-delete"
         icon="remove"
         size="medium"

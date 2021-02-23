@@ -1,5 +1,0 @@
----
-title: Fix N+1 SQL regression in exporting issues to CSV
-merge_request: 54287
-author:
-type: performance

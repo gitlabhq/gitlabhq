@@ -11,7 +11,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import { typeSet } from '~/alerts_settings/constants';
-import alertFields from '../mocks/alertFields.json';
+import alertFields from '../mocks/alert_fields.json';
+import parsedMapping from '../mocks/parsed_mapping.json';
 import { defaultAlertSettingsConfig } from './util';
 
 describe('AlertsSettingsForm', () => {
@@ -39,6 +40,9 @@ describe('AlertsSettingsForm', () => {
         multiIntegrations,
       },
       mocks: {
+        $apollo: {
+          query: jest.fn(),
+        },
         $toast: {
           show: mockToastShow,
         },
@@ -146,7 +150,7 @@ describe('AlertsSettingsForm', () => {
 
         enableIntegration(0, integrationName);
 
-        const sampleMapping = { field: 'test' };
+        const sampleMapping = parsedMapping.payloadAttributeMappings;
         findMappingBuilder().vm.$emit('onMappingUpdate', sampleMapping);
         findForm().trigger('submit');
 
@@ -157,7 +161,7 @@ describe('AlertsSettingsForm', () => {
               name: integrationName,
               active: true,
               payloadAttributeMappings: sampleMapping,
-              payloadExample: null,
+              payloadExample: '{}',
             },
           },
         ]);
@@ -275,34 +279,47 @@ describe('AlertsSettingsForm', () => {
   });
 
   describe('Test payload section for HTTP integration', () => {
+    const validSamplePayload = JSON.stringify(alertFields);
+    const emptySamplePayload = '{}';
+
     beforeEach(() => {
       createComponent({
         multipleHttpIntegrationsCustomMapping: true,
-        props: {
+        data: {
           currentIntegration: {
             type: typeSet.http,
+            payloadExample: validSamplePayload,
+            payloadAttributeMappings: [],
           },
-          alertFields,
+          active: false,
+          resetPayloadAndMappingConfirmed: false,
         },
+        props: { alertFields },
       });
     });
 
     describe.each`
-      active   | resetSamplePayloadConfirmed | disabled
-      ${true}  | ${true}                     | ${undefined}
-      ${false} | ${true}                     | ${'disabled'}
-      ${true}  | ${false}                    | ${'disabled'}
-      ${false} | ${false}                    | ${'disabled'}
-    `('', ({ active, resetSamplePayloadConfirmed, disabled }) => {
-      const payloadResetMsg = resetSamplePayloadConfirmed ? 'was confirmed' : 'was not confirmed';
+      active   | resetPayloadAndMappingConfirmed | disabled
+      ${true}  | ${true}                         | ${undefined}
+      ${false} | ${true}                         | ${'disabled'}
+      ${true}  | ${false}                        | ${'disabled'}
+      ${false} | ${false}                        | ${'disabled'}
+    `('', ({ active, resetPayloadAndMappingConfirmed, disabled }) => {
+      const payloadResetMsg = resetPayloadAndMappingConfirmed
+        ? 'was confirmed'
+        : 'was not confirmed';
       const enabledState = disabled === 'disabled' ? 'disabled' : 'enabled';
       const activeState = active ? 'active' : 'not active';
 
       it(`textarea should be ${enabledState} when payload reset ${payloadResetMsg} and current integration is ${activeState}`, async () => {
         wrapper.setData({
-          customMapping: { samplePayload: true },
+          currentIntegration: {
+            type: typeSet.http,
+            payloadExample: validSamplePayload,
+            payloadAttributeMappings: [],
+          },
           active,
-          resetSamplePayloadConfirmed,
+          resetPayloadAndMappingConfirmed,
         });
         await wrapper.vm.$nextTick();
         expect(findTestPayloadSection().find(GlFormTextarea).attributes('disabled')).toBe(disabled);
@@ -311,20 +328,27 @@ describe('AlertsSettingsForm', () => {
 
     describe('action buttons for sample payload', () => {
       describe.each`
-        resetSamplePayloadConfirmed | samplePayload | caption
-        ${false}                    | ${true}       | ${'Edit payload'}
-        ${true}                     | ${false}      | ${'Submit payload'}
-        ${true}                     | ${true}       | ${'Submit payload'}
-        ${false}                    | ${false}      | ${'Submit payload'}
-      `('', ({ resetSamplePayloadConfirmed, samplePayload, caption }) => {
-        const samplePayloadMsg = samplePayload ? 'was provided' : 'was not provided';
-        const payloadResetMsg = resetSamplePayloadConfirmed ? 'was confirmed' : 'was not confirmed';
+        resetPayloadAndMappingConfirmed | payloadExample        | caption
+        ${false}                        | ${validSamplePayload} | ${'Edit payload'}
+        ${true}                         | ${emptySamplePayload} | ${'Submit payload'}
+        ${true}                         | ${validSamplePayload} | ${'Submit payload'}
+        ${false}                        | ${emptySamplePayload} | ${'Submit payload'}
+      `('', ({ resetPayloadAndMappingConfirmed, payloadExample, caption }) => {
+        const samplePayloadMsg = payloadExample ? 'was provided' : 'was not provided';
+        const payloadResetMsg = resetPayloadAndMappingConfirmed
+          ? 'was confirmed'
+          : 'was not confirmed';
 
         it(`shows ${caption} button when sample payload ${samplePayloadMsg} and payload reset ${payloadResetMsg}`, async () => {
           wrapper.setData({
             selectedIntegration: typeSet.http,
-            customMapping: { samplePayload },
-            resetSamplePayloadConfirmed,
+            currentIntegration: {
+              payloadExample,
+              type: typeSet.http,
+              active: true,
+              payloadAttributeMappings: [],
+            },
+            resetPayloadAndMappingConfirmed,
           });
           await wrapper.vm.$nextTick();
           expect(findActionBtn().text()).toBe(caption);
@@ -333,22 +357,36 @@ describe('AlertsSettingsForm', () => {
     });
 
     describe('Parsing payload', () => {
-      it('displays a toast message on successful parse', async () => {
-        jest.useFakeTimers();
+      beforeEach(() => {
         wrapper.setData({
           selectedIntegration: typeSet.http,
-          customMapping: { samplePayload: false },
+          resetPayloadAndMappingConfirmed: true,
         });
-        await wrapper.vm.$nextTick();
+      });
 
+      it('displays a toast message on successful parse', async () => {
+        jest.spyOn(wrapper.vm.$apollo, 'query').mockResolvedValue({
+          data: {
+            project: { alertManagementPayloadFields: [] },
+          },
+        });
         findActionBtn().vm.$emit('click');
-        jest.advanceTimersByTime(1000);
 
         await waitForPromises();
 
         expect(mockToastShow).toHaveBeenCalledWith(
           'Sample payload has been parsed. You can now map the fields.',
         );
+      });
+
+      it('displays an error message under payload field on unsuccessful parse', async () => {
+        const errorMessage = 'Error parsing paylod';
+        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({ message: errorMessage });
+        findActionBtn().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findTestPayloadSection().find('.invalid-feedback').text()).toBe(errorMessage);
       });
     });
   });

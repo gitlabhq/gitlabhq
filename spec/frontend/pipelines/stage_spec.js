@@ -142,6 +142,8 @@ describe('Pipelines stage component', () => {
     beforeEach(() => {
       mock.onGet(dropdownPath).reply(200, stageReply);
       mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
+
+      createComponent();
     });
 
     const clickCiAction = async () => {
@@ -152,34 +154,22 @@ describe('Pipelines stage component', () => {
       await axios.waitForAll();
     };
 
-    describe('within pipeline table', () => {
-      beforeEach(() => {
-        createComponent({ type: 'PIPELINES_TABLE' });
-      });
+    it('closes dropdown when job item action is clicked', async () => {
+      const hidden = jest.fn();
 
-      it('emits `refreshPipelinesTable` event when `pipelineActionRequestComplete` is triggered', async () => {
-        await clickCiAction();
+      wrapper.vm.$root.$on('bv::dropdown::hide', hidden);
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
-      });
+      expect(hidden).toHaveBeenCalledTimes(0);
+
+      await clickCiAction();
+
+      expect(hidden).toHaveBeenCalledTimes(1);
     });
 
-    describe('in MR widget', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+    it('emits `pipelineActionRequestComplete` when job item action is clicked', async () => {
+      await clickCiAction();
 
-      it('closes the dropdown when `pipelineActionRequestComplete` is triggered', async () => {
-        const hidden = jest.fn();
-
-        wrapper.vm.$root.$on('bv::dropdown::hide', hidden);
-
-        expect(hidden).toHaveBeenCalledTimes(0);
-
-        await clickCiAction();
-
-        expect(hidden).toHaveBeenCalledTimes(1);
-      });
+      expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(1);
     });
   });
 });

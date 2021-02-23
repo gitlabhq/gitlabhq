@@ -58,12 +58,10 @@ RSpec.describe Gitlab::BackgroundMigration::SetDefaultIterationCadences, schema:
     context 'when an iteration cadence exists for a group' do
       let!(:group) { namespaces.create!(name: 'group', path: 'group') }
 
-      let!(:iterations_cadence_1) { iterations_cadences.create!(group_id: group.id, start_date: 5.days.ago, title: 'Cadence 1') }
-      let!(:iterations_cadence_2) { iterations_cadences.create!(group_id: group.id, start_date: 2.days.ago, title: 'Cadence 2') }
+      let!(:iterations_cadence_1) { iterations_cadences.create!(group_id: group.id, start_date: 2.days.ago, title: 'Cadence 1') }
 
       let!(:iteration_1) { iterations.create!(group_id: group.id, iid: 1, title: 'Iteration 1', start_date: 10.days.ago, due_date: 8.days.ago) }
       let!(:iteration_2) { iterations.create!(group_id: group.id, iterations_cadence_id: iterations_cadence_1.id, iid: 2, title: 'Iteration 2', start_date: 5.days.ago, due_date: 3.days.ago) }
-      let!(:iteration_3) { iterations.create!(group_id: group.id, iterations_cadence_id: iterations_cadence_2.id, iid: 3, title: 'Iteration 3', start_date: 2.days.ago, due_date: 1.day.ago) }
 
       subject { described_class.new.perform(group.id) }
 
@@ -76,7 +74,6 @@ RSpec.describe Gitlab::BackgroundMigration::SetDefaultIterationCadences, schema:
 
         expect(iteration_1.reload.iterations_cadence_id).to eq(iterations_cadence_1.id)
         expect(iteration_2.reload.iterations_cadence_id).to eq(iterations_cadence_1.id)
-        expect(iteration_3.reload.iterations_cadence_id).to eq(iterations_cadence_2.id)
       end
     end
   end

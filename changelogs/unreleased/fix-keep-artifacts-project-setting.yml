@@ -1,5 +1,0 @@
----
-title: Fix keep latest artifacts checkbox being always disabled
-merge_request: 54669
-author:
-type: fixed

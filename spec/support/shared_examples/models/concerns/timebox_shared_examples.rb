@@ -18,7 +18,7 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     context 'with a project' do
       it_behaves_like 'AtomicInternalId' do
         let(:internal_id_attribute) { :iid }
-        let(:instance) { build(timebox_type, *timebox_args, project: build(:project), group: nil) }
+        let(:instance) { build(timebox_type, *timebox_args, project: create(:project), group: nil) }
         let(:scope) { :project }
         let(:scope_attrs) { { project: instance.project } }
         let(:usage) { timebox_table_name }
@@ -28,7 +28,7 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     context 'with a group' do
       it_behaves_like 'AtomicInternalId' do
         let(:internal_id_attribute) { :iid }
-        let(:instance) { build(timebox_type, *timebox_args, project: nil, group: build(:group)) }
+        let(:instance) { build(timebox_type, *timebox_args, project: nil, group: create(:group)) }
         let(:scope) { :group }
         let(:scope_attrs) { { namespace: instance.group } }
         let(:usage) { timebox_table_name }

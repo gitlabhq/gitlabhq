@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.9.1 (2021-02-23)
+
+### Fixed (6 changes, 1 of them is from the community)
+
+- Send SIGINT instead of SIGQUIT to puma. !54446 (Jörg Behrmann @behrmann)
+- Reset description template names cache key to reload an updated templates structure. !54614
+- Restore missing horizontal scrollbar on issue boards. !54634
+- Fix keep latest artifacts checkbox being always disabled. !54669
+- Fix Metric tab not showing up on operations page. !54736
+- Fix S3 object storage failing when endpoint is not specified. !54868
+
+### Changed (1 change)
+
+- Updates authorization for linting endpoint. !54492
+
+### Performance (1 change)
+
+- Fix N+1 SQL regression in exporting issues to CSV. !54287
+
+### Other (1 change)
+
+- Fix creating the idx_on_issues_where_service_desk_reply_to_is_not_null index before the post migration. !54346
+
+
 ## 13.9.0 (2021-02-22)
 
 ### Security (1 change)

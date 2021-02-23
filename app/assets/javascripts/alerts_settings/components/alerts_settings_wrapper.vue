@@ -8,15 +8,18 @@ import createPrometheusIntegrationMutation from '../graphql/mutations/create_pro
 import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
-import updateCurrentIntergrationMutation from '../graphql/mutations/update_current_intergration.mutation.graphql';
+import updateCurrentHttpIntegrationMutation from '../graphql/mutations/update_current_http_integration.mutation.graphql';
+import updateCurrentPrometheusIntegrationMutation from '../graphql/mutations/update_current_prometheus_integration.mutation.graphql';
 import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
+import getHttpIntegrationsQuery from '../graphql/queries/get_http_integrations.query.graphql';
 import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
 import service from '../services';
 import {
   updateStoreAfterIntegrationDelete,
   updateStoreAfterIntegrationAdd,
+  updateStoreAfterHttpIntegrationAdd,
 } from '../utils/cache_updates';
 import {
   DELETE_INTEGRATION_ERROR,
@@ -84,6 +87,28 @@ export default {
         createFlash({ message: err });
       },
     },
+    // TODO: we'll need to update the logic to request specific http integration by its id on edit
+    // when BE adds support for it https://gitlab.com/gitlab-org/gitlab/-/issues/321674
+    // currently the request for ALL http integrations is made and on specific integration edit we search it in the list
+    httpIntegrations: {
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      query: getHttpIntegrationsQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      update(data) {
+        const { alertManagementHttpIntegrations: { nodes: list = [] } = {} } = data.project || {};
+
+        return {
+          list,
+        };
+      },
+      error(err) {
+        createFlash({ message: err });
+      },
+    },
     currentIntegration: {
       query: getCurrentIntegrationQuery,
     },
@@ -93,6 +118,7 @@ export default {
       isUpdating: false,
       testAlertPayload: null,
       integrations: {},
+      httpIntegrations: {},
       currentIntegration: null,
     };
   },
@@ -105,22 +131,28 @@ export default {
     },
   },
   methods: {
+    isHttp(type) {
+      return type === typeSet.http;
+    },
     createNewIntegration({ type, variables }) {
       const { projectPath } = this;
 
+      const isHttp = this.isHttp(type);
       this.isUpdating = true;
       this.$apollo
         .mutate({
-          mutation:
-            type === this.$options.typeSet.http
-              ? createHttpIntegrationMutation
-              : createPrometheusIntegrationMutation,
+          mutation: isHttp ? createHttpIntegrationMutation : createPrometheusIntegrationMutation,
           variables: {
             ...variables,
             projectPath,
           },
           update(store, { data }) {
             updateStoreAfterIntegrationAdd(store, getIntegrationsQuery, data, { projectPath });
+            if (isHttp) {
+              updateStoreAfterHttpIntegrationAdd(store, getHttpIntegrationsQuery, data, {
+                projectPath,
+              });
+            }
           },
         })
         .then(({ data: { httpIntegrationCreate, prometheusIntegrationCreate } = {} } = {}) => {
@@ -157,10 +189,9 @@ export default {
       this.isUpdating = true;
       this.$apollo
         .mutate({
-          mutation:
-            type === this.$options.typeSet.http
-              ? updateHttpIntegrationMutation
-              : updatePrometheusIntegrationMutation,
+          mutation: this.isHttp(type)
+            ? updateHttpIntegrationMutation
+            : updatePrometheusIntegrationMutation,
           variables: {
             ...variables,
             id: this.currentIntegration.id,
@@ -176,7 +207,7 @@ export default {
             return this.validateAlertPayload();
           }
 
-          this.clearCurrentIntegration();
+          this.clearCurrentIntegration({ type });
 
           return createFlash({
             message: this.$options.i18n.changesSaved,
@@ -195,16 +226,13 @@ export default {
       this.isUpdating = true;
       this.$apollo
         .mutate({
-          mutation:
-            type === this.$options.typeSet.http
-              ? resetHttpTokenMutation
-              : resetPrometheusTokenMutation,
+          mutation: this.isHttp(type) ? resetHttpTokenMutation : resetPrometheusTokenMutation,
           variables,
         })
         .then(
           ({ data: { httpIntegrationResetToken, prometheusIntegrationResetToken } = {} } = {}) => {
-            const error =
-              httpIntegrationResetToken?.errors[0] || prometheusIntegrationResetToken?.errors[0];
+            const [error] =
+              httpIntegrationResetToken?.errors || prometheusIntegrationResetToken?.errors;
             if (error) {
               return createFlash({ message: error });
             }
@@ -214,10 +242,10 @@ export default {
               prometheusIntegrationResetToken?.integration;
 
             this.$apollo.mutate({
-              mutation: updateCurrentIntergrationMutation,
-              variables: {
-                ...integration,
-              },
+              mutation: this.isHttp(type)
+                ? updateCurrentHttpIntegrationMutation
+                : updateCurrentPrometheusIntegrationMutation,
+              variables: integration,
             });
 
             return createFlash({
@@ -233,33 +261,30 @@ export default {
           this.isUpdating = false;
         });
     },
-    editIntegration({ id }) {
-      const currentIntegration = this.integrations.list.find(
-        (integration) => integration.id === id,
-      );
+    editIntegration({ id, type }) {
+      let currentIntegration = this.integrations.list.find((integration) => integration.id === id);
+      if (this.isHttp(type)) {
+        const httpIntegrationMappingData = this.httpIntegrations.list.find(
+          (integration) => integration.id === id,
+        );
+        currentIntegration = { ...currentIntegration, ...httpIntegrationMappingData };
+      }
+
       this.$apollo.mutate({
-        mutation: updateCurrentIntergrationMutation,
-        variables: {
-          id: currentIntegration.id,
-          name: currentIntegration.name,
-          active: currentIntegration.active,
-          token: currentIntegration.token,
-          type: currentIntegration.type,
-          url: currentIntegration.url,
-          apiUrl: currentIntegration.apiUrl,
-        },
+        mutation: this.isHttp(type)
+          ? updateCurrentHttpIntegrationMutation
+          : updateCurrentPrometheusIntegrationMutation,
+        variables: currentIntegration,
       });
     },
-    deleteIntegration({ id }) {
+    deleteIntegration({ id, type }) {
       const { projectPath } = this;
 
       this.isUpdating = true;
       this.$apollo
         .mutate({
           mutation: destroyHttpIntegrationMutation,
-          variables: {
-            id,
-          },
+          variables: { id },
           update(store, { data }) {
             updateStoreAfterIntegrationDelete(store, getIntegrationsQuery, data, { projectPath });
           },
@@ -269,7 +294,7 @@ export default {
           if (error) {
             return createFlash({ message: error });
           }
-          this.clearCurrentIntegration();
+          this.clearCurrentIntegration({ type });
           return createFlash({
             message: this.$options.i18n.integrationRemoved,
             type: FLASH_TYPES.SUCCESS,
@@ -282,9 +307,11 @@ export default {
           this.isUpdating = false;
         });
     },
-    clearCurrentIntegration() {
+    clearCurrentIntegration({ type }) {
       this.$apollo.mutate({
-        mutation: updateCurrentIntergrationMutation,
+        mutation: this.isHttp(type)
+          ? updateCurrentHttpIntegrationMutation
+          : updateCurrentPrometheusIntegrationMutation,
         variables: {},
       });
     },

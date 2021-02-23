@@ -12,6 +12,8 @@ import {
   GlModalDirective,
   GlToggle,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
+import { isEmpty, omit } from 'lodash';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -22,12 +24,9 @@ import {
   typeSet,
 } from '../constants';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
+import parseSamplePayloadQuery from '../graphql/queries/parse_sample_payload.query.graphql';
 import MappingBuilder from './alert_mapping_builder.vue';
 import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
-// Mocks will be removed when integrating with BE is ready
-// data format is defined and will be the same as mocked (maybe with some minor changes)
-// feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171
-import mockedCustomMapping from './mocks/parsedMapping.json';
 
 export const i18n = {
   integrationFormSteps: {
@@ -92,7 +91,6 @@ export const i18n = {
 };
 
 export default {
-  integrationTypes,
   placeholders: {
     prometheus: targetPrometheusUrlPlaceholder,
   },
@@ -128,6 +126,9 @@ export default {
     multiIntegrations: {
       default: false,
     },
+    projectPath: {
+      default: '',
+    },
   },
   props: {
     loading: {
@@ -151,18 +152,19 @@ export default {
   },
   data() {
     return {
-      selectedIntegration: integrationTypes[0].value,
+      integrationTypesOptions: Object.values(integrationTypes),
+      selectedIntegration: integrationTypes.none.value,
       active: false,
       formVisible: false,
       integrationTestPayload: {
         json: null,
         error: null,
       },
-      resetSamplePayloadConfirmed: false,
-      customMapping: null,
+      resetPayloadAndMappingConfirmed: false,
       mapping: [],
       parsingPayload: false,
       currentIntegration: null,
+      parsedPayload: [],
     };
   },
   computed: {
@@ -210,17 +212,11 @@ export default {
         this.alertFields?.length
       );
     },
-    parsedSamplePayload() {
-      return this.customMapping?.samplePayload?.payloadAlerFields?.nodes;
-    },
-    savedMapping() {
-      return this.customMapping?.storedMapping?.nodes;
-    },
     hasSamplePayload() {
-      return Boolean(this.customMapping?.samplePayload);
+      return this.isValidNonEmptyJSON(this.currentIntegration?.payloadExample);
     },
     canEditPayload() {
-      return this.hasSamplePayload && !this.resetSamplePayloadConfirmed;
+      return this.hasSamplePayload && !this.resetPayloadAndMappingConfirmed;
     },
     isResetAuthKeyDisabled() {
       return !this.active && !this.integrationForm.token !== '';
@@ -240,25 +236,52 @@ export default {
     isSelectDisabled() {
       return this.currentIntegration !== null || !this.canAddIntegration;
     },
+    savedMapping() {
+      return this.mapping;
+    },
   },
   watch: {
     currentIntegration(val) {
       if (val === null) {
-        return this.reset();
+        this.reset();
+        return;
       }
-      this.selectedIntegration = val.type;
-      this.active = val.active;
-      if (val.type === typeSet.http && this.showMappingBuilder) this.getIntegrationMapping(val.id);
-      return this.integrationTypeSelect();
+      const { type, active, payloadExample, payloadAlertFields, payloadAttributeMappings } = val;
+      this.selectedIntegration = type;
+      this.active = active;
+
+      if (type === typeSet.prometheus) {
+        this.integrationTestPayload.json = null;
+      }
+
+      if (type === typeSet.http && this.showMappingBuilder) {
+        this.parsedPayload = payloadAlertFields;
+        this.integrationTestPayload.json = this.isValidNonEmptyJSON(payloadExample)
+          ? payloadExample
+          : null;
+        const mapping = payloadAttributeMappings.map((mappingItem) =>
+          omit(mappingItem, '__typename'),
+        );
+        this.updateMapping(mapping);
+      }
+      this.toggleFormVisibility();
     },
   },
   methods: {
-    integrationTypeSelect() {
-      if (this.selectedIntegration === integrationTypes[0].value) {
-        this.formVisible = false;
-      } else {
-        this.formVisible = true;
+    isValidNonEmptyJSON(JSONString) {
+      if (JSONString) {
+        let parsed;
+        try {
+          parsed = JSON.parse(JSONString);
+        } catch (error) {
+          Sentry.captureException(error);
+        }
+        if (parsed) return !isEmpty(parsed);
       }
+      return false;
+    },
+    toggleFormVisibility() {
+      this.formVisible = this.selectedIntegration !== integrationTypes.none.value;
     },
     submitWithTestPayload() {
       this.$emit('set-test-alert-payload', this.testAlertPayload);
@@ -269,20 +292,15 @@ export default {
       const customMappingVariables = this.glFeatures.multipleHttpIntegrationsCustomMapping
         ? {
             payloadAttributeMappings: this.mapping,
-            payloadExample: this.integrationTestPayload.json,
+            payloadExample: this.integrationTestPayload.json || '{}',
           }
         : {};
 
       const variables =
         this.selectedIntegration === typeSet.http
-          ? {
-              name,
-              active: this.active,
-              ...customMappingVariables,
-            }
+          ? { name, active: this.active, ...customMappingVariables }
           : { apiUrl, active: this.active };
       const integrationPayload = { type: this.selectedIntegration, variables };
-
       if (this.currentIntegration) {
         return this.$emit('update-integration', integrationPayload);
       }
@@ -291,11 +309,12 @@ export default {
       return this.$emit('create-new-integration', integrationPayload);
     },
     reset() {
-      this.selectedIntegration = integrationTypes[0].value;
-      this.integrationTypeSelect();
+      this.selectedIntegration = integrationTypes.none.value;
+      this.toggleFormVisibility();
+      this.resetPayloadAndMapping();
 
       if (this.currentIntegration) {
-        return this.$emit('clear-current-integration');
+        return this.$emit('clear-current-integration', { type: this.currentIntegration.type });
       }
 
       return this.resetFormValues();
@@ -332,34 +351,39 @@ export default {
       }
     },
     parseMapping() {
-      // TODO: replace with real BE mutation when ready;
       this.parsingPayload = true;
 
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(mockedCustomMapping), 1000);
-      })
-        .then((res) => {
-          const mapping = { ...res };
-          delete mapping.storedMapping;
-          this.customMapping = res;
-          this.integrationTestPayload.json = res?.samplePayload.body;
-          this.resetSamplePayloadConfirmed = false;
+      return this.$apollo
+        .query({
+          query: parseSamplePayloadQuery,
+          variables: { projectPath: this.projectPath, payload: this.integrationTestPayload.json },
+        })
+        .then(
+          ({
+            data: {
+              project: { alertManagementPayloadFields },
+            },
+          }) => {
+            this.parsedPayload = alertManagementPayloadFields;
+            this.resetPayloadAndMappingConfirmed = false;
 
-          this.$toast.show(this.$options.i18n.integrationFormSteps.step4.payloadParsedSucessMsg);
+            this.$toast.show(this.$options.i18n.integrationFormSteps.step4.payloadParsedSucessMsg);
+          },
+        )
+        .catch(({ message }) => {
+          this.integrationTestPayload.error = message;
         })
         .finally(() => {
           this.parsingPayload = false;
         });
     },
-    getIntegrationMapping() {
-      // TODO: replace with real BE mutation when ready;
-      return Promise.resolve(mockedCustomMapping).then((res) => {
-        this.customMapping = res;
-        this.integrationTestPayload.json = res?.samplePayload.body;
-      });
-    },
     updateMapping(mapping) {
       this.mapping = mapping;
+    },
+    resetPayloadAndMapping() {
+      this.resetPayloadAndMappingConfirmed = true;
+      this.parsedPayload = [];
+      this.updateMapping([]);
     },
   },
 };
@@ -377,8 +401,8 @@ export default {
         v-model="selectedIntegration"
         :disabled="isSelectDisabled"
         class="mw-100"
-        :options="$options.integrationTypes"
-        @change="integrationTypeSelect"
+        :options="integrationTypesOptions"
+        @change="toggleFormVisibility"
       />
 
       <div v-if="!canAddIntegration" class="gl-my-4" data-testid="multi-integrations-not-supported">
@@ -551,7 +575,7 @@ export default {
             :title="$options.i18n.integrationFormSteps.step4.resetHeader"
             :ok-title="$options.i18n.integrationFormSteps.step4.resetOk"
             ok-variant="danger"
-            @ok="resetSamplePayloadConfirmed = true"
+            @ok="resetPayloadAndMapping"
           >
             {{ $options.i18n.integrationFormSteps.step4.resetBody }}
           </gl-modal>
@@ -566,7 +590,7 @@ export default {
         >
           <span>{{ $options.i18n.integrationFormSteps.step5.intro }}</span>
           <mapping-builder
-            :parsed-payload="parsedSamplePayload"
+            :parsed-payload="parsedPayload"
             :saved-mapping="savedMapping"
             :alert-fields="alertFields"
             @onMappingUpdate="updateMapping"

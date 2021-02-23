@@ -16849,10 +16849,7 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
-msgid "Iteration|Dates cannot overlap with other existing Iterations"
-msgstr ""
-
-msgid "Iteration|cannot be in the past"
+msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"
 msgstr ""
 
 msgid "Iteration|cannot be more than 500 years in the future"
@@ -33642,10 +33639,7 @@ msgstr ""
 msgid "WikiPageConfirmDelete|Delete page %{pageTitle}?"
 msgstr ""
 
-msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs."
-msgstr ""
-
-msgid "WikiPageConflictMessage|the page"
+msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
 msgid "WikiPageCreate|Create %{pageTitle}"

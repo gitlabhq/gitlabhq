@@ -13,6 +13,7 @@ class Iteration < ApplicationRecord
   }.with_indifferent_access.freeze
 
   include AtomicInternalId
+  include Timebox
 
   belongs_to :project
   belongs_to :group
@@ -23,22 +24,22 @@ class Iteration < ApplicationRecord
 
   validates :start_date, presence: true
   validates :due_date, presence: true
+  validates :iterations_cadence, presence: true, unless: -> { project_id.present? }
 
   validate :dates_do_not_overlap, if: :start_or_due_dates_changed?
   validate :future_date, if: :start_or_due_dates_changed?, unless: :skip_future_date_validation
   validate :no_project, unless: :skip_project_validation
   validate :validate_group
 
-  before_create :set_iterations_cadence
+  before_validation :set_iterations_cadence, unless: -> { project_id.present? }
+  before_create :set_past_iteration_state
 
   scope :upcoming, -> { with_state(:upcoming) }
   scope :started, -> { with_state(:started) }
   scope :closed, -> { with_state(:closed) }
 
   scope :within_timeframe, -> (start_date, end_date) do
-    where('start_date IS NOT NULL OR due_date IS NOT NULL')
-      .where('start_date IS NULL OR start_date <= ?', end_date)
-      .where('due_date IS NULL OR due_date >= ?', start_date)
+    where('start_date <= ?', end_date).where('due_date >= ?', start_date)
   end
 
   scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date >= ?', Date.current) }
@@ -106,30 +107,20 @@ class Iteration < ApplicationRecord
     start_date_changed? || due_date_changed?
   end
 
-  # ensure dates do not overlap with other Iterations in the same group/project tree
+  # ensure dates do not overlap with other Iterations in the same cadence tree
   def dates_do_not_overlap
-    iterations = if parent_group.present? && resource_parent.is_a?(Project)
-                   Iteration.where(group: parent_group.self_and_ancestors).or(project.iterations)
-                 elsif parent_group.present?
-                   Iteration.where(group: parent_group.self_and_ancestors)
-                 else
-                   project.iterations
-                 end
+    return unless iterations_cadence
+    return unless iterations_cadence.iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
 
-    return unless iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
-
-    errors.add(:base, s_("Iteration|Dates cannot overlap with other existing Iterations"))
+    # for now we only have a single default cadence within a group just to wrap the iterations into a set.
+    # once we introduce multiple cadences per group we need to change this message.
+    # related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/299312
+    errors.add(:base, s_("Iteration|Dates cannot overlap with other existing Iterations within this group"))
   end
 
-  # ensure dates are in the future
   def future_date
-    if start_date_changed?
-      errors.add(:start_date, s_("Iteration|cannot be in the past")) if start_date < Date.current
+    if start_or_due_dates_changed?
       errors.add(:start_date, s_("Iteration|cannot be more than 500 years in the future")) if start_date > 500.years.from_now
-    end
-
-    if due_date_changed?
-      errors.add(:due_date, s_("Iteration|cannot be in the past")) if due_date < Date.current
       errors.add(:due_date, s_("Iteration|cannot be more than 500 years in the future")) if due_date > 500.years.from_now
     end
   end
@@ -140,6 +131,12 @@ class Iteration < ApplicationRecord
     errors.add(:project_id, s_("is not allowed. We do not currently support project-level iterations"))
   end
 
+  def set_past_iteration_state
+    # if we create an iteration in the past, we set the state to closed right away,
+    # no need to wait for IterationsUpdateStatusWorker to do so.
+    self.state = :closed if due_date < Date.current
+  end
+
   # TODO: this method should be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/296099
   def set_iterations_cadence
     return if iterations_cadence
@@ -147,13 +144,20 @@ class Iteration < ApplicationRecord
     # issue to clarify project iterations: https://gitlab.com/gitlab-org/gitlab/-/issues/299864
     return unless group
 
-    self.iterations_cadence = group.iterations_cadences.first || create_default_cadence
+    # we need this as we use the cadence to validate the dates overlap for this iteration,
+    # so in the case this runs before background migration we need to first set all iterations
+    # in this group to a cadence before we can validate the dates overlap.
+    default_cadence = find_or_create_default_cadence
+    group.iterations.where(iterations_cadence_id: nil).update_all(iterations_cadence_id: default_cadence.id)
+
+    self.iterations_cadence = default_cadence
   end
 
-  def create_default_cadence
+  def find_or_create_default_cadence
     cadence_title = "#{group.name} Iterations"
+    start_date = self.start_date || Date.today
 
-    Iterations::Cadence.create!(group: group, title: cadence_title, start_date: start_date)
+    ::Iterations::Cadence.create_with(title: cadence_title, start_date: start_date).safe_find_or_create_by!(group: group)
   end
 
   # TODO: remove this as part of https://gitlab.com/gitlab-org/gitlab/-/issues/296100

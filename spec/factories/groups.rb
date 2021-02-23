@@ -15,7 +15,7 @@ FactoryBot.define do
         raise "Don't set owner for groups, use `group.add_owner(user)` instead"
       end
 
-      create(:namespace_settings, namespace: group)
+      create(:namespace_settings, namespace: group) unless group.namespace_settings
     end
 
     trait :public do

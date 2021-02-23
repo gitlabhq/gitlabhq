@@ -58,6 +58,7 @@ describe('delete_button', () => {
           title: 'Foo title',
           variant: 'danger',
           disabled: 'true',
+          category: 'secondary',
         });
       });
 

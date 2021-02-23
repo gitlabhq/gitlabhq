@@ -593,7 +593,7 @@ required to go from `10%` to `100%`, you can jump to whatever job you want.
 You can also scale down by running a lower percentage job, just before hitting
 `100%`. Once you get to `100%`, you can't scale down, and you'd have to roll
 back by redeploying the old version using the
-[rollback button](../../ci/environments/index.md#retrying-and-rolling-back) in the
+[rollback button](../../ci/environments/index.md#retry-or-roll-back-a-deployment) in the
 environment page.
 
 Below, you can see how the pipeline appears if the rollout or staging

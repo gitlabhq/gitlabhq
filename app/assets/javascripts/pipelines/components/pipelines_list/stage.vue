@@ -15,7 +15,6 @@ import { GlDropdown, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/u
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import { PIPELINES_TABLE } from '../../constants';
 import eventHub from '../../event_hub';
 import JobItem from '../graph/job_item.vue';
 
@@ -38,11 +37,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    type: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   data() {
@@ -90,13 +84,11 @@ export default {
       return this.$el.classList.contains('show');
     },
     pipelineActionRequestComplete() {
-      if (this.type === PIPELINES_TABLE) {
-        // warn the pipelines table to update
-        eventHub.$emit('refreshPipelinesTable');
-        return;
-      }
       // close the dropdown in MR widget
       this.$refs.stageGlDropdown.hide();
+
+      // warn the pipelines table to update
+      this.$emit('pipelineActionRequestComplete');
     },
   },
 };

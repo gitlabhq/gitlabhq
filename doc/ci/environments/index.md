@@ -10,41 +10,20 @@ disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 
 > Introduced in GitLab 8.9.
 
-Environments allow control of the continuous deployment of your software,
-all within GitLab.
+Environments describe where code is deployed.
 
-## Introduction
-
-There are many stages required in the software development process before the software is ready
-for public consumption.
-
-For example:
-
-1. Develop your code.
-1. Test your code.
-1. Deploy your code into a testing or staging environment before you release it to the public.
-
-This helps find bugs in your software, and also in the deployment process as well.
-
-GitLab CI/CD is capable of not only testing or building your projects, but also
-deploying them in your infrastructure, with the added benefit of giving you a
-way to track your deployments. In other words, you always know what is
-currently being deployed or has been deployed on your servers.
-
-It's important to know that:
-
-- Environments are like tags for your CI jobs, describing where code gets deployed.
-- Deployments are created when [GitLab CI/CD](../yaml/README.md) is used to deploy versions of code to environments.
+Each time [GitLab CI/CD](../yaml/README.md) deploys a version of code to an environment,
+a deployment is created.
 
 GitLab:
 
-- Provides a full history of your deployments for each environment.
-- Keeps track of your deployments, so you always know what is currently being deployed on your
+- Provides a full history of deployments to each environment.
+- Tracks your deployments, so you always know what is currently deployed on your
   servers.
 
-If you have a deployment service such as [Kubernetes](../../user/project/clusters/index.md)
-associated with your project, you can use it to assist with your deployments, and
-can even access a [web terminal](#web-terminals) for your environment from within GitLab!
+If you have a deployment service like [Kubernetes](../../user/project/clusters/index.md)
+associated with your project, you can use it to assist with your deployments.
+You can even access a [web terminal](#web-terminals) for your environment from within GitLab.
 
 ## Configuring environments
 
@@ -68,6 +47,10 @@ In the scenario:
 - We deploy the app only when a pipeline on `master` branch is run.
 
 ### Defining environments
+
+You can create environments manually in the web interface, but we recommend
+that you define your environments in the `.gitlab-ci.yml` file. After the first
+deploy, the environments are automatically created.
 
 Let's consider the following `.gitlab-ci.yml` example:
 
@@ -539,8 +522,8 @@ So now, every branch:
 
 - Gets its own environment.
 - Is deployed to its own unique location, with the added benefit of:
-  - Having a [history of deployments](#viewing-deployment-history).
-  - Being able to [rollback changes](#retrying-and-rolling-back) if needed.
+  - Having a [history of deployments](#view-the-deployment-history).
+  - Being able to [roll back changes](#retry-or-roll-back-a-deployment) if needed.
 
 For more information, see [Using the environment URL](#using-the-environment-url).
 
@@ -555,72 +538,46 @@ For more information, see [Protected environments](protected_environments.md).
 Once environments are configured, GitLab provides many features for working with them,
 as documented below.
 
-### Viewing environments and deployments
+### View environments and deployments
 
-A list of environments and deployment statuses is available on each project's **Operations > Environments** page.
+Prerequisites:
 
-For example:
+- You must have a minimum of [Reporter permission](../../user/permissions.md#project-members-permissions).
 
-![Environment view](../img/environments_available_13_7.png)
+To view a list of environments and deployment statuses:
 
-This example shows:
+- Go to the project's **Operations > Environments** page.
 
-- The environment's name with a link to its deployments.
-- The last deployment ID number and who performed it.
-- The job ID of the last deployment with its respective job name.
-- The commit information of the last deployment, such as who committed it, to what
-  branch, and the Git SHA of the commit.
-- The exact time the last deployment was performed.
-- The upcoming deployment, if a deployment for the environment is in progress.
-- When the environment stops automatically.
-- A button that takes you to the URL that you defined under the `environment` keyword
-  in `.gitlab-ci.yml`.
-- A number of deployment actions, including:
-  - Prevent the environment from [stopping automatically](#automatically-stopping-an-environment).
-  - [Open the live environment](#using-the-environment-url).
-  - Trigger [a manual deployment to a different environment](#configuring-manual-deployments).
-  - [Retry the deployment](#retrying-and-rolling-back).
-  - [Stop the environment](#stopping-an-environment).
+The **Environments** page shows the latest deployments.
 
-The information shown in the **Environments** page is limited to the latest
-deployments, but an environment can have multiple deployments.
+- An environment can have multiple deployments. Some deployments may not be listed on the page.
+- Only deploys that happen after your `.gitlab-ci.yml` is properly configured
+  show up in the **Environment** and **Last deployment** lists.
 
-> **Notes:**
->
-> - While you can create environments manually in the web interface, we recommend
->   that you define your environments in `.gitlab-ci.yml` first. They will
->   be automatically created for you after the first deploy.
-> - The environments page can only be viewed by users with [Reporter permission](../../user/permissions.md#project-members-permissions)
->   and above. For more information on permissions, see the [permissions documentation](../../user/permissions.md).
-> - Only deploys that happen after your `.gitlab-ci.yml` is properly configured
->   show up in the **Environment** and **Last deployment** lists.
+### View the deployment history
 
-### Viewing deployment history
+GitLab tracks your deployments, so you:
 
-GitLab keeps track of your deployments, so you:
+- Always know what is currently deployed on your servers.
+- Have the full history of your deployments for every environment.
 
-- Always know what is currently being deployed on your servers.
-- Can have the full history of your deployments for every environment.
-
-Clicking on an environment shows the history of its deployments. Here's an example **Environments** page
-with multiple deployments:
+- Go to the project's **Operations > Environments** page.
 
 ![Deployments](../img/deployments_view.png)
 
-This view is similar to the **Environments** page, but all deployments are shown. Also in this view
-is a **Rollback** button. For more information, see [Retrying and rolling back](#retrying-and-rolling-back).
+This view is similar to the **Environments** page, but all deployments are shown.
 
-### Retrying and rolling back
+### Retry or roll back a deployment
 
 If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. Navigate to **Operations > Environments**.
-1. Click on the environment.
-1. In the deployment history list for the environment, click the:
-   - **Retry** button next to the last deployment, to retry that deployment.
-   - **Rollback** button next to a previously successful deployment, to roll back to that deployment.
+1. Go to the project's **Operations > Environments**.
+1. Select the environment.
+1. In the deployment history list for the environment:
+   - To retry a deployment, select **Retry**.
+   - to roll back to a deployment, next to a previously successful deployment, select **Rollback**.
 
 #### What to expect with a rollback
 
@@ -662,7 +619,7 @@ from source files to public pages in the environment set for Review Apps.
 Stopping an environment:
 
 - Moves it from the list of **Available** environments to the list of **Stopped**
-  environments on the [**Environments** page](#viewing-environments-and-deployments).
+  environments on the [**Environments** page](#view-environments-and-deployments).
 - Executes an [`on_stop` action](../yaml/README.md#environmenton_stop), if defined.
 
 This is often used when multiple developers are working on a project at the same time,
@@ -819,7 +776,7 @@ Environments can also be deleted by using the [Environments API](../../api/envir
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
-By default, GitLab creates a [deployment](#viewing-deployment-history) every time a
+By default, GitLab creates a [deployment](#view-the-deployment-history) every time a
 build with the specified environment runs. Newer deployments can also
 [cancel older ones](deployment_safety.md#skip-outdated-deployment-jobs).
 
@@ -897,7 +854,7 @@ severity is shown, so you can identify which environments need immediate attenti
 When the issue that triggered the alert is resolved, it is removed and is no
 longer visible on the environment page.
 
-If the alert requires a [rollback](#retrying-and-rolling-back), you can select the
+If the alert requires a [rollback](#retry-or-roll-back-a-deployment), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
 #### Auto Rollback **(ULTIMATE)**
