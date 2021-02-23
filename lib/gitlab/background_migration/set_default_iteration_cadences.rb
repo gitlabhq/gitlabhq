@@ -16,6 +16,8 @@ module Gitlab
 
       class Group < ApplicationRecord
         self.table_name = 'namespaces'
+
+        self.inheritance_column = :_type_disabled
       end
 
       def perform(*group_ids)
@@ -27,6 +29,7 @@ module Gitlab
 
       def create_iterations_cadences(group_ids)
         groups_with_cadence = IterationCadence.select(:group_id)
+
         new_cadences = Group.where(id: group_ids).where.not(id: groups_with_cadence).map do |group|
           last_iteration = Iteration.where(group_id: group.id).order(:start_date)&.last
 
@@ -44,7 +47,7 @@ module Gitlab
           )
         end
 
-        IterationCadence.bulk_insert!(new_cadences.compact)
+        IterationCadence.bulk_insert!(new_cadences.compact, skip_duplicates: true)
       end
 
       def assign_iterations_cadences(group_ids)

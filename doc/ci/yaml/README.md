@@ -1436,14 +1436,7 @@ In this example, if the first rule matches, then the job has `when: manual` and 
 #### `rules:variables`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209864) in GitLab 13.7.
-> - It was [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/289803) on GitLab 13.8.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-rulesvariables). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289803) in GitLab 13.10.
 
 You can use [`variables`](#variables) in `rules:` to define variables for specific conditions.
 
@@ -1463,25 +1456,6 @@ job:
   script:
     - echo "Run script with $DEPLOY_VARIABLE as an argument"
     - echo "Run another script if $IS_A_FEATURE exists"
-```
-
-##### Enable or disable rules:variables **(FREE SELF)**
-
-rules:variables is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_rules_variables)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_rules_variables)
 ```
 
 #### Complex rule clauses

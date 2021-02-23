@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-class SnippetScheduleBulkRepositoryShardMovesWorker
-  include ApplicationWorker
-
+# This is a compatibility class to avoid calling a non-existent
+# class from sidekiq during deployment.
+#
+# This class was moved to a namespace in https://gitlab.com/gitlab-org/gitlab/-/issues/299853.
+# we cannot remove this class entirely because there can be jobs
+# referencing it.
+#
+# We can get rid of this class in 14.0
+# https://gitlab.com/gitlab-org/gitlab/-/issues/322393
+class SnippetScheduleBulkRepositoryShardMovesWorker < Snippets::ScheduleBulkRepositoryShardMovesWorker
   idempotent!
   feature_category :gitaly
   urgency :throttled
-
-  def perform(source_storage_name, destination_storage_name = nil)
-    Snippets::ScheduleBulkRepositoryShardMovesService.new.execute(source_storage_name, destination_storage_name)
-  end
 end

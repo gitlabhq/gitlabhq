@@ -346,6 +346,10 @@
   - 1
 - - snippet_update_repository_storage
   - 1
+- - snippets_schedule_bulk_repository_shard_moves
+  - 1
+- - snippets_update_repository_storage
+  - 1
 - - status_page_publish
   - 1
 - - sync_seat_link_request

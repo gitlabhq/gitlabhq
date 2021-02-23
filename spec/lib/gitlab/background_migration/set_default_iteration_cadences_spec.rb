@@ -17,8 +17,10 @@ RSpec.describe Gitlab::BackgroundMigration::SetDefaultIterationCadences, schema:
       let!(:iteration_2) { iterations.create!(group_id: group_3.id, iid: 1, title: 'Iteration 2', start_date: 10.days.ago, due_date: 8.days.ago) }
       let!(:iteration_3) { iterations.create!(group_id: group_3.id, iid: 1, title: 'Iteration 3', start_date: 5.days.ago, due_date: 2.days.ago) }
 
+      subject { described_class.new.perform(group_1.id, group_2.id, group_3.id, namespaces.last.id + 1) }
+
       before do
-        described_class.new.perform(group_1.id, group_2.id, group_3.id, namespaces.last.id + 1)
+        subject
       end
 
       it 'creates iterations_cadence records for the requested groups' do
@@ -44,6 +46,12 @@ RSpec.describe Gitlab::BackgroundMigration::SetDefaultIterationCadences, schema:
         expect(iteration_records.size).to eq(2)
         expect(iteration_records.first.id).to eq(iteration_2.id)
         expect(iteration_records.second.id).to eq(iteration_3.id)
+      end
+
+      it 'does not call Group class' do
+        expect(::Group).not_to receive(:where)
+
+        subject
       end
     end
 

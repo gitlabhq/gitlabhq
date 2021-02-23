@@ -17,11 +17,7 @@ class ScheduleSetDefaultIterationCadences < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    Iteration.select(:group_id).distinct.each_batch(of: BATCH_SIZE, column: :group_id) do |batch, index|
-      group_ids = batch.pluck(:group_id)
-
-      migrate_in(index * DELAY_INTERVAL, MIGRATION_CLASS, group_ids)
-    end
+    # Do nothing, rescheduling migration: 20210219102900_reschedule_set_default_iteration_cadences.rb
   end
 
   def down

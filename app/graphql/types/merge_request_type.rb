@@ -54,7 +54,7 @@ module Types
     field :target_branch, GraphQL::STRING_TYPE, null: false,
           description: 'Target branch of the merge request.'
     field :work_in_progress, GraphQL::BOOLEAN_TYPE, method: :work_in_progress?, null: false,
-          description: 'Indicates if the merge request is a work in progress (WIP).'
+          description: 'Indicates if the merge request is a draft.'
     field :merge_when_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS).'
     field :diff_head_sha, GraphQL::STRING_TYPE, null: true,

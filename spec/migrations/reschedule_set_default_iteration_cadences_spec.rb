@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleSetDefaultIterationCadences do
+RSpec.describe RescheduleSetDefaultIterationCadences do
   let(:namespaces) { table(:namespaces) }
   let(:iterations) { table(:sprints) }
 

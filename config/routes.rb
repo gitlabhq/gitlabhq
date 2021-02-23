@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     resource :welcome, only: [:show, :update], controller: 'welcome' do
       Gitlab.ee do
         get :trial_getting_started, on: :collection
+        get :trial_onboarding_board, on: :collection
       end
     end
 

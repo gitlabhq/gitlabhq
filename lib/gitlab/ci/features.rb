@@ -59,10 +59,6 @@ module Gitlab
         ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
       end
 
-      def self.rules_variables_enabled?(project)
-        ::Feature.enabled?(:ci_rules_variables, project, default_enabled: true)
-      end
-
       def self.validate_build_dependencies?(project)
         ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
           ::Feature.disabled?(:ci_validate_build_dependencies_override, project)

@@ -130,6 +130,9 @@ namespace :gitlab do
         abort
       end
     end
+
+    desc 'GitLab | GraphQL | Update GraphQL docs and schema'
+    task update_all: [:compile_docs, 'schema:dump']
   end
 end
 

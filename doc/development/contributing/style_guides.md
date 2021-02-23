@@ -146,7 +146,7 @@ One way to generate the initial list is to run the `todo` auto generation,
 with `exclude limit` set to a high number.
 
 ```shell
-bundle exec rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit=10000
+bundle exec rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit=100000
 ```
 
 You can then move the list from the freshly generated `.rubocop_todo.yml` for the Cop being actively

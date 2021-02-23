@@ -33,14 +33,14 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
     end
 
     it 'sanitizes `class` attribute from all elements' do
-      act = %q{<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
-      exp = %q{<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
+      act = %q(<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>)
+      exp = %q(<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>)
       expect(filter(act).to_html).to eq exp
     end
 
     it 'sanitizes `class` attribute from non-highlight spans' do
-      act = %q{<span class="k">def</span>}
-      expect(filter(act).to_html).to eq %q{<span>def</span>}
+      act = %q(<span class="k">def</span>)
+      expect(filter(act).to_html).to eq %q(<span>def</span>)
     end
 
     it 'allows `text-align` property in `style` attribute on table elements' do
@@ -82,12 +82,12 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
     end
 
     it 'allows `span` elements' do
-      exp = act = %q{<span>Hello</span>}
+      exp = act = %q(<span>Hello</span>)
       expect(filter(act).to_html).to eq exp
     end
 
     it 'allows `abbr` elements' do
-      exp = act = %q{<abbr title="HyperText Markup Language">HTML</abbr>}
+      exp = act = %q(<abbr title="HyperText Markup Language">HTML</abbr>)
       expect(filter(act).to_html).to eq exp
     end
 
@@ -132,7 +132,7 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
     end
 
     it 'allows the `data-sourcepos` attribute globally' do
-      exp = %q{<p data-sourcepos="1:1-1:10">foo/bar.md</p>}
+      exp = %q(<p data-sourcepos="1:1-1:10">foo/bar.md</p>)
       act = filter(exp)
 
       expect(act.to_html).to eq exp
@@ -140,41 +140,41 @@ RSpec.describe Banzai::Filter::SanitizationFilter do
 
     describe 'footnotes' do
       it 'allows correct footnote id property on links' do
-        exp = %q{<a href="#fn1" id="fnref1">foo/bar.md</a>}
+        exp = %q(<a href="#fn1" id="fnref1">foo/bar.md</a>)
         act = filter(exp)
 
         expect(act.to_html).to eq exp
       end
 
       it 'allows correct footnote id property on li element' do
-        exp = %q{<ol><li id="fn1">footnote</li></ol>}
+        exp = %q(<ol><li id="fn1">footnote</li></ol>)
         act = filter(exp)
 
         expect(act.to_html).to eq exp
       end
 
       it 'removes invalid id for footnote links' do
-        exp = %q{<a href="#fn1">link</a>}
+        exp = %q(<a href="#fn1">link</a>)
 
         %w[fnrefx test xfnref1].each do |id|
-          act = filter(%Q{<a href="#fn1" id="#{id}">link</a>})
+          act = filter(%(<a href="#fn1" id="#{id}">link</a>))
 
           expect(act.to_html).to eq exp
         end
       end
 
       it 'removes invalid id for footnote li' do
-        exp = %q{<ol><li>footnote</li></ol>}
+        exp = %q(<ol><li>footnote</li></ol>)
 
         %w[fnx test xfn1].each do |id|
-          act = filter(%Q{<ol><li id="#{id}">footnote</li></ol>})
+          act = filter(%(<ol><li id="#{id}">footnote</li></ol>))
 
           expect(act.to_html).to eq exp
         end
       end
 
       it 'allows footnotes numbered higher than 9' do
-        exp = %q{<a href="#fn15" id="fnref15">link</a><ol><li id="fn15">footnote</li></ol>}
+        exp = %q(<a href="#fn15" id="fnref15">link</a><ol><li id="fn15">footnote</li></ol>)
         act = filter(exp)
 
         expect(act.to_html).to eq exp

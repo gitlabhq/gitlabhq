@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Repository tags' do
+    # TODO: Remove :requires_admin meta when the `Runtime::Feature.enable` method call is removed
+    describe 'Repository tags', :requires_admin do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-for-tags'

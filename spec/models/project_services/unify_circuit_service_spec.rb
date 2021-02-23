@@ -5,6 +5,12 @@ require "spec_helper"
 RSpec.describe UnifyCircuitService do
   it_behaves_like "chat service", "Unify Circuit" do
     let(:client_arguments) { webhook_url }
-    let(:content_key) { :subject }
+    let(:payload) do
+      {
+        subject: project.full_name,
+        text: be_present,
+        markdown: true
+      }
+    end
   end
 end

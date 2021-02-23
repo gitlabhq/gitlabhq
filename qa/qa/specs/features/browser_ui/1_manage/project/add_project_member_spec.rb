@@ -5,6 +5,7 @@ module QA
     describe 'Add project member' do
       before do
         Runtime::Feature.enable('vue_project_members_list')
+        Runtime::Feature.enable(:invite_members_group_modal)
       end
       after do
         Runtime::Feature.disable('vue_project_members_list')
@@ -18,8 +19,6 @@ module QA
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'add-member-project'
         end
-
-        Runtime::Feature.enable(:invite_members_group_modal)
 
         project.visit!
 

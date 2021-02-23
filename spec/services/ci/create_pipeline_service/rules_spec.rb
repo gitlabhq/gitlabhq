@@ -180,20 +180,6 @@ RSpec.describe Ci::CreatePipelineService do
             expect(variables['VAR2']).to eq('my var 2')
             expect(variables['VAR3']).to be_nil
           end
-
-          context 'when FF ci_rules_variables is disabled' do
-            before do
-              stub_feature_flags(ci_rules_variables: false)
-            end
-
-            it 'does not affect variables' do
-              variables = job.scoped_variables_hash
-
-              expect(variables['VAR1']).to eq('my var 1')
-              expect(variables['VAR2']).to eq('my var 2')
-              expect(variables['VAR3']).to be_nil
-            end
-          end
         end
 
         context 'when matching to the second rule' do

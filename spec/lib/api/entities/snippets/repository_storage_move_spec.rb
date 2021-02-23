@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::SnippetRepositoryStorageMove do
+RSpec.describe API::Entities::Snippets::RepositoryStorageMove do
   describe '#as_json' do
     subject { entity.as_json }
 

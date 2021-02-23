@@ -169,15 +169,11 @@ module Gitlab
             strong_memoize(:rules_attributes) do
               next {} unless @using_rules
 
-              if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
-                rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                  @seed_attributes[:yaml_variables], rules_result.variables
-                )
+              rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @seed_attributes[:yaml_variables], rules_result.variables
+              )
 
-                rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
-              else
-                rules_result.build_attributes
-              end
+              rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
             end
           end
 
