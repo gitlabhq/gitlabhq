@@ -1,0 +1,5 @@
+---
+title: Fix S3 object storage failing when endpoint is not specified
+merge_request: 54868
+author:
+type: fixed
