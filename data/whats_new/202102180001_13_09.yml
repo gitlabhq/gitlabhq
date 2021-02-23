@@ -13,9 +13,7 @@
   release: 13.9
 - title: "GPU and smart scheduling support for GitLab Runner"
   body: |
-    Previously, if you wanted to reuse the same configuration in multiple jobs, you had two options: add YAML anchors, which don't work across different configuration files, or use `extends` to reuse an entire section.
-
-    In this release, we've added a new YAML function called `!reference`, which lets you target the exact configuration you want to reuse as part of your CI/CD pipeline, even if it's in another file.
+    Specialized compute workloads like those used in machine learning can significantly benefit from access to GPUs. Developers can configure GitLab Runner to leverage GPUs in the Docker executor by forwarding the `--gpu` flag. You can also use this with recent support in [GitLab’s fork of Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html#using-the-forked-version-of-docker-machine), which allows you to [accelerate workloads with attached GPUs](https://cloud.google.com/compute/docs/gpus/create-vm-with-gpus). Doing so can help control costs associated with potentially expensive machine configurations.
   stage: Verify
   self-managed: true
   gitlab-com: true

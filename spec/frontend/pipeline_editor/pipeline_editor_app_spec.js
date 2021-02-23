@@ -193,6 +193,7 @@ describe('Pipeline editor app component', () => {
 
       describe('and the commit mutation succeeds', () => {
         beforeEach(() => {
+          window.scrollTo = jest.fn();
           createComponent();
 
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
@@ -201,11 +202,16 @@ describe('Pipeline editor app component', () => {
         it('shows a confirmation message', () => {
           expect(findAlert().text()).toBe(wrapper.vm.$options.successTexts[COMMIT_SUCCESS]);
         });
+
+        it('scrolls to the top of the page to bring attention to the confirmation message', () => {
+          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+        });
       });
       describe('and the commit mutation fails', () => {
         const commitFailedReasons = ['Commit failed'];
 
         beforeEach(() => {
+          window.scrollTo = jest.fn();
           createComponent();
 
           findEditorHome().vm.$emit('showError', {
@@ -219,11 +225,17 @@ describe('Pipeline editor app component', () => {
             `${updateFailureMessage} ${commitFailedReasons[0]}`,
           );
         });
+
+        it('scrolls to the top of the page to bring attention to the error message', () => {
+          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+        });
       });
+
       describe('when an unknown error occurs', () => {
         const unknownReasons = ['Commit failed'];
 
         beforeEach(() => {
+          window.scrollTo = jest.fn();
           createComponent();
 
           findEditorHome().vm.$emit('showError', {
@@ -236,6 +248,10 @@ describe('Pipeline editor app component', () => {
           expect(findAlert().text()).toMatchInterpolatedText(
             `${updateFailureMessage} ${unknownReasons[0]}`,
           );
+        });
+
+        it('scrolls to the top of the page to bring attention to the error message', () => {
+          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
         });
       });
     });

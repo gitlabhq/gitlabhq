@@ -26,11 +26,18 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
 
       context 'when configuration changes' do
         it 'updates the config and reloads the daemon' do
-          allow(service).to receive(:update_file).and_call_original
-
           expect(service).to receive(:update_file).with(file.path, an_instance_of(String))
             .and_call_original
-          expect(service).to receive(:reload_daemon).and_call_original
+          allow(service).to receive(:update_file).with(File.join(::Settings.pages.path, '.update'),
+                                                       an_instance_of(String)).and_call_original
+
+          expect(subject).to include(status: :success)
+        end
+
+        it "doesn't update configuration files if updates on legacy storage are disabled" do
+          stub_feature_flags(pages_update_legacy_storage: false)
+
+          expect(service).not_to receive(:update_file)
 
           expect(subject).to include(status: :success)
         end
@@ -42,8 +49,8 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
           service.execute
         end
 
-        it 'does not update the .update file' do
-          expect(service).not_to receive(:reload_daemon)
+        it 'does not update anything' do
+          expect(service).not_to receive(:update_file)
 
           expect(subject).to include(status: :success)
         end

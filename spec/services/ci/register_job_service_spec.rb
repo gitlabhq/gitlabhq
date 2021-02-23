@@ -590,22 +590,14 @@ module Ci
 
       before do
         allow(Time).to receive(:now).and_return(current_time)
-
-        # Stub defaults for any metrics other than the ones we're testing
-        allow(Gitlab::Metrics).to receive(:counter)
-                                    .with(any_args)
-                                    .and_return(Gitlab::Metrics::NullMetric.instance)
-        allow(Gitlab::Metrics).to receive(:histogram)
-                                    .with(any_args)
-                                    .and_return(Gitlab::Metrics::NullMetric.instance)
-
         # Stub tested metrics
-        allow(Gitlab::Metrics).to receive(:counter)
-                                    .with(:job_register_attempts_total, anything)
-                                    .and_return(attempt_counter)
-        allow(Gitlab::Metrics).to receive(:histogram)
-                                    .with(:job_queue_duration_seconds, anything, anything, anything)
-                                    .and_return(job_queue_duration_seconds)
+        allow(Gitlab::Ci::Queue::Metrics)
+          .to receive(:attempt_counter)
+          .and_return(attempt_counter)
+
+        allow(Gitlab::Ci::Queue::Metrics)
+          .to receive(:job_queue_duration_seconds)
+          .and_return(job_queue_duration_seconds)
 
         project.update!(shared_runners_enabled: true)
         pending_job.update!(created_at: current_time - 3600, queued_at: current_time - 1800)
@@ -655,7 +647,7 @@ module Ci
       context 'when shared runner is used' do
         let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 tag2)) }
         let(:expected_shared_runner) { true }
-        let(:expected_shard) { Ci::RegisterJobService::DEFAULT_METRICS_SHARD }
+        let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { 0 }
         let(:expected_jobs_running_for_project_third_job) { 2 }
 
@@ -694,7 +686,7 @@ module Ci
       context 'when specific runner is used' do
         let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w(tag1 metrics_shard::shard_tag tag2)) }
         let(:expected_shared_runner) { false }
-        let(:expected_shard) { Ci::RegisterJobService::DEFAULT_METRICS_SHARD }
+        let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '+Inf' }
         let(:expected_jobs_running_for_project_third_job) { '+Inf' }
 

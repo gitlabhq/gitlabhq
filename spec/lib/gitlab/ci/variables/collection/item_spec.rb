@@ -32,6 +32,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
       it 'saves given value' do
         expect(subject[:key]).to eq variable_key
         expect(subject[:value]).to eq expected_value
+        expect(subject.value).to eq expected_value
       end
     end
 

@@ -27,25 +27,16 @@ RSpec.describe ServicesHelper do
       ]
     end
 
-    let(:jira_fields) { %i[jira_issue_transition_id] }
-
     subject { helper.integration_form_data(integration) }
 
     context 'Slack service' do
       let(:integration) { build(:slack_service) }
 
       it { is_expected.to include(*fields) }
-      it { is_expected.not_to include(*jira_fields) }
 
       specify do
         expect(subject[:reset_path]).to eq(helper.scoped_reset_integration_path(integration))
       end
-    end
-
-    context 'Jira service' do
-      let(:integration) { build(:jira_service) }
-
-      it { is_expected.to include(*fields, *jira_fields) }
     end
   end
 

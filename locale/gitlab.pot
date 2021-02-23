@@ -16921,9 +16921,6 @@ msgstr ""
 msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
-msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
 msgstr ""
 
@@ -16978,7 +16975,7 @@ msgstr ""
 msgid "JiraService|Jira project key"
 msgstr ""
 
-msgid "JiraService|Move to Done"
+msgid "JiraService|Jira workflow transition IDs"
 msgstr ""
 
 msgid "JiraService|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}Jira%{linkEnd}."
@@ -16999,7 +16996,7 @@ msgstr ""
 msgid "JiraService|Select issue type"
 msgstr ""
 
-msgid "JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}"
+msgid "JiraService|Set transition IDs for Jira workflow transitions. %{link_start}Learn more%{link_end}"
 msgstr ""
 
 msgid "JiraService|Sign in to GitLab.com to get started."
@@ -17011,16 +17008,10 @@ msgstr ""
 msgid "JiraService|This issue is synchronized with Jira"
 msgstr ""
 
-msgid "JiraService|Transition Jira issues to their final state:"
-msgstr ""
-
 msgid "JiraService|Use a password for server version and an API token for cloud version"
 msgstr ""
 
 msgid "JiraService|Use a username for server version and an email for cloud version"
-msgstr ""
-
-msgid "JiraService|Use custom transitions"
 msgstr ""
 
 msgid "JiraService|Username or Email"
@@ -17520,6 +17511,9 @@ msgstr ""
 msgid "Learn GitLab - Ultimate trial"
 msgstr ""
 
+msgid "Learn GitLab|Trial only"
+msgstr ""
+
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
 msgstr ""
 
@@ -17580,28 +17574,94 @@ msgstr ""
 msgid "Learn more."
 msgstr ""
 
+msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
+msgstr ""
+
 msgid "LearnGitLab|Add code owners"
 msgstr ""
 
-msgid "LearnGitLab|Create a repository"
+msgid "LearnGitLab|Add merge request approval"
+msgstr ""
+
+msgid "LearnGitLab|Complete these tasks first so you can enjoy GitLab's features to their fullest:"
+msgstr ""
+
+msgid "LearnGitLab|Create a workflow for your new workspace, and learn how GitLab features work together:"
+msgstr ""
+
+msgid "LearnGitLab|Create or import a repository"
+msgstr ""
+
+msgid "LearnGitLab|Create or import your first repository into your new project."
+msgstr ""
+
+msgid "LearnGitLab|Deploy"
 msgstr ""
 
 msgid "LearnGitLab|Enable require merge approvals"
 msgstr ""
 
+msgid "LearnGitLab|GitLab works best as a team. Invite your colleague to enjoy all features."
+msgstr ""
+
 msgid "LearnGitLab|Invite your colleagues"
 msgstr ""
 
-msgid "LearnGitLab|Run a Security scan using CI/CD"
+msgid "LearnGitLab|Learn GitLab"
+msgstr ""
+
+msgid "LearnGitLab|Plan and execute"
+msgstr ""
+
+msgid "LearnGitLab|Prevent unexpected changes to important assets by assigning ownership of files and paths."
+msgstr ""
+
+msgid "LearnGitLab|Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
+msgstr ""
+
+msgid "LearnGitLab|Review and edit proposed changes to source code."
+msgstr ""
+
+msgid "LearnGitLab|Route code reviews to the right reviewers, every time."
+msgstr ""
+
+msgid "LearnGitLab|Run a Security scan"
+msgstr ""
+
+msgid "LearnGitLab|Run a security scan"
+msgstr ""
+
+msgid "LearnGitLab|Save time by automating your integration and deployment tasks."
+msgstr ""
+
+msgid "LearnGitLab|Scan your code to uncover vulnerabilities before deploying."
+msgstr ""
+
+msgid "LearnGitLab|Set up CI/CD"
+msgstr ""
+
+msgid "LearnGitLab|Set up your workspace"
 msgstr ""
 
 msgid "LearnGitLab|Set-up CI/CD"
 msgstr ""
 
-msgid "LearnGitLab|Start a free trial of GitLab Gold"
+msgid "LearnGitLab|Start a free Ultimate trial"
+msgstr ""
+
+msgid "LearnGitLab|Submit a merge request"
 msgstr ""
 
 msgid "LearnGitLab|Submit a merge request (MR)"
+msgstr ""
+
+msgid "LearnGitLab|Try GitLab Ultimate for free"
+msgstr ""
+
+msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required."
+msgstr ""
+
+msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
 msgstr ""
 
 msgid "Leave"
@@ -25503,6 +25563,9 @@ msgstr ""
 msgid "Restrict projects for this runner"
 msgstr ""
 
+msgid "Restricted shift times are not available for hourly shifts"
+msgstr ""
+
 msgid "Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information."
 msgstr ""
 
@@ -30588,6 +30651,9 @@ msgstr ""
 msgid "ThreatMonitoring|Environment"
 msgstr ""
 
+msgid "ThreatMonitoring|Events"
+msgstr ""
+
 msgid "ThreatMonitoring|Hide dismissed alerts"
 msgstr ""
 
@@ -35659,6 +35725,9 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"
+msgstr ""
+
+msgid "must be later than active period start"
 msgstr ""
 
 msgid "must contain only valid frameworks"

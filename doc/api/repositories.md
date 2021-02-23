@@ -285,8 +285,8 @@ Example response:
 
 Generate changelog data based on commits in a repository.
 
-Given a version (using semantic versioning) and a range of commits,
-GitLab generates a changelog for all commits that use a particular
+Given a version (using [semantic versioning](https://semver.org/)) and a range
+of commits, GitLab generates a changelog for all commits that use a particular
 [Git trailer](https://git-scm.com/docs/git-interpret-trailers).
 
 The output of this process is a new section in a changelog file in the Git
@@ -312,15 +312,15 @@ Supported attributes:
 
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last
 version that came before the version specified in the `version` attribute. For
-this to work, your project must create Git tags for versions using the
-following format:
+this to work, your project must create Git tags for versions using one of the
+following formats:
 
-```plaintext
-vX.Y.Z
-```
+- `vX.Y.Z`
+- `X.Y.Z`
 
-Where `X.Y.Z` is a version that follows semantic versioning. For example,
-consider a project with the following tags:
+Where `X.Y.Z` is a version that follows [semantic
+versioning](https://semver.org/). For example, consider a project with the
+following tags:
 
 - v1.0.0
 - v1.1.0

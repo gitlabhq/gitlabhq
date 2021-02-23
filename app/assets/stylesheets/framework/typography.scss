@@ -430,8 +430,7 @@
     }
   }
 
-  a[href*='/uploads/'],
-  a[href*='storage.googleapis.com/google-code-attachments/'] {
+  a.with-attachment-icon {
     &::before {
       margin-right: 4px;
 
@@ -441,6 +440,11 @@
       -webkit-font-smoothing: antialiased;
       content: '📎';
     }
+  }
+
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
+    @extend .with-attachment-icon;
 
     &.no-attachment-icon {
       &::before {

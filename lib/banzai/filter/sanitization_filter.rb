@@ -64,3 +64,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::SanitizationFilter.prepend_if_ee('EE::Banzai::Filter::SanitizationFilter')

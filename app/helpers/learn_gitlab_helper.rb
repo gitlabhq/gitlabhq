@@ -15,7 +15,8 @@ module LearnGitlabHelper
       [
         action,
         url: url,
-        completed: attributes[OnboardingProgress.column_name(action)].present?
+        completed: attributes[OnboardingProgress.column_name(action)].present?,
+        svg: image_path("learn_gitlab/#{action}.svg")
       ]
     end.to_h
   end
@@ -25,7 +26,7 @@ module LearnGitlabHelper
   ACTION_ISSUE_IDS = {
     git_write: 2,
     pipeline_created: 4,
-    merge_request_created: 6,
+    merge_request_created: 5,
     user_added: 7,
     trial_started: 13,
     required_mr_approvals_enabled: 15,

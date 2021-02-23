@@ -3,7 +3,6 @@
 class Projects::Ci::DailyBuildGroupReportResultsController < Projects::ApplicationController
   include Gitlab::Utils::StrongMemoize
 
-  MAX_ITEMS = 1000
   REPORT_WINDOW = 90.days
 
   before_action :authorize_read_build_report_results!
@@ -40,17 +39,13 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   def report_results
-    if ::Gitlab::Ci::Features.use_coverage_data_new_finder?(project)
-      ::Ci::Testing::DailyBuildGroupReportResultsFinder.new(
-        params: new_finder_params,
-        current_user: current_user
-      ).execute
-    else
-      Ci::DailyBuildGroupReportResultsFinder.new(**finder_params).execute
-    end
+    ::Ci::DailyBuildGroupReportResultsFinder.new(
+      params: finder_params,
+      current_user: current_user
+    ).execute
   end
 
-  def new_finder_params
+  def finder_params
     {
       project: project,
       coverage: true,
@@ -58,17 +53,6 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
       end_date: end_date,
       ref_path: params[:ref_path],
       sort: true
-    }
-  end
-
-  def finder_params
-    {
-      current_user: current_user,
-      project: project,
-      ref_path: params.require(:ref_path),
-      start_date: start_date,
-      end_date: end_date,
-      limit: MAX_ITEMS
     }
   end
 

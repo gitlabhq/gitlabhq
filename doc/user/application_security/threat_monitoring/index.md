@@ -223,4 +223,6 @@ checkbox **Hide dismissed alerts**.
 
 ![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_9.png)
 
+Clicking an alert's name takes the user to the [alert details page](../../../operations/incident_management/alerts.md#alert-details-page).
+
 For information on work in progress for the alerts dashboard, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5041).

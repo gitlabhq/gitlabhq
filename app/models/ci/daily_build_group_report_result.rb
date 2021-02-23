@@ -30,10 +30,6 @@ module Ci
         upsert_all(data, unique_by: :index_daily_build_group_report_results_unique_columns) if data.any?
       end
 
-      def recent_results(attrs, limit: nil)
-        where(attrs).order(date: :desc, group_name: :asc).limit(limit)
-      end
-
       def report_window(start_date)
         default_date = REPORT_WINDOW.ago.to_date
         date = Date.parse(start_date) rescue default_date

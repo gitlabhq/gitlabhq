@@ -52,7 +52,7 @@ module Gitlab
           end
 
           def tsort_each_child(variable, &block)
-            each_variable_reference(variable[:value], &block)
+            each_variable_reference(variable.value, &block)
           end
 
           def input_vars

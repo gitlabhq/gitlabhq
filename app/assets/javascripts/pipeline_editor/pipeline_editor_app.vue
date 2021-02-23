@@ -186,11 +186,13 @@ export default {
       this.showSuccessAlert = false;
     },
     reportFailure(type, reasons = []) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showFailureAlert = true;
       this.failureType = type;
       this.failureReasons = reasons;
     },
     reportSuccess(type) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showSuccessAlert = true;
       this.successType = type;
     },

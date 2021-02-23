@@ -71,10 +71,6 @@ module Gitlab
       def self.display_codequality_backend_comparison?(project)
         ::Feature.enabled?(:codequality_backend_comparison, project, default_enabled: :yaml)
       end
-
-      def self.use_coverage_data_new_finder?(record)
-        ::Feature.enabled?(:coverage_data_new_finder, record, default_enabled: :yaml)
-      end
     end
   end
 end

@@ -3044,18 +3044,6 @@ RSpec.describe API::Users do
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
-
-      context 'when the clear_status_with_quick_options feature flag is disabled' do
-        before do
-          stub_feature_flags(clear_status_with_quick_options: false)
-        end
-
-        it 'does not persist clear_status_at' do
-          put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: '3_hours' }
-
-          expect(user.status.reload.clear_status_at).to be_nil
-        end
-      end
     end
   end
 

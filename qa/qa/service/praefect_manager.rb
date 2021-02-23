@@ -353,15 +353,47 @@ module QA
         Support::Waiter.wait_until(sleep_interval: 1) { replication_queue_incomplete_count == 0 && replicated?(project_id) }
       end
 
+      def replication_pending?
+        result = []
+        shell sql_to_docker_exec_cmd(
+          <<~SQL
+            select job from replication_queue
+            where state = 'ready'
+              and job ->> 'change' = 'update'
+              and job ->> 'source_node_storage' = '#{current_primary_node}'
+              and job ->> 'target_node_storage' = '#{@primary_node}';
+          SQL
+        ) do |line|
+          result << line
+        end
+
+        # The result looks like:
+        #
+        #  job
+        #  -----------
+        #   {"change": "update", "params": null, "relative_path": "@hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git", "virtual_storage": "default", "source_node_storage": "gitaly3", "target_node_storage": "gitaly1"}
+        #  (1 row)
+        #  <blank row>
+        #
+        # Therefore when replication is pending there is at least 1 row of data plus 4 rows of metadata/layout
+
+        result.size >= 5
+      end
+
       private
 
       def current_primary_node
-        shell dataloss_command do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-
-          match = line.match(/Primary: (.*)/)
-          break match[1] if match
+        result = []
+        shell sql_to_docker_exec_cmd("select node_name from shard_primaries where shard_name = '#{@virtual_storage}';") do |line|
+          result << line
         end
+        # The result looks like:
+        #  node_name
+        #  -----------
+        #   gitaly1
+        #  (1 row)
+
+        result[2].strip
       end
 
       def dataloss_command

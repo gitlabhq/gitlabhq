@@ -59,4 +59,17 @@ RSpec.describe ::SystemNotes::AlertManagementService do
       expect(subject.note).to eq("changed the status to **Resolved** by closing issue #{issue.to_reference(project)}")
     end
   end
+
+  describe '#log_resolving_alert' do
+    subject { described_class.new(noteable: noteable, project: project).log_resolving_alert('Some Service') }
+
+    it_behaves_like 'a system note' do
+      let(:author) { User.alert_bot }
+      let(:action) { 'new_alert_added' }
+    end
+
+    it 'has the appropriate message' do
+      expect(subject.note).to eq('logged a resolving alert from **Some Service**')
+    end
+  end
 end

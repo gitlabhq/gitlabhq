@@ -9,8 +9,9 @@ RSpec.describe 'Adding a DiffNote' do
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
   let(:project) { create(:project, :repository) }
   let(:diff_refs) { noteable.diff_refs }
-  let(:mutation) do
-    variables = {
+
+  let(:base_variables) do
+    {
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
       body: 'Body text',
       position: {
@@ -18,15 +19,15 @@ RSpec.describe 'Adding a DiffNote' do
           old_path: 'files/ruby/popen.rb',
           new_path: 'files/ruby/popen2.rb'
         },
-        new_line: 14,
         base_sha: diff_refs.base_sha,
         head_sha: diff_refs.head_sha,
         start_sha: diff_refs.start_sha
       }
     }
-
-    graphql_mutation(:create_diff_note, variables)
   end
+
+  let(:variables) { base_variables.deep_merge({ position: { new_line: 14 } }) }
+  let(:mutation) { graphql_mutation(:create_diff_note, variables) }
 
   def mutation_response
     graphql_mutation_response(:create_diff_note)
@@ -40,6 +41,18 @@ RSpec.describe 'Adding a DiffNote' do
     end
 
     it_behaves_like 'a Note mutation that creates a Note'
+
+    context 'add comment to old line' do
+      let(:variables) { base_variables.deep_merge({ position: { old_line: 14 } }) }
+
+      it_behaves_like 'a Note mutation that creates a Note'
+    end
+
+    context 'add a comment with a position without lines' do
+      let(:variables) { base_variables }
+
+      it_behaves_like 'a Note mutation that does not create a Note'
+    end
 
     it_behaves_like 'a Note mutation when there are active record validation errors', model: DiffNote
 

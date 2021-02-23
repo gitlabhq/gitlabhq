@@ -1,0 +1,5 @@
+---
+title: Create system note on alert when its auto-resolved via alert integration
+merge_request: 54645
+author:
+type: added

@@ -1071,10 +1071,7 @@ module API
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)
 
-        update_params = declared_params
-        update_params.delete(:clear_status_after) if Feature.disabled?(:clear_status_with_quick_options, current_user, default_enabled: :yaml)
-
-        if ::Users::SetStatusService.new(current_user, update_params).execute
+        if ::Users::SetStatusService.new(current_user, declared_params).execute
           present current_user.status, with: Entities::UserStatus
         else
           render_validation_error!(current_user.status)

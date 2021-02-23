@@ -14,6 +14,10 @@ module Gitlab
             }
           end
 
+          def value
+            @variable.fetch(:value)
+          end
+
           def [](key)
             @variable.fetch(key)
           end

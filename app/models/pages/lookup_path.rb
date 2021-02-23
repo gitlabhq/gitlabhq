@@ -43,8 +43,6 @@ module Pages
 
     def deployment
       strong_memoize(:deployment) do
-        next unless Feature.enabled?(:pages_serve_from_deployments, project, default_enabled: true)
-
         project.pages_metadatum.pages_deployment
       end
     end

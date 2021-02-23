@@ -10,13 +10,18 @@ module Gitlab
 
         def initialize(variables = [], errors = nil)
           @variables = []
+          @variables_by_key = {}
           @errors = errors
 
           variables.each { |variable| self.append(variable) }
         end
 
         def append(resource)
-          tap { @variables.append(Collection::Item.fabricate(resource)) }
+          item = Collection::Item.fabricate(resource)
+          @variables.append(item)
+          @variables_by_key[item[:key]] = item
+
+          self
         end
 
         def concat(resources)
@@ -34,6 +39,14 @@ module Gitlab
             self.each { |variable| collection.append(variable) }
             other.each { |variable| collection.append(variable) }
           end
+        end
+
+        def [](key)
+          @variables_by_key[key]
+        end
+
+        def size
+          @variables.size
         end
 
         def to_runner_variables

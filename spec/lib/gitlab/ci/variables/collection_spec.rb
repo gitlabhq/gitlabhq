@@ -98,6 +98,50 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
     end
   end
 
+  describe '#[]' do
+    variable = { key: 'VAR', value: 'value', public: true, masked: false }
+
+    collection = described_class.new([variable])
+
+    it 'returns nil for a non-existent variable name' do
+      expect(collection['UNKNOWN_VAR']).to be_nil
+    end
+
+    it 'returns Item for an existent variable name' do
+      expect(collection['VAR']).to be_an_instance_of(Gitlab::Ci::Variables::Collection::Item)
+      expect(collection['VAR'].to_runner_variable).to eq(variable)
+    end
+  end
+
+  describe '#size' do
+    it 'returns zero for empty collection' do
+      collection = described_class.new([])
+
+      expect(collection.size).to eq(0)
+    end
+
+    it 'returns 2 for collection with 2 variables' do
+      collection = described_class.new(
+        [
+          { key: 'VAR1', value: 'value', public: true, masked: false },
+          { key: 'VAR2', value: 'value', public: true, masked: false }
+        ])
+
+      expect(collection.size).to eq(2)
+    end
+
+    it 'returns 3 for collection with 2 duplicate variables' do
+      collection = described_class.new(
+        [
+          { key: 'VAR1', value: 'value', public: true, masked: false },
+          { key: 'VAR2', value: 'value', public: true, masked: false },
+          { key: 'VAR1', value: 'value', public: true, masked: false }
+        ])
+
+      expect(collection.size).to eq(3)
+    end
+  end
+
   describe '#to_runner_variables' do
     it 'creates an array of hashes in a runner-compatible format' do
       collection = described_class.new([{ key: 'TEST', value: '1' }])

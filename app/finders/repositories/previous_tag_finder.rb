@@ -16,12 +16,13 @@ module Repositories
   # This finder expects that all tags to consider meet the following
   # requirements:
   #
-  # * They start with the letter "v"
-  # * They use semantic versioning for the tag format
+  # * They start with the letter "v" followed by a version, or immediately start
+  #   with a version
+  # * They use semantic versioning for the version format
   #
   # Tags not meeting these requirements are ignored.
   class PreviousTagFinder
-    TAG_REGEX = /\Av(?<version>#{Gitlab::Regex.unbounded_semver_regex})\z/.freeze
+    TAG_REGEX = /\Av?(?<version>#{Gitlab::Regex.unbounded_semver_regex})\z/.freeze
 
     def initialize(project)
       @project = project

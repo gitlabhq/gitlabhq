@@ -11,6 +11,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
   describe '#execute' do
     let(:service) { described_class.new(project, payload) }
+    let(:source) { 'Prometheus' }
     let(:auto_close_incident) { true }
     let(:create_issue) { true }
     let(:send_email) { true }
@@ -31,7 +32,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
     subject(:execute) { service.execute }
 
     context 'when alert payload is valid' do
-      let(:parsed_payload) { Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: 'Prometheus') }
+      let(:parsed_payload) { Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: source) }
       let(:fingerprint) { parsed_payload.gitlab_fingerprint }
       let(:payload) do
         {
@@ -112,9 +113,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
             it_behaves_like 'Alert Notification Service sends notification email'
             it_behaves_like 'processes incident issues'
 
-            it 'creates a system note corresponding to alert creation' do
-              expect { subject }.to change(Note, :count).by(1)
-            end
+            it_behaves_like 'creates single system note based on the source of the alert'
 
             context 'when auto-alert creation is disabled' do
               let(:create_issue) { false }
@@ -158,16 +157,19 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
       context 'when Prometheus alert status is resolved' do
         let(:status) { 'resolved' }
-        let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
+        let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint, monitoring_tool: source) }
 
         context 'when auto_resolve_incident set to true' do
           context 'when status can be changed' do
             it_behaves_like 'Alert Notification Service sends notification email'
             it_behaves_like 'does not process incident issues'
 
-            it 'resolves an existing alert' do
+            it 'resolves an existing alert without error' do
+              expect(Gitlab::AppLogger).not_to receive(:warn)
               expect { execute }.to change { alert.reload.resolved? }.to(true)
             end
+
+            it_behaves_like 'creates status-change system note for an auto-resolved alert'
 
             context 'existing issue' do
               let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint) }
@@ -215,6 +217,8 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           it 'does not resolve an existing alert' do
             expect { execute }.not_to change { alert.reload.resolved? }
           end
+
+          it_behaves_like 'creates single system note based on the source of the alert'
         end
 
         context 'when emails are disabled' do

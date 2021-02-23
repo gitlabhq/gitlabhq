@@ -82,8 +82,11 @@ RSpec.describe JiraService do
 
     subject(:fields) { service.fields }
 
-    it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url username password])
+    it 'includes transition help link' do
+      transition_id_field = fields.find { |field| field[:name] == 'jira_issue_transition_id' }
+
+      expect(transition_id_field[:title]).to eq('Jira workflow transition IDs')
+      expect(transition_id_field[:help]).to include('/help/user/project/integrations/jira')
     end
   end
 
@@ -457,10 +460,10 @@ RSpec.describe JiraService do
     end
 
     context 'with options' do
-      let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields,transitions" }
+      let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields" }
 
       it 'calls the Jira API with the options to get the issue' do
-        jira_service.find_issue(issue_key, rendered_fields: true, transitions: true)
+        jira_service.find_issue(issue_key, rendered_fields: true)
 
         expect(WebMock).to have_requested(:get, issue_url)
       end
@@ -502,7 +505,7 @@ RSpec.describe JiraService do
         allow(closed_issue).to receive(:resolution).and_return(true)
         allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
 
-        allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return(issue_key)
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return('JIRA-123')
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         WebMock.stub_request(:get, issue_url).with(basic_auth: %w(jira-username jira-password))
@@ -659,49 +662,6 @@ RSpec.describe JiraService do
         expect(WebMock).to have_requested(:post, transitions_url).with(
           body: /"id":"999"/
         ).once
-      end
-
-      context 'when using automatic issue transitions' do
-        let(:transitions) do
-          [
-            { id: '1' },
-            { id: '2', to: { statusCategory: { key: 'new' } } },
-            { id: '3', to: { statusCategory: { key: 'done' } } },
-            { id: '4', to: { statusCategory: { key: 'done' } } }
-          ]
-        end
-
-        before do
-          allow(jira_service).to receive_messages(jira_issue_transition_id: '')
-
-          close_issue
-        end
-
-        it 'uses the next transition with a status category of done' do
-          expect(WebMock).to have_requested(:post, transitions_url).with(
-            body: /"id":"3"/
-          ).once
-        end
-
-        context 'when no done transition is available' do
-          let(:transitions) do
-            [
-              { id: '1', to: { statusCategory: { key: 'new' } } }
-            ]
-          end
-
-          it 'does not attempt to transition' do
-            expect(WebMock).not_to have_requested(:post, transitions_url)
-          end
-        end
-
-        context 'when no valid transitions are returned' do
-          let(:transitions) { 'foo' }
-
-          it 'does not attempt to transition' do
-            expect(WebMock).not_to have_requested(:post, transitions_url)
-          end
-        end
       end
 
       context 'when using multiple transition ids' do
