@@ -99,7 +99,7 @@ ul {
 
 // Best
 // prefer an existing utility class over adding existing styles
-```0
+```
 
 Class names are also preferable to IDs. Rules that use IDs
 are not-reusable, as there can only be one affected element on

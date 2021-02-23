@@ -182,6 +182,30 @@ RSpec.describe OnboardingProgress do
     end
   end
 
+  describe '.not_completed?' do
+    subject { described_class.not_completed?(namespace.id, action) }
+
+    context 'when the namespace has not yet been onboarded' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the namespace has been onboarded but not registered the action yet' do
+      before do
+        described_class.onboard(namespace)
+      end
+
+      it { is_expected.to be(true) }
+
+      context 'when the action has been registered' do
+        before do
+          described_class.register(namespace, action)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '.column_name' do
     subject { described_class.column_name(action) }
 

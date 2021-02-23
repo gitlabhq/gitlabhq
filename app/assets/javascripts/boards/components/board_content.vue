@@ -6,11 +6,13 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import { sortableEnd, sortableStart } from '~/boards/mixins/sortable_default_options';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import BoardAddNewColumn from './board_add_new_column.vue';
 import BoardColumn from './board_column.vue';
 import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
   components: {
+    BoardAddNewColumn,
     BoardColumn:
       gon.features?.graphqlBoardLists || gon.features?.epicBoards
         ? BoardColumn
@@ -36,8 +38,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(['boardLists', 'error', 'isEpicBoard']),
+    ...mapState(['boardLists', 'error', 'addColumnForm', 'isEpicBoard']),
     ...mapGetters(['isSwimlanesOn']),
+    addColumnFormVisible() {
+      return this.addColumnForm?.visible;
+    },
     boardListsToUse() {
       return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn || this.isEpicBoard
         ? sortBy([...Object.values(this.boardLists)], 'position')
@@ -65,6 +70,10 @@ export default {
   },
   methods: {
     ...mapActions(['moveList']),
+    afterFormEnters() {
+      const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    },
     handleDragOnStart() {
       sortableStart();
     },
@@ -103,13 +112,17 @@ export default {
       @end="handleDragOnEnd"
     >
       <board-column
-        v-for="list in boardListsToUse"
-        :key="list.id"
+        v-for="(list, index) in boardListsToUse"
+        :key="index"
         ref="board"
         :can-admin-list="canAdminList"
         :list="list"
         :disabled="disabled"
       />
+
+      <transition name="slide" @after-enter="afterFormEnters">
+        <board-add-new-column v-if="addColumnFormVisible" />
+      </transition>
     </component>
 
     <epics-swimlanes

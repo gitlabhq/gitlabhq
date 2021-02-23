@@ -191,6 +191,8 @@ You can prevent the use of expired SSH keys with the following steps:
 1. Expand the **Account and limit** section.
 1. Select the **Enforce SSH key expiration** checkbox.
 
+Enforcing SSH key expiration immediately disables all expired SSH keys.
+
 For more information, see the following issue on [SSH key expiration](https://gitlab.com/gitlab-org/gitlab/-/issues/320970).
 
 ## Optional non-enforcement of Personal Access Token expiration **(ULTIMATE SELF)**

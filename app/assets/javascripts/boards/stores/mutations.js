@@ -64,8 +64,18 @@ export default {
     state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
+  [mutationTypes.RECEIVE_LABELS_REQUEST]: (state) => {
+    state.labelsLoading = true;
+  },
+
   [mutationTypes.RECEIVE_LABELS_SUCCESS]: (state, labels) => {
     state.labels = labels;
+    state.labelsLoading = false;
+  },
+
+  [mutationTypes.RECEIVE_LABELS_FAILURE]: (state) => {
+    state.error = s__('Boards|An error occurred while fetching labels. Please reload the page.');
+    state.labelsLoading = false;
   },
 
   [mutationTypes.GENERATE_DEFAULT_LISTS_FAILURE]: (state) => {
@@ -270,7 +280,7 @@ export default {
   },
 
   [mutationTypes.SET_ADD_COLUMN_FORM_VISIBLE]: (state, visible) => {
-    state.addColumnFormVisible = visible;
+    Vue.set(state.addColumnForm, 'visible', visible);
   },
 
   [mutationTypes.ADD_LIST_TO_HIGHLIGHTED_LISTS]: (state, listId) => {

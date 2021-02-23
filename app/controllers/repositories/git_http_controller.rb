@@ -78,11 +78,11 @@ module Repositories
     def update_fetch_statistics
       return unless project
       return if Gitlab::Database.read_only?
-      return if Feature.enabled?(:disable_git_http_fetch_writes)
-
       return unless repo_type.project?
 
-      OnboardingProgressService.new(project.namespace).execute(action: :git_read)
+      OnboardingProgressService.async(project.namespace_id).execute(action: :git_pull)
+
+      return if Feature.enabled?(:disable_git_http_fetch_writes)
 
       if Feature.enabled?(:project_statistics_sync, project, default_enabled: true)
         Projects::FetchStatisticsIncrementService.new(project).execute

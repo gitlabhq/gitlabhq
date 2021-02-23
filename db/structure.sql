@@ -21355,8 +21355,6 @@ CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_c
 
 CREATE UNIQUE INDEX idx_on_compliance_management_frameworks_namespace_id_name ON compliance_management_frameworks USING btree (namespace_id, name);
 
-CREATE INDEX idx_on_issues_where_service_desk_reply_to_is_not_null ON issues USING btree (id) WHERE (service_desk_reply_to IS NOT NULL);
-
 CREATE INDEX idx_packages_build_infos_on_package_id ON packages_build_infos USING btree (package_id);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);

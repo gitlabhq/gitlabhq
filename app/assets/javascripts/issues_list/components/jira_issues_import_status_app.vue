@@ -11,7 +11,7 @@ import { n__ } from '~/locale';
 import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 
 export default {
-  name: 'JiraIssuesList',
+  name: 'JiraIssuesImportStatus',
   components: {
     GlAlert,
     GlLabel,
@@ -89,13 +89,13 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-list-root">
+  <div class="gl-my-5">
     <gl-alert v-if="jiraImport.shouldShowInProgressAlert" @dismiss="hideInProgressAlert">
       {{ __('Import in progress. Refresh page to see newly added issues.') }}
     </gl-alert>
 
     <gl-alert
-      v-if="jiraImport.shouldShowFinishedAlert"
+      v-else-if="jiraImport.shouldShowFinishedAlert"
       variant="success"
       @dismiss="hideFinishedAlert"
     >

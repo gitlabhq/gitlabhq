@@ -41,8 +41,7 @@ module QA
         end
       end
 
-      it 'pushes multiple branches and tags together', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1679
-      ' do
+      it 'pushes multiple branches and tags together', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1679' do
         branches = []
         tags = []
         Git::Repository.perform do |repository|

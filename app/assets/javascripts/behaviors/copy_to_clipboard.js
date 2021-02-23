@@ -1,31 +1,27 @@
 import Clipboard from 'clipboard';
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
-import { fixTitle, show } from '~/tooltips';
+import { fixTitle, add, show, once } from '~/tooltips';
 
 function showTooltip(target, title) {
-  const { originalTitle } = target.dataset;
-  const hideTooltip = () => {
-    target.removeEventListener('mouseout', hideTooltip);
-    setTimeout(() => {
+  const { title: originalTitle } = target.dataset;
+
+  once('hidden', (tooltip) => {
+    if (tooltip.target === target) {
       target.setAttribute('title', originalTitle);
       fixTitle(target);
-    }, 100);
-  };
+    }
+  });
 
   target.setAttribute('title', title);
-
   fixTitle(target);
   show(target);
-
-  target.addEventListener('mouseout', hideTooltip);
+  setTimeout(() => target.blur(), 1000);
 }
 
 function genericSuccess(e) {
   // Clear the selection and blur the trigger so it loses its border
   e.clearSelection();
-  $(e.trigger).blur();
-
   showTooltip(e.trigger, __('Copied'));
 }
 
@@ -88,24 +84,8 @@ export default function initCopyToClipboard() {
  * @param {HTMLElement} btnElement
  */
 export function clickCopyToClipboardButton(btnElement) {
-  const $btnElement = $(btnElement);
-
   // Ensure the button has already been tooltip'd.
-  // If the use hasn't yet interacted (i.e. hovered or clicked)
-  // with the button, Bootstrap hasn't yet initialized
-  // the tooltip, and its `data-original-title` will be `undefined`.
-  // This value is used in the functions above.
-  $btnElement.tooltip();
-  btnElement.dispatchEvent(new MouseEvent('mouseover'));
+  add([btnElement], { show: true });
 
   btnElement.click();
-
-  // Manually trigger the necessary events to hide the
-  // button's tooltip and allow the button to perform its
-  // tooltip cleanup (updating the title from "Copied" back
-  // to its original title, "Copy branch name").
-  setTimeout(() => {
-    btnElement.dispatchEvent(new MouseEvent('mouseout'));
-    $btnElement.tooltip('hide');
-  }, 2000);
 }

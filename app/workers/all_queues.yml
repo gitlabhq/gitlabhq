@@ -1848,6 +1848,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: namespaces_onboarding_progress
+  :feature_category: :product_analytics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: namespaces_onboarding_user_added
   :feature_category: :users
   :has_external_dependencies:

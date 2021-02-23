@@ -110,9 +110,11 @@ Gitlab::Seeder.quiet do
           next
         end
 
-        ::Packages::Composer::CreatePackageService
-          .new(project, project.owner, params)
-          .execute
+        Sidekiq::Worker.skipping_transaction_check do
+          ::Packages::Composer::CreatePackageService
+            .new(project, project.owner, params)
+            .execute
+        end
 
         puts "version #{version.inspect} created!"
       end

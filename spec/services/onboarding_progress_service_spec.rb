@@ -3,6 +3,47 @@
 require 'spec_helper'
 
 RSpec.describe OnboardingProgressService do
+  describe '.async' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:action) { :git_pull }
+
+    subject(:execute_service) { described_class.async(namespace.id).execute(action: action) }
+
+    context 'when not onboarded' do
+      it 'does not schedule a worker' do
+        expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+
+        execute_service
+      end
+    end
+
+    context 'when onboarded' do
+      before do
+        OnboardingProgress.onboard(namespace)
+      end
+
+      context 'when action is already completed' do
+        before do
+          OnboardingProgress.register(namespace, action)
+        end
+
+        it 'does not schedule a worker' do
+          expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+
+          execute_service
+        end
+      end
+
+      context 'when action is not yet completed' do
+        it 'schedules a worker' do
+          expect(Namespaces::OnboardingProgressWorker).to receive(:perform_async)
+
+          execute_service
+        end
+      end
+    end
+  end
+
   describe '#execute' do
     let(:namespace) { create(:namespace, parent: root_namespace) }
     let(:root_namespace) { nil }

@@ -2,7 +2,7 @@
 import * as Sentry from '@sentry/browser';
 import MetricCard from '~/analytics/shared/components/metric_card.vue';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
+import { number } from '~/lib/utils/unit_format';
 import { s__ } from '~/locale';
 import usageTrendsCountQuery from '../graphql/queries/usage_trends_count.query.graphql';
 
@@ -24,8 +24,7 @@ export default {
       update(data) {
         return Object.entries(data).map(([key, obj]) => {
           const label = this.$options.i18n.labels[key];
-          const formatter = getFormatter(SUPPORTED_FORMATS.number);
-          const value = obj.nodes?.length ? formatter(obj.nodes[0].count, defaultPrecision) : null;
+          const value = obj.nodes?.length ? number(obj.nodes[0].count, defaultPrecision) : null;
 
           return {
             key,

@@ -327,11 +327,15 @@ describe('fetchLabels', () => {
     };
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    await testAction({
-      action: actions.fetchLabels,
-      state: { boardType: 'group' },
-      expectedMutations: [{ type: types.RECEIVE_LABELS_SUCCESS, payload: labels }],
-    });
+    const commit = jest.fn();
+    const getters = {
+      shouldUseGraphQL: () => true,
+    };
+    const state = { boardType: 'group' };
+
+    await actions.fetchLabels({ getters, state, commit });
+
+    expect(commit).toHaveBeenCalledWith(types.RECEIVE_LABELS_SUCCESS, labels);
   });
 });
 

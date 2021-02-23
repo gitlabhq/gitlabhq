@@ -753,7 +753,7 @@ alt_usage_data(999)
 ### Adding counters to build new metrics
 
 When adding the results of two counters, use the `add` usage data method that 
-handles fallback values and exceptions. It also generates a valid SQL export.
+handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-usage-ping-sql-queries-and-definitions).
 
 Example usage:
 

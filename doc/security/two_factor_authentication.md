@@ -129,8 +129,15 @@ verification can be done via a GitLab Shell command:
 ssh git@<hostname> 2fa_verify
 ```
 
-Once the OTP is verified, Git over SSH operations can be used for 15 minutes
-with the associated SSH key.
+Once the OTP is verified, Git over SSH operations can be used for a session duration of
+15 minutes (default) with the associated SSH key.
+
+### Security limitation
+
+2FA does not protect users with compromised *private* SSH keys.
+
+Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
+the configured [session duration](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled). 
 
 ### Enable or disable Two-factor Authentication (2FA) for Git operations
 

@@ -46,10 +46,19 @@ export default {
   watch: {
     filterParams: {
       handler() {
-        this.fetchItemsForList({ listId: this.list.id });
+        if (this.list.id) {
+          this.fetchItemsForList({ listId: this.list.id });
+        }
       },
       deep: true,
       immediate: true,
+    },
+    'list.id': {
+      handler(id) {
+        if (id) {
+          this.fetchItemsForList({ listId: this.list.id });
+        }
+      },
     },
     highlighted: {
       handler(highlighted) {

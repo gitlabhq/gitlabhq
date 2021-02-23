@@ -21,7 +21,7 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/runner/executors/docker_machine.html#using-gpus-on-google-compute-engine
-  image_url: https://about.gitlabcom/images/ci/gitlab-ci-cd-logo_2x.png
+  image_url: https://about.gitlab.com/images/ci/gitlab-ci-cd-logo_2x.png
   published_at: 2021-02-22
   release: 13.9
 - title: "Vault JWT (JSON Web Token) supports GitLab environments"

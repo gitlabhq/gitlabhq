@@ -109,11 +109,31 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('RECEIVE_LABELS_REQUEST', () => {
+    it('sets labelsLoading on state', () => {
+      mutations.RECEIVE_LABELS_REQUEST(state);
+
+      expect(state.labelsLoading).toEqual(true);
+    });
+  });
+
   describe('RECEIVE_LABELS_SUCCESS', () => {
     it('sets labels on state', () => {
       mutations.RECEIVE_LABELS_SUCCESS(state, labels);
 
       expect(state.labels).toEqual(labels);
+      expect(state.labelsLoading).toEqual(false);
+    });
+  });
+
+  describe('RECEIVE_LABELS_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.RECEIVE_LABELS_FAILURE(state);
+
+      expect(state.error).toEqual(
+        'An error occurred while fetching labels. Please reload the page.',
+      );
+      expect(state.labelsLoading).toEqual(false);
     });
   });
 

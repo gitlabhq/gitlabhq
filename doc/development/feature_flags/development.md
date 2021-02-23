@@ -71,7 +71,8 @@ push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 `experiment` feature flags are used for A/B testing on GitLab.com.
 
 An `experiment` feature flag should conform to the same standards as a `development` feature flag,
-although the interface has some differences. More information can be found in the [experiment guide](../experiment_guide/index.md).
+although the interface has some differences. An experiment feature flag should have a rollout issue,
+ideally created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/experiment_tracking_template.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 ## Feature flag definition and validation
 

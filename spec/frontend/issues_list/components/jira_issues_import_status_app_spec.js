@@ -1,9 +1,9 @@
 import { GlAlert, GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-import JiraIssuesListRoot from '~/issues_list/components/jira_issues_list_root.vue';
+import JiraIssuesImportStatus from '~/issues_list/components/jira_issues_import_status_app.vue';
 
-describe('JiraIssuesListRoot', () => {
+describe('JiraIssuesImportStatus', () => {
   const issuesPath = 'gitlab-org/gitlab-test/-/issues';
   const label = {
     color: '#333',
@@ -19,7 +19,7 @@ describe('JiraIssuesListRoot', () => {
     shouldShowFinishedAlert = false,
     shouldShowInProgressAlert = false,
   } = {}) =>
-    shallowMount(JiraIssuesListRoot, {
+    shallowMount(JiraIssuesImportStatus, {
       propsData: {
         canEdit: true,
         isJiraConfigured: true,
