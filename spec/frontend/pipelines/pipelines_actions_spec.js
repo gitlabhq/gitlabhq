@@ -1,5 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
@@ -63,10 +63,6 @@ describe('Pipelines Actions dropdown', () => {
     });
 
     describe('on click', () => {
-      beforeEach(() => {
-        createComponent({ actions: mockActions }, mount);
-      });
-
       it('makes a request and toggles the loading state', async () => {
         mock.onPost(mockActions.path).reply(200);
 

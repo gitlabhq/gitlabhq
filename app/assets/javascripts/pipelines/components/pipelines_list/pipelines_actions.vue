@@ -82,6 +82,7 @@ export default {
     :loading="isLoading"
     data-testid="pipelines-manual-actions-dropdown"
     right
+    lazy
     icon="play"
   >
     <gl-dropdown-item

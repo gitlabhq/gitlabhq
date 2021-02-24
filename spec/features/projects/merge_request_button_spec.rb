@@ -24,7 +24,7 @@ RSpec.describe 'Merge Request button' do
         project.add_developer(user)
       end
 
-      it 'shows Create merge request button' do
+      it 'shows Create merge request button', :js do
         href = project_new_merge_request_path(
           project,
           merge_request: {
@@ -83,7 +83,7 @@ RSpec.describe 'Merge Request button' do
       end
 
       context 'on own fork of project' do
-        it 'shows Create merge request button' do
+        it 'shows Create merge request button', :js do
           href = project_new_merge_request_path(
             forked_project,
             merge_request: {
@@ -120,7 +120,7 @@ RSpec.describe 'Merge Request button' do
       let(:fork_url) { project_compare_path(forked_project, from: 'master', to: 'feature') }
     end
 
-    it 'shows the correct merge request button when viewing across forks' do
+    it 'shows the correct merge request button when viewing across forks', :js do
       sign_in(user)
       project.add_developer(user)
 

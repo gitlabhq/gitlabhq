@@ -6,6 +6,9 @@ import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { __ } from './locale';
 
+// TODO: Update all references of "issuable_vue_app:change" https://gitlab.com/gitlab-org/gitlab/-/issues/322760
+export const EVENT_ISSUABLE_VUE_APP_CHANGE = 'issuable_vue_app:change';
+
 export default class Issue {
   constructor() {
     if ($('.js-alert-moved-from-service-desk-warning').length) {
@@ -23,9 +26,13 @@ export default class Issue {
     }
 
     // Listen to state changes in the Vue app
-    document.addEventListener('issuable_vue_app:change', (event) => {
+    this.issuableVueAppChangeHandler = (event) =>
       this.updateTopState(event.detail.isClosed, event.detail.data);
-    });
+    document.addEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, this.issuableVueAppChangeHandler);
+  }
+
+  dispose() {
+    document.removeEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, this.issuableVueAppChangeHandler);
   }
 
   /**

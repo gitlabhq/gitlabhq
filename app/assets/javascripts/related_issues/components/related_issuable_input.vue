@@ -223,6 +223,7 @@ export default {
           type="text"
           class="js-add-issuable-form-input add-issuable-form-input"
           data-qa-selector="add_issue_field"
+          autocomplete="off"
           @input="onInput"
           @focus="onFocus"
           @blur="onBlur"

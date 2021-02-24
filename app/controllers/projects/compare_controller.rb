@@ -21,7 +21,7 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :validate_refs!
 
   before_action do
-    push_frontend_feature_flag(:compare_repo_dropdown)
+    push_frontend_feature_flag(:compare_repo_dropdown, source_project, default_enabled: :yaml)
   end
 
   feature_category :source_code_management

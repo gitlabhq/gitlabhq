@@ -605,9 +605,10 @@ When adding a foreign-key constraint to an existing column in a non-empty table,
 we have to employ `add_concurrent_foreign_key` and `add_concurrent_index`
 instead of `add_reference`.
 
-For an empty table (such as a fresh one), it is recommended to use
-`add_reference` in a single-transaction migration, combining it with other
-operations that don't require `disable_ddl_transaction!`.
+If you have a new or empty table that doesn't reference a
+[high-traffic table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
+we recommend that you use `add_reference` in a single-transaction migration. You can
+combine it with other operations that don't require `disable_ddl_transaction!`.
 
 You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
 

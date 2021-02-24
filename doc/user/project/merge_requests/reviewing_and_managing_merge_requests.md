@@ -187,27 +187,31 @@ Feature.disable(:local_file_reviews)
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
 
 In a merge request, you can leave comments in any part of the file being changed.
-In the Merge Request Diff UI, click the **{comment}** **comment** icon in the gutter
-to expand the diff lines and leave a comment, just as you would for a changed line.
+In the Merge Request Diff UI, you can:
 
-![Comment on any diff file line](img/comment-on-any-diff-line.png)
+- **Comment on a single line**: Click the **{comment}** **comment** icon in the
+  gutter to expand the diff lines and display a comment box.
+- [**Comment on multiple lines**](#commenting-on-multiple-lines).
 
 ### Commenting on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) click-and-drag features in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299121) in GitLab 13.9.
 
-GitLab provides a way to select which lines of code a comment refers to. After starting a comment
-a dropdown selector is shown to select the first line that this comment refers to.
-The last line is the line that the comment icon was initially clicked on.
+When commenting on a diff, you can select which lines of code your comment refers
+to by either:
 
-New comments default to single line comments by having the first and last lines
-the same. Selecting a different starting line turns this into a multiline comment.
+![Comment on any diff file line](img/comment-on-any-diff-line_v13_10.png)
 
-![Multiline comment selection highlighted](img/multiline-comment-highlighted.png)
+- Clicking and dragging the **{comment}** **comment** icon in the gutter to highlight
+  lines in the diff. GitLab expands the diff lines and displays a comment box.
+- After starting a comment by clicking the **{comment}** **comment** icon in the
+  gutter, select the first line number your comment refers to in the **Commenting on lines**
+  select box. New comments default to single-line comments, unless you select
+  a different starting line.
 
-Once a multiline comment is saved the lines of code pertaining to that comment are listed directly
-above it.
+Multiline comments display the comment's line numbers above the body of the comment:
 
 ![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 

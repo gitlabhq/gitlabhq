@@ -21,13 +21,13 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js do
 
   describe 'clicking "Hide whitespace changes" button' do
     it 'toggles the "Hide whitespace changes" button' do
-      find('#show-whitespace').click
+      find('[data-testid="show-whitespace"]').click
 
       visit diffs_project_merge_request_path(project, merge_request)
 
       find('.js-show-diff-settings').click
 
-      expect(find('#show-whitespace')).not_to be_checked
+      expect(find('[data-testid="show-whitespace"]')).not_to be_checked
     end
   end
 end

@@ -81,6 +81,11 @@ export default {
       required: false,
       default: '',
     },
+    labelsFilterParam: {
+      type: String,
+      required: false,
+      default: 'label_name',
+    },
     dropdownButtonText: {
       type: String,
       required: false,
@@ -156,6 +161,7 @@ export default {
       labelsFetchPath: this.labelsFetchPath,
       labelsManagePath: this.labelsManagePath,
       labelsFilterBasePath: this.labelsFilterBasePath,
+      labelsFilterParam: this.labelsFilterParam,
       labelsListTitle: this.labelsListTitle,
       labelsCreateTitle: this.labelsCreateTitle,
       footerCreateLabelTitle: this.footerCreateLabelTitle,

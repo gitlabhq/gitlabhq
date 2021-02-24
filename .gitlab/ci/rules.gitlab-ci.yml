@@ -298,7 +298,6 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - <<: *if-master-refs
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
 

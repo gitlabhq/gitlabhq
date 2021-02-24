@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesTableRowComponent from '~/pipelines/components/pipelines_list/pipelines_table_row.vue';
 import eventHub from '~/pipelines/event_hub';
 
@@ -181,10 +182,16 @@ describe('Pipelines Table Row', () => {
       expect(wrapper.find('.js-pipelines-retry-button').attributes('title')).toMatch('Retry');
       expect(wrapper.find('.js-pipelines-cancel-button').exists()).toBe(true);
       expect(wrapper.find('.js-pipelines-cancel-button').attributes('title')).toMatch('Cancel');
+    });
 
-      const actionsMenu = wrapper.find('[data-testid="pipelines-manual-actions-dropdown"]');
+    it('should render the manual actions', async () => {
+      const manualActions = wrapper.find('[data-testid="pipelines-manual-actions-dropdown"]');
 
-      expect(actionsMenu.text()).toContain(scheduledJobAction.name);
+      // Click on the dropdown and wait for `lazy` dropdown items
+      manualActions.find('.dropdown-toggle').trigger('click');
+      await waitForPromises();
+
+      expect(manualActions.text()).toContain(scheduledJobAction.name);
     });
 
     it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {

@@ -889,7 +889,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/stylelint-config@^2.2.0":
+"@gitlab/stylelint-config@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-2.2.0.tgz#f0139c8bd29525b51ee9f16d26b66283bd2be5bb"
   integrity sha512-yLBwRu/geN7nGzoOtF6VV2Fbjhcu2w3PwVnJ5/6wX3MILLO7Wh8zzurIjjSnls8124WUoD7n51Catrjl0hyqDw==

@@ -11,32 +11,31 @@ import { mockConfig, mockRegularLabel, mockScopedLabel } from './mock_data';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-const createComponent = (initialState = mockConfig, slots = {}) => {
-  const store = new Vuex.Store(labelsSelectModule());
-
-  store.dispatch('setInitialState', initialState);
-
-  return shallowMount(DropdownValue, {
-    localVue,
-    store,
-    slots,
-  });
-};
-
 describe('DropdownValue', () => {
   let wrapper;
 
-  beforeEach(() => {
-    wrapper = createComponent();
-  });
+  const createComponent = (initialState = {}, slots = {}) => {
+    const store = new Vuex.Store(labelsSelectModule());
+
+    store.dispatch('setInitialState', { ...mockConfig, ...initialState });
+
+    wrapper = shallowMount(DropdownValue, {
+      localVue,
+      store,
+      slots,
+    });
+  };
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('methods', () => {
     describe('labelFilterUrl', () => {
       it('returns a label filter URL based on provided label param', () => {
+        createComponent();
+
         expect(wrapper.vm.labelFilterUrl(mockRegularLabel)).toBe(
           '/gitlab-org/my-project/issues?label_name[]=Foo%20Label',
         );
@@ -44,6 +43,10 @@ describe('DropdownValue', () => {
     });
 
     describe('scopedLabel', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
       it('returns `true` when provided label param is a scoped label', () => {
         expect(wrapper.vm.scopedLabel(mockScopedLabel)).toBe(true);
       });
@@ -56,28 +59,29 @@ describe('DropdownValue', () => {
 
   describe('template', () => {
     it('renders class `has-labels` on component container element when `selectedLabels` is not empty', () => {
+      createComponent();
+
       expect(wrapper.attributes('class')).toContain('has-labels');
     });
 
     it('renders element containing `None` when `selectedLabels` is empty', () => {
-      const wrapperNoLabels = createComponent(
+      createComponent(
         {
-          ...mockConfig,
           selectedLabels: [],
         },
         {
           default: 'None',
         },
       );
-      const noneEl = wrapperNoLabels.find('span.text-secondary');
+      const noneEl = wrapper.find('span.text-secondary');
 
       expect(noneEl.exists()).toBe(true);
       expect(noneEl.text()).toBe('None');
-
-      wrapperNoLabels.destroy();
     });
 
     it('renders labels when `selectedLabels` is not empty', () => {
+      createComponent();
+
       expect(wrapper.findAll(GlLabel).length).toBe(2);
     });
   });

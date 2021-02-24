@@ -69,7 +69,7 @@ export default {
       this.loading = true;
 
       if (reset) {
-        this.selectedRevision = emptyDropdownText;
+        this.selectedRevision = this.getDefaultBranch();
       }
 
       return axios

@@ -11634,7 +11634,9 @@ CREATE TABLE dast_profiles (
     updated_at timestamp with time zone NOT NULL,
     name text NOT NULL,
     description text NOT NULL,
+    branch_name text,
     CONSTRAINT check_5fcf73bf61 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_6c9d775949 CHECK ((char_length(branch_name) <= 255)),
     CONSTRAINT check_c34e505c24 CHECK ((char_length(description) <= 255))
 );
 

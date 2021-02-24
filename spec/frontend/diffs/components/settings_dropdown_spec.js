@@ -1,79 +1,66 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
+
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
-import diffModule from '~/diffs/store/modules';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import createDiffsStore from '../create_diffs_store';
 
 describe('Diff settings dropdown component', () => {
   let wrapper;
   let vm;
-  let actions;
+  let store;
 
   function createComponent(extendStore = () => {}) {
-    const store = new Vuex.Store({
-      modules: {
-        diffs: {
-          namespaced: true,
-          actions,
-          state: diffModule().state,
-          getters: diffModule().getters,
-        },
-      },
-    });
+    store = createDiffsStore();
 
     extendStore(store);
 
-    wrapper = mount(SettingsDropdown, {
-      localVue,
-      store,
-    });
+    wrapper = extendedWrapper(
+      mount(SettingsDropdown, {
+        store,
+      }),
+    );
     vm = wrapper.vm;
   }
 
   function getFileByFileCheckbox(vueWrapper) {
-    return vueWrapper.find('[data-testid="file-by-file"]');
+    return vueWrapper.findByTestId('file-by-file');
+  }
+
+  function setup({ storeUpdater } = {}) {
+    createComponent(storeUpdater);
+    jest.spyOn(store, 'dispatch').mockImplementation(() => {});
   }
 
   beforeEach(() => {
-    actions = {
-      setInlineDiffViewType: jest.fn(),
-      setParallelDiffViewType: jest.fn(),
-      setRenderTreeList: jest.fn(),
-      setShowWhitespace: jest.fn(),
-      setFileByFile: jest.fn(),
-    };
+    setup();
   });
 
   afterEach(() => {
+    store.dispatch.mockRestore();
     wrapper.destroy();
   });
 
   describe('tree view buttons', () => {
     it('list view button dispatches setRenderTreeList with false', () => {
-      createComponent();
-
       wrapper.find('.js-list-view').trigger('click');
 
-      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), false);
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', false);
     });
 
     it('tree view button dispatches setRenderTreeList with true', () => {
-      createComponent();
-
       wrapper.find('.js-tree-view').trigger('click');
 
-      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), true);
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', true);
     });
 
     it('sets list button as selected when renderTreeList is false', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          renderTreeList: false,
-        });
+      setup({
+        storeUpdater: (origStore) =>
+          Object.assign(origStore.state.diffs, { renderTreeList: false }),
       });
 
       expect(wrapper.find('.js-list-view').classes('selected')).toBe(true);
@@ -81,10 +68,8 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets tree button as selected when renderTreeList is true', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          renderTreeList: true,
-        });
+      setup({
+        storeUpdater: (origStore) => Object.assign(origStore.state.diffs, { renderTreeList: true }),
       });
 
       expect(wrapper.find('.js-list-view').classes('selected')).toBe(false);
@@ -94,10 +79,9 @@ describe('Diff settings dropdown component', () => {
 
   describe('compare changes', () => {
     it('sets inline button as selected', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          diffViewType: INLINE_DIFF_VIEW_TYPE,
-        });
+      setup({
+        storeUpdater: (origStore) =>
+          Object.assign(origStore.state.diffs, { diffViewType: INLINE_DIFF_VIEW_TYPE }),
       });
 
       expect(wrapper.find('.js-inline-diff-button').classes('selected')).toBe(true);
@@ -105,10 +89,9 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets parallel button as selected', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          diffViewType: PARALLEL_DIFF_VIEW_TYPE,
-        });
+      setup({
+        storeUpdater: (origStore) =>
+          Object.assign(origStore.state.diffs, { diffViewType: PARALLEL_DIFF_VIEW_TYPE }),
       });
 
       expect(wrapper.find('.js-inline-diff-button').classes('selected')).toBe(false);
@@ -116,53 +99,49 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('calls setInlineDiffViewType when clicking inline button', () => {
-      createComponent();
-
       wrapper.find('.js-inline-diff-button').trigger('click');
 
-      expect(actions.setInlineDiffViewType).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setInlineDiffViewType', expect.anything());
     });
 
     it('calls setParallelDiffViewType when clicking parallel button', () => {
-      createComponent();
-
       wrapper.find('.js-parallel-diff-button').trigger('click');
 
-      expect(actions.setParallelDiffViewType).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'diffs/setParallelDiffViewType',
+        expect.anything(),
+      );
     });
   });
 
   describe('whitespace toggle', () => {
     it('does not set as checked when showWhitespace is false', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          showWhitespace: false,
-        });
+      setup({
+        storeUpdater: (origStore) =>
+          Object.assign(origStore.state.diffs, { showWhitespace: false }),
       });
 
-      expect(wrapper.find('#show-whitespace').element.checked).toBe(false);
+      expect(wrapper.findByTestId('show-whitespace').element.checked).toBe(false);
     });
 
     it('sets as checked when showWhitespace is true', () => {
-      createComponent((store) => {
-        Object.assign(store.state.diffs, {
-          showWhitespace: true,
-        });
+      setup({
+        storeUpdater: (origStore) => Object.assign(origStore.state.diffs, { showWhitespace: true }),
       });
 
-      expect(wrapper.find('#show-whitespace').element.checked).toBe(true);
+      expect(wrapper.findByTestId('show-whitespace').element.checked).toBe(true);
     });
 
-    it('calls setShowWhitespace on change', () => {
-      createComponent();
+    it('calls setShowWhitespace on change', async () => {
+      const checkbox = wrapper.findByTestId('show-whitespace');
+      const { checked } = checkbox.element;
 
-      const checkbox = wrapper.find('#show-whitespace');
+      checkbox.trigger('click');
 
-      checkbox.element.checked = true;
-      checkbox.trigger('change');
+      await vm.$nextTick();
 
-      expect(actions.setShowWhitespace).toHaveBeenCalledWith(expect.anything(), {
-        showWhitespace: true,
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowWhitespace', {
+        showWhitespace: !checked,
         pushState: true,
       });
     });
@@ -179,14 +158,11 @@ describe('Diff settings dropdown component', () => {
       ${false}   | ${false}
     `(
       'sets the checkbox to { checked: $checked } if the fileByFile setting is $fileByFile',
-      async ({ fileByFile, checked }) => {
-        createComponent((store) => {
-          Object.assign(store.state.diffs, {
-            viewDiffsFileByFile: fileByFile,
-          });
+      ({ fileByFile, checked }) => {
+        setup({
+          storeUpdater: (origStore) =>
+            Object.assign(origStore.state.diffs, { viewDiffsFileByFile: fileByFile }),
         });
-
-        await vm.$nextTick();
 
         expect(getFileByFileCheckbox(wrapper).element.checked).toBe(checked);
       },
@@ -199,19 +175,16 @@ describe('Diff settings dropdown component', () => {
     `(
       'when the file by file setting starts as $start, toggling the checkbox should call setFileByFile with $setting',
       async ({ start, setting }) => {
-        createComponent((store) => {
-          Object.assign(store.state.diffs, {
-            viewDiffsFileByFile: start,
-          });
+        setup({
+          storeUpdater: (origStore) =>
+            Object.assign(origStore.state.diffs, { viewDiffsFileByFile: start }),
         });
-
-        await vm.$nextTick();
 
         getFileByFileCheckbox(wrapper).trigger('click');
 
         await vm.$nextTick();
 
-        expect(actions.setFileByFile).toHaveBeenLastCalledWith(expect.anything(), {
+        expect(store.dispatch).toHaveBeenCalledWith('diffs/setFileByFile', {
           fileByFile: setting,
         });
       },

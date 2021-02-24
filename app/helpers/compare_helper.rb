@@ -28,4 +28,20 @@ module CompareHelper
       .new(current_user: current_user, source_project: source_project, project_feature: :repository)
       .execute(include_routes: true)
   end
+
+  def project_compare_selector_data(project, merge_request, params)
+    {
+      project_compare_index_path: project_compare_index_path(project),
+      refs_project_path: refs_project_path(project),
+      params_from: params[:from],
+      params_to: params[:to],
+      project_merge_request_path: merge_request.present? ? project_merge_request_path(project, merge_request) : '',
+      create_mr_path: create_mr_button? ? create_mr_path : ''
+    }.tap do |data|
+      if Feature.enabled?(:compare_repo_dropdown, project, default_enabled: :yaml)
+        data[:project_to] = { id: project.id, name: project.full_path }.to_json
+        data[:projects_from] = target_projects(project).map { |project| { id: project.id, name: project.full_path } }.to_json
+      end
+    end
+  end
 end
