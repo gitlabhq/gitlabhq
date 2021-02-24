@@ -1051,7 +1051,7 @@ RSpec.describe User do
       let(:user)          { create(:user) }
       let(:external_user) { create(:user, external: true) }
 
-      it "sets other properties aswell" do
+      it "sets other properties as well" do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
@@ -1062,7 +1062,7 @@ RSpec.describe User do
       let(:user)      { create(:user) }
       let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
 
-      it 'allows a verfied secondary email to be used as the primary without needing reconfirmation' do
+      it 'allows a verified secondary email to be used as the primary without needing reconfirmation' do
         user.update!(email: secondary.email)
         user.reload
         expect(user.email).to eq secondary.email
@@ -5412,5 +5412,51 @@ RSpec.describe User do
     it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
     it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
     it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
+  end
+
+  describe '#confirmation_required_on_sign_in?' do
+    subject { user.confirmation_required_on_sign_in? }
+
+    context 'when user is confirmed' do
+      let(:user) { build_stubbed(:user) }
+
+      it 'is falsey' do
+        expect(user.confirmed?).to be_truthy
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'when user is not confirmed' do
+      let_it_be(:user) { build_stubbed(:user, :unconfirmed, confirmation_sent_at: Time.current) }
+
+      it 'is truthy when soft_email_confirmation feature is disabled' do
+        stub_feature_flags(soft_email_confirmation: false)
+        expect(subject).to be_truthy
+      end
+
+      context 'when soft_email_confirmation feature is enabled' do
+        before do
+          stub_feature_flags(soft_email_confirmation: true)
+        end
+
+        it 'is falsey when confirmation period is valid' do
+          expect(subject).to be_falsey
+        end
+
+        it 'is truthy when confirmation period is expired' do
+          travel_to(User.allow_unconfirmed_access_for.from_now + 1.day) do
+            expect(subject).to be_truthy
+          end
+        end
+
+        context 'when user has no confirmation email sent' do
+          let(:user) { build(:user, :unconfirmed, confirmation_sent_at: nil) }
+
+          it 'is truthy' do
+            expect(subject).to be_truthy
+          end
+        end
+      end
+    end
   end
 end

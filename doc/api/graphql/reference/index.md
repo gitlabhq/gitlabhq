@@ -5819,9 +5819,9 @@ Possible states of a user.
 
 | Value | Description |
 | ----- | ----------- |
-| `internal` |  |
-| `private` |  |
-| `public` |  |
+| `internal` | Internal visibility level. |
+| `private` | Private visibility level. |
+| `public` | Public visibility level. |
 
 ### VisibilityScopesEnum
 

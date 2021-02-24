@@ -25,7 +25,6 @@ module MergeRequests
       update_task_event(merge_request) || update(merge_request)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def handle_changes(merge_request, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
@@ -34,25 +33,14 @@ module MergeRequests
       old_reviewers = old_associations.fetch(:reviewers, [])
       changed_fields = merge_request.previous_changes.keys
 
-      if has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
-        todo_service.resolve_todos_for_target(merge_request, current_user)
-      end
+      resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
 
       if merge_request.previous_changes.include?('title') ||
           merge_request.previous_changes.include?('description')
         todo_service.update_merge_request(merge_request, current_user, old_mentioned_users)
       end
 
-      if merge_request.previous_changes.include?('target_branch')
-        create_branch_change_note(merge_request,
-                                  'target',
-                                  target_branch_was_deleted ? 'delete' : 'update',
-                                  merge_request.previous_changes['target_branch'].first,
-                                  merge_request.target_branch)
-
-        abort_auto_merge(merge_request, 'target branch was changed')
-      end
-
+      handle_target_branch_change(merge_request)
       handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
       handle_reviewers_change(merge_request, old_reviewers) if merge_request.reviewers != old_reviewers
       handle_milestone_change(merge_request)
@@ -60,24 +48,8 @@ module MergeRequests
 
       track_title_and_desc_edits(changed_fields)
 
-      added_labels = merge_request.labels - old_labels
-      if added_labels.present?
-        notification_service.async.relabeled_merge_request(
-          merge_request,
-          added_labels,
-          current_user
-        )
-      end
-
-      added_mentions = merge_request.mentioned_users(current_user) - old_mentioned_users
-
-      if added_mentions.present?
-        notification_service.async.new_mentions_in_merge_request(
-          merge_request,
-          added_mentions,
-          current_user
-        )
-      end
+      notify_if_labels_added(merge_request, old_labels)
+      notify_if_mentions_added(merge_request, old_mentioned_users)
 
       # Since #mark_as_unchecked triggers an update action through the MR's
       #   state machine, we want to push this as far down in the process so we
@@ -88,7 +60,6 @@ module MergeRequests
         merge_request.mark_as_unchecked
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def handle_task_changes(merge_request)
       todo_service.resolve_todos_for_target(merge_request, current_user)
@@ -122,6 +93,50 @@ module MergeRequests
         merge_request_activity_counter
           .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
       end
+    end
+
+    def notify_if_labels_added(merge_request, old_labels)
+      added_labels = merge_request.labels - old_labels
+
+      return unless added_labels.present?
+
+      notification_service.async.relabeled_merge_request(
+        merge_request,
+        added_labels,
+        current_user
+      )
+    end
+
+    def notify_if_mentions_added(merge_request, old_mentioned_users)
+      added_mentions = merge_request.mentioned_users(current_user) - old_mentioned_users
+
+      return unless added_mentions.present?
+
+      notification_service.async.new_mentions_in_merge_request(
+        merge_request,
+        added_mentions,
+        current_user
+      )
+    end
+
+    def resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
+      return unless has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
+
+      todo_service.resolve_todos_for_target(merge_request, current_user)
+    end
+
+    def handle_target_branch_change(merge_request)
+      return unless merge_request.previous_changes.include?('target_branch')
+
+      create_branch_change_note(
+        merge_request,
+        'target',
+        target_branch_was_deleted ? 'delete' : 'update',
+        merge_request.previous_changes['target_branch'].first,
+        merge_request.target_branch
+      )
+
+      abort_auto_merge(merge_request, 'target branch was changed')
     end
 
     def handle_draft_status_change(merge_request, changed_fields)

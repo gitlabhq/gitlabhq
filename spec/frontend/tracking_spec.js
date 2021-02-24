@@ -149,6 +149,27 @@ describe('Tracking', () => {
     });
   });
 
+  describe('.flushPendingEvents', () => {
+    it('flushes any pending events', () => {
+      Tracking.initialized = false;
+      Tracking.event('_category_', '_eventName_', { label: '_label_' });
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+
+      Tracking.flushPendingEvents();
+
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'trackStructEvent',
+        '_category_',
+        '_eventName_',
+        '_label_',
+        undefined,
+        undefined,
+        [STANDARD_CONTEXT],
+      );
+    });
+  });
+
   describe('tracking interface events', () => {
     let eventSpy;
 

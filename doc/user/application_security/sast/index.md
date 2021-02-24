@@ -131,16 +131,16 @@ All open source (OSS) analyzers have been moved to the GitLab Free tier as of Gi
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                         | In Free             | In Ultimate        |
-|:-----------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                           | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                          | **{dotted-circle}** | **{check-circle}** |
-| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)                     | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST Rulesets](#customize-rulesets)                            | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                                                                   | In Free             | In Ultimate        |
+|:-------------------------------------------------------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure SAST Scanners](#configuration)                                                                    | **{check-circle}**  | **{check-circle}** |
+| [Customize SAST Settings](#customizing-the-sast-settings)                                                    | **{check-circle}**  | **{check-circle}** |
+| View [JSON Report](#reports-json-format)                                                                     | **{check-circle}**  | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                                                                 | **{dotted-circle}** | **{check-circle}** |
+| [Interaction with Vulnerabilities](../../application_security/index.md#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
+| [Access to Security Dashboard](../../application_security/security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)                                                        | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST Rulesets](#customize-rulesets)                                                               | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -610,31 +610,6 @@ Here's an example SAST report:
   "remediations": []
 }
 ```
-
-## Secret detection
-
-Learn more about [Secret Detection](../secret_detection).
-
-## Security Dashboard **(ULTIMATE)**
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Interacting with the vulnerabilities **(ULTIMATE)**
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
-
-## Vulnerabilities database
-
-Vulnerabilities contained in the vulnerability database can be searched
-and viewed at the [GitLab vulnerability advisory database](https://advisories.gitlab.com).
-
-### Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
 ## Running SAST in an offline environment
 
