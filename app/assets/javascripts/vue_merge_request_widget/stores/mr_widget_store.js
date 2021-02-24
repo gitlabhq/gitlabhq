@@ -177,7 +177,7 @@ export default class MergeRequestStore {
       this.ciStatus = `${this.ciStatus}-with-warnings`;
     }
 
-    this.commitsCount = mergeRequest.commitCount || 10;
+    this.commitsCount = mergeRequest.commitCount;
     this.branchMissing = !mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists;
     this.hasConflicts = mergeRequest.conflicts;
     this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;

@@ -4,7 +4,7 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
-= render_dashboard_gold_trial(current_user)
+= render_dashboard_ultimate_trial(current_user)
 
 .page-title-holder.d-flex.align-items-center
   %h1.page-title= _('Issues')

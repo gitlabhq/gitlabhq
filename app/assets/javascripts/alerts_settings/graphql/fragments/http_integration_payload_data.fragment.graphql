@@ -1,14 +1,3 @@
 fragment HttpIntegrationPayloadData on AlertManagementHttpIntegration {
-  payloadExample
-  payloadAttributeMappings {
-    fieldName
-    path
-    type
-    label
-  }
-  payloadAlertFields {
-    path
-    type
-    label
-  }
+  id
 }

@@ -183,6 +183,7 @@ describe('Tracking', () => {
         <input class="dropdown" data-track-event="toggle_dropdown"/>
         <div data-track-event="nested_event"><span class="nested"></span></div>
         <input data-track-eventbogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
+        <input data-track-event="click_input3" data-track-experiment="example" value="_value_"/>
       `);
     });
 
@@ -241,6 +242,22 @@ describe('Tracking', () => {
       document.querySelector('span.nested').click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
+    });
+
+    it('brings in experiment data if linked to an experiment', () => {
+      const data = {
+        variant: 'candidate',
+        experiment: 'repo_integrations_link',
+        key: '2bff73f6bb8cc11156c50a8ba66b9b8b',
+      };
+
+      window.gon.global = { experiment: { example: data } };
+      document.querySelector('[data-track-event="click_input3"]').click();
+
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input3', {
+        value: '_value_',
+        context: { schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', data },
+      });
     });
   });
 

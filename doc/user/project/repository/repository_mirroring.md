@@ -588,3 +588,9 @@ If you receive an "13:Received RST_STREAM with error code 2" while mirroring to 
 ### 4:Deadline Exceeded
 
 When upgrading to GitLab 11.11.8 or newer, a change in how usernames are represented means that you may need to update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
+
+### Connection blocked because server only allows public key authentication
+
+As the error indicates, the connection is getting blocked between GitLab and the remote repository. Even if a [TCP Check](../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site) is successful, you will need to check any networking components in the route from GitLab to the remote Server to ensure there's no blockage.
+
+For example, we've seen this error when a Firewall was performing a `Deep SSH Inspection` on outgoing packets.

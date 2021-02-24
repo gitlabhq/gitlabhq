@@ -2584,14 +2584,14 @@ RSpec.describe Ci::Build do
       end
 
       shared_examples 'containing environment variables' do
-        it { environment_variables.each { |v| is_expected.to include(v) } }
+        it { is_expected.to include(*environment_variables) }
       end
 
       context 'when no URL was set' do
         it_behaves_like 'containing environment variables'
 
         it 'does not have CI_ENVIRONMENT_URL' do
-          keys = subject.map { |var| var[:key] }
+          keys = subject.pluck(:key)
 
           expect(keys).not_to include('CI_ENVIRONMENT_URL')
         end

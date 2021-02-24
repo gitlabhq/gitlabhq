@@ -1,0 +1,8 @@
+---
+name: repo_integrations_link
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54652/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285154
+milestone: '13.10'
+type: experiment
+group: group::adoption
+default_enabled: false

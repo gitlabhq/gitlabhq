@@ -3,7 +3,7 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
 
-= render_dashboard_gold_trial(current_user)
+= render_dashboard_ultimate_trial(current_user)
 
 - page_title    _("Activity")
 - header_title  _("Activity"), activity_dashboard_path

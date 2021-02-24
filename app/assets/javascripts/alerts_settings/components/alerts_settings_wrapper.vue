@@ -1,16 +1,16 @@
 <script>
+import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
+import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { s__ } from '~/locale';
 import { typeSet } from '../constants';
-import createHttpIntegrationMutation from '../graphql/mutations/create_http_integration.mutation.graphql';
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
 import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import updateCurrentHttpIntegrationMutation from '../graphql/mutations/update_current_http_integration.mutation.graphql';
 import updateCurrentPrometheusIntegrationMutation from '../graphql/mutations/update_current_prometheus_integration.mutation.graphql';
-import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 import getHttpIntegrationsQuery from '../graphql/queries/get_http_integrations.query.graphql';

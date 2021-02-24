@@ -78,33 +78,3 @@ the following table.
 | `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |
 | `read_repository`  | Allows read-only access (pull) to the repository. |
 | `write_repository` | Allows read-write access (pull, push) to the repository. |
-
-### Enable or disable project access tokens
-
-Project access tokens are deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it for your instance, globally or by project.
-
-To disable it globally:
-
-```ruby
-Feature.disable(:resource_access_token)
-```
-
-To disable it for a specific project:
-
-```ruby
-Feature.disable(:resource_access_token, project)
-```
-
-To enable it globally:
-
-```ruby
-Feature.enable(:resource_access_token)
-```
-
-To enable it for a specific project:
-
-```ruby
-Feature.enable(:resource_access_token, project)
-```

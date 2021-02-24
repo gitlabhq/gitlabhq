@@ -7736,6 +7736,9 @@ msgstr ""
 msgid "Configure Gitaly timeouts."
 msgstr ""
 
+msgid "Configure Integrations"
+msgstr ""
+
 msgid "Configure Let's Encrypt"
 msgstr ""
 
@@ -10634,7 +10637,7 @@ msgstr ""
 msgid "Discover|Security capabilities, integrated into your development lifecycle"
 msgstr ""
 
-msgid "Discover|See the other features of the %{linkStart}gold plan%{linkEnd}"
+msgid "Discover|See the other features of the %{linkStart}ultimate plan%{linkEnd}"
 msgstr ""
 
 msgid "Discover|Start a free trial"
@@ -15643,7 +15646,7 @@ msgstr ""
 msgid "InProductMarketing|Start a GitLab Gold trial today in less than one minute, no credit card required."
 msgstr ""
 
-msgid "InProductMarketing|Start a free trial of GitLab Gold – no CC required"
+msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no CC required"
 msgstr ""
 
 msgid "InProductMarketing|Start a trial"
@@ -21097,7 +21100,7 @@ msgstr ""
 msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
-msgid "Only projects created under a Gold license are available in Security Dashboards."
+msgid "Only projects created under a Ultimate license are available in Security Dashboards."
 msgstr ""
 
 msgid "Only verified users with an email address in any of these domains can be added to the group."
@@ -32265,7 +32268,7 @@ msgstr ""
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
-msgid "Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
+msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
 msgstr ""
 
 msgid "Use cURL"

@@ -89,7 +89,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
           )
         end
 
-        it 'successfully fills and submits the form', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322666' do
+        it 'successfully fills and submits the form' do
           visit project_settings_operations_path(project)
 
           wait_for_requests
@@ -152,7 +152,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
     end
 
     context 'grafana integration settings form' do
-      it 'successfully fills and completes the form', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322666' do
+      it 'successfully fills and completes the form' do
         visit project_settings_operations_path(project)
 
         wait_for_requests

@@ -5,13 +5,13 @@ module Gitlab
     module Variables
       class Collection
         class Item
+          include Gitlab::Utils::StrongMemoize
+
           def initialize(key:, value:, public: true, file: false, masked: false)
             raise ArgumentError, "`#{key}` must be of type String or nil value, while it was: #{value.class}" unless
               value.is_a?(String) || value.nil?
 
-            @variable = {
-              key: key, value: value, public: public, file: file, masked: masked
-            }
+            @variable = { key: key, value: value, public: public, file: file, masked: masked }
           end
 
           def value
@@ -24,6 +24,14 @@ module Gitlab
 
           def ==(other)
             to_runner_variable == self.class.fabricate(other).to_runner_variable
+          end
+
+          def depends_on
+            strong_memoize(:depends_on) do
+              next unless ExpandVariables.possible_var_reference?(value)
+
+              value.scan(ExpandVariables::VARIABLES_REGEXP).map(&:first)
+            end
           end
 
           ##

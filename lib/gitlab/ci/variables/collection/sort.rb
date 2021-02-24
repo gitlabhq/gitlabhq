@@ -27,11 +27,11 @@ module Gitlab
 
             strong_memoize(:errors) do
               # Check for cyclic dependencies and build error message in that case
-              errors = each_strongly_connected_component.filter_map do |component|
+              cyclic_vars = each_strongly_connected_component.filter_map do |component|
                 component.map { |v| v[:key] }.inspect if component.size > 1
               end
 
-              "circular variable reference detected: #{errors.join(', ')}" if errors.any?
+              "circular variable reference detected: #{cyclic_vars.join(', ')}" if cyclic_vars.any?
             end
           end
 
@@ -51,29 +51,11 @@ module Gitlab
             @collection.each(&block)
           end
 
-          def tsort_each_child(variable, &block)
-            each_variable_reference(variable.value, &block)
-          end
+          def tsort_each_child(var_item, &block)
+            depends_on = var_item.depends_on
+            return unless depends_on
 
-          def input_vars
-            strong_memoize(:input_vars) do
-              @collection.index_by { |env| env[:key] }
-            end
-          end
-
-          def walk_references(value)
-            return unless ExpandVariables.possible_var_reference?(value)
-
-            value.scan(ExpandVariables::VARIABLES_REGEXP) do |var_ref|
-              yield(input_vars, var_ref.first)
-            end
-          end
-
-          def each_variable_reference(value)
-            walk_references(value) do |vars_hash, ref_var_name|
-              variable = vars_hash.dig(ref_var_name)
-              yield variable if variable
-            end
+            depends_on.filter_map { |var_ref_name| @collection[var_ref_name] }.each(&block)
           end
         end
       end

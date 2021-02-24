@@ -2,6 +2,8 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
+import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
+import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,14 +11,12 @@ import IntegrationsList from '~/alerts_settings/components/alerts_integrations_l
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
 import { typeSet } from '~/alerts_settings/constants';
-import createHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import createPrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/create_prometheus_integration.mutation.graphql';
 import destroyHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '~/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '~/alerts_settings/graphql/mutations/reset_prometheus_token.mutation.graphql';
 import updateCurrentHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/update_current_http_integration.mutation.graphql';
 import updateCurrentPrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/update_current_prometheus_integration.mutation.graphql';
-import updateHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getIntegrationsQuery from '~/alerts_settings/graphql/queries/get_integrations.query.graphql';
 import {

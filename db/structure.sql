@@ -17599,7 +17599,7 @@ CREATE TABLE terraform_states (
     locked_at timestamp with time zone,
     locked_by_user_id bigint,
     uuid character varying(32) NOT NULL,
-    name character varying(255),
+    name character varying(255) NOT NULL,
     versioning_enabled boolean DEFAULT true NOT NULL
 );
 

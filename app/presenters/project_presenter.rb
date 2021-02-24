@@ -41,7 +41,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       contribution_guide_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
-      gitlab_ci_anchor_data
+      gitlab_ci_anchor_data,
+      integrations_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
@@ -57,7 +58,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       license_anchor_data,
       changelog_anchor_data,
       contribution_guide_anchor_data,
-      gitlab_ci_anchor_data
+      gitlab_ci_anchor_data,
+      integrations_anchor_data
     ].compact.reject { |item| item.is_link }
   end
 
@@ -421,6 +423,25 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   private
+
+  def integrations_anchor_data
+    experiment(:repo_integrations_link, project: project) do |e|
+      e.exclude! unless can?(current_user, :admin_project, project)
+
+      e.use {} # nil control
+      e.try do
+        label = statistic_icon('settings') + _('Configure Integrations')
+        AnchorData.new(false, label, project_settings_integrations_path(project), nil, nil, nil, {
+          'track-event': 'click',
+          'track-experiment': e.name
+        })
+      end
+
+      e.run # call run so the return value will be the AnchorData (or nil)
+
+      e.track(:view, value: project.id) # track an event for the view, with project id
+    end
+  end
 
   def cicd_missing?
     current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?

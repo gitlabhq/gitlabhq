@@ -82,6 +82,10 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
   end
 
+  it "can exclude from within the block" do
+    expect(described_class.new('namespaced/stub') { |e| e.exclude! }).to be_excluded
+  end
+
   describe "tracking events", :snowplow do
     it "doesn't track if we shouldn't track" do
       allow(subject).to receive(:should_track?).and_return(false)
