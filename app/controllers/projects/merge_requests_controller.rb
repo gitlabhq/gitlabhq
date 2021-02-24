@@ -11,7 +11,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RecordUserLastActivity
   include SourcegraphDecorator
   include DiffHelper
-  include CommentAndCloseFlag
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]

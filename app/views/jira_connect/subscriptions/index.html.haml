@@ -15,8 +15,7 @@
       %p= s_('JiraService|Sign in to GitLab.com to get started.')
 
       .gl-mt-7
-        - sign_in_button_class = new_jira_connect_ui? ? 'btn gl-button btn-confirm' : 'ak-button ak-button__appearance-primary'
-        = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "#{sign_in_button_class} js-jira-connect-sign-in"
+        = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "btn gl-button btn-confirm js-jira-connect-sign-in"
 
       .gl-mt-7
         %p= s_('Integrations|Note: this integration only works with accounts on GitLab.com (SaaS).')
@@ -24,16 +23,6 @@
     .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 
     .jira-connect-app-body
-      - unless new_jira_connect_ui?
-        %form#add-subscription-form.subscription-form.gl-mb-5{ action: jira_connect_subscriptions_path }
-          .ak-field-group
-            %label= _('GitLab namespace')
-
-          .ak-field-group.field-group-input
-            %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
-            %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
-              = s_('Integrations|Link namespace to Jira')
-
       - if @subscriptions.present?
         %table.subscriptions.gl-w-full
           %thead

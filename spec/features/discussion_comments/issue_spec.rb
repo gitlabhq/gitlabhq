@@ -8,8 +8,6 @@ RSpec.describe 'Thread Comments Issue', :js do
   let(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(remove_comment_close_reopen: false)
-
     project.add_maintainer(user)
     sign_in(user)
 

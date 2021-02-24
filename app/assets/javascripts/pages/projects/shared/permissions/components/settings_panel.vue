@@ -613,7 +613,9 @@ export default {
       <project-setting-row
         ref="operations-settings"
         :label="s__('ProjectSettings|Operations')"
-        :help-text="s__('ProjectSettings|Environments, logs, cluster management, and more.')"
+        :help-text="
+          s__('ProjectSettings|Configure your project resources and monitor their health.')
+        "
       >
         <project-feature-setting
           v-model="operationsAccessLevel"

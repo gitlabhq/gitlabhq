@@ -13813,9 +13813,6 @@ msgstr ""
 msgid "GitLab metadata URL"
 msgstr ""
 
-msgid "GitLab namespace"
-msgstr ""
-
 msgid "GitLab project export"
 msgstr ""
 
@@ -16160,9 +16157,6 @@ msgid "Integrations|Includes commit title and branch"
 msgstr ""
 
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
-msgstr ""
-
-msgid "Integrations|Link namespace to Jira"
 msgstr ""
 
 msgid "Integrations|Link namespaces"
@@ -23414,6 +23408,9 @@ msgstr ""
 msgid "ProjectSettings|Commit authors can edit commit messages on unprotected branches."
 msgstr ""
 
+msgid "ProjectSettings|Configure your project resources and monitor their health."
+msgstr ""
+
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -23439,9 +23436,6 @@ msgid "ProjectSettings|Enable merged results pipelines."
 msgstr ""
 
 msgid "ProjectSettings|Encourage"
-msgstr ""
-
-msgid "ProjectSettings|Environments, logs, cluster management, and more."
 msgstr ""
 
 msgid "ProjectSettings|Every merge creates a merge commit"

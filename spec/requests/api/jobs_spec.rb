@@ -329,6 +329,17 @@ RSpec.describe API::Jobs do
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
         end
+
+        context 'when artifacts are locked' do
+          it 'allows access to expired artifact' do
+            pipeline.artifacts_locked!
+            job.update!(artifacts_expire_at: Time.now - 7.days)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
     end
 

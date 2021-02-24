@@ -57,18 +57,6 @@ RSpec.describe Packages::CreateEventService do
     end
 
     shared_examples 'redis package unique event creation' do |originator_type, expected_scope|
-      context 'with feature flag disable' do
-        before do
-          stub_feature_flags(collect_package_events_redis: false)
-        end
-
-        it 'does not track the event' do
-          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-          subject
-        end
-      end
-
       it 'tracks the event' do
         expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(/package/, values: user.id)
 
@@ -77,18 +65,6 @@ RSpec.describe Packages::CreateEventService do
     end
 
     shared_examples 'redis package count event creation' do |originator_type, expected_scope|
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(collect_package_events_redis: false)
-        end
-
-        it 'does not track the event' do
-          expect(::Gitlab::UsageDataCounters::PackageEventCounter).not_to receive(:count)
-
-          subject
-        end
-      end
-
       it 'tracks the event' do
         expect(::Gitlab::UsageDataCounters::PackageEventCounter).to receive(:count).at_least(:once)
 

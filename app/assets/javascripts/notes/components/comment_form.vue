@@ -180,9 +180,6 @@ export default {
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
-    hasCloseAndCommentButton() {
-      return !this.glFeatures.removeCommentCloseReopen;
-    },
     confidentialNotesEnabled() {
       return Boolean(this.glFeatures.confidentialNotes);
     },
@@ -426,7 +423,7 @@ export default {
                 </gl-dropdown-item>
               </gl-dropdown>
               <gl-button
-                v-if="hasCloseAndCommentButton && canToggleIssueState"
+                v-if="canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 category="secondary"
                 :variant="buttonVariant"

@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   RSpec.describe 'Package', :orchestrated, :packages do
     describe 'NuGet Repository' do
       include Runtime::Fixtures
 
-      let(:package_name) { 'dotnetcore' }
+      let(:package_name) { "dotnetcore-#{SecureRandom.hex(8)}" }
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'nuget-package-project'
@@ -43,7 +45,7 @@ module QA
         another_runner.remove_via_api!
       end
 
-      it 'publishes a nuget package at the project level, installs and deletes it at the group level', quarantine: { only: { pipeline: :canary }, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/321425', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1073' do
+      it 'publishes a nuget package at the project level, installs and deletes it at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1073' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -64,7 +66,7 @@ module QA
                         script:
                           - dotnet restore -p:Configuration=Release
                           - dotnet build -c Release
-                          - dotnet pack -c Release
+                          - dotnet pack -c Release -p:PackageID=#{package_name}
                           - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
                           - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
                         only:

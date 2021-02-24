@@ -24,9 +24,6 @@ describe('JiraConnectApp', () => {
     wrapper = extendedWrapper(
       shallowMount(JiraConnectApp, {
         store,
-        provide: {
-          glFeatures: { newJiraConnectUi: true },
-        },
         ...options,
       }),
     );
@@ -49,7 +46,6 @@ describe('JiraConnectApp', () => {
       beforeEach(() => {
         createComponent({
           provide: {
-            glFeatures: { newJiraConnectUi: true },
             usersPath: '/users',
           },
         });
@@ -69,18 +65,6 @@ describe('JiraConnectApp', () => {
       it('renders "Add" button and modal', () => {
         expect(findGlButton().text()).toBe('Add namespace');
         expect(findGlModal().exists()).toBe(true);
-      });
-    });
-
-    describe('newJiraConnectUi is false', () => {
-      it('does not render new UI', () => {
-        createComponent({
-          provide: {
-            glFeatures: { newJiraConnectUi: false },
-          },
-        });
-
-        expect(findHeader().exists()).toBe(false);
       });
     });
 
