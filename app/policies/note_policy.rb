@@ -57,6 +57,10 @@ class NotePolicy < BasePolicy
     enable :resolve_note
   end
 
+  rule { can_read_confidential }.policy do
+    enable :mark_note_as_confidential
+  end
+
   rule { confidential & ~can_read_confidential }.policy do
     prevent :read_note
     prevent :admin_note

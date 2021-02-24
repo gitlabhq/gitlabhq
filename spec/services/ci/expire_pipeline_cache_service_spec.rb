@@ -13,10 +13,14 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       pipelines_path = "/#{project.full_path}/-/pipelines.json"
       new_mr_pipelines_path = "/#{project.full_path}/-/merge_requests/new.json"
       pipeline_path = "/#{project.full_path}/-/pipelines/#{pipeline.id}.json"
+      graphql_pipeline_path = "/api/graphql:pipelines/id/#{pipeline.id}"
 
-      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(pipelines_path)
-      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(new_mr_pipelines_path)
-      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(pipeline_path)
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+        expect(store).to receive(:touch).with(pipelines_path)
+        expect(store).to receive(:touch).with(new_mr_pipelines_path)
+        expect(store).to receive(:touch).with(pipeline_path)
+        expect(store).to receive(:touch).with(graphql_pipeline_path)
+      end
 
       subject.execute(pipeline)
     end

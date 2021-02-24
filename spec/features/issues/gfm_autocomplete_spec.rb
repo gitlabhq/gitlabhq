@@ -214,6 +214,13 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find_field('Description').value).to have_content "@#{user.username}"
     end
 
+    it 'does not show `@undefined` when pressing `@` then Enter' do
+      fill_in 'Description', with: "@\n"
+
+      expect(find_field('Description').value).to have_content "@"
+      expect(find_field('Description').value).not_to have_content "@undefined"
+    end
+
     it 'selects the first item for non-assignee dropdowns if a query is entered' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys(':1')

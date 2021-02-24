@@ -313,14 +313,14 @@ class GfmAutoComplete {
           return data;
         },
         sorter(query, items) {
-          if (!query) {
-            return items;
-          }
-
           // Disable auto-selecting the loading icon
           this.setting.highlightFirst = this.setting.alwaysHighlightFirst;
           if (GfmAutoComplete.isLoading(items)) {
             this.setting.highlightFirst = false;
+            return items;
+          }
+
+          if (!query) {
             return items;
           }
 

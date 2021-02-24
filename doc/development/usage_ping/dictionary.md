@@ -19430,41 +19430,39 @@ Calculated unique users to perform Advanced searches by week
 
 ## `redis_hll_counters.search.i_search_paid_monthly`
 
-Missing description
+Calculated unique users to perform a search with a paid license enabled by month
 
 | field | value |
 | --- | --- |
 | `key_path` | **`redis_hll_counters.search.i_search_paid_monthly`** |
-| `product_section` |  |
-| `product_stage` |  |
-| `product_group` |  |
-| `product_category` |  |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
 | `data_source` | Redis_hll |
-| `distribution` | ce |
-| `tier` | free |
-| `skip_validation` | true |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
 
 ## `redis_hll_counters.search.i_search_paid_weekly`
 
-Missing description
+Calculated unique users to perform a search with a paid license enabled by week
 
 | field | value |
 | --- | --- |
 | `key_path` | **`redis_hll_counters.search.i_search_paid_weekly`** |
-| `product_section` |  |
-| `product_stage` |  |
-| `product_group` |  |
-| `product_category` |  |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
 | `data_source` | Redis_hll |
 | `distribution` | ee |
-| `tier` |  |
-| `skip_validation` | true |
+| `tier` | premium, ultimate |
 
 ## `redis_hll_counters.search.i_search_total_monthly`
 
@@ -20692,8 +20690,8 @@ Calculated unique users to perform a search with a paid license enabled by week
 | `status` | data_available |
 | `time_frame` | all |
 | `data_source` | Redis_hll |
-| `distribution` | ce, ee |
-| `tier` | free, premium, ultimate |
+| `distribution` | ee |
+| `tier` | premium, ultimate |
 
 ## `search_unique_visits.i_search_total`
 
@@ -20715,41 +20713,39 @@ Calculated unique users to perform Basic or Advanced searches by week
 
 ## `search_unique_visits.search_unique_visits_for_any_target_monthly`
 
-Missing description
+Total unique users for i_search_total, i_search_advanced, i_search_paid for recent 28 days. This metric is redundant because advanced will be a subset of paid and paid will be a subset of total. i_search_total is more appropriate if you just want the total
 
 | field | value |
 | --- | --- |
 | `key_path` | **`search_unique_visits.search_unique_visits_for_any_target_monthly`** |
-| `product_section` |  |
-| `product_stage` |  |
-| `product_group` |  |
-| `product_category` |  |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 28d |
-| `data_source` |  |
-| `distribution` | ce |
-| `tier` | free |
-| `skip_validation` | true |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 
 ## `search_unique_visits.search_unique_visits_for_any_target_weekly`
 
-Missing description
+Total unique users for i_search_total, i_search_advanced, i_search_paid for recent 7 days. This metric is redundant because advanced will be a subset of paid and paid will be a subset of total. i_search_total is more appropriate if you just want the total
 
 | field | value |
 | --- | --- |
 | `key_path` | **`search_unique_visits.search_unique_visits_for_any_target_weekly`** |
-| `product_section` |  |
-| `product_stage` |  |
-| `product_group` |  |
-| `product_category` |  |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::global search` |
+| `product_category` | `global_search` |
 | `value_type` | number |
 | `status` | data_available |
 | `time_frame` | 7d |
-| `data_source` |  |
-| `distribution` | ee |
-| `tier` |  |
-| `skip_validation` | true |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 
 ## `settings.ldap_encrypted_secrets_enabled`
 

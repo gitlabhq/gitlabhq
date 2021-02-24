@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Notes::BuildService do
+  include AdminModeHelper
+
   let(:note) { create(:discussion_note_on_issue) }
   let(:project) { note.project }
   let(:author) { note.author }
@@ -143,6 +145,123 @@ RSpec.describe Notes::BuildService do
           expect(subject).to be_valid
           expect(subject).to be_a(Note)
           expect(subject.discussion_id).not_to eq(note.discussion_id)
+        end
+      end
+    end
+
+    context 'confidential comments' do
+      before do
+        project.add_reporter(author)
+      end
+
+      context 'when replying to a confidential comment' do
+        let(:note) { create(:note_on_issue, confidential: true) }
+
+        context 'when the user can read confidential comments' do
+          subject do
+            described_class.new(
+              project,
+              author,
+              note: 'Test',
+              in_reply_to_discussion_id: note.discussion_id,
+              confidential: false
+            ).execute
+          end
+
+          it '`confidential` param is ignored and set to `true`' do
+            expect(subject.confidential).to be_truthy
+          end
+        end
+
+        context 'when the user cannot read confidential comments' do
+          let(:another_user) { create(:user) }
+
+          subject do
+            described_class.new(
+              project,
+              another_user,
+              note: 'Test',
+              in_reply_to_discussion_id: note.discussion_id,
+              confidential: false
+            ).execute
+          end
+
+          it 'returns `Discussion to reply to cannot be found` error' do
+            expect(subject.errors.first).to include("Discussion to reply to cannot be found")
+          end
+        end
+      end
+
+      context 'when replying to a public comment' do
+        let(:note) { create(:note_on_issue, confidential: false) }
+
+        subject do
+          described_class.new(
+            project,
+            author,
+            note: 'Test',
+            in_reply_to_discussion_id: note.discussion_id,
+            confidential: true
+          ).execute
+        end
+
+        it '`confidential` param is ignored and set to `false`' do
+          expect(subject.confidential).to be_falsey
+        end
+      end
+
+      context 'when creating a new comment' do
+        context 'when the `confidential` note flag is set to `true`' do
+          context 'when the user is allowed (reporter)' do
+            subject { described_class.new(project, author, note: 'Test', noteable: merge_request, confidential: true).execute }
+
+            it 'note `confidential` flag is set to `true`' do
+              expect(subject.confidential).to be_truthy
+            end
+          end
+
+          context 'when the user is allowed (issuable author)' do
+            let(:another_user) { create(:user) }
+            let(:issue) { create(:issue, author: another_user) }
+
+            subject { described_class.new(project, another_user, note: 'Test', noteable: issue, confidential: true).execute }
+
+            it 'note `confidential` flag is set to `true`' do
+              expect(subject.confidential).to be_truthy
+            end
+          end
+
+          context 'when the user is allowed (admin)' do
+            before do
+              enable_admin_mode!(another_user)
+            end
+
+            let(:another_user) { create(:admin) }
+
+            subject { described_class.new(project, another_user, note: 'Test', noteable: merge_request, confidential: true).execute }
+
+            it 'note `confidential` flag is set to `true`' do
+              expect(subject.confidential).to be_truthy
+            end
+          end
+
+          context 'when the user is not allowed' do
+            let(:another_user) { create(:user) }
+
+            subject { described_class.new(project, another_user, note: 'Test', noteable: merge_request, confidential: true).execute }
+
+            it 'note `confidential` flag is set to `false`' do
+              expect(subject.confidential).to be_falsey
+            end
+          end
+        end
+
+        context 'when the `confidential` note flag is set to `false`' do
+          subject { described_class.new(project, author, note: 'Test', noteable: merge_request, confidential: false).execute }
+
+          it 'note `confidential` flag is set to `false`' do
+            expect(subject.confidential).to be_falsey
+          end
         end
       end
     end

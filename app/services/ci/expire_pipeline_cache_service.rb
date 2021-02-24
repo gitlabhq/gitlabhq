@@ -47,6 +47,10 @@ module Ci
       end
     end
 
+    def graphql_pipeline_path(pipeline)
+      [Gitlab::Routing.url_helpers.api_graphql_path, "pipelines/id/#{pipeline.id}"].join(':')
+    end
+
     # Updates ETag caches of a pipeline.
     #
     # This logic resides in a separate method so that EE can more easily extend
@@ -61,6 +65,7 @@ module Ci
       store.touch(project_pipeline_path(project, pipeline))
       store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
       store.touch(new_merge_request_pipelines_path(project))
+      store.touch(graphql_pipeline_path(pipeline))
       each_pipelines_merge_request_path(pipeline) do |path|
         store.touch(path)
       end

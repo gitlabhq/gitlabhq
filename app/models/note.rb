@@ -319,6 +319,7 @@ class Note < ApplicationRecord
 
   def noteable_assignee_or_author?(user)
     return false unless user
+    return false unless noteable.respond_to?(:author_id)
     return noteable.assignee_or_author?(user) if [MergeRequest, Issue].include?(noteable.class)
 
     noteable.author_id == user.id
