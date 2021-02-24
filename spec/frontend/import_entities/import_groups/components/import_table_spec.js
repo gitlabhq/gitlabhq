@@ -43,6 +43,7 @@ describe('import table', () => {
     wrapper = shallowMount(ImportTable, {
       propsData: {
         sourceUrl: 'https://demo.host',
+        groupPathRegex: /.*/,
       },
       stubs: {
         GlSprintf,

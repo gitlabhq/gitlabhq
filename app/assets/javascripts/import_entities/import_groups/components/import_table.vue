@@ -33,6 +33,10 @@ export default {
       type: String,
       required: true,
     },
+    groupPathRegex: {
+      type: RegExp,
+      required: true,
+    },
   },
 
   data() {
@@ -165,12 +169,13 @@ export default {
             <th class="gl-py-4 import-jobs-status-col">{{ __('Status') }}</th>
             <th class="gl-py-4 import-jobs-cta-col"></th>
           </thead>
-          <tbody>
+          <tbody class="gl-vertical-align-top">
             <template v-for="group in bulkImportSourceGroups.nodes">
               <import-table-row
                 :key="group.id"
                 :group="group"
                 :available-namespaces="availableNamespaces"
+                :group-path-regex="groupPathRegex"
                 @update-target-namespace="updateTargetNamespace(group.id, $event)"
                 @update-new-name="updateNewName(group.id, $event)"
                 @import-group="importGroup(group.id)"

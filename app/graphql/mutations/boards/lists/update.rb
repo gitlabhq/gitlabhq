@@ -17,7 +17,7 @@ module Mutations
 
         argument :collapsed, GraphQL::BOOLEAN_TYPE,
                   required: false,
-                  description: 'Indicates if list is collapsed for this user.'
+                  description: 'Indicates if the list is collapsed for this user.'
 
         field :list,
               Types::BoardListType,

@@ -1,0 +1,5 @@
+query group($fullPath: ID!) {
+  existingGroup: group(fullPath: $fullPath) {
+    id
+  }
+}

@@ -669,7 +669,7 @@ Represents a list for an issue board.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `assignee` | User | Assignee in the list. |
-| `collapsed` | Boolean | Indicates if list is collapsed for this user. |
+| `collapsed` | Boolean | Indicates if the list is collapsed for this user. |
 | `id` | ID! | ID (global ID) of the list. |
 | `issues` | IssueConnection | Board issues. |
 | `issuesCount` | Int | Count of issues in the list. |
@@ -1971,6 +1971,7 @@ Represents an epic board list.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `collapsed` | Boolean | Indicates if this list is collapsed for this user. |
 | `epics` | EpicConnection | List epics. |
 | `id` | BoardsEpicListID! | Global ID of the board list. |
 | `label` | Label | Label of the list. |
@@ -5310,10 +5311,10 @@ State of a GitLab issue or merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` |  |
-| `closed` |  |
-| `locked` |  |
-| `opened` |  |
+| `all` | All available |
+| `closed` | In closed state |
+| `locked` | Discussion has been locked |
+| `opened` | In open state |
 
 ### IssueSort
 
@@ -5353,10 +5354,10 @@ State of a GitLab issue.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` |  |
-| `closed` |  |
-| `locked` |  |
-| `opened` |  |
+| `all` | All available |
+| `closed` | In closed state |
+| `locked` | Discussion has been locked |
+| `opened` | In open state |
 
 ### IssueStateEvent
 
@@ -5496,11 +5497,11 @@ State of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` |  |
-| `closed` |  |
-| `locked` |  |
+| `all` | All available |
+| `closed` | In closed state |
+| `locked` | Discussion has been locked |
 | `merged` | Merge Request has been merged |
-| `opened` |  |
+| `opened` | In open state |
 
 ### MilestoneStateEnum
 

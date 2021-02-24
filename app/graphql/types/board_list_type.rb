@@ -19,7 +19,7 @@ module Types
     field :label, Types::LabelType, null: true,
           description: 'Label of the list.'
     field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if list is collapsed for this user.'
+          description: 'Indicates if the list is collapsed for this user.'
     field :issues_count, GraphQL::INT_TYPE, null: true,
           description: 'Count of issues in the list.'
 

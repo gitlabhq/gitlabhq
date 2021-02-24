@@ -348,6 +348,11 @@ msgid_plural "%d vulnerabilities dismissed"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d vulnerability updated"
+msgid_plural "%d vulnerabilities updated"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d warning found:"
 msgid_plural "%d warnings found:"
 msgstr[0] ""
@@ -2067,6 +2072,9 @@ msgid "AdminArea|Developer"
 msgstr ""
 
 msgid "AdminArea|Features"
+msgstr ""
+
+msgid "AdminArea|Groups"
 msgstr ""
 
 msgid "AdminArea|Guest"
@@ -5093,6 +5101,9 @@ msgstr ""
 msgid "BulkImport|Importing the group failed"
 msgstr ""
 
+msgid "BulkImport|Name already exists."
+msgstr ""
+
 msgid "BulkImport|No parent"
 msgstr ""
 
@@ -7681,6 +7692,9 @@ msgid "ComplianceFramework|HIPAA"
 msgstr ""
 
 msgid "ComplianceFramework|HIPAA - Health Insurance Portability and Accountability Act"
+msgstr ""
+
+msgid "ComplianceFramework|New Compliance Framework"
 msgstr ""
 
 msgid "ComplianceFramework|PCI-DSS"
@@ -26402,6 +26416,9 @@ msgstr ""
 msgid "SecurityReports|All"
 msgstr ""
 
+msgid "SecurityReports|Change status"
+msgstr ""
+
 msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
 msgstr ""
 
@@ -26415,9 +26432,6 @@ msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
 msgid "SecurityReports|Create issue"
-msgstr ""
-
-msgid "SecurityReports|Dismiss Selected"
 msgstr ""
 
 msgid "SecurityReports|Dismiss vulnerability"
@@ -26454,9 +26468,6 @@ msgid "SecurityReports|Error fetching the vulnerability list. Please check your 
 msgstr ""
 
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
-msgstr ""
-
-msgid "SecurityReports|False positive"
 msgstr ""
 
 msgid "SecurityReports|Fuzzing artifacts"
@@ -26534,7 +26545,7 @@ msgstr ""
 msgid "SecurityReports|Select a project to add by using the project search field above."
 msgstr ""
 
-msgid "SecurityReports|Select a reason"
+msgid "SecurityReports|Set status"
 msgstr ""
 
 msgid "SecurityReports|Severity"
@@ -26569,11 +26580,6 @@ msgstr ""
 
 msgid "SecurityReports|There was an error deleting the comment."
 msgstr ""
-
-msgid "SecurityReports|There was an error dismissing %d vulnerability. Please try again later."
-msgid_plural "SecurityReports|There was an error dismissing %d vulnerabilities. Please try again later."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "SecurityReports|There was an error dismissing the vulnerabilities."
 msgstr ""
@@ -26620,16 +26626,10 @@ msgstr ""
 msgid "SecurityReports|With issues"
 msgstr ""
 
-msgid "SecurityReports|Won't fix / Accept risk"
-msgstr ""
-
 msgid "SecurityReports|You do not have sufficient permissions to access this report"
 msgstr ""
 
 msgid "SecurityReports|You must sign in as an authorized user to see this report"
-msgstr ""
-
-msgid "SecurityReports|[No reason]"
 msgstr ""
 
 msgid "Security|Policies"

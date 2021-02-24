@@ -13,6 +13,14 @@ module Boards
       scope :ordered, -> { order(:list_type, :position) }
       scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
       scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
+
+      class << self
+        def preload_preferences_for_user(lists, user)
+          return unless user
+
+          lists.each { |list| list.preferences_for(user) }
+        end
+      end
     end
 
     class_methods do
@@ -31,6 +39,18 @@ module Boards
 
     def movable?
       self.class.movable_types.include?(list_type&.to_sym)
+    end
+
+    def collapsed?(user)
+      preferences = preferences_for(user)
+
+      preferences.collapsed?
+    end
+
+    def update_preferences_for(user, preferences = {})
+      return unless user
+
+      preferences_for(user).update(preferences)
     end
 
     def title

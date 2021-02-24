@@ -320,6 +320,18 @@ RSpec.describe API::Users do
         expect(json_response).to all(include('state' => /(blocked|ldap_blocked)/))
       end
 
+      it "returns an array of external users" do
+        create(:user)
+        external_user = create(:user, external: true)
+
+        get api("/users?external=true", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(external_user.id)
+      end
+
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
 

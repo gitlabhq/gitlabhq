@@ -24,7 +24,7 @@ bundle exec rake gitlab:usage_data:generate_metrics_dictionary
 
 The Metrics Dictionary is based on the following metrics definition YAML files:
 
-- [`config/metrics`]('https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics')
+- [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 - [`ee/config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/metrics)
 Each table includes a `milestone`, which corresponds to the GitLab version when the metric
 was released.
@@ -21927,7 +21927,7 @@ Distinct count of users that imported issues into projects using CSV upload
 
 ## `usage_activity_by_stage.manage.issues_imported.fogbugz`
 
-Distinct count of users that imported issues into projects using FogBugz 
+Distinct count of users that imported issues into projects using FogBugz
 
 | field | value |
 | --- | --- |
@@ -22269,7 +22269,7 @@ Count of projects imported using manifst file
 
 ## `usage_activity_by_stage.manage.projects_imported.bitbucket`
 
-Distinct count of users that imported projects from Bitbucket Cloud 
+Distinct count of users that imported projects from Bitbucket Cloud
 
 | field | value |
 | --- | --- |
@@ -22288,7 +22288,7 @@ Distinct count of users that imported projects from Bitbucket Cloud
 
 ## `usage_activity_by_stage.manage.projects_imported.bitbucket_server`
 
-Distinct count of users that imported projects from Bitbucket Server 
+Distinct count of users that imported projects from Bitbucket Server
 
 | field | value |
 | --- | --- |
@@ -22307,7 +22307,7 @@ Distinct count of users that imported projects from Bitbucket Server
 
 ## `usage_activity_by_stage.manage.projects_imported.git`
 
-Distinct count of users that imported projects using Import by URL 
+Distinct count of users that imported projects using Import by URL
 
 | field | value |
 | --- | --- |
@@ -22326,7 +22326,7 @@ Distinct count of users that imported projects using Import by URL
 
 ## `usage_activity_by_stage.manage.projects_imported.gitea`
 
-Distinct count of users that imported projects from Gitea 
+Distinct count of users that imported projects from Gitea
 
 | field | value |
 | --- | --- |
@@ -22364,7 +22364,7 @@ Distinct count of users that imported projects from GitHub
 
 ## `usage_activity_by_stage.manage.projects_imported.gitlab`
 
-Distinct count of users that imported projects from GitLab.com 
+Distinct count of users that imported projects from GitLab.com
 
 | field | value |
 | --- | --- |
@@ -22383,7 +22383,7 @@ Distinct count of users that imported projects from GitLab.com
 
 ## `usage_activity_by_stage.manage.projects_imported.gitlab_project`
 
-Distinct count of users that imported projects using Project Import/Export 
+Distinct count of users that imported projects using Project Import/Export
 
 | field | value |
 | --- | --- |
@@ -22402,7 +22402,7 @@ Distinct count of users that imported projects using Project Import/Export
 
 ## `usage_activity_by_stage.manage.projects_imported.manifest`
 
-Distinct count of users that imported projects using Manifest file 
+Distinct count of users that imported projects using Manifest file
 
 | field | value |
 | --- | --- |
@@ -23143,7 +23143,7 @@ Total successful deployments
 
 ## `usage_activity_by_stage.secure.api_fuzzing_scans`
 
-Counts API fuzzing jobs 
+Counts API fuzzing jobs
 
 | field | value |
 | --- | --- |
@@ -23162,7 +23162,7 @@ Counts API fuzzing jobs
 
 ## `usage_activity_by_stage.secure.container_scanning_scans`
 
-Counts container scanning jobs 
+Counts container scanning jobs
 
 | field | value |
 | --- | --- |
@@ -23181,7 +23181,7 @@ Counts container scanning jobs
 
 ## `usage_activity_by_stage.secure.coverage_fuzzing_scans`
 
-Counts fuzzing jobs 
+Counts fuzzing jobs
 
 | field | value |
 | --- | --- |
@@ -23200,7 +23200,7 @@ Counts fuzzing jobs
 
 ## `usage_activity_by_stage.secure.dast_scans`
 
-Counts dast jobs 
+Counts dast jobs
 
 | field | value |
 | --- | --- |
@@ -23219,7 +23219,7 @@ Counts dast jobs
 
 ## `usage_activity_by_stage.secure.dependency_scanning_scans`
 
-Counts dependency scanning jobs 
+Counts dependency scanning jobs
 
 | field | value |
 | --- | --- |
@@ -23238,7 +23238,7 @@ Counts dependency scanning jobs
 
 ## `usage_activity_by_stage.secure.sast_scans`
 
-Counts sast jobs 
+Counts sast jobs
 
 | field | value |
 | --- | --- |
@@ -23257,7 +23257,7 @@ Counts sast jobs
 
 ## `usage_activity_by_stage.secure.secret_detection_scans`
 
-Counts secret detection jobs 
+Counts secret detection jobs
 
 | field | value |
 | --- | --- |
@@ -25746,7 +25746,7 @@ Missing description
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents`
 
-Count of unique projects with an incident from an alert created in the last month 
+Count of unique projects with an incident from an alert created in the last month
 
 | field | value |
 | --- | --- |
@@ -25784,7 +25784,7 @@ Missing description
 
 ## `usage_activity_by_stage_monthly.monitor.projects_with_incidents`
 
-Count of unique projects with an incident created in the last month 
+Count of unique projects with an incident created in the last month
 
 | field | value |
 | --- | --- |
