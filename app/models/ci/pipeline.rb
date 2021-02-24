@@ -1165,6 +1165,10 @@ module Ci
       end
     end
 
+    def for_merged_result?
+      merge_request_event_type == :merged_result
+    end
+
     def persistent_ref
       @persistent_ref ||= PersistentRef.new(pipeline: self)
     end

@@ -149,6 +149,8 @@ RSpec.describe API::V3::Github do
     end
 
     describe 'GET events' do
+      include ProjectForksHelper
+
       let(:group) { create(:group) }
       let(:project) { create(:project, :empty_repo, path: 'project.with.dot', group: group) }
       let(:events_path) { "/repos/#{group.path}/#{project.path}/events" }
@@ -171,6 +173,34 @@ RSpec.describe API::V3::Github do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an(Array)
           expect(json_response.size).to eq(1)
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        create(:merge_request, source_project: project)
+        source_project = fork_project(project, nil, repository: true)
+
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { jira_get v3_api(events_path, user) }.count
+
+        create_list(:merge_request, 2, :unique_branches, source_project: source_project, target_project: project)
+
+        expect { jira_get v3_api(events_path, user) }.not_to exceed_all_query_limit(control_count)
+      end
+
+      context 'with `api_v3_repos_events_optimization` feature flag disabled' do
+        before do
+          stub_feature_flags(api_v3_repos_events_optimization: false)
+        end
+
+        it 'falls back to less optimal query performance' do
+          create(:merge_request, source_project: project)
+          source_project = fork_project(project, nil, repository: true)
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { jira_get v3_api(events_path, user) }.count
+
+          create_list(:merge_request, 2, :unique_branches, source_project: source_project, target_project: project)
+
+          expect { jira_get v3_api(events_path, user) }.to exceed_all_query_limit(control_count)
         end
       end
 

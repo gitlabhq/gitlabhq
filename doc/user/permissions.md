@@ -303,7 +303,7 @@ group.
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
    - The [group level](group/index.md#default-project-creation-level).
 1. Does not apply to subgroups.
-1. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#changing-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+1. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 1. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 1. Users can only view events based on their individual actions.
 

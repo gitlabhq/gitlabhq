@@ -29,7 +29,7 @@ To change the default branch protection:
 
 For more details, see [Protected branches](../../project/protected_branches.md).
 
-To change this setting for a specific group, see [Default branch protection for groups](../../group/index.md#changing-the-default-branch-protection-of-a-group)
+To change this setting for a specific group, see [Default branch protection for groups](../../group/index.md#change-the-default-branch-protection-of-a-group)
 
 ### Disable group owners from updating default branch protection **(PREMIUM SELF)**
 
