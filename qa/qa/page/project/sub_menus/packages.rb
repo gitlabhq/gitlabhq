@@ -22,6 +22,25 @@ module QA
               click_element :packages_link
             end
           end
+
+          def go_to_container_registry
+            hover_registry do
+              within_submenu do
+                click_link('Container Registry')
+              end
+            end
+          end
+
+          private
+
+          def hover_registry
+            within_sidebar do
+              scroll_to_element(:packages_link)
+              find_element(:packages_link).hover
+
+              yield
+            end
+          end
         end
       end
     end

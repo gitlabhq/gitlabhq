@@ -4,7 +4,7 @@ module Gitlab
     module Extensions
       class ExternallyPaginatedArrayExtension < GraphQL::Schema::Field::ConnectionExtension
         def resolve(object:, arguments:, context:)
-          yield(object, arguments)
+          yield(object, arguments, arguments)
         end
       end
     end

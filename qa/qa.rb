@@ -293,6 +293,10 @@ module QA
         autoload :Show, 'qa/page/project/packages/show'
       end
 
+      module Registry
+        autoload :Show, 'qa/page/project/registry/show'
+      end
+
       module Settings
         autoload :Advanced, 'qa/page/project/settings/advanced'
         autoload :Main, 'qa/page/project/settings/main'

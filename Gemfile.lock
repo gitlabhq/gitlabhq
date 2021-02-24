@@ -451,7 +451,7 @@ GEM
     gitlab-pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    gitlab-sidekiq-fetcher (0.5.4)
+    gitlab-sidekiq-fetcher (0.5.5)
       sidekiq (~> 5)
     gitlab-styles (6.0.0)
       rubocop (~> 0.91.1)
@@ -520,7 +520,7 @@ GEM
       faraday (>= 1.0)
       faraday_middleware
       graphql-client
-    graphql (1.11.4)
+    graphql (1.11.8)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
@@ -1379,7 +1379,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.7.1)
   gitlab-net-dns (~> 0.9.1)
   gitlab-pry-byebug
-  gitlab-sidekiq-fetcher (= 0.5.4)
+  gitlab-sidekiq-fetcher (= 0.5.5)
   gitlab-styles (~> 6.0.0)
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.1.1)
@@ -1393,7 +1393,7 @@ DEPENDENCIES
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphlient (~> 0.4.0)
-  graphql (~> 1.11.4)
+  graphql (~> 1.11.8)
   graphql-docs (~> 1.6.0)
   grpc (~> 1.30.2)
   gssapi

@@ -5,6 +5,7 @@ module AlertManagement
     include Gitlab::Utils::StrongMemoize
 
     DEFAULT_ALERT_TITLE = ::Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE
+    DEFAULT_INCIDENT_TITLE = 'New: Incident'
 
     # @param alert [AlertManagement::Alert]
     # @param user [User]
@@ -57,7 +58,7 @@ module AlertManagement
     def update_title_for(issue)
       return unless issue.title == DEFAULT_ALERT_TITLE
 
-      issue.update!(title: _('New: Incident %{iid}' % { iid: issue.iid }))
+      issue.update!(title: "#{DEFAULT_INCIDENT_TITLE} #{issue.iid}")
     end
 
     def error(message, issue = nil)

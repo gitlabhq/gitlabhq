@@ -150,7 +150,7 @@ export default {
           <gl-button
             v-else
             category="primary"
-            variant="success"
+            variant="confirm"
             type="submit"
             :loading="isSaving"
             :disabled="isDisabled"
