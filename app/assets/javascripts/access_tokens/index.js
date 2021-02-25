@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 import ExpiresAtField from './components/expires_at_field.vue';
 
 const getInputAttrs = (el) => {
@@ -11,7 +12,7 @@ const getInputAttrs = (el) => {
   };
 };
 
-const initExpiresAtField = () => {
+export const initExpiresAtField = () => {
   const el = document.querySelector('.js-access-tokens-expires-at');
 
   if (!el) {
@@ -32,4 +33,29 @@ const initExpiresAtField = () => {
   });
 };
 
-export default initExpiresAtField;
+export const initProjectsField = () => {
+  const el = document.querySelector('.js-access-tokens-projects');
+
+  if (!el) {
+    return null;
+  }
+
+  const inputAttrs = getInputAttrs(el);
+
+  if (window.gon.features.personalAccessTokensScopedToProjects) {
+    const ProjectsField = () => import('./components/projects_field.vue');
+
+    return new Vue({
+      el,
+      render(h) {
+        return h(ProjectsField, {
+          props: {
+            inputAttrs,
+          },
+        });
+      },
+    });
+  }
+
+  return null;
+};
