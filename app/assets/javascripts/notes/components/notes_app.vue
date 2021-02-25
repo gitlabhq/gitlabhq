@@ -17,6 +17,7 @@ import commentForm from './comment_form.vue';
 import discussionFilterNote from './discussion_filter_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
 import noteableNote from './noteable_note.vue';
+import SidebarSubscription from './sidebar_subscription.vue';
 
 export default {
   name: 'NotesApp',
@@ -30,6 +31,7 @@ export default {
     skeletonLoadingContainer,
     discussionFilterNote,
     OrderedLayout,
+    SidebarSubscription,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -261,6 +263,7 @@ export default {
 
 <template>
   <div v-show="shouldShow" id="notes">
+    <sidebar-subscription :iid="noteableData.iid" :noteable-data="noteableData" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form

@@ -8884,6 +8884,9 @@ msgstr ""
 msgid "Credentials"
 msgstr ""
 
+msgid "CredentialsInventory|GPG Keys"
+msgstr ""
+
 msgid "CredentialsInventory|No credentials found"
 msgstr ""
 
@@ -9785,7 +9788,7 @@ msgstr ""
 msgid "DeleteValueStream|'%{name}' Value Stream deleted"
 msgstr ""
 
-msgid "DeleteValueStream|Are you sure you want to delete \"%{name}\" Value Stream?"
+msgid "DeleteValueStream|Are you sure you want to delete the \"%{name}\" Value Stream?"
 msgstr ""
 
 msgid "DeleteValueStream|Delete %{name}"
@@ -12493,9 +12496,6 @@ msgstr ""
 msgid "Failed to load related branches"
 msgstr ""
 
-msgid "Failed to load sidebar confidential toggle"
-msgstr ""
-
 msgid "Failed to load sidebar lock status"
 msgstr ""
 
@@ -13746,6 +13746,9 @@ msgstr ""
 msgid "GitHub import"
 msgstr ""
 
+msgid "GitHubImporter|*Merged by: %{author} at %{timestamp}*"
+msgstr ""
+
 msgid "GitLab"
 msgstr ""
 
@@ -14920,6 +14923,9 @@ msgid "Here you will find recent merge request activity"
 msgstr ""
 
 msgid "Hi %{username}!"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "Hide archived projects"
@@ -19571,6 +19577,9 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move issue"
 msgstr ""
 
@@ -19587,6 +19596,9 @@ msgid "Move test case"
 msgstr ""
 
 msgid "Move this issue to another project."
+msgstr ""
+
+msgid "Move up"
 msgstr ""
 
 msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
@@ -21058,7 +21070,7 @@ msgstr ""
 msgid "One or more of your personal access tokens has expired."
 msgstr ""
 
-msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less."
+msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
 msgid "Only 'Reporter' roles and above on tiers Premium and above can see Value Stream Analytics."
@@ -27809,6 +27821,9 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
+msgid "Something went wrong while setting %{issuableType} confidentiality."
+msgstr ""
+
 msgid "Something went wrong while stopping this environment. Please try again."
 msgstr ""
 
@@ -31356,9 +31371,6 @@ msgstr ""
 msgid "Trials|Skip Trial"
 msgstr ""
 
-msgid "Trials|Skip Trial (Continue with Free Account)"
-msgstr ""
-
 msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
 msgstr ""
 
@@ -31498,6 +31510,12 @@ msgid "Turn Off"
 msgstr ""
 
 msgid "Turn On"
+msgstr ""
+
+msgid "Turn off"
+msgstr ""
+
+msgid "Turn on"
 msgstr ""
 
 msgid "Turn on %{strongStart}usage ping%{strongEnd} to activate analysis of user activity, known as %{docLinkStart}Cohorts%{docLinkEnd}."
@@ -33804,6 +33822,9 @@ msgstr ""
 msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}."
 msgstr ""
 
+msgid "You are going to turn on confidentiality. Only team members with %{strongStart}at least Reporter access%{strongEnd} will be able to see and leave comments on the %{issuableType}."
+msgstr ""
+
 msgid "You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}."
 msgstr ""
 
@@ -34371,9 +34392,6 @@ msgstr ""
 msgid "Your Personal Access Token was revoked"
 msgstr ""
 
-msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
-msgstr ""
-
 msgid "Your Primary Email will be used for avatar detection."
 msgstr ""
 
@@ -34543,6 +34561,9 @@ msgid "Your password reset token has expired."
 msgstr ""
 
 msgid "Your personal access token has expired"
+msgstr ""
+
+msgid "Your personal access tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
 msgid "Your profile"

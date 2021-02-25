@@ -15,6 +15,15 @@ export default {
       required: false,
       default: false,
     },
+    tracking: {
+      type: Object,
+      required: false,
+      default: () => ({
+        event: null,
+        label: null,
+        property: null,
+      }),
+    },
   },
   data() {
     return {
@@ -71,14 +80,18 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center gl-mb-3" @click.self="collapse">
-      <span data-testid="title">{{ title }}</span>
-      <gl-loading-icon v-if="loading" inline class="gl-ml-2" />
+    <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
+      <span class="hide-collapsed" data-testid="title">{{ title }}</span>
+      <gl-loading-icon v-if="loading" inline class="gl-ml-2 hide-collapsed" />
+      <gl-loading-icon v-if="loading" inline class="gl-mx-auto gl-my-0 hide-expanded" />
       <gl-button
         v-if="canUpdate"
         variant="link"
-        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto js-sidebar-dropdown-toggle"
+        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto js-sidebar-dropdown-toggle hide-collapsed"
         data-testid="edit-button"
+        :data-track-event="tracking.event"
+        :data-track-label="tracking.label"
+        :data-track-property="tracking.property"
         @keyup.esc="toggle"
         @click="toggle"
       >

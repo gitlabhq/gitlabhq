@@ -209,16 +209,16 @@ RSpec.describe 'GFM autocomplete', :js do
 
     # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/321925
     it 'shows username when pasting then pressing Enter' do
-      fill_in 'Description', with: "@#{user.username}\n"
+      fill_in 'Comment', with: "@#{user.username}\n"
 
-      expect(find_field('Description').value).to have_content "@#{user.username}"
+      expect(find_field('Comment').value).to have_content "@#{user.username}"
     end
 
     it 'does not show `@undefined` when pressing `@` then Enter' do
-      fill_in 'Description', with: "@\n"
+      fill_in 'Comment', with: "@\n"
 
-      expect(find_field('Description').value).to have_content "@"
-      expect(find_field('Description').value).not_to have_content "@undefined"
+      expect(find_field('Comment').value).to have_content "@"
+      expect(find_field('Comment').value).not_to have_content "@undefined"
     end
 
     it 'selects the first item for non-assignee dropdowns if a query is entered' do

@@ -210,6 +210,16 @@ describe('fetchIssueLists', () => {
 });
 
 describe('createList', () => {
+  it('should dispatch createIssueList action', () => {
+    testAction({
+      action: actions.createList,
+      payload: { backlog: true },
+      expectedActions: [{ type: 'createIssueList', payload: { backlog: true } }],
+    });
+  });
+});
+
+describe('createIssueList', () => {
   let commit;
   let dispatch;
   let getters;
@@ -249,7 +259,7 @@ describe('createList', () => {
       }),
     );
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
     expect(dispatch).toHaveBeenCalledWith('addList', backlogList);
   });
@@ -271,7 +281,7 @@ describe('createList', () => {
       },
     });
 
-    await actions.createList({ getters, state, commit, dispatch }, { labelId: '4' });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { labelId: '4' });
 
     expect(dispatch).toHaveBeenCalledWith('addList', list);
     expect(dispatch).toHaveBeenCalledWith('highlightList', list.id);
@@ -289,7 +299,7 @@ describe('createList', () => {
       }),
     );
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
     expect(commit).toHaveBeenCalledWith(types.CREATE_LIST_FAILURE);
   });
@@ -306,7 +316,7 @@ describe('createList', () => {
       getListByLabelId: jest.fn().mockReturnValue(existingList),
     };
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
     expect(dispatch).toHaveBeenCalledWith('highlightList', existingList.id);
     expect(dispatch).toHaveBeenCalledTimes(1);

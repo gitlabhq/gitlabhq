@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import { confidentialWidget } from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
 import loadAwardsHandler from '../../awards_handler';
@@ -339,6 +339,15 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
      */
     if (hasQuickActions && message) {
       eTagPoll.makeRequest();
+
+      // synchronizing the quick action with the sidebar widget
+      // this is a temporary solution until we have confidentiality real-time updates
+      if (
+        confidentialWidget.setConfidentiality &&
+        message.some((m) => m.includes('confidential'))
+      ) {
+        confidentialWidget.setConfidentiality();
+      }
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
 
@@ -718,34 +727,4 @@ export const updateAssignees = ({ commit }, assignees) => {
 
 export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
   commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
-};
-
-export const updateConfidentialityOnIssuable = (
-  { getters, commit },
-  { confidential, fullPath },
-) => {
-  const { iid } = getters.getNoteableData;
-
-  return utils.gqClient
-    .mutate({
-      mutation: updateIssueConfidentialMutation,
-      variables: {
-        input: {
-          projectPath: fullPath,
-          iid: String(iid),
-          confidential,
-        },
-      },
-    })
-    .then(({ data }) => {
-      const {
-        issueSetConfidential: { issue, errors },
-      } = data;
-
-      if (errors?.length) {
-        Flash(errors[0], 'alert');
-      } else {
-        setConfidentiality({ commit }, issue.confidential);
-      }
-    });
 };

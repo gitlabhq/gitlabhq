@@ -1,0 +1,5 @@
+---
+title: Limit the payload size of Sidekiq jobs before scheduling
+merge_request: 53829
+author:
+type: added

@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::Jobs do
+  include HttpBasicAuthHelpers
+  include DependencyProxyHelpers
+
   using RSpec::Parameterized::TableSyntax
   include HttpIOHelpers
 
@@ -16,18 +19,148 @@ RSpec.describe API::Jobs do
                          ref: project.default_branch)
   end
 
-  let!(:job) do
-    create(:ci_build, :success, :tags, pipeline: pipeline,
-                                artifacts_expire_at: 1.day.since)
-  end
-
   let(:user) { create(:user) }
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
 
+  let(:running_job) do
+    create(:ci_build, :running, project: project,
+                                user: user,
+                                pipeline: pipeline,
+                                artifacts_expire_at: 1.day.since)
+  end
+
+  let!(:job) do
+    create(:ci_build, :success, :tags, pipeline: pipeline,
+                                artifacts_expire_at: 1.day.since)
+  end
+
   before do
     project.add_developer(user)
+  end
+
+  shared_examples 'returns common pipeline data' do
+    it 'returns common pipeline data' do
+      expect(json_response['pipeline']).not_to be_empty
+      expect(json_response['pipeline']['id']).to eq jobx.pipeline.id
+      expect(json_response['pipeline']['ref']).to eq jobx.pipeline.ref
+      expect(json_response['pipeline']['sha']).to eq jobx.pipeline.sha
+      expect(json_response['pipeline']['status']).to eq jobx.pipeline.status
+    end
+  end
+
+  shared_examples 'returns common job data' do
+    it 'returns common job data' do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['id']).to eq(jobx.id)
+      expect(json_response['status']).to eq(jobx.status)
+      expect(json_response['stage']).to eq(jobx.stage)
+      expect(json_response['name']).to eq(jobx.name)
+      expect(json_response['ref']).to eq(jobx.ref)
+      expect(json_response['tag']).to eq(jobx.tag)
+      expect(json_response['coverage']).to eq(jobx.coverage)
+      expect(json_response['allow_failure']).to eq(jobx.allow_failure)
+      expect(Time.parse(json_response['created_at'])).to be_like_time(jobx.created_at)
+      expect(Time.parse(json_response['started_at'])).to be_like_time(jobx.started_at)
+      expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(jobx.artifacts_expire_at)
+      expect(json_response['artifacts_file']).to be_nil
+      expect(json_response['artifacts']).to be_an Array
+      expect(json_response['artifacts']).to be_empty
+      expect(json_response['web_url']).to be_present
+    end
+  end
+
+  shared_examples 'returns unauthorized' do
+    it 'returns unauthorized' do
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
+  describe 'GET /job' do
+    shared_context 'with auth headers' do
+      let(:headers_with_token) { header }
+      let(:params_with_token) { {} }
+    end
+
+    shared_context 'with auth params' do
+      let(:headers_with_token) { {} }
+      let(:params_with_token) { param }
+    end
+
+    shared_context 'without auth' do
+      let(:headers_with_token) { {} }
+      let(:params_with_token) { {} }
+    end
+
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api('/job'), headers: headers_with_token, params: params_with_token
+      end
+    end
+
+    context 'with job token authentication header' do
+      include_context 'with auth headers' do
+        let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => running_job.token } }
+      end
+
+      it_behaves_like 'returns common job data' do
+        let(:jobx) { running_job }
+      end
+
+      it 'returns specific job data' do
+        expect(json_response['finished_at']).to be_nil
+      end
+
+      it_behaves_like 'returns common pipeline data' do
+        let(:jobx) { running_job }
+      end
+    end
+
+    context 'with job token authentication params' do
+      include_context 'with auth params' do
+        let(:param) { { job_token: running_job.token } }
+      end
+
+      it_behaves_like 'returns common job data' do
+        let(:jobx) { running_job }
+      end
+
+      it 'returns specific job data' do
+        expect(json_response['finished_at']).to be_nil
+      end
+
+      it_behaves_like 'returns common pipeline data' do
+        let(:jobx) { running_job }
+      end
+    end
+
+    context 'with non running job' do
+      include_context 'with auth headers' do
+        let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
+      end
+
+      it_behaves_like 'returns unauthorized'
+    end
+
+    context 'with basic auth header' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let(:token) { personal_access_token.token}
+
+      include_context 'with auth headers' do
+        let(:header) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => token } }
+      end
+
+      it 'does not return a job' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'without authentication' do
+      include_context 'without auth'
+
+      it_behaves_like 'returns unauthorized'
+    end
   end
 
   describe 'GET /projects/:id/jobs' do
@@ -150,39 +283,21 @@ RSpec.describe API::Jobs do
     end
 
     context 'authorized user' do
+      it_behaves_like 'returns common job data' do
+        let(:jobx) { job }
+      end
+
       it 'returns specific job data' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['id']).to eq(job.id)
-        expect(json_response['status']).to eq(job.status)
-        expect(json_response['stage']).to eq(job.stage)
-        expect(json_response['name']).to eq(job.name)
-        expect(json_response['ref']).to eq(job.ref)
-        expect(json_response['tag']).to eq(job.tag)
-        expect(json_response['coverage']).to eq(job.coverage)
-        expect(json_response['allow_failure']).to eq(job.allow_failure)
-        expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
-        expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
-        expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
-        expect(json_response['artifacts_file']).to be_nil
-        expect(json_response['artifacts']).to be_an Array
-        expect(json_response['artifacts']).to be_empty
         expect(json_response['duration']).to eq(job.duration)
-        expect(json_response['web_url']).to be_present
       end
 
       it_behaves_like 'a job with artifacts and trace', result_is_array: false do
         let(:api_endpoint) { "/projects/#{project.id}/jobs/#{second_job.id}" }
       end
 
-      it 'returns pipeline data' do
-        json_job = json_response
-
-        expect(json_job['pipeline']).not_to be_empty
-        expect(json_job['pipeline']['id']).to eq job.pipeline.id
-        expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
-        expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
-        expect(json_job['pipeline']['status']).to eq job.pipeline.status
+      it_behaves_like 'returns common pipeline data' do
+        let(:jobx) { job }
       end
     end
 

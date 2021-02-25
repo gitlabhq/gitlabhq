@@ -10,7 +10,6 @@ import * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import mutations from '~/notes/stores/mutations';
 import * as utils from '~/notes/stores/utils';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
 import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
@@ -1273,68 +1272,6 @@ describe('Actions Notes Store', () => {
         [],
         done,
       );
-    });
-  });
-
-  describe('updateConfidentialityOnIssuable', () => {
-    state = { noteableData: { confidential: false } };
-    const iid = '1';
-    const projectPath = 'full/path';
-    const getters = { getNoteableData: { iid } };
-    const actionArgs = { fullPath: projectPath, confidential: true };
-    const confidential = true;
-
-    beforeEach(() => {
-      jest
-        .spyOn(utils.gqClient, 'mutate')
-        .mockResolvedValue({ data: { issueSetConfidential: { issue: { confidential } } } });
-    });
-
-    it('calls gqClient mutation one time', () => {
-      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
-
-      expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls gqClient mutation with the correct values', () => {
-      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
-
-      expect(utils.gqClient.mutate).toHaveBeenCalledWith({
-        mutation: updateIssueConfidentialMutation,
-        variables: { input: { iid, projectPath, confidential } },
-      });
-    });
-
-    describe('on success of mutation', () => {
-      it('calls commit with the correct values', () => {
-        const commitSpy = jest.fn();
-
-        return actions
-          .updateConfidentialityOnIssuable({ commit: commitSpy, state, getters }, actionArgs)
-          .then(() => {
-            expect(Flash).not.toHaveBeenCalled();
-            expect(commitSpy).toHaveBeenCalledWith(
-              mutationTypes.SET_ISSUE_CONFIDENTIAL,
-              confidential,
-            );
-          });
-      });
-    });
-
-    describe('on user recoverable error', () => {
-      it('sends the error to Flash', () => {
-        const error = 'error';
-
-        jest
-          .spyOn(utils.gqClient, 'mutate')
-          .mockResolvedValue({ data: { issueSetConfidential: { errors: [error] } } });
-
-        return actions
-          .updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs)
-          .then(() => {
-            expect(Flash).toHaveBeenCalledWith(error, 'alert');
-          });
-      });
     });
   });
 

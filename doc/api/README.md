@@ -211,6 +211,7 @@ to authenticate with the API:
   - [Package Registry for PyPI](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
   - [Package Registry for generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
+- [Get job token's job](jobs.md#get-job-tokens-job)
 - [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)
 - [Terraform plan](../user/infrastructure/index.md)

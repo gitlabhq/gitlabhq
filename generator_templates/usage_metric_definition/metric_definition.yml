@@ -8,7 +8,7 @@ product_group:
 product_category:
 value_type: <%= value_type %>
 status: implemented
-milestone: <%= milestone %>
+milestone: "<%= milestone %>"
 introduced_by_url:
 time_frame: <%= time_frame %>
 data_source:

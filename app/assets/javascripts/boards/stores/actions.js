@@ -128,7 +128,11 @@ export default {
     }, flashAnimationDuration);
   },
 
-  createList: (
+  createList: ({ dispatch }, { backlog, labelId, milestoneId, assigneeId }) => {
+    dispatch('createIssueList', { backlog, labelId, milestoneId, assigneeId });
+  },
+
+  createIssueList: (
     { state, commit, dispatch, getters },
     { backlog, labelId, milestoneId, assigneeId },
   ) => {
@@ -172,7 +176,7 @@ export default {
   },
 
   fetchLabels: ({ state, commit, getters }, searchTerm) => {
-    const { fullPath, boardType } = state;
+    const { fullPath, boardType, isEpicBoard } = state;
 
     const variables = {
       fullPath,
@@ -191,7 +195,7 @@ export default {
       .then(({ data }) => {
         let labels = data[boardType]?.labels.nodes;
 
-        if (!getters.shouldUseGraphQL) {
+        if (!getters.shouldUseGraphQL && !isEpicBoard) {
           labels = labels.map((label) => ({
             ...label,
             id: getIdFromGraphQLId(label.id),

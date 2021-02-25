@@ -61,9 +61,6 @@ module Gitlab
       remove_known_trial_form_fields: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
       },
-      trimmed_skip_trial_copy: {
-        tracking_category: 'Growth::Conversion::Experiment::TrimmedSkipTrialCopy'
-      },
       trial_registration_with_social_signin: {
         tracking_category: 'Growth::Conversion::Experiment::TrialRegistrationWithSocialSigning'
       },

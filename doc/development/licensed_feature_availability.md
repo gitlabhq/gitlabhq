@@ -19,7 +19,7 @@ it should be restricted on namespace scope.
 
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in
   `ee/app/models/license.rb`. Note on `ee/app/models/ee/namespace.rb` that _Bronze_ GitLab.com
-  features maps to on-premise _EES_, _Silver_ to _EEP_ and _Gold_ to _EEU_.
+  features maps to on-premise _EES_, _Silver/Premium_ to _EEP_ and _Gold/Ultimate_ to _EEU_.
 1. Check using:
 
 ```ruby

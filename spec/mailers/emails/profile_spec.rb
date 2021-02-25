@@ -125,8 +125,9 @@ RSpec.describe Emails::Profile do
 
   describe 'user personal access token is about to expire' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:expiring_token) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }
 
-    subject { Notify.access_token_about_to_expire_email(user) }
+    subject { Notify.access_token_about_to_expire_email(user, [expiring_token.name]) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -137,11 +138,15 @@ RSpec.describe Emails::Profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^Your Personal Access Tokens will expire in 7 days or less$/i
+      is_expected.to have_subject /^Your personal access tokens will expire in 7 days or less$/i
     end
 
     it 'mentions the access tokens will expire' do
       is_expected.to have_body_text /One or more of your personal access tokens will expire in 7 days or less/
+    end
+
+    it 'provides the names of expiring tokens' do
+      is_expected.to have_body_text /#{expiring_token.name}/
     end
 
     it 'includes a link to personal access tokens page' do

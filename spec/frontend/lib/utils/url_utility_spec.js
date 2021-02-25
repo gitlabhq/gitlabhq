@@ -814,6 +814,14 @@ describe('URL utility', () => {
       );
     });
 
+    it('decodes URI when decodeURI=true', () => {
+      const url = 'https://gitlab.com/test';
+
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true, true)).toEqual(
+        'https://gitlab.com/test?labels[]=foo&labels[]=bar',
+      );
+    });
+
     it('removes all existing URL params and sets a new param when cleanParams=true', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 

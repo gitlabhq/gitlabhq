@@ -11211,7 +11211,7 @@ When the Usage Ping computation was started
 | `product_category` | `collection` |
 | `value_type` | string |
 | `status` | data_available |
-| `milestone` | 8.1 |
+| `milestone` | 8.10 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557) |
 | `time_frame` | none |
 | `data_source` | Ruby |
@@ -17653,7 +17653,7 @@ Missing description
 | `product_category` | `issue_tracking` |
 | `value_type` | number |
 | `status` | implemented |
-| `milestone` | 13.1 |
+| `milestone` | 13.10 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49264) |
 | `time_frame` | 28d |
 | `data_source` | Redis_hll |
@@ -17674,7 +17674,7 @@ Missing description
 | `product_category` | `issue_tracking` |
 | `value_type` | number |
 | `status` | implemented |
-| `milestone` | 13.1 |
+| `milestone` | 13.10 |
 | `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49264) |
 | `time_frame` | 28d |
 | `data_source` | Redis_hll |

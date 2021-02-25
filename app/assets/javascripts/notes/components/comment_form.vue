@@ -363,7 +363,7 @@ export default {
                     data-qa-selector="comment_field"
                     data-testid="comment-field"
                     :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
-                    :aria-label="__('Description')"
+                    :aria-label="__('Comment')"
                     :placeholder="__('Write a comment or drag your files here…')"
                     @keydown.up="editCurrentUserLastNote()"
                     @keydown.meta.enter="handleSave()"

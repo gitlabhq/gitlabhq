@@ -889,29 +889,29 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/stylelint-config@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-2.2.0.tgz#f0139c8bd29525b51ee9f16d26b66283bd2be5bb"
-  integrity sha512-yLBwRu/geN7nGzoOtF6VV2Fbjhcu2w3PwVnJ5/6wX3MILLO7Wh8zzurIjjSnls8124WUoD7n51Catrjl0hyqDw==
+"@gitlab/stylelint-config@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-2.3.0.tgz#b27e8544ff52a4c5e23ff7a104c7efff1f7078f0"
+  integrity sha512-8aGdBjNO05xadeGb8GSCyRdr1QcRDaDTUTTjKlD2CfFqvAmaQpCk6NdFMMSHlWQpHHMxS5hQeWiC47sIWON4iQ==
   dependencies:
-    stylelint "^13.2.1"
-    stylelint-declaration-strict-value "^1.7.7"
-    stylelint-scss "^3.18.0"
+    stylelint "13.9.0"
+    stylelint-declaration-strict-value "1.7.7"
+    stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.182.0":
-  version "1.182.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.182.0.tgz#600cb577c598ff63325c3f6f049e3254abdbb580"
-  integrity sha512-hV6Hkd92bNyzGm2awdwtyXVjT71QZkfAMVV9qHg9fhu5swA4qLrxzXpYBBfeY3/e2KJIByVfROP8tSFws0R6Kw==
+"@gitlab/svgs@1.183.0":
+  version "1.183.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.183.0.tgz#58a3f49d2355531bfc073f35cbd71855b4a0f9da"
+  integrity sha512-cOcFlgmTkRhfljT+0arKFtkYMLFMXLk0q74WtMqb9YFRtuPmthqfH0zZd47XZ2yFTSvbEJfcyAXXrPIuX8f8Rg==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@27.7.1":
-  version "27.7.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-27.7.1.tgz#e62a9a8d96a5f0e61f09fdbbe1771027caaa7aa4"
-  integrity sha512-LRmP2SD73NT9ntvKw1pJShPP6DmjCBmu+mBSZiAj535AGpA+GoQcyi+PTXY12nUjnsPwulaFOOhvFPo8IeFm2Q==
+"@gitlab/ui@27.14.0":
+  version "27.14.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-27.14.0.tgz#f80c11df3650380f66aa763867afa32d1901d407"
+  integrity sha512-cQaMN4pjcV0lCic3w1eiZUru9kV8XHwI3ZRT3LOWoBRQEbK0r3qv71SNKzEGDOtVPYq+WBl0/PRDlThk9H+CAg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -919,7 +919,7 @@
     copy-to-clipboard "^3.0.8"
     dompurify "^2.2.6"
     echarts "^4.9.0"
-    highlight.js "^9.13.1"
+    highlight.js "^10.6.0"
     js-beautify "^1.8.8"
     lodash "^4.17.20"
     portal-vue "^2.1.6"
@@ -5923,7 +5923,12 @@ he@^1.1.0, he@^1.1.1, he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-highlight.js@^9.13.1, highlight.js@~9.13.0:
+highlight.js@^10.6.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.6.0.tgz#0073aa71d566906965ba6e1b7be7b2682f5e18b6"
+  integrity sha512-8mlRcn5vk/r4+QcqerapwBYTe+iPL5ih6xrNylxrnBdHQiijDETfXX7VIxC3UiCRiINBJfANBAsPzAvRQj8RpQ==
+
+highlight.js@~9.13.0:
   version "9.13.1"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.13.1.tgz#054586d53a6863311168488a0f58d6c505ce641e"
   integrity sha512-Sc28JNQNDzaH6PORtRLMvif9RSn1mYuOoX3omVjnb0+HbpPygU2ALBI0R/wsiqCb4/fcp07Gdo8g+fhtFrQl6A==
@@ -11278,7 +11283,7 @@ style-search@^0.1.0:
   resolved "https://registry.yarnpkg.com/style-search/-/style-search-0.1.0.tgz#7958c793e47e32e07d2b5cafe5c0bf8e12e77902"
   integrity sha1-eVjHk+R+MuB9K1yv5cC/jhLneQI=
 
-stylelint-declaration-strict-value@^1.7.7:
+stylelint-declaration-strict-value@1.7.7:
   version "1.7.7"
   resolved "https://registry.yarnpkg.com/stylelint-declaration-strict-value/-/stylelint-declaration-strict-value-1.7.7.tgz#d2f0aabc7f3e701a8988207f27d9696bd1d1ed0d"
   integrity sha512-Gr5RZYMIS7af6N6PGRD3vmCJM/NlKY4D/jWdidQqxcXkhBtsmV6C99GjQOB0nfdYtjfJEQZLMlTNBztY4tRGfA==
@@ -11286,10 +11291,10 @@ stylelint-declaration-strict-value@^1.7.7:
     css-values "^0.1.0"
     shortcss "^0.1.3"
 
-stylelint-scss@^3.18.0:
-  version "3.19.0"
-  resolved "https://registry.yarnpkg.com/stylelint-scss/-/stylelint-scss-3.19.0.tgz#528006d5a4c5a0f1f4d709b02fd3f626ed66d742"
-  integrity sha512-Ic5bsmpS4wVucOw44doC1Yi9f5qbeVL4wPFiEOaUElgsOuLEN6Ofn/krKI8BeNL2gAn53Zu+IcVV4E345r6rBw==
+stylelint-scss@3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/stylelint-scss/-/stylelint-scss-3.18.0.tgz#8f06371c223909bf3f62e839548af1badeed31e9"
+  integrity sha512-LD7+hv/6/ApNGt7+nR/50ft7cezKP2HM5rI8avIdGaUWre3xlHfV4jKO/DRZhscfuN+Ewy9FMhcTq0CcS0C/SA==
   dependencies:
     lodash "^4.17.15"
     postcss-media-query-parser "^0.2.3"
@@ -11297,7 +11302,7 @@ stylelint-scss@^3.18.0:
     postcss-selector-parser "^6.0.2"
     postcss-value-parser "^4.1.0"
 
-stylelint@^13.2.1:
+stylelint@13.9.0:
   version "13.9.0"
   resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-13.9.0.tgz#93921ee6e11d4556b9f31131f485dc813b68e32a"
   integrity sha512-VVWH2oixOAxpWL1vH+V42ReCzBjW2AeqskSAbi8+3OjV1Xg3VZkmTcAqBZfRRvJeF4BvYuDLXebW3tIHxgZDEg==

@@ -30,6 +30,7 @@
   color: var(--gray-500, $gray-500);
 }
 
+[data-page$='epic_boards:show'],
 .issue-boards-page {
   .content-wrapper {
     padding-bottom: 0;

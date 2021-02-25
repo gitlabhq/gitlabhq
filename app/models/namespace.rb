@@ -259,12 +259,8 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    if Feature.enabled?(:recursive_approach_for_all_projects)
-      namespace = user? ? self : self_and_descendants
-      Project.where(namespace: namespace)
-    else
-      Project.inside_path(full_path)
-    end
+    namespace = user? ? self : self_and_descendants
+    Project.where(namespace: namespace)
   end
 
   # Includes pipelines from this namespace and pipelines from all subgroups

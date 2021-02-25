@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';
+import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 
 jest.mock('~/flash');
@@ -15,7 +15,7 @@ describe('Pipelines Actions dropdown', () => {
   let mock;
 
   const createComponent = (props, mountFn = shallowMount) => {
-    wrapper = mountFn(PipelinesActions, {
+    wrapper = mountFn(PipelinesManualActions, {
       propsData: {
         ...props,
       },

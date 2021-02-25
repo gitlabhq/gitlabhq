@@ -202,7 +202,7 @@ describe('IssuableItem', () => {
     describe('labelTarget', () => {
       it('returns target string for a provided label param when `enableLabelPermalinks` is true', () => {
         expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe(
-          '?label_name%5B%5D=Documentation%20Update',
+          '?label_name[]=Documentation%20Update',
         );
       });
 

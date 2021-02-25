@@ -45,7 +45,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['labels', 'labelsLoading']),
+    ...mapState(['labels', 'labelsLoading', 'isEpicBoard']),
     ...mapGetters(['getListByLabelId', 'shouldUseGraphQL']),
     selectedLabel() {
       return this.labels.find(({ id }) => id === this.selectedLabelId);
@@ -57,7 +57,7 @@ export default {
   methods: {
     ...mapActions(['createList', 'fetchLabels', 'highlightList', 'setAddColumnFormVisibility']),
     getListByLabel(label) {
-      if (this.shouldUseGraphQL) {
+      if (this.shouldUseGraphQL || this.isEpicBoard) {
         return this.getListByLabelId(label);
       }
       return boardsStore.findListByLabelId(label.id);
@@ -66,7 +66,7 @@ export default {
       return Boolean(this.getListByLabel(label));
     },
     highlight(listId) {
-      if (this.shouldUseGraphQL) {
+      if (this.shouldUseGraphQL || this.isEpicBoard) {
         this.highlightList(listId);
       } else {
         const list = boardsStore.state.lists.find(({ id }) => id === listId);
@@ -95,7 +95,7 @@ export default {
         return;
       }
 
-      if (this.shouldUseGraphQL) {
+      if (this.shouldUseGraphQL || this.isEpicBoard) {
         this.createList({ labelId: this.selectedLabelId });
       } else {
         boardsStore.new({
@@ -127,6 +127,7 @@ export default {
 <template>
   <div
     class="board-add-new-list board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal gl-flex-shrink-0"
+    data-testid="board-add-new-column"
     data-qa-selector="board_add_new_list"
   >
     <div

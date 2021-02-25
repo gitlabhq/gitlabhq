@@ -4,7 +4,6 @@ import $ from 'jquery';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import TaskList from '../../task_list';
-import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 import animateMixin from '../mixins/animate';
 
 export default {
@@ -12,7 +11,7 @@ export default {
     SafeHtml,
   },
 
-  mixins: [animateMixin, recaptchaModalImplementor],
+  mixins: [animateMixin],
 
   props: {
     canUpdate: {
@@ -87,18 +86,8 @@ export default {
           fieldName: 'description',
           lockVersion: this.lockVersion,
           selector: '.detail-page-description',
-          onSuccess: this.taskListUpdateSuccess.bind(this),
           onError: this.taskListUpdateError.bind(this),
         });
-      }
-    },
-
-    taskListUpdateSuccess(data) {
-      try {
-        this.checkForSpam(data);
-        this.closeRecaptcha();
-      } catch (error) {
-        if (error && error.name === 'SpamError') this.openRecaptcha();
       }
     },
 
@@ -165,7 +154,5 @@ export default {
     >
     </textarea>
     <!-- eslint-enable vue/no-mutating-props -->
-
-    <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>
 </template>

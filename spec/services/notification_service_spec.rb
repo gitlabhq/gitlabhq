@@ -243,11 +243,12 @@ RSpec.describe NotificationService, :mailer do
   describe 'AccessToken' do
     describe '#access_token_about_to_expire' do
       let_it_be(:user) { create(:user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }
 
-      subject { notification.access_token_about_to_expire(user) }
+      subject { notification.access_token_about_to_expire(user, [pat.name]) }
 
       it 'sends email to the token owner' do
-        expect { subject }.to have_enqueued_email(user, mail: "access_token_about_to_expire_email")
+        expect { subject }.to have_enqueued_email(user, [pat.name], mail: "access_token_about_to_expire_email")
       end
     end
 

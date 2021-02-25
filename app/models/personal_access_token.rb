@@ -4,6 +4,7 @@ class PersonalAccessToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
   include Sortable
+  include EachBatch
   extend ::Gitlab::Utils::Override
 
   add_authentication_token_field :token, digest: true
@@ -97,6 +98,10 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def set_default_scopes
+    # When only loading a select set of attributes, for example using `EachBatch`,
+    # the `scopes` attribute is not present, so we can't initialize it.
+    return unless has_attribute?(:scopes)
+
     self.scopes = Gitlab::Auth::DEFAULT_SCOPES if self.scopes.empty?
   end
 

@@ -192,7 +192,7 @@ module Gitlab
             container_expiration_policies_usage,
             service_desk_counts
           ).tap do |data|
-            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
       end
@@ -227,7 +227,7 @@ module Gitlab
             snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp)),
             aggregated_metrics_monthly
           ).tap do |data|
-            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
       end
@@ -821,11 +821,9 @@ module Gitlab
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
-        [
-          count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
+        add count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
           count(::Issue.with_self_managed_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id),
           count(::Issue.with_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id)
-        ].reduce(:+)
       end
 
       def user_minimum_id
@@ -952,7 +950,7 @@ module Gitlab
         csv_issue_imports = distinct_count(Issues::CsvImport.where(time_period), :user_id)
         group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
 
-        project_imports + bulk_imports + jira_issue_imports + csv_issue_imports + group_imports
+        add(project_imports, bulk_imports, jira_issue_imports, csv_issue_imports, group_imports)
       end
       # rubocop:enable CodeReuse/ActiveRecord
 

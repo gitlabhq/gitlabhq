@@ -146,6 +146,7 @@ The following API resources are available outside of project and group contexts 
 | [Instance clusters](instance_clusters.md)          | `/admin/clusters`                                                       |
 | [Issues](issues.md)                                | `/issues` (also available for groups and projects)                      |
 | [Issues Statistics](issues_statistics.md)          | `/issues_statistics` (also available for groups and projects)           |
+| [Jobs](jobs.md)                                    | `/job`                                                                  |
 | [Keys](keys.md)                                    | `/keys`                                                                 |
 | [License](license.md) **(FREE SELF)**              | `/license`                                                              |
 | [Markdown](markdown.md)                            | `/markdown`                                                             |

@@ -57,8 +57,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def attributes_from_personal_snippets
-    # Return if the type of namespace does not belong to a user
-    return {} unless namespace.type.nil?
+    return {} unless namespace.user?
 
     from_personal_snippets.take.slice(SNIPPETS_SIZE_STAT_NAME)
   end
@@ -70,3 +69,5 @@ class Namespace::RootStorageStatistics < ApplicationRecord
       .select("COALESCE(SUM(s.repository_size), 0) AS #{SNIPPETS_SIZE_STAT_NAME}")
   end
 end
+
+Namespace::RootStorageStatistics.prepend_if_ee('EE::Namespace::RootStorageStatistics')
