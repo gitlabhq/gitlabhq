@@ -5661,6 +5661,16 @@ State of a requirement.
 | `ARCHIVED` |  |
 | `OPENED` |  |
 
+### RequirementStatusFilter
+
+Status of a requirement based on last test report.
+
+| Value | Description |
+| ----- | ----------- |
+| `FAILED` |  |
+| `MISSING` | Requirements without any test report. |
+| `PASSED` |  |
+
 ### SastUiComponentSize
 
 Size of UI component in SAST configuration page.

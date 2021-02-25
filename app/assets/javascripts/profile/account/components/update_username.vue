@@ -90,7 +90,10 @@ Please update your Git repository remotes as soon as possible.`),
           this.isRequestPending = false;
         })
         .catch((error) => {
-          Flash(error.response.data.message);
+          Flash(
+            error?.response?.data?.message ||
+              s__('Profiles|An error occurred while updating your username, please try again.'),
+          );
           this.isRequestPending = false;
           throw error;
         });
@@ -121,7 +124,8 @@ Please update your Git repository remotes as soon as possible.`),
     </div>
     <gl-button
       v-gl-modal-directive="$options.modalId"
-      :disabled="isRequestPending || newUsername === username"
+      :disabled="newUsername === username"
+      :loading="isRequestPending"
       category="primary"
       variant="warning"
       data-testid="username-change-confirmation-modal"

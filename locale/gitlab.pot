@@ -4739,6 +4739,9 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list"
 msgstr ""
 
+msgid "Billing|An error occurred while removing a billable member"
+msgstr ""
+
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
@@ -4751,10 +4754,22 @@ msgstr ""
 msgid "Billing|Private"
 msgstr ""
 
+msgid "Billing|Remove user %{username} from your subscription"
+msgstr ""
+
+msgid "Billing|Type %{username} to confirm"
+msgstr ""
+
 msgid "Billing|Type to search"
 msgstr ""
 
+msgid "Billing|User was successfully removed"
+msgstr ""
+
 msgid "Billing|Users occupying seats in"
+msgstr ""
+
+msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -22807,6 +22822,9 @@ msgstr ""
 msgid "Profiles|Add status emoji"
 msgstr ""
 
+msgid "Profiles|An error occurred while updating your username, please try again."
+msgstr ""
+
 msgid "Profiles|Avatar cropper"
 msgstr ""
 
@@ -24906,6 +24924,9 @@ msgid "Remove stage"
 msgstr ""
 
 msgid "Remove time estimate"
+msgstr ""
+
+msgid "Remove user"
 msgstr ""
 
 msgid "Remove user & report"
