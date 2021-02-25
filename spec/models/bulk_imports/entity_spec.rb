@@ -103,7 +103,9 @@ RSpec.describe BulkImports::Entity, type: :model do
         )
 
         expect(entity).not_to be_valid
-        expect(entity.errors).to include(:destination_namespace)
+        expect(entity.errors).to include(:base)
+        expect(entity.errors[:base])
+          .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
       end
 
       it 'is invalid if destination namespace is a descendant of the source' do
@@ -118,7 +120,8 @@ RSpec.describe BulkImports::Entity, type: :model do
         )
 
         expect(entity).not_to be_valid
-        expect(entity.errors).to include(:destination_namespace)
+        expect(entity.errors[:base])
+          .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
       end
     end
   end

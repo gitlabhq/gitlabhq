@@ -85,9 +85,11 @@ describe('Blob viewer', () => {
 
   describe('copy blob button', () => {
     let copyButton;
+    let copyButtonTooltip;
 
     beforeEach(() => {
       copyButton = document.querySelector('.js-copy-blob-source-btn');
+      copyButtonTooltip = document.querySelector('.js-copy-blob-source-btn-tooltip');
     });
 
     it('disabled on load', () => {
@@ -95,7 +97,7 @@ describe('Blob viewer', () => {
     });
 
     it('has tooltip when disabled', () => {
-      expect(copyButton.getAttribute('title')).toBe(
+      expect(copyButtonTooltip.getAttribute('title')).toBe(
         'Switch to the source to copy the file contents',
       );
     });
@@ -131,7 +133,7 @@ describe('Blob viewer', () => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setImmediate(() => {
-        expect(copyButton.getAttribute('title')).toBe('Copy file contents');
+        expect(copyButtonTooltip.getAttribute('title')).toBe('Copy file contents');
 
         done();
       });

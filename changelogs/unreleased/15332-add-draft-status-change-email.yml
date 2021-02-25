@@ -1,0 +1,5 @@
+---
+title: Add notification templates for merge request draft/WIP status change events
+merge_request: 54870
+author:
+type: other

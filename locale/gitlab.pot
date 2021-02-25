@@ -5095,6 +5095,9 @@ msgstr ""
 msgid "BulkImport|From source group"
 msgstr ""
 
+msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
+msgstr ""
+
 msgid "BulkImport|Import groups from GitLab"
 msgstr ""
 
@@ -5120,9 +5123,6 @@ msgid "BulkImport|Update of import statuses with realtime changes failed"
 msgstr ""
 
 msgid "BulkImport|You have no groups to import"
-msgstr ""
-
-msgid "BulkImport|destination group cannot be part of the source group tree"
 msgstr ""
 
 msgid "BulkImport|expected an associated Group but has an associated Project"

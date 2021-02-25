@@ -25,7 +25,6 @@ RSpec.describe Group do
     it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:container_repositories) }
     it { is_expected.to have_many(:milestones) }
-    it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_one(:dependency_proxy_setting) }

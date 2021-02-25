@@ -118,8 +118,8 @@ class BulkImports::Entity < ApplicationRecord
 
     if source.self_and_descendants.any? { |namespace| namespace.full_path == destination_namespace }
       errors.add(
-        :destination_namespace,
-        s_('BulkImport|destination group cannot be part of the source group tree')
+        :base,
+        s_('BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
       )
     end
   end

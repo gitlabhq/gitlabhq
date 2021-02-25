@@ -246,9 +246,6 @@ export default {
                 <div
                   v-for="(stage, i) in pipeline.details.stages"
                   :key="i"
-                  :class="{
-                    'has-downstream': hasDownstream(i),
-                  }"
                   class="stage-container dropdown mr-widget-pipeline-stages"
                   data-testid="widget-mini-pipeline-graph"
                 >
