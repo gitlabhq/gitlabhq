@@ -17,6 +17,7 @@ class OnboardingProgress < ApplicationRecord
     :code_owners_enabled,
     :scoped_label_created,
     :security_scan_enabled,
+    :issue_created,
     :issue_auto_closed,
     :repository_imported,
     :repository_mirrored

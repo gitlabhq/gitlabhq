@@ -186,7 +186,7 @@ This icon is only displayed if the user has permission to edit the issue.
 ### Description
 
 The plain text title and description of the issue fill the top center of the issue page.
-The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
+The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown),
 allowing many formatting options.
 
 [In GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/10103) and later, changes to an
@@ -281,7 +281,7 @@ or newest items to be shown first.
 ### Comments
 
 Collaborate in the issue by posting comments in its thread. This text field also fully
-supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 
 ### Submit comment, start a thread, or comment and close
 
@@ -301,7 +301,7 @@ You can also close the issue from here, so you don't need to scroll to the top o
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31103) in GitLab 12.3.
 
 You can attach and remove Zoom meetings to issues using the `/zoom` and `/remove_zoom` [quick actions](../quick_actions.md) as part of
-[GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+[GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 
 Attaching a [Zoom](https://zoom.us) call an issue
 results in a **Join Zoom meeting** button at the top of the issue, just under the header.

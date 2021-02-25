@@ -49,6 +49,12 @@ class SearchController < ApplicationController
     scope = search_service.scope
     count = search_service.search_results.formatted_count(scope)
 
+    # Users switching tabs will keep fetching the same tab counts so it's a
+    # good idea to cache in their browser just for a short time. They can still
+    # clear cache if they are seeing an incorrect count but inaccurate count is
+    # not such a bad thing.
+    expires_in 1.minute
+
     render json: { count: count }
   end
 

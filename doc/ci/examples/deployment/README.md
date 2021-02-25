@@ -128,4 +128,4 @@ or `%` (for Windows Batch runners):
 1. `$VARIABLE` - use it for non-Windows runners
 1. `%VARIABLE%` - use it for Windows Batch runners
 
-Read more about the [CI variables](../../variables/README.md).
+Read more about the [CI/CD variables](../../variables/README.md).

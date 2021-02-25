@@ -183,7 +183,7 @@ the [`compile_dev` job](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/3280424
 the `master` branches were pulled.
 
 To fix this, re-run the pipeline (`https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new`)
-for the `update-12-2-for-release-12-4` branch, by including the following environment variables:
+for the `update-12-2-for-release-12-4` branch, by including the following CI/CD variables:
 
 - `BRANCH_CE` set to `12-2-stable`
 - `BRANCH_EE` set to `12-2-stable-ee`

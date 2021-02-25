@@ -183,7 +183,7 @@ requirements_confirmation:
 ### Add the manual job to CI conditionally
 
 To configure your CI to include the manual job only when there are some open
-requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI variable.
+requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI/CD variable.
 
 ```yaml
 requirements_confirmation:

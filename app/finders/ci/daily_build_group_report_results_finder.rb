@@ -11,8 +11,8 @@
 #     group: integer
 #     coverage: boolean
 #     ref_path: string
-#     start_date: date
-#     end_date: date
+#     start_date: string
+#     end_date: string
 #     sort: boolean
 #     limit: integer
 
@@ -21,6 +21,8 @@ module Ci
     include Gitlab::Allowable
 
     MAX_ITEMS = 1_000
+    REPORT_WINDOW = 90.days
+    DATE_FORMAT_ALLOWED = '%Y-%m-%d'
 
     attr_reader :params, :current_user
 
@@ -62,7 +64,7 @@ module Ci
     end
 
     def by_dates(items)
-      params[:start_date].present? && params[:end_date].present? ? items.by_dates(params[:start_date], params[:end_date]) : items
+      params[:start_date].present? && params[:end_date].present? ? items.by_dates(start_date, end_date) : items
     end
 
     def sort(items)
@@ -79,6 +81,17 @@ module Ci
       return MAX_ITEMS unless params[:limit].present?
 
       [params[:limit].to_i, MAX_ITEMS].min
+    end
+
+    def start_date
+      start_date = Date.strptime(params[:start_date], DATE_FORMAT_ALLOWED) rescue REPORT_WINDOW.ago.to_date
+
+      # The start_date cannot be older than `end_date - 90 days`
+      [start_date, end_date - REPORT_WINDOW].max
+    end
+
+    def end_date
+      Date.strptime(params[:end_date], DATE_FORMAT_ALLOWED) rescue Date.current
     end
   end
 end

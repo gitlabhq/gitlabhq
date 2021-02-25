@@ -212,6 +212,8 @@
   - 1
 - - namespaceless_project_destroy
   - 1
+- - namespaces_onboarding_issue_created
+  - 1
 - - namespaces_onboarding_pipeline_created
   - 1
 - - namespaces_onboarding_progress

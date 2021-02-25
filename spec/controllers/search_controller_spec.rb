@@ -252,6 +252,14 @@ RSpec.describe SearchController do
           get :count, params: { search: 'hello' }
         end.to raise_error(ActionController::ParameterMissing)
       end
+
+      it 'sets private cache control headers' do
+        get :count, params: { search: 'hello', scope: 'projects' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(response.headers['Cache-Control']).to include('max-age=60, private')
+      end
     end
 
     describe 'GET #autocomplete' do

@@ -18,13 +18,13 @@ for a complete Kramdown reference.
 NOTE:
 We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
 
-## GitLab Flavored Markdown (GFM)
+## GitLab Flavored Markdown
 
-GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification](https://spec.commonmark.org/current/)
+GitLab uses "GitLab Flavored Markdown". It extends the [CommonMark specification](https://spec.commonmark.org/current/)
 (which is based on standard Markdown) in several ways to add more features.
 It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
 
-You can use GFM in the following areas:
+You can use GitLab Flavored Markdown in the following areas:
 
 - Comments
 - Issues
@@ -92,12 +92,12 @@ if any changes are needed.
 
 `diff_redcarpet_cmark` is not an officially supported product.
 
-### GFM extends standard Markdown
+### GitLab Flavored Markdown extends standard Markdown
 
 GitLab makes full use of the standard (CommonMark) formatting, but also includes more
 helpful features for GitLab users.
 
-It makes use of [new Markdown features](#new-gfm-markdown-extensions),
+It makes use of [new Markdown features](#new-gitlab-flavored-markdown-extensions),
 not found in standard Markdown:
 
 - [Color chips written in HEX, RGB or HSL](#colors)
@@ -124,7 +124,7 @@ changing how standard Markdown is used:
 | [line breaks](#line-breaks)           | [more line break control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
-## New GFM Markdown extensions
+## New GitLab Flavored Markdown extensions
 
 ### Colors
 
@@ -251,7 +251,7 @@ If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com
 ```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-:zap: You can use emoji anywhere GFM is supported. :v:
+:zap: You can use emoji anywhere GitLab Flavored Markdown is supported. :v:
 
 You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People :heart: you for that.
 
@@ -262,7 +262,7 @@ Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all sup
 
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. Well we have a gift for you:
 
-<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
+<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">You can use emoji anywhere GitLab Flavored Markdown is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
 
 You can use it to point out a<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> patches. If someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. People <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> you for that.
 
@@ -424,14 +424,14 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Special GitLab references
 
-GFM recognizes special GitLab related references. For example, you can reference
-an issue, a commit, a team member, or even an entire project team. GFM turns
+GitLab Flavored Markdown recognizes special GitLab related references. For example, you can reference
+an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
 that reference into a link so you can navigate between them.
 
-Additionally, GFM recognizes certain cross-project references and also has a shorthand
+Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
 
-GFM recognizes the following:
+GitLab Flavored Markdown recognizes the following:
 
 | references                      | input                      | cross-project reference                 | shortcut inside same namespace |
 | :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
@@ -630,7 +630,7 @@ Quote break.
 
 If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-GFM extends the standard Markdown by also supporting multi-line blockquotes
+GitLab Flavored Markdown extends the standard Markdown by also supporting multi-line blockquotes
 fenced by `>>>`:
 
 ```markdown
@@ -778,7 +778,7 @@ But let's throw in a <b>tag</b>.
 
 There are multiple ways to emphasize text in Markdown. You can italicize, bold, strikethrough,
 and combine these emphasis styles together.
-Strikethrough is not part of the core Markdown standard, but is part of GFM.
+Strikethrough is not part of the core Markdown standard, but is part of GitLab Flavored Markdown.
 
 Examples:
 
@@ -807,7 +807,7 @@ If this section isn't rendered correctly,
 
 Avoid italicizing a portion of a word, especially when you're
 dealing with code and names that often appear with multiple underscores.
-GFM extends the standard Markdown standard by ignoring multiple underlines in words,
+GitLab Flavored Markdown extends the standard Markdown standard by ignoring multiple underlines in words,
 to allow better rendering of Markdown documents discussing code:
 
 ```markdown
@@ -899,7 +899,7 @@ Alt-H2
 
 #### Header IDs and links
 
-GFM extends the standard Markdown standard so that all Markdown-rendered headers automatically
+GitLab Flavored Markdown extends the standard Markdown standard so that all Markdown-rendered headers automatically
 get IDs, which can be linked to, except in comments.
 
 On hover, a link to those IDs becomes visible to make it easier to copy the link to
@@ -1193,7 +1193,7 @@ in the *same paragraph*.
 
 #### Newlines
 
-GFM adheres to the Markdown specification in how [paragraphs and line breaks are handled](https://spec.commonmark.org/current/).
+GitLab Flavored Markdown adheres to the Markdown specification in how [paragraphs and line breaks are handled](https://spec.commonmark.org/current/).
 
 A paragraph is one or more consecutive lines of text, separated by one or
 more blank lines (two newlines at the end of the first paragraph), as [explained above](#line-breaks).
@@ -1275,7 +1275,7 @@ points the link to `wikis/style` only when the link is inside of a wiki Markdown
 
 #### URL auto-linking
 
-GFM auto-links almost any URL you put into your text:
+GitLab Flavored Markdown auto-links almost any URL you put into your text:
 
 ```markdown
 - https://www.google.com
@@ -1418,7 +1418,7 @@ Example:
 
 ### Superscripts / Subscripts
 
-CommonMark and GFM don't support the Redcarpet superscript syntax ( `x^2` ).
+CommonMark and GitLab Flavored Markdown don't support the Redcarpet superscript syntax ( `x^2` ).
 Use the standard HTML syntax for superscripts and subscripts:
 
 ```html
@@ -1435,7 +1435,7 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 
 ### Tables
 
-Tables are not part of the core Markdown spec, but they are part of GFM.
+Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.
 
 1. The first line contains the headers, separated by "pipes" (`|`).
 1. The second line separates the headers from the cells, and must contain three or more dashes.

@@ -121,10 +121,10 @@ job:
     - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
 ```
 
-You can define the color codes in Shell variables, or even [custom CI/CD variables](../variables/README.md#custom-cicd-variables),
+You can define the color codes in Shell environment variables, or even [custom CI/CD variables](../variables/README.md#custom-cicd-variables),
 which makes the commands easier to read and reusable.
 
-For example, using the same example as above and variables defined in a `before_script`:
+For example, using the same example as above and environment variables defined in a `before_script`:
 
 ```yaml
 job:

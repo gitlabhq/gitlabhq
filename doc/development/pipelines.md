@@ -29,7 +29,7 @@ Pipelines are always created for the following scenarios:
 - Tags.
 - Stable, `auto-deploy`, and security branches.
 
-Pipeline creation is also affected by the following CI variables:
+Pipeline creation is also affected by the following CI/CD variables:
 
 - If `$FORCE_GITLAB_CI` is set, pipelines are created.
 - If `$GITLAB_INTERNAL` is not set, pipelines are not created.
@@ -414,10 +414,10 @@ The `rspec fail-fast` is a no-op if there are more than 10 test files related to
 Merge Request. This prevents `rspec fail-fast` duration from exceeding the average
 `rspec` job duration and defeating its purpose.
 
-This number can be overridden by setting a CI variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
 
 NOTE:
-This experiment is only enabled when the CI variable `RSPEC_FAIL_FAST_ENABLED=true` is set.
+This experiment is only enabled when the CI/CD variable `RSPEC_FAIL_FAST_ENABLED=true` is set.
 
 #### Determining related test files in a Merge Request
 
@@ -531,8 +531,7 @@ several reasons:
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
 [defined by GitLab.com shared runners](../user/gitlab_com/index.md#pre-clone-script).
 
-The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD
-variable:
+The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 
 ```shell
 echo "Downloading archived master..."
@@ -638,7 +637,7 @@ Some of the jobs are using images from Docker Hub, where we also use
 `${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
 images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
 
-`${GITLAB_DEPENDENCY_PROXY}` is a group variable defined in
+`${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
 [`gitlab-org`](https://gitlab.com/gitlab-org) as
 `${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`. This means when we use an image
 defined as:
@@ -653,7 +652,7 @@ Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
 
 ### Default variables
 
-In addition to the [predefined variables](../ci/variables/predefined_variables.md),
+In addition to the [predefined CI/CD variables](../ci/variables/predefined_variables.md),
 each pipeline includes default variables defined in
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
@@ -679,7 +678,7 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 | `.use-pg12` | Allows a job to use the `postgres:12` and `redis:4.0-alpine` services. |
 | `.use-pg12-ee` | Same as `.use-pg12` but also use the `docker.elastic.co/elasticsearch/elasticsearch:7.9.2` services. |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
-| `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` environment variable. |
+| `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
 | `.use-docker-in-docker` | Allows a job to use Docker in Docker. |
 
 ### `rules`, `if:` conditions and `changes:` patterns
@@ -726,7 +725,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if-dot-com-gitlab-org-and-security-tag`                     | Limit jobs creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
 | `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
 | `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
-| `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` variable not set to `"true"`. | |
+| `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` CI/CD variable not set to `"true"`. | |
 | `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR title includes "SKIP RSPEC FAIL-FAST". | |
 | `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 

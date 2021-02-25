@@ -5,9 +5,9 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Instance template repository **(PREMIUM SELF)** **(FREE)**
+# Instance template repository **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in GitLab Premium 11.3.
 
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the

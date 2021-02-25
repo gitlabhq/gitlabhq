@@ -188,7 +188,7 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    **macOS:**
 
    ```shell
-   pbcopy < ~/.ssh/id_ed25519.pub
+   tr -d '\n' < ~/.ssh/id_ed25519.pub | pbcopy
    ```
 
    **Linux** (requires the `xclip` package):

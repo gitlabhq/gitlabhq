@@ -20339,9 +20339,6 @@ msgstr ""
 msgid "No issues found"
 msgstr ""
 
-msgid "No issues found for the selected labels"
-msgstr ""
-
 msgid "No iteration"
 msgstr ""
 
@@ -29817,6 +29814,9 @@ msgstr ""
 msgid "There are no issues to show."
 msgstr ""
 
+msgid "There are no issues with the selected labels"
+msgstr ""
+
 msgid "There are no labels yet"
 msgstr ""
 
@@ -31483,6 +31483,9 @@ msgid "Try all GitLab has to offer for 30 days."
 msgstr ""
 
 msgid "Try changing or removing filters."
+msgstr ""
+
+msgid "Try grouping with different labels"
 msgstr ""
 
 msgid "Try to fork again"

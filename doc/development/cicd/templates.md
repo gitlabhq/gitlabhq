@@ -47,7 +47,7 @@ performance:
 ```
 
 and users include this template with passing an argument to the `performance` job.
-This can be done by specifying the environment variable `TARGET_URL` in _their_ `.gitlab-ci.yml`:
+This can be done by specifying the CI/CD variable `TARGET_URL` in _their_ `.gitlab-ci.yml`:
 
 ```yaml
 include:
@@ -180,7 +180,7 @@ is updated in a major version GitLab release.
 ## Security
 
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
-might accidentally expose project secret variables in a job log.
+might accidentally expose secret project CI/CD variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
 
 ## Contribute CI/CD Template Merge Requests

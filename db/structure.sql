@@ -14694,7 +14694,8 @@ CREATE TABLE onboarding_progresses (
     security_scan_enabled_at timestamp with time zone,
     issue_auto_closed_at timestamp with time zone,
     repository_imported_at timestamp with time zone,
-    repository_mirrored_at timestamp with time zone
+    repository_mirrored_at timestamp with time zone,
+    issue_created_at timestamp with time zone
 );
 
 CREATE SEQUENCE onboarding_progresses_id_seq

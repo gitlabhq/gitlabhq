@@ -154,7 +154,7 @@ You can also consult the [group permissions table](../../permissions.md#group-me
 
 - Comments: collaborate on that epic by posting comments in its thread.
   These text fields also fully support
-  [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+  [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 
 ## Comment or start a thread
 

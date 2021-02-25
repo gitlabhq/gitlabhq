@@ -79,6 +79,25 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
             ])
           end
         end
+
+        context 'when provided dates are nil' do
+          let(:start_date) { nil }
+          let(:end_date) { nil }
+          let(:rspec_coverage_4) { create_daily_coverage('rspec', 98.0, 91.days.ago.to_date.to_s) }
+
+          it 'returns all coverages from the last 90 days' do
+            expect(coverages).to match_array(
+              [
+                karma_coverage_3,
+                rspec_coverage_3,
+                karma_coverage_2,
+                rspec_coverage_2,
+                karma_coverage_1,
+                rspec_coverage_1
+              ]
+            )
+          end
+        end
       end
     end
   end

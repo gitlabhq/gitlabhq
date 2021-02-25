@@ -234,7 +234,7 @@ different branch.
 
 When you edit Markdown files in the Web IDE, you can preview your changes by
 clicking the **Preview Markdown** tab above the file editor. The Markdown preview
-supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 
 You can also upload any local images by pasting them directly in the Markdown file.
 The image is uploaded to the same directory and is named `image.png` by default.

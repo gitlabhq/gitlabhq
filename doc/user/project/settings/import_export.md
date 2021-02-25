@@ -124,7 +124,7 @@ The following items will **not** be exported:
 
 - Build traces and artifacts
 - Container registry images
-- CI variables
+- CI/CD variables
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers

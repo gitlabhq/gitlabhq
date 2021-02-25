@@ -57,11 +57,12 @@ To create a group:
    - To the left of the search box, select the plus sign and then **New group**.
 1. For the **Group name**, use only:
    - Alphanumeric characters
+   - Emojis
    - Underscores
-   - Dashes and dots
-   - Spaces
+   - Dashes, dots, spaces and parenthesis (however, it cannot start with any of these characters)
 
    For a list of words that cannot be used as group names, see [reserved names](../reserved_names.md).
+
 1. For the **Group URL**, which is used for the [namespace](#namespaces),
    use only:
    - Alphanumeric characters

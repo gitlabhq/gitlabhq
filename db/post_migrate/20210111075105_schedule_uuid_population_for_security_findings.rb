@@ -11,13 +11,7 @@ class ScheduleUuidPopulationForSecurityFindings < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    Gitlab::BackgroundMigration::PopulateUuidsForSecurityFindings.security_findings.each_batch(column: :scan_id, of: BATCH_SIZE) do |batch, index|
-      migrate_in(
-        DELAY_INTERVAL * index,
-        MIGRATION_CLASS,
-        batch.pluck(:scan_id)
-      )
-    end
+    # no-op, replaced by 20210111075206_schedule_uuid_population_for_security_findings2.rb
   end
 
   def down
