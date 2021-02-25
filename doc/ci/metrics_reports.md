@@ -26,12 +26,14 @@ Consider the following examples of data that can use Metrics Reports:
 
 ## How it works
 
-Metrics are read from the metrics report (default: `metrics.txt`). They are parsed and displayed in the MR widget.
+Metrics for a branch are read from the latest metrics report artifact (default filename: `metrics.txt`) as string values.
 
-All values are considered strings and string compare is used to find differences between the latest available `metrics` artifact from:
+For an MR, the values of these metrics from the feature branch are compared to the values from the target branch. Then they are displayed in the MR widget in this order:
 
-- `master`
-- The feature branch
+- Metrics that have been added by the MR. Marked with a **New** badge.
+- Existing metrics with changed values.
+- Existing metrics with unchanged values.
+- Metrics that have been removed by the MR. Marked with a **Removed** badge.
 
 ## How to set it up
 

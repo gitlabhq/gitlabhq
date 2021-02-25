@@ -7,7 +7,6 @@ RSpec.describe 'factories' do
 
   def skipped_traits
     [
-      [:alert_management_alert, :with_ended_at],
       [:audit_event, :unauthenticated],
       [:ci_build_trace_chunk, :fog_with_data],
       [:ci_job_artifact, :remote_store],
@@ -32,10 +31,7 @@ RSpec.describe 'factories' do
       [:pages_domain, :explicit_ecdsa],
       [:project_member, :blocked],
       [:project, :remote_mirror],
-      [:prometheus_alert_event, :none],
       [:remote_mirror, :ssh],
-      [:self_managed_prometheus_alert_event, :resolved],
-      [:self_managed_prometheus_alert_event, :none],
       [:user_preference, :only_comments]
     ]
   end

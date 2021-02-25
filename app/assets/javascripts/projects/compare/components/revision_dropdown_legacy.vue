@@ -65,8 +65,8 @@ export default {
       return axios
         .get(endpoint)
         .then(({ data }) => {
-          this.branches = data.Branches;
-          this.tags = data.Tags;
+          this.branches = data.Branches || [];
+          this.tags = data.Tags || [];
         })
         .catch(() => {
           createFlash({

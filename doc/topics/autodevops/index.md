@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Auto DevOps **(FREE)**
 
-> - Generally available on GitLab 11.0.
+> - Introduced in GitLab 11.0 for general availability.
 
 GitLab Auto DevOps helps to reduce the complexity of software delivery by
 setting up pipelines and integrations for you. Instead of requiring you to
@@ -38,7 +38,7 @@ For a developer's guide, read [Auto DevOps development guide](../../development/
 
 ## Enabled by default
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
 
 On self-managed instances, Auto DevOps is enabled by default for all projects.
 It attempts to run on all pipelines in each project. An instance administrator can
@@ -205,7 +205,7 @@ After enabling the feature, an Auto DevOps pipeline is triggered on the `master`
 
 ### At the group level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
 
 Only administrators and group owners can enable or disable Auto DevOps at the group level.
 
@@ -232,7 +232,7 @@ Auto DevOps at the group and project level, respectively.
 
 ### Deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 You can change the deployment strategy used by Auto DevOps by visiting your
 project's **Settings > CI/CD > Auto DevOps**. The following options

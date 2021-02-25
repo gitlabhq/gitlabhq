@@ -10,6 +10,16 @@ You can integrate your GitLab instance with GitHub.com and GitHub Enterprise. Th
 enables users to import projects from GitHub, or sign in to your GitLab instance
 with their GitHub account.
 
+## Security check
+
+Some integrations risk compromising GitLab accounts. To help mitigate this
+[OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
+vulnerability, append `/users/auth` to the end of the authorization callback URL.
+
+However, as far as we know, GitHub does not validate the subdomain part of the `redirect_uri`.
+This means that a subdomain takeover, an XSS, or an open redirect on any subdomain of
+your website could enable the covert redirect attack.
+
 ## Enabling GitHub OAuth
 
 To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
@@ -18,9 +28,6 @@ When you create an OAuth 2 app in GitHub, you need the following information:
 
 - The URL of your GitLab instance, such as `https://gitlab.example.com`.
 - The authorization callback URL; in this case, `https://gitlab.example.com/users/auth`. Include the port number if your GitLab instance uses a non-default port.
-
-NOTE:
-To prevent an [OAuth2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/) vulnerability, append `/users/auth` to the end of the GitHub authorization callback URL.
 
 See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 

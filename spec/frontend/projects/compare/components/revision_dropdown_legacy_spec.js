@@ -62,6 +62,20 @@ describe('RevisionDropdown component', () => {
     expect(wrapper.vm.tags).toEqual(Tags);
   });
 
+  it('sets branches and tags to be an empty array when no tags or branches are given', async () => {
+    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(200, {
+      Branches: undefined,
+      Tags: undefined,
+    });
+
+    createComponent();
+
+    await axios.waitForAll();
+
+    expect(wrapper.vm.branches).toEqual([]);
+    expect(wrapper.vm.tags).toEqual([]);
+  });
+
   it('shows flash message on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(404);
 
