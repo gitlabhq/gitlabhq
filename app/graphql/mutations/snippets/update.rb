@@ -45,7 +45,7 @@ module Mutations
         end
 
         snippet = service_response.payload[:snippet]
-        with_spam_action_fields(snippet) do
+        with_spam_action_response_fields(snippet) do
           {
             snippet: service_response.success? ? snippet : snippet.reset,
             errors: errors_on_object(snippet)

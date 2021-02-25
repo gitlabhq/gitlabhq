@@ -580,7 +580,7 @@ RSpec.describe SearchHelper do
   describe '#issuable_state_to_badge_class' do
     context 'with merge request' do
       it 'returns correct badge based on status' do
-        expect(issuable_state_to_badge_class(build(:merge_request, :merged))).to eq(:primary)
+        expect(issuable_state_to_badge_class(build(:merge_request, :merged))).to eq(:info)
         expect(issuable_state_to_badge_class(build(:merge_request, :closed))).to eq(:danger)
         expect(issuable_state_to_badge_class(build(:merge_request, :opened))).to eq(:success)
       end

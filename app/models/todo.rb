@@ -55,7 +55,6 @@ class Todo < ApplicationRecord
   validates :project, presence: true, unless: :group_id
   validates :group, presence: true, unless: :project_id
 
-  scope :for_ids, -> (ids) { where(id: ids) }
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
   scope :for_action, -> (action) { where(action: action) }

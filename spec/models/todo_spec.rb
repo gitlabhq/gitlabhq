@@ -363,23 +363,6 @@ RSpec.describe Todo do
     end
   end
 
-  describe '.for_ids' do
-    it 'returns the expected todos' do
-      todo1 = create(:todo)
-      todo2 = create(:todo)
-      todo3 = create(:todo)
-      create(:todo)
-
-      expect(described_class.for_ids([todo2.id, todo1.id, todo3.id])).to contain_exactly(todo1, todo2, todo3)
-    end
-
-    it 'returns an empty collection when no ids are given' do
-      create(:todo)
-
-      expect(described_class.for_ids([])).to be_empty
-    end
-  end
-
   describe '.for_user' do
     it 'returns the expected todos' do
       user1 = create(:user)

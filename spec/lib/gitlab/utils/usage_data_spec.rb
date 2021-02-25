@@ -183,6 +183,24 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
   end
 
+  describe '#add' do
+    it 'adds given values' do
+      expect(described_class.add(1, 3)).to eq(4)
+    end
+
+    it 'adds given values' do
+      expect(described_class.add).to eq(0)
+    end
+
+    it 'returns the fallback value when adding fails' do
+      expect(described_class.add(nil, 3)).to eq(-1)
+    end
+
+    it 'returns the fallback value one of the arguments is negative' do
+      expect(described_class.add(-1, 1)).to eq(-1)
+    end
+  end
+
   describe '#alt_usage_data' do
     it 'returns the fallback when it gets an error' do
       expect(described_class.alt_usage_data { raise StandardError } ).to eq(-1)

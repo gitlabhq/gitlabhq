@@ -24722,6 +24722,9 @@ msgstr ""
 msgid "Release title"
 msgstr ""
 
+msgid "Release with tag \"%{tag}\" was not found"
+msgstr ""
+
 msgid "ReleaseAssetLinkType|Image"
 msgstr ""
 
@@ -30965,6 +30968,9 @@ msgid "Tip:"
 msgstr ""
 
 msgid "Tip: add a"
+msgstr ""
+
+msgid "Tip: add a %{linkStart}CODEOWNERS%{linkEnd} to automatically add approvers based on file paths and file types."
 msgstr ""
 
 msgid "Title"

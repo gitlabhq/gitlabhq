@@ -5,6 +5,7 @@ module Mutations
   # and optionally support the workflow to allow clients to display and solve CAPTCHAs.
   module CanMutateSpammable
     extend ActiveSupport::Concern
+    include Spam::Concerns::HasSpamActionResponseFields
 
     # NOTE: The arguments and fields are intentionally named with 'captcha' instead of 'recaptcha',
     # so that they can be applied to future alternative CAPTCHA implementations other than
@@ -58,26 +59,6 @@ module Mutations
         api: true,
         request: context[:request]
       }
-    end
-
-    # with_spam_action_fields(spammable) { {other_fields: true} }    -> hash
-    #
-    # Takes a Spammable and a block as arguments.
-    #
-    # The block passed should be a hash, which the spam action fields will be merged into.
-    def with_spam_action_fields(spammable)
-      spam_action_fields = {
-        spam: spammable.spam?,
-        # NOTE: These fields are intentionally named with 'captcha' instead of 'recaptcha', so
-        # that they can be applied to future alternative CAPTCHA implementations other than
-        # reCAPTCHA (such as FriendlyCaptcha) without having to change the response field name
-        # in the API.
-        needs_captcha_response: spammable.render_recaptcha?,
-        spam_log_id: spammable.spam_log&.id,
-        captcha_site_key: Gitlab::CurrentSettings.recaptcha_site_key
-      }
-
-      yield.merge(spam_action_fields)
     end
   end
 end

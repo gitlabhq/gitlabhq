@@ -490,15 +490,18 @@ def foo
 end
 ```
 
-## Deprecating fields and enum values
+## Deprecating fields, arguments, and enum values
 
 The GitLab GraphQL API is versionless, which means we maintain backwards
-compatibility with older versions of the API with every change. Rather
-than removing a field or [enum value](#enums), we need to _deprecate_ it instead.
+compatibility with older versions of the API with every change.
+
+Rather than removing fields, arguments, or [enum values](#enums), they
+must be _deprecated_ instead.
+
 The deprecated parts of the schema can then be removed in a future release
 in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-process).
 
-Fields and enum values are deprecated using the `deprecated` property.
+Fields, arguments, and enum values are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:
 
 - `reason` - Reason for the deprecation.
@@ -518,14 +521,15 @@ is appended to the `description`.
 
 ### Deprecation reason style guide
 
-Where the reason for deprecation is due to the field or enum value being
-replaced, the `reason` must be:
+Where the reason for deprecation is due to the field, argument, or enum value being
+replaced, the `reason` must indicate the replacement. For example, the
+following is a `reason` for a replaced field:
 
 ```plaintext
 Use `otherFieldName`
 ```
 
-Example:
+Examples:
 
 ```ruby
 field :designs, ::Types::DesignManagement::DesignCollectionType, null: true,
@@ -544,8 +548,8 @@ module Types
 end
 ```
 
-If the field is not being replaced by another field, a descriptive
-deprecation `reason` should be given.
+If the field, argument, or enum value being deprecated is not being replaced,
+a descriptive deprecation `reason` should be given.
 
 See also [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
 
@@ -594,7 +598,7 @@ end
 ```
 
 Enum values can be deprecated using the
-[`deprecated` keyword](#deprecating-fields-and-enum-values).
+[`deprecated` keyword](#deprecating-fields-arguments-and-enum-values).
 
 ### Defining GraphQL enums dynamically from Rails enums
 
@@ -1567,7 +1571,7 @@ mount_aliased_mutation 'BarMutation', Mutations::FooMutation
 ```
 
 This allows us to rename a mutation and continue to support the old name,
-when coupled with the [`deprecated`](#deprecating-fields-and-enum-values)
+when coupled with the [`deprecated`](#deprecating-fields-arguments-and-enum-values)
 argument.
 
 Example:

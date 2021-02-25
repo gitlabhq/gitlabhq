@@ -53,7 +53,7 @@ module Ci
       end
 
       def update_processables!(ids)
-        created_processables = pipeline.processables.for_ids(ids)
+        created_processables = pipeline.processables.id_in(ids)
           .with_project_preload
           .created
           .latest

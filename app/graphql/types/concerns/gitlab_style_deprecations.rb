@@ -10,7 +10,7 @@ module GitlabStyleDeprecations
   def gitlab_deprecation(kwargs)
     if kwargs[:deprecation_reason].present?
       raise ArgumentError, 'Use `deprecated` property instead of `deprecation_reason`. ' \
-                           'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields-and-enum-values'
+                           'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields-arguments-and-enum-values'
     end
 
     deprecation = kwargs.delete(:deprecated)
