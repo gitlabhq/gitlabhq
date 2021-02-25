@@ -1,11 +1,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import IssueCardInner from './issue_card_inner.vue';
+import BoardCardInner from './board_card_inner.vue';
 
 export default {
   name: 'BoardCard',
   components: {
-    IssueCardInner,
+    BoardCardInner,
   },
   props: {
     list: {
@@ -76,6 +76,6 @@ export default {
     class="board-card gl-p-5 gl-rounded-base"
     @mouseup="toggleIssue($event)"
   >
-    <issue-card-inner :list="list" :issue="issue" :update-filters="true" />
+    <board-card-inner :list="list" :item="issue" :update-filters="true" />
   </li>
 </template>

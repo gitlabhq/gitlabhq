@@ -1,10 +1,8 @@
 export default {
-  computed: {
+  methods: {
     validIssueWeight() {
       return false;
     },
-  },
-  methods: {
     filterByWeight() {},
   },
 };

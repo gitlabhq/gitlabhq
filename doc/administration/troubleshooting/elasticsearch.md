@@ -294,7 +294,7 @@ Beyond that, you will want to review the error. If it is:
   GitLab support.
 - An OS issue, you will want to reach out to your systems administrator.
 - A `Faraday::TimeoutError (execution expired)` error **and** you're using a proxy,
-  [set a custom  `gitlab_rails['env']` environment variable, called `no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+  [set a custom `gitlab_rails['env']` environment variable, called `no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
   with the IP address of your Elasticsearch host.
 
 ### Troubleshooting performance

@@ -58,6 +58,7 @@ module API
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
+          optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
           all_or_none_of :extern_uid, :provider
 
           use :optional_params_ee

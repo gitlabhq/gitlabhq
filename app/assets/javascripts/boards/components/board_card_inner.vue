@@ -2,7 +2,7 @@
 import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
+import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
@@ -26,10 +26,10 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [issueCardInner],
+  mixins: [boardCardInner],
   inject: ['groupId', 'rootPath', 'scopedLabelsAvailable'],
   props: {
-    issue: {
+    item: {
       type: Object,
       required: true,
     },
@@ -52,19 +52,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isShowingLabels']),
+    ...mapState(['isShowingLabels', 'isEpicBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness
       // Otherwise render up to the limitBeforeCounter
-      if (this.issue.assignees.length <= this.maxRender) {
-        return this.issue.assignees.slice(0, this.maxRender);
+      if (this.item.assignees.length <= this.maxRender) {
+        return this.item.assignees.slice(0, this.maxRender);
       }
 
-      return this.issue.assignees.slice(0, this.limitBeforeCounter);
+      return this.item.assignees.slice(0, this.limitBeforeCounter);
     },
     numberOverLimit() {
-      return this.issue.assignees.length - this.limitBeforeCounter;
+      return this.item.assignees.length - this.limitBeforeCounter;
     },
     assigneeCounterTooltip() {
       const { numberOverLimit, maxCounter } = this;
@@ -79,31 +79,35 @@ export default {
       return `+${this.numberOverLimit}`;
     },
     shouldRenderCounter() {
-      if (this.issue.assignees.length <= this.maxRender) {
+      if (this.item.assignees.length <= this.maxRender) {
         return false;
       }
 
-      return this.issue.assignees.length > this.numberOverLimit;
+      return this.item.assignees.length > this.numberOverLimit;
     },
-    issueId() {
-      if (this.issue.iid) {
-        return `#${this.issue.iid}`;
+    itemPrefix() {
+      return this.isEpicBoard ? '&' : '#';
+    },
+
+    itemId() {
+      if (this.item.iid) {
+        return `${this.itemPrefix}${this.item.iid}`;
       }
       return false;
     },
     showLabelFooter() {
-      return this.isShowingLabels && this.issue.labels.find(this.showLabel);
+      return this.isShowingLabels && this.item.labels.find(this.showLabel);
     },
-    issueReferencePath() {
-      const { referencePath, groupId } = this.issue;
-      return !groupId ? referencePath.split('#')[0] : null;
+    itemReferencePath() {
+      const { referencePath } = this.item;
+      return referencePath.split(this.itemPrefix)[0];
     },
     orderedLabels() {
-      return sortBy(this.issue.labels.filter(this.isNonListLabel), 'title');
+      return sortBy(this.item.labels.filter(this.isNonListLabel), 'title');
     },
     blockedLabel() {
-      if (this.issue.blockedByCount) {
-        return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.issue.blockedByCount);
+      if (this.item.blockedByCount) {
+        return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.item.blockedByCount);
       }
       return __('Blocked issue');
     },
@@ -160,7 +164,7 @@ export default {
     <div class="gl-display-flex" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0">
         <gl-icon
-          v-if="issue.blocked"
+          v-if="item.blocked"
           v-gl-tooltip
           name="issue-block"
           :title="blockedLabel"
@@ -169,7 +173,7 @@ export default {
           data-testid="issue-blocked-icon"
         />
         <gl-icon
-          v-if="issue.confidential"
+          v-if="item.confidential"
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
@@ -177,11 +181,11 @@ export default {
           :aria-label="__('Confidential')"
         />
         <a
-          :href="issue.path || issue.webUrl || ''"
-          :title="issue.title"
+          :href="item.path || item.webUrl || ''"
+          :title="item.title"
           class="js-no-trigger"
           @mousemove.stop
-          >{{ issue.title }}</a
+          >{{ item.title }}</a
         >
       </h4>
     </div>
@@ -205,29 +209,30 @@ export default {
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
       >
         <span
-          v-if="issue.referencePath"
+          v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"
+          :class="{ 'gl-font-base': isEpicBoard }"
         >
           <tooltip-on-truncate
-            v-if="issueReferencePath"
-            :title="issueReferencePath"
+            v-if="itemReferencePath"
+            :title="itemReferencePath"
             placement="bottom"
-            class="board-issue-path gl-text-truncate gl-font-weight-bold"
-            >{{ issueReferencePath }}</tooltip-on-truncate
+            class="board-item-path gl-text-truncate gl-font-weight-bold"
+            >{{ itemReferencePath }}</tooltip-on-truncate
           >
-          #{{ issue.iid }}
+          {{ itemId }}
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <issue-due-date
-            v-if="issue.dueDate"
-            :date="issue.dueDate"
-            :closed="issue.closed || Boolean(issue.closedAt)"
+            v-if="item.dueDate"
+            :date="item.dueDate"
+            :closed="item.closed || Boolean(item.closedAt)"
           />
-          <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
+          <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
           <issue-card-weight
-            v-if="validIssueWeight"
-            :weight="issue.weight"
-            @click="filterByWeight(issue.weight)"
+            v-if="validIssueWeight(item)"
+            :weight="item.weight"
+            @click="filterByWeight(item.weight)"
           />
         </span>
       </div>

@@ -89,7 +89,7 @@ scans your source code for code quality issues. The report is saved as a
 that you can later download and analyze.
 
 It's also possible to override the URL to the Code Quality image by
-setting the `CODE_QUALITY_IMAGE` variable. This is particularly useful if you want
+setting the `CODE_QUALITY_IMAGE` CI/CD variable. This is particularly useful if you want
 to lock in a specific version of Code Quality, or use a fork of it:
 
 ```yaml
@@ -235,12 +235,12 @@ was chosen as an operational decision by the runner team, instead of exposing `d
 
 ### Disabling the code quality job
 
-The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` environment
-variable is present. Please refer to the environment variables [documentation](../../../ci/variables/README.md)
+The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
+is present. Please refer to the CI/CD variables [documentation](../../../ci/variables/README.md)
 to learn more about how to define one.
 
-To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom environment
-variable. This can be done:
+To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom CI/CD variable.
+This can be done:
 
 - For the whole project, [in the project settings](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
   or [CI/CD configuration](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
@@ -364,7 +364,7 @@ After the Code Quality job completes:
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/ci-cd/codequality/-/issues/10),
 it is possible to generate an HTML report file by setting the `REPORT_FORMAT`
-variable to `html`. This is useful if you just want to view the report in a more
+CI/CD variable to `html`. This is useful if you just want to view the report in a more
 human-readable format or to publish this artifact on GitLab Pages for even
 easier reviewing.
 

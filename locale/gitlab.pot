@@ -27387,7 +27387,7 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Showing %{conflict_start}%{conflicts_text}%{strong_end} between %{ref_start}%{source_branch}%{strong_end} and %{ref_start}%{target_branch}%{strong_end}"
+msgid "Showing %{conflict} between %{sourceBranch} and %{targetBranch}"
 msgstr ""
 
 msgid "Showing %{count} of %{total} projects"
@@ -32774,9 +32774,6 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View file @ %{commitSha}"
-msgstr ""
-
-msgid "View file @%{commit_sha}"
 msgstr ""
 
 msgid "View full dashboard"

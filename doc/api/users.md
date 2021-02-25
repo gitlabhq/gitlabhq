@@ -448,6 +448,7 @@ Parameters:
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 ## User modification
@@ -489,6 +490,7 @@ Parameters:
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `username`                           | No       | Username                                                                                                                                                |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 On password update, the user is forced to change it upon next login.

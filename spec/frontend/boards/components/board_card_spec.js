@@ -2,7 +2,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import BoardCard from '~/boards/components/board_card.vue';
-import IssueCardInner from '~/boards/components/issue_card_inner.vue';
+import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
 import { mockLabelList, mockIssue } from '../mock_data';
 
@@ -38,7 +38,7 @@ describe('Board card layout', () => {
     wrapper = shallowMount(BoardCard, {
       localVue,
       stubs: {
-        IssueCardInner,
+        BoardCardInner,
       },
       store,
       propsData: {

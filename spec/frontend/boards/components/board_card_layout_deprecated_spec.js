@@ -11,7 +11,7 @@ import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
 import BoardCardLayout from '~/boards/components/board_card_layout_deprecated.vue';
-import issueCardInner from '~/boards/components/issue_card_inner.vue';
+import issueCardInner from '~/boards/components/issue_card_inner_deprecated.vue';
 import { ISSUABLE } from '~/boards/constants';
 import boardsVuexStore from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';

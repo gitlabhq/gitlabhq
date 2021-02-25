@@ -7,7 +7,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import BoardCardDeprecated from '~/boards/components/board_card_deprecated.vue';
-import issueCardInner from '~/boards/components/issue_card_inner.vue';
+import issueCardInner from '~/boards/components/issue_card_inner_deprecated.vue';
 import eventHub from '~/boards/eventhub';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';

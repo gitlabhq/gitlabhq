@@ -83,7 +83,8 @@ module Users
         :location,
         :public_email,
         :user_type,
-        :note
+        :note,
+        :view_diffs_file_by_file
       ]
     end
 

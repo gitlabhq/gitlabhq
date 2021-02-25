@@ -1,18 +1,11 @@
-// This is a true violation of @gitlab/no-runtime-template-compiler, as it
-// relies on app/views/projects/merge_requests/conflicts/show.html.haml for its
-// template.
-/* eslint-disable @gitlab/no-runtime-template-compiler */
 import $ from 'jquery';
 import Vue from 'vue';
 import { __ } from '~/locale';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { deprecatedCreateFlash as createFlash } from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import syntaxHighlight from '../syntax_highlight';
-import DiffFileEditor from './components/diff_file_editor.vue';
-import InlineConflictLines from './components/inline_conflict_lines.vue';
-import ParallelConflictLines from './components/parallel_conflict_lines.vue';
+import MergeConflictsResolverApp from './merge_conflict_resolver_app.vue';
 import MergeConflictsService from './merge_conflict_service';
 
 export default function initMergeConflicts() {
@@ -24,15 +17,15 @@ export default function initMergeConflicts() {
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath,
   });
 
+  const { sourceBranchPath, mergeRequestPath } = conflictsEl.dataset;
+
   initIssuableSidebar();
 
-  gl.MergeConflictsResolverApp = new Vue({
-    el: '#conflicts',
-    components: {
-      FileIcon,
-      DiffFileEditor,
-      InlineConflictLines,
-      ParallelConflictLines,
+  return new Vue({
+    el: conflictsEl,
+    provide: {
+      sourceBranchPath,
+      mergeRequestPath,
     },
     data: mergeConflictsStore.state,
     computed: {
@@ -102,6 +95,9 @@ export default function initMergeConflicts() {
             createFlash(__('Failed to save merge conflicts resolutions. Please try again!'));
           });
       },
+    },
+    render(createElement) {
+      return createElement(MergeConflictsResolverApp);
     },
   });
 }

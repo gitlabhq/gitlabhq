@@ -1,7 +1,7 @@
 import { GlLabel } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
-import IssueCardInner from '~/boards/components/issue_card_inner.vue';
+import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -10,7 +10,7 @@ import { mockLabelList } from './mock_data';
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
 
-describe('Issue card component', () => {
+describe('Board card component', () => {
   const user = {
     id: 1,
     name: 'testing 123',
@@ -31,11 +31,11 @@ describe('Issue card component', () => {
   let list;
 
   const createWrapper = (props = {}, store = defaultStore) => {
-    wrapper = mount(IssueCardInner, {
+    wrapper = mount(BoardCardInner, {
       store,
       propsData: {
         list,
-        issue,
+        item: issue,
         ...props,
       },
       stubs: {
@@ -63,7 +63,7 @@ describe('Issue card component', () => {
       weight: 1,
     };
 
-    createWrapper({ issue, list });
+    createWrapper({ item: issue, list });
   });
 
   afterEach(() => {
@@ -103,8 +103,8 @@ describe('Issue card component', () => {
   describe('confidential issue', () => {
     beforeEach(() => {
       wrapper.setProps({
-        issue: {
-          ...wrapper.props('issue'),
+        item: {
+          ...wrapper.props('item'),
           confidential: true,
         },
       });
@@ -119,8 +119,8 @@ describe('Issue card component', () => {
     describe('with avatar', () => {
       beforeEach(() => {
         wrapper.setProps({
-          issue: {
-            ...wrapper.props('issue'),
+          item: {
+            ...wrapper.props('item'),
             assignees: [user],
             updateData(newData) {
               Object.assign(this, newData);
@@ -146,8 +146,8 @@ describe('Issue card component', () => {
       });
 
       it('renders the avatar using avatarUrl property', async () => {
-        wrapper.props('issue').updateData({
-          ...wrapper.props('issue'),
+        wrapper.props('item').updateData({
+          ...wrapper.props('item'),
           assignees: [
             {
               id: '1',
@@ -172,8 +172,8 @@ describe('Issue card component', () => {
         global.gon.default_avatar_url = 'default_avatar';
 
         wrapper.setProps({
-          issue: {
-            ...wrapper.props('issue'),
+          item: {
+            ...wrapper.props('item'),
             assignees: [
               {
                 id: 1,
@@ -201,8 +201,8 @@ describe('Issue card component', () => {
   describe('multiple assignees', () => {
     beforeEach(() => {
       wrapper.setProps({
-        issue: {
-          ...wrapper.props('issue'),
+        item: {
+          ...wrapper.props('item'),
           assignees: [
             {
               id: 2,
@@ -233,7 +233,7 @@ describe('Issue card component', () => {
 
     describe('more than three assignees', () => {
       beforeEach(() => {
-        const { assignees } = wrapper.props('issue');
+        const { assignees } = wrapper.props('item');
         assignees.push({
           id: 5,
           name: 'user5',
@@ -242,8 +242,8 @@ describe('Issue card component', () => {
         });
 
         wrapper.setProps({
-          issue: {
-            ...wrapper.props('issue'),
+          item: {
+            ...wrapper.props('item'),
             assignees,
           },
         });
@@ -259,7 +259,7 @@ describe('Issue card component', () => {
 
       it('renders 99+ avatar counter', async () => {
         const assignees = [
-          ...wrapper.props('issue').assignees,
+          ...wrapper.props('item').assignees,
           ...range(5, 103).map((i) => ({
             id: i,
             name: 'name',
@@ -268,8 +268,8 @@ describe('Issue card component', () => {
           })),
         ];
         wrapper.setProps({
-          issue: {
-            ...wrapper.props('issue'),
+          item: {
+            ...wrapper.props('item'),
             assignees,
           },
         });
@@ -283,7 +283,7 @@ describe('Issue card component', () => {
 
   describe('labels', () => {
     beforeEach(() => {
-      wrapper.setProps({ issue: { ...issue, labels: [list.label, label1] } });
+      wrapper.setProps({ item: { ...issue, labels: [list.label, label1] } });
     });
 
     it('does not render list label but renders all other labels', () => {
@@ -295,7 +295,7 @@ describe('Issue card component', () => {
     });
 
     it('does not render label if label does not have an ID', async () => {
-      wrapper.setProps({ issue: { ...issue, labels: [label1, { title: 'closed' }] } });
+      wrapper.setProps({ item: { ...issue, labels: [label1, { title: 'closed' }] } });
 
       await wrapper.vm.$nextTick();
 
@@ -307,8 +307,8 @@ describe('Issue card component', () => {
   describe('blocked', () => {
     beforeEach(() => {
       wrapper.setProps({
-        issue: {
-          ...wrapper.props('issue'),
+        item: {
+          ...wrapper.props('item'),
           blocked: true,
         },
       });

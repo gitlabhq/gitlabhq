@@ -125,57 +125,61 @@ The output includes the project ID and the project name. For example:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1606) in GitLab 12.1.
 
-WARNING:
-Do not run `git prune` or `git gc` in pool repositories! This can
-cause data loss in "real" repositories that depend on the pool in
-question.
+Object pools are repositories used to deduplicate forks of public and internal projects and
+contain the objects from the source project. Using `objects/info/alternates`, the source project and
+forks use the object pool for shared objects. For more information, see
+[How Git object deduplication works in GitLab](../development/git_object_deduplication.md).
 
-Forks of public and internal projects are deduplicated by creating a third repository, the
-object pool, containing the objects from the source project. Using
-`objects/info/alternates`, the source project and forks use the object pool for
-shared objects. Objects are moved from the source project to the object pool
-when housekeeping is run on the source project.
+Objects are moved from the source project to the object pool when housekeeping is run on the source
+project. Object pool repositories are stored similarly to regular repositories:
 
 ```ruby
 # object pool paths
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-### Hashed storage coverage migration
+WARNING:
+Do not run `git prune` or `git gc` in object pool repositories. This can cause data loss in the
+regular repositories that depend on the object pool.
 
-Files stored in an S3-compatible endpoint do not have the downsides
-mentioned earlier, if they are not prefixed with `#{namespace}/#{project_name}`.
-This is true for CI Cache and LFS Objects.
+### Object storage support
 
-In the table below, you can find the coverage of the migration to the hashed storage.
+This table shows which storable objects are storable in each storage type:
 
-| Storable Object | Legacy storage | Hashed storage | S3 Compatible | GitLab Version |
-| --------------- | -------------- | -------------- | ------------- | -------------- |
-| Repository      | Yes            | Yes            | -             | 10.0           |
-| Attachments     | Yes            | Yes            | -             | 10.2           |
-| Avatars         | Yes            | No             | -             | -              |
-| Pages           | Yes            | No             | -             | -              |
-| Docker Registry | Yes            | No             | -             | -              |
-| CI Build Logs   | No             | No             | -             | -              |
-| CI Artifacts    | No             | No             | Yes           | 9.4 / 10.6     |
-| CI Cache        | No             | No             | Yes           | -              |
-| LFS Objects     | Yes            | Similar        | Yes           | 10.0 / 10.7    |
-| Repository pools| No             | Yes            | -             | 11.6           |
+| Storable object  | Legacy storage | Hashed storage | S3 compatible | GitLab version |
+|:-----------------|:---------------|:---------------|:--------------|:---------------|
+| Repository       | Yes            | Yes            | -             | 10.0           |
+| Attachments      | Yes            | Yes            | -             | 10.2           |
+| Avatars          | Yes            | No             | -             | -              |
+| Pages            | Yes            | No             | -             | -              |
+| Docker Registry  | Yes            | No             | -             | -              |
+| CI/CD job logs   | No             | No             | -             | -              |
+| CI/CD artifacts  | No             | No             | Yes           | 9.4 / 10.6     |
+| CI/CD cache      | No             | No             | Yes           | -              |
+| LFS objects      | Yes            | Similar        | Yes           | 10.0 / 10.7    |
+| Repository pools | No             | Yes            | -             | 11.6           |
+
+Files stored in an S3-compatible endpoint can have the same advantages as
+[hashed storage](#hashed-storage), as long as they are not prefixed with
+`#{namespace}/#{project_name}`. This is true for CI/CD cache and LFS objects.
 
 #### Avatars
 
-Each file is stored in a folder with its `id` from the database. The filename is always `avatar.png` for user avatars.
-When avatar is replaced, `Upload` model is destroyed and a new one takes place with different `id`.
+Each file is stored in a directory that matches the `id` assigned to it in the database. The
+filename is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
+destroyed and a new one takes place with a different `id`.
 
-#### CI artifacts
+#### CI/CD artifacts
 
-CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in GitLab Free since
-**10.6**.
+CI/CD artifacts are:
+
+- S3-compatible since GitLab 9.4, initially available in [GitLab Premium](https://about.gitlab.com/pricing/).
+- Available in [GitLab Free](https://about.gitlab.com/pricing/) since GitLab 10.6.
 
 #### LFS objects
 
 [LFS Objects in GitLab](../topics/git/lfs/index.md) implement a similar
-storage pattern using 2 chars, 2 level folders, following Git's own implementation:
+storage pattern using two characters and two-level folders, following Git's own implementation:
 
 ```ruby
 "shared/lfs-objects/#{oid[0..1}/#{oid[2..3]}/#{oid[4..-1]}"
@@ -184,40 +188,32 @@ storage pattern using 2 chars, 2 level folders, following Git's own implementati
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-LFS objects are also [S3 compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
 
 ## Legacy storage
 
 WARNING:
-In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
-deprecated. If you haven't migrated yet, check the
-[migration instructions](raketasks/storage.md#migrate-to-hashed-storage).
-Support for legacy storage is scheduled to be removed in GitLab 14.0. If you're on GitLab
-13.0 and later, switching new projects to legacy storage is not possible.
-The option to choose between hashed and legacy storage in the admin area has
-been disabled.
+In GitLab 13.0, legacy storage is deprecated. If you haven't migrated to hashed storage yet, check
+the [migration instructions](raketasks/storage.md#migrate-to-hashed-storage). Support for legacy
+storage is [scheduled to be removed](https://gitlab.com/gitlab-org/gitaly/-/issues/1690) in GitLab
+14.0. In GitLab 13.0 and later, switching new projects to legacy storage is not possible. The
+option to choose between hashed and legacy storage in the Admin Area is disabled.
 
-Legacy storage is the storage behavior prior to version 10.0. For historical
-reasons, GitLab replicated the same mapping structure from the projects URLs:
+Legacy storage was the storage behavior prior to version GitLab 10.0. For historical reasons,
+GitLab replicated the same mapping structure from the projects URLs:
 
-- Project's repository: `#{namespace}/#{project_name}.git`
-- Project's wiki: `#{namespace}/#{project_name}.wiki.git`
+- Project's repository: `#{namespace}/#{project_name}.git`.
+- Project's wiki: `#{namespace}/#{project_name}.wiki.git`.
 
-This structure enables you to migrate from existing solutions to GitLab, and
-for Administrators to find where the repository is stored.
+This structure enabled you to migrate from existing solutions to GitLab, and for Administrators to
+find where the repository was stored. This approach also had some drawbacks:
 
-This approach also has some drawbacks:
-
-Storage location concentrates a huge number of top-level namespaces. The
-impact can be reduced by the introduction of
-[multiple storage paths](repository_storage_paths.md).
-
-Because backups are a snapshot of the same URL mapping, if you try to recover a
-very old backup, you need to verify whether any project has taken the place of
-an old removed or renamed project sharing the same URL. This means that
-`mygroup/myproject` from your backup may not be the same original project that
-is at that same URL today.
-
-Any change in the URL needs to be reflected on disk (when groups / users or
-projects are renamed). This can add a lot of load in big installations,
-especially if using any type of network based file system.
+- Storage location concentrated a large number of top-level namespaces. The impact could be
+  reduced by [multiple repository storage paths](repository_storage_paths.md).
+- Because backups were a snapshot of the same URL mapping, if you tried to recover a very old
+  backup, you needed to verify whether any project had taken the place of an old removed or renamed
+  project sharing the same URL. This meant that `mygroup/myproject` from your backup may not have
+  been the same original project that was at that same URL today.
+- Any change in the URL needed to be reflected on disk (when groups, users, or projects were
+  renamed. This could add a lot of load in big installations, especially if using any type of
+  network-based file system.
