@@ -58,15 +58,6 @@ RSpec.describe TimeboxesHelper do
       it { expect(result_for(start_date: yesterday)).to eq("started on #{yesterday_formatted}") }
       it { expect(result_for(start_date: yesterday, due_date: tomorrow)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}") }
     end
-
-    context 'iteration' do
-      # Iterations always have start and due dates, so only A-B format is expected
-      it 'formats properly' do
-        iteration = build(:iteration, start_date: yesterday, due_date: tomorrow)
-
-        expect(timebox_date_range(iteration)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}")
-      end
-    end
   end
 
   describe '#milestone_counts' do
