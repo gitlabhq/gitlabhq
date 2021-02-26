@@ -13,7 +13,6 @@ RSpec.describe 'factories' do
       [:ci_job_artifact, :raw],
       [:ci_job_artifact, :gzip],
       [:ci_job_artifact, :correct_checksum],
-      [:design_version, :empty],
       [:environment, :non_playable],
       [:go_module_commit, :files],
       [:go_module_commit, :package],

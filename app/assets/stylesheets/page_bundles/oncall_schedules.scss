@@ -37,11 +37,6 @@
   &.gl-modal .modal-md {
     max-width: 640px;
   }
-
-  .dropdown-menu {
-    max-height: $dropdown-max-height;
-    @include gl-overflow-y-auto;
-  }
 }
 
 //// Copied from roadmaps.scss - adapted for on-call schedules

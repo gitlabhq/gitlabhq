@@ -37,6 +37,11 @@ module Repositories
 
         next unless matches
 
+        # When using this class for generating changelog data for a range of
+        # commits, we want to compare against the tag of the last _stable_
+        # release; not some random RC that came after that.
+        next if matches[:prerelease]
+
         version = matches[:version]
         tags[version] = tag
         versions << version

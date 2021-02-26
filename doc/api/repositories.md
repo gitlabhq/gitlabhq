@@ -311,9 +311,9 @@ Supported attributes:
 | `message` | string   | no | The commit message to produce when committing the changes, defaults to `Add changelog for version X` where X is the value of the `version` argument. |
 
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last
-version that came before the version specified in the `version` attribute. For
-this to work, your project must create Git tags for versions using one of the
-following formats:
+stable version that came before the version specified in the `version`
+attribute. For this to work, your project must create Git tags for versions
+using one of the following formats:
 
 - `vX.Y.Z`
 - `X.Y.Z`
@@ -322,16 +322,57 @@ Where `X.Y.Z` is a version that follows [semantic
 versioning](https://semver.org/). For example, consider a project with the
 following tags:
 
+- v1.0.0-pre1
 - v1.0.0
 - v1.1.0
 - v2.0.0
 
 If the `version` attribute is `2.1.0`, GitLab uses tag v2.0.0. And when the
-version is `1.1.1`, or `1.2.0`, GitLab uses tag v1.1.0.
+version is `1.1.1`, or `1.2.0`, GitLab uses tag v1.1.0. The tag `v1.0.0-pre1` is
+never used, because pre-release tags are ignored.
 
 If `from` is unspecified and no tag to use is found, the API produces an error.
 To solve such an error, you must explicitly specify a value for the `from`
 attribute.
+
+### Examples
+
+For these examples we use the project ID 42, and assume the project is hosted on
+GitLab.com. The example API token we use is `token`. We use
+[curl](https://curl.se/) to perform the HTTP requests.
+
+Let's start with a basic example:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" --data "version=1.0.0" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+```
+
+This generates a changelog for version `1.0.0`. The start of the range of
+commits to include is the tag of the last release. The end of the range is the
+last commit on the target branch, which defaults to the project's default
+branch. So if the last tag is `v0.9.0`, and the default branch is `main`, this
+means the range of commits is `v0.9.0..main`.
+
+If you want to generate the data on a different branch, you can do so as
+follows:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" --data "version=1.0.0&branch=foo" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+```
+
+This generates the data on the `foo` branch.
+
+A different trailer to use is specified as follows:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" --data "version=1.0.0&trailer=Type" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+```
+
+Or perhaps you want to store the results in a different file:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" --data "version=1.0.0&file=NEWS" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+```
 
 ### How it works
 

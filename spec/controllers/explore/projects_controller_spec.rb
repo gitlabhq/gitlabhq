@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Explore::ProjectsController do
   shared_examples 'explore projects' do
+    let(:expected_default_sort) { 'latest_activity_desc' }
+
     describe 'GET #index.json' do
       render_views
 
@@ -12,6 +14,11 @@ RSpec.describe Explore::ProjectsController do
       end
 
       it { is_expected.to respond_with(:success) }
+
+      it 'sets a default sort parameter' do
+        expect(controller.params[:sort]).to eq(expected_default_sort)
+        expect(assigns[:sort]).to eq(expected_default_sort)
+      end
     end
 
     describe 'GET #trending.json' do
@@ -22,6 +29,11 @@ RSpec.describe Explore::ProjectsController do
       end
 
       it { is_expected.to respond_with(:success) }
+
+      it 'sets a default sort parameter' do
+        expect(controller.params[:sort]).to eq(expected_default_sort)
+        expect(assigns[:sort]).to eq(expected_default_sort)
+      end
     end
 
     describe 'GET #starred.json' do
@@ -32,6 +44,11 @@ RSpec.describe Explore::ProjectsController do
       end
 
       it { is_expected.to respond_with(:success) }
+
+      it 'sets a default sort parameter' do
+        expect(controller.params[:sort]).to eq(expected_default_sort)
+        expect(assigns[:sort]).to eq(expected_default_sort)
+      end
     end
 
     describe 'GET #trending' do

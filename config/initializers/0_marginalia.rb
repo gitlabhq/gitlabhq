@@ -8,7 +8,11 @@ require 'marginalia'
 # query. Prepending the comment allows us to trace the source of the
 # query without having to increase the `track_activity_query_size`
 # parameter.
-Marginalia::Comment.prepend_comment = true unless Rails.env.test? # Some tests do string matching against raw SQL
+#
+# We only enable this in production because a number of tests do string
+# matching against the raw SQL, and prepending the comment prevents color
+# coding from working in the development log.
+Marginalia::Comment.prepend_comment = true if Rails.env.production?
 Marginalia::Comment.components = [:application, :controller, :action, :correlation_id, :jid, :job_class]
 
 # As mentioned in https://github.com/basecamp/marginalia/pull/93/files,

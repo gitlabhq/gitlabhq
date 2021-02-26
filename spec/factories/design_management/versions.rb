@@ -13,11 +13,6 @@ FactoryBot.define do
       deleted_designs { [] }
     end
 
-    # Warning: this will intentionally result in an invalid version!
-    trait :empty do
-      designs_count { 0 }
-    end
-
     trait :importing do
       issue { nil }
 
