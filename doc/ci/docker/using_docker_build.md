@@ -7,14 +7,14 @@ type: concepts, howto
 
 # Use Docker to build Docker images
 
-You can use GitLab CI/CD with Docker Engine to build and test Docker-based projects.
+You can use GitLab CI/CD with Docker to build and test Docker images.
 
 For example, you might want to:
 
-1. Create an application image.
-1. Run tests against the created image.
-1. Push image to a remote registry.
-1. Deploy to a server from the pushed image.
+1. Create a Docker image of your application.
+1. Run tests against the image.
+1. Push the image to a remote registry.
+1. Use the image to deploy your application to a server.
 
 Or, if your application already has a `Dockerfile`, you can
 use it to create and test an image:
@@ -27,7 +27,7 @@ docker push my-registry:5000/my-image
 ```
 
 To run Docker commands in your CI/CD jobs, you must configure
-GitLab Runner to enable `docker` support.
+GitLab Runner to support `docker` commands.
 
 ## Enable Docker commands in your CI/CD jobs
 
