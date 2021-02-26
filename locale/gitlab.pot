@@ -31378,10 +31378,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trials|%{plan} Trial %{en_dash} %{num} day left"
-msgid_plural "Trials|%{plan} Trial %{en_dash} %{num} days left"
+msgid "Trials|%{planName} Trial %{enDash} %{num} day left"
+msgid_plural "Trials|%{planName} Trial %{enDash} %{num} days left"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Trials|Compare all plans"
+msgstr ""
 
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
@@ -31389,7 +31392,13 @@ msgstr ""
 msgid "Trials|Go back to GitLab"
 msgstr ""
 
+msgid "Trials|Hey there"
+msgstr ""
+
 msgid "Trials|Skip Trial"
+msgstr ""
+
+msgid "Trials|Upgrade %{groupName} to %{planName}"
 msgstr ""
 
 msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
@@ -31405,6 +31414,9 @@ msgid "Trials|You can apply your trial to a new group, an existing group, or you
 msgstr ""
 
 msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
+msgstr ""
+
+msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you are enjoying GitLab %{planName}. To continue using GitLab %{planName} after your trial ends, you will need to buy a subscription. You can also choose GitLab Premium if its features are sufficient for your needs."
 msgstr ""
 
 msgid "Trial|Company name"

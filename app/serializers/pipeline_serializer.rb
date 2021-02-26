@@ -43,14 +43,14 @@ class PipelineSerializer < BaseSerializer
       :cancelable_statuses,
       :latest_statuses_ordered_by_stage,
       :latest_builds_report_results,
-      :manual_actions,
       :retryable_builds,
-      :scheduled_actions,
       :stages,
       :latest_statuses,
       :trigger_requests,
       :user,
       {
+        manual_actions: :metadata,
+        scheduled_actions: :metadata,
         downloadable_artifacts: {
           project: [:route, { namespace: :route }],
           job: []

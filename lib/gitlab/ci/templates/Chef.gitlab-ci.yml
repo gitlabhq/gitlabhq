@@ -20,11 +20,6 @@ stages:
   - functional
   - deploy
 
-foodcritic:
-  stage: lint
-  script:
-    - chef exec foodcritic .
-
 cookstyle:
   stage: lint
   script:
