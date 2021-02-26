@@ -25,7 +25,6 @@ The following table lists examples with step-by-step tutorials that are containe
 | Use case                      | Resource |
 |-------------------------------|----------|
 | Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
-| Clojure                       | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md). |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/README.md). |
 | GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
 | End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md). |
@@ -47,6 +46,7 @@ separate example projects:
 
 | Use case                      | Resource |
 |-------------------------------|----------|
+| Clojure                       | [Test a Clojure application with GitLab CI/CD](https://gitlab.com/gitlab-examples/clojure-web-application). |
 | Game development              | [DevOps and Game Development with GitLab CI/CD](https://gitlab.com/gitlab-examples/gitlab-game-demo/). |
 | Java with Maven               | [How to deploy Maven projects to Artifactory with GitLab CI/CD](https://gitlab.com/gitlab-examples/maven/simple-maven-example). |
 | Java with Spring Boot         | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo). |
