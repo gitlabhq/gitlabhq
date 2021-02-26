@@ -25,15 +25,6 @@ RSpec.describe ExpirePipelineCacheWorker do
       subject.perform(617748)
     end
 
-    it "doesn't do anything if the pipeline cannot be cached" do
-      allow_any_instance_of(Ci::Pipeline).to receive(:cacheable?).and_return(false)
-
-      expect_any_instance_of(Ci::ExpirePipelineCacheService).not_to receive(:execute)
-      expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
-
-      subject.perform(pipeline.id)
-    end
-
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [pipeline.id] }
     end

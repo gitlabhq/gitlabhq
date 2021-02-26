@@ -63,5 +63,36 @@ RSpec.describe Ci::ExpirePipelineCacheService do
         expect(Project.find(project_with_repo.id).pipeline_status.has_status?).to be_falsey
       end
     end
+
+    context 'when the pipeline is triggered by another pipeline' do
+      let(:source) { create(:ci_sources_pipeline, pipeline: pipeline) }
+
+      it 'updates the cache of dependent pipeline' do
+        dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
+
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+          allow(store).to receive(:touch)
+          expect(store).to receive(:touch).with(dependent_pipeline_path)
+        end
+
+        subject.execute(pipeline)
+      end
+    end
+
+    context 'when the pipeline triggered another pipeline' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:source) { create(:ci_sources_pipeline, source_job: build) }
+
+      it 'updates the cache of dependent pipeline' do
+        dependent_pipeline_path = "/#{source.project.full_path}/-/pipelines/#{source.pipeline.id}.json"
+
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+          allow(store).to receive(:touch)
+          expect(store).to receive(:touch).with(dependent_pipeline_path)
+        end
+
+        subject.execute(pipeline)
+      end
+    end
   end
 end

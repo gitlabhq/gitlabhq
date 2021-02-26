@@ -7,6 +7,7 @@ module Gitlab
         extend Gitlab::Utils::StrongMemoize
 
         QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
+        QUEUE_ACTIVE_RUNNERS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
         QUEUE_DEPTH_TOTAL_BUCKETS = [1, 2, 3, 5, 8, 16, 32, 50, 100, 250, 500, 1000, 2000, 5000].freeze
         QUEUE_SIZE_TOTAL_BUCKETS = [1, 5, 10, 50, 100, 500, 1000, 2000, 5000].freeze
         QUEUE_ITERATION_DURATION_SECONDS_BUCKETS = [0.1, 0.3, 0.5, 1, 5, 10, 30, 60, 180, 300].freeze
@@ -26,7 +27,8 @@ module Gitlab
           :queue_iteration,
           :queue_replication_lag,
           :runner_pre_assign_checks_failed,
-          :runner_pre_assign_checks_success
+          :runner_pre_assign_checks_success,
+          :runner_queue_tick
         ].to_set.freeze
 
         QUEUE_DEPTH_HISTOGRAMS = [
@@ -108,6 +110,16 @@ module Gitlab
           result
         end
 
+        def self.observe_active_runners(runners_proc)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
+
+          queue_active_runners_total.observe({}, runners_proc.call.to_f)
+        end
+
+        def self.increment_runner_tick(runner)
+          self.new(runner).increment_queue_operation(:runner_queue_tick)
+        end
+
         def self.failed_attempt_counter
           strong_memoize(:failed_attempt_counter) do
             name = :job_register_attempts_failed_total
@@ -130,8 +142,8 @@ module Gitlab
           strong_memoize(:job_queue_duration_seconds) do
             name = :job_queue_duration_seconds
             comment = 'Request handling execution time'
-            labels = {}
             buckets = QUEUE_DURATION_SECONDS_BUCKETS
+            labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end
@@ -150,8 +162,8 @@ module Gitlab
           strong_memoize(:queue_depth_total) do
             name = :gitlab_ci_queue_depth_total
             comment = 'Size of a CI/CD builds queue in relation to the operation result'
-            labels = {}
             buckets = QUEUE_DEPTH_TOTAL_BUCKETS
+            labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end
@@ -161,8 +173,8 @@ module Gitlab
           strong_memoize(:queue_size_total) do
             name = :gitlab_ci_queue_size_total
             comment = 'Size of initialized CI/CD builds queue'
-            labels = {}
             buckets = QUEUE_SIZE_TOTAL_BUCKETS
+            labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end
@@ -172,8 +184,19 @@ module Gitlab
           strong_memoize(:queue_iteration_duration_seconds) do
             name = :gitlab_ci_queue_iteration_duration_seconds
             comment = 'Time it takes to find a build in CI/CD queue'
-            labels = {}
             buckets = QUEUE_ITERATION_DURATION_SECONDS_BUCKETS
+            labels = {}
+
+            Gitlab::Metrics.histogram(name, comment, labels, buckets)
+          end
+        end
+
+        def self.queue_active_runners_total
+          strong_memoize(:queue_active_runners_total) do
+            name = :gitlab_ci_queue_active_runners_total
+            comment = 'The amount of active runners that can process queue in a project'
+            buckets = QUEUE_ACTIVE_RUNNERS_BUCKETS
+            labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end

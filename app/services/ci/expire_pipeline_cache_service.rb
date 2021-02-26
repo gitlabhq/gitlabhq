@@ -62,15 +62,16 @@ module Ci
       project = pipeline.project
 
       store.touch(project_pipelines_path(project))
-      store.touch(project_pipeline_path(project, pipeline))
       store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
       store.touch(new_merge_request_pipelines_path(project))
-      store.touch(graphql_pipeline_path(pipeline))
       each_pipelines_merge_request_path(pipeline) do |path|
         store.touch(path)
+      end
+
+      pipeline.self_with_ancestors_and_descendants.each do |relative_pipeline|
+        store.touch(project_pipeline_path(relative_pipeline.project, relative_pipeline))
+        store.touch(graphql_pipeline_path(relative_pipeline))
       end
     end
   end
 end
-
-Ci::ExpirePipelineCacheService.prepend_if_ee('EE::Ci::ExpirePipelineCacheService')

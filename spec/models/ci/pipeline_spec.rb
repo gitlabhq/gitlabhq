@@ -1449,28 +1449,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'pipeline caching' do
-      context 'if pipeline is cacheable' do
-        before do
-          pipeline.source = 'push'
-        end
+      it 'performs ExpirePipelinesCacheWorker' do
+        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
-        it 'performs ExpirePipelinesCacheWorker' do
-          expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.cancel
-        end
-      end
-
-      context 'if pipeline is not cacheable' do
-        before do
-          pipeline.source = 'webide'
-        end
-
-        it 'deos not perform ExpirePipelinesCacheWorker' do
-          expect(ExpirePipelineCacheWorker).not_to receive(:perform_async)
-
-          pipeline.cancel
-        end
+        pipeline.cancel
       end
     end
 

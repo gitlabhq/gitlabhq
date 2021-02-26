@@ -20,7 +20,7 @@ module QA
           end
         end
 
-        it 'shows results for the original request and AJAX requests', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/478', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/247467', type: :investigating } do
+        it 'shows results for the original request and AJAX requests', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/478' do
           # Issue pages always make AJAX requests
           Resource::Issue.fabricate_via_browser_ui! do |issue|
             issue.title = 'Performance bar test'

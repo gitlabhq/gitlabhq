@@ -228,7 +228,7 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id) if pipeline.cacheable?
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -938,6 +938,12 @@ module Ci
         .first
     end
 
+    def self_with_ancestors_and_descendants(same_project: false)
+      ::Gitlab::Ci::PipelineObjectHierarchy
+        .new(self.class.unscoped.where(id: id), options: { same_project: same_project })
+        .all_objects
+    end
+
     def bridge_triggered?
       source_bridge.present?
     end
@@ -1171,10 +1177,6 @@ module Ci
 
     def persistent_ref
       @persistent_ref ||= PersistentRef.new(pipeline: self)
-    end
-
-    def cacheable?
-      !dangling?
     end
 
     def dangling?
