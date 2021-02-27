@@ -119,7 +119,7 @@ associated with it. Usually one pipeline is a merge request pipeline, and the ot
 is a branch pipeline.
 
 This is usually caused by the `rules` configuration, and there are several ways to
-[prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines).
+[prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines).
 
 #### A job is not in the pipeline
 
@@ -258,7 +258,7 @@ When you use [`rules`](yaml/README.md#rules) with a `when:` clause without an `i
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
-To [prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines), use
+To [prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines), use
 [`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules to control
 which pipelines can run.
 
