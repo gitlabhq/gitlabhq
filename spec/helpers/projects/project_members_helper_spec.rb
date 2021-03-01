@@ -166,7 +166,7 @@ RSpec.describe Projects::ProjectMembersHelper do
           members: helper.project_members_data_json(project, present_members(project_members)),
           member_path: '/foo-bar/-/project_members/:id',
           source_id: project.id,
-          can_manage_members: true
+          can_manage_members: 'true'
         })
       end
     end
@@ -193,7 +193,7 @@ RSpec.describe Projects::ProjectMembersHelper do
           members: helper.project_group_links_data_json(project_group_links),
           member_path: '/foo-bar/-/group_links/:id',
           source_id: project.id,
-          can_manage_members: true
+          can_manage_members: 'true'
         })
       end
     end

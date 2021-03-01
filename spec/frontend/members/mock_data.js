@@ -75,3 +75,5 @@ export const membersJsonString = JSON.stringify(members);
 
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
+
+export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };

@@ -8,7 +8,7 @@ RSpec.describe 'Project members list' do
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:project, :internal, namespace: group) }
 
   before do
     stub_feature_flags(invite_members_group_modal: false)
@@ -115,6 +115,48 @@ RSpec.describe 'Project members list' do
           expect(page).to have_field('Expiration date', disabled: true)
           expect(page).not_to have_button('Remove member')
         end
+      end
+    end
+
+    describe 'when user has 2FA enabled' do
+      let_it_be(:admin) { create(:admin) }
+      let_it_be(:user_with_2fa) { create(:user, :two_factor_via_otp) }
+
+      before do
+        project.add_guest(user_with_2fa)
+      end
+
+      it 'shows 2FA badge to user with "Maintainer" access level' do
+        project.add_maintainer(user1)
+
+        visit_members_page
+
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
+      end
+
+      it 'shows 2FA badge to admins' do
+        sign_in(admin)
+        gitlab_enable_admin_mode_sign_in(admin)
+
+        visit_members_page
+
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
+      end
+
+      it 'does not show 2FA badge to users with access level below "Maintainer"' do
+        group.add_developer(user1)
+
+        visit_members_page
+
+        expect(find_member_row(user_with_2fa)).not_to have_content('2FA')
+      end
+
+      it 'shows 2FA badge to themselves' do
+        sign_in(user_with_2fa)
+
+        visit_members_page
+
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
       end
     end
   end

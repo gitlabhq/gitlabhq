@@ -173,6 +173,7 @@ The following table depicts the various user permission levels in a project.
 | View project Audit Events                         |         |            |  ✓ (*12*)   | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** |         |            |             | ✓        | ✓      |
+| View 2FA status of members                        |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
 | Transfer project to another namespace             |         |            |             |          | ✓      |
 | Rename project                                    |         |            |             |          | ✓      |
@@ -293,6 +294,7 @@ group.
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
+| View 2FA status of members                             |       |          |           |            | ✓     |
 | Filter members by 2FA status                           |       |          |           |            | ✓     |
 | Administer project compliance frameworks               |       |          |           |            | ✓     |
 

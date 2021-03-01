@@ -13,7 +13,7 @@ import {
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
 } from './constants';
 
-export const generateBadges = (member, isCurrentUser) => [
+export const generateBadges = ({ member, isCurrentUser, canManageMembers }) => [
   {
     show: isCurrentUser,
     text: __("It's you"),
@@ -25,7 +25,7 @@ export const generateBadges = (member, isCurrentUser) => [
     variant: 'danger',
   },
   {
-    show: member.user?.twoFactorEnabled,
+    show: member.user?.twoFactorEnabled && (canManageMembers || isCurrentUser),
     text: __('2FA'),
     variant: 'info',
   },
