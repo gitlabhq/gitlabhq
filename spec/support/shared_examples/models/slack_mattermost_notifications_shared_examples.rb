@@ -66,193 +66,183 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
   end
 
   describe "#execute" do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository, :wiki_repo) }
-    let(:username) { 'slack_username' }
-    let(:channel)  { 'slack_channel' }
-    let(:issue_service_options) { { title: 'Awesome issue', description: 'please fix' } }
+    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:user) { create(:user) }
 
-    let(:data) do
-      Gitlab::DataBuilder::Push.build_sample(project, user)
-    end
+    let(:chat_service) { described_class.new( { project: project, webhook: webhook_url, branches_to_be_notified: 'all' }.merge(chat_service_params)) }
+    let(:chat_service_params) { {} }
+    let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
     let!(:stubbed_resolved_hostname) do
       stub_full_request(webhook_url, method: :post).request_pattern.uri_pattern.to_s
     end
 
-    before do
-      allow(chat_service).to receive_messages(
-        project: project,
-        project_id: project.id,
-        service_hook: true,
-        webhook: webhook_url
-      )
+    subject(:execute_service) { chat_service.execute(data) }
 
-      issue_service = Issues::CreateService.new(project, user, issue_service_options)
-      @issue = issue_service.execute
-      @issues_sample_data = issue_service.hook_data(@issue, 'open')
+    context 'with username for slack configured' do
+      let(:chat_service_params) { { username: 'slack_username' } }
 
-      project.add_developer(user)
-      opts = {
-        title: 'Awesome merge_request',
-        description: 'please fix',
-        source_branch: 'feature',
-        target_branch: 'master'
-      }
-      merge_service = MergeRequests::CreateService.new(project,
-                                                       user, opts)
-      @merge_request = merge_service.execute
-      @merge_sample_data = merge_service.hook_data(@merge_request,
-                                                   'open')
+      it 'uses the username as an option' do
+        expect(Slack::Messenger).to execute_with_options(username: 'slack_username')
 
-      opts = {
-        title: "Awesome wiki_page",
-        content: "Some text describing some thing or another",
-        format: "md",
-        message: "user created page: Awesome wiki_page"
-      }
-
-      @wiki_page = create(:wiki_page, wiki: project.wiki, **opts)
-      @wiki_page_sample_data = Gitlab::DataBuilder::WikiPage.build(@wiki_page, user, 'create')
+        execute_service
+      end
     end
 
-    it "calls #{service_name} API for push events" do
-      chat_service.execute(data)
+    context 'push events' do
+      let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
-      expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-    end
+      it "calls #{service_name} API for push events" do
+        execute_service
 
-    it "calls #{service_name} API for issue events" do
-      chat_service.execute(@issues_sample_data)
-
-      expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-    end
-
-    it "calls #{service_name} API for merge requests events" do
-      chat_service.execute(@merge_sample_data)
-
-      expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-    end
-
-    it "calls #{service_name} API for wiki page events" do
-      chat_service.execute(@wiki_page_sample_data)
-
-      expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-    end
-
-    it "calls #{service_name} API for deployment events" do
-      deployment_event_data = { object_kind: 'deployment' }
-
-      chat_service.execute(deployment_event_data)
-
-      expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-    end
-
-    it 'uses the username as an option for slack when configured' do
-      allow(chat_service).to receive(:username).and_return(username)
-
-      expect(Slack::Messenger).to execute_with_options(username: username)
-
-      chat_service.execute(data)
-    end
-
-    it 'uses the channel as an option when it is configured' do
-      allow(chat_service).to receive(:channel).and_return(channel)
-      expect(Slack::Messenger).to execute_with_options(channel: [channel])
-      chat_service.execute(data)
-    end
-
-    context "event channels" do
-      it "uses the right channel for push event" do
-        chat_service.update!(push_channel: "random")
-
-        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
-
-        chat_service.execute(data)
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
       end
 
-      it "uses the right channel for merge request event" do
-        chat_service.update!(merge_request_channel: "random")
+      context 'with event channel' do
+        let(:chat_service_params) { { push_channel: 'random' } }
 
-        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
-
-        chat_service.execute(@merge_sample_data)
-      end
-
-      it "uses the right channel for issue event" do
-        chat_service.update!(issue_channel: "random")
-
-        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
-
-        chat_service.execute(@issues_sample_data)
-      end
-
-      context 'for confidential issues' do
-        let(:issue_service_options) { { title: 'Secret', confidential: true } }
-
-        it "uses confidential issue channel" do
-          chat_service.update!(confidential_issue_channel: 'confidential')
-
-          expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
-
-          chat_service.execute(@issues_sample_data)
-        end
-
-        it 'falls back to issue channel' do
-          chat_service.update!(issue_channel: 'fallback_channel')
-
-          expect(Slack::Messenger).to execute_with_options(channel: ['fallback_channel'])
-
-          chat_service.execute(@issues_sample_data)
-        end
-      end
-
-      it "uses the right channel for wiki event" do
-        chat_service.update!(wiki_page_channel: "random")
-
-        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
-
-        chat_service.execute(@wiki_page_sample_data)
-      end
-
-      context "note event" do
-        let(:issue_note) do
-          create(:note_on_issue, project: project, note: "issue note")
-        end
-
-        it "uses the right channel" do
-          chat_service.update!(note_channel: "random")
-
-          note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
-
+        it 'uses the right channel for push event' do
           expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
-          chat_service.execute(note_data)
+          execute_service
+        end
+      end
+    end
+
+    context 'issue events' do
+      let_it_be(:issue) { create(:issue) }
+      let(:data) { issue.to_hook_data(user) }
+
+      it "calls #{service_name} API for issue events" do
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+
+      context 'whith event channel' do
+        let(:chat_service_params) { { issue_channel: 'random' } }
+
+        it 'uses the right channel for issue event' do
+          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+
+          execute_service
+        end
+
+        context 'for confidential issues' do
+          before_all do
+            issue.update!(confidential: true)
+          end
+
+          it 'falls back to issue channel' do
+            expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+
+            execute_service
+          end
+
+          context 'and confidential_issue_channel is defined' do
+            let(:chat_service_params) { { issue_channel: 'random', confidential_issue_channel: 'confidential' } }
+
+            it 'uses the confidential issue channel when it is defined' do
+              expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
+
+              execute_service
+            end
+          end
+        end
+      end
+    end
+
+    context 'merge request events' do
+      let_it_be(:merge_request) { create(:merge_request) }
+      let(:data) { merge_request.to_hook_data(user) }
+
+      it "calls #{service_name} API for merge requests events" do
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+
+      context 'with event channel' do
+        let(:chat_service_params) { { merge_request_channel: 'random' } }
+
+        it 'uses the right channel for merge request event' do
+          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+
+          execute_service
+        end
+      end
+    end
+
+    context 'wiki page events' do
+      let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+      let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
+
+      it "calls #{service_name} API for wiki page events" do
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+
+      context 'with event channel' do
+        let(:chat_service_params) { { wiki_page_channel: 'random' } }
+
+        it 'uses the right channel for wiki event' do
+          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+
+          execute_service
+        end
+      end
+    end
+
+    context 'deployment events' do
+      let_it_be(:deployment) { create(:deployment) }
+      let(:data) { Gitlab::DataBuilder::Deployment.build(deployment) }
+
+      it "calls #{service_name} API for deployment events" do
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+    end
+
+    context 'note event' do
+      let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note") }
+      let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
+
+      it "calls #{service_name} API for note events" do
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+
+      context 'with event channel' do
+        let(:chat_service_params) { { note_channel: 'random' } }
+
+        it 'uses the right channel' do
+          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+
+          execute_service
         end
 
         context 'for confidential notes' do
-          before do
-            issue_note.noteable.update!(confidential: true)
-          end
-
-          it "uses confidential channel" do
-            chat_service.update!(confidential_note_channel: "confidential")
-
-            note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
-
-            expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
-
-            chat_service.execute(note_data)
+          before_all do
+            issue_note.update!(confidential: true)
           end
 
           it 'falls back to note channel' do
-            chat_service.update!(note_channel: "fallback_channel")
+            expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
-            note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
+            execute_service
+          end
 
-            expect(Slack::Messenger).to execute_with_options(channel: ['fallback_channel'])
+          context 'and confidential_note_channel is defined' do
+            let(:chat_service_params) { { note_channel: 'random', confidential_note_channel: 'confidential' } }
 
-            chat_service.execute(note_data)
+            it 'uses confidential channel' do
+              expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
+
+              execute_service
+            end
           end
         end
       end

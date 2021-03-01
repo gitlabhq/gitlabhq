@@ -1,0 +1,5 @@
+---
+title: Stop scrollbar stretching filtered search box
+merge_request: 54574
+author:
+type: fixed

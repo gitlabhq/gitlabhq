@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Activate GitLab EE with a license **(STARTER ONLY)**
+# Activate GitLab EE with a license **(PREMIUM SELF)**
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
 a license. It's only possible to activate GitLab Enterprise Edition, so first verify which edition

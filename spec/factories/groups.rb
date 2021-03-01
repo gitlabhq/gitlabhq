@@ -61,5 +61,35 @@ FactoryBot.define do
     trait :allow_descendants_override_disabled_shared_runners do
       allow_descendants_override_disabled_shared_runners { true }
     end
+
+    # Construct a hierarchy underneath the group.
+    # Each group will have `children` amount of children,
+    # and `depth` levels of descendants.
+    trait :with_hierarchy do
+      transient do
+        children { 4 }
+        depth    { 4 }
+      end
+
+      after(:create) do |group, evaluator|
+        def create_graph(parent: nil, children: 4, depth: 4)
+          return unless depth > 1
+
+          children.times do
+            factory_name = parent.model_name.singular
+            child = FactoryBot.create(factory_name, parent: parent)
+            create_graph(parent: child, children: children, depth: depth - 1)
+          end
+
+          parent
+        end
+
+        create_graph(
+          parent:   group,
+          children: evaluator.children,
+          depth:    evaluator.depth
+        )
+      end
+    end
   end
 end

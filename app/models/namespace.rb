@@ -63,6 +63,7 @@ class Namespace < ApplicationRecord
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
+  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type) }
   validate :nesting_level_allowed
   validate :changing_shared_runners_enabled_is_allowed
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
@@ -445,6 +446,16 @@ class Namespace < ApplicationRecord
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, 'has too deep level of nesting')
+    end
+  end
+
+  def validate_parent_type
+    return unless has_parent?
+
+    if user?
+      errors.add(:parent_id, 'a user namespace cannot have a parent')
+    elsif group?
+      errors.add(:parent_id, 'a group cannot have a user namespace as its parent') if parent.user?
     end
   end
 

@@ -2,7 +2,7 @@
 
 %section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_branches_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       Protected branches
     %button.btn.gl-button.js-settings-toggle.qa-expand-protected-branches{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'

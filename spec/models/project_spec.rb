@@ -145,7 +145,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it_behaves_like 'model with wiki' do
-      let_it_be(:container) { create(:project, :wiki_repo) }
+      let_it_be(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
       let(:container_without_wiki) { create(:project) }
     end
 

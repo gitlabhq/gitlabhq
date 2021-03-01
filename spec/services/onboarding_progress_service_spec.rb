@@ -45,8 +45,7 @@ RSpec.describe OnboardingProgressService do
   end
 
   describe '#execute' do
-    let(:namespace) { create(:namespace, parent: root_namespace) }
-    let(:root_namespace) { nil }
+    let(:namespace) { create(:namespace) }
     let(:action) { :namespace_action }
 
     subject(:execute_service) { described_class.new(namespace).execute(action: :subscription_created) }
@@ -64,16 +63,16 @@ RSpec.describe OnboardingProgressService do
     end
 
     context 'when the namespace is not the root' do
-      let(:root_namespace) { build(:namespace) }
+      let(:group) { create(:group, :nested) }
 
       before do
-        OnboardingProgress.onboard(root_namespace)
+        OnboardingProgress.onboard(group)
       end
 
-      it 'registers a namespace onboarding progress action for the root namespace' do
+      it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to eq(true)
+        expect(OnboardingProgress.completed?(group, :subscription_created)).to be(nil)
       end
     end
 
@@ -83,7 +82,7 @@ RSpec.describe OnboardingProgressService do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to be(nil)
+        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to be(nil)
       end
     end
   end

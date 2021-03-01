@@ -17,9 +17,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:root_namespace) { create(:namespace) }
-    let(:namespace) { create(:namespace, parent: root_namespace) }
-    let(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
+    let(:group) { create(:group, :nested) }
+    let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:user) { create(:user) }

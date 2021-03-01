@@ -105,6 +105,10 @@ RSpec.describe ProjectPolicy do
   context 'pipeline feature' do
     let(:project) { private_project }
 
+    before do
+      private_project.add_developer(current_user)
+    end
+
     describe 'for unconfirmed user' do
       let(:current_user) { create(:user, confirmed_at: nil) }
 

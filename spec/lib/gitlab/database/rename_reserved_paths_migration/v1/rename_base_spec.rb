@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :
   end
 
   describe '#rename_path_for_routable' do
-    context 'for namespaces' do
+    context 'for personal namespaces' do
       let(:namespace) { create(:namespace, path: 'the-path') }
 
       it "renames namespaces called the-path" do
@@ -119,13 +119,16 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :
 
         expect(project.route.reload.path).to eq('the-path-but-not-really/the-project')
       end
+    end
 
-      context "the-path namespace -> subgroup -> the-path0 project" do
+    context 'for groups' do
+      context "the-path group -> subgroup -> the-path0 project" do
         it "updates the route of the project correctly" do
-          subgroup = create(:group, path: "subgroup", parent: namespace)
+          group = create(:group, path: 'the-path')
+          subgroup = create(:group, path: "subgroup", parent: group)
           project = create(:project, :repository, path: "the-path0", namespace: subgroup)
 
-          subject.rename_path_for_routable(migration_namespace(namespace))
+          subject.rename_path_for_routable(migration_namespace(group))
 
           expect(project.route.reload.path).to eq("the-path0/subgroup/the-path0")
         end
@@ -158,23 +161,27 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :
   end
 
   describe '#perform_rename' do
-    describe 'for namespaces' do
-      let(:namespace) { create(:namespace, path: 'the-path') }
-
+    context 'for personal namespaces' do
       it 'renames the path' do
+        namespace = create(:namespace, path: 'the-path')
+
         subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
 
         expect(namespace.reload.path).to eq('renamed')
-      end
-
-      it 'renames all the routes for the namespace' do
-        child = create(:group, path: 'child', parent: namespace)
-        project = create(:project, :repository, namespace: child, path: 'the-project')
-        other_one = create(:namespace, path: 'the-path-is-similar')
-
-        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
-
         expect(namespace.reload.route.path).to eq('renamed')
+      end
+    end
+
+    context 'for groups' do
+      it 'renames all the routes for the group' do
+        group = create(:group, path: 'the-path')
+        child = create(:group, path: 'child', parent: group)
+        project = create(:project, :repository, namespace: child, path: 'the-project')
+        other_one = create(:group, path: 'the-path-is-similar')
+
+        subject.perform_rename(migration_namespace(group), 'the-path', 'renamed')
+
+        expect(group.reload.route.path).to eq('renamed')
         expect(child.reload.route.path).to eq('renamed/child')
         expect(project.reload.route.path).to eq('renamed/child/the-project')
         expect(other_one.reload.route.path).to eq('the-path-is-similar')

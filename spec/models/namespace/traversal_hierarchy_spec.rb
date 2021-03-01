@@ -3,41 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe Namespace::TraversalHierarchy, type: :model do
-  let_it_be(:root, reload: true) { create(:namespace, :with_hierarchy) }
+  let_it_be(:root, reload: true) { create(:group, :with_hierarchy) }
 
   describe '.for_namespace' do
-    let(:hierarchy) { described_class.for_namespace(namespace) }
+    let(:hierarchy) { described_class.for_namespace(group) }
 
     context 'with root group' do
-      let(:namespace) { root }
+      let(:group) { root }
 
       it { expect(hierarchy.root).to eq root }
     end
 
     context 'with child group' do
-      let(:namespace) { root.children.first.children.first }
+      let(:group) { root.children.first.children.first }
 
       it { expect(hierarchy.root).to eq root }
     end
 
     context 'with group outside of hierarchy' do
-      let(:namespace) { create(:namespace) }
+      let(:group) { create(:namespace) }
 
       it { expect(hierarchy.root).not_to eq root }
     end
   end
 
   describe '.new' do
-    let(:hierarchy) { described_class.new(namespace) }
+    let(:hierarchy) { described_class.new(group) }
 
     context 'with root group' do
-      let(:namespace) { root }
+      let(:group) { root }
 
       it { expect(hierarchy.root).to eq root }
     end
 
     context 'with child group' do
-      let(:namespace) { root.children.first }
+      let(:group) { root.children.first }
 
       it { expect { hierarchy }.to raise_error(StandardError, 'Must specify a root node') }
     end

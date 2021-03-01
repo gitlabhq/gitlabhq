@@ -6,7 +6,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.h
 type: reference, howto
 ---
 
-# Pipeline settings
+# Pipeline settings **(FREE)**
 
 To reach the pipelines settings navigate to your project's
 **Settings > CI/CD**.
@@ -17,6 +17,11 @@ The following settings can be configured per project.
 For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
 Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
 
+You can use the pipeline status to determine if a merge request can be merged:
+
+- [Merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md).
+- [Only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds).
+
 ## Git strategy
 
 With Git strategy, you can choose the default way your repository is fetched
@@ -24,7 +29,7 @@ from GitLab in a job.
 
 There are two options. Using:
 
-- `git clone`, which is slower since it clones the repository from scratch
+- `git clone`, which is slower because it clones the repository from scratch
   for every job, ensuring that the local working copy is always pristine.
 - `git fetch`, which is default in GitLab and faster as it re-uses the local working copy (falling
   back to clone if it doesn't exist).
@@ -70,8 +75,7 @@ For information about setting a maximum artifact size for a project, see
 
 ## Custom CI/CD configuration path
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12509) in GitLab 9.4.
-> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
+> [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If needed, you can specify an alternate path and filename, including locations outside the project.
@@ -83,7 +87,7 @@ To customize the path:
 1. Provide a value in the **CI/CD configuration file** field.
 1. Click **Save changes**.
 
-If the CI configuration is stored within the repository in a non-default
+If the CI configuration is stored in the repository in a non-default
 location, the path must be relative to the root directory. Examples of valid
 paths and file names include:
 
@@ -96,7 +100,7 @@ If hosting the CI configuration on an external site, the URL link must end with 
 
 - `http://example.com/generate/ci/config.yml`
 
-If hosting the CI configuration in a different project within GitLab, the path must be relative
+If hosting the CI configuration in a different project in GitLab, the path must be relative
 to the root directory in the other project. Include the group and project name at the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`
@@ -114,10 +118,10 @@ able to edit it.
 ## Test coverage parsing
 
 If you use test coverage in your code, GitLab can capture its output in the
-job log using a regular expression. In the pipelines settings, search for the
-"Test coverage parsing" section.
+job log using a regular expression.
 
-![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
+In your project, go to **Settings > CI / CD** and expand the **General pipelines**
+section. Enter the regular expression in the **Test coverage parsing** field.
 
 Leave blank if you want to disable it or enter a Ruby regular expression. You
 can use <https://rubular.com> to test your regex. The regex returns the **last**
@@ -219,8 +223,6 @@ If **Public pipelines** is disabled:
 
 ## Auto-cancel redundant pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9362) in GitLab 9.1.
-
 You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
 
 1. Go to **Settings > CI / CD**.
@@ -236,7 +238,7 @@ running job can be cancelled before it completes.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
 
 Your project may have multiple concurrent deployment jobs that are
-scheduled to run within the same time frame.
+scheduled to run in the same time frame.
 
 This can lead to a situation where an older deployment job runs after a
 newer one, which may not be what you want.
@@ -276,15 +278,15 @@ pages.
 
 ### Pipeline status badge
 
-Depending on the status of your job, a badge can have the following values:
+Depending on the status of your pipeline, a badge can have the following values:
 
-- pending
-- running
-- passed
-- failed
-- skipped
-- canceled
-- unknown
+- `pending`
+- `running`
+- `passed`
+- `failed`
+- `skipped`
+- `canceled`
+- `unknown`
 
 You can access a pipeline status badge image using the following link:
 
@@ -325,39 +327,33 @@ into your `README.md`:
 
 Pipeline badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Two styles are available:
 
-#### Flat (default)
+- Flat (default):
 
-```plaintext
-https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
-```
+  ```plaintext
+  https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
+  ```
 
-![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat)
+  ![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat)
 
-#### Flat square
+- Flat square ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8):
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8.
+  ```plaintext
+  https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
+  ```
 
-```plaintext
-https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
-```
-
-![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat-square)
+  ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat-square)
 
 ### Custom badge text
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17555) in GitLab 13.1.
 
-The text for a badge can be customized. This can be useful to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
+The text for a badge can be customized to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
 
 ```plaintext
 https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
 ![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
-
-## CI/CD Variables
-
-[CI/CD variables](../variables/README.md) can be set to be available to a runner.
 
 <!-- ## Troubleshooting
 

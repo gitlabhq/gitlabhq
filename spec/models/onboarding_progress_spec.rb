@@ -106,7 +106,7 @@ RSpec.describe OnboardingProgress do
     end
 
     context 'when not given a root namespace' do
-      let(:namespace) { create(:namespace, parent: build(:namespace)) }
+      let(:namespace) { create(:group, parent: build(:group)) }
 
       it 'does not add a record for the namespace' do
         expect { onboard }.not_to change(described_class, :count).from(0)
