@@ -11,7 +11,7 @@ RSpec.describe 'Project members list' do
   let(:project) { create(:project, :internal, namespace: group) }
 
   before do
-    stub_feature_flags(invite_members_group_modal: false)
+    stub_feature_flags(invite_members_group_modal: true)
 
     sign_in(user1)
     group.add_owner(user1)
@@ -60,10 +60,27 @@ RSpec.describe 'Project members list' do
     it 'add user to project', :js do
       visit_members_page
 
-      add_user(user2.id, 'Reporter')
+      add_user(user2.name, 'Reporter')
 
       page.within find_member_row(user2) do
         expect(page).to have_button('Reporter')
+      end
+    end
+
+    it 'uses ProjectMember access_level_roles for the invite members modal access option', :js do
+      visit_members_page
+
+      click_on 'Invite members'
+
+      click_on 'Guest'
+      wait_for_requests
+
+      page.within '.dropdown-menu' do
+        expect(page).to have_button('Guest')
+        expect(page).to have_button('Reporter')
+        expect(page).to have_button('Developer')
+        expect(page).to have_button('Maintainer')
+        expect(page).not_to have_button('Owner')
       end
     end
 
@@ -202,7 +219,7 @@ RSpec.describe 'Project members list' do
     it 'add user to project', :js do
       visit_members_page
 
-      add_user(user2.id, 'Reporter')
+      add_user(user2.name, 'Reporter')
 
       page.within(second_row) do
         expect(page).to have_content(user2.name)
@@ -264,12 +281,22 @@ RSpec.describe 'Project members list' do
   private
 
   def add_user(id, role)
-    page.within ".invite-users-form" do
-      select2(id, from: "#user_ids", multiple: true)
-      select(role, from: "access_level")
+    click_on 'Invite members'
+
+    page.within '#invite-members-modal' do
+      fill_in 'Search for members to invite', with: id
+
+      wait_for_requests
+      click_button id
+
+      click_button 'Guest'
+      wait_for_requests
+      click_button role
+
+      click_button 'Invite'
     end
 
-    click_button "Invite"
+    page.refresh
   end
 
   def visit_members_page

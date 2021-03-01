@@ -157,7 +157,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   def use_merge_base_with_merged_results?
-    object.actual_head_pipeline&.for_merged_result?
+    object.actual_head_pipeline&.merged_result_pipeline?
   end
 
   def head_pipeline_downloadable_path_for_report_type(file_type)

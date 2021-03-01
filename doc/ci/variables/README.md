@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD variables
+# GitLab CI/CD variables **(FREE)**
 
 CI/CD variables are part of the environment in which [pipelines](../pipelines/index.md)
 and jobs run. For example, you could:

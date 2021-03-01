@@ -373,8 +373,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#merge_request_pipeline?' do
-    subject { pipeline.merge_request_pipeline? }
+  describe '#merged_result_pipeline?' do
+    subject { pipeline.merged_result_pipeline? }
 
     let!(:pipeline) do
       create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
@@ -419,24 +419,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
 
       it { is_expected.to eq(:detached) }
-    end
-  end
-
-  describe '#for_merged_result?' do
-    subject { pipeline.for_merged_result? }
-
-    let(:pipeline) { merge_request.all_pipelines.last }
-
-    context 'when pipeline is merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when pipeline is detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-
-      it { is_expected.to be_falsey }
     end
   end
 

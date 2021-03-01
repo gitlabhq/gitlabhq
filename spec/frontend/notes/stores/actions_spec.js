@@ -3,6 +3,7 @@ import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
@@ -202,7 +203,7 @@ describe('Actions Notes Store', () => {
 
   describe('emitStateChangedEvent', () => {
     it('emits an event on the document', () => {
-      document.addEventListener('issuable_vue_app:change', (event) => {
+      document.addEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, (event) => {
         expect(event.detail.data).toEqual({ id: '1', state: 'closed' });
         expect(event.detail.isClosed).toEqual(false);
       });

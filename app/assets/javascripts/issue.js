@@ -2,12 +2,10 @@ import $ from 'jquery';
 import { joinPaths } from '~/lib/utils/url_utility';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import { deprecatedCreateFlash as flash } from './flash';
+import { EVENT_ISSUABLE_VUE_APP_CHANGE } from './issuable/constants';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { __ } from './locale';
-
-// TODO: Update all references of "issuable_vue_app:change" https://gitlab.com/gitlab-org/gitlab/-/issues/322760
-export const EVENT_ISSUABLE_VUE_APP_CHANGE = 'issuable_vue_app:change';
 
 export default class Issue {
   constructor() {

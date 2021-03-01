@@ -508,6 +508,7 @@ This can be due to multiple reasons:
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
+- The widgets use the pipeline of the latest commit to the target branch. If commits are made to the default branch that do not run the code quality job, this may cause the Merge Request widget to have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.
 - Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
   As a work-around, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)

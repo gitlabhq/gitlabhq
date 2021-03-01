@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import Api from '~/api';
+import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { confidentialWidget } from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
@@ -267,7 +268,7 @@ export const toggleStateButtonLoading = ({ commit }, value) =>
   commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
 export const emitStateChangedEvent = ({ getters }, data) => {
-  const event = new CustomEvent('issuable_vue_app:change', {
+  const event = new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, {
     detail: {
       data,
       isClosed: getters.openState === constants.CLOSED,

@@ -350,7 +350,7 @@ If you use both pipeline types at the same time, [duplicate pipelines](#avoid-du
 might run at the same time. To prevent duplicate pipelines, use the
 [`CI_OPEN_MERGE_REQUESTS` variable](../variables/predefined_variables.md).
 
-This example is for a project that runs branch and merge request pipelines only,
+The following example is for a project that runs branch and merge request pipelines only,
 but does not run pipelines for any other case. It runs:
 
 - Branch pipelines when a merge request is not open for the branch.

@@ -31,7 +31,7 @@ class Ci::PipelineEntity < Grape::Entity
     expose :can_cancel?, as: :cancelable
     expose :failure_reason?, as: :failure_reason
     expose :detached_merge_request_pipeline?, as: :detached_merge_request_pipeline
-    expose :merge_request_pipeline?, as: :merge_request_pipeline
+    expose :merged_result_pipeline?, as: :merge_request_pipeline
   end
 
   expose :details do
@@ -64,8 +64,8 @@ class Ci::PipelineEntity < Grape::Entity
 
   expose :commit, using: CommitEntity
   expose :merge_request_event_type, if: -> (pipeline, _) { pipeline.merge_request? }
-  expose :source_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
-  expose :target_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
+  expose :source_sha, if: -> (pipeline, _) { pipeline.merged_result_pipeline? }
+  expose :target_sha, if: -> (pipeline, _) { pipeline.merged_result_pipeline? }
   expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
   expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? }
 
