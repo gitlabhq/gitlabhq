@@ -164,7 +164,7 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 
 1. A user creates a feature branch named `example` and pushes it to a remote repository.
 1. A new pipeline starts running on the `example` branch.
-1. A user rebases the `example` branch on the latest `master` branch and force-pushes it to its remote repository.
+1. A user rebases the `example` branch on the latest default branch and force-pushes it to its remote repository.
 1. A new pipeline starts running on the `example` branch again, however,
    the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
 

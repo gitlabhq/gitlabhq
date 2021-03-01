@@ -25,6 +25,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     // Add to provide/inject API for static values
     ciConfigPath,
     defaultBranch,
+    emptyStateIllustrationPath,
     lintHelpPagePath,
     newMergeRequestPath,
     projectFullPath,
@@ -51,6 +52,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     provide: {
       ciConfigPath,
       defaultBranch,
+      emptyStateIllustrationPath,
       lintHelpPagePath,
       newMergeRequestPath,
       projectFullPath,

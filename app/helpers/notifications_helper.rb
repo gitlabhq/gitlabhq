@@ -72,52 +72,6 @@ module NotificationsHelper
     end
   end
 
-  def notification_list_item(level, setting)
-    title = notification_title(level)
-
-    data = {
-      notification_level: level,
-      notification_title: title
-    }
-
-    content_tag(:li, role: "menuitem") do
-      link_to '#', class: "update-notification #{('is-active' if setting.level == level)}", data: data do
-        link_output = content_tag(:strong, title, class: 'dropdown-menu-inner-title')
-        link_output << content_tag(:span, notification_description(level), class: 'dropdown-menu-inner-content')
-      end
-    end
-  end
-
-  # Identifier to trigger individually dropdowns and custom settings modals in the same view
-  def notifications_menu_identifier(type, notification_setting)
-    "#{type}-#{notification_setting.user_id}-#{notification_setting.source_id}-#{notification_setting.source_type}"
-  end
-
-  # Create hidden field to send notification setting source to controller
-  def hidden_setting_source_input(notification_setting)
-    return unless notification_setting.source_type
-
-    hidden_field_tag "#{notification_setting.source_type.downcase}_id", notification_setting.source_id
-  end
-
-  def notification_event_name(event)
-    # All values from NotificationSetting.email_events
-    case event
-    when :success_pipeline
-      s_('NotificationEvent|Successful pipeline')
-    else
-      event_name = "NotificationEvent|#{event.to_s.humanize}"
-      s_(event_name)
-    end
-  end
-
-  def notification_setting_icon(notification_setting = nil)
-    sprite_icon(
-      !notification_setting.present? || notification_setting.disabled? ? "notifications-off" : "notifications",
-      css_class: "icon notifications-icon js-notifications-icon"
-    )
-  end
-
   def show_unsubscribe_title?(noteable)
     can?(current_user, "read_#{noteable.to_ability_name}".to_sym, noteable)
   end

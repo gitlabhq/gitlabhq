@@ -1607,34 +1607,31 @@ displayed for the page or feature.
 
 #### Version text in the **Version History**
 
-If all content in a section is related, add version text after the header
-for the section. The version information must be surrounded by blank lines, and
-each entry should be on its own line.
+If all content in a section is related, add version text after the header for
+the section. The version information must:
 
-Add the version history information as a blockquote:
+- Be surrounded by blank lines.
+- Start with `>`.
+- Version histories with more than one entry should have each entry on its own
+  line (long lines are okay). Start each line with `> -` to get unordered list
+  formatting.
+- Whenever possible, have a link to the completed issue, merge request, or epic
+  that introduced the feature. An issue is preferred over a merge request, and
+  a merge request is preferred over an epic.
 
 ```markdown
 ## Feature name
 
-> Introduced in GitLab 11.3.
+> [Introduced](<link-to-issue>) in GitLab 11.3.
 
 This feature does something.
-```
 
-Whenever possible, version text should have a link to the completed issue, merge
-request, or epic that introduced the feature. An issue is preferred over a merge
-request, and a merge request is preferred over an epic. For example:
+## Feature name 2
 
-```markdown
-> [Introduced](<link-to-issue>) in GitLab 11.3.
-```
-
-If you're adding information about new features or changes in a release, update
-the blockquote to use a bulleted list:
-
-```markdown
 > - [Introduced](<link-to-issue>) in GitLab 11.3.
-> - Enabled by default in GitLab 11.4.
+> - [Enabled by default](<link-to-issue>) in GitLab 11.4.
+
+This feature does something else.
 ```
 
 If a feature is moved to another tier:

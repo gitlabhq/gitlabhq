@@ -23,15 +23,21 @@ FactoryBot.define do
     end
 
     trait :with_aggregation_schedule do
-      association :aggregation_schedule, factory: :namespace_aggregation_schedules
+      after(:create) do |namespace|
+        create(:namespace_aggregation_schedules, namespace: namespace)
+      end
     end
 
     trait :with_root_storage_statistics do
-      association :root_storage_statistics, factory: :namespace_root_storage_statistics
+      after(:create) do |namespace|
+        create(:namespace_root_storage_statistics, namespace: namespace)
+      end
     end
 
     trait :with_namespace_settings do
-      association :namespace_settings, factory: :namespace_settings
+      after(:create) do |namespace|
+        create(:namespace_settings, namespace: namespace)
+      end
     end
 
     trait :shared_runners_disabled do

@@ -28,7 +28,7 @@ in the pipeline detail view.
 
 Consider the following workflow:
 
-1. Your `master` branch is rock solid, your project is using GitLab CI/CD and
+1. Your default branch is rock solid, your project is using GitLab CI/CD and
    your pipelines indicate that there isn't anything broken.
 1. Someone from your team submits a merge request, a test fails and the pipeline
    gets the known red icon. To investigate more, you have to go through the job
@@ -44,7 +44,7 @@ First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm
 as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 
-- The base branch is the target branch (usually `master`).
+- The base branch is the target branch (usually the default branch).
 - The head branch is the source branch (the latest pipeline in each merge request).
 
 The reports panel has a summary showing how many tests failed, how many had errors

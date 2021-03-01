@@ -55,10 +55,6 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.ci_pipeline_editor_page_enabled?(project)
-        ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: :yaml)
-      end
-
       def self.validate_build_dependencies?(project)
         ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
           ::Feature.disabled?(:ci_validate_build_dependencies_override, project)

@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop: disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
   context "with worker attribution" do
     subject { described_class.new }
@@ -287,3 +288,4 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
     end
   end
 end
+# rubocop: enable RSpec/MultipleMemoizedHelpers

@@ -11,7 +11,6 @@ class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   feature_category :pipeline_authoring
 
   def show
-    render_404 unless ::Gitlab::Ci::Features.ci_pipeline_editor_page_enabled?(@project)
   end
 
   private

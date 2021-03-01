@@ -180,7 +180,7 @@ $ vault write auth/jwt/config \
 
 For the full list of available configuration options, see Vault's [API documentation](https://www.vaultproject.io/api/auth/jwt#configure).
 
-The following job, when run for the `master` branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
+The following job, when run for the default branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
 
 ```yaml
 read_secrets:

@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Labels::PromoteService do
   describe '#execute' do
-    let!(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
-    context 'project without group' do
+    context 'without a group' do
       let!(:project_1) { create(:project) }
 
       let!(:project_label_1_1) { create(:label, project: project_1) }
@@ -18,40 +18,40 @@ RSpec.describe Labels::PromoteService do
       end
     end
 
-    context 'project with group' do
-      let!(:promoted_label_name)  { "Promoted Label" }
-      let!(:untouched_label_name) { "Untouched Label" }
-      let!(:promoted_description) { "Promoted Description" }
-      let!(:promoted_color)       { "#0000FF" }
-      let!(:label_2_1_priority)   { 1 }
-      let!(:label_3_1_priority)   { 2 }
+    context 'with a group' do
+      let_it_be(:promoted_label_name)  { "Promoted Label" }
+      let_it_be(:untouched_label_name) { "Untouched Label" }
+      let_it_be(:promoted_description) { "Promoted Description" }
+      let_it_be(:promoted_color)       { "#0000FF" }
+      let_it_be(:label_2_1_priority)   { 1 }
+      let_it_be(:label_3_1_priority)   { 2 }
 
-      let!(:group_1)  { create(:group) }
-      let!(:group_2)  { create(:group) }
+      let_it_be(:group_1)  { create(:group) }
+      let_it_be(:group_2)  { create(:group) }
 
-      let!(:project_1)  { create(:project, namespace: group_1) }
-      let!(:project_2)  { create(:project, namespace: group_1) }
-      let!(:project_3)  { create(:project, namespace: group_1) }
-      let!(:project_4)  { create(:project, namespace: group_2) }
+      let_it_be(:project_1)  { create(:project, :repository, namespace: group_1) }
+      let_it_be(:project_2)  { create(:project, :repository, namespace: group_1) }
+      let_it_be(:project_3)  { create(:project, :repository, namespace: group_1) }
+      let_it_be(:project_4)  { create(:project, :repository, namespace: group_2) }
 
       # Labels/issues can't be lazily created so we might as well eager initialize
       # all other objects too since we use them inside
-      let!(:project_label_1_1)  { create(:label, project: project_1, name: promoted_label_name, color: promoted_color, description: promoted_description) }
-      let!(:project_label_1_2)  { create(:label, project: project_1, name: untouched_label_name) }
-      let!(:project_label_2_1)  { create(:label, project: project_2, priority: label_2_1_priority, name: promoted_label_name, color: "#FF0000") }
-      let!(:project_label_3_1)  { create(:label, project: project_3, priority: label_3_1_priority, name: promoted_label_name) }
-      let!(:project_label_3_2)  { create(:label, project: project_3, priority: 1, name: untouched_label_name) }
-      let!(:project_label_4_1)  { create(:label, project: project_4, name: promoted_label_name) }
+      let_it_be(:project_label_1_1)  { create(:label, project: project_1, name: promoted_label_name, color: promoted_color, description: promoted_description) }
+      let_it_be(:project_label_1_2)  { create(:label, project: project_1, name: untouched_label_name) }
+      let_it_be(:project_label_2_1)  { create(:label, project: project_2, priority: label_2_1_priority, name: promoted_label_name, color: "#FF0000") }
+      let_it_be(:project_label_3_1)  { create(:label, project: project_3, priority: label_3_1_priority, name: promoted_label_name) }
+      let_it_be(:project_label_3_2)  { create(:label, project: project_3, priority: 1, name: untouched_label_name) }
+      let_it_be(:project_label_4_1)  { create(:label, project: project_4, name: promoted_label_name) }
 
-      let!(:issue_1_1)  { create(:labeled_issue, project: project_1, labels: [project_label_1_1, project_label_1_2]) }
-      let!(:issue_1_2)  { create(:labeled_issue, project: project_1, labels: [project_label_1_2]) }
-      let!(:issue_2_1)  { create(:labeled_issue, project: project_2, labels: [project_label_2_1]) }
-      let!(:issue_4_1)  { create(:labeled_issue, project: project_4, labels: [project_label_4_1]) }
+      let_it_be(:issue_1_1)  { create(:labeled_issue, project: project_1, labels: [project_label_1_1, project_label_1_2]) }
+      let_it_be(:issue_1_2)  { create(:labeled_issue, project: project_1, labels: [project_label_1_2]) }
+      let_it_be(:issue_2_1)  { create(:labeled_issue, project: project_2, labels: [project_label_2_1]) }
+      let_it_be(:issue_4_1)  { create(:labeled_issue, project: project_4, labels: [project_label_4_1]) }
 
-      let!(:merge_3_1)  { create(:labeled_merge_request, source_project: project_3, target_project: project_3, labels: [project_label_3_1, project_label_3_2]) }
+      let_it_be(:merge_3_1)  { create(:labeled_merge_request, source_project: project_3, target_project: project_3, labels: [project_label_3_1, project_label_3_2]) }
 
-      let!(:issue_board_2_1)      { create(:board, project: project_2) }
-      let!(:issue_board_list_2_1) { create(:list, board: issue_board_2_1, label: project_label_2_1) }
+      let_it_be(:issue_board_2_1)      { create(:board, project: project_2) }
+      let_it_be(:issue_board_list_2_1) { create(:list, board: issue_board_2_1, label: project_label_2_1) }
 
       let(:new_label) { group_1.labels.find_by(title: promoted_label_name) }
 
@@ -82,8 +82,8 @@ RSpec.describe Labels::PromoteService do
 
           expect { service.execute(project_label_1_1) }.to change { Subscription.count }.from(4).to(3)
 
-          expect(new_label.subscribed?(user)).to be_truthy
-          expect(new_label.subscribed?(user2)).to be_truthy
+          expect(new_label).to be_subscribed(user)
+          expect(new_label).to be_subscribed(user2)
         end
 
         it 'recreates priorities' do
@@ -165,12 +165,12 @@ RSpec.describe Labels::PromoteService do
           service.execute(project_label_1_1)
 
           Label.reflect_on_all_associations.each do |association|
-            expect(project_label_1_1.send(association.name).any?).to be_falsey
+            expect(project_label_1_1.send(association.name).reset).not_to be_any
           end
         end
       end
 
-      context 'if there is an existing identical group label' do
+      context 'when there is an existing identical group label' do
         let!(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title ) }
 
         it 'uses the existing group label' do
@@ -187,7 +187,7 @@ RSpec.describe Labels::PromoteService do
         it_behaves_like 'promoting a project label to a group label'
       end
 
-      context 'if there is no existing identical group label' do
+      context 'when there is no existing identical group label' do
         let(:existing_group_label) { nil }
 
         it 'recreates the label as a group label' do
