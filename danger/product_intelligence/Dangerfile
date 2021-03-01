@@ -37,8 +37,8 @@ tracking_files = [
 
 tracking_changed_files   = all_changed_files & tracking_files
 usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
-metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
+metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 
 def matching_files?(file, extension:, pattern:)
   return unless file.end_with?(extension)
@@ -52,6 +52,16 @@ js_patterns = Regexp.union(
   'data-track-event'
 )
 
+dictionary_pattern = Regexp.union(
+  'key_path:',
+  'description:',
+  'product_section:',
+  'product_stage:',
+  'product_group:',
+  'status:',
+  'tier:'
+)
+
 snowplow_changed_files = all_changed_files.select do |file|
   matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.event}) ||
     matching_files?(file, extension: '.js', pattern: js_patterns) ||
@@ -59,7 +69,15 @@ snowplow_changed_files = all_changed_files.select do |file|
     matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})
 end
 
-matching_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file + snowplow_changed_files
+required_dictionary_update_changed_files = dictionary_changed_file.select do |file|
+  matching_files?(file, extension: '.yml', pattern: dictionary_pattern)
+end
+
+matching_changed_files = usage_data_changed_files +
+                         tracking_changed_files +
+                         metrics_changed_files +
+                         dictionary_changed_file +
+                         snowplow_changed_files
 
 if matching_changed_files.any?
 
@@ -71,7 +89,7 @@ if matching_changed_files.any?
 
   warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
 
-  fail format(UPDATE_DICTIONARY_MESSAGE) if metrics_changed_files.any? && dictionary_changed_file.empty?
+  fail format(UPDATE_DICTIONARY_MESSAGE) if metrics_changed_files.any? && required_dictionary_update_changed_files.empty?
 
   labels = ['product intelligence']
   labels << 'product intelligence::review pending' unless helper.mr_has_labels?('product intelligence::approved')

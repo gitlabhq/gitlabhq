@@ -75,7 +75,7 @@ CSV file containing details of the resources scanned.
 
 At the project level, the Security Dashboard displays a chart with the number of vulnerabilities over time.
 Access it by navigating to **Security & Compliance > Security Dashboard**. We display historical
-data up to 365 days.
+data up to 365 days. The chart's data is updated daily.
 
 ![Project Security Dashboard](img/project_security_dashboard_chart_v13_6.png)
 

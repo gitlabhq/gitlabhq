@@ -52,3 +52,7 @@ mapping:
   # EE/FOSS factory should map to factories spec
   - source: (ee/)?spec/factories/.+\.rb
     test: spec/factories_spec.rb
+
+  # Whats New should map to its respective spec
+  - source: data/whats_new/\w*.yml
+    test: spec/lib/release_highlights/validator_spec.rb

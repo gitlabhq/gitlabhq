@@ -214,7 +214,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
     context 'when FF :variable_inside_variable is enabled' do
       before do
         stub_licensed_features(group_saml_group_sync: true)
-        stub_feature_flags(saml_group_links: true)
         stub_feature_flags(variable_inside_variable: true)
       end
 

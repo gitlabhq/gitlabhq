@@ -91,6 +91,50 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
     end
   end
 
+  context 'enum values' do
+    it 'adds an offense when there is no description' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Please add a `description` property.
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description does not end in a period' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'bar'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when description is correct (defined using `description:`)' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'bar.'
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when description is correct (defined as a second argument)' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', 'bar.', value: 'foo'
+          end
+        end
+      TYPE
+    end
+  end
+
   describe 'autocorrecting descriptions without periods' do
     it 'can autocorrect' do
       expect_offense(<<~TYPE)

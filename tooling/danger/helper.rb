@@ -209,6 +209,7 @@ module Tooling
 
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
+        %r{\Adata/whats_new/} => :docs,
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,

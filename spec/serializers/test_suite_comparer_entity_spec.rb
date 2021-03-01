@@ -35,6 +35,7 @@ RSpec.describe TestSuiteComparerEntity do
         end
         expect(subject[:resolved_failures]).to be_empty
         expect(subject[:existing_failures]).to be_empty
+        expect(subject[:suite_errors]).to be_nil
       end
     end
 
@@ -56,6 +57,7 @@ RSpec.describe TestSuiteComparerEntity do
         end
         expect(subject[:resolved_failures]).to be_empty
         expect(subject[:existing_failures]).to be_empty
+        expect(subject[:suite_errors]).to be_nil
       end
     end
 
@@ -77,6 +79,7 @@ RSpec.describe TestSuiteComparerEntity do
           expect(existing_failure[:execution_time]).to eq(test_case_failed.execution_time)
           expect(existing_failure[:system_output]).to eq(test_case_failed.system_output)
         end
+        expect(subject[:suite_errors]).to be_nil
       end
     end
 
@@ -98,6 +101,47 @@ RSpec.describe TestSuiteComparerEntity do
           expect(resolved_failure[:system_output]).to eq(test_case_success.system_output)
         end
         expect(subject[:existing_failures]).to be_empty
+        expect(subject[:suite_errors]).to be_nil
+      end
+    end
+
+    context 'when head suite has suite error' do
+      before do
+        allow(head_suite).to receive(:suite_error).and_return('some error')
+      end
+
+      it 'contains suite error for head suite' do
+        expect(subject[:suite_errors]).to eq(
+          head: 'some error',
+          base: nil
+        )
+      end
+    end
+
+    context 'when base suite has suite error' do
+      before do
+        allow(base_suite).to receive(:suite_error).and_return('some error')
+      end
+
+      it 'contains suite error for head suite' do
+        expect(subject[:suite_errors]).to eq(
+          head: nil,
+          base: 'some error'
+        )
+      end
+    end
+
+    context 'when base and head suite both have suite errors' do
+      before do
+        allow(head_suite).to receive(:suite_error).and_return('head error')
+        allow(base_suite).to receive(:suite_error).and_return('base error')
+      end
+
+      it 'contains suite error for head suite' do
+        expect(subject[:suite_errors]).to eq(
+          head: 'head error',
+          base: 'base error'
+        )
       end
     end
   end

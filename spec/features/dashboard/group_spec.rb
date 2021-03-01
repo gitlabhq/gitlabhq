@@ -15,7 +15,7 @@ RSpec.describe 'Dashboard Group' do
 
   it 'creates new group', :js do
     visit dashboard_groups_path
-    find('.btn-success').click
+    find('[data-testid="new-group-button"]').click
     new_name = 'Samurai'
 
     fill_in 'group_name', with: new_name
