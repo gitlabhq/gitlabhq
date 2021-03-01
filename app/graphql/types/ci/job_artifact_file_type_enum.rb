@@ -6,7 +6,8 @@ module Types
       graphql_name 'JobArtifactFileType'
 
       ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.keys.each do |file_type|
-        value file_type.to_s.upcase, value: file_type.to_s
+        description = file_type == :codequality ? "CODE QUALITY" : file_type.to_s.titleize.upcase  # This is needed as doc lint will not allow codequality as one word
+        value file_type.to_s.upcase, value: file_type.to_s, description: "#{description} job artifact file type."
       end
     end
   end

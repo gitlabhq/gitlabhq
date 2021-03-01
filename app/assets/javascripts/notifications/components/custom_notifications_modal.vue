@@ -115,7 +115,11 @@ export default {
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
           <template v-else>
             <gl-form-group v-for="event in events" :key="event.id">
-              <gl-form-checkbox v-model="event.enabled" @change="updateEvent($event, event)">
+              <gl-form-checkbox
+                v-model="event.enabled"
+                :data-testid="`notification-setting-${event.id}`"
+                @change="updateEvent($event, event)"
+              >
                 <strong>{{ event.name }}</strong
                 ><gl-loading-icon v-if="event.loading" :inline="true" class="gl-ml-2" />
               </gl-form-checkbox>

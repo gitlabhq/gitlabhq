@@ -976,6 +976,9 @@ msgstr ""
 msgid "'%{name}' Value Stream deleted"
 msgstr ""
 
+msgid "'%{name}' Value Stream saved"
+msgstr ""
+
 msgid "'%{name}' stage already exists"
 msgstr ""
 
@@ -8707,7 +8710,7 @@ msgstr ""
 msgid "CreateValueStreamForm|'%{name}' Value Stream created"
 msgstr ""
 
-msgid "CreateValueStreamForm|'%{name}' Value Stream edited"
+msgid "CreateValueStreamForm|'%{name}' Value Stream saved"
 msgstr ""
 
 msgid "CreateValueStreamForm|Add another stage"
@@ -8984,9 +8987,6 @@ msgid "Custom notification events"
 msgstr ""
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart} notification emails%{notificationLinkEnd}."
-msgstr ""
-
-msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
 msgid "Custom project templates"
@@ -20636,9 +20636,6 @@ msgstr ""
 msgid "Notification events"
 msgstr ""
 
-msgid "Notification setting"
-msgstr ""
-
 msgid "Notification setting - %{notification_title}"
 msgstr ""
 
@@ -20721,9 +20718,6 @@ msgid "NotificationLevel|Participate"
 msgstr ""
 
 msgid "NotificationLevel|Watch"
-msgstr ""
-
-msgid "NotificationSetting|Custom"
 msgstr ""
 
 msgid "Notifications"
@@ -25971,6 +25965,9 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
+msgid "Save Value Stream"
+msgstr ""
+
 msgid "Save application"
 msgstr ""
 
@@ -30040,9 +30037,6 @@ msgid "There was an error saving this Geo Node."
 msgstr ""
 
 msgid "There was an error saving your changes."
-msgstr ""
-
-msgid "There was an error saving your notification settings."
 msgstr ""
 
 msgid "There was an error subscribing to this label."
@@ -35818,9 +35812,6 @@ msgid "none"
 msgstr ""
 
 msgid "not found"
-msgstr ""
-
-msgid "notification emails"
 msgstr ""
 
 msgid "nounSeries|%{firstItem} and %{lastItem}"

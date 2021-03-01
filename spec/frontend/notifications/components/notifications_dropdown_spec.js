@@ -162,7 +162,7 @@ describe('NotificationsDropdown', () => {
           initialNotificationLevel: level,
         });
 
-        const tooltipElement = findByTestId('notificationButton');
+        const tooltipElement = findByTestId('notification-button');
         const tooltip = getBinding(tooltipElement.element, 'gl-tooltip');
 
         expect(tooltip.value.title).toBe(`${tooltipTitlePrefix} - ${title}`);

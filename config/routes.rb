@@ -166,9 +166,6 @@ Rails.application.routes.draw do
       end
     end
 
-    # Notification settings
-    resources :notification_settings, only: [:create, :update]
-
     resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
       member do
         post :accept

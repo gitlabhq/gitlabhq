@@ -8,8 +8,5 @@
     = link_to_project(project)
 
   .float-right
-    - if Feature.enabled?(:vue_notification_dropdown, default_enabled: :yaml)
-      - if setting
-        .js-vue-notification-dropdown{ data: { disabled: emails_disabled, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }
-    - else
-      = render 'shared/notifications/button', notification_setting: setting, emails_disabled: emails_disabled
+    - if setting
+      .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }

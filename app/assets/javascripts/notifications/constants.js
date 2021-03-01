@@ -53,6 +53,7 @@ export const i18n = {
     reassign_merge_request: s__('NotificationEvent|Reassign merge request'),
     reopen_issue: s__('NotificationEvent|Reopen issue'),
     reopen_merge_request: s__('NotificationEvent|Reopen merge request'),
+    merge_when_pipeline_succeeds: s__('NotificationEvent|Merge when pipeline succeeds'),
     success_pipeline: s__('NotificationEvent|Successful pipeline'),
   },
 };

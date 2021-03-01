@@ -752,7 +752,7 @@ alt_usage_data(999)
 
 ### Adding counters to build new metrics
 
-When adding the results of two counters, use the `add` usage data method that 
+When adding the results of two counters, use the `add` usage data method that
 handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-usage-ping-sql-queries-and-definitions).
 
 Example usage:
@@ -869,7 +869,7 @@ Ensure you comply with the [Changelog entries guide](changelog.md).
 
 ### 9. Ask for a Product Intelligence Review
 
-On GitLab.com, we have DangerBot setup to monitor Product Intelligence related files and DangerBot recommends a Product Intelligence review. Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR for a review.
+On GitLab.com, we have DangerBot setup to monitor Product Intelligence related files and DangerBot recommends a [Product Intelligence review](usage_ping/product_intelligence_review.md). Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR for a review.
 
 ### 10. Verify your metric
 

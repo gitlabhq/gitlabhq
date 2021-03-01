@@ -291,8 +291,6 @@ linters:
       - 'app/views/shared/milestones/_sidebar.html.haml'
       - 'app/views/shared/milestones/_top.html.haml'
       - 'app/views/shared/notes/_hints.html.haml'
-      - 'app/views/shared/notifications/_button.html.haml'
-      - 'app/views/shared/notifications/_new_button.html.haml'
       - 'app/views/shared/runners/_runner_description.html.haml'
       - 'app/views/shared/runners/show.html.haml'
       - 'app/views/shared/snippets/_header.html.haml'

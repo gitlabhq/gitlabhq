@@ -23,11 +23,8 @@
     .home-panel-buttons.col-md-12.col-lg-6
       - if current_user
         .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2{ data: { testid: 'group-buttons' } }
-          - if Feature.enabled?(:vue_notification_dropdown, @group, default_enabled: :yaml)
-            - if @notification_setting
-              .js-vue-notification-dropdown{ data: { disabled: emails_disabled, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-mr-3 gl-mt-3 gl-vertical-align-top' } }
-          - else
-            = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn gl-button gl-sm-w-auto gl-w-full', dropdown_container_class: 'gl-mr-0 gl-px-2 gl-sm-w-auto gl-w-full', emails_disabled: emails_disabled
+          - if @notification_setting
+            .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-mr-3 gl-mt-3 gl-vertical-align-top' } }
           - if can_create_subgroups
             .gl-px-2.gl-sm-w-auto.gl-w-full
               = link_to _("New subgroup"), new_group_path(parent_id: @group.id), class: "btn btn-success btn-md gl-button btn-success-secondary gl-mt-3 gl-sm-w-auto gl-w-full", data: { qa_selector: 'new_subgroup_button' }

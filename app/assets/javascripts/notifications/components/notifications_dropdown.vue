@@ -128,7 +128,8 @@ export default {
     <gl-button-group
       v-if="isCustomNotification"
       v-gl-tooltip="{ title: buttonTooltip }"
-      data-testid="notificationButton"
+      data-testid="notification-button"
+      :class="{ disabled: disabled }"
       :size="buttonSize"
     >
       <gl-button
@@ -165,12 +166,13 @@ export default {
     <gl-dropdown
       v-else
       v-gl-tooltip="{ title: buttonTooltip }"
-      data-testid="notificationButton"
+      data-testid="notification-button"
       :text="buttonText"
       :icon="buttonIcon"
       :loading="isLoading"
       :size="buttonSize"
       :disabled="disabled"
+      :class="{ disabled: disabled }"
     >
       <notifications-dropdown-item
         v-for="item in notificationLevels"

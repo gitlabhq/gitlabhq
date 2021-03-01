@@ -31,10 +31,6 @@ class ProjectsController < Projects::ApplicationController
   # Project Export Rate Limit
   before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
 
-  before_action do
-    push_frontend_feature_flag(:vue_notification_dropdown, @project, default_enabled: :yaml)
-  end
-
   before_action only: [:edit] do
     push_frontend_feature_flag(:allow_editing_commit_messages, @project)
   end

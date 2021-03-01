@@ -2,7 +2,7 @@
 - release = @releases.find { |release| release.tag == tag.name }
 - commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
 
-%li.flex-row.allow-wrap.js-tag-list
+%li.flex-row.js-tag-list{ class: "gl-white-space-normal!" }
   .row-main-content
     = sprite_icon('tag')
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'

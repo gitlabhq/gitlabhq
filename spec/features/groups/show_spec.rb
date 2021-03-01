@@ -163,7 +163,6 @@ RSpec.describe 'Group show page' do
     let!(:project)   { create(:project, namespace: group) }
 
     before do
-      stub_feature_flags(vue_notification_dropdown: false)
       group.add_maintainer(maintainer)
       sign_in(maintainer)
     end
@@ -171,14 +170,14 @@ RSpec.describe 'Group show page' do
     it 'is enabled by default' do
       visit path
 
-      expect(page).to have_selector('.notifications-btn:not(.disabled)', visible: true)
+      expect(page).to have_selector('[data-testid="notification-button"]:not(.disabled)')
     end
 
     it 'is disabled if emails are disabled' do
       group.update_attribute(:emails_disabled, true)
       visit path
 
-      expect(page).to have_selector('.notifications-btn.disabled', visible: true)
+      expect(page).to have_selector('[data-testid="notification-button"].disabled')
     end
   end
 

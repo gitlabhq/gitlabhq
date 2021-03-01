@@ -1,8 +1,0 @@
----
-name: vue_notification_dropdown
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52068
-rollout_issue_url:
-milestone: '13.8'
-type: development
-group: group::optimize
-default_enabled: false

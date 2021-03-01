@@ -192,11 +192,6 @@ ul.content-list {
     display: flex;
     align-items: center;
     white-space: nowrap;
-
-    // Override style that allows the flex-row text to wrap.
-    &.allow-wrap {
-      white-space: normal;
-    }
   }
 
   .row-main-content {

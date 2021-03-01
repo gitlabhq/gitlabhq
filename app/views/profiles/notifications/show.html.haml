@@ -32,11 +32,8 @@
       %br
       .clearfix
       .form-group.float-left.global-notification-setting
-        - if Feature.enabled?(:vue_notification_dropdown, default_enabled: :yaml)
-          - if @global_notification_setting
-            .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), show_label: 'true' } }
-        - else
-          = render 'shared/notifications/button', notification_setting: @global_notification_setting
+        - if @global_notification_setting
+          .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), show_label: 'true' } }
 
       .clearfix
 

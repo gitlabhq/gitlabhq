@@ -5417,33 +5417,33 @@ Iteration ID wildcard values.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACCESSIBILITY` |  |
-| `API_FUZZING` |  |
-| `ARCHIVE` |  |
-| `BROWSER_PERFORMANCE` |  |
-| `CLUSTER_APPLICATIONS` |  |
-| `COBERTURA` |  |
-| `CODEQUALITY` |  |
-| `CONTAINER_SCANNING` |  |
-| `COVERAGE_FUZZING` |  |
-| `DAST` |  |
-| `DEPENDENCY_SCANNING` |  |
-| `DOTENV` |  |
-| `JUNIT` |  |
-| `LICENSE_MANAGEMENT` |  |
-| `LICENSE_SCANNING` |  |
-| `LOAD_PERFORMANCE` |  |
-| `LSIF` |  |
-| `METADATA` |  |
-| `METRICS` |  |
-| `METRICS_REFEREE` |  |
-| `NETWORK_REFEREE` |  |
-| `PERFORMANCE` |  |
-| `REQUIREMENTS` |  |
-| `SAST` |  |
-| `SECRET_DETECTION` |  |
-| `TERRAFORM` |  |
-| `TRACE` |  |
+| `ACCESSIBILITY` | ACCESSIBILITY job artifact file type. |
+| `API_FUZZING` | API FUZZING job artifact file type. |
+| `ARCHIVE` | ARCHIVE job artifact file type. |
+| `BROWSER_PERFORMANCE` | BROWSER PERFORMANCE job artifact file type. |
+| `CLUSTER_APPLICATIONS` | CLUSTER APPLICATIONS job artifact file type. |
+| `COBERTURA` | COBERTURA job artifact file type. |
+| `CODEQUALITY` | CODE QUALITY job artifact file type. |
+| `CONTAINER_SCANNING` | CONTAINER SCANNING job artifact file type. |
+| `COVERAGE_FUZZING` | COVERAGE FUZZING job artifact file type. |
+| `DAST` | DAST job artifact file type. |
+| `DEPENDENCY_SCANNING` | DEPENDENCY SCANNING job artifact file type. |
+| `DOTENV` | DOTENV job artifact file type. |
+| `JUNIT` | JUNIT job artifact file type. |
+| `LICENSE_MANAGEMENT` | LICENSE MANAGEMENT job artifact file type. |
+| `LICENSE_SCANNING` | LICENSE SCANNING job artifact file type. |
+| `LOAD_PERFORMANCE` | LOAD PERFORMANCE job artifact file type. |
+| `LSIF` | LSIF job artifact file type. |
+| `METADATA` | METADATA job artifact file type. |
+| `METRICS` | METRICS job artifact file type. |
+| `METRICS_REFEREE` | METRICS REFEREE job artifact file type. |
+| `NETWORK_REFEREE` | NETWORK REFEREE job artifact file type. |
+| `PERFORMANCE` | PERFORMANCE job artifact file type. |
+| `REQUIREMENTS` | REQUIREMENTS job artifact file type. |
+| `SAST` | SAST job artifact file type. |
+| `SECRET_DETECTION` | SECRET DETECTION job artifact file type. |
+| `TERRAFORM` | TERRAFORM job artifact file type. |
+| `TRACE` | TRACE job artifact file type. |
 
 ### ListLimitMetric
 
