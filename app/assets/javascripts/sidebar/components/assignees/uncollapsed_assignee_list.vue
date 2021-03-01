@@ -83,7 +83,7 @@ export default {
         <assignee-avatar-link :user="user" :issuable-type="issuableType" />
       </div>
     </div>
-    <div v-if="renderShowMoreSection" class="user-list-more">
+    <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">
       <button
         type="button"
         class="btn-link"

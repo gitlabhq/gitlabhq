@@ -77,7 +77,7 @@ module Gitlab
         return false unless user
 
         Gitlab::SafeRequestStore.fetch(admin_mode_rs_key) do
-          user.admin? && session_with_admin_mode?
+          user.admin? && (privileged_runtime? || session_with_admin_mode?)
         end
       end
 
@@ -153,6 +153,11 @@ module Gitlab
       def reset_request_store_cache_entries
         Gitlab::SafeRequestStore.delete(admin_mode_rs_key)
         Gitlab::SafeRequestStore.delete(admin_mode_requested_rs_key)
+      end
+
+      # Runtimes which imply shell access get admin mode automatically, see Gitlab::Runtime
+      def privileged_runtime?
+        Gitlab::Runtime.rake? || Gitlab::Runtime.rails_runner? || Gitlab::Runtime.console?
       end
     end
   end

@@ -26,41 +26,43 @@ A job is defined as a list of keywords that define the job's behavior.
 
 The keywords available for jobs are:
 
-| Keyword                                            | Description                                                                                                                                                                         |
-|:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`script`](#script)                                | Shell script that is executed by a runner.                                                                                                                                          |
-| [`after_script`](#after_script)                    | Override a set of commands that are executed after job.                                                                                                                             |
-| [`allow_failure`](#allow_failure)                  | Allow job to fail. A failed job does not cause the pipeline to fail.                                                                                                                |
-| [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:exclude`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, and `artifacts:reports`. |
-| [`before_script`](#before_script)                  | Override a set of commands that are executed before job.                                                                                                                            |
-| [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, `cache:when`, and `cache:policy`.                       |
-| [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                             |
-| [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                          |
-| [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in`, and `environment:action`. |
-| [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                              |
-| [`extends`](#extends)                              | Configuration entries that this job inherits from.                                                                                                                                  |
-| [`image`](#image)                                  | Use Docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                             |
-| [`include`](#include)                              | Include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                             |
-| [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                |
-| [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                          |
-| [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                |
-| [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                              |
-| [`release`](#release)                              | Instructs the runner to generate a [Release](../../user/project/releases/index.md) object.                                                                                          |
-| [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                              |
-| [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                             |
-| [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created.                                                                         |
-| [`services`](#services)                            | Use Docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                       |
-| [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                              |
-| [`tags`](#tags)                                    | List of tags that are used to select a runner.                                                                                                                                      |
-| [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                              |
-| [`trigger`](#trigger)                              | Defines a downstream pipeline trigger.                                                                                                                                              |
-| [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
-| [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                  |
+| Keyword                             | Description |
+| :-----------------------------------|:------------|
+| [`after_script`](#after_script)     | Override a set of commands that are executed after job. |
+| [`allow_failure`](#allow_failure)   | Allow job to fail. A failed job does not cause the pipeline to fail. |
+| [`artifacts`](#artifacts)           | List of files and directories to attach to a job on success. |
+| [`before_script`](#before_script)   | Override a set of commands that are executed before job. |
+| [`cache`](#cache)                   | List of files that should be cached between subsequent runs. |
+| [`coverage`](#coverage)             | Code coverage settings for a given job. |
+| [`dependencies`](#dependencies)     | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
+| [`environment`](#environment)       | Name of an environment to which the job deploys. |
+| [`except`](#onlyexcept-basic)       | Limit when jobs are not created. |
+| [`extends`](#extends)               | Configuration entries that this job inherits from. |
+| [`image`](#image)                   | Use Docker images. |
+| [`include`](#include)               | Include external YAML files. |
+| [`inherit`](#inherit)               | Select which global defaults all jobs inherit. |
+| [`interruptible`](#interruptible)   | Defines if a job can be canceled when made redundant by a newer run. |
+| [`needs`](#needs)                   | Execute jobs earlier than the stage ordering. |
+| [`only`](#onlyexcept-basic)         | Limit when jobs are created. |
+| [`pages`](#pages)                   | Upload the result of a job to use with GitLab Pages. |
+| [`parallel`](#parallel)             | How many instances of a job should be run in parallel. |
+| [`release`](#release)               | Instructs the runner to generate a [Release](../../user/project/releases/index.md) object. |
+| [`resource_group`](#resource_group) | Limit job concurrency. |
+| [`retry`](#retry)                   | When and how many times a job can be auto-retried in case of a failure. |
+| [`rules`](#rules)                   | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
+| [`script`](#script)                 | Shell script that is executed by a runner. |
+| [`secrets`](#secrets)               | The CI/CD secrets the job needs. |
+| [`services`](#services)             | Use Docker services images. |
+| [`stage`](#stage)                   | Defines a job stage. |
+| [`tags`](#tags)                     | List of tags that are used to select a runner. |
+| [`timeout`](#timeout)               | Define a custom job-level timeout that takes precedence over the project-wide setting. |
+| [`trigger`](#trigger)               | Defines a downstream pipeline trigger. |
+| [`variables`](#variables)           | Define job variables on a job level. |
+| [`when`](#when)                     | When to run job. |
 
 ### Unavailable names for jobs
 
-Each job must have a unique name, but there are a few reserved `keywords` that
-can't be used as job names:
+You can't use these keywords as job names:
 
 - `image`
 - `services`
@@ -72,38 +74,27 @@ can't be used as job names:
 - `cache`
 - `include`
 
-### Reserved keywords
+### Custom default keyword values
 
-If you get a validation error when you use specific values (for example, `true` or `false`), try to:
+You can set global defaults for some keywords. Jobs that do not define one or more
+of the listed keywords use the value defined in the `default:` section.
 
-- Quote them.
-- Change them to a different form. For example, `/bin/true`.
+The following job keywords can be defined inside a `default:` section:
 
-## Global keywords
-
-Some keywords are defined at a global level and affect all jobs in the pipeline.
-
-### Global defaults
-
-Some keywords can be set globally as the default for all jobs with the
-`default:` keyword. Default keywords can then be overridden by job-specific
-configuration.
-
-The following job keywords can be defined inside a `default:` block:
-
-- [`image`](#image)
-- [`services`](#services)
-- [`before_script`](#before_script)
 - [`after_script`](#after_script)
-- [`tags`](#tags)
-- [`cache`](#cache)
 - [`artifacts`](#artifacts)
-- [`retry`](#retry)
-- [`timeout`](#timeout)
+- [`before_script`](#before_script)
+- [`cache`](#cache)
+- [`image`](#image)
 - [`interruptible`](#interruptible)
+- [`retry`](#retry)
+- [`services`](#services)
+- [`tags`](#tags)
+- [`timeout`](#timeout)
 
-In the following example, the `ruby:2.5` image is set as the default for all
-jobs except the `rspec 2.6` job, which uses the `ruby:2.6` image:
+This example sets the `ruby:2.5` image as the default for all jobs in the pipeline.
+The `rspec 2.6` job does not use the default, because it overrides the default with
+a job-specific `image:` section:
 
 ```yaml
 default:
@@ -117,87 +108,16 @@ rspec 2.6:
   script: bundle exec rspec
 ```
 
-#### `inherit`
+## Global keywords
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
+Some keywords are not defined within a job. These keywords control pipeline behavior
+or import additional pipeline configuration:
 
-You can disable inheritance of globally defined defaults
-and variables with the `inherit:` keyword.
-
-To enable or disable the inheritance of all `default:` or `variables:` keywords, use:
-
-- `default: true` or `default: false`
-- `variables: true` or `variables: false`
-
-To inherit only a subset of `default:` keywords or `variables:`, specify what
-you wish to inherit. Anything not listed is **not** inherited. Use
-one of the following formats:
-
-```yaml
-inherit:
-  default: [keyword1, keyword2]
-  variables: [VARIABLE1, VARIABLE2]
-```
-
-Or:
-
-```yaml
-inherit:
-  default:
-    - keyword1
-    - keyword2
-  variables:
-    - VARIABLE1
-    - VARIABLE2
-```
-
-In the example below:
-
-- `rubocop`:
-  - inherits: Nothing.
-- `rspec`:
-  - inherits: the default `image` and the `WEBHOOK_URL` variable.
-  - does **not** inherit: the default `before_script` and the `DOMAIN` variable.
-- `capybara`:
-  - inherits: the default `before_script` and `image`.
-  - does **not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
-- `karma`:
-  - inherits: the default `image` and `before_script`, and the `DOMAIN` variable.
-  - does **not** inherit: `WEBHOOK_URL` variable.
-
-```yaml
-default:
-  image: 'ruby:2.4'
-  before_script:
-    - echo Hello World
-
-variables:
-  DOMAIN: example.com
-  WEBHOOK_URL: https://my-webhook.example.com
-
-rubocop:
-  inherit:
-    default: false
-    variables: false
-  script: bundle exec rubocop
-
-rspec:
-  inherit:
-    default: [image]
-    variables: [WEBHOOK_URL]
-  script: bundle exec rspec
-
-capybara:
-  inherit:
-    variables: false
-  script: bundle exec capybara
-
-karma:
-  inherit:
-    default: true
-    variables: [DOMAIN]
-  script: karma
-```
+| Keyword                 | Description |
+|-------------------------|:------------|
+| [`stages`](#stages)     | The names and order of the pipeline stages. |
+| [`workflow`](#workflow) | Control what types of pipeline run. |
+| [`include`](#include)   | Import configuration from other YAML files. |
 
 ### `stages`
 
@@ -235,7 +155,7 @@ If a job does not specify a [`stage`](#stage), the job is assigned the `test` st
 To make a job start earlier and ignore the stage order, use
 the [`needs`](#needs) keyword.
 
-### `workflow:rules`
+### `workflow`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29654) in GitLab 12.5
 
@@ -1183,7 +1103,7 @@ causes duplicated pipelines.
 
 There are multiple ways to avoid duplicate pipelines:
 
-- Use [`workflow: rules`](#workflowrules) to specify which types of pipelines
+- Use [`workflow`](#workflow) to specify which types of pipelines
   can run.
 - Rewrite the rules to run the job only in very specific cases,
   and avoid a final `when:` rule:
@@ -2347,7 +2267,7 @@ The valid values of `when` are:
     Added in GitLab 11.14.
 1. `never`:
    - With [`rules`](#rules), don't execute job.
-   - With [`workflow:rules`](#workflowrules), don't run pipeline.
+   - With [`workflow`](#workflow), don't run pipeline.
 
 For example:
 
@@ -4301,6 +4221,88 @@ pages:
 
 Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
 
+### `inherit`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
+
+You can disable inheritance of globally defined defaults
+and variables with the `inherit:` keyword.
+
+To enable or disable the inheritance of all `default:` or `variables:` keywords, use:
+
+- `default: true` or `default: false`
+- `variables: true` or `variables: false`
+
+To inherit only a subset of `default:` keywords or `variables:`, specify what
+you wish to inherit. Anything not listed is **not** inherited. Use
+one of the following formats:
+
+```yaml
+inherit:
+  default: [keyword1, keyword2]
+  variables: [VARIABLE1, VARIABLE2]
+```
+
+Or:
+
+```yaml
+inherit:
+  default:
+    - keyword1
+    - keyword2
+  variables:
+    - VARIABLE1
+    - VARIABLE2
+```
+
+In the example below:
+
+- `rubocop`:
+  - inherits: Nothing.
+- `rspec`:
+  - inherits: the default `image` and the `WEBHOOK_URL` variable.
+  - does **not** inherit: the default `before_script` and the `DOMAIN` variable.
+- `capybara`:
+  - inherits: the default `before_script` and `image`.
+  - does **not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
+- `karma`:
+  - inherits: the default `image` and `before_script`, and the `DOMAIN` variable.
+  - does **not** inherit: `WEBHOOK_URL` variable.
+
+```yaml
+default:
+  image: 'ruby:2.4'
+  before_script:
+    - echo Hello World
+
+variables:
+  DOMAIN: example.com
+  WEBHOOK_URL: https://my-webhook.example.com
+
+rubocop:
+  inherit:
+    default: false
+    variables: false
+  script: bundle exec rubocop
+
+rspec:
+  inherit:
+    default: [image]
+    variables: [WEBHOOK_URL]
+  script: bundle exec rspec
+
+capybara:
+  inherit:
+    variables: false
+  script: bundle exec capybara
+
+karma:
+  inherit:
+    default: true
+    variables: [DOMAIN]
+  script: karma
+```
+
 ## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
@@ -4720,7 +4722,7 @@ Defining `image`, `services`, `cache`, `before_script`, and
 `after_script` globally is deprecated. Support could be removed
 from a future release.
 
-Use [`default:`](#global-defaults) instead. For example:
+Use [`default:`](#custom-default-keyword-values) instead. For example:
 
 ```yaml
 default:

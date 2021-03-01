@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlPopover, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SCHEDULE_ORIGIN } from '../../constants';
 
 export default {
@@ -13,6 +14,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     targetProjectFullPath: {
       default: '',
@@ -47,11 +49,19 @@ export default {
     autoDevopsHelpPath() {
       return helpPagePath('topics/autodevops/index.md');
     },
+    classes() {
+      const tagsClass = 'pipeline-tags';
+
+      if (this.glFeatures.newPipelinesTable) {
+        return tagsClass;
+      }
+      return `table-section section-10 d-none d-md-block ${tagsClass}`;
+    },
   },
 };
 </script>
 <template>
-  <div class="table-section section-10 d-none d-md-block pipeline-tags">
+  <div :class="classes">
     <gl-link
       :href="pipeline.path"
       data-testid="pipeline-url-link"

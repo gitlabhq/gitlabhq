@@ -10,4 +10,5 @@ export default () => ({
   can_merge: true,
   can_update_merge_request: true,
   reviewed: true,
+  approved: false,
 });

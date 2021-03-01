@@ -131,12 +131,6 @@ export default {
     commitTitle() {
       return this.pipeline?.commit?.title;
     },
-    pipelineDuration() {
-      return this.pipeline?.details?.duration ?? 0;
-    },
-    pipelineFinishedAt() {
-      return this.pipeline?.details?.finished_at ?? '';
-    },
     pipelineStatus() {
       return this.pipeline?.details?.status ?? {};
     },
@@ -231,11 +225,7 @@ export default {
       </div>
     </div>
 
-    <pipelines-timeago
-      class="gl-text-right"
-      :duration="pipelineDuration"
-      :finished-time="pipelineFinishedAt"
-    />
+    <pipelines-timeago class="gl-text-right" :pipeline="pipeline" />
 
     <div
       v-if="displayPipelineActions"

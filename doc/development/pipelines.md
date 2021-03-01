@@ -19,7 +19,7 @@ as much as possible.
 
 ## Overview
 
-Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/README.md#workflowrules)
+Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/README.md#workflow)
 feature of the GitLab CI/CD.
 
 Pipelines are always created for the following scenarios:

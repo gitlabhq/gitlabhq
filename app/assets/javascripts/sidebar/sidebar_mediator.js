@@ -22,6 +22,7 @@ export default class SidebarMediator {
       projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
       fullPath: options.fullPath,
       iid: options.iid,
+      issuableType: options.issuableType,
     });
     SidebarMediator.singleton = this;
   }

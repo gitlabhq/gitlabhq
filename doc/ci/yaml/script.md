@@ -145,3 +145,34 @@ job:
     - Write-Host $TXT_RED"This text is red,"$TXT_CLEAR" but this text isn't"$TXT_RED" however this text is red again."
     - Write-Host "This text is not colored"
 ```
+
+## Troubleshooting
+
+### `Syntax is incorrect` in scripts that use `:`
+
+If you use a colon (`:`) in a script, GitLab might output:
+
+- `Syntax is incorrect`
+- `script config should be a string or a nested array of strings up to 10 levels deep`
+
+For example, if you use `"PRIVATE-TOKEN: ${PRIVATE_TOKEN}"` as part of a cURL command:
+
+```yaml
+pages-job:
+  stage: deploy
+  script:
+    - curl --header 'PRIVATE-TOKEN: ${PRIVATE_TOKEN}' "https://gitlab.example.com/api/v4/projects"
+```
+
+The YAML parser thinks the `:` defines a YAML keyword, and outputs the
+`Syntax is incorrect` error.
+
+To use commands that contain a colon, you should wrap the whole command
+in single quotes. You might need to change existing single quotes (`'`) into double quotes (`"`):
+
+```yaml
+pages-job:
+  stage: deploy
+  script:
+    - 'curl --header "PRIVATE-TOKEN: ${PRIVATE_TOKEN}" "https://gitlab.example.com/api/v4/projects"'
+```

@@ -141,7 +141,7 @@ be checked to make sure the jobs are added to the correct pipeline type. For
 example, if a merge request pipeline did not run, the jobs may have been added to
 a branch pipeline instead.
 
-It's also possible that your [`workflow: rules`](yaml/README.md#workflowrules) configuration
+It's also possible that your [`workflow: rules`](yaml/README.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
 ### A job runs unexpectedly
@@ -259,7 +259,7 @@ clause, multiple pipelines may run. Usually this occurs when you push a commit t
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules to control
+[`workflow: rules`](yaml/README.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ### Console workaround if job using resource_group gets stuck

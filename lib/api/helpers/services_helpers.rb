@@ -635,7 +635,7 @@ module API
               required: true,
               name: :google_iap_audience_client_id,
               type: String,
-              desc: 'Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'
+              desc: 'Client ID of the IAP-secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'
             },
             {
               required: true,

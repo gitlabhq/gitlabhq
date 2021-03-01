@@ -4,6 +4,10 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
   include UserStatusTooltip
   include RequestAwareEntity
 
+  def self.satisfies(*methods)
+    ->(_, options) { methods.all? { |m| options[:merge_request].try(m) } }
+  end
+
   expose :can_merge do |reviewer, options|
     options[:merge_request]&.can_be_merged_by?(reviewer)
   end
@@ -12,10 +16,16 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
     request.current_user&.can?(:update_merge_request, options[:merge_request])
   end
 
-  expose :reviewed, if: -> (_, options) { options[:merge_request] && options[:merge_request].allows_reviewers? } do |reviewer, options|
+  expose :reviewed, if: satisfies(:present?, :allows_reviewers?) do |reviewer, options|
     reviewer = options[:merge_request].find_reviewer(reviewer)
 
     reviewer&.reviewed?
+  end
+
+  expose :approved, if: satisfies(:present?) do |user, options|
+    # This approach is preferred over MergeRequest#approved_by? since this
+    # makes one query per merge request, whereas #approved_by? makes one per user
+    options[:merge_request].approvals.any? { |app| app.user_id == user.id }
   end
 end
 

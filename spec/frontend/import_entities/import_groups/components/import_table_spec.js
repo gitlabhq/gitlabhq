@@ -1,7 +1,15 @@
-import { GlEmptyState, GlLoadingIcon, GlSearchBoxByClick, GlSprintf } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlLoadingIcon,
+  GlSearchBoxByClick,
+  GlSprintf,
+  GlDropdown,
+  GlDropdownItem,
+} from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
@@ -16,16 +24,24 @@ import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtur
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
+const GlDropdownStub = stubComponent(GlDropdown, {
+  template: '<div><h1 ref="text"><slot name="button-content"></slot></h1><slot></slot></div>',
+});
+
 describe('import table', () => {
   let wrapper;
   let apolloProvider;
 
+  const SOURCE_URL = 'https://demo.host';
   const FAKE_GROUP = generateFakeEntry({ id: 1, status: STATUSES.NONE });
   const FAKE_GROUPS = [
     generateFakeEntry({ id: 1, status: STATUSES.NONE }),
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
   ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
+
+  const findPaginationDropdown = () => wrapper.findComponent(GlDropdown);
+  const findPaginationDropdownText = () => findPaginationDropdown().find({ ref: 'text' }).text();
 
   const createComponent = ({ bulkImportSourceGroups }) => {
     apolloProvider = createMockApollo([], {
@@ -42,11 +58,12 @@ describe('import table', () => {
 
     wrapper = shallowMount(ImportTable, {
       propsData: {
-        sourceUrl: 'https://demo.host',
         groupPathRegex: /.*/,
+        sourceUrl: SOURCE_URL,
       },
       stubs: {
         GlSprintf,
+        GlDropdown: GlDropdownStub,
       },
       localVue,
       apolloProvider,
@@ -152,6 +169,20 @@ describe('import table', () => {
       expect(wrapper.find(PaginationLinks).props().pageInfo).toStrictEqual(FAKE_PAGE_INFO);
     });
 
+    it('renders pagination dropdown', () => {
+      expect(findPaginationDropdown().exists()).toBe(true);
+    });
+
+    it('updates page size when selected in Dropdown', async () => {
+      const otherOption = wrapper.findAllComponents(GlDropdownItem).at(1);
+      expect(otherOption.text()).toMatchInterpolatedText('50 items per page');
+
+      otherOption.vm.$emit('click');
+      await waitForPromises();
+
+      expect(findPaginationDropdownText()).toMatchInterpolatedText('50 items per page');
+    });
+
     it('updates page when page change is requested', async () => {
       const REQUESTED_PAGE = 2;
       wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
@@ -179,7 +210,7 @@ describe('import table', () => {
       wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Showing 21-21 of 38');
+      expect(wrapper.text()).toContain('Showing 21-21 of 38 groups from');
     });
   });
 
@@ -225,7 +256,7 @@ describe('import table', () => {
       findFilterInput().vm.$emit('submit', FILTER_VALUE);
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Showing 1-1 of 40 groups matching filter "foo"');
+      expect(wrapper.text()).toContain('Showing 1-1 of 40 groups matching filter "foo" from');
     });
 
     it('properly resets filter in graphql query when search box is cleared', async () => {

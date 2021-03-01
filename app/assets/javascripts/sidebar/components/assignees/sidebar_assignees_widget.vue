@@ -281,6 +281,9 @@ export default {
     collapseWidget() {
       this.$refs.toggle.collapse();
     },
+    showDivider(list) {
+      return list.length > 0 && this.isSearchEmpty;
+    },
   },
 };
 </script>
@@ -306,6 +309,7 @@ export default {
       <issuable-assignees
         :users="assignees"
         :issuable-type="issuableType"
+        class="gl-mt-2"
         @assign-self="assignSelf"
       />
     </template>
@@ -334,12 +338,14 @@ export default {
                 data-testid="unassign"
                 @click="selectAssignee()"
               >
-                <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'">{{
-                  $options.i18n.unassigned
-                }}</span></gl-dropdown-item
+                <span
+                  :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'"
+                  class="gl-font-weight-bold"
+                  >{{ $options.i18n.unassigned }}</span
+                ></gl-dropdown-item
               >
-              <gl-dropdown-divider data-testid="unassign-divider" />
             </template>
+            <gl-dropdown-divider v-if="showDivider(selectedFiltered)" />
             <gl-dropdown-item
               v-for="item in selectedFiltered"
               :key="item.id"
@@ -358,8 +364,8 @@ export default {
                 />
               </gl-avatar-link>
             </gl-dropdown-item>
-            <gl-dropdown-divider v-if="!selectedIsEmpty" data-testid="selected-user-divider" />
             <template v-if="showCurrentUser">
+              <gl-dropdown-divider />
               <gl-dropdown-item
                 data-testid="unselected-participant"
                 @click.stop="selectAssignee(currentUser)"
@@ -370,12 +376,12 @@ export default {
                     :label="currentUser.name"
                     :sub-label="currentUser.username"
                     :src="currentUser.avatarUrl"
-                    class="gl-align-items-center"
+                    class="gl-align-items-center gl-pl-6!"
                   />
                 </gl-avatar-link>
               </gl-dropdown-item>
-              <gl-dropdown-divider />
             </template>
+            <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
             <gl-dropdown-item
               v-for="unselectedUser in unselectedFiltered"
               :key="unselectedUser.id"

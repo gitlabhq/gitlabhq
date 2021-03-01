@@ -98,7 +98,7 @@ export default {
         {{ __('Edit') }}
       </gl-button>
     </div>
-    <div v-show="!edit" class="gl-text-gray-500" data-testid="collapsed-content">
+    <div v-show="!edit" data-testid="collapsed-content">
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>
     <div v-show="edit" data-testid="expanded-content">

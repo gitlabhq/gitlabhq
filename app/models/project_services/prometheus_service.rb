@@ -46,7 +46,7 @@ class PrometheusService < MonitoringService
   end
 
   def description
-    s_('PrometheusService|Time-series monitoring service')
+    s_('PrometheusService|Monitor application health with Prometheus metrics and dashboards')
   end
 
   def self.to_param
@@ -59,20 +59,23 @@ class PrometheusService < MonitoringService
         type: 'checkbox',
         name: 'manual_configuration',
         title: s_('PrometheusService|Active'),
+        help: s_('PrometheusService|Select this checkbox to override the auto configuration settings with your own settings.'),
         required: true
       },
       {
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
+        placeholder: s_('PrometheusService|https://prometheus.example.com/'),
+        help: s_('PrometheusService|The Prometheus API base URL.'),
         required: true
       },
       {
         type: 'text',
         name: 'google_iap_audience_client_id',
         title: 'Google IAP Audience Client ID',
-        placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
+        placeholder: s_('PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com'),
+        help: s_('PrometheusService|PrometheusService|The ID of the IAP-secured resource.'),
         autocomplete: 'off',
         required: false
       },
@@ -80,7 +83,8 @@ class PrometheusService < MonitoringService
         type: 'textarea',
         name: 'google_iap_service_account_json',
         title: 'Google IAP Service Account JSON',
-        placeholder: s_('PrometheusService|Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'),
+        placeholder: s_('PrometheusService|{ "type": "service_account", "project_id": ... }'),
+        help: s_('PrometheusService|The contents of the credentials.json file of your service account.'),
         required: false
       }
     ]

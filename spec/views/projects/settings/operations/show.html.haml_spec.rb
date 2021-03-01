@@ -59,7 +59,7 @@ RSpec.describe 'projects/settings/operations/show' do
 
         expect(rendered).to have_content _('Prometheus')
         expect(rendered).to have_content _('Link Prometheus monitoring to GitLab.')
-        expect(rendered).to have_content _('To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
+        expect(rendered).to have_content _('To enable the installation of Prometheus on your clusters, deactivate the manual configuration.')
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe 'projects/settings/operations/show' do
       it 'renders the Operations Settings page' do
         render
 
-        expect(rendered).not_to have_content _('Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used.')
+        expect(rendered).not_to have_content _('Auto configuration settings are used unless you override their values here.')
       end
     end
   end

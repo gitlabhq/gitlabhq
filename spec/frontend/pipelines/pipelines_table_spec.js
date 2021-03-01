@@ -1,4 +1,6 @@
+import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 
 describe('Pipelines Table', () => {
@@ -12,20 +14,28 @@ describe('Pipelines Table', () => {
     viewType: 'root',
   };
 
-  const createComponent = (props = defaultProps) => {
-    wrapper = mount(PipelinesTable, {
-      propsData: props,
-    });
+  const createComponent = (props = defaultProps, flagState = false) => {
+    wrapper = extendedWrapper(
+      mount(PipelinesTable, {
+        propsData: props,
+        provide: {
+          glFeatures: {
+            newPipelinesTable: flagState,
+          },
+        },
+      }),
+    );
   };
+
   const findRows = () => wrapper.findAll('.commit.gl-responsive-table-row');
+  const findGlTable = () => wrapper.findComponent(GlTable);
+  const findLegacyTable = () => wrapper.findByTestId('ci-table');
 
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
     pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);
-
-    createComponent();
   });
 
   afterEach(() => {
@@ -33,33 +43,50 @@ describe('Pipelines Table', () => {
     wrapper = null;
   });
 
-  describe('table', () => {
-    it('should render a table', () => {
-      expect(wrapper.classes()).toContain('ci-table');
+  describe('table with feature flag off', () => {
+    describe('renders the table correctly', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('should render a table', () => {
+        expect(wrapper.classes()).toContain('ci-table');
+      });
+
+      it('should render table head with correct columns', () => {
+        expect(wrapper.find('.table-section.js-pipeline-status').text()).toEqual('Status');
+
+        expect(wrapper.find('.table-section.js-pipeline-info').text()).toEqual('Pipeline');
+
+        expect(wrapper.find('.table-section.js-pipeline-commit').text()).toEqual('Commit');
+
+        expect(wrapper.find('.table-section.js-pipeline-stages').text()).toEqual('Stages');
+      });
     });
 
-    it('should render table head with correct columns', () => {
-      expect(wrapper.find('.table-section.js-pipeline-status').text()).toEqual('Status');
+    describe('without data', () => {
+      it('should render an empty table', () => {
+        createComponent();
 
-      expect(wrapper.find('.table-section.js-pipeline-info').text()).toEqual('Pipeline');
+        expect(findRows()).toHaveLength(0);
+      });
+    });
 
-      expect(wrapper.find('.table-section.js-pipeline-commit').text()).toEqual('Commit');
+    describe('with data', () => {
+      it('should render rows', () => {
+        createComponent({ pipelines: [pipeline], viewType: 'root' });
 
-      expect(wrapper.find('.table-section.js-pipeline-stages').text()).toEqual('Stages');
+        expect(findRows()).toHaveLength(1);
+      });
     });
   });
 
-  describe('without data', () => {
-    it('should render an empty table', () => {
-      expect(findRows()).toHaveLength(0);
-    });
-  });
+  describe('table with feature flag on', () => {
+    it('displays new table', () => {
+      createComponent(defaultProps, true);
 
-  describe('with data', () => {
-    it('should render rows', () => {
-      createComponent({ pipelines: [pipeline], viewType: 'root' });
-
-      expect(findRows()).toHaveLength(1);
+      expect(findGlTable().exists()).toBe(true);
+      expect(findLegacyTable().exists()).toBe(false);
     });
   });
 });

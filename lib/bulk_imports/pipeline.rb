@@ -7,6 +7,8 @@ module BulkImports
     include Gitlab::ClassAttributes
     include Runner
 
+    NotAllowedError = Class.new(StandardError)
+
     def initialize(context)
       @context = context
     end

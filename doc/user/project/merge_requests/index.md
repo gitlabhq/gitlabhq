@@ -7,10 +7,23 @@ type: index, reference
 
 # Merge requests **(FREE)**
 
-A Merge Request (**MR**) is a _request_ to _merge_ one branch into another.
+Whenever you need to merge one branch into another branch with GitLab, you'll
+need to create a merge request (MR).
 
-Use merge requests to visualize and collaborate on proposed changes
-to source code.
+Using merge requests, you can visualize and collaborate on proposed changes to
+source code. Merge requests display information about the proposed code changes,
+including:
+
+- A description of the request.
+- Code changes and inline code reviews.
+- Information about CI/CD pipelines.
+- A comment section for discussion threads.
+- The list of commits.
+
+Based on your workflow, after review you can merge a merge request into its
+target branch.
+
+To get started, read the [introduction to merge requests](getting_started.md).
 
 ## Use cases
 
@@ -38,18 +51,6 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 1. Your production team [cherry picks](cherry_pick_changes.md) the merge commit into production
-
-## Overview
-
-Merge requests (aka "MRs") display a great deal of information about the changes proposed.
-The body of an MR contains its description, along with its widget (displaying information
-about CI/CD pipelines, when present), followed by the discussion threads of the people
-collaborating with that MR.
-
-MRs also contain navigation tabs from which you can see the discussion happening on the thread,
-the list of commits, the list of pipelines and jobs, the code changes, and inline code reviews.
-
-To get started, read the [introduction to merge requests](getting_started.md).
 
 ## Merge request navigation tabs at the top
 

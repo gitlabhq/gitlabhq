@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -50,6 +51,9 @@ export default {
     },
   },
   methods: {
+    approvedByTooltipTitle(user) {
+      return sprintf(s__('MergeRequest|Approved by @%{username}'), user);
+    },
     toggleShowLess() {
       this.showLess = !this.showLess;
     },
@@ -57,6 +61,7 @@ export default {
       this.loadingStates[userId] = LOADING_STATE;
       this.$emit('request-review', { userId, callback: this.requestReviewComplete });
     },
+
     requestReviewComplete(userId, success) {
       if (success) {
         this.loadingStates[userId] = SUCCESS_STATE;
@@ -86,10 +91,19 @@ export default {
         <div class="gl-ml-3">@{{ user.username }}</div>
       </reviewer-avatar-link>
       <gl-icon
+        v-if="user.approved"
+        v-gl-tooltip.left
+        :size="16"
+        :title="approvedByTooltipTitle(user)"
+        name="status-success"
+        class="float-right gl-my-2 gl-ml-2 gl-text-green-500"
+        data-testid="re-approved"
+      />
+      <gl-icon
         v-if="loadingStates[user.id] === $options.SUCCESS_STATE"
         :size="24"
         name="check"
-        class="float-right gl-text-green-500"
+        class="float-right gl-py-2 gl-mr-2 gl-text-green-500"
         data-testid="re-request-success"
       />
       <gl-button

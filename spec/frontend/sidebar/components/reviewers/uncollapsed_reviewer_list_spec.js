@@ -7,6 +7,8 @@ import userDataMock from '../../user_data_mock';
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
+  const reviewerApprovalIcons = () => wrapper.findAll('[data-testid="re-approved"]');
+
   function createComponent(props = {}) {
     const propsData = {
       users: [],
@@ -58,17 +60,27 @@ describe('UncollapsedReviewerList component', () => {
       const user = userDataMock();
 
       createComponent({
-        users: [user, { ...user, id: 2, username: 'hello-world' }],
+        users: [user, { ...user, id: 2, username: 'hello-world', approved: true }],
       });
     });
 
-    it('only has one user', () => {
+    it('has both users', () => {
       expect(wrapper.findAll(ReviewerAvatarLink).length).toBe(2);
     });
 
-    it('shows one user with avatar, username and author name', () => {
+    it('shows both users with avatar, username and author name', () => {
       expect(wrapper.text()).toContain(`@root`);
       expect(wrapper.text()).toContain(`@hello-world`);
+    });
+
+    it('renders approval icon', () => {
+      expect(reviewerApprovalIcons().length).toBe(1);
+    });
+
+    it('shows that hello-world approved', () => {
+      const icon = reviewerApprovalIcons().at(0);
+
+      expect(icon.attributes('title')).toEqual('Approved by @hello-world');
     });
 
     it('renders re-request loading icon', async () => {

@@ -1,3 +1,3 @@
-import initCycleAnalytics from '~/cycle_analytics/cycle_analytics_bundle';
+import initCycleAnalytics from '~/cycle_analytics';
 
 document.addEventListener('DOMContentLoaded', initCycleAnalytics);

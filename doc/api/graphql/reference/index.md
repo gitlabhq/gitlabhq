@@ -1302,6 +1302,7 @@ Represents a DAST scanner profile.
 | `globalId` **{warning-solid}** | DastScannerProfileID! | **Deprecated:** Use `id`. Deprecated in 13.6. |
 | `id` | DastScannerProfileID! | ID of the DAST scanner profile. |
 | `profileName` | String | Name of the DAST scanner profile. |
+| `referencedInSecurityPolicies` | String! => Array | List of security policy names that are referencing given project. |
 | `scanType` | DastScanTypeEnum | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | `showDebugMessages` | Boolean! | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | `spiderTimeout` | Int | The maximum number of minutes allowed for the spider to traverse the site. |
@@ -1348,6 +1349,7 @@ Represents a DAST Site Profile.
 | `id` | DastSiteProfileID! | ID of the site profile. |
 | `normalizedTargetUrl` | String | Normalized URL of the target to be scanned. |
 | `profileName` | String | The name of the site profile. |
+| `referencedInSecurityPolicies` | String! => Array | List of security policy names that are referencing given project. |
 | `targetUrl` | String | The URL of the target to be scanned. |
 | `userPermissions` | DastSiteProfilePermissions! | Permissions for the current user on the resource |
 | `validationStatus` | DastSiteProfileValidationStatusEnum | The current validation status of the site profile. |

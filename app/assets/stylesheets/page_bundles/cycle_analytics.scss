@@ -1,6 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-#cycle-analytics,
 .cycle-analytics {
   margin: 24px auto 0;
   position: relative;
@@ -314,37 +313,6 @@
         vertical-align: top;
         font-weight: $gl-font-weight-normal;
       }
-    }
-  }
-
-  .empty-stage,
-  .no-access-stage {
-    text-align: center;
-    width: 75%;
-    margin: 0 auto;
-    padding-top: 130px;
-    color: var(--gray-500, $gray-500);
-
-    h4 {
-      color: var(--gl-text-color, $gl-text-color);
-    }
-  }
-
-  .empty-stage {
-    .icon-no-data {
-      height: 36px;
-      width: 78px;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-  }
-
-  .no-access-stage {
-    .icon-lock {
-      height: 36px;
-      width: 78px;
-      display: inline-block;
-      margin-bottom: 20px;
     }
   }
 }

@@ -164,6 +164,13 @@ the author of the merge request can request a new review from the reviewer:
 GitLab creates a new [to-do item](../../todos.md) for the reviewer, and sends
 them a notification email.
 
+#### Approval status
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
+
+If a user in the reviewer list has approved the merge request, a green tick symbol is
+shown to the right of their name.
+
 ### Merge requests to close issues
 
 If the merge request is being created to resolve an issue, you can

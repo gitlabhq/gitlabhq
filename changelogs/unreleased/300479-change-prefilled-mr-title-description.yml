@@ -1,0 +1,5 @@
+---
+title: Prefill first multiline commit message for new MRs
+merge_request: 52984
+author: Max Coplan @vegerot
+type: changed

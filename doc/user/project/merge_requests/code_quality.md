@@ -267,7 +267,7 @@ code_quality:
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 ```
 
-If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/README.md#workflowrules))
+If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/README.md#workflow))
 might look like this example:
 
 ```yaml

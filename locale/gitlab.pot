@@ -430,6 +430,9 @@ msgid_plural "%{count} issues selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} items per page"
+msgstr ""
+
 msgid "%{count} merge request selected"
 msgid_plural "%{count} merge requests selected"
 msgstr[0] ""
@@ -1191,6 +1194,9 @@ msgid "1-9 contributions"
 msgstr ""
 
 msgid "10-19 contributions"
+msgstr ""
+
+msgid "1000+"
 msgstr ""
 
 msgid "1st contribution!"
@@ -5126,6 +5132,9 @@ msgid "BulkImport|Name already exists."
 msgstr ""
 
 msgid "BulkImport|No parent"
+msgstr ""
+
+msgid "BulkImport|Showing %{start}-%{end} of %{total}"
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total} from %{link}"
@@ -17399,6 +17408,9 @@ msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Last %{days} days"
+msgstr ""
+
 msgid "Last 2 weeks"
 msgstr ""
 
@@ -18869,6 +18881,9 @@ msgid "MergeRequests|started a thread on an outdated change in commit %{linkStar
 msgstr ""
 
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequest|Approved by @%{username}"
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
@@ -23977,19 +23992,16 @@ msgstr ""
 msgid "PrometheusService|Auto configuration"
 msgstr ""
 
-msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments"
+msgid "PrometheusService|Auto configuration settings are used unless you override their values here."
 msgstr ""
 
-msgid "PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)"
+msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments."
 msgstr ""
 
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
 msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
-msgstr ""
-
-msgid "PrometheusService|Contents of the credentials.json file of your service account, like: { \"type\": \"service_account\", \"project_id\": ... }"
 msgstr ""
 
 msgid "PrometheusService|Custom metrics"
@@ -24007,6 +24019,15 @@ msgstr ""
 msgid "PrometheusService|Finding custom metrics..."
 msgstr ""
 
+msgid "PrometheusService|GitLab is managing Prometheus on your clusters."
+msgstr ""
+
+msgid "PrometheusService|GitLab manages Prometheus on your clusters."
+msgstr ""
+
+msgid "PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com"
+msgstr ""
+
 msgid "PrometheusService|Install Prometheus on clusters"
 msgstr ""
 
@@ -24022,6 +24043,12 @@ msgstr ""
 msgid "PrometheusService|Missing environment variable"
 msgstr ""
 
+msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
+msgstr ""
+
+msgid "PrometheusService|Monitor your project’s environments by deploying and configuring Prometheus on your clusters."
+msgstr ""
+
 msgid "PrometheusService|More information"
 msgstr ""
 
@@ -24034,28 +24061,34 @@ msgstr ""
 msgid "PrometheusService|No custom metrics have been created. Create one using the button above"
 msgstr ""
 
-msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
+msgid "PrometheusService|PrometheusService|The ID of the IAP-secured resource."
 msgstr ""
 
-msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
+msgid "PrometheusService|Select this checkbox to override the auto configuration settings with your own settings."
 msgstr ""
 
-msgid "PrometheusService|Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used."
+msgid "PrometheusService|The Prometheus API base URL."
+msgstr ""
+
+msgid "PrometheusService|The contents of the credentials.json file of your service account."
 msgstr ""
 
 msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
-msgid "PrometheusService|Time-series monitoring service"
-msgstr ""
-
-msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
+msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration."
 msgstr ""
 
 msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
 msgstr ""
 
 msgid "PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page has been deprecated."
+msgstr ""
+
+msgid "PrometheusService|https://prometheus.example.com/"
+msgstr ""
+
+msgid "PrometheusService|{ \"type\": \"service_account\", \"project_id\": ... }"
 msgstr ""
 
 msgid "Promote"
@@ -33868,6 +33901,9 @@ msgid "You are not allowed to reject a user"
 msgstr ""
 
 msgid "You are not allowed to unlink your primary login account"
+msgstr ""
+
+msgid "You are not authorized to delete this site profile"
 msgstr ""
 
 msgid "You are not authorized to perform this action"
