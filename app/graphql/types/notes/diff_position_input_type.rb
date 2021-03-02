@@ -2,7 +2,6 @@
 
 module Types
   module Notes
-    # rubocop: disable Graphql/AuthorizeTypes
     class DiffPositionInputType < DiffPositionBaseInputType
       graphql_name 'DiffPositionInput'
 
@@ -11,6 +10,5 @@ module Types
       argument :new_line, GraphQL::INT_TYPE, required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :new_line)
     end
-    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

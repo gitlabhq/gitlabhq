@@ -4,8 +4,8 @@ import Tracking from '~/tracking';
 const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0';
 
 export default class ExperimentTracking {
-  constructor(experimentName, { label } = {}) {
-    this.label = label;
+  constructor(experimentName, trackingArgs = {}) {
+    this.trackingArgs = trackingArgs;
     this.experimentData = get(window, ['gon', 'global', 'experiment', experimentName]);
   }
 
@@ -15,7 +15,7 @@ export default class ExperimentTracking {
     }
 
     return Tracking.event(document.body.dataset.page, action, {
-      label: this.label,
+      ...this.trackingArgs,
       context: {
         schema: TRACKING_CONTEXT_SCHEMA,
         data: this.experimentData,

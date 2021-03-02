@@ -120,10 +120,6 @@ module Ci
       raise NotImplementedError
     end
 
-    def scoped_variables_hash
-      raise NotImplementedError
-    end
-
     override :all_met_to_become_pending?
     def all_met_to_become_pending?
       super && !with_resource_group?

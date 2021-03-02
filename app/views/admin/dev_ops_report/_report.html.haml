@@ -9,6 +9,8 @@
   = render 'no_data'
 - else
   .devops
+    .gl-my-3.gl-text-gray-400{ data: { testid: 'devops-score-note-text' } }
+      = s_('DevopsReport|DevOps score metrics are based on usage over the last 30 days. Last updated: %{timestamp}.').html_safe % { timestamp: @metric.created_at.strftime('%Y-%m-%d %H:%M') }
     .devops-header
       %h2.devops-header-title{ class: "devops-#{score_level(@metric.average_percentage_score)}-score" }
         = number_to_percentage(@metric.average_percentage_score, precision: 1)

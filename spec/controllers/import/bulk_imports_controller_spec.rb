@@ -123,7 +123,7 @@ RSpec.describe Import::BulkImportsController do
             it 'denies network request' do
               get :status
 
-              expect(controller).to redirect_to(new_group_path)
+              expect(controller).to redirect_to(new_group_path(anchor: 'import-group-pane'))
               expect(flash[:alert]).to eq('Specified URL cannot be used: "Only allowed schemes are http, https"')
             end
           end

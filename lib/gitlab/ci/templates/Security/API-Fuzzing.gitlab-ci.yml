@@ -45,13 +45,10 @@ apifuzzer_fuzz:
         entrypoint: ["/bin/bash", "-l", "-c"]
     variables:
         FUZZAPI_PROJECT: $CI_PROJECT_PATH
-        FUZZAPI_API: http://apifuzzer:80
+        FUZZAPI_API: http://localhost:80
         FUZZAPI_NEW_REPORT: 1
+        FUZZAPI_LOG_SCANNER: gl-apifuzzing-api-scanner.log
         TZ: America/Los_Angeles
-    services:
-        - name: $FUZZAPI_IMAGE
-          alias: apifuzzer
-          entrypoint: ["dotnet", "/peach/Peach.Web.dll"]
     allow_failure: true
     rules:
         - if: $FUZZAPI_D_TARGET_IMAGE
@@ -80,17 +77,26 @@ apifuzzer_fuzz:
         # Make sure asset path exists
         - mkdir -p $FUZZAPI_REPORT_ASSET_PATH
         #
+        # Start API Security background process
+        - dotnet /peach/Peach.Web.dll &> $FUZZAPI_LOG_SCANNER &
+        - APISEC_PID=$!
+        #
         # Start scanning
         - worker-entry
         #
         # Run user provided post-script
         - sh -c "$FUZZAPI_POST_SCRIPT"
         #
+        # Shutdown API Security
+        - kill $APISEC_PID
+        - wait $APISEC_PID
+        #
     artifacts:
         when: always
         paths:
             - $FUZZAPI_REPORT_ASSET_PATH
             - $FUZZAPI_REPORT
+            - $FUZZAPI_LOG_SCANNER
         reports:
             api_fuzzing: $FUZZAPI_REPORT
 

@@ -43,7 +43,7 @@ export default {
       }, 0);
     },
     showAlert() {
-      return !this.showLinkedLayers && !this.alertDismissed;
+      return !this.containerZero && !this.showLinkedLayers && !this.alertDismissed;
     },
     showLinkedLayers() {
       return (

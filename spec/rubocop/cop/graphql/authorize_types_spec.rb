@@ -63,4 +63,34 @@ RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes do
       end
     TYPE
   end
+
+  it 'does not add an offense for subtypes of BaseUnion' do
+    expect_no_offenses(<<~TYPE)
+      module Types
+        class AType < BaseUnion
+          possible_types Types::Foo, Types::Bar
+        end
+      end
+    TYPE
+  end
+
+  it 'does not add an offense for subtypes of BaseInputObject' do
+    expect_no_offenses(<<~TYPE)
+      module Types
+        class AType < BaseInputObject
+          argument :a_thing
+        end
+      end
+    TYPE
+  end
+
+  it 'does not add an offense for InputTypes' do
+    expect_no_offenses(<<~TYPE)
+      module Types
+        class AInputType < SomeObjectType
+          argument :a_thing
+        end
+      end
+    TYPE
+  end
 end

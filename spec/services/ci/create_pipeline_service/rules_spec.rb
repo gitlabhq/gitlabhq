@@ -174,7 +174,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/master' }
 
           it 'overrides VAR1' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('overridden var 1')
             expect(variables['VAR2']).to eq('my var 2')
@@ -186,7 +186,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/feature' }
 
           it 'overrides VAR2 and adds VAR3' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('my var 1')
             expect(variables['VAR2']).to eq('overridden var 2')
@@ -198,7 +198,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/wip' }
 
           it 'does not affect vars' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('my var 1')
             expect(variables['VAR2']).to eq('my var 2')

@@ -2,7 +2,7 @@
 
 module Types
   module Snippets
-    class BlobActionInputType < BaseInputObject # rubocop:disable Graphql/AuthorizeTypes
+    class BlobActionInputType < BaseInputObject
       graphql_name 'SnippetBlobActionInputType'
       description 'Represents an action to perform over a snippet file'
 

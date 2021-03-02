@@ -29,14 +29,6 @@ module Ci
     end
 
     ##
-    # Regular Ruby hash of scoped variables, without duplicates that are
-    # possible to be present in an array of hashes returned from `variables`.
-    #
-    def scoped_variables_hash
-      scoped_variables.to_hash
-    end
-
-    ##
     # Variables that do not depend on the environment name.
     #
     def simple_variables

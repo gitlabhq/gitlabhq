@@ -3,7 +3,7 @@
 module Types
   module CiConfiguration
     module Sast
-      class InputType < BaseInputObject # rubocop:disable Graphql/AuthorizeTypes
+      class InputType < BaseInputObject
         graphql_name 'SastCiConfigurationInput'
         description 'Represents a CI configuration of SAST'
 

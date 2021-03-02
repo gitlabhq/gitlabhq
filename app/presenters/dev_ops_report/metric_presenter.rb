@@ -2,6 +2,8 @@
 
 module DevOpsReport
   class MetricPresenter < Gitlab::View::Presenter::Simple
+    delegate :created_at, to: :subject
+
     def cards
       [
         Card.new(

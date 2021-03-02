@@ -2,7 +2,6 @@
 
 module Types
   module Boards
-    # rubocop: disable Graphql/AuthorizeTypes
     class BoardIssueInputBaseType < BaseInputObject
       argument :label_name, GraphQL::STRING_TYPE.to_list_type,
                required: false,
@@ -28,7 +27,6 @@ module Types
                required: false,
                description: 'Filter by reaction emoji.'
     end
-    # rubocop: enable Graphql/AuthorizeTypes
   end
 end
 

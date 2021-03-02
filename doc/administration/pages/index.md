@@ -536,7 +536,7 @@ and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy 
 the value will be propagated in the request chain.
 Users [can find the correlation ID in the logs](../troubleshooting/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
-To enable the correlation ID:
+To enable the propagation of the correlation ID:
 
 1. Set the parameter to true in `/etc/gitlab/gitlab.rb`:
 

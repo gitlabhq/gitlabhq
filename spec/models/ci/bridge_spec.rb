@@ -41,7 +41,7 @@ RSpec.describe Ci::Bridge do
     end
   end
 
-  describe '#scoped_variables_hash' do
+  describe '#scoped_variables' do
     it 'returns a hash representing variables' do
       variables = %w[
         CI_JOB_NAME CI_JOB_STAGE CI_COMMIT_SHA CI_COMMIT_SHORT_SHA
@@ -53,7 +53,7 @@ RSpec.describe Ci::Bridge do
         CI_COMMIT_TIMESTAMP
       ]
 
-      expect(bridge.scoped_variables_hash.keys).to include(*variables)
+      expect(bridge.scoped_variables.map { |v| v[:key] }).to include(*variables)
     end
 
     context 'when bridge has dependency which has dotenv variable' do
@@ -63,7 +63,7 @@ RSpec.describe Ci::Bridge do
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
 
       it 'includes inherited variable' do
-        expect(bridge.scoped_variables_hash).to include(job_variable.key => job_variable.value)
+        expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
       end
     end
   end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Types
-  # rubocop: disable Graphql/AuthorizeTypes
   class JiraUsersMappingInputType < BaseInputObject
     graphql_name 'JiraUsersMappingInputType'
 
@@ -14,5 +13,4 @@ module Types
                required: false,
                description: 'Id of the GitLab user.'
   end
-  # rubocop: enable Graphql/AuthorizeTypes
 end

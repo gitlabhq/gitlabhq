@@ -8,7 +8,7 @@ jest.mock('~/experiment_tracking', () =>
   })),
 );
 
-const fixture = `<a class='js-upload-file-experiment-trigger' data-toggle='modal' data-target='#modal-upload-blob'></a><div id='modal-upload-blob'></div>`;
+const fixture = `<a class='js-upload-file-experiment-trigger' data-toggle='modal' data-target='#modal-upload-blob'></a><div id='modal-upload-blob'></div><div class='project-home-panel empty-project'></div>`;
 const findModal = () => document.querySelector('[aria-modal="true"]');
 const findTrigger = () => document.querySelector('.js-upload-file-experiment-trigger');
 
@@ -29,8 +29,20 @@ describe('trackUploadFileFormSubmitted', () => {
 
     expect(ExperimentTracking).toHaveBeenCalledWith('empty_repo_upload', {
       label: 'blob-upload-modal',
+      property: 'empty',
     });
     expect(mockExperimentTrackingEvent).toHaveBeenCalledWith('click_upload_modal_form_submit');
+  });
+
+  it('initializes ExperimentTracking with the correct arguments when the project is not empty', () => {
+    document.querySelector('.empty-project').remove();
+
+    UploadFileExperiment.trackUploadFileFormSubmitted();
+
+    expect(ExperimentTracking).toHaveBeenCalledWith('empty_repo_upload', {
+      label: 'blob-upload-modal',
+      property: 'nonempty',
+    });
   });
 });
 

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
     end
 
     it 'can be initialized without an argument' do
-      expect(subject).to be_none
+      is_expected.to be_none
     end
   end
 
@@ -21,13 +21,13 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
     it 'appends a hash' do
       subject.append(key: 'VARIABLE', value: 'something')
 
-      expect(subject).to be_one
+      is_expected.to be_one
     end
 
     it 'appends a Ci::Variable' do
       subject.append(build(:ci_variable))
 
-      expect(subject).to be_one
+      is_expected.to be_one
     end
 
     it 'appends an internal resource' do
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
 
       subject.append(collection.first)
 
-      expect(subject).to be_one
+      is_expected.to be_one
     end
 
     it 'returns self' do
@@ -208,6 +208,26 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
             { key: 'A', value: 'test-$B', masked: false, public: true }
           ])
       end
+    end
+  end
+
+  describe '#reject' do
+    let(:collection) do
+      described_class.new
+        .append(key: 'CI_JOB_NAME', value: 'test-1')
+        .append(key: 'CI_BUILD_ID', value: '1')
+        .append(key: 'TEST1', value: 'test-3')
+    end
+
+    subject { collection.reject { |var| var[:key] =~ /\ACI_(JOB|BUILD)/ } }
+
+    it 'returns a Collection instance' do
+      is_expected.to be_an_instance_of(described_class)
+    end
+
+    it 'returns correctly filtered Collection' do
+      comp = collection.to_runner_variables.reject { |var| var[:key] =~ /\ACI_(JOB|BUILD)/ }
+      expect(subject.to_runner_variables).to eq(comp)
     end
   end
 end

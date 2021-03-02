@@ -231,7 +231,7 @@ RSpec.describe ProjectsController do
 
           get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
 
-          expect_snowplow_event(category: 'empty_repo_upload', action: 'view_project_show', context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', data: anything }])
+          expect_snowplow_event(category: 'empty_repo_upload', action: 'view_project_show', context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', data: anything }], property: 'empty')
         end
       end
 

@@ -32,6 +32,10 @@ module Ci
       end.to_i
     end
 
+    def runner_variables
+      variables.to_runner_variables
+    end
+
     def refspecs
       specs = []
       specs << refspec_for_persistent_ref if persistent_ref_exist?

@@ -2,7 +2,6 @@
 
 module Types
   module Boards
-    # rubocop: disable Graphql/AuthorizeTypes
     class NegatedBoardIssueInputType < BoardIssueInputBaseType
     end
 
@@ -17,7 +16,6 @@ module Types
                required: false,
                description: 'Search query for issue title or description.'
     end
-    # rubocop: enable Graphql/AuthorizeTypes
   end
 end
 

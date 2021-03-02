@@ -9,7 +9,7 @@ module RuboCop
 
         # We want to exclude our own basetypes and scalars
         ALLOWED_TYPES = %w[BaseEnum BaseScalar BasePermissionType MutationType
-                           QueryType GraphQL::Schema BaseUnion].freeze
+                           QueryType GraphQL::Schema BaseUnion BaseInputObject].freeze
 
         def_node_search :authorize?, <<~PATTERN
           (send nil? :authorize ...)
@@ -29,8 +29,9 @@ module RuboCop
 
           return false unless class_const
           return true if class_const.end_with?('Enum')
+          return true if class_const.end_with?('InputType')
 
-          ALLOWED_TYPES.any? { |allowed| class_node.const_name.include?(allowed) }
+          ALLOWED_TYPES.any? { |allowed| class_const.include?(allowed) }
         end
 
         def class_constant(node)

@@ -3,8 +3,6 @@
 - group_path << parent.full_path + '/' if parent
 
 = form_with url: import_gitlab_group_path, class: 'group-form gl-show-field-errors', multipart: true do |f|
-  = form_errors(@group)
-
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')

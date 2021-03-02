@@ -21,7 +21,7 @@ module Gitlab
               # to the CI variables to evaluate rules before we persist a Build
               # with the result. We should refactor away the extra Build.new,
               # but be able to get CI Variables directly from the Seed::Build.
-              stub_build.scoped_variables_hash
+              stub_build.scoped_variables
             end
           end
 

@@ -510,7 +510,6 @@ module Ci
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
-          .to_runner_variables
       end
     end
 
@@ -986,7 +985,7 @@ module Ci
       # TODO: Have `debug_mode?` check against data on sent back from runner
       # to capture all the ways that variables can be set.
       # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
-      variables.any? { |variable| variable[:key] == 'CI_DEBUG_TRACE' && variable[:value].casecmp('true') == 0 }
+      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)

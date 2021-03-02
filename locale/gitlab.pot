@@ -8596,6 +8596,9 @@ msgstr ""
 msgid "Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "Create blank project"
+msgstr ""
+
 msgid "Create branch"
 msgstr ""
 
@@ -8621,6 +8624,9 @@ msgid "Create file"
 msgstr ""
 
 msgid "Create from"
+msgstr ""
+
+msgid "Create from template"
 msgstr ""
 
 msgid "Create group"
@@ -10568,6 +10574,9 @@ msgid "DevopsReport|DevOps"
 msgstr ""
 
 msgid "DevopsReport|DevOps Score"
+msgstr ""
+
+msgid "DevopsReport|DevOps score metrics are based on usage over the last 30 days. Last updated: %{timestamp}."
 msgstr ""
 
 msgid "DevopsReport|Score"
@@ -13565,6 +13574,9 @@ msgstr ""
 msgid "Geo|Could not remove tracking entry for an existing upload."
 msgstr ""
 
+msgid "Geo|Discover GitLab Geo"
+msgstr ""
+
 msgid "Geo|Failed"
 msgstr ""
 
@@ -13599,6 +13611,12 @@ msgid "Geo|Last sync attempt"
 msgstr ""
 
 msgid "Geo|Last time verified"
+msgstr ""
+
+msgid "Geo|Learn more about Geo"
+msgstr ""
+
+msgid "Geo|Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
 msgid "Geo|Never"
@@ -15344,6 +15362,9 @@ msgid "Import from"
 msgstr ""
 
 msgid "Import from Jira"
+msgstr ""
+
+msgid "Import group"
 msgstr ""
 
 msgid "Import group from file"

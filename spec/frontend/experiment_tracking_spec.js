@@ -5,13 +5,14 @@ jest.mock('~/tracking');
 
 const oldGon = window.gon;
 
+let newGon = {};
 let experimentTracking;
 let label;
-let newGon = {};
+let property;
 
 const setup = () => {
   window.gon = newGon;
-  experimentTracking = new ExperimentTracking('sidebar_experiment', label);
+  experimentTracking = new ExperimentTracking('sidebar_experiment', { label, property });
 };
 
 beforeEach(() => {
@@ -22,6 +23,7 @@ afterEach(() => {
   window.gon = oldGon;
   Tracking.mockClear();
   label = undefined;
+  property = undefined;
 });
 
 describe('event', () => {
@@ -32,7 +34,8 @@ describe('event', () => {
     });
 
     describe('when providing options', () => {
-      label = { label: 'sidebar-drawer' };
+      label = 'sidebar-drawer';
+      property = 'dark-mode';
 
       it('passes them to the tracking call', () => {
         experimentTracking.event('click_sidebar_close');
@@ -40,6 +43,7 @@ describe('event', () => {
         expect(Tracking.event).toHaveBeenCalledTimes(1);
         expect(Tracking.event).toHaveBeenCalledWith('issues-page', 'click_sidebar_close', {
           label: 'sidebar-drawer',
+          property: 'dark-mode',
           context: {
             schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
             data: 'experiment-data',
@@ -53,7 +57,6 @@ describe('event', () => {
 
       expect(Tracking.event).toHaveBeenCalledTimes(1);
       expect(Tracking.event).toHaveBeenCalledWith('issues-page', 'click_sidebar_trigger', {
-        label: undefined,
         context: {
           schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
           data: 'experiment-data',
