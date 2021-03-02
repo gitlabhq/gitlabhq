@@ -17928,7 +17928,8 @@ CREATE TABLE user_preferences (
     tab_width smallint,
     experience_level smallint,
     view_diffs_file_by_file boolean DEFAULT false NOT NULL,
-    gitpod_enabled boolean DEFAULT false NOT NULL
+    gitpod_enabled boolean DEFAULT false NOT NULL,
+    markdown_surround_selection boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE user_preferences_id_seq

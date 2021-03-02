@@ -31,6 +31,8 @@ GitLab has been tested on a number of object storage providers:
   HTTP Range Requests from working with CI job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/223806).
   Be sure to upgrade to GitLab v13.3.0 or above if you use S3 storage with this hardware.
 
+- Ceph S3 prior to [Kraken 11.0.2](https://ceph.com/releases/kraken-11-0-2-released/) does not support the [Upload Copy Part API](https://gitlab.com/gitlab-org/gitlab/-/issues/300604). You may need to [disable multi-threaded copying](#multi-threaded-copying).
+
 ## Configuration guides
 
 There are two ways of specifying object storage configuration in GitLab:
@@ -737,7 +739,22 @@ following command:
 Feature.disable(:use_workhorse_s3_client)
 ```
 
-#### IAM Permissions
+### Multi-threaded copying
+
+GitLab uses the [S3 Upload Part Copy API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html)
+to accelerate the copying of files within a bucket. Ceph S3 [prior to Kraken 11.0.2](https://ceph.com/releases/kraken-11-0-2-released/)
+does not support this and [returns a 404 error when files are copied during the upload process](https://gitlab.com/gitlab-org/gitlab/-/issues/300604).
+
+The feature can be disabled using the `:s3_multithreaded_uploads`
+feature flag. To disable the feature, ask a GitLab administrator with
+[Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags)
+to run the following command:
+
+```ruby
+Feature.disable(:s3_multithreaded_uploads)
+```
+
+### IAM Permissions
 
 To set up an instance profile:
 
@@ -754,7 +771,6 @@ To set up an instance profile:
                "Action": [
                    "s3:PutObject",
                    "s3:GetObject",
-                   "s3:AbortMultipartUpload",
                    "s3:DeleteObject"
                ],
                "Resource": "arn:aws:s3:::test-bucket/*"

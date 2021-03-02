@@ -171,27 +171,40 @@ describe('init markdown', () => {
         expect(textArea.value).toEqual(text.replace(selected, `[${selected}](url)`));
       });
 
-      it.each`
-        key    | expected
-        ${'['} | ${`[${selected}]`}
-        ${'*'} | ${`**${selected}**`}
-        ${"'"} | ${`'${selected}'`}
-        ${'_'} | ${`_${selected}_`}
-        ${'`'} | ${`\`${selected}\``}
-        ${'"'} | ${`"${selected}"`}
-        ${'{'} | ${`{${selected}}`}
-        ${'('} | ${`(${selected})`}
-        ${'<'} | ${`<${selected}>`}
-      `('generates $expected when $key is pressed', ({ key, expected }) => {
-        const event = new KeyboardEvent('keydown', { key });
+      describe('surrounds selected text with matching character', () => {
+        it.each`
+          key    | expected
+          ${'['} | ${`[${selected}]`}
+          ${'*'} | ${`**${selected}**`}
+          ${"'"} | ${`'${selected}'`}
+          ${'_'} | ${`_${selected}_`}
+          ${'`'} | ${`\`${selected}\``}
+          ${'"'} | ${`"${selected}"`}
+          ${'{'} | ${`{${selected}}`}
+          ${'('} | ${`(${selected})`}
+          ${'<'} | ${`<${selected}>`}
+        `('generates $expected when $key is pressed', ({ key, expected }) => {
+          const event = new KeyboardEvent('keydown', { key });
+          gon.markdown_surround_selection = true;
 
-        textArea.addEventListener('keydown', keypressNoteText);
-        textArea.dispatchEvent(event);
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(event);
 
-        expect(textArea.value).toEqual(text.replace(selected, expected));
+          expect(textArea.value).toEqual(text.replace(selected, expected));
 
-        // cursor placement should be after selection + 2 tag lengths
-        expect(textArea.selectionStart).toBe(selectedIndex + expected.length);
+          // cursor placement should be after selection + 2 tag lengths
+          expect(textArea.selectionStart).toBe(selectedIndex + expected.length);
+        });
+
+        it('does nothing if user preference disabled', () => {
+          const event = new KeyboardEvent('keydown', { key: '[' });
+          gon.markdown_surround_selection = false;
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(event);
+
+          expect(textArea.value).toEqual(text);
+        });
       });
 
       describe('and text to be selected', () => {

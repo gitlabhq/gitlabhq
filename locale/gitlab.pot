@@ -22615,6 +22615,9 @@ msgstr ""
 msgid "Preferences|Sourcegraph"
 msgstr ""
 
+msgid "Preferences|Surround text selection when typing quotes or brackets"
+msgstr ""
+
 msgid "Preferences|Syntax highlighting theme"
 msgstr ""
 

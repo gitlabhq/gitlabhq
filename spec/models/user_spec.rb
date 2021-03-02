@@ -41,6 +41,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
     it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:view_diffs_file_by_file).to(:user_preference) }
+    it { is_expected.to delegate_method(:view_diffs_file_by_file=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
     it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(:args) }
 
@@ -58,6 +61,9 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:experience_level).to(:user_preference) }
     it { is_expected.to delegate_method(:experience_level=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:markdown_surround_selection).to(:user_preference) }
+    it { is_expected.to delegate_method(:markdown_surround_selection=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
