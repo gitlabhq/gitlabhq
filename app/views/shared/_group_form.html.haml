@@ -39,7 +39,7 @@
         .gl-alert-body
           = _('Changing group URL can have unintended side effects.')
           = succeed '.' do
-            = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank', class: 'gl-link'
+            = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'change-a-groups-path'), target: '_blank', class: 'gl-link'
 
 - if @group.persisted?
   .row

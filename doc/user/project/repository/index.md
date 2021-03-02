@@ -298,7 +298,7 @@ and Git push/pull redirects.
 Depending on the situation, different things apply.
 
 When [renaming a user](../../profile/index.md#changing-your-username),
-[changing a group path](../../group/index.md#changing-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
+[changing a group path](../../group/index.md#change-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
 
 - Existing web URLs for the namespace and anything under it (such as projects) will
   redirect to the new URLs.

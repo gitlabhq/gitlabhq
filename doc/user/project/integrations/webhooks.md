@@ -1566,7 +1566,7 @@ X-Gitlab-Event: Subgroup Hook
 ```
 
 NOTE:
-Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transferring-groups)
+Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transfer-a-group)
 
 ### Feature Flag events
 

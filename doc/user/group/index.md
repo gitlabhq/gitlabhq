@@ -293,7 +293,7 @@ Learn how to [transfer a project into a group](../project/settings/index.md#tran
 You can [share your projects with a group](../project/members/share_project_with_groups.md)
 and give all group members access to the project at once.
 
-Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
+Alternatively, you can [lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 
 ## Sharing a group with another group
 
@@ -418,9 +418,9 @@ to explore data such as:
 
 [Learn more about Insights](insights/index.md).
 
-## Transferring groups
+## Transfer a group
 
-From GitLab 10.5, you can transfer groups in the following ways:
+You can transfer groups in the following ways:
 
 - Transfer a subgroup to a new parent group.
 - Convert a top-level group into a subgroup by transferring it to the desired group.
@@ -435,20 +435,7 @@ When transferring groups, note:
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
 - Transfers will fail if [packages](../packages/index.md) exist in any of the projects within the group, or in any of its subgroups.
 
-## Group settings
-
-After creating a group, you can manage its settings by navigating to
-the group's dashboard, and clicking **Settings**.
-
-![group settings](img/group_settings.png)
-
-### General settings
-
-In addition to editing any settings you previously
-set when [creating the group](#create-a-group), you can also
-access further configurations for your group.
-
-#### Changing a group's path
+## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read
 [how redirects will behave](../project/repository/index.md#redirects-when-changing-repository-paths)
@@ -475,11 +462,7 @@ If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.
 
-### Group repository settings
-
-You can change settings that are specific to repositories in your group.
-
-#### Custom initial branch name
+## Use a custom name for the initial branch
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
@@ -492,7 +475,7 @@ else. This way, every new project created under that group from then on will sta
 1. Change the default initial branch to a custom name of your choice.
 1. **Save Changes**.
 
-### Remove a group
+## Remove a group
 
 To remove a group and its contents:
 
@@ -509,7 +492,7 @@ This action either:
 Since [GitLab 13.6](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion leaves or is otherwise removed from the group before the
 actual deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
-### Restore a group **(PREMIUM)**
+## Restore a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
@@ -519,13 +502,13 @@ To restore a group that is marked for deletion:
 1. Expand the **Path, transfer, remove** section.
 1. In the Restore group section, click the **Restore group** button.
 
-#### Enforce 2FA to group members
+## Enforce two-factor authentication for group members
 
 Add a security layer to your group by
 [enforcing two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group)
 for all group members.
 
-#### Share with group lock
+## Prevent a project from being shared with groups
 
 Prevent projects in a group from [sharing
 a project with another group](../project/members/share_project_with_groups.md) to enable tighter control over project access.
@@ -540,7 +523,7 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock **(PREMIUM)**
+## Prevent members from being added to a group **(PREMIUM)**
 
 Member lock lets a group owner prevent any new project membership to all of the
 projects within a group, allowing tighter control over project membership.
@@ -560,7 +543,7 @@ This will disable the option for all users who previously had permissions to
 operate project memberships, so no new users can be added. Furthermore, any
 request to add a new user to a project through API will not be possible.
 
-#### IP access restriction **(PREMIUM)**
+## Restrict group access by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.1.
@@ -598,7 +581,7 @@ To enable this feature:
 
 ![Domain restriction by IP address](img/restrict-by-ip.gif)
 
-#### Allowed domain restriction **(PREMIUM)**
+## Restrict group access by domain **(PREMIUM)**
 
 >- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 >- Support for specifying multiple email domains [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1
@@ -633,7 +616,7 @@ This will enable the domain-checking for all new users added to the group from t
 NOTE:
 Domain restrictions only apply to groups and do not prevent users from being added as members of projects owned by the restricted group.
 
-#### Group file templates **(PREMIUM)**
+## Group file templates **(PREMIUM)**
 
 Group file templates allow you to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -660,12 +643,12 @@ To enable this feature, navigate to the group settings page, expand the
 To learn how to create templates for issues and merge requests, visit
 [Description templates](../project/description_templates.md).
 
-#### Group-level project templates **(PREMIUM)**
+### Group-level project templates **(PREMIUM)**
 
 Define project templates at a group level by setting a group as the template source.
 [Learn more about group-level project templates](custom_project_templates.md).
 
-#### Disabling email notifications
+## Disabling email notifications
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
 
@@ -677,7 +660,7 @@ To enable this feature:
 1. Expand the **Permissions, LFS, 2FA** section, and select **Disable email notifications**.
 1. Click **Save changes**.
 
-#### Disabling group mentions
+## Disabling group mentions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
@@ -694,7 +677,7 @@ To enable this feature:
 1. Expand the **Permissions, LFS, 2FA** section, and select **Disable group mentions**.
 1. Click **Save changes**.
 
-#### Enabling delayed project removal **(PREMIUM)**
+## Enabling delayed project removal **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
@@ -714,7 +697,7 @@ To enable delayed deletion of projects:
 NOTE:
 The group setting for delayed deletion is not inherited by subgroups and has to be individually defined for each group.
 
-#### Prevent project forking outside group **(PREMIUM)**
+## Prevent project forking outside group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
@@ -731,7 +714,7 @@ To enable prevent project forking:
 1. Expand the **Permissions, LFS, 2FA** section, and check **Prevent project forking outside current group**.
 1. Click **Save changes**.
 
-### Advanced settings
+## Advanced settings
 
 - **Projects**: View all projects within that group, add members to each project,
   access each project's settings, and remove any project, all from the same screen.
@@ -742,7 +725,7 @@ To enable prevent project forking:
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 - **Integrations**: Configure [integrations](../admin_area/settings/project_integration_management.md) for your group.
 
-#### Group push rules **(PREMIUM)**
+## Group push rules **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
@@ -758,7 +741,7 @@ When set, new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-### Maximum artifacts size **(FREE SELF)**
+## Maximum artifacts size **(FREE SELF)**
 
 For information about setting a maximum artifact size for a group, see
 [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).

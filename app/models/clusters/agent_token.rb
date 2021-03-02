@@ -13,5 +13,6 @@ module Clusters
     before_save :ensure_token
 
     validates :description, length: { maximum: 1024 }
+    validates :name, presence: true, length: { maximum: 255 }, on: :create
   end
 end

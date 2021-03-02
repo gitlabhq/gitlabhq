@@ -30,10 +30,16 @@ yarn run lint:eslint:staged:fix
 
 If manual changes are required, a list of changes are sent to the console.
 
+To check a specific file in the repository with ESLINT, run the following script (replacing $PATH_TO_FILE):
+
+```shell
+yarn run lint:eslint $PATH_TO_FILE
+```
+
 To check **all** files in the repository with ESLint, run the following script:
 
 ```shell
-yarn run lint:eslint
+yarn run lint:eslint:all
 ```
 
 A list of problems found are logged to the console.
@@ -41,7 +47,7 @@ A list of problems found are logged to the console.
 To apply automatic ESLint fixes to **all** files in the repository, run the following script:
 
 ```shell
-yarn run lint:eslint:fix
+yarn run lint:eslint:all:fix
 ```
 
 If manual changes are required, a list of changes are sent to the console.

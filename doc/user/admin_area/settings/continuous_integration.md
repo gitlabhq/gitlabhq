@@ -50,13 +50,13 @@ To change it at the:
    1. Change the value of maximum artifacts size (in MB).
    1. Click **Save changes** for the changes to take effect.
 
-- [Group level](../../group/index.md#group-settings) (this will override the instance setting):
+- Group level (this will override the instance setting):
 
   1. Go to the group's **Settings > CI / CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Click **Save changes** for the changes to take effect.
 
-- [Project level](../../../ci/pipelines/settings.md) (this will override the instance and group settings):
+- Project level (this will override the instance and group settings):
 
   1. Go to the project's **Settings > CI / CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.

@@ -7,7 +7,7 @@ pre-push:
       tags: frontend style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "*.{js,vue}"
-      run: yarn run internal:eslint {files}
+      run: yarn run lint:eslint {files}
     haml-lint:
       tags: view haml style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD

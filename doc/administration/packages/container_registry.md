@@ -1144,7 +1144,7 @@ project or branch name. Special characters can include:
 - Trailing hyphen/dash
 - Double hyphen/dash
 
-To get around this, you can [change the group path](../../user/group/index.md#changing-a-groups-path),
+To get around this, you can [change the group path](../../user/group/index.md#change-a-groups-path),
 [change the project path](../../user/project/settings/index.md#renaming-a-repository) or change the
 branch name. Another option is to create a [push rule](../../push_rules/push_rules.md) to prevent
 this at the instance level.

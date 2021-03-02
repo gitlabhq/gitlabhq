@@ -205,7 +205,13 @@ the Agent in subsequent steps. You can create an Agent record either:
   }
 
   mutation createToken {
-    clusterAgentTokenCreate(input: { clusterAgentId: <cluster-agent-id-taken-from-the-previous-mutation> }) {
+    clusterAgentTokenCreate(
+      input: {
+        clusterAgentId: "<cluster-agent-id-taken-from-the-previous-mutation>"
+        description: "<optional-description-of-token>"
+        name: "<required-name-given-to-token>"
+      }
+    ) {
       secret # This is the value you need to use on the next step
       token {
         createdAt
@@ -459,7 +465,7 @@ There are several components that work in concert for the Agent to generate the 
 - One or more network policies through any of these options:
   - Use the [Container Network Policy editor](../../application_security/threat_monitoring/index.md#container-network-policy-editor) to create and manage policies.
   - Use an [AutoDevOps](../../application_security/threat_monitoring/index.md#container-network-policy-management) configuration.
-  - Add the required labels and annotations to existing network policies. 
+  - Add the required labels and annotations to existing network policies.
 - Use a configuration repository to inform the Agent through a `config.yaml` file, which
   repositories can synchronize with. This repository might be the same, or a separate GitLab
   project.

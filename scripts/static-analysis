@@ -25,7 +25,7 @@ class StaticAnalysis
     # Most of the time, RuboCop finishes in 30 seconds, but sometimes it can take around 1200 seconds so we set a
     # duration of 300 to lower the likelihood that it will run in the same job as another long task...
     %w[bundle exec rubocop --parallel] => 300,
-    %w[yarn run lint:eslint] => 197,
+    %w[yarn run lint:eslint:all] => 197,
     %w[yarn run lint:prettier] => 124,
     %w[bin/rake gettext:lint] => 96,
     %w[bundle exec license_finder] => 49,

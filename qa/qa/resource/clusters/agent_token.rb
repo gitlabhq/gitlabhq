@@ -32,7 +32,7 @@ module QA
         def api_post_body
           <<~GQL
           mutation createToken {
-            clusterAgentTokenCreate(input: { clusterAgentId: "gid://gitlab/Clusters::Agent/#{agent.id}" }) {
+            clusterAgentTokenCreate(input: { clusterAgentId: "gid://gitlab/Clusters::Agent/#{agent.id}" name: "token-#{agent.id}" }) {
               secret # This is the value you need to use on the next step
               token {
                 createdAt

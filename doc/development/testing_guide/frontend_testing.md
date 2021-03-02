@@ -1168,6 +1168,95 @@ You can download any older version of Firefox from the releases FTP server, <htt
 1. Open up a terminal and run `/Applications/Firefox_Old.app/Contents/MacOS/firefox-bin -profilemanager` to create a new profile specific to that Firefox version.
 1. Once the profile has been created, quit the app, and run it again like normal. You now have a working older Firefox version.
 
+## Snapshots
+
+By now you've probably heard of [Jest snapshot tests](https://jestjs.io/docs/en/snapshot-testing) and why they are useful for various reasons.
+To use them within GitLab, there are a few guidelines that should be highlighted:
+
+- Treat snapshots as code
+- Don't think of a snapshot file as a Blackbox
+- Care for the output of the snapshot, otherwise, it's not providing any real value. This will usually involve reading the generated snapshot file as you would read any other piece of code
+
+Think of a snapshot test as a simple way to store a raw `String` representation of what you've put into the item being tested. This can be used to evaluate changes in a component, a store, a complex piece of generated output, etc. You can see more in the list below for some recommended `Do's and Don'ts`.
+While snapshot tests can be a very powerful tool. They are meant to supplement, not to replace unit tests.
+
+Jest provides a great set of docs on [best practices](https://jestjs.io/docs/en/snapshot-testing#best-practices) that we should keep in mind when creating snapshots.
+
+### How does a snapshot work?
+
+A snapshot is purely a stringified version of what you ask to be tested on the lefthand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
+
+Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
+
+Find all the details in Jests official documentation [https://jestjs.io/docs/en/snapshot-testing](https://jestjs.io/docs/en/snapshot-testing)
+
+### How to take a snapshot
+
+```javascript
+it('makes the name look pretty', () => {
+  expect(prettifyName('Homer Simpson')).toMatchSnapshot()
+})
+```
+
+When this test runs the first time a fresh `.snap` file will be created. It will look something like this:
+
+```txt
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`makes the name look pretty`] = `
+Sir Homer Simpson the Third
+`
+```
+
+Now, every time you call this test, the new snapshot will be evaluated against the previously created version. This should highlight the fact that it's important to understand the content of your snapshot file and treat it with care. Snapshots will lose their value if the output of the snapshot is too big or complex to read, this means keeping snapshots isolated to human-readable items that can be either evaluated in a merge request review or are guaranteed to never change.
+The same can be done for `wrappers` or `elements`
+
+```javascript
+it('renders the component correctly', () => {
+  expect(wrapper).toMatchSnapshot()
+  expect(wrapper.element).toMatchSnapshot();
+})
+```
+
+The above test will create two snapshots, what's important is to decide which of the snapshots provide more value for the codebase safety i.e. if one of these snapshots changes, does that highlight a possible un-wanted break in the codebase? This can help catch unexpected changes if something in an underlying dependency changes without our knowledge.
+
+### Pros and Cons
+
+**Pros**
+
+- Speed up the creation of unit tests
+- Easy to maintain
+- Provides a good safety net to protect against accidental breakage of important HTML structures
+
+**Cons**
+
+- Is not a catch-all solution that replaces the work of integration or unit tests
+- No meaningful assertions or expectations within snapshots
+- When carelessly used with [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui) it can create fragility in tests when the underlying library changes the HTML of a component we are testing
+
+A good guideline to follow: the more complex the component you may want to steer away from just snapshot testing. But that's not to say you can't still snapshot test and test your component as normal.
+
+### When to use
+
+**Use snapshots when**
+
+- to capture a components rendered output
+- to fully or partially match templates
+- to match readable data structures
+- to verify correctly composed native HTML elements
+- as a safety net for critical structures so others don't break it by accident
+- Template heavy component
+- Not a lot of logic in the component
+- Composed of native HTML elements
+
+### When not to use
+
+**Don't use snapshots when**
+
+- To capture large data structures just to have something
+- To just have some kind of test written
+- To capture highly volatile ui elements without stubbing them (Think of GitLab UI version updates)
+
 ---
 
 [Return to Testing documentation](index.md)

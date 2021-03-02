@@ -8,7 +8,7 @@
       %p
         = s_('GroupSettings|Changing group URL can have unintended side effects.')
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'change-a-groups-path'), target: '_blank'
 
       .input-group.gl-field-error-anchor
         .group-root-path.input-group-prepend.has-tooltip{ title: group_path(@group), :'data-placement' => 'bottom' }
