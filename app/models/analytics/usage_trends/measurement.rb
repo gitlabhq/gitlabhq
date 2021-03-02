@@ -5,8 +5,6 @@ module Analytics
     class Measurement < ApplicationRecord
       self.table_name = 'analytics_instance_statistics_measurements'
 
-      EXPERIMENTAL_IDENTIFIERS = %i[pipelines_succeeded pipelines_failed pipelines_canceled pipelines_skipped].freeze
-
       enum identifier: {
         projects: 1,
         users: 2,

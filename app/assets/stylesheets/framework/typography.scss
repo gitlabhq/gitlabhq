@@ -78,6 +78,8 @@
   code {
     font-family: $monospace-font;
     white-space: pre-wrap;
+    // Safari
+    word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: keep-all;
   }
@@ -344,6 +346,9 @@
     // Multi-line code blocks should scroll horizontally
     code {
       white-space: pre;
+      // Safari
+      word-wrap: normal;
+      overflow-wrap: normal;
     }
 
     &.plain-readme {

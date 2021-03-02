@@ -395,11 +395,8 @@ from any device you're logged into.
 ## Suggest Changes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
-> - Custom commit messages for suggestions was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9.
-> - Custom commit messages for suggestions was deployed behind a [feature flag](../feature_flags.md), disabled by default.
-> - Custom commit messages for suggestions became enabled by default on GitLab 13.9.
-> - Custom commit messages for suggestions is enabled on GitLab.com and is recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disabled it](#enable-or-disable-custom-commit-messages-for-suggestions). **(FREE SELF)**
+> - Custom commit messages for suggestions was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9 behind a [feature flag](../feature_flags.md), disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10.
 
 As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
@@ -426,8 +423,7 @@ the merge request authored by the user that applied them.
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
    you can opt to add a custom commit message to describe your change. If you don't
-   specify it, the default commit message will be used. Note that [this feature may not be available to you](#enable-or-disable-custom-commit-messages-for-suggestions).
-   Also, it is not supported for [batch suggestions](#batch-suggestions).
+   specify it, the default commit message will be used. It is not supported for [batch suggestions](#batch-suggestions).
 
    ![Custom commit](img/custom_commit_v13_9.png)
 
@@ -501,7 +497,7 @@ For example, to customize the commit message to output
 `Addresses %{username}'s review`.
 
 NOTE:
-Custom commit messages for each applied Suggestion (and for batch Suggestions) will be
+Custom commit messages for each applied Suggestion will be
 introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ### Batch Suggestions
@@ -581,25 +577,6 @@ To disable it:
 
 ```ruby
 Feature.disable(:confidential_notes)
-```
-
-## Enable or disable Custom commit messages for suggestions **(FREE SELF)**
-
-Custom commit messages for suggestions is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable custom commit messages for suggestions:
-
-```ruby
-Feature.disable(:suggestions_custom_commit)
-```
-
-To enable custom commit messages for suggestions:
-
-```ruby
-Feature.enable(:suggestions_custom_commit)
 ```
 
 ## Enable or disable Batch Suggestions **(FREE SELF)**

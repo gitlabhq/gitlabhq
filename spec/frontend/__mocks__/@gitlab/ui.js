@@ -39,7 +39,10 @@ jest.mock('@gitlab/ui/dist/components/base/popover/popover.js', () => ({
       default: () => [],
     },
     ...Object.fromEntries(
-      ['target', 'triggers', 'placement', 'boundary', 'container'].map((prop) => [prop, {}]),
+      ['title', 'target', 'triggers', 'placement', 'boundary', 'container'].map((prop) => [
+        prop,
+        {},
+      ]),
     ),
   },
   render(h) {

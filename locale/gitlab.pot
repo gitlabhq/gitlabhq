@@ -33547,6 +33547,9 @@ msgstr ""
 msgid "What describes you best?"
 msgstr ""
 
+msgid "What does this command do?"
+msgstr ""
+
 msgid "What is squashing?"
 msgstr ""
 

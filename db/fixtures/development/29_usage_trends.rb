@@ -9,7 +9,8 @@ Gitlab::Seeder.quiet do
 
   model_class = Analytics::UsageTrends::Measurement
 
-  measurements = model_class.identifiers.flat_map do |_, id|
+  # Skip generating data for billable_users, to avoid license check problems
+  measurements = model_class.identifiers.except(:billable_users).each_value.flat_map do |id|
     recorded_at = 60.days.ago
     current_count = rand(1_000_000)
 
