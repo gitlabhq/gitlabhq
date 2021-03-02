@@ -96,6 +96,6 @@ create  ee/config/metrics/counts_7d/issues.yml
 
 ## Metrics added dynamic to Usage Ping payload
 
-The [Redis HLL metrics](../usage_ping.md#known-events-are-added-automatically-in-usage-data-payload) are added automatically to Usage Ping payload.
+The [Redis HLL metrics](index.md#known-events-are-added-automatically-in-usage-data-payload) are added automatically to Usage Ping payload.
 
 A YAML metric definition is required for each metric.

@@ -131,6 +131,15 @@
 /doc/user/project/settings/import_export.md @aqualls
 /doc/user/snippets.md @aqualls
 
+[Docs Growth]
+/doc/administration/instance_review.md @aqualls
+/doc/api/invitations.md @aqualls
+/doc/api/experiments.md @aqualls 
+/doc/development/experiment_guide/ @aqualls
+/doc/development/snowplow.md @aqualls
+/doc/development/usage_ping/ @aqualls
+/doc/user/admin_area/license.md @aqualls
+
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend

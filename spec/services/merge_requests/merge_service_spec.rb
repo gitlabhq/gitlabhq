@@ -258,9 +258,8 @@ RSpec.describe MergeRequests::MergeService do
           end
 
           it 'removes the source branch using the author user' do
-            expect(::Branches::DeleteService).to receive(:new)
-              .with(merge_request.source_project, merge_request.author)
-              .and_call_original
+            expect(::MergeRequests::DeleteSourceBranchWorker).to receive(:perform_async).with(merge_request.id, merge_request.source_branch_sha, merge_request.author.id)
+
             service.execute(merge_request)
           end
 
@@ -268,7 +267,8 @@ RSpec.describe MergeRequests::MergeService do
             let(:service) { described_class.new(project, user, merge_params.merge('should_remove_source_branch' => false)) }
 
             it 'does not delete the source branch' do
-              expect(::Branches::DeleteService).not_to receive(:new)
+              expect(::MergeRequests::DeleteSourceBranchWorker).not_to receive(:perform_async)
+
               service.execute(merge_request)
             end
           end
@@ -280,9 +280,8 @@ RSpec.describe MergeRequests::MergeService do
           end
 
           it 'removes the source branch using the current user' do
-            expect(::Branches::DeleteService).to receive(:new)
-              .with(merge_request.source_project, user)
-              .and_call_original
+            expect(::MergeRequests::DeleteSourceBranchWorker).to receive(:perform_async).with(merge_request.id, merge_request.source_branch_sha, user.id)
+
             service.execute(merge_request)
           end
         end

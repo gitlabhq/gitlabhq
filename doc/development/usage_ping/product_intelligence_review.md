@@ -13,7 +13,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 
 ## Resources for Product Intelligence reviewers
 
-- [Usage Ping Guide](../usage_ping.md)
+- [Usage Ping Guide](index.md)
 - [Snowplow Guide](../snowplow.md)
 - [Metrics Dictionary](metrics_dictionary.md)
 
@@ -64,13 +64,13 @@ Any of the Product Intelligence engineers can be assigned for the Product Intell
 
 ### How to review for Product Intelligence
 
-- Check the [metrics location](../usage_ping.md#1-naming-and-placing-the-metrics) in
+- Check the [metrics location](index.md#1-naming-and-placing-the-metrics) in
   the Usage Ping JSON payload.
 - Add `~database` label and ask for [database review](../database_review.md) for
   metrics that are based on Database.
 - For tracking using Redis HLL (HyperLogLog):
   - Check the Redis slot.
-  - Check if a [feature flag is needed](../usage_ping.md#recommendations).
+  - Check if a [feature flag is needed](index.md#recommendations).
 - Metrics YAML definitions:
   - Check the metric `description`.
   - Check the metrics `key_path`.

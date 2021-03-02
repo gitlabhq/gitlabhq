@@ -107,8 +107,7 @@ module MergeRequests
       log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
       if delete_source_branch?
-        ::Branches::DeleteService.new(@merge_request.source_project, branch_deletion_user)
-          .execute(merge_request.source_branch)
+        MergeRequests::DeleteSourceBranchWorker.perform_async(@merge_request.id, @merge_request.source_branch_sha, branch_deletion_user.id)
       end
     end
 

@@ -204,6 +204,8 @@
   - 1
 - - merge_request_reset_approvals
   - 1
+- - merge_requests_delete_source_branch
+  - 1
 - - metrics_dashboard_prune_old_annotations
   - 1
 - - metrics_dashboard_sync_dashboards
