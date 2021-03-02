@@ -2428,10 +2428,7 @@ Soon GitLab Runner picks up and starts the job.
 ### `environment`
 
 Use `environment` to define the [environment](../environments/index.md) that a job deploys to.
-If `environment` is specified and no environment under that name exists, a new
-one is created automatically.
-
-In its simplest form, the `environment` keyword can be defined like:
+For example:
 
 ```yaml
 deploy to production:
@@ -2440,34 +2437,20 @@ deploy to production:
   environment: production
 ```
 
-In the above example, the `deploy to production` job is marked as doing a
-deployment to the `production` environment.
+You can assign a value to the `environment` keyword by using:
 
-#### `environment:name`
-
-The `environment: name` keyword can use any of the defined CI/CD [variables](#variables),
-including predefined, secure, or variables defined in the `.gitlab-ci.yml` file.
+- Plain text, like `production`.
+- Variables, including CI/CD variables, predefined, secure, or variables
+  defined in the `.gitlab-ci.yml` file.
 
 You can't use variables defined in a `script` section.
 
-The `environment` name can contain:
+If you specify an `environment` and no environment with that name exists,
+an environment is created.
 
-- letters
-- digits
-- spaces
-- `-`
-- `_`
-- `/`
-- `$`
-- `{`
-- `}`
+#### `environment:name`
 
-Common names are `qa`, `staging`, and `production`, but you can use whatever
-name works with your workflow.
-
-Instead of defining the name of the environment right after the `environment`
-keyword, it's also possible to define it as a separate value. For that, use
-the `name` keyword under `environment`:
+Set a name for an [environment](../environments/index.md). For example:
 
 ```yaml
 deploy to production:
@@ -2477,18 +2460,32 @@ deploy to production:
     name: production
 ```
 
-#### `environment:url`
+Common environment names are `qa`, `staging`, and `production`, but you can use any
+name you want.
 
-The `environment:url` keyword can use any of the defined CI/CD [variables](#variables),
-including predefined, secure, or variables defined in the `.gitlab-ci.yml` file.
+You can assign a value to the `name` keyword by using:
+
+- Plain text, like `staging`.
+- Variables, including CI/CD variables, predefined, secure, or variables
+  defined in the `.gitlab-ci.yml` file.
 
 You can't use variables defined in a `script` section.
 
-This optional value exposes buttons that take you to the defined URL
+The environment `name` can contain:
 
-In this example, if the job finishes successfully, it creates buttons
-in the merge requests and in the environments/deployments pages that point
-to `https://prod.example.com`.
+- Letters
+- Digits
+- Spaces
+- `-`
+- `_`
+- `/`
+- `$`
+- `{`
+- `}`
+
+#### `environment:url`
+
+Set a URL for an [environment](../environments/index.md). For example:
 
 ```yaml
 deploy to production:
@@ -2498,6 +2495,17 @@ deploy to production:
     name: production
     url: https://prod.example.com
 ```
+
+After the job completes, you can access the URL by using a button in the merge request,
+environment, or deployment pages.
+
+You can assign a value to the `url` keyword by using:
+
+- Plain text, like `https://prod.example.com`.
+- Variables, including CI/CD variables, predefined, secure, or variables
+  defined in the `.gitlab-ci.yml` file.
+
+You can't use variables defined in a `script` section.
 
 #### `environment:on_stop`
 

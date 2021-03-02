@@ -90,4 +90,57 @@ RSpec.describe MergeRequestsHelper do
       )
     end
   end
+
+  describe '#reviewers_label' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:reviewer1) { build_stubbed(:user, name: 'Jane Doe') }
+    let(:reviewer2) { build_stubbed(:user, name: 'John Doe') }
+
+    before do
+      allow(merge_request).to receive(:reviewers).and_return(reviewers)
+    end
+
+    context 'when multiple reviewers exist' do
+      let(:reviewers) { [reviewer1, reviewer2] }
+
+      it 'returns reviewer label with reviewer names' do
+        expect(helper.reviewers_label(merge_request)).to eq("Reviewers: Jane Doe and John Doe")
+      end
+
+      it 'returns reviewer label only with include_value: false' do
+        expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
+      end
+
+      context 'when the name contains a URL' do
+        let(:reviewers) { [build_stubbed(:user, name: 'www.gitlab.com')] }
+
+        it 'returns sanitized name' do
+          expect(helper.reviewers_label(merge_request)).to eq("Reviewer: www_gitlab_com")
+        end
+      end
+    end
+
+    context 'when one reviewer exists' do
+      let(:reviewers) { [reviewer1] }
+
+      it 'returns reviewer label with no names' do
+        expect(helper.reviewers_label(merge_request)).to eq("Reviewer: Jane Doe")
+      end
+
+      it 'returns reviewer label only with include_value: false' do
+        expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewer")
+      end
+    end
+
+    context 'when no reviewers exist' do
+      let(:reviewers) { [] }
+
+      it 'returns reviewer label with no names' do
+        expect(helper.reviewers_label(merge_request)).to eq("Reviewers: ")
+      end
+      it 'returns reviewer label only with include_value: false' do
+        expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
+      end
+    end
+  end
 end

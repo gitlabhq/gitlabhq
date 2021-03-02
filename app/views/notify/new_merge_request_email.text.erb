@@ -3,6 +3,7 @@
 <%= merge_path_description(@merge_request, 'to') %>
 <%= 'Author:' %>    <%= @merge_request.author_name %>
 <%= assignees_label(@merge_request) if @merge_request.assignees.any? %>
+<%= reviewers_label(@merge_request) if @merge_request.reviewers.any? %>
 <%= render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter %>
 
 <%= @merge_request.description %>

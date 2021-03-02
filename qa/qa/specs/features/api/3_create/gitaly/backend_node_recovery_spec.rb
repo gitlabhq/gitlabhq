@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env do
+      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322647', type: :flaky } do
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do
           Resource::Project.fabricate! do |project|

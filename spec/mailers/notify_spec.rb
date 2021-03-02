@@ -16,12 +16,14 @@ RSpec.describe Notify do
   let_it_be(:user, reload: true) { create(:user) }
   let_it_be(:current_user, reload: true) { create(:user, email: "current@email.com", name: 'www.example.com') }
   let_it_be(:assignee, reload: true) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
+  let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
 
   let_it_be(:merge_request) do
     create(:merge_request, source_project: project,
                            target_project: project,
                            author: current_user,
                            assignees: [assignee],
+                           reviewers: [reviewer],
                            description: 'Awesome description')
   end
 
@@ -342,6 +344,7 @@ RSpec.describe Notify do
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
             is_expected.to have_body_text(merge_request.source_branch)
             is_expected.to have_body_text(merge_request.target_branch)
+            is_expected.to have_body_text(reviewer.name)
           end
         end
 

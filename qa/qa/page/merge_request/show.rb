@@ -26,6 +26,10 @@ module QA
           element :merge_immediately_option
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do
+          element :merge_request_status_content
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
           element :merged_status_content
         end
@@ -235,6 +239,12 @@ module QA
           click_element(:merge_immediately_option)
         end
 
+        def merge_when_pipeline_succeeds!
+          wait_until_ready_to_merge
+
+          click_element(:merge_button, text: 'Merge when pipeline succeeds')
+        end
+
         def merged?
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
@@ -250,6 +260,10 @@ module QA
           # `wait_for_requests`, which should ensure the disabled/enabled
           # state of the element is reliable
           has_element?(:merge_button, disabled: false)
+        end
+
+        def merge_request_status
+          find_element(:merge_request_status_content).text
         end
 
         # Waits up 60 seconds and raises an error if unable to merge

@@ -140,6 +140,14 @@ module QA
         end
       end
 
+      def reload!
+        # Refabricate so that we can return a new object with updated attributes
+        self.class.fabricate_via_api! do |resource|
+          resource.project = project
+          resource.id = api_resource[:iid]
+        end
+      end
+
       private
 
       def transform_api_resource(api_resource)

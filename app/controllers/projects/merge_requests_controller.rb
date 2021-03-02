@@ -32,7 +32,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:batch_suggestions, @project, default_enabled: true)
     push_frontend_feature_flag(:approvals_commented_by, @project, default_enabled: true)
-    push_frontend_feature_flag(:merge_request_widget_graphql, @project)
+    push_frontend_feature_flag(:merge_request_widget_graphql, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:drag_comment_selection, @project, default_enabled: true)
     push_frontend_feature_flag(:unified_diff_components, @project, default_enabled: true)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)

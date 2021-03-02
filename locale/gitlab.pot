@@ -13350,9 +13350,6 @@ msgstr ""
 msgid "Geo Nodes"
 msgstr ""
 
-msgid "Geo Nodes Beta"
-msgstr ""
-
 msgid "Geo Nodes|Cannot remove a primary node if there is a secondary node"
 msgstr ""
 
@@ -13515,6 +13512,9 @@ msgstr ""
 msgid "Geo|%{name} is scheduled for re-verify"
 msgstr ""
 
+msgid "Geo|Add site"
+msgstr ""
+
 msgid "Geo|Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
@@ -13561,6 +13561,9 @@ msgid "Geo|Filter by status"
 msgstr ""
 
 msgid "Geo|Geo Status"
+msgstr ""
+
+msgid "Geo|Geo sites"
 msgstr ""
 
 msgid "Geo|Go to the primary site"
@@ -13614,6 +13617,9 @@ msgstr ""
 msgid "Geo|Primary node"
 msgstr ""
 
+msgid "Geo|Primary site"
+msgstr ""
+
 msgid "Geo|Project"
 msgstr ""
 
@@ -13657,6 +13663,9 @@ msgid "Geo|Review replication status, and resynchronize and reverify items with 
 msgstr ""
 
 msgid "Geo|Secondary node"
+msgstr ""
+
+msgid "Geo|Secondary site"
 msgstr ""
 
 msgid "Geo|Status"
@@ -13708,6 +13717,9 @@ msgid "Geo|Verification failed - %{error}"
 msgstr ""
 
 msgid "Geo|Waiting for scheduler"
+msgstr ""
+
+msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere."
 msgstr ""
 
 msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node."
