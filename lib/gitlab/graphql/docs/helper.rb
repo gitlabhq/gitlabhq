@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def render_name_and_description(object)
-          content = "### #{object[:name].camelcase}\n"
+          content = "### #{object[:name]}\n"
 
           if object[:description].present?
             content += "\n#{object[:description]}"
@@ -51,14 +51,6 @@ module Gitlab
             render_field_type(field[:type][:info]),
             render_description(field)
             ]
-        end
-
-        def render_argument(argument)
-          '| %s | %s | %s |' % [
-            render_name(argument),
-            render_description(argument),
-            render_field_type(argument[:type][:info])
-          ]
         end
 
         def render_enum_value(value)

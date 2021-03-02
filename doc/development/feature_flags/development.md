@@ -410,11 +410,21 @@ Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 
 ### Removing a feature flag locally (in development)
 
-When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten.
+Once you have manually enabled or disabled a feature flag to test in your local environment, 
+the flag's default value gets overwritten and it takes precedence over the `default_enabled` value.
 This can cause confusion when changing the flag's `default_enabled` attribute.
 
-To reset the feature flag to the default status, you can remove it in the rails console (`rails c`)
-as follows:
+For example, flags are commonly enabled and disabled several times during the development process.
+When we finally enable the flag by default, we set `default_enabled: true` in the YAML file.
+
+- If the flag was manually enabled before setting `default_enabled: true`, the feature will be enabled. 
+Not because of the `default_enabled: true` value of the flag but because it was manually enabled.
+- If the flag was manually disabled before setting `default_enabled: true`, the feature will 
+remain disabled. The `default_enabled: true` value does not take precendence over the explicit `false`
+value set when disabling it manually.
+
+To reset the feature flag to the default status set in its YAML file, remove it using the Rails console
+(`rails c`) as follows:
 
 ```ruby
 Feature.remove(:feature_flag_name)

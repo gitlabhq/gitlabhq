@@ -9,6 +9,8 @@ import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_w
 import { mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
+  graphqlResourceEtag: 'frog/amphibirama/etag/',
+  metricsPath: '',
   pipelineProjectPath: 'frog/amphibirama',
   pipelineIid: '22',
 };
@@ -86,6 +88,13 @@ describe('Pipeline graph wrapper', () => {
 
     it('displays the graph', () => {
       expect(getGraph().exists()).toBe(true);
+    });
+
+    it('passes the etag resource and metrics path to the graph', () => {
+      expect(getGraph().props('configPaths')).toMatchObject({
+        graphqlResourceEtag: defaultProvide.graphqlResourceEtag,
+        metricsPath: defaultProvide.metricsPath,
+      });
     });
   });
 

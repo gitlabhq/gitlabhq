@@ -219,6 +219,7 @@ module Gitlab
     config.assets.precompile << "lazy_bundles/select2.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "disable_animations.css"
+    config.assets.precompile << "test_environment.css"
     config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"

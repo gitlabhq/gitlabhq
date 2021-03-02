@@ -2,6 +2,11 @@
 
 module Ci
   class ExpirePipelineCacheService
+    class UrlHelpers
+      include ::Gitlab::Routing
+      include ::GitlabRoutingHelper
+    end
+
     def execute(pipeline, delete: false)
       store = Gitlab::EtagCaching::Store.new
 
@@ -17,27 +22,27 @@ module Ci
     private
 
     def project_pipelines_path(project)
-      Gitlab::Routing.url_helpers.project_pipelines_path(project, format: :json)
+      url_helpers.project_pipelines_path(project, format: :json)
     end
 
     def project_pipeline_path(project, pipeline)
-      Gitlab::Routing.url_helpers.project_pipeline_path(project, pipeline, format: :json)
+      url_helpers.project_pipeline_path(project, pipeline, format: :json)
     end
 
     def commit_pipelines_path(project, commit)
-      Gitlab::Routing.url_helpers.pipelines_project_commit_path(project, commit.id, format: :json)
+      url_helpers.pipelines_project_commit_path(project, commit.id, format: :json)
     end
 
     def new_merge_request_pipelines_path(project)
-      Gitlab::Routing.url_helpers.project_new_merge_request_path(project, format: :json)
+      url_helpers.project_new_merge_request_path(project, format: :json)
     end
 
     def pipelines_project_merge_request_path(merge_request)
-      Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(merge_request.target_project, merge_request, format: :json)
+      url_helpers.pipelines_project_merge_request_path(merge_request.target_project, merge_request, format: :json)
     end
 
     def merge_request_widget_path(merge_request)
-      Gitlab::Routing.url_helpers.cached_widget_project_json_merge_request_path(merge_request.project, merge_request, format: :json)
+      url_helpers.cached_widget_project_json_merge_request_path(merge_request.project, merge_request, format: :json)
     end
 
     def each_pipelines_merge_request_path(pipeline)
@@ -48,7 +53,7 @@ module Ci
     end
 
     def graphql_pipeline_path(pipeline)
-      [Gitlab::Routing.url_helpers.api_graphql_path, "pipelines/id/#{pipeline.id}"].join(':')
+      url_helpers.graphql_etag_pipeline_path(pipeline)
     end
 
     # Updates ETag caches of a pipeline.
@@ -72,6 +77,10 @@ module Ci
         store.touch(project_pipeline_path(relative_pipeline.project, relative_pipeline))
         store.touch(graphql_pipeline_path(relative_pipeline))
       end
+    end
+
+    def url_helpers
+      @url_helpers ||= UrlHelpers.new
     end
   end
 end

@@ -1,8 +1,11 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
+import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ArtifactsApp from './artifacts_list_app.vue';
+import MrCollapsibleExtension from './mr_collapsible_extension.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
 
@@ -19,6 +22,8 @@ export default {
   components: {
     ArtifactsApp,
     Deployment: () => import('./deployment/deployment.vue'),
+    GlSprintf,
+    MrCollapsibleExtension,
     MrWidgetContainer,
     MrWidgetPipeline,
     MergeTrainPositionIndicator: () =>
@@ -69,6 +74,16 @@ export default {
     showMergeTrainPositionIndicator() {
       return isNumber(this.mr.mergeTrainIndex);
     },
+    showCollapsedDeployments() {
+      return this.deployments.length > 3;
+    },
+    multipleDeploymentsTitle() {
+      return n__(
+        'Deployments|%{deployments} environment impacted.',
+        'Deployments|%{deployments} environments impacted.',
+        this.deployments.length,
+      );
+    },
   },
 };
 </script>
@@ -90,17 +105,44 @@ export default {
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
         <artifacts-app :endpoint="mr.exposedArtifactsPath" />
       </div>
-      <div v-if="deployments.length" class="mr-widget-extension">
-        <deployment
-          v-for="deployment in deployments"
-          :key="deployment.id"
-          :class="deploymentClass"
-          :deployment="deployment"
-          :show-metrics="hasDeploymentMetrics"
-          :show-visual-review-app="showVisualReviewAppLink"
-          :visual-review-app-meta="visualReviewAppMeta"
-        />
-      </div>
+      <template v-if="deployments.length">
+        <mr-collapsible-extension
+          v-if="showCollapsedDeployments"
+          :title="__('View all environments.')"
+          data-testid="mr-collapsed-deployments"
+        >
+          <template #header>
+            <div class="gl-mr-3 gl-line-height-normal">
+              <gl-sprintf :message="multipleDeploymentsTitle">
+                <template #deployments>
+                  <span class="gl-font-weight-bold gl-mr-2">{{ deployments.length }}</span>
+                </template>
+              </gl-sprintf>
+            </div>
+          </template>
+          <deployment
+            v-for="deployment in deployments"
+            :key="deployment.id"
+            :class="deploymentClass"
+            class="gl-bg-gray-50"
+            :deployment="deployment"
+            :show-metrics="hasDeploymentMetrics"
+            :show-visual-review-app="showVisualReviewAppLink"
+            :visual-review-app-meta="visualReviewAppMeta"
+          />
+        </mr-collapsible-extension>
+        <div v-else class="mr-widget-extension">
+          <deployment
+            v-for="deployment in deployments"
+            :key="deployment.id"
+            :class="deploymentClass"
+            :deployment="deployment"
+            :show-metrics="hasDeploymentMetrics"
+            :show-visual-review-app="showVisualReviewAppLink"
+            :visual-review-app-meta="visualReviewAppMeta"
+          />
+        </div>
+      </template>
       <merge-train-position-indicator
         v-if="showMergeTrainPositionIndicator"
         class="mr-widget-extension"

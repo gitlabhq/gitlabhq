@@ -10,6 +10,8 @@ module Ci
 
     Result = Struct.new(:build, :build_json, :valid?)
 
+    MAX_QUEUE_DEPTH = 50
+
     def initialize(runner)
       @runner = runner
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
@@ -33,6 +35,14 @@ module Ci
         depth += 1
         @metrics.increment_queue_operation(:queue_iteration)
 
+        if depth > max_queue_depth
+          @metrics.increment_queue_operation(:queue_depth_limit)
+
+          valid = false
+
+          break
+        end
+
         # We read builds from replicas
         # It is likely that some other concurrent connection is processing
         # a given build at a given moment. To avoid an expensive compute
@@ -44,6 +54,7 @@ module Ci
           # - our queue is not complete as some resources are locked temporarily
           # - we need to re-process it again to ensure that all builds are handled
           valid = false
+
           next
         end
 
@@ -156,6 +167,16 @@ module Ci
 
       # skip, and move to next one
       nil
+    end
+
+    def max_queue_depth
+      @max_queue_depth ||= begin
+        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: false)
+          MAX_QUEUE_DEPTH
+        else
+          ::Gitlab::Database::MAX_INT_VALUE
+        end
+      end
     end
 
     # Force variables evaluation to occur now

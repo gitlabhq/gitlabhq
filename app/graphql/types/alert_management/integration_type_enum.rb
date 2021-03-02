@@ -6,8 +6,8 @@ module Types
       graphql_name 'AlertManagementIntegrationType'
       description 'Values of types of integrations'
 
-      value 'PROMETHEUS', 'Prometheus integration', value: :prometheus
-      value 'HTTP', 'Integration with any monitoring tool', value: :http
+      value 'PROMETHEUS', 'Prometheus integration.', value: :prometheus
+      value 'HTTP', 'Integration with any monitoring tool.', value: :http
     end
   end
 end

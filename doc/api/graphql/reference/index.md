@@ -21,298 +21,344 @@ fields and methods on a model are available via GraphQL.
 
 WARNING:
 Fields that are deprecated are marked with **{warning-solid}**.
-Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-process) can be found
+Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-and-removal-process) can be found
 in [Removed Items](../removed_items.md).
 
 <!-- vale gitlab.Spelling = NO -->
 
-## Queries
+## `Query` type
 
-Queries are used to get the resources, filter or query them.
+The `Query` type contains the API's top-level entry points for all executable queries.
 
-For more information, visit [Queries and Mutations](https://graphql.org/learn/queries/).
-
-### CiApplicationSettings
+### ciApplicationSettings
 
 CI related settings that apply to the entire instance.
 
-### CiConfig
+### ciConfig
 
 Get linted and processed contents of a CI config. Should not be requested more than once per request.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `content` | Contents of `.gitlab-ci.yml`. | String! |
-| `dryRun` | Run pipeline creation simulation, or only do static check. | Boolean |
-| `projectPath` | The project of the CI config. | ID! |
+#### Arguments
 
-### ContainerRepository
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `content` | String! | Contents of `.gitlab-ci.yml`. |
+| `dryRun` | Boolean | Run pipeline creation simulation, or only do static check. |
+| `projectPath` | ID! | The project of the CI config. |
+
+### containerRepository
 
 Find a container repository.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | The global ID of the container repository. | ContainerRepositoryID! |
+#### Arguments
 
-### CurrentUser
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | ContainerRepositoryID! | The global ID of the container repository. |
+
+### currentUser
 
 Get information about current user.
 
-### DesignManagement
+### designManagement
 
 Fields related to design management.
 
-### DevopsAdoptionSegments
+### devopsAdoptionSegments
 
 Get configured DevOps adoption segments on the instance.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `last` | Returns the last _n_ elements from the list. | Int |
+#### Arguments
 
-### Echo
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+
+### echo
 
 Text to echo back.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `text` | Text to echo back. | String! |
+#### Arguments
 
-### GeoNode
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `text` | String! | Text to echo back. |
+
+### geoNode
 
 Find a Geo node.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `name` | The name of the Geo node. Defaults to the current Geo node name. | String |
+#### Arguments
 
-### Group
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `name` | String | The name of the Geo node. Defaults to the current Geo node name. |
+
+### group
 
 Find a group.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `fullPath` | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. | ID! |
+#### Arguments
 
-### InstanceSecurityDashboard
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `fullPath` | ID! | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+
+### instanceSecurityDashboard
 
 Fields related to Instance Security Dashboard.
 
-### InstanceStatisticsMeasurements
+### instanceStatisticsMeasurements
 
 Get statistics on the instance. Deprecated in 13.10: This field was renamed. Use the `usageTrendsMeasurements` field instead.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `identifier` | The type of measurement/statistics to retrieve. | MeasurementIdentifier! |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `recordedAfter` | Measurement recorded after this date. | Time |
-| `recordedBefore` | Measurement recorded before this date. | Time |
+#### Arguments
 
-### Issue
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `identifier` | MeasurementIdentifier! | The type of measurement/statistics to retrieve. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `recordedAfter` | Time | Measurement recorded after this date. |
+| `recordedBefore` | Time | Measurement recorded before this date. |
+
+### issue
 
 Find an Issue.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | The global ID of the Issue. | IssueID! |
+#### Arguments
 
-### Iteration
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | IssueID! | The global ID of the Issue. |
+
+### iteration
 
 Find an iteration.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | Find an iteration by its ID. | IterationID! |
+#### Arguments
 
-### Metadata
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | IterationID! | Find an iteration by its ID. |
+
+### metadata
 
 Metadata about GitLab.
 
-### Milestone
+### milestone
 
 Find a milestone.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | Find a milestone by its ID. | MilestoneID! |
+#### Arguments
 
-### Namespace
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | MilestoneID! | Find a milestone by its ID. |
+
+### namespace
 
 Find a namespace.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `fullPath` | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. | ID! |
+#### Arguments
 
-### Package
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `fullPath` | ID! | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+
+### package
 
 Find a package.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | The global ID of the package. | PackagesPackageID! |
+#### Arguments
 
-### Project
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | PackagesPackageID! | The global ID of the package. |
+
+### project
 
 Find a project.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `fullPath` | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. | ID! |
+#### Arguments
 
-### Projects
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `fullPath` | ID! | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+
+### projects
 
 Find projects visible to the current user.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `ids` | Filter projects by IDs. | ID! => Array |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `membership` | Limit projects that the current user is a member of. | Boolean |
-| `search` | Search query for project name, path, or description. | String |
-| `searchNamespaces` | Include namespace in project search. | Boolean |
-| `sort` | Sort order of results. | String |
+#### Arguments
 
-### RunnerPlatforms
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `ids` | ID! => Array | Filter projects by IDs. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `membership` | Boolean | Limit projects that the current user is a member of. |
+| `search` | String | Search query for project name, path, or description. |
+| `searchNamespaces` | Boolean | Include namespace in project search. |
+| `sort` | String | Sort order of results. |
+
+### runnerPlatforms
 
 Supported runner platforms.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `last` | Returns the last _n_ elements from the list. | Int |
+#### Arguments
 
-### RunnerSetup
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+
+### runnerSetup
 
 Get runner setup instructions.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `architecture` | Architecture to generate the instructions for. | String! |
-| `groupId` | Group to register the runner for. | GroupID |
-| `platform` | Platform to generate the instructions for. | String! |
-| `projectId` | Project to register the runner for. | ProjectID |
+#### Arguments
 
-### Snippets
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `architecture` | String! | Architecture to generate the instructions for. |
+| `groupId` | GroupID | Group to register the runner for. |
+| `platform` | String! | Platform to generate the instructions for. |
+| `projectId` | ProjectID | Project to register the runner for. |
+
+### snippets
 
 Find Snippets visible to the current user.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `authorId` | The ID of an author. | UserID |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `explore` | Explore personal snippets. | Boolean |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `ids` | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. | SnippetID! => Array |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `projectId` | The ID of a project. | ProjectID |
-| `type` | The type of snippet. | TypeEnum |
-| `visibility` | The visibility of the snippet. | VisibilityScopesEnum |
+#### Arguments
 
-### UsageTrendsMeasurements
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `authorId` | UserID | The ID of an author. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `explore` | Boolean | Explore personal snippets. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `ids` | SnippetID! => Array | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `projectId` | ProjectID | The ID of a project. |
+| `type` | TypeEnum | The type of snippet. |
+| `visibility` | VisibilityScopesEnum | The visibility of the snippet. |
+
+### usageTrendsMeasurements
 
 Get statistics on the instance.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `identifier` | The type of measurement/statistics to retrieve. | MeasurementIdentifier! |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `recordedAfter` | Measurement recorded after this date. | Time |
-| `recordedBefore` | Measurement recorded before this date. | Time |
+#### Arguments
 
-### User
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `identifier` | MeasurementIdentifier! | The type of measurement/statistics to retrieve. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `recordedAfter` | Time | Measurement recorded after this date. |
+| `recordedBefore` | Time | Measurement recorded before this date. |
+
+### user
 
 Find a user.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | ID of the User. | UserID |
-| `username` | Username of the User. | String |
+#### Arguments
 
-### Users
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | UserID | ID of the User. |
+| `username` | String | Username of the User. |
+
+### users
 
 Find users.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `admins` | Return only admin users. | Boolean |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `ids` | List of user Global IDs. | ID! => Array |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `search` | Query to search users by name, username, or primary email. | String |
-| `sort` | Sort users by this criteria. | Sort |
-| `usernames` | List of usernames. | String! => Array |
+#### Arguments
 
-### Vulnerabilities
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `admins` | Boolean | Return only admin users. |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `ids` | ID! => Array | List of user Global IDs. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `search` | String | Query to search users by name, username, or primary email. |
+| `sort` | Sort | Sort users by this criteria. |
+| `usernames` | String! => Array | List of usernames. |
+
+### vulnerabilities
 
 Vulnerabilities reported on projects on the current user's instance security dashboard.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `hasIssues` | Returns only the vulnerabilities which have linked issues. | Boolean |
-| `hasResolution` | Returns only the vulnerabilities which have been resolved on default branch. | Boolean |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `projectId` | Filter vulnerabilities by project. | ID! => Array |
-| `reportType` | Filter vulnerabilities by report type. | VulnerabilityReportType! => Array |
-| `scanner` | Filter vulnerabilities by VulnerabilityScanner.externalId. | String! => Array |
-| `severity` | Filter vulnerabilities by severity. | VulnerabilitySeverity! => Array |
-| `sort` | List vulnerabilities by sort order. | VulnerabilitySort |
-| `state` | Filter vulnerabilities by state. | VulnerabilityState! => Array |
+#### Arguments
 
-### VulnerabilitiesCountByDay
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `hasIssues` | Boolean | Returns only the vulnerabilities which have linked issues. |
+| `hasResolution` | Boolean | Returns only the vulnerabilities which have been resolved on default branch. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `projectId` | ID! => Array | Filter vulnerabilities by project. |
+| `reportType` | VulnerabilityReportType! => Array | Filter vulnerabilities by report type. |
+| `scanner` | String! => Array | Filter vulnerabilities by VulnerabilityScanner.externalId. |
+| `severity` | VulnerabilitySeverity! => Array | Filter vulnerabilities by severity. |
+| `sort` | VulnerabilitySort | List vulnerabilities by sort order. |
+| `state` | VulnerabilityState! => Array | Filter vulnerabilities by state. |
+
+### vulnerabilitiesCountByDay
 
 Number of vulnerabilities per day for the projects on the current user's instance security dashboard.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `endDate` | Last day for which to fetch vulnerability history. | ISO8601Date! |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `startDate` | First day for which to fetch vulnerability history. | ISO8601Date! |
+#### Arguments
 
-### VulnerabilitiesCountByDayAndSeverity
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `endDate` | ISO8601Date! | Last day for which to fetch vulnerability history. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `startDate` | ISO8601Date! | First day for which to fetch vulnerability history. |
+
+### vulnerabilitiesCountByDayAndSeverity
 
 Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `after` | Returns the elements in the list that come after the specified cursor. | String |
-| `before` | Returns the elements in the list that come before the specified cursor. | String |
-| `endDate` | Last day for which to fetch vulnerability history. | ISO8601Date! |
-| `first` | Returns the first _n_ elements from the list. | Int |
-| `last` | Returns the last _n_ elements from the list. | Int |
-| `startDate` | First day for which to fetch vulnerability history. | ISO8601Date! |
+#### Arguments
 
-### Vulnerability
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | String | Returns the elements in the list that come after the specified cursor. |
+| `before` | String | Returns the elements in the list that come before the specified cursor. |
+| `endDate` | ISO8601Date! | Last day for which to fetch vulnerability history. |
+| `first` | Int | Returns the first _n_ elements from the list. |
+| `last` | Int | Returns the last _n_ elements from the list. |
+| `startDate` | ISO8601Date! | First day for which to fetch vulnerability history. |
+
+### vulnerability
 
 Find a vulnerability.
 
-| Name | Description | Type |
-| ----- | ---- | ----------- |
-| `id` | The Global ID of the Vulnerability. | VulnerabilityID! |
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | VulnerabilityID! | The Global ID of the Vulnerability. |
 
 ## Object types
 
@@ -4931,24 +4977,24 @@ Values for sorting alerts.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `CREATED_TIME_ASC` | Created time by ascending order |
-| `CREATED_TIME_DESC` | Created time by descending order |
-| `ENDED_AT_ASC` | End time by ascending order |
-| `ENDED_AT_DESC` | End time by descending order |
-| `EVENT_COUNT_ASC` | Events count by ascending order |
-| `EVENT_COUNT_DESC` | Events count by descending order |
-| `SEVERITY_ASC` | Severity from less critical to more critical |
-| `SEVERITY_DESC` | Severity from more critical to less critical |
-| `STARTED_AT_ASC` | Start time by ascending order |
-| `STARTED_AT_DESC` | Start time by descending order |
-| `STATUS_ASC` | Status by order: Ignored > Resolved > Acknowledged > Triggered |
-| `STATUS_DESC` | Status by order: Triggered > Acknowledged > Resolved > Ignored |
-| `UPDATED_ASC` | Updated at ascending order |
-| `UPDATED_DESC` | Updated at descending order |
-| `UPDATED_TIME_ASC` | Created time by ascending order |
-| `UPDATED_TIME_DESC` | Created time by descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `CREATED_TIME_ASC` | Created time by ascending order. |
+| `CREATED_TIME_DESC` | Created time by descending order. |
+| `ENDED_AT_ASC` | End time by ascending order. |
+| `ENDED_AT_DESC` | End time by descending order. |
+| `EVENT_COUNT_ASC` | Events count by ascending order. |
+| `EVENT_COUNT_DESC` | Events count by descending order. |
+| `SEVERITY_ASC` | Severity from less critical to more critical. |
+| `SEVERITY_DESC` | Severity from more critical to less critical. |
+| `STARTED_AT_ASC` | Start time by ascending order. |
+| `STARTED_AT_DESC` | Start time by descending order. |
+| `STATUS_ASC` | Status by order: Ignored > Resolved > Acknowledged > Triggered. |
+| `STATUS_DESC` | Status by order: Triggered > Acknowledged > Resolved > Ignored. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
+| `UPDATED_TIME_ASC` | Created time by ascending order. |
+| `UPDATED_TIME_DESC` | Created time by descending order. |
 | `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
@@ -4960,8 +5006,8 @@ Filters the alerts based on given domain.
 
 | Value | Description |
 | ----- | ----------- |
-| `operations` | Alerts for operations domain |
-| `threat_monitoring` | Alerts for threat monitoring domain |
+| `operations` | Alerts for operations domain. |
+| `threat_monitoring` | Alerts for threat monitoring domain. |
 
 ### AlertManagementIntegrationType
 
@@ -4969,8 +5015,8 @@ Values of types of integrations.
 
 | Value | Description |
 | ----- | ----------- |
-| `HTTP` | Integration with any monitoring tool |
-| `PROMETHEUS` | Prometheus integration |
+| `HTTP` | Integration with any monitoring tool. |
+| `PROMETHEUS` | Prometheus integration. |
 
 ### AlertManagementPayloadAlertFieldName
 
@@ -4995,9 +5041,9 @@ Values for alert field types used in the custom mapping.
 
 | Value | Description |
 | ----- | ----------- |
-| `ARRAY` | Array field type |
-| `DATETIME` | DateTime field type |
-| `STRING` | String field type |
+| `ARRAY` | Array field type. |
+| `DATETIME` | DateTime field type. |
+| `STRING` | String field type. |
 
 ### AlertManagementSeverity
 
@@ -5057,8 +5103,8 @@ Values for YAML processor result.
 
 | Value | Description |
 | ----- | ----------- |
-| `INVALID` | The configuration file is not valid |
-| `VALID` | The configuration file is valid |
+| `INVALID` | The configuration file is not valid. |
+| `VALID` | The configuration file is valid. |
 
 ### CommitActionMode
 
@@ -5066,18 +5112,18 @@ Mode of a commit action.
 
 | Value | Description |
 | ----- | ----------- |
-| `CHMOD` | Chmod command |
-| `CREATE` | Create command |
-| `DELETE` | Delete command |
-| `MOVE` | Move command |
-| `UPDATE` | Update command |
+| `CHMOD` | Chmod command. |
+| `CREATE` | Create command. |
+| `DELETE` | Delete command. |
+| `MOVE` | Move command. |
+| `UPDATE` | Update command. |
 
 ### CommitEncoding
 
 | Value | Description |
 | ----- | ----------- |
-| `BASE64` | Base64 encoding |
-| `TEXT` | Text encoding |
+| `BASE64` | Base64 encoding. |
+| `TEXT` | Text encoding. |
 
 ### ContainerExpirationPolicyCadenceEnum
 
@@ -5126,12 +5172,12 @@ Values for sorting container repositories.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `NAME_ASC` | Name by ascending order |
-| `NAME_DESC` | Name by descending order |
-| `UPDATED_ASC` | Updated at ascending order |
-| `UPDATED_DESC` | Updated at descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `NAME_ASC` | Name by ascending order. |
+| `NAME_DESC` | Name by descending order. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
 | `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
@@ -5157,18 +5203,18 @@ Status of a container repository.
 
 | Value | Description |
 | ----- | ----------- |
-| `FAILED_VALIDATION` | Site validation process finished but failed |
-| `INPROGRESS_VALIDATION` | Site validation process is in progress |
-| `NONE` | No site validation exists |
-| `PASSED_VALIDATION` | Site validation process finished successfully |
-| `PENDING_VALIDATION` | Site validation process has not started |
+| `FAILED_VALIDATION` | Site validation process finished but failed. |
+| `INPROGRESS_VALIDATION` | Site validation process is in progress. |
+| `NONE` | No site validation exists. |
+| `PASSED_VALIDATION` | Site validation process finished successfully. |
+| `PENDING_VALIDATION` | Site validation process has not started. |
 
 ### DastSiteValidationStrategyEnum
 
 | Value | Description |
 | ----- | ----------- |
-| `HEADER` | Header validation |
-| `TEXT_FILE` | Text file validation |
+| `HEADER` | Header validation. |
+| `TEXT_FILE` | Text file validation. |
 
 ### DataVisualizationColorEnum
 
@@ -5219,7 +5265,7 @@ Mutation event of a design within a version.
 | `CREATION` | A creation event |
 | `DELETION` | A deletion event |
 | `MODIFICATION` | A modification event |
-| `NONE` | No change |
+| `NONE` | No change. |
 
 ### DiffPositionType
 
@@ -5246,10 +5292,10 @@ Roadmap sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| `end_date_asc` | End date at ascending order |
-| `end_date_desc` | End date at descending order |
-| `start_date_asc` | Start date at ascending order |
-| `start_date_desc` | Start date at descending order |
+| `end_date_asc` | End date at ascending order. |
+| `end_date_desc` | End date at descending order. |
+| `start_date_asc` | Start date at ascending order. |
+| `start_date_desc` | Start date at descending order. |
 
 ### EpicState
 
@@ -5267,8 +5313,8 @@ State event of an epic.
 
 | Value | Description |
 | ----- | ----------- |
-| `CLOSE` | Close the epic |
-| `REOPEN` | Reopen the epic |
+| `CLOSE` | Close the epic. |
+| `REOPEN` | Reopen the epic. |
 
 ### EpicWildcardId
 
@@ -5276,8 +5322,8 @@ Epic ID wildcard values.
 
 | Value | Description |
 | ----- | ----------- |
-| `ANY` | Any epic is assigned |
-| `NONE` | No epic is assigned |
+| `ANY` | Any epic is assigned. |
+| `NONE` | No epic is assigned. |
 
 ### EventAction
 
@@ -5337,10 +5383,10 @@ State of a GitLab issue or merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` | All available |
-| `closed` | In closed state |
-| `locked` | Discussion has been locked |
-| `opened` | In open state |
+| `all` | All available. |
+| `closed` | In closed state. |
+| `locked` | Discussion has been locked. |
+| `opened` | In open state. |
 
 ### IssueSort
 
@@ -5348,27 +5394,27 @@ Values for sorting issues.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `DUE_DATE_ASC` | Due date by ascending order |
-| `DUE_DATE_DESC` | Due date by descending order |
-| `LABEL_PRIORITY_ASC` | Label priority by ascending order |
-| `LABEL_PRIORITY_DESC` | Label priority by descending order |
-| `MILESTONE_DUE_ASC` | Milestone due date by ascending order |
-| `MILESTONE_DUE_DESC` | Milestone due date by descending order |
-| `PRIORITY_ASC` | Priority by ascending order |
-| `PRIORITY_DESC` | Priority by descending order |
-| `PUBLISHED_ASC` | Published issues shown last |
-| `PUBLISHED_DESC` | Published issues shown first |
-| `RELATIVE_POSITION_ASC` | Relative position by ascending order |
-| `SEVERITY_ASC` | Severity from less critical to more critical |
-| `SEVERITY_DESC` | Severity from more critical to less critical |
-| `SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first |
-| `SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first |
-| `UPDATED_ASC` | Updated at ascending order |
-| `UPDATED_DESC` | Updated at descending order |
-| `WEIGHT_ASC` | Weight by ascending order |
-| `WEIGHT_DESC` | Weight by descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `DUE_DATE_ASC` | Due date by ascending order. |
+| `DUE_DATE_DESC` | Due date by descending order. |
+| `LABEL_PRIORITY_ASC` | Label priority by ascending order. |
+| `LABEL_PRIORITY_DESC` | Label priority by descending order. |
+| `MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
+| `MILESTONE_DUE_DESC` | Milestone due date by descending order. |
+| `PRIORITY_ASC` | Priority by ascending order. |
+| `PRIORITY_DESC` | Priority by descending order. |
+| `PUBLISHED_ASC` | Published issues shown last. |
+| `PUBLISHED_DESC` | Published issues shown first. |
+| `RELATIVE_POSITION_ASC` | Relative position by ascending order. |
+| `SEVERITY_ASC` | Severity from less critical to more critical. |
+| `SEVERITY_DESC` | Severity from more critical to less critical. |
+| `SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first. |
+| `SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
+| `WEIGHT_ASC` | Weight by ascending order. |
+| `WEIGHT_DESC` | Weight by descending order. |
 | `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
@@ -5380,10 +5426,10 @@ State of a GitLab issue.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` | All available |
-| `closed` | In closed state |
-| `locked` | Discussion has been locked |
-| `opened` | In open state |
+| `all` | All available. |
+| `closed` | In closed state. |
+| `locked` | Discussion has been locked. |
+| `opened` | In open state. |
 
 ### IssueStateEvent
 
@@ -5391,8 +5437,8 @@ Values for issue state events.
 
 | Value | Description |
 | ----- | ----------- |
-| `CLOSE` | Closes the issue |
-| `REOPEN` | Reopens the issue |
+| `CLOSE` | Closes the issue. |
+| `REOPEN` | Reopens the issue. |
 
 ### IssueType
 
@@ -5422,9 +5468,9 @@ Iteration ID wildcard values.
 
 | Value | Description |
 | ----- | ----------- |
-| `ANY` | An iteration is assigned |
-| `CURRENT` | Current iteration |
-| `NONE` | No iteration is assigned |
+| `ANY` | An iteration is assigned. |
+| `CURRENT` | Current iteration. |
+| `NONE` | No iteration is assigned. |
 
 ### JobArtifactFileType
 
@@ -5474,16 +5520,16 @@ Possible identifier types for a measurement.
 
 | Value | Description |
 | ----- | ----------- |
-| `GROUPS` | Group count |
-| `ISSUES` | Issue count |
-| `MERGE_REQUESTS` | Merge request count |
-| `PIPELINES` | Pipeline count |
-| `PIPELINES_CANCELED` | Pipeline count with canceled status |
-| `PIPELINES_FAILED` | Pipeline count with failed status |
-| `PIPELINES_SKIPPED` | Pipeline count with skipped status |
-| `PIPELINES_SUCCEEDED` | Pipeline count with success status |
-| `PROJECTS` | Project count |
-| `USERS` | User count |
+| `GROUPS` | Group count. |
+| `ISSUES` | Issue count. |
+| `MERGE_REQUESTS` | Merge request count. |
+| `PIPELINES` | Pipeline count. |
+| `PIPELINES_CANCELED` | Pipeline count with canceled status. |
+| `PIPELINES_FAILED` | Pipeline count with failed status. |
+| `PIPELINES_SKIPPED` | Pipeline count with skipped status. |
+| `PIPELINES_SUCCEEDED` | Pipeline count with success status. |
+| `PROJECTS` | Project count. |
+| `USERS` | User count. |
 
 ### MergeRequestNewState
 
@@ -5500,18 +5546,18 @@ Values for sorting merge requests.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `LABEL_PRIORITY_ASC` | Label priority by ascending order |
-| `LABEL_PRIORITY_DESC` | Label priority by descending order |
-| `MERGED_AT_ASC` | Merge time by ascending order |
-| `MERGED_AT_DESC` | Merge time by descending order |
-| `MILESTONE_DUE_ASC` | Milestone due date by ascending order |
-| `MILESTONE_DUE_DESC` | Milestone due date by descending order |
-| `PRIORITY_ASC` | Priority by ascending order |
-| `PRIORITY_DESC` | Priority by descending order |
-| `UPDATED_ASC` | Updated at ascending order |
-| `UPDATED_DESC` | Updated at descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `LABEL_PRIORITY_ASC` | Label priority by ascending order. |
+| `LABEL_PRIORITY_DESC` | Label priority by descending order. |
+| `MERGED_AT_ASC` | Merge time by ascending order. |
+| `MERGED_AT_DESC` | Merge time by descending order. |
+| `MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
+| `MILESTONE_DUE_DESC` | Milestone due date by descending order. |
+| `PRIORITY_ASC` | Priority by ascending order. |
+| `PRIORITY_DESC` | Priority by descending order. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
 | `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
@@ -5523,11 +5569,11 @@ State of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| `all` | All available |
-| `closed` | In closed state |
-| `locked` | Discussion has been locked |
-| `merged` | Merge Request has been merged |
-| `opened` | In open state |
+| `all` | All available. |
+| `closed` | In closed state. |
+| `locked` | Discussion has been locked. |
+| `merged` | Merge Request has been merged. |
+| `opened` | In open state. |
 
 ### MilestoneStateEnum
 
@@ -5535,8 +5581,8 @@ Current state of milestone.
 
 | Value | Description |
 | ----- | ----------- |
-| `active` | Milestone is currently active |
-| `closed` | Milestone is closed |
+| `active` | Milestone is currently active. |
+| `closed` | Milestone is closed. |
 
 ### MoveType
 
@@ -5544,8 +5590,8 @@ The position to which the adjacent object should be moved.
 
 | Value | Description |
 | ----- | ----------- |
-| `after` | The adjacent object will be moved after the object that is being moved |
-| `before` | The adjacent object will be moved before the object that is being moved |
+| `after` | The adjacent object will be moved after the object that is being moved. |
+| `before` | The adjacent object will be moved before the object that is being moved. |
 
 ### MutationOperationMode
 
@@ -5553,9 +5599,9 @@ Different toggles for changing mutator behavior.
 
 | Value | Description |
 | ----- | ----------- |
-| `APPEND` | Performs an append operation |
-| `REMOVE` | Performs a removal operation |
-| `REPLACE` | Performs a replace operation |
+| `APPEND` | Performs an append operation. |
+| `REMOVE` | Performs a removal operation. |
+| `REPLACE` | Performs a replace operation. |
 
 ### NamespaceProjectSort
 
@@ -5563,8 +5609,8 @@ Values for sorting projects.
 
 | Value | Description |
 | ----- | ----------- |
-| `SIMILARITY` | Most similar to the search query |
-| `STORAGE` | Sort by storage size |
+| `SIMILARITY` | Most similar to the search query. |
+| `STORAGE` | Sort by storage size. |
 
 ### OncallRotationUnitEnum
 
@@ -5638,10 +5684,10 @@ State of a Geo registry.
 
 | Value | Description |
 | ----- | ----------- |
-| `FAILED` | Registry that failed to sync |
-| `PENDING` | Registry waiting to be synced |
-| `STARTED` | Registry currently syncing |
-| `SYNCED` | Registry that is synced |
+| `FAILED` | Registry that failed to sync. |
+| `PENDING` | Registry waiting to be synced. |
+| `STARTED` | Registry currently syncing. |
+| `SYNCED` | Registry that is synced. |
 
 ### ReleaseAssetLinkType
 
@@ -5660,10 +5706,10 @@ Values for sorting releases.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `RELEASED_AT_ASC` | Released at by ascending order |
-| `RELEASED_AT_DESC` | Released at by descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `RELEASED_AT_ASC` | Released at by ascending order. |
+| `RELEASED_AT_DESC` | Released at by descending order. |
 
 ### RequirementState
 
@@ -5726,10 +5772,10 @@ State of a Sentry error.
 
 | Value | Description |
 | ----- | ----------- |
-| `IGNORED` | Error has been ignored |
-| `RESOLVED` | Error has been resolved |
-| `RESOLVED_IN_NEXT_RELEASE` | Error has been ignored until next release |
-| `UNRESOLVED` | Error is unresolved |
+| `IGNORED` | Error has been ignored. |
+| `RESOLVED` | Error has been resolved. |
+| `RESOLVED_IN_NEXT_RELEASE` | Error has been ignored until next release. |
+| `UNRESOLVED` | Error is unresolved. |
 
 ### ServiceType
 
@@ -5789,10 +5835,10 @@ Common sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED_ASC` | Created at ascending order |
-| `CREATED_DESC` | Created at descending order |
-| `UPDATED_ASC` | Updated at ascending order |
-| `UPDATED_DESC` | Updated at descending order |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
 | `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
@@ -5830,12 +5876,12 @@ State of a test report.
 
 | Value | Description |
 | ----- | ----------- |
-| `ALERT` | An Alert |
-| `COMMIT` | A Commit |
-| `DESIGN` | A Design |
-| `EPIC` | An Epic |
-| `ISSUE` | An Issue |
-| `MERGEREQUEST` | A MergeRequest |
+| `ALERT` | An Alert. |
+| `COMMIT` | A Commit. |
+| `DESIGN` | A Design. |
+| `EPIC` | An Epic. |
+| `ISSUE` | An Issue. |
+| `MERGEREQUEST` | A MergeRequest. |
 
 ### TypeEnum
 
@@ -5850,9 +5896,9 @@ Possible states of a user.
 
 | Value | Description |
 | ----- | ----------- |
-| `active` | The user is active and is able to use the system |
-| `blocked` | The user has been blocked and is prevented from using the system |
-| `deactivated` | The user is no longer active and is unable to use the system |
+| `active` | The user is active and is able to use the system. |
+| `blocked` | The user has been blocked and is prevented from using the system. |
+| `deactivated` | The user is no longer active and is unable to use the system. |
 
 ### VisibilityLevelsEnum
 
@@ -5952,16 +5998,16 @@ Vulnerability sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| `detected_asc` | Detection timestamp in ascending order |
-| `detected_desc` | Detection timestamp in descending order |
-| `report_type_asc` | Report Type in ascending order |
-| `report_type_desc` | Report Type in descending order |
-| `severity_asc` | Severity in ascending order |
-| `severity_desc` | Severity in descending order |
-| `state_asc` | State in ascending order |
-| `state_desc` | State in descending order |
-| `title_asc` | Title in ascending order |
-| `title_desc` | Title in descending order |
+| `detected_asc` | Detection timestamp in ascending order. |
+| `detected_desc` | Detection timestamp in descending order. |
+| `report_type_asc` | Report Type in ascending order. |
+| `report_type_desc` | Report Type in descending order. |
+| `severity_asc` | Severity in ascending order. |
+| `severity_desc` | Severity in descending order. |
+| `state_asc` | State in ascending order. |
+| `state_desc` | State in descending order. |
+| `title_asc` | Title in ascending order. |
+| `title_desc` | Title in descending order. |
 
 ### VulnerabilityState
 

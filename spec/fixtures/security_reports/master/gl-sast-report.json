@@ -28,7 +28,21 @@
       "file": "python/hardcoded/hardcoded-tmp.py",
       "line": 1,
       "url": "https://docs.openstack.org/bandit/latest/plugins/b108_hardcoded_tmp_directory.html",
-      "tool": "bandit"
+      "tool": "bandit",
+      "tracking": {
+        "type": "source",
+        "items": [
+          {
+            "file": "python/hardcoded/hardcoded-tmp.py",
+            "start_line": 1,
+            "end_line": 1,
+            "fingerprints": [
+              { "algorithm": "hash", "value": "HASHVALUE" },
+              { "algorithm": "scope_offset", "value": "python/hardcoded/hardcoded-tmp.py:ClassA:method_b:2" }
+            ]
+          }
+        ]
+      }
     },
     {
       "category": "sast",

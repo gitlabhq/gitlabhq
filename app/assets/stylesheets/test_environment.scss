@@ -1,0 +1,11 @@
+// Disable sticky changes bar for tests
+.diff-files-changed {
+  position: relative !important;
+  top: 0 !important;
+}
+
+// Un-hide inputs for @gitlab/ui custom checkboxes and radios so Capybara can target them
+.custom-control-input {
+  z-index: 500;
+  opacity: 1;
+}

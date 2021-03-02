@@ -11,6 +11,15 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.9
+
+We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/322991)
+that prevents regular downtime upgrades to GitLab 13.9.0 and 13.9.1. Zero-downtime upgrades are not
+affected. We are working on a patch and recommend delaying any upgrade attempt until a fixed version
+is released.
+
+More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/322991).
+
 ## Updating to GitLab 13.7
 
 We've detected an issue with the `FetchRemove` call used by Geo secondaries.

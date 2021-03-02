@@ -4,7 +4,7 @@ import LinksLayer from '../graph_shared/links_layer.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH } from './constants';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
-import { reportToSentry } from './utils';
+import { reportToSentry, validateConfigPaths } from './utils';
 
 export default {
   name: 'PipelineGraph',
@@ -15,6 +15,11 @@ export default {
     StageColumnComponent,
   },
   props: {
+    configPaths: {
+      type: Object,
+      required: true,
+      validator: validateConfigPaths,
+    },
     pipeline: {
       type: Object,
       required: true,
@@ -23,11 +28,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    metricsPath: {
-      type: String,
-      required: false,
-      default: '',
     },
     type: {
       type: String,
@@ -73,7 +73,7 @@ export default {
     },
     metricsConfig() {
       return {
-        path: this.metricsPath,
+        path: this.configPaths.metricsPath,
         collectMetrics: true,
       };
     },
@@ -142,6 +142,7 @@ export default {
         <template #upstream>
           <linked-pipelines-column
             v-if="showUpstreamPipelines"
+            :config-paths="configPaths"
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
             :type="$options.pipelineTypeConstants.UPSTREAM"
@@ -182,6 +183,7 @@ export default {
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
             class="gl-mr-6"
+            :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"

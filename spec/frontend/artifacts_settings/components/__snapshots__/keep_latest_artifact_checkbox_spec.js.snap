@@ -7,7 +7,6 @@ exports[`Keep latest artifact checkbox when application keep latest artifact set
   <b-form-checkbox-stub
     checked="true"
     class="gl-form-checkbox"
-    plain="true"
     value="true"
   >
     <strong

@@ -5,7 +5,7 @@ module Types
     graphql_name 'IssueStateEvent'
     description 'Values for issue state events'
 
-    value 'REOPEN', 'Reopens the issue', value: 'reopen'
-    value 'CLOSE', 'Closes the issue', value: 'close'
+    value 'REOPEN', 'Reopens the issue.', value: 'reopen'
+    value 'CLOSE', 'Closes the issue.', value: 'close'
   end
 end

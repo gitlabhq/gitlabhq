@@ -175,7 +175,7 @@ module SystemNoteService
   # Example Note text is based on event_type:
   #
   #   update: "changed target branch from `Old` to `New`"
-  #   delete: "changed automatically target branch to `New` because `Old` was deleted"
+  #   delete: "deleted the `Old` branch. This merge request now targets the `New` branch"
   #
   # Returns the created Note object
   def change_branch(noteable, project, author, branch_type, event_type, old_branch, new_branch)

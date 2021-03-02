@@ -161,6 +161,11 @@ The Okta GitLab application currently only supports SCIM. Continue
 using the separate Okta [SAML SSO](index.md) configuration along with the new SCIM
 application described above.
 
+### OneLogin
+
+OneLogin provides a "GitLab (SaaS)" app in their catalog, which includes a SCIM integration.
+As the app is developed by OneLogin, please reach out to OneLogin if you encounter issues.
+
 ## User access and linking setup
 
 The following diagram is a general outline on what happens when you add users to your SCIM app:

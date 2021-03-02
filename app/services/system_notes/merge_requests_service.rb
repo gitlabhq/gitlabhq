@@ -90,14 +90,14 @@ module SystemNotes
     # Example Note text is based on event_type:
     #
     #   update: "changed target branch from `Old` to `New`"
-    #   delete: "changed automatically target branch to `New` because `Old` was deleted"
+    #   delete: "deleted the `Old` branch. This merge request now targets the `New` branch"
     #
     # Returns the created Note object
     def change_branch(branch_type, event_type, old_branch, new_branch)
       body =
         case event_type.to_s
         when 'delete'
-          "changed automatically #{branch_type} branch to `#{new_branch}` because `#{old_branch}` was deleted"
+          "deleted the `#{old_branch}` branch. This merge request now targets the `#{new_branch}` branch"
         when 'update'
           "changed #{branch_type} branch from `#{old_branch}` to `#{new_branch}`"
         else

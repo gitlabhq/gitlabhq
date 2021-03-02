@@ -14,28 +14,26 @@
 
   WARNING:
   Fields that are deprecated are marked with **{warning-solid}**.
-  Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-process) can be found
+  Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-and-removal-process) can be found
   in [Removed Items](../removed_items.md).
 
   <!-- vale gitlab.Spelling = NO -->
 \
 
 :plain
-  ## Queries
+  ## `Query` type
 
-  Queries are used to get the resources, filter or query them.
-
-  For more information, visit [Queries and Mutations](https://graphql.org/learn/queries/).
+  The `Query` type contains the API's top-level entry points for all executable queries.
 \
 
 - sorted_by_name(queries).each do |query|
-
   = render_name_and_description(query)
   - unless query[:arguments].empty?
-    ~ "| Name | Description | Type |"
-    ~ "| ----- | ---- | ----------- |"
+    ~ "#### Arguments\n"
+    ~ "| Name | Type | Description |"
+    ~ "| ---- | ---- | ----------- |"
     - sorted_by_name(query[:arguments]).each do |argument|
-      = render_argument(argument)
+      = render_field(argument)
     \
 
 :plain

@@ -17,5 +17,5 @@ export const RESET_INTEGRATION_TOKEN_ERROR = s__(
 );
 
 export const INTEGRATION_PAYLOAD_TEST_ERROR = s__(
-  'AlertsIntegrations|Integration payload is invalid. You can still save your changes.',
+  'AlertsIntegrations|Integration payload is invalid.',
 );

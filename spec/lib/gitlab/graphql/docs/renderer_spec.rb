@@ -53,13 +53,15 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       context 'query generation' do
         let(:expectation) do
           <<~DOC
-            ### Foo
+            ### foo
 
             List of objects.
 
-            | Name | Description | Type |
-            | ----- | ---- | ----------- |
-            | `id` | ID of the object. | ID |
+            #### Arguments
+
+            | Name | Type | Description |
+            | ---- | ---- | ----------- |
+            | `id` | ID | ID of the object. |
           DOC
         end
 

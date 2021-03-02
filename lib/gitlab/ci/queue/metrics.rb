@@ -27,6 +27,7 @@ module Gitlab
           :queue_attempt,
           :queue_conflict,
           :queue_iteration,
+          :queue_depth_limit,
           :queue_replication_lag,
           :runner_pre_assign_checks_failed,
           :runner_pre_assign_checks_success,

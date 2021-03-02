@@ -48,7 +48,7 @@ describe('Merge Requests Artifacts list app', () => {
   };
 
   const findButtons = () => wrapper.findAll('button');
-  const findTitle = () => wrapper.find('.js-title');
+  const findTitle = () => wrapper.find('[data-testid="mr-collapsible-title"]');
   const findErrorMessage = () => wrapper.find('.js-error-state');
   const findTableRows = () => wrapper.findAll('tbody tr');
 

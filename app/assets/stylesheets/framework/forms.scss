@@ -35,7 +35,8 @@ label {
     margin: 0;
   }
 
-  &.form-check-label {
+  &.form-check-label,
+  &.custom-control-label {
     font-weight: $gl-font-weight-normal;
   }
 

@@ -151,7 +151,11 @@ export default {
     <template #body>
       <div class="mr-widget-grouped-section report-block">
         <template v-for="(report, i) in reports">
-          <summary-row :key="`summary-row-${i}`" :status-icon="getReportIcon(report)">
+          <summary-row
+            :key="`summary-row-${i}`"
+            :status-icon="getReportIcon(report)"
+            nested-summary
+          >
             <template #summary>
               <div class="gl-display-inline-flex gl-flex-direction-column">
                 <div>{{ reportText(report) }}</div>
@@ -168,7 +172,7 @@ export default {
             :new-issues="newIssues(report)"
             :resolved-issues="resolvedIssues(report)"
             :component="$options.componentNames.TestIssueBody"
-            class="report-block-group-list"
+            :nested-level="2"
           />
         </template>
         <modal

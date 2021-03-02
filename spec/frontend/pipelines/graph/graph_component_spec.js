@@ -20,6 +20,10 @@ describe('graph component', () => {
 
   const defaultProps = {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
+    configPaths: {
+      metricsPath: '',
+      graphqlResourceEtag: 'this/is/a/path',
+    },
   };
 
   const defaultData = {

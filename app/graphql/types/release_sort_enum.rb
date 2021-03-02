@@ -9,10 +9,10 @@ module Types
 
     # Borrowed from Types::SortEnum
     # These values/descriptions should stay in-sync as much as possible.
-    value 'CREATED_DESC', 'Created at descending order', value: :created_desc
-    value 'CREATED_ASC', 'Created at ascending order', value: :created_asc
+    value 'CREATED_DESC', 'Created at descending order.', value: :created_desc
+    value 'CREATED_ASC', 'Created at ascending order.', value: :created_asc
 
-    value 'RELEASED_AT_DESC', 'Released at by descending order', value: :released_at_desc
-    value 'RELEASED_AT_ASC', 'Released at by ascending order', value: :released_at_asc
+    value 'RELEASED_AT_DESC', 'Released at by descending order.', value: :released_at_desc
+    value 'RELEASED_AT_ASC', 'Released at by ascending order.', value: :released_at_asc
   end
 end

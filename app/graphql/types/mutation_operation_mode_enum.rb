@@ -7,8 +7,8 @@ module Types
 
     # Suggested param name for the enum: `operation_mode`
 
-    value 'REPLACE', 'Performs a replace operation'
-    value 'APPEND', 'Performs an append operation'
-    value 'REMOVE', 'Performs a removal operation'
+    value 'REPLACE', 'Performs a replace operation.'
+    value 'APPEND', 'Performs an append operation.'
+    value 'REMOVE', 'Performs a removal operation.'
   end
 end

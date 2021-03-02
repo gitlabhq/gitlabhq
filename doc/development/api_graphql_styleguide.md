@@ -76,6 +76,25 @@ Rake task.
 
 Requests time out at 30 seconds.
 
+## Breaking changes
+
+The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) which means
+developers must familiarize themselves with our [deprecation cycle of breaking changes](#breaking-changes).
+
+Breaking changes are:
+
+- Removing or renaming a field, argument, enum value or mutation.
+- Changing the type of a field, argument or enum value.
+- Raising the [complexity](#max-complexity) of a field or complexity multipliers in a resolver.
+- Changing the [max page size](#page-size-limit) of a connection.
+- Lowering the global limits for query complexity and depth.
+- Anything else that can result in queries hitting a limit that previously was allowed.
+
+Fields that use the [`feature_flag` property](#feature_flag-property) and the flag is disabled by default are exempt
+from the deprecation process, and can be removed at any time without notice.
+
+See the [deprecating fields and enum values](#deprecating-fields-arguments-and-enum-values) section for how to deprecate items.
+
 ## Global IDs
 
 The GitLab GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
@@ -499,7 +518,7 @@ Rather than removing fields, arguments, or [enum values](#enums), they
 must be _deprecated_ instead.
 
 The deprecated parts of the schema can then be removed in a future release
-in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-process).
+in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-and-removal-process).
 
 Fields, arguments, and enum values are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:

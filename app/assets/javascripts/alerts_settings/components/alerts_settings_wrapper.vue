@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
@@ -31,20 +32,24 @@ import {
 import IntegrationsList from './alerts_integrations_list.vue';
 import AlertSettingsForm from './alerts_settings_form.vue';
 
+export const i18n = {
+  changesSaved: s__(
+    'AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list.',
+  ),
+  integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
+  alertSent: s__(
+    'AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list.',
+  ),
+  addNewIntegration: s__('AlertSettings|Add new integration'),
+};
+
 export default {
   typeSet,
-  i18n: {
-    changesSaved: s__(
-      'AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list.',
-    ),
-    integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
-    alertSent: s__(
-      'AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list.',
-    ),
-  },
+  i18n,
   components: {
     IntegrationsList,
     AlertSettingsForm,
+    GlButton,
   },
   inject: {
     generic: {
@@ -116,10 +121,10 @@ export default {
   data() {
     return {
       isUpdating: false,
-      testAlertPayload: null,
       integrations: {},
       httpIntegrations: {},
       currentIntegration: null,
+      formVisible: false,
     };
   },
   computed: {
@@ -161,18 +166,6 @@ export default {
             return createFlash({ message: error });
           }
 
-          if (this.testAlertPayload) {
-            const integration =
-              httpIntegrationCreate?.integration || prometheusIntegrationCreate?.integration;
-
-            const payload = {
-              ...this.testAlertPayload,
-              endpoint: integration.url,
-              token: integration.token,
-            };
-            return this.validateAlertPayload(payload);
-          }
-
           return createFlash({
             message: this.$options.i18n.changesSaved,
             type: FLASH_TYPES.SUCCESS,
@@ -203,10 +196,6 @@ export default {
             return createFlash({ message: error });
           }
 
-          if (this.testAlertPayload) {
-            return this.validateAlertPayload();
-          }
-
           this.clearCurrentIntegration({ type });
 
           return createFlash({
@@ -219,7 +208,6 @@ export default {
         })
         .finally(() => {
           this.isUpdating = false;
-          this.testAlertPayload = null;
         });
     },
     resetToken({ type, variables }) {
@@ -276,6 +264,7 @@ export default {
           : updateCurrentPrometheusIntegrationMutation,
         variables: currentIntegration,
       });
+      this.setFormVisibility(true);
     },
     deleteIntegration({ id, type }) {
       const { projectPath } = this;
@@ -308,19 +297,19 @@ export default {
         });
     },
     clearCurrentIntegration({ type }) {
-      this.$apollo.mutate({
-        mutation: this.isHttp(type)
-          ? updateCurrentHttpIntegrationMutation
-          : updateCurrentPrometheusIntegrationMutation,
-        variables: {},
-      });
+      if (type) {
+        this.$apollo.mutate({
+          mutation: this.isHttp(type)
+            ? updateCurrentHttpIntegrationMutation
+            : updateCurrentPrometheusIntegrationMutation,
+          variables: {},
+        });
+      }
+      this.setFormVisibility(false);
     },
-    setTestAlertPayload(payload) {
-      this.testAlertPayload = payload;
-    },
-    validateAlertPayload(payload) {
+    testAlertPayload(payload) {
       return service
-        .updateTestAlert(payload ?? this.testAlertPayload)
+        .updateTestAlert(payload)
         .then(() => {
           return createFlash({
             message: this.$options.i18n.alertSent,
@@ -330,6 +319,9 @@ export default {
         .catch(() => {
           createFlash({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
         });
+    },
+    setFormVisibility(visible) {
+      this.formVisible = visible;
     },
   },
 };
@@ -343,7 +335,18 @@ export default {
       @edit-integration="editIntegration"
       @delete-integration="deleteIntegration"
     />
+    <gl-button
+      v-if="canAddIntegration && !formVisible"
+      category="secondary"
+      variant="confirm"
+      data-testid="add-integration-btn"
+      class="gl-mt-3"
+      @click="setFormVisibility(true)"
+    >
+      {{ $options.i18n.addNewIntegration }}
+    </gl-button>
     <alert-settings-form
+      v-if="formVisible"
       :loading="isUpdating"
       :can-add-integration="canAddIntegration"
       :alert-fields="alertFields"
@@ -351,7 +354,7 @@ export default {
       @update-integration="updateIntegration"
       @reset-token="resetToken"
       @clear-current-integration="clearCurrentIntegration"
-      @set-test-alert-payload="setTestAlertPayload"
+      @test-alert-payload="testAlertPayload"
     />
   </div>
 </template>

@@ -332,4 +332,14 @@ RSpec.describe GitlabRoutingHelper do
       end
     end
   end
+
+  context 'GraphQL ETag paths' do
+    context 'with pipelines' do
+      let(:pipeline) { double(id: 5) }
+
+      it 'returns an ETag path for pipelines' do
+        expect(graphql_etag_pipeline_path(pipeline)).to eq('/api/graphql:pipelines/id/5')
+      end
+    end
+  end
 end

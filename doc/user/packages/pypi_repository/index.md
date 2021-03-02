@@ -317,18 +317,24 @@ more than once, a `404 Bad Request` error occurs.
 To install the latest version of a package, use the following command:
 
 ```shell
-pip install --extra-index-url https://__token__:<personal_access_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple --no-deps <package_name>
+pip install --index-url https://__token__:<personal_access_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple --no-deps <package_name>
 ```
 
 - `<package_name>` is the package name.
 - `<personal_access_token>` is a personal access token with the `read_api` scope.
 - `<project_id>` is the project ID.
 
+In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
+`--extra-index-url` makes you vulnerable to dependency confusion attacks because it checks the PyPi
+repository for the package before it checks the custom repository. `--extra-index-url` adds the
+provided URL as an additional registry which the client checks if the package is present.
+`--index-url` tells the client to check for the package on the provided URL only.
+
 If you were following the guide and want to install the
 `MyPyPiPackage` package, you can run:
 
 ```shell
-pip install mypypipackage --no-deps --extra-index-url https://__token__:<personal_access_token>@gitlab.example.com/api/v4/projects/<your_project_id>/packages/pypi/simple
+pip install mypypipackage --no-deps --index-url https://__token__:<personal_access_token>@gitlab.example.com/api/v4/projects/<your_project_id>/packages/pypi/simple
 ```
 
 This message indicates that the package was installed successfully:

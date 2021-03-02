@@ -1,11 +1,4 @@
-import {
-  GlForm,
-  GlFormSelect,
-  GlCollapse,
-  GlFormInput,
-  GlToggle,
-  GlFormTextarea,
-} from '@gitlab/ui';
+import { GlForm, GlFormSelect, GlFormInput, GlToggle, GlFormTextarea, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
@@ -52,18 +45,18 @@ describe('AlertsSettingsForm', () => {
 
   const findForm = () => wrapper.find(GlForm);
   const findSelect = () => wrapper.find(GlFormSelect);
-  const findFormSteps = () => wrapper.find(GlCollapse);
   const findFormFields = () => wrapper.findAll(GlFormInput);
   const findFormToggle = () => wrapper.find(GlToggle);
-  const findTestPayloadSection = () => wrapper.find(`[id = "test-integration"]`);
+  const findSamplePayloadSection = () => wrapper.find('[data-testid="sample-payload-section"]');
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
   const findMappingBuilder = () => wrapper.findComponent(MappingBuilder);
   const findSubmitButton = () => wrapper.find(`[type = "submit"]`);
   const findMultiSupportText = () =>
     wrapper.find(`[data-testid="multi-integrations-not-supported"]`);
-  const findJsonTestSubmit = () => wrapper.find(`[data-testid="integration-test-and-submit"]`);
+  const findJsonTestSubmit = () => wrapper.find(`[data-testid="send-test-alert"]`);
   const findJsonTextArea = () => wrapper.find(`[id = "test-payload"]`);
   const findActionBtn = () => wrapper.find(`[data-testid="payload-action-btn"]`);
+  const findTabs = () => wrapper.findAll(GlTab);
 
   afterEach(() => {
     if (wrapper) {
@@ -95,7 +88,7 @@ describe('AlertsSettingsForm', () => {
       expect(findForm().exists()).toBe(true);
       expect(findSelect().exists()).toBe(true);
       expect(findMultiSupportText().exists()).toBe(false);
-      expect(findFormSteps().attributes('visible')).toBeUndefined();
+      expect(findFormFields()).toHaveLength(0);
     });
 
     it('shows the rest of the form when the dropdown is used', async () => {
@@ -110,11 +103,40 @@ describe('AlertsSettingsForm', () => {
       expect(findMultiSupportText().exists()).toBe(true);
     });
 
-    it('disabled the name input when the selected value is prometheus', async () => {
+    it('hides the name input when the selected value is prometheus', async () => {
       createComponent();
       await selectOptionAtIndex(2);
+      expect(findFormFields().at(0).attributes('id')).not.toBe('name-integration');
+    });
 
-      expect(findFormFields().at(0).attributes('disabled')).toBe('disabled');
+    describe('form tabs', () => {
+      it('renders 3 tabs', () => {
+        expect(findTabs()).toHaveLength(3);
+      });
+
+      it('only first tab is enabled on integration create', () => {
+        createComponent({
+          data: {
+            currentIntegration: null,
+          },
+        });
+        const tabs = findTabs();
+        expect(tabs.at(0).find('[role="tabpanel"]').classes('disabled')).toBe(false);
+        expect(tabs.at(1).find('[role="tabpanel"]').classes('disabled')).toBe(true);
+        expect(tabs.at(2).find('[role="tabpanel"]').classes('disabled')).toBe(true);
+      });
+
+      it('all tabs are enabled on integration edit', () => {
+        createComponent({
+          data: {
+            currentIntegration: { id: 1 },
+          },
+        });
+        const tabs = findTabs();
+        expect(tabs.at(0).find('[role="tabpanel"]').classes('disabled')).toBe(false);
+        expect(tabs.at(1).find('[role="tabpanel"]').classes('disabled')).toBe(false);
+        expect(tabs.at(2).find('[role="tabpanel"]').classes('disabled')).toBe(false);
+      });
     });
   });
 
@@ -195,14 +217,9 @@ describe('AlertsSettingsForm', () => {
     describe('PROMETHEUS', () => {
       it('create', async () => {
         createComponent();
-
         await selectOptionAtIndex(2);
-
         const apiUrl = 'https://test.com';
-        enableIntegration(1, apiUrl);
-
-        findFormToggle().trigger('click');
-
+        enableIntegration(0, apiUrl);
         const submitBtn = findSubmitButton();
         expect(submitBtn.exists()).toBe(true);
         expect(submitBtn.text()).toBe('Save integration');
@@ -226,7 +243,7 @@ describe('AlertsSettingsForm', () => {
         });
 
         const apiUrl = 'https://test-post.com';
-        enableIntegration(1, apiUrl);
+        enableIntegration(0, apiUrl);
 
         const submitBtn = findSubmitButton();
         expect(submitBtn.exists()).toBe(true);
@@ -264,7 +281,7 @@ describe('AlertsSettingsForm', () => {
 
       const jsonTestSubmit = findJsonTestSubmit();
       expect(jsonTestSubmit.exists()).toBe(true);
-      expect(jsonTestSubmit.text()).toBe('Save and test payload');
+      expect(jsonTestSubmit.text()).toBe('Send');
       expect(jsonTestSubmit.props('disabled')).toBe(true);
     });
 
@@ -313,16 +330,14 @@ describe('AlertsSettingsForm', () => {
 
       it(`textarea should be ${enabledState} when payload reset ${payloadResetMsg} and current integration is ${activeState}`, async () => {
         wrapper.setData({
-          currentIntegration: {
-            type: typeSet.http,
-            payloadExample: validSamplePayload,
-            payloadAttributeMappings: [],
-          },
+          selectedIntegration: typeSet.http,
           active,
           resetPayloadAndMappingConfirmed,
         });
         await wrapper.vm.$nextTick();
-        expect(findTestPayloadSection().find(GlFormTextarea).attributes('disabled')).toBe(disabled);
+        expect(findSamplePayloadSection().find(GlFormTextarea).attributes('disabled')).toBe(
+          disabled,
+        );
       });
     });
 
@@ -330,9 +345,9 @@ describe('AlertsSettingsForm', () => {
       describe.each`
         resetPayloadAndMappingConfirmed | payloadExample        | caption
         ${false}                        | ${validSamplePayload} | ${'Edit payload'}
-        ${true}                         | ${emptySamplePayload} | ${'Submit payload'}
-        ${true}                         | ${validSamplePayload} | ${'Submit payload'}
-        ${false}                        | ${emptySamplePayload} | ${'Submit payload'}
+        ${true}                         | ${emptySamplePayload} | ${'Parse payload for custom mapping'}
+        ${true}                         | ${validSamplePayload} | ${'Parse payload for custom mapping'}
+        ${false}                        | ${emptySamplePayload} | ${'Parse payload for custom mapping'}
       `('', ({ resetPayloadAndMappingConfirmed, payloadExample, caption }) => {
         const samplePayloadMsg = payloadExample ? 'was provided' : 'was not provided';
         const payloadResetMsg = resetPayloadAndMappingConfirmed
@@ -386,7 +401,7 @@ describe('AlertsSettingsForm', () => {
 
         await waitForPromises();
 
-        expect(findTestPayloadSection().find('.invalid-feedback').text()).toBe(errorMessage);
+        expect(findSamplePayloadSection().find('.invalid-feedback').text()).toBe(errorMessage);
       });
     });
   });

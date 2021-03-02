@@ -127,7 +127,7 @@ module Gitlab
           return unless Gitlab::CurrentSettings.usage_ping_enabled?
 
           event = event_for(event_name)
-          raise UnknownEvent, "Unknown event #{event_name}" unless event.present?
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}")) unless event.present?
 
           return unless feature_enabled?(event)
 
