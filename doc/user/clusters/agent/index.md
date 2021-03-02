@@ -229,7 +229,31 @@ the Agent in subsequent steps. You can create an Agent record either:
   [Getting started with the GraphQL API page](../../../api/graphql/getting_started.md),
   or the [GraphQL Explorer](https://gitlab.com/-/graphql-explorer).
 
-### Create the Kubernetes secret
+### Install the Agent into the cluster
+
+Next, install the in-cluster component of the Agent. 
+
+#### One-liner installation
+
+Replace the value of `agent-token` below with the token received from the previous step. Also, replace `kas-address` with the configured access of the Kubernetes Agent Server:
+
+```shell
+docker run --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:latest generate --agent-token=your-agent-token --kas-address=wss://kas.gitlab.example.com --agent-version latest | kubectl apply -f -
+```
+
+To find out the various options the above Docker container supports, run:
+
+```shell
+docker run --rm -it registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:latest generate --help
+```
+
+#### Advanced installation
+
+For more advanced configurations, we recommend to use [the `kpt` based installation method](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent).
+
+Otherwise, you can follow below for fully manual, detailed installation steps.
+
+##### Create the Kubernetes secret
 
 After generating the token, you must apply it to the Kubernetes cluster.
 
@@ -245,9 +269,7 @@ After generating the token, you must apply it to the Kubernetes cluster.
    kubectl create secret generic -n <YOUR-DESIRED-NAMESPACE> gitlab-agent-token --from-literal=token='YOUR_AGENT_TOKEN'
    ```
 
-### Install the Agent into the cluster
-
-Next, install the in-cluster component of the Agent. This example file contains the
+The following example file contains the
 Kubernetes resources required for the Agent to be installed. You can modify this
 example [`resources.yml` file](#example-resourcesyml-file) in the following ways:
 
@@ -294,7 +316,7 @@ NAMESPACE     NAME                               READY   STATUS    RESTARTS   AG
 gitlab-agent  gitlab-agent-77689f7dcb-5skqk      1/1     Running   0          51s
 ```
 
-#### Example `resources.yml` file
+##### Example `resources.yml` file
 
 ```yaml
 apiVersion: v1

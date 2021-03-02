@@ -242,7 +242,7 @@ class Environment < ApplicationRecord
   def cancel_deployment_jobs!
     jobs = active_deployments.with_deployable
     jobs.each do |deployment|
-      Gitlab::OptimisticLocking.retry_lock(deployment.deployable) do |deployable|
+      Gitlab::OptimisticLocking.retry_lock(deployment.deployable, name: 'environment_cancel_deployment_jobs') do |deployable|
         deployable.cancel! if deployable&.cancelable?
       end
     rescue => e

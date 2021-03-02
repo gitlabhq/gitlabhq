@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to install GitLab on OpenShift Origin 3
+# How to install GitLab on OpenShift Origin 3 **(FREE SELF)**
 
 WARNING:
 This article is deprecated. Use the official Kubernetes Helm charts for

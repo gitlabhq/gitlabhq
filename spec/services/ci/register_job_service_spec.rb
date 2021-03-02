@@ -13,573 +13,656 @@ module Ci
     let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
     describe '#execute' do
-      context 'runner follow tag list' do
-        it "picks build with the same tag" do
-          pending_job.update!(tag_list: ["linux"])
-          specific_runner.update!(tag_list: ["linux"])
-          expect(execute(specific_runner)).to eq(pending_job)
+      shared_examples 'handles runner assignment' do
+        context 'runner follow tag list' do
+          it "picks build with the same tag" do
+            pending_job.update!(tag_list: ["linux"])
+            specific_runner.update!(tag_list: ["linux"])
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
+
+          it "does not pick build with different tag" do
+            pending_job.update!(tag_list: ["linux"])
+            specific_runner.update!(tag_list: ["win32"])
+            expect(execute(specific_runner)).to be_falsey
+          end
+
+          it "picks build without tag" do
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
+
+          it "does not pick build with tag" do
+            pending_job.update!(tag_list: ["linux"])
+            expect(execute(specific_runner)).to be_falsey
+          end
+
+          it "pick build without tag" do
+            specific_runner.update!(tag_list: ["win32"])
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
         end
 
-        it "does not pick build with different tag" do
-          pending_job.update!(tag_list: ["linux"])
-          specific_runner.update!(tag_list: ["win32"])
-          expect(execute(specific_runner)).to be_falsey
+        context 'deleted projects' do
+          before do
+            project.update!(pending_delete: true)
+          end
+
+          context 'for shared runners' do
+            before do
+              project.update!(shared_runners_enabled: true)
+            end
+
+            it 'does not pick a build' do
+              expect(execute(shared_runner)).to be_nil
+            end
+          end
+
+          context 'for specific runner' do
+            it 'does not pick a build' do
+              expect(execute(specific_runner)).to be_nil
+            end
+          end
         end
 
-        it "picks build without tag" do
-          expect(execute(specific_runner)).to eq(pending_job)
-        end
-
-        it "does not pick build with tag" do
-          pending_job.update!(tag_list: ["linux"])
-          expect(execute(specific_runner)).to be_falsey
-        end
-
-        it "pick build without tag" do
-          specific_runner.update!(tag_list: ["win32"])
-          expect(execute(specific_runner)).to eq(pending_job)
-        end
-      end
-
-      context 'deleted projects' do
-        before do
-          project.update!(pending_delete: true)
-        end
-
-        context 'for shared runners' do
+        context 'allow shared runners' do
           before do
             project.update!(shared_runners_enabled: true)
           end
 
-          it 'does not pick a build' do
-            expect(execute(shared_runner)).to be_nil
-          end
-        end
-
-        context 'for specific runner' do
-          it 'does not pick a build' do
-            expect(execute(specific_runner)).to be_nil
-          end
-        end
-      end
-
-      context 'allow shared runners' do
-        before do
-          project.update!(shared_runners_enabled: true)
-        end
-
-        context 'for multiple builds' do
-          let!(:project2) { create :project, shared_runners_enabled: true }
-          let!(:pipeline2) { create :ci_pipeline, project: project2 }
-          let!(:project3) { create :project, shared_runners_enabled: true }
-          let!(:pipeline3) { create :ci_pipeline, project: project3 }
-          let!(:build1_project1) { pending_job }
-          let!(:build2_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
-          let!(:build3_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
-          let!(:build1_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
-          let!(:build2_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
-          let!(:build1_project3) { FactoryBot.create :ci_build, pipeline: pipeline3 }
-
-          it 'prefers projects without builds first' do
-            # it gets for one build from each of the projects
-            expect(execute(shared_runner)).to eq(build1_project1)
-            expect(execute(shared_runner)).to eq(build1_project2)
-            expect(execute(shared_runner)).to eq(build1_project3)
-
-            # then it gets a second build from each of the projects
-            expect(execute(shared_runner)).to eq(build2_project1)
-            expect(execute(shared_runner)).to eq(build2_project2)
-
-            # in the end the third build
-            expect(execute(shared_runner)).to eq(build3_project1)
-          end
-
-          it 'equalises number of running builds' do
-            # after finishing the first build for project 1, get a second build from the same project
-            expect(execute(shared_runner)).to eq(build1_project1)
-            build1_project1.reload.success
-            expect(execute(shared_runner)).to eq(build2_project1)
-
-            expect(execute(shared_runner)).to eq(build1_project2)
-            build1_project2.reload.success
-            expect(execute(shared_runner)).to eq(build2_project2)
-            expect(execute(shared_runner)).to eq(build1_project3)
-            expect(execute(shared_runner)).to eq(build3_project1)
-          end
-        end
-
-        context 'shared runner' do
-          let(:response) { described_class.new(shared_runner).execute }
-          let(:build) { response.build }
-
-          it { expect(build).to be_kind_of(Build) }
-          it { expect(build).to be_valid }
-          it { expect(build).to be_running }
-          it { expect(build.runner).to eq(shared_runner) }
-          it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
-        end
-
-        context 'specific runner' do
-          let(:build) { execute(specific_runner) }
-
-          it { expect(build).to be_kind_of(Build) }
-          it { expect(build).to be_valid }
-          it { expect(build).to be_running }
-          it { expect(build.runner).to eq(specific_runner) }
-        end
-      end
-
-      context 'disallow shared runners' do
-        before do
-          project.update!(shared_runners_enabled: false)
-        end
-
-        context 'shared runner' do
-          let(:build) { execute(shared_runner) }
-
-          it { expect(build).to be_nil }
-        end
-
-        context 'specific runner' do
-          let(:build) { execute(specific_runner) }
-
-          it { expect(build).to be_kind_of(Build) }
-          it { expect(build).to be_valid }
-          it { expect(build).to be_running }
-          it { expect(build.runner).to eq(specific_runner) }
-        end
-      end
-
-      context 'disallow when builds are disabled' do
-        before do
-          project.update!(shared_runners_enabled: true, group_runners_enabled: true)
-          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
-        end
-
-        context 'and uses shared runner' do
-          let(:build) { execute(shared_runner) }
-
-          it { expect(build).to be_nil }
-        end
-
-        context 'and uses group runner' do
-          let(:build) { execute(group_runner) }
-
-          it { expect(build).to be_nil }
-        end
-
-        context 'and uses project runner' do
-          let(:build) { execute(specific_runner) }
-
-          it { expect(build).to be_nil }
-        end
-      end
-
-      context 'allow group runners' do
-        before do
-          project.update!(group_runners_enabled: true)
-        end
-
-        context 'for multiple builds' do
-          let!(:project2) { create(:project, group_runners_enabled: true, group: group) }
-          let!(:pipeline2) { create(:ci_pipeline, project: project2) }
-          let!(:project3) { create(:project, group_runners_enabled: true, group: group) }
-          let!(:pipeline3) { create(:ci_pipeline, project: project3) }
-
-          let!(:build1_project1) { pending_job }
-          let!(:build2_project1) { create(:ci_build, pipeline: pipeline) }
-          let!(:build3_project1) { create(:ci_build, pipeline: pipeline) }
-          let!(:build1_project2) { create(:ci_build, pipeline: pipeline2) }
-          let!(:build2_project2) { create(:ci_build, pipeline: pipeline2) }
-          let!(:build1_project3) { create(:ci_build, pipeline: pipeline3) }
-
-          # these shouldn't influence the scheduling
-          let!(:unrelated_group) { create(:group) }
-          let!(:unrelated_project) { create(:project, group_runners_enabled: true, group: unrelated_group) }
-          let!(:unrelated_pipeline) { create(:ci_pipeline, project: unrelated_project) }
-          let!(:build1_unrelated_project) { create(:ci_build, pipeline: unrelated_pipeline) }
-          let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
-
-          it 'does not consider builds from other group runners' do
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
-            execute(group_runner)
-
-            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
-            expect(execute(group_runner)).to be_nil
-          end
-        end
-
-        context 'group runner' do
-          let(:build) { execute(group_runner) }
-
-          it { expect(build).to be_kind_of(Build) }
-          it { expect(build).to be_valid }
-          it { expect(build).to be_running }
-          it { expect(build.runner).to eq(group_runner) }
-        end
-      end
-
-      context 'disallow group runners' do
-        before do
-          project.update!(group_runners_enabled: false)
-        end
-
-        context 'group runner' do
-          let(:build) { execute(group_runner) }
-
-          it { expect(build).to be_nil }
-        end
-      end
-
-      context 'when first build is stalled' do
-        before do
-          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!).and_call_original
-          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!)
-            .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
-        end
-
-        subject { described_class.new(specific_runner).execute }
-
-        context 'with multiple builds are in queue' do
-          let!(:other_build) { create :ci_build, pipeline: pipeline }
-
-          before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-              .and_return(Ci::Build.where(id: [pending_job, other_build]))
-          end
-
-          it "receives second build from the queue" do
-            expect(subject).to be_valid
-            expect(subject.build).to eq(other_build)
-          end
-        end
-
-        context 'when single build is in queue' do
-          before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-              .and_return(Ci::Build.where(id: pending_job))
-          end
-
-          it "does not receive any valid result" do
-            expect(subject).not_to be_valid
-          end
-        end
-
-        context 'when there is no build in queue' do
-          before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-              .and_return(Ci::Build.none)
-          end
-
-          it "does not receive builds but result is valid" do
-            expect(subject).to be_valid
-            expect(subject.build).to be_nil
-          end
-        end
-      end
-
-      context 'when access_level of runner is not_protected' do
-        let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
-
-        context 'when a job is protected' do
-          let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
-
-          it 'picks the job' do
-            expect(execute(specific_runner)).to eq(pending_job)
-          end
-        end
-
-        context 'when a job is unprotected' do
-          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-          it 'picks the job' do
-            expect(execute(specific_runner)).to eq(pending_job)
-          end
-        end
-
-        context 'when protected attribute of a job is nil' do
-          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-          before do
-            pending_job.update_attribute(:protected, nil)
-          end
-
-          it 'picks the job' do
-            expect(execute(specific_runner)).to eq(pending_job)
-          end
-        end
-      end
-
-      context 'when access_level of runner is ref_protected' do
-        let!(:specific_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
-
-        context 'when a job is protected' do
-          let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
-
-          it 'picks the job' do
-            expect(execute(specific_runner)).to eq(pending_job)
-          end
-        end
-
-        context 'when a job is unprotected' do
-          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-          it 'does not pick the job' do
-            expect(execute(specific_runner)).to be_nil
-          end
-        end
-
-        context 'when protected attribute of a job is nil' do
-          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-          before do
-            pending_job.update_attribute(:protected, nil)
-          end
-
-          it 'does not pick the job' do
-            expect(execute(specific_runner)).to be_nil
-          end
-        end
-      end
-
-      context 'runner feature set is verified' do
-        let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
-        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, options: options) }
-
-        subject { execute(specific_runner, params) }
-
-        context 'when feature is missing by runner' do
-          let(:params) { {} }
-
-          it 'does not pick the build and drops the build' do
-            expect(subject).to be_nil
-            expect(pending_job.reload).to be_failed
-            expect(pending_job).to be_runner_unsupported
-          end
-        end
-
-        context 'when feature is supported by runner' do
-          let(:params) do
-            { info: { features: { upload_multiple_artifacts: true } } }
-          end
-
-          it 'does pick job' do
-            expect(subject).not_to be_nil
-          end
-        end
-      end
-
-      context 'when "dependencies" keyword is specified' do
-        shared_examples 'not pick' do
-          it 'does not pick the build and drops the build' do
-            expect(subject).to be_nil
-            expect(pending_job.reload).to be_failed
-            expect(pending_job).to be_missing_dependency_failure
-          end
-        end
-
-        shared_examples 'validation is active' do
-          context 'when depended job has not been completed yet' do
-            let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
-
-            it { expect(subject).to eq(pending_job) }
-          end
-
-          context 'when artifacts of depended job has been expired' do
-            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
-
-            it_behaves_like 'not pick'
-          end
-
-          context 'when artifacts of depended job has been erased' do
-            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
-
-            before do
-              pre_stage_job.erase
+          context 'for multiple builds' do
+            let!(:project2) { create :project, shared_runners_enabled: true }
+            let!(:pipeline2) { create :ci_pipeline, project: project2 }
+            let!(:project3) { create :project, shared_runners_enabled: true }
+            let!(:pipeline3) { create :ci_pipeline, project: project3 }
+            let!(:build1_project1) { pending_job }
+            let!(:build2_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
+            let!(:build3_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
+            let!(:build1_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
+            let!(:build2_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
+            let!(:build1_project3) { FactoryBot.create :ci_build, pipeline: pipeline3 }
+
+            it 'prefers projects without builds first' do
+              # it gets for one build from each of the projects
+              expect(execute(shared_runner)).to eq(build1_project1)
+              expect(execute(shared_runner)).to eq(build1_project2)
+              expect(execute(shared_runner)).to eq(build1_project3)
+
+              # then it gets a second build from each of the projects
+              expect(execute(shared_runner)).to eq(build2_project1)
+              expect(execute(shared_runner)).to eq(build2_project2)
+
+              # in the end the third build
+              expect(execute(shared_runner)).to eq(build3_project1)
             end
 
-            it_behaves_like 'not pick'
+            it 'equalises number of running builds' do
+              # after finishing the first build for project 1, get a second build from the same project
+              expect(execute(shared_runner)).to eq(build1_project1)
+              build1_project1.reload.success
+              expect(execute(shared_runner)).to eq(build2_project1)
+
+              expect(execute(shared_runner)).to eq(build1_project2)
+              build1_project2.reload.success
+              expect(execute(shared_runner)).to eq(build2_project2)
+              expect(execute(shared_runner)).to eq(build1_project3)
+              expect(execute(shared_runner)).to eq(build3_project1)
+            end
           end
 
-          context 'when job object is staled' do
-            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+          context 'shared runner' do
+            let(:response) { described_class.new(shared_runner).execute }
+            let(:build) { response.build }
+
+            it { expect(build).to be_kind_of(Build) }
+            it { expect(build).to be_valid }
+            it { expect(build).to be_running }
+            it { expect(build.runner).to eq(shared_runner) }
+            it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
+          end
+
+          context 'specific runner' do
+            let(:build) { execute(specific_runner) }
+
+            it { expect(build).to be_kind_of(Build) }
+            it { expect(build).to be_valid }
+            it { expect(build).to be_running }
+            it { expect(build.runner).to eq(specific_runner) }
+          end
+        end
+
+        context 'disallow shared runners' do
+          before do
+            project.update!(shared_runners_enabled: false)
+          end
+
+          context 'shared runner' do
+            let(:build) { execute(shared_runner) }
+
+            it { expect(build).to be_nil }
+          end
+
+          context 'specific runner' do
+            let(:build) { execute(specific_runner) }
+
+            it { expect(build).to be_kind_of(Build) }
+            it { expect(build).to be_valid }
+            it { expect(build).to be_running }
+            it { expect(build.runner).to eq(specific_runner) }
+          end
+        end
+
+        context 'disallow when builds are disabled' do
+          before do
+            project.update!(shared_runners_enabled: true, group_runners_enabled: true)
+            project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+          end
+
+          context 'and uses shared runner' do
+            let(:build) { execute(shared_runner) }
+
+            it { expect(build).to be_nil }
+          end
+
+          context 'and uses group runner' do
+            let(:build) { execute(group_runner) }
+
+            it { expect(build).to be_nil }
+          end
+
+          context 'and uses project runner' do
+            let(:build) { execute(specific_runner) }
+
+            it { expect(build).to be_nil }
+          end
+        end
+
+        context 'allow group runners' do
+          before do
+            project.update!(group_runners_enabled: true)
+          end
+
+          context 'for multiple builds' do
+            let!(:project2) { create(:project, group_runners_enabled: true, group: group) }
+            let!(:pipeline2) { create(:ci_pipeline, project: project2) }
+            let!(:project3) { create(:project, group_runners_enabled: true, group: group) }
+            let!(:pipeline3) { create(:ci_pipeline, project: project3) }
+
+            let!(:build1_project1) { pending_job }
+            let!(:build2_project1) { create(:ci_build, pipeline: pipeline) }
+            let!(:build3_project1) { create(:ci_build, pipeline: pipeline) }
+            let!(:build1_project2) { create(:ci_build, pipeline: pipeline2) }
+            let!(:build2_project2) { create(:ci_build, pipeline: pipeline2) }
+            let!(:build1_project3) { create(:ci_build, pipeline: pipeline3) }
+
+            # these shouldn't influence the scheduling
+            let!(:unrelated_group) { create(:group) }
+            let!(:unrelated_project) { create(:project, group_runners_enabled: true, group: unrelated_group) }
+            let!(:unrelated_pipeline) { create(:ci_pipeline, project: unrelated_project) }
+            let!(:build1_unrelated_project) { create(:ci_build, pipeline: unrelated_pipeline) }
+            let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
+
+            it 'does not consider builds from other group runners' do
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
+              execute(group_runner)
+
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
+              expect(execute(group_runner)).to be_nil
+            end
+          end
+
+          context 'group runner' do
+            let(:build) { execute(group_runner) }
+
+            it { expect(build).to be_kind_of(Build) }
+            it { expect(build).to be_valid }
+            it { expect(build).to be_running }
+            it { expect(build.runner).to eq(group_runner) }
+          end
+        end
+
+        context 'disallow group runners' do
+          before do
+            project.update!(group_runners_enabled: false)
+          end
+
+          context 'group runner' do
+            let(:build) { execute(group_runner) }
+
+            it { expect(build).to be_nil }
+          end
+        end
+
+        context 'when first build is stalled' do
+          before do
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!).and_call_original
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!)
+              .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
+          end
+
+          subject { described_class.new(specific_runner).execute }
+
+          context 'with multiple builds are in queue' do
+            let!(:other_build) { create :ci_build, pipeline: pipeline }
 
             before do
-              allow_any_instance_of(Ci::Build).to receive(:drop!)
-                .and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
+              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
+                .and_return(Ci::Build.where(id: [pending_job, other_build]))
             end
 
-            it 'does not drop nor pick' do
+            it "receives second build from the queue" do
+              expect(subject).to be_valid
+              expect(subject.build).to eq(other_build)
+            end
+          end
+
+          context 'when single build is in queue' do
+            before do
+              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
+                .and_return(Ci::Build.where(id: pending_job))
+            end
+
+            it "does not receive any valid result" do
+              expect(subject).not_to be_valid
+            end
+          end
+
+          context 'when there is no build in queue' do
+            before do
+              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
+                .and_return(Ci::Build.none)
+            end
+
+            it "does not receive builds but result is valid" do
+              expect(subject).to be_valid
+              expect(subject.build).to be_nil
+            end
+          end
+        end
+
+        context 'when access_level of runner is not_protected' do
+          let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+
+          context 'when a job is protected' do
+            let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
+
+            it 'picks the job' do
+              expect(execute(specific_runner)).to eq(pending_job)
+            end
+          end
+
+          context 'when a job is unprotected' do
+            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+
+            it 'picks the job' do
+              expect(execute(specific_runner)).to eq(pending_job)
+            end
+          end
+
+          context 'when protected attribute of a job is nil' do
+            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+
+            before do
+              pending_job.update_attribute(:protected, nil)
+            end
+
+            it 'picks the job' do
+              expect(execute(specific_runner)).to eq(pending_job)
+            end
+          end
+        end
+
+        context 'when access_level of runner is ref_protected' do
+          let!(:specific_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
+
+          context 'when a job is protected' do
+            let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
+
+            it 'picks the job' do
+              expect(execute(specific_runner)).to eq(pending_job)
+            end
+          end
+
+          context 'when a job is unprotected' do
+            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+
+            it 'does not pick the job' do
+              expect(execute(specific_runner)).to be_nil
+            end
+          end
+
+          context 'when protected attribute of a job is nil' do
+            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+
+            before do
+              pending_job.update_attribute(:protected, nil)
+            end
+
+            it 'does not pick the job' do
+              expect(execute(specific_runner)).to be_nil
+            end
+          end
+        end
+
+        context 'runner feature set is verified' do
+          let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
+          let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, options: options) }
+
+          subject { execute(specific_runner, params) }
+
+          context 'when feature is missing by runner' do
+            let(:params) { {} }
+
+            it 'does not pick the build and drops the build' do
               expect(subject).to be_nil
+              expect(pending_job.reload).to be_failed
+              expect(pending_job).to be_runner_unsupported
+            end
+          end
+
+          context 'when feature is supported by runner' do
+            let(:params) do
+              { info: { features: { upload_multiple_artifacts: true } } }
+            end
+
+            it 'does pick job' do
+              expect(subject).not_to be_nil
             end
           end
         end
 
-        shared_examples 'validation is not active' do
-          context 'when depended job has not been completed yet' do
-            let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
-
-            it { expect(subject).to eq(pending_job) }
+        context 'when "dependencies" keyword is specified' do
+          shared_examples 'not pick' do
+            it 'does not pick the build and drops the build' do
+              expect(subject).to be_nil
+              expect(pending_job.reload).to be_failed
+              expect(pending_job).to be_missing_dependency_failure
+            end
           end
 
-          context 'when artifacts of depended job has been expired' do
-            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+          shared_examples 'validation is active' do
+            context 'when depended job has not been completed yet' do
+              let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-            it { expect(subject).to eq(pending_job) }
-          end
-
-          context 'when artifacts of depended job has been erased' do
-            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
-
-            before do
-              pre_stage_job.erase
+              it { expect(subject).to eq(pending_job) }
             end
 
-            it { expect(subject).to eq(pending_job) }
+            context 'when artifacts of depended job has been expired' do
+              let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+              it_behaves_like 'not pick'
+            end
+
+            context 'when artifacts of depended job has been erased' do
+              let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+              before do
+                pre_stage_job.erase
+              end
+
+              it_behaves_like 'not pick'
+            end
+
+            context 'when job object is staled' do
+              let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+              before do
+                allow_any_instance_of(Ci::Build).to receive(:drop!)
+                  .and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
+              end
+
+              it 'does not drop nor pick' do
+                expect(subject).to be_nil
+              end
+            end
           end
-        end
 
-        before do
-          stub_feature_flags(ci_validate_build_dependencies_override: false)
-        end
+          shared_examples 'validation is not active' do
+            context 'when depended job has not been completed yet' do
+              let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
+              it { expect(subject).to eq(pending_job) }
+            end
 
-        let!(:pending_job) do
-          create(:ci_build, :pending,
-            pipeline: pipeline, stage_idx: 1,
-            options: { script: ["bash"], dependencies: ['test'] })
-        end
+            context 'when artifacts of depended job has been expired' do
+              let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        subject { execute(specific_runner) }
+              it { expect(subject).to eq(pending_job) }
+            end
 
-        context 'when validates for dependencies is enabled' do
+            context 'when artifacts of depended job has been erased' do
+              let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+              before do
+                pre_stage_job.erase
+              end
+
+              it { expect(subject).to eq(pending_job) }
+            end
+          end
+
           before do
             stub_feature_flags(ci_validate_build_dependencies_override: false)
           end
 
-          it_behaves_like 'validation is active'
+          let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-          context 'when the main feature flag is enabled for a specific project' do
+          let!(:pending_job) do
+            create(:ci_build, :pending,
+              pipeline: pipeline, stage_idx: 1,
+              options: { script: ["bash"], dependencies: ['test'] })
+          end
+
+          subject { execute(specific_runner) }
+
+          context 'when validates for dependencies is enabled' do
             before do
-              stub_feature_flags(ci_validate_build_dependencies: pipeline.project)
+              stub_feature_flags(ci_validate_build_dependencies_override: false)
             end
 
             it_behaves_like 'validation is active'
+
+            context 'when the main feature flag is enabled for a specific project' do
+              before do
+                stub_feature_flags(ci_validate_build_dependencies: pipeline.project)
+              end
+
+              it_behaves_like 'validation is active'
+            end
+
+            context 'when the main feature flag is enabled for a different project' do
+              before do
+                stub_feature_flags(ci_validate_build_dependencies: create(:project))
+              end
+
+              it_behaves_like 'validation is not active'
+            end
           end
 
-          context 'when the main feature flag is enabled for a different project' do
+          context 'when validates for dependencies is disabled' do
             before do
-              stub_feature_flags(ci_validate_build_dependencies: create(:project))
+              stub_feature_flags(ci_validate_build_dependencies_override: true)
             end
 
             it_behaves_like 'validation is not active'
           end
         end
 
-        context 'when validates for dependencies is disabled' do
-          before do
-            stub_feature_flags(ci_validate_build_dependencies_override: true)
+        context 'when build is degenerated' do
+          let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
+
+          subject { execute(specific_runner, {}) }
+
+          it 'does not pick the build and drops the build' do
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job).to be_archived_failure
+          end
+        end
+
+        context 'when build has data integrity problem' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, pipeline: pipeline)
           end
 
-          it_behaves_like 'validation is not active'
+          before do
+            pending_job.update_columns(options: "string")
+          end
+
+          subject { execute(specific_runner, {}) }
+
+          it 'does drop the build and logs both failures' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(anything, a_hash_including(build_id: pending_job.id))
+              .twice
+              .and_call_original
+
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job).to be_data_integrity_failure
+          end
+        end
+
+        context 'when build fails to be run!' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, pipeline: pipeline)
+          end
+
+          before do
+            expect_any_instance_of(Ci::Build).to receive(:run!)
+              .and_raise(RuntimeError, 'scheduler error')
+          end
+
+          subject { execute(specific_runner, {}) }
+
+          it 'does drop the build and logs failure' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(anything, a_hash_including(build_id: pending_job.id))
+              .once
+              .and_call_original
+
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job).to be_scheduler_failure
+          end
+        end
+
+        context 'when an exception is raised during a persistent ref creation' do
+          before do
+            allow_any_instance_of(Ci::PersistentRef).to receive(:exist?) { false }
+            allow_any_instance_of(Ci::PersistentRef).to receive(:create_ref) { raise ArgumentError }
+          end
+
+          subject { execute(specific_runner, {}) }
+
+          it 'picks the build' do
+            expect(subject).to eq(pending_job)
+
+            pending_job.reload
+            expect(pending_job).to be_running
+          end
+        end
+
+        context 'when only some builds can be matched by runner' do
+          let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[matching]) }
+          let!(:pending_job) { create(:ci_build, pipeline: pipeline, tag_list: %w[matching]) }
+
+          before do
+            # create additional matching and non-matching jobs
+            create_list(:ci_build, 2, pipeline: pipeline, tag_list: %w[matching])
+            create(:ci_build, pipeline: pipeline, tag_list: %w[non-matching])
+          end
+
+          it "observes queue size of only matching jobs" do
+            # pending_job + 2 x matching ones
+            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe).with({}, 3)
+
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
+        end
+
+        context 'when ci_register_job_temporary_lock is enabled' do
+          before do
+            stub_feature_flags(ci_register_job_temporary_lock: true)
+
+            allow(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
+          end
+
+          context 'when a build is temporarily locked' do
+            let(:service) { described_class.new(specific_runner) }
+
+            before do
+              service.send(:acquire_temporary_lock, pending_job.id)
+            end
+
+            it 'skips this build and marks queue as invalid' do
+              expect(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
+                .with(operation: :queue_iteration)
+              expect(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
+                .with(operation: :build_temporary_locked)
+
+              expect(service.execute).not_to be_valid
+            end
+
+            context 'when there is another build in queue' do
+              let!(:next_pending_job) { create(:ci_build, pipeline: pipeline) }
+
+              it 'skips this build and picks another build' do
+                expect(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
+                  .with(operation: :queue_iteration).twice
+                expect(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
+                  .with(operation: :build_temporary_locked)
+
+                result = service.execute
+
+                expect(result.build).to eq(next_pending_job)
+                expect(result).to be_valid
+              end
+            end
+          end
         end
       end
 
-      context 'when build is degenerated' do
-        let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
-
-        subject { execute(specific_runner, {}) }
-
-        it 'does not pick the build and drops the build' do
-          expect(subject).to be_nil
-
-          pending_job.reload
-          expect(pending_job).to be_failed
-          expect(pending_job).to be_archived_failure
-        end
-      end
-
-      context 'when build has data integrity problem' do
-        let!(:pending_job) do
-          create(:ci_build, :pending, pipeline: pipeline)
-        end
-
+      context 'when ci_register_job_service_one_by_one is enabled' do
         before do
-          pending_job.update_columns(options: "string")
+          stub_feature_flags(ci_register_job_service_one_by_one: true)
         end
 
-        subject { execute(specific_runner, {}) }
+        it 'picks builds one-by-one' do
+          expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
 
-        it 'does drop the build and logs both failures' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
-            .with(anything, a_hash_including(build_id: pending_job.id))
-            .twice
-            .and_call_original
-
-          expect(subject).to be_nil
-
-          pending_job.reload
-          expect(pending_job).to be_failed
-          expect(pending_job).to be_data_integrity_failure
+          expect(execute(specific_runner)).to eq(pending_job)
         end
+
+        include_examples 'handles runner assignment'
       end
 
-      context 'when build fails to be run!' do
-        let!(:pending_job) do
-          create(:ci_build, :pending, pipeline: pipeline)
-        end
-
+      context 'when ci_register_job_service_one_by_one is disabled' do
         before do
-          expect_any_instance_of(Ci::Build).to receive(:run!)
-            .and_raise(RuntimeError, 'scheduler error')
+          stub_feature_flags(ci_register_job_service_one_by_one: false)
         end
 
-        subject { execute(specific_runner, {}) }
-
-        it 'does drop the build and logs failure' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
-            .with(anything, a_hash_including(build_id: pending_job.id))
-            .once
-            .and_call_original
-
-          expect(subject).to be_nil
-
-          pending_job.reload
-          expect(pending_job).to be_failed
-          expect(pending_job).to be_scheduler_failure
-        end
-      end
-
-      context 'when an exception is raised during a persistent ref creation' do
-        before do
-          allow_any_instance_of(Ci::PersistentRef).to receive(:exist?) { false }
-          allow_any_instance_of(Ci::PersistentRef).to receive(:create_ref) { raise ArgumentError }
-        end
-
-        subject { execute(specific_runner, {}) }
-
-        it 'picks the build' do
-          expect(subject).to eq(pending_job)
-
-          pending_job.reload
-          expect(pending_job).to be_running
-        end
+        include_examples 'handles runner assignment'
       end
     end
 

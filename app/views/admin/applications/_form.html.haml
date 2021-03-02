@@ -40,5 +40,5 @@
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
 
   .form-actions
-    = f.submit 'Submit', class: "gl-button btn btn-success wide"
-    = link_to "Cancel", admin_applications_path, class: "gl-button btn btn-cancel"
+    = f.submit 'Submit', class: "gl-button btn btn-confirm wide"
+    = link_to "Cancel", admin_applications_path, class: "gl-button btn btn-default btn-cancel"

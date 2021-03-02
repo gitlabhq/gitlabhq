@@ -9,6 +9,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
     include IgnorableColumns
+    include FeatureGate
 
     add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 

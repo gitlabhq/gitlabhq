@@ -84,7 +84,7 @@ module Ci
     end
 
     def set_status(new_status)
-      retry_optimistic_lock(self) do
+      retry_optimistic_lock(self, name: 'ci_stage_set_status') do
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource

@@ -30,6 +30,18 @@ RSpec.describe API::ResourceAccessTokens do
           expect(token_ids).to match_array(access_tokens.pluck(:id))
         end
 
+        it "exposes the correct token information", :aggregate_failures do
+          get_tokens
+
+          token = access_tokens.last
+          api_get_token = json_response.last
+
+          expect(api_get_token["name"]).to eq(token.name)
+          expect(api_get_token["scopes"]).to eq(token.scopes)
+          expect(api_get_token["expires_at"]).to eq(token.expires_at.to_date.iso8601)
+          expect(api_get_token).not_to have_key('token')
+        end
+
         context "when using a project access token to GET other project access tokens" do
           let_it_be(:token) { access_tokens.first }
 
@@ -182,13 +194,13 @@ RSpec.describe API::ResourceAccessTokens do
     end
 
     describe "POST projects/:id/access_tokens" do
-      let_it_be(:params) { { name: "test", scopes: ["api"], expires_at: Date.today + 1.month } }
+      let(:params) { { name: "test", scopes: ["api"], expires_at: expires_at } }
+      let(:expires_at) { 1.month.from_now }
 
       subject(:create_token) { post api("/projects/#{project_id}/access_tokens", user), params: params }
 
       context "when the user has maintainer permissions" do
         let_it_be(:project_id) { project.id }
-        let_it_be(:expires_at) { 1.month.from_now }
 
         before do
           project.add_maintainer(user)
@@ -203,11 +215,12 @@ RSpec.describe API::ResourceAccessTokens do
               expect(json_response["name"]).to eq("test")
               expect(json_response["scopes"]).to eq(["api"])
               expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)
+              expect(json_response["token"]).to be_present
             end
           end
 
           context "when 'expires_at' is not set" do
-            let_it_be(:params) { { name: "test", scopes: ["api"] } }
+            let(:expires_at) { nil }
 
             it "creates a project access token with the params", :aggregate_failures do
               create_token

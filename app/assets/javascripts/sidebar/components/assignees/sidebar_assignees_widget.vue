@@ -104,11 +104,22 @@ export default {
       query: searchUsers,
       variables() {
         return {
+          fullPath: this.fullPath,
           search: this.search,
         };
       },
       update(data) {
-        return data.users?.nodes || [];
+        const searchResults = data.issuable?.users?.nodes.map(({ user }) => user) || [];
+        const mergedSearchResults = this.participants.reduce((acc, current) => {
+          if (
+            !acc.some((user) => current.username === user.username) &&
+            (current.name.includes(this.search) || current.username.includes(this.search))
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, searchResults);
+        return mergedSearchResults;
       },
       debounce: 250,
       skip() {
@@ -185,7 +196,7 @@ export default {
       return this.selected.some(isCurrentUser) || this.participants.some(isCurrentUser);
     },
     noUsersFound() {
-      return !this.isSearchEmpty && this.unselectedFiltered.length === 0;
+      return !this.isSearchEmpty && this.searchUsers.length === 0;
     },
     showCurrentUser() {
       return !this.isCurrentUserInParticipants && (this.isSearchEmpty || this.isSearching);

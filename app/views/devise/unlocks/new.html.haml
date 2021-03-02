@@ -8,7 +8,7 @@
         = f.label :email
         = f.email_field :email, class: 'form-control', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: 'Please provide a valid email address.'
       .clearfix
-        = f.submit 'Resend unlock instructions', class: 'gl-button btn btn-success'
+        = f.submit 'Resend unlock instructions', class: 'gl-button btn btn-confirm'
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Installation from source
+# Installation from source **(FREE SELF)**
 
 This is the official installation guide to set up a production GitLab server
 using the source files. To set up a **development installation** or for many

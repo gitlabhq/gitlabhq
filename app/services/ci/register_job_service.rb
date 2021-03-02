@@ -6,6 +6,8 @@ module Ci
   class RegisterJobService
     attr_reader :runner, :metrics
 
+    TEMPORARY_LOCK_TIMEOUT = 3.seconds
+
     Result = Struct.new(:build, :build_json, :valid?)
 
     def initialize(runner)
@@ -23,38 +25,27 @@ module Ci
 
     private
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def process_queue(params)
-      builds =
-        if runner.instance_type?
-          builds_for_shared_runner
-        elsif runner.group_type?
-          builds_for_group_runner
-        else
-          builds_for_project_runner
-        end
-
-      # pick builds that does not have other tags than runner's one
-      builds = builds.matches_tag_ids(runner.tags.ids)
-
-      # pick builds that have at least one tag
-      unless runner.run_untagged?
-        builds = builds.with_any_tags
-      end
-
-      # pick builds that older than specified age
-      if params.key?(:job_age)
-        builds = builds.queued_before(params[:job_age].seconds.ago)
-      end
-
-      @metrics.observe_queue_size(-> { builds.to_a.size })
-
       valid = true
       depth = 0
 
-      builds.each do |build|
+      each_build(params) do |build|
         depth += 1
         @metrics.increment_queue_operation(:queue_iteration)
+
+        # We read builds from replicas
+        # It is likely that some other concurrent connection is processing
+        # a given build at a given moment. To avoid an expensive compute
+        # we perform an exclusive lease on Redis to acquire a build temporarily
+        unless acquire_temporary_lock(build.id)
+          @metrics.increment_queue_operation(:build_temporary_locked)
+
+          # We failed to acquire lock
+          # - our queue is not complete as some resources are locked temporarily
+          # - we need to re-process it again to ensure that all builds are handled
+          valid = false
+          next
+        end
 
         result = process_build(build, params)
         next unless result
@@ -78,9 +69,53 @@ module Ci
 
       Result.new(nil, nil, valid)
     end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def each_build(params, &blk)
+      builds =
+        if runner.instance_type?
+          builds_for_shared_runner
+        elsif runner.group_type?
+          builds_for_group_runner
+        else
+          builds_for_project_runner
+        end
+
+      # pick builds that does not have other tags than runner's one
+      builds = builds.matches_tag_ids(runner.tags.ids)
+
+      # pick builds that have at least one tag
+      unless runner.run_untagged?
+        builds = builds.with_any_tags
+      end
+
+      # pick builds that older than specified age
+      if params.key?(:job_age)
+        builds = builds.queued_before(params[:job_age].seconds.ago)
+      end
+
+      if Feature.enabled?(:ci_register_job_service_one_by_one, runner)
+        build_ids = builds.pluck(:id)
+
+        @metrics.observe_queue_size(-> { build_ids.size })
+
+        build_ids.each do |build_id|
+          yield Ci::Build.find(build_id)
+        end
+      else
+        @metrics.observe_queue_size(-> { builds.to_a.size })
+
+        builds.each(&blk)
+      end
+    end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def process_build(build, params)
+      unless build.pending?
+        @metrics.increment_queue_operation(:build_not_pending)
+        return
+      end
+
       if runner.can_pick?(build)
         @metrics.increment_queue_operation(:build_can_pick)
       else
@@ -151,8 +186,18 @@ module Ci
       !failure_reason
     end
 
+    def acquire_temporary_lock(build_id)
+      return true unless Feature.enabled?(:ci_register_job_temporary_lock, runner)
+
+      key = "build/register/#{build_id}"
+
+      Gitlab::ExclusiveLease
+        .new(key, timeout: TEMPORARY_LOCK_TIMEOUT.to_i)
+        .try_obtain
+    end
+
     def scheduler_failure!(build)
-      Gitlab::OptimisticLocking.retry_lock(build, 3) do |subject|
+      Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'register_job_scheduler_failure') do |subject|
         subject.drop!(:scheduler_failure)
       end
     rescue => ex

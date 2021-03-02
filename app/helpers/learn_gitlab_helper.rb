@@ -24,13 +24,13 @@ module LearnGitlabHelper
   private
 
   ACTION_ISSUE_IDS = {
-    git_write: 2,
-    pipeline_created: 4,
-    merge_request_created: 5,
-    user_added: 7,
-    trial_started: 13,
-    required_mr_approvals_enabled: 15,
-    code_owners_enabled: 16
+    git_write: 6,
+    pipeline_created: 7,
+    merge_request_created: 9,
+    user_added: 8,
+    trial_started: 2,
+    required_mr_approvals_enabled: 11,
+    code_owners_enabled: 10
   }.freeze
 
   ACTION_DOC_URLS = {

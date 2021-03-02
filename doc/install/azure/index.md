@@ -6,7 +6,7 @@ description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure
 type: howto
 ---
 
-# Install GitLab on Microsoft Azure
+# Install GitLab on Microsoft Azure **(FREE SELF)**
 
 WARNING:
 This guide is deprecated and pending an update. For the time being, use the GitLab

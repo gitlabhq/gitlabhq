@@ -80,7 +80,7 @@ module Ci
         return unless Ci::HasStatus::COMPLETED_STATUSES.include?(status)
 
         # transition status if possible
-        Gitlab::OptimisticLocking.retry_lock(processable) do |subject|
+        Gitlab::OptimisticLocking.retry_lock(processable, name: 'atomic_processing_update_processable') do |subject|
           Ci::ProcessBuildService.new(project, subject.user)
             .execute(subject, status)
 

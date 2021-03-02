@@ -19,7 +19,7 @@ module Ci
         mark_subsequent_stages_as_processable(build)
         build.pipeline.reset_ancestor_bridges!
 
-        Gitlab::OptimisticLocking.retry_lock(new_build, &:enqueue)
+        Gitlab::OptimisticLocking.retry_lock(new_build, name: 'retry_build', &:enqueue)
 
         MergeRequests::AddTodoWhenBuildFailsService
           .new(project, current_user)
@@ -68,7 +68,7 @@ module Ci
 
     def mark_subsequent_stages_as_processable(build)
       build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |skipped|
-        retry_optimistic_lock(skipped) { |build| build.process(current_user) }
+        retry_optimistic_lock(skipped, name: 'ci_retry_build_mark_subsequent_stages') { |build| build.process(current_user) }
       end
     end
   end
