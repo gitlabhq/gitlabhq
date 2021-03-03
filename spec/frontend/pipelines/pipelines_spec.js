@@ -1,4 +1,4 @@
-import { GlFilteredSearch, GlButton, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import { GlButton, GlFilteredSearch, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';

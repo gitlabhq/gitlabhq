@@ -4,6 +4,9 @@ import { X_TOTAL_HEADER } from '../constants';
 import * as types from './mutation_types';
 
 export default {
+  [types.SET_ENABLED_REF_TYPES](state, refTypes) {
+    state.enabledRefTypes = refTypes;
+  },
   [types.SET_PROJECT_ID](state, projectId) {
     state.projectId = projectId;
   },

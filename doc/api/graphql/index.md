@@ -171,8 +171,7 @@ certain arguments may also increase the complexity of a query.
 
 NOTE:
 The complexity limits may be revised in future, and additionally, the complexity
-of a query may be altered. Changes to complexity can happen on `X.0` or `X.6`
-releases without a deprecation period.
+of a query may be altered.
 
 ### Request timeout
 

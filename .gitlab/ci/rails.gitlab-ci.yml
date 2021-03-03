@@ -162,6 +162,7 @@ setup-test-env:
       - tmp/tests/gitaly/gitaly-lfs-smudge
       - tmp/tests/gitaly/gitaly-ssh
       - tmp/tests/gitaly/internal/
+      - tmp/tests/gitaly/internal_gitaly2/
       - tmp/tests/gitaly/internal_sockets/
       - tmp/tests/gitaly/Makefile
       - tmp/tests/gitaly/praefect

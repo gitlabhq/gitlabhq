@@ -11,6 +11,12 @@ export default {
     GlIcon,
   },
   props: {
+    showHeader: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+
     sectionTitle: {
       type: String,
       required: true,
@@ -84,7 +90,7 @@ export default {
 
 <template>
   <div>
-    <gl-dropdown-section-header>
+    <gl-dropdown-section-header v-if="showHeader">
       <div class="gl-display-flex align-items-center" data-testid="section-header">
         <span class="gl-mr-2 gl-mb-1">{{ sectionTitle }}</span>
         <gl-badge variant="neutral">{{ totalCountText }}</gl-badge>

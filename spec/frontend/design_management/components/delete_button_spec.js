@@ -36,7 +36,7 @@ describe('Batch delete button component', () => {
     expect(findButton().attributes('disabled')).toBeTruthy();
   });
 
-  it('emits `deleteSelectedDesigns` event on modal ok click', () => {
+  it('emits `delete-selected-designs` event on modal ok click', () => {
     createComponent();
     findButton().vm.$emit('click');
     return wrapper.vm
@@ -46,7 +46,7 @@ describe('Batch delete button component', () => {
         return wrapper.vm.$nextTick();
       })
       .then(() => {
-        expect(wrapper.emitted().deleteSelectedDesigns).toBeTruthy();
+        expect(wrapper.emitted('delete-selected-designs')).toBeTruthy();
       });
   });
 

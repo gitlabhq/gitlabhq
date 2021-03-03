@@ -130,7 +130,7 @@ export default {
       button-icon="archive"
       button-category="secondary"
       :title="s__('DesignManagement|Archive design')"
-      @deleteSelectedDesigns="$emit('delete')"
+      @delete-selected-designs="$emit('delete')"
     />
   </header>
 </template>

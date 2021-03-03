@@ -1,5 +1,10 @@
 import { __ } from '~/locale';
 
+export const REF_TYPE_BRANCHES = 'REF_TYPE_BRANCHES';
+export const REF_TYPE_TAGS = 'REF_TYPE_TAGS';
+export const REF_TYPE_COMMITS = 'REF_TYPE_COMMITS';
+export const ALL_REF_TYPES = Object.freeze([REF_TYPE_BRANCHES, REF_TYPE_TAGS, REF_TYPE_COMMITS]);
+
 export const X_TOTAL_HEADER = 'x-total';
 
 export const SEARCH_DEBOUNCE_MS = 250;

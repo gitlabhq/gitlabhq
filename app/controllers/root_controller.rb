@@ -46,6 +46,8 @@ class RootController < Dashboard::ProjectsController
       redirect_to(activity_dashboard_path)
     when 'starred_project_activity'
       redirect_to(activity_dashboard_path(filter: 'starred'))
+    when 'followed_user_activity'
+      redirect_to(activity_dashboard_path(filter: 'followed'))
     when 'groups'
       redirect_to(dashboard_groups_path)
     when 'todos'

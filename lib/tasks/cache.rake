@@ -2,32 +2,22 @@
 
 namespace :cache do
   namespace :clear do
-    REDIS_CLEAR_BATCH_SIZE = 1000 # There seems to be no speedup when pushing beyond 1,000
-    REDIS_SCAN_START_STOP = '0'.freeze # Magic value, see http://redis.io/commands/scan
-
     desc "GitLab | Cache | Clear redis cache"
     task redis: :environment do
-      Gitlab::Redis::Cache.with do |redis|
-        cache_key_pattern = %W[#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*
-                               projects/*/pipeline_status]
+      cache_key_patterns = %W[
+        #{Gitlab::Redis::Cache::CACHE_NAMESPACE}*
+        #{Gitlab::Cache::Ci::ProjectPipelineStatus::ALL_PIPELINES_STATUS_PATTERN}
+      ]
 
-        cache_key_pattern.each do |match|
-          cursor = REDIS_SCAN_START_STOP
-          loop do
-            cursor, keys = redis.scan(
-              cursor,
-              match: match,
-              count: REDIS_CLEAR_BATCH_SIZE
-            )
+      ::Gitlab::Cleanup::Redis::BatchDeleteByPattern.new(cache_key_patterns).execute
+    end
 
-            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.del(*keys) if keys.any?
-            end
+    desc "GitLab | Cache | Clear description templates redis cache"
+    task description_templates: :environment do
+      project_ids = Array(ENV['project_ids']&.split(',')).map!(&:squish)
 
-            break if cursor == REDIS_SCAN_START_STOP
-          end
-        end
-      end
+      cache_key_patterns = ::Gitlab::Cleanup::Redis::DescriptionTemplatesCacheKeysPatternBuilder.new(project_ids).execute
+      ::Gitlab::Cleanup::Redis::BatchDeleteByPattern.new(cache_key_patterns).execute
     end
 
     task all: [:redis]

@@ -365,7 +365,8 @@ export default {
             v-if="isLatestVersion"
             variant="link"
             size="small"
-            class="gl-mr-4 js-select-all"
+            class="gl-mr-3"
+            data-testid="select-all-designs-button"
             @click="toggleDesignsSelection"
             >{{ selectAllButtonText }}
           </gl-button>
@@ -385,7 +386,7 @@ export default {
               data-qa-selector="archive_button"
               :loading="loading"
               :has-selected-designs="hasSelectedDesigns"
-              @deleteSelectedDesigns="mutate()"
+              @delete-selected-designs="mutate()"
             >
               {{ s__('DesignManagement|Archive selected') }}
             </delete-button>

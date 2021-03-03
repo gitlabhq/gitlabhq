@@ -13201,6 +13201,9 @@ msgstr ""
 msgid "Follow"
 msgstr ""
 
+msgid "Followed Users' Activity"
+msgstr ""
+
 msgid "Followed users"
 msgstr ""
 

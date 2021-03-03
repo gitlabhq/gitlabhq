@@ -73,21 +73,19 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-h-full">
+  <div>
     <gl-modal
       :modal-id="modalId"
       :title="$options.modal.title"
       :action-primary="$options.modal.actionPrimary"
       :action-cancel="$options.modal.actionCancel"
-      @ok="$emit('deleteSelectedDesigns')"
+      @ok="$emit('delete-selected-designs')"
     >
-      <p>
-        {{
-          s__(
-            'DesignManagement|Archived designs will still be available in previous versions of the design collection.',
-          )
-        }}
-      </p>
+      {{
+        s__(
+          'DesignManagement|Archived designs will still be available in previous versions of the design collection.',
+        )
+      }}
     </gl-modal>
     <gl-button
       v-gl-modal-directive="modalId"

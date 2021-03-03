@@ -29,7 +29,7 @@ export default {
 };
 </script>
 <template>
-  <div :class="classes">
+  <div :class="classes" data-testid="pipeline-triggerer">
     <user-avatar-link
       v-if="user"
       :link-href="user.path"

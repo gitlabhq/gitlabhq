@@ -52,7 +52,7 @@ module Gitlab
             return unless included?
 
             strong_memoize(:errors) do
-              needs_errors
+              [needs_errors, variable_expansion_errors].compact.flatten
             end
           end
 
@@ -151,6 +151,12 @@ module Gitlab
 
           def max_needs_allowed
             @pipeline.project.actual_limits.ci_needs_size_limit
+          end
+
+          def variable_expansion_errors
+            sorted_collection = evaluate_context.variables.sorted_collection(@pipeline.project)
+            errors = sorted_collection.errors
+            ["#{name}: #{errors}"] if errors
           end
 
           def pipeline_attributes

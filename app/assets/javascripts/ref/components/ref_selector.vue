@@ -8,9 +8,16 @@ import {
   GlIcon,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, isArray } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { SEARCH_DEBOUNCE_MS, DEFAULT_I18N } from '../constants';
+import {
+  ALL_REF_TYPES,
+  SEARCH_DEBOUNCE_MS,
+  DEFAULT_I18N,
+  REF_TYPE_BRANCHES,
+  REF_TYPE_TAGS,
+  REF_TYPE_COMMITS,
+} from '../constants';
 import createStore from '../stores';
 import RefResultsSection from './ref_results_section.vue';
 
@@ -28,6 +35,20 @@ export default {
     RefResultsSection,
   },
   props: {
+    enabledRefTypes: {
+      type: Array,
+      required: false,
+      default: () => ALL_REF_TYPES,
+      validator: (val) =>
+        // It has to be an arrray
+        isArray(val) &&
+        // with at least one item
+        val.length > 0 &&
+        // and only "REF_TYPE_BRANCHES", "REF_TYPE_TAGS", and "REF_TYPE_COMMITS" are allowed
+        val.every((item) => ALL_REF_TYPES.includes(item)) &&
+        // and no duplicates are allowed
+        val.length === new Set(val).size,
+    },
     value: {
       type: String,
       required: false,
@@ -62,16 +83,28 @@ export default {
       };
     },
     showBranchesSection() {
-      return Boolean(this.matches.branches.totalCount > 0 || this.matches.branches.error);
+      return (
+        this.enabledRefTypes.includes(REF_TYPE_BRANCHES) &&
+        Boolean(this.matches.branches.totalCount > 0 || this.matches.branches.error)
+      );
     },
     showTagsSection() {
-      return Boolean(this.matches.tags.totalCount > 0 || this.matches.tags.error);
+      return (
+        this.enabledRefTypes.includes(REF_TYPE_TAGS) &&
+        Boolean(this.matches.tags.totalCount > 0 || this.matches.tags.error)
+      );
     },
     showCommitsSection() {
-      return Boolean(this.matches.commits.totalCount > 0 || this.matches.commits.error);
+      return (
+        this.enabledRefTypes.includes(REF_TYPE_COMMITS) &&
+        Boolean(this.matches.commits.totalCount > 0 || this.matches.commits.error)
+      );
     },
     showNoResults() {
       return !this.showBranchesSection && !this.showTagsSection && !this.showCommitsSection;
+    },
+    showSectionHeaders() {
+      return this.enabledRefTypes.length > 1;
     },
   },
   watch: {
@@ -97,10 +130,18 @@ export default {
     }, SEARCH_DEBOUNCE_MS);
 
     this.setProjectId(this.projectId);
-    this.search(this.query);
+
+    this.$watch(
+      'enabledRefTypes',
+      () => {
+        this.setEnabledRefTypes(this.enabledRefTypes);
+        this.search(this.query);
+      },
+      { immediate: true },
+    );
   },
   methods: {
-    ...mapActions(['setProjectId', 'setSelectedRef', 'search']),
+    ...mapActions(['setEnabledRefTypes', 'setProjectId', 'setSelectedRef', 'search']),
     focusSearchBox() {
       this.$refs.searchBox.$el.querySelector('input').focus();
     },
@@ -170,6 +211,7 @@ export default {
               :selected-ref="selectedRef"
               :error="matches.branches.error"
               :error-message="i18n.branchesErrorMessage"
+              :show-header="showSectionHeaders"
               data-testid="branches-section"
               @selected="selectRef($event)"
             />
@@ -185,6 +227,7 @@ export default {
               :selected-ref="selectedRef"
               :error="matches.tags.error"
               :error-message="i18n.tagsErrorMessage"
+              :show-header="showSectionHeaders"
               data-testid="tags-section"
               @selected="selectRef($event)"
             />
@@ -200,6 +243,7 @@ export default {
               :selected-ref="selectedRef"
               :error="matches.commits.error"
               :error-message="i18n.commitsErrorMessage"
+              :show-header="showSectionHeaders"
               data-testid="commits-section"
               @selected="selectRef($event)"
             />

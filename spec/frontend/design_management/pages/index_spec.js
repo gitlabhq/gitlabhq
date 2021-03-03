@@ -97,7 +97,7 @@ describe('Design management index page', () => {
   let moveDesignHandler;
 
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
-  const findSelectAllButton = () => wrapper.find('.js-select-all');
+  const findSelectAllButton = () => wrapper.find('[data-testid="select-all-designs-button"');
   const findToolbar = () => wrapper.find('.qa-selector-toolbar');
   const findDesignCollectionIsCopying = () =>
     wrapper.find('[data-testid="design-collection-is-copying"');
@@ -542,7 +542,9 @@ describe('Design management index page', () => {
       await nextTick();
       expect(findDeleteButton().exists()).toBe(true);
       expect(findSelectAllButton().text()).toBe('Deselect all');
-      findDeleteButton().vm.$emit('deleteSelectedDesigns');
+
+      findDeleteButton().vm.$emit('delete-selected-designs');
+
       const [{ variables }] = mutate.mock.calls[0];
       expect(variables.filenames).toStrictEqual([mockDesigns[0].filename, mockDesigns[1].filename]);
     });

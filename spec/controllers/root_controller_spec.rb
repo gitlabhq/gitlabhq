@@ -68,6 +68,18 @@ RSpec.describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for followed user activities' do
+        before do
+          user.dashboard = 'followed_user_activity'
+        end
+
+        it 'redirects to the activity list' do
+          get :index
+
+          expect(response).to redirect_to activity_dashboard_path(filter: 'followed')
+        end
+      end
+
       context 'who has customized their dashboard setting for groups' do
         before do
           user.dashboard = 'groups'

@@ -30,10 +30,10 @@ Metrics for a branch are read from the latest metrics report artifact (default f
 
 For an MR, the values of these metrics from the feature branch are compared to the values from the target branch. Then they are displayed in the MR widget in this order:
 
-- Metrics that have been added by the MR. Marked with a **New** badge.
 - Existing metrics with changed values.
-- Existing metrics with unchanged values.
+- Metrics that have been added by the MR. Marked with a **New** badge.
 - Metrics that have been removed by the MR. Marked with a **Removed** badge.
+- Existing metrics with unchanged values.
 
 ## How to set it up
 

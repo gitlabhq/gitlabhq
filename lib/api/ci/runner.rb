@@ -34,12 +34,12 @@ module API
             if runner_registration_token_valid?
               # Create shared runner. Requires admin access
               attributes.merge(runner_type: :instance_type)
-            elsif project = Project.find_by_runners_token(params[:token])
+            elsif @project = Project.find_by_runners_token(params[:token])
               # Create a specific runner for the project
-              attributes.merge(runner_type: :project_type, projects: [project])
-            elsif group = Group.find_by_runners_token(params[:token])
+              attributes.merge(runner_type: :project_type, projects: [@project])
+            elsif @group = Group.find_by_runners_token(params[:token])
               # Create a specific runner for the group
-              attributes.merge(runner_type: :group_type, groups: [group])
+              attributes.merge(runner_type: :group_type, groups: [@group])
             else
               forbidden!
             end
@@ -81,12 +81,7 @@ module API
       end
 
       resource :jobs do
-        before do
-          Gitlab::ApplicationContext.push(
-            user: -> { current_job&.user },
-            project: -> { current_job&.project }
-          )
-        end
+        before { set_application_context }
 
         desc 'Request a job' do
           success Entities::JobRequest::Response

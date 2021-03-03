@@ -7,6 +7,7 @@ import PipelineGraph from './graph_component.vue';
 import {
   getQueryHeaders,
   reportToSentry,
+  serializeGqlErr,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
 } from './utils';
@@ -60,8 +61,8 @@ export default {
       update(data) {
         return unwrapPipelineData(this.pipelineProjectPath, data);
       },
-      error() {
-        this.reportFailure(LOAD_FAILURE);
+      error({ gqlError }) {
+        this.reportFailure(LOAD_FAILURE, serializeGqlErr(gqlError));
       },
     },
   },
@@ -112,10 +113,10 @@ export default {
     refreshPipelineGraph() {
       this.$apollo.queries.pipeline.refetch();
     },
-    reportFailure(type) {
+    reportFailure(type, err = '') {
       this.showAlert = true;
       this.alertType = type;
-      reportToSentry(this.$options.name, this.alertType);
+      reportToSentry(this.$options.name, `type: ${this.alertType}, info: ${err}`);
     },
   },
 };

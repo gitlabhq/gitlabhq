@@ -1025,4 +1025,75 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
   end
+
+  describe 'applying pipeline variables' do
+    subject { seed_build }
+
+    let(:pipeline_variables) { [] }
+    let(:pipeline) do
+      build(:ci_empty_pipeline, project: project, sha: head_sha, variables: pipeline_variables)
+    end
+
+    context 'containing variable references' do
+      let(:pipeline_variables) do
+        [
+          build(:ci_pipeline_variable, key: 'A', value: '$B'),
+          build(:ci_pipeline_variable, key: 'B', value: '$C')
+        ]
+      end
+
+      context 'when FF :variable_inside_variable is enabled' do
+        before do
+          stub_feature_flags(variable_inside_variable: [project])
+        end
+
+        it "does not have errors" do
+          expect(subject.errors).to be_empty
+        end
+      end
+    end
+
+    context 'containing cyclic reference' do
+      let(:pipeline_variables) do
+        [
+          build(:ci_pipeline_variable, key: 'A', value: '$B'),
+          build(:ci_pipeline_variable, key: 'B', value: '$C'),
+          build(:ci_pipeline_variable, key: 'C', value: '$A')
+        ]
+      end
+
+      context 'when FF :variable_inside_variable is disabled' do
+        before do
+          stub_feature_flags(variable_inside_variable: false)
+        end
+
+        it "does not have errors" do
+          expect(subject.errors).to be_empty
+        end
+      end
+
+      context 'when FF :variable_inside_variable is enabled' do
+        before do
+          stub_feature_flags(variable_inside_variable: [project])
+        end
+
+        it "returns an error" do
+          expect(subject.errors).to contain_exactly(
+            'rspec: circular variable reference detected: ["A", "B", "C"]')
+        end
+
+        context 'with job:rules:[if:]' do
+          let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
+
+          it "included? does not raise" do
+            expect { subject.included? }.not_to raise_error
+          end
+
+          it "included? returns true" do
+            expect(subject.included?).to eq(true)
+          end
+        end
+      end
+    end
+  end
 end

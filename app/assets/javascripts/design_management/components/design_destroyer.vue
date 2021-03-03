@@ -55,6 +55,7 @@ export default {
       iid,
     }"
     :update="updateStoreAfterDelete"
+    :tag="null"
     v-on="$listeners"
   >
     <slot v-bind="{ mutate, loading, error }"></slot>

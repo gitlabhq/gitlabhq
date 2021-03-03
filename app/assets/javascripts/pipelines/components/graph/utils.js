@@ -23,7 +23,6 @@ const getQueryHeaders = (etagResource) => {
     },
   };
 };
-/* eslint-enable @gitlab/require-i18n-strings */
 
 const reportToSentry = (component, failureType) => {
   Sentry.withScope((scope) => {
@@ -31,6 +30,25 @@ const reportToSentry = (component, failureType) => {
     Sentry.captureException(failureType);
   });
 };
+
+const serializeGqlErr = (gqlError) => {
+  if (!gqlError) {
+    return 'gqlError data not available.';
+  }
+
+  const { locations, message, path } = gqlError;
+
+  return `
+    ${message}.
+    Locations: ${locations
+      .flatMap((loc) => Object.entries(loc))
+      .flat(2)
+      .join(' ')}.
+    Path: ${path.join(', ')}.
+  `;
+};
+
+/* eslint-enable @gitlab/require-i18n-strings */
 
 const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
   const stopStartQuery = (query) => {
@@ -82,6 +100,7 @@ const validateConfigPaths = (value) => value.graphqlResourceEtag?.length > 0;
 export {
   getQueryHeaders,
   reportToSentry,
+  serializeGqlErr,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
   validateConfigPaths,

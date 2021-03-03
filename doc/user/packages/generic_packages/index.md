@@ -40,7 +40,7 @@ Prerequisites:
 - You need to [authenticate with the API](../../../api/README.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 
 ```plaintext
-PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name
+PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
 ```
 
 | Attribute          | Type            | Required | Description                                                                                                                      |
@@ -58,7 +58,7 @@ Example request:
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
 ```
 
 Example response:

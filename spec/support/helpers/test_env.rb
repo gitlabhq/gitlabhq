@@ -172,8 +172,13 @@ module TestEnv
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,
-          { 'default' => repos_path }, force: true,
-          options: { gitaly_socket: "gitaly2.socket", config_filename: "gitaly2.config.toml" }
+          { 'default' => repos_path },
+          force: true,
+          options: {
+            internal_socket_dir: File.join(gitaly_dir, "internal_gitaly2"),
+            gitaly_socket: "gitaly2.socket",
+            config_filename: "gitaly2.config.toml"
+          }
         )
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
       end

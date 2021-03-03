@@ -61,7 +61,7 @@ export default {
 };
 </script>
 <template>
-  <div :class="classes">
+  <div :class="classes" data-testid="pipeline-url-table-cell">
     <gl-link
       :href="pipeline.path"
       data-testid="pipeline-url-link"

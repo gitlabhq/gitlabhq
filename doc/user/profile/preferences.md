@@ -108,12 +108,13 @@ select few, the amount of activity on the default Dashboard page can be
 overwhelming. Changing this setting allows you to redefine your default
 dashboard.
 
-You have 8 options here that you can use for your default dashboard view:
+You can include the following options for your default dashboard view:
 
 - Your projects (default)
 - Starred projects
 - Your projects' activity
 - Starred projects' activity
+- Followed Users' Activity
 - Your groups
 - Your [To-Do List](../todos.md)
 - Assigned Issues

@@ -1,4 +1,5 @@
 import testAction from 'helpers/vuex_action_helper';
+import { ALL_REF_TYPES, REF_TYPE_BRANCHES, REF_TYPE_TAGS, REF_TYPE_COMMITS } from '~/ref/constants';
 import * as actions from '~/ref/stores/actions';
 import * as types from '~/ref/stores/mutation_types';
 import createState from '~/ref/stores/state';
@@ -25,6 +26,14 @@ describe('Ref selector Vuex store actions', () => {
     state = createState();
   });
 
+  describe('setEnabledRefTypes', () => {
+    it(`commits ${types.SET_ENABLED_REF_TYPES} with the enabled ref types`, () => {
+      testAction(actions.setProjectId, ALL_REF_TYPES, state, [
+        { type: types.SET_PROJECT_ID, payload: ALL_REF_TYPES },
+      ]);
+    });
+  });
+
   describe('setProjectId', () => {
     it(`commits ${types.SET_PROJECT_ID} with the new project ID`, () => {
       const projectId = '4';
@@ -46,12 +55,23 @@ describe('Ref selector Vuex store actions', () => {
   describe('search', () => {
     it(`commits ${types.SET_QUERY} with the new search query`, () => {
       const query = 'hello';
+      testAction(actions.search, query, state, [{ type: types.SET_QUERY, payload: query }]);
+    });
+
+    it.each`
+      enabledRefTypes                                         | expectedActions
+      ${[REF_TYPE_BRANCHES]}                                  | ${['searchBranches']}
+      ${[REF_TYPE_COMMITS]}                                   | ${['searchCommits']}
+      ${[REF_TYPE_BRANCHES, REF_TYPE_TAGS, REF_TYPE_COMMITS]} | ${['searchBranches', 'searchTags', 'searchCommits']}
+    `(`dispatches fetch actions for enabled ref types`, ({ enabledRefTypes, expectedActions }) => {
+      const query = 'hello';
+      state.enabledRefTypes = enabledRefTypes;
       testAction(
         actions.search,
         query,
         state,
         [{ type: types.SET_QUERY, payload: query }],
-        [{ type: 'searchBranches' }, { type: 'searchTags' }, { type: 'searchCommits' }],
+        expectedActions.map((type) => ({ type })),
       );
     });
   });
