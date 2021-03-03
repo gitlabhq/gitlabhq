@@ -69,7 +69,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
       it 'batch-resolves by target project full path and IIDS', :request_store do
         result = batch_sync(max_queries: queries_per_project) do
-          resolve_mr(project, iids: [iid_1, iid_2])
+          resolve_mr(project, iids: [iid_1, iid_2]).to_a
         end
 
         expect(result).to contain_exactly(merge_request_1, merge_request_2)

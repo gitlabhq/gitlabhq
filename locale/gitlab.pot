@@ -12036,9 +12036,6 @@ msgstr ""
 msgid "Error uploading file"
 msgstr ""
 
-msgid "Error uploading file. Please try again."
-msgstr ""
-
 msgid "Error uploading file: %{stripped}"
 msgstr ""
 
@@ -13260,6 +13257,42 @@ msgid "Fork project"
 msgstr ""
 
 msgid "Fork project?"
+msgstr ""
+
+msgid "ForkProject|Cancel"
+msgstr ""
+
+msgid "ForkProject|Create a group"
+msgstr ""
+
+msgid "ForkProject|Fork project"
+msgstr ""
+
+msgid "ForkProject|Internal"
+msgstr ""
+
+msgid "ForkProject|Private"
+msgstr ""
+
+msgid "ForkProject|Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
+msgstr ""
+
+msgid "ForkProject|Public"
+msgstr ""
+
+msgid "ForkProject|Select a namespace"
+msgstr ""
+
+msgid "ForkProject|The project can be accessed by any logged in user."
+msgstr ""
+
+msgid "ForkProject|The project can be accessed without any authentication."
+msgstr ""
+
+msgid "ForkProject|Visibility level"
+msgstr ""
+
+msgid "ForkProject|Want to house several dependent projects under the same namespace?"
 msgstr ""
 
 msgid "ForkedFromProjectPath|Forked from"
@@ -24967,9 +25000,6 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
-msgid "Remove file"
-msgstr ""
-
 msgid "Remove fork relationship"
 msgstr ""
 
@@ -28331,9 +28361,6 @@ msgid "Start a new discussion…"
 msgstr ""
 
 msgid "Start a new merge request"
-msgstr ""
-
-msgid "Start a new merge request with these changes"
 msgstr ""
 
 msgid "Start a review"

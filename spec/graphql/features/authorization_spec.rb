@@ -2,17 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Gitlab::Graphql::Authorization' do
+RSpec.describe 'Gitlab::Graphql::Authorize' do
   include GraphqlHelpers
+  include Graphql::ResolverFactories
 
   let_it_be(:user) { create(:user) }
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }
   let(:query_string) { '{ item { name } }' }
-  let(:result) { execute_query(query_type)['data'] }
+  let(:result) do
+    schema = empty_schema
+    schema.use(Gitlab::Graphql::Authorize)
+    execute_query(query_type, schema: schema)
+  end
 
-  subject { result['item'] }
+  subject { result.dig('data', 'item') }
 
   shared_examples 'authorization with a single permission' do
     it 'returns the protected field when user has permission' do
@@ -55,7 +60,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
     describe 'with a single permission' do
       let(:query_type) do
         query_factory do |query|
-          query.field :item, type, null: true, resolver: simple_resolver(test_object), authorize: permission_single
+          query.field :item, type, null: true, resolver: new_resolver(test_object), authorize: permission_single
         end
       end
 
@@ -66,7 +71,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
       let(:query_type) do
         permissions = permission_collection
         query_factory do |qt|
-          qt.field :item, type, null: true, resolver: simple_resolver(test_object) do
+          qt.field :item, type, null: true, resolver: new_resolver(test_object) do
             authorize permissions
           end
         end
@@ -79,7 +84,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
   describe 'Field authorizations when field is a built in type' do
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolver: simple_resolver(test_object)
+        query.field :item, type, null: true, resolver: new_resolver(test_object)
       end
     end
 
@@ -132,7 +137,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
   describe 'Type authorizations' do
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolver: simple_resolver(test_object)
+        query.field :item, type, null: true, resolver: new_resolver(test_object)
       end
     end
 
@@ -169,7 +174,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolver: simple_resolver(test_object), authorize: permission_2
+        query.field :item, type, null: true, resolver: new_resolver(test_object), authorize: permission_2
       end
     end
 
@@ -188,11 +193,11 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type.connection_type, null: true, resolver: simple_resolver([test_object, second_test_object])
+        query.field :item, type.connection_type, null: true, resolver: new_resolver([test_object, second_test_object])
       end
     end
 
-    subject { result.dig('item', 'edges') }
+    subject { result.dig('data', 'item', 'edges') }
 
     it 'returns only the elements visible to the user' do
       permit(permission_single)
@@ -208,7 +213,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
     describe 'limiting connections with multiple objects' do
       let(:query_type) do
         query_factory do |query|
-          query.field :item, type.connection_type, null: true, resolver: simple_resolver([test_object, second_test_object])
+          query.field :item, type.connection_type, null: true, resolver: new_resolver([test_object, second_test_object])
         end
       end
 
@@ -232,11 +237,11 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, [type], null: true, resolver: simple_resolver([test_object])
+        query.field :item, [type], null: true, resolver: new_resolver([test_object])
       end
     end
 
-    subject { result['item'].first }
+    subject { result.dig('data', 'item', 0) }
 
     include_examples 'authorization with a single permission'
   end
@@ -260,13 +265,13 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
         type.field :test_issues, issue_type.connection_type, null: false,
-                   resolver: simple_resolver(Issue.where(project: [visible_project, other_project]).order(id: :asc))
+                   resolver: new_resolver(Issue.where(project: [visible_project, other_project]).order(id: :asc))
       end
     end
 
     let(:query_type) do
       query_factory do |query|
-        query.field :test_project, project_type, null: false, resolver: simple_resolver(visible_project)
+        query.field :test_project, project_type, null: false, resolver: new_resolver(visible_project)
       end
     end
 
@@ -281,7 +286,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
     end
 
     it 'renders the issues the user has access to' do
-      issue_edges = result['testProject']['testIssues']['edges']
+      issue_edges = result.dig('data', 'testProject', 'testIssues', 'edges')
       issue_ids = issue_edges.map { |issue_edge| issue_edge['node']&.fetch('id') }
 
       expect(issue_edges.size).to eq(visible_issues.size)

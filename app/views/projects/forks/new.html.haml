@@ -9,10 +9,20 @@
       %br
       = _('Forking a repository allows you to make changes without affecting the original project.')
   .col-lg-9
-    - if @own_namespace.present?
-      .fork-thumbnail-container.js-fork-content
-        %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
-          = _("Select a namespace to fork the project")
-        = render 'fork_button', namespace: @own_namespace
-    #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json) } }
-
+    - if Feature.enabled?(:fork_project_form)
+      #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json),
+        new_group_path: new_group_path,
+        project_full_path: project_path(@project),
+        visibility_help_path: help_page_path("public_access/public_access"),
+        project_id: @project.id,
+        project_name: @project.name,
+        project_path: @project.path,
+        project_description: @project.description,
+        project_visibility: @project.visibility } }
+    - else
+      - if @own_namespace.present?
+        .fork-thumbnail-container.js-fork-content
+          %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
+            = _("Select a namespace to fork the project")
+          = render 'fork_button', namespace: @own_namespace
+      #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json) } }

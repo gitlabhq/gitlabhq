@@ -21,9 +21,9 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
   let(:args) do
     {
       project_path: project_path,
-      tag: tag,
+      tag_name: tag,
       name: name,
-      filepath: filepath,
+      direct_asset_path: filepath,
       url: url
     }
   end
@@ -44,9 +44,9 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
 
         expect(release.links.length).to be(1)
 
-        expect(last_release_link.name).to eq(args[:name])
-        expect(last_release_link.url).to eq(args[:url])
-        expect(last_release_link.filepath).to eq(args[:filepath])
+        expect(last_release_link.name).to eq(name)
+        expect(last_release_link.url).to eq(url)
+        expect(last_release_link.filepath).to eq(filepath)
       end
     end
 

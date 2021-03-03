@@ -16,6 +16,10 @@ class Projects::ForksController < Projects::ApplicationController
 
   feature_category :source_code_management
 
+  before_action do
+    push_frontend_feature_flag(:fork_project_form)
+  end
+
   def index
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size

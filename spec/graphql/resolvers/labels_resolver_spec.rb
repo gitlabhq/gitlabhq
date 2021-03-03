@@ -42,50 +42,36 @@ RSpec.describe Resolvers::LabelsResolver do
 
     context 'without parent' do
       it 'returns no labels' do
-        expect(resolve_labels(nil)).to eq(Label.none)
+        expect(resolve_labels(nil)).to be_empty
       end
     end
 
-    context 'at project level' do
+    context 'with a parent project' do
       before_all do
         group.add_developer(current_user)
       end
 
-      # because :include_ancestor_groups, :include_descendant_groups, :only_group_labels default to false
-      # the `nil` value would be equivalent to passing in `false` so just check for `nil` option
-      where(:include_ancestor_groups, :include_descendant_groups, :only_group_labels, :search_term, :test) do
-        nil     |  nil     | nil    | nil   | -> { expect(subject).to contain_exactly(label1, label2, subgroup_label1, subgroup_label2) }
-        nil     |  nil     | true   | nil   | -> { expect(subject).to contain_exactly(label1, label2, subgroup_label1, subgroup_label2) }
-        nil     |  true    | nil    | nil   | -> { expect(subject).to contain_exactly(label1, label2, subgroup_label1, subgroup_label2, sub_subgroup_label1, sub_subgroup_label2) }
-        nil     |  true    | true   | nil   | -> { expect(subject).to contain_exactly(label1, label2, subgroup_label1, subgroup_label2, sub_subgroup_label1, sub_subgroup_label2) }
-        true    |  nil     | nil    | nil   | -> { expect(subject).to contain_exactly(label1, label2, group_label1, group_label2, subgroup_label1, subgroup_label2) }
-        true    |  nil     | true   | nil   | -> { expect(subject).to contain_exactly(label1, label2, group_label1, group_label2, subgroup_label1, subgroup_label2) }
-        true    |  true    | nil    | nil   | -> { expect(subject).to contain_exactly(label1, label2, group_label1, group_label2, subgroup_label1, subgroup_label2, sub_subgroup_label1, sub_subgroup_label2) }
-        true    |  true    | true   | nil   | -> { expect(subject).to contain_exactly(label1, label2, group_label1, group_label2, subgroup_label1, subgroup_label2, sub_subgroup_label1, sub_subgroup_label2) }
-
-        nil     |  nil     | nil    | 'new'   | -> { expect(subject).to contain_exactly(label2, subgroup_label2) }
-        nil     |  nil     | true   | 'new'   | -> { expect(subject).to contain_exactly(label2, subgroup_label2) }
-        nil     |  true    | nil    | 'new'   | -> { expect(subject).to contain_exactly(label2, subgroup_label2, sub_subgroup_label2) }
-        nil     |  true    | true   | 'new'   | -> { expect(subject).to contain_exactly(label2, subgroup_label2, sub_subgroup_label2) }
-        true    |  nil     | nil    | 'new'   | -> { expect(subject).to contain_exactly(label2, group_label2, subgroup_label2) }
-        true    |  nil     | true   | 'new'   | -> { expect(subject).to contain_exactly(label2, group_label2, subgroup_label2) }
-        true    |  true    | nil    | 'new'   | -> { expect(subject).to contain_exactly(label2, group_label2, subgroup_label2, sub_subgroup_label2) }
-        true    |  true    | true   | 'new'   | -> { expect(subject).to contain_exactly(label2, group_label2, subgroup_label2, sub_subgroup_label2) }
+      # the expected result is wrapped in a lambda to get around the phase restrictions of RSpec::Parameterized
+      where(:include_ancestor_groups, :search_term, :expected_labels) do
+        nil   | nil   | -> { [label1, label2, subgroup_label1, subgroup_label2] }
+        false | nil   | -> { [label1, label2, subgroup_label1, subgroup_label2] }
+        true  | nil   | -> { [label1, label2, group_label1, group_label2, subgroup_label1, subgroup_label2] }
+        nil   | 'new' | -> { [label2, subgroup_label2] }
+        false | 'new' | -> { [label2, subgroup_label2] }
+        true  | 'new' | -> { [label2, group_label2, subgroup_label2] }
       end
 
       with_them do
         let(:params) do
           {
             include_ancestor_groups: include_ancestor_groups,
-            include_descendant_groups: include_descendant_groups,
-            only_group_labels: only_group_labels,
             search_term: search_term
           }
         end
 
         subject { resolve_labels(project, params) }
 
-        it { self.instance_exec(&test) }
+        specify { expect(subject).to match_array(instance_exec(&expected_labels)) }
       end
     end
   end

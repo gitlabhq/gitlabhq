@@ -9,6 +9,7 @@ RSpec.describe 'Project fork' do
   let(:project) { create(:project, :public, :repository) }
 
   before do
+    stub_feature_flags(fork_project_form: false)
     sign_in(user)
   end
 

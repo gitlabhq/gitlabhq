@@ -40,5 +40,5 @@
   - if runner.tags.present?
     %p
       - runner.tags.map(&:name).sort.each do |tag|
-        %span.badge.badge-primary
+        %span.badge.gl-badge.sm.badge-pill.badge-primary
           = tag

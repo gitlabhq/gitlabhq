@@ -127,7 +127,7 @@ RSpec.describe 'Project members list' do
       it 'does not show form used to change roles and "Expiration date" or the remove user button' do
         visit_members_page
 
-        page.within find_member_row(project_bot) do
+        page.within find_username_row(project_bot) do
           expect(page).not_to have_button('Maintainer')
           expect(page).to have_field('Expiration date', disabled: true)
           expect(page).not_to have_button('Remove member')

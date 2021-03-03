@@ -37,6 +37,10 @@
   }
 }
 
+[data-page$='epic_boards:show'] .filter-form {
+  display: none;
+}
+
 .boards-app {
   @include media-breakpoint-up(sm) {
     transition: width $sidebar-transition-duration;
