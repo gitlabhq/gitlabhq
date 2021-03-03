@@ -23,7 +23,7 @@ func TestIfNoDeployPageExist(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	executed := false
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.DeployPage(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		executed = true
 	})).ServeHTTP(w, nil)
@@ -45,7 +45,7 @@ func TestIfDeployPageExist(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	executed := false
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.DeployPage(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		executed = true
 	})).ServeHTTP(w, nil)
