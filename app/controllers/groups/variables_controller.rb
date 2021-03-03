@@ -2,7 +2,7 @@
 
 module Groups
   class VariablesController < Groups::ApplicationController
-    before_action :authorize_admin_build!
+    before_action :authorize_admin_group!
 
     skip_cross_project_access_check :show, :update
 
