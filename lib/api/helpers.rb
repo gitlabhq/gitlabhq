@@ -467,7 +467,7 @@ module API
     def handle_api_exception(exception)
       if report_exception?(exception)
         define_params_for_grape_middleware
-        Gitlab::ErrorTracking.with_context(current_user) do
+        Gitlab::ApplicationContext.with_context(user: current_user) do
           Gitlab::ErrorTracking.track_exception(exception)
         end
       end

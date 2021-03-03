@@ -103,13 +103,18 @@ describe('Environments Folder View', () => {
         expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
           scope: wrapper.vm.scope,
           page: '10',
+          nested: true,
         });
       });
 
       it('should make an API request when using tabs', () => {
         jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
         findEnvironmentsTabStopped().trigger('click');
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
+          scope: 'stopped',
+          page: '1',
+          nested: true,
+        });
       });
     });
   });
@@ -161,7 +166,11 @@ describe('Environments Folder View', () => {
       it('should set page to 1', () => {
         jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
         wrapper.vm.onChangeTab('stopped');
-        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+        expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
+          scope: 'stopped',
+          page: '1',
+          nested: true,
+        });
       });
     });
 
@@ -172,6 +181,7 @@ describe('Environments Folder View', () => {
         expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
           scope: wrapper.vm.scope,
           page: '4',
+          nested: true,
         });
       });
     });

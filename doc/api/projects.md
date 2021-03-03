@@ -179,6 +179,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -284,6 +285,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -439,6 +441,7 @@ GET /users/:user_id/projects
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -544,6 +547,7 @@ GET /users/:user_id/projects
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -658,6 +662,7 @@ Example response:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -758,6 +763,7 @@ Example response:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -921,6 +927,7 @@ GET /projects/:id
     "packages_size": 0,
     "snippets_size": 0
   },
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1373,6 +1380,7 @@ Example responses:
     "merge_method": "merge",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1467,6 +1475,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1559,6 +1568,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1745,6 +1755,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1858,6 +1869,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -2354,6 +2366,7 @@ Example response:
     "avatar_url": null,
     "web_url": "https://gitlab.example.com/groups/cute-cats"
   },
+  "container_registry_image_prefix": "registry.example.com/cute-cats/hello-world",
   "_links": {
     "self": "https://gitlab.example.com/api/v4/projects/7",
     "issues": "https://gitlab.example.com/api/v4/projects/7/issues",

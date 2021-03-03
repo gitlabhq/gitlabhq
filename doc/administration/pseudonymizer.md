@@ -24,7 +24,7 @@ be textually exported. This ensures that:
 
 ## Configuration
 
-To configure the pseudonymizer, you need to:
+To configure the Pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
   pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/tree/master/config/pseudonymizer.yml)).
@@ -87,7 +87,7 @@ To configure the pseudonymizer, you need to:
 
 ## Usage
 
-You can optionally run the pseudonymizer using the following environment variables:
+You can optionally run the Pseudonymizer using the following environment variables:
 
 - `PSEUDONYMIZER_OUTPUT_DIR` - where to store the output CSV files (defaults to `/tmp`)
 - `PSEUDONYMIZER_BATCH` - the batch size when querying the DB (defaults to `100000`)

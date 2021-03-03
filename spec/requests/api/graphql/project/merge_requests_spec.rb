@@ -7,13 +7,27 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
-
   let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:merge_request_a) { create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label]) }
-  let_it_be(:merge_request_b) { create(:merge_request, :closed, :unique_branches, source_project: project) }
-  let_it_be(:merge_request_c) { create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label]) }
-  let_it_be(:merge_request_d) { create(:merge_request, :locked, :unique_branches, source_project: project) }
-  let_it_be(:merge_request_e) { create(:merge_request, :unique_branches, source_project: project) }
+
+  let_it_be(:merge_request_a) do
+    create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label])
+  end
+
+  let_it_be(:merge_request_b) do
+    create(:merge_request, :closed, :unique_branches, source_project: project)
+  end
+
+  let_it_be(:merge_request_c) do
+    create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label])
+  end
+
+  let_it_be(:merge_request_d) do
+    create(:merge_request, :locked, :unique_branches, source_project: project)
+  end
+
+  let_it_be(:merge_request_e) do
+    create(:merge_request, :unique_branches, source_project: project)
+  end
 
   let(:results) { graphql_data.dig('project', 'mergeRequests', 'nodes') }
 
@@ -27,32 +41,38 @@ RSpec.describe 'getting merge request listings nested in a project' do
     )
   end
 
-  let(:query) do
-    query_merge_requests(all_graphql_fields_for('MergeRequest', max_depth: 1))
-  end
-
   it_behaves_like 'a working graphql query' do
+    let(:query) do
+      query_merge_requests(all_graphql_fields_for('MergeRequest', max_depth: 2))
+    end
+
     before do
-      post_graphql(query, current_user: current_user)
+      # We cannot call the whitelist here, since the transaction does not
+      # begin until we enter the controller.
+      headers = {
+        'X-GITLAB-QUERY-WHITELIST-ISSUE' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/322979'
+      }
+
+      post_graphql(query, current_user: current_user, headers: headers)
     end
   end
 
   # The following tests are needed to guarantee that we have correctly annotated
   # all the gitaly calls.  Selecting combinations of fields may mask this due to
   # memoization.
-  context 'requesting a single field' do
+  context 'when requesting a single field' do
     let_it_be(:fresh_mr) { create(:merge_request, :unique_branches, source_project: project) }
+
     let(:search_params) { { iids: [fresh_mr.iid.to_s] } }
+    let(:graphql_data) do
+      GitlabSchema.execute(query, context: { current_user: current_user }).to_h['data']
+    end
 
     before do
       project.repository.expire_branches_cache
     end
 
-    let(:graphql_data) do
-      GitlabSchema.execute(query, context: { current_user: current_user }).to_h['data']
-    end
-
-    context 'selecting any single scalar field' do
+    context 'when selecting any single scalar field' do
       where(:field) do
         scalar_fields_of('MergeRequest').map { |name| [name] }
       end
@@ -68,7 +88,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
     end
 
-    context 'selecting any single nested field' do
+    context 'when selecting any single nested field' do
       where(:field, :subfield, :is_connection) do
         nested_fields_of('MergeRequest').flat_map do |name, field|
           type = field_type(field)
@@ -95,7 +115,11 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
   end
 
-  shared_examples 'searching with parameters' do
+  shared_examples 'when searching with parameters' do
+    let(:query) do
+      query_merge_requests('iid title')
+    end
+
     let(:expected) do
       mrs.map { |mr| a_hash_including('iid' => mr.iid.to_s, 'title' => mr.title) }
     end
@@ -107,60 +131,60 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
   end
 
-  context 'there are no search params' do
+  context 'when there are no search params' do
     let(:search_params) { nil }
     let(:mrs) { [merge_request_a, merge_request_b, merge_request_c, merge_request_d, merge_request_e] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'the search params do not match anything' do
-    let(:search_params) { { iids: %w(foo bar baz) } }
+  context 'when the search params do not match anything' do
+    let(:search_params) { { iids: %w[foo bar baz] } }
     let(:mrs) { [] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by iids' do
+  context 'when searching by iids' do
     let(:search_params) { { iids: mrs.map(&:iid).map(&:to_s) } }
     let(:mrs) { [merge_request_a, merge_request_c] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by state' do
+  context 'when searching by state' do
     let(:search_params) { { state: :closed } }
     let(:mrs) { [merge_request_b, merge_request_c] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by source_branch' do
+  context 'when searching by source_branch' do
     let(:search_params) { { source_branches: mrs.map(&:source_branch) } }
     let(:mrs) { [merge_request_b, merge_request_c] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by target_branch' do
+  context 'when searching by target_branch' do
     let(:search_params) { { target_branches: mrs.map(&:target_branch) } }
     let(:mrs) { [merge_request_a, merge_request_d] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by label' do
+  context 'when searching by label' do
     let(:search_params) { { labels: [label.title] } }
     let(:mrs) { [merge_request_a, merge_request_c] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
-  context 'searching by combination' do
+  context 'when searching by combination' do
     let(:search_params) { { state: :closed, labels: [label.title] } }
     let(:mrs) { [merge_request_c] }
 
-    it_behaves_like 'searching with parameters'
+    it_behaves_like 'when searching with parameters'
   end
 
   context 'when requesting `approved_by`' do
@@ -203,10 +227,10 @@ RSpec.describe 'getting merge request listings nested in a project' do
       it 'exposes `commit_count`' do
         execute_query
 
-        expect(results).to match_array([
+        expect(results).to match_array [
           { "iid" => merge_request_a.iid.to_s, "commitCount" => 0 },
           { "iid" => merge_request_with_commits.iid.to_s, "commitCount" => 29 }
-        ])
+        ]
       end
     end
 
@@ -216,8 +240,8 @@ RSpec.describe 'getting merge request listings nested in a project' do
       before do
         # make the MRs "merged"
         [merge_request_a, merge_request_b, merge_request_c].each do |mr|
-          mr.update_column(:state_id, MergeRequest.available_states[:merged])
-          mr.metrics.update_column(:merged_at, Time.now)
+          mr.update!(state_id: MergeRequest.available_states[:merged])
+          mr.metrics.update!(merged_at: Time.now)
         end
       end
 
@@ -256,13 +280,12 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       it 'returns the reviewers' do
+        nodes = merge_request_a.reviewers.map { |r| { 'username' => r.username } }
+        reviewers = { 'nodes' => match_array(nodes) }
+
         execute_query
 
-        expect(results).to include a_hash_including('reviewers' => {
-          'nodes' => match_array(merge_request_a.reviewers.map do |r|
-            a_hash_including('username' => r.username)
-          end)
-        })
+        expect(results).to include a_hash_including('reviewers' => match(reviewers))
       end
 
       include_examples 'N+1 query check'
@@ -309,12 +332,14 @@ RSpec.describe 'getting merge request listings nested in a project' do
       allow(Gitlab::Database).to receive(:read_only?).and_return(false)
     end
 
+    def query_context
+      { current_user: current_user }
+    end
+
     def run_query(number)
       # Ensure that we have a fresh request store and batch-context between runs
-      result = run_with_clean_state(query,
-        context: { current_user: current_user },
-        variables: { first: number }
-      )
+      vars = { first: number }
+      result = run_with_clean_state(query, context: query_context, variables: vars)
 
       graphql_dig_at(result.to_h, :data, :project, :merge_requests, :nodes)
     end
@@ -348,13 +373,11 @@ RSpec.describe 'getting merge request listings nested in a project' do
     let(:data_path) { [:project, :mergeRequests] }
 
     def pagination_query(params)
-      graphql_query_for(:project, { full_path: project.full_path },
-        <<~QUERY
+      graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
         mergeRequests(#{params}) {
           #{page_info} nodes { id }
         }
-        QUERY
-      )
+      QUERY
     end
 
     context 'when sorting by merged_at DESC' do
@@ -396,14 +419,12 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
       let(:query) do
         # Note: __typename meta field is always requested by the FE
-        graphql_query_for(:project, { full_path: project.full_path },
-        <<~QUERY
+        graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
         mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0, sourceBranches: null, labels: null) {
           count
           __typename
         }
         QUERY
-        )
       end
 
       shared_examples 'count examples' do
@@ -430,14 +451,12 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
         context 'when total_time_to_merge and count is queried' do
           let(:query) do
-            graphql_query_for(:project, { full_path: project.full_path },
-            <<~QUERY
+            graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
             mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
               totalTimeToMerge
               count
             }
             QUERY
-            )
           end
 
           it 'does not query the merge requests table for the total_time_to_merge' do

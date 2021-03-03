@@ -221,7 +221,7 @@ RSpec.describe Upload do
         it 'does not send a message to Sentry' do
           upload = described_class.new(path: "#{__FILE__}-nope", store: ObjectStorage::Store::LOCAL)
 
-          expect(Raven).not_to receive(:capture_message)
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
           upload.exist?
         end

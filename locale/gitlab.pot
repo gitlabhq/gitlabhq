@@ -21028,6 +21028,9 @@ msgstr ""
 msgid "OnCallSchedules|Restrict to time intervals"
 msgstr ""
 
+msgid "OnCallSchedules|Rotation end date/time must come after start date/time"
+msgstr ""
+
 msgid "OnCallSchedules|Rotation length"
 msgstr ""
 

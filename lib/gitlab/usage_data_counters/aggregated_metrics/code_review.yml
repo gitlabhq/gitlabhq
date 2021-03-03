@@ -42,7 +42,9 @@
     'i_code_review_user_approval_rule_edited',
     'i_code_review_user_vs_code_api_request',
     'i_code_review_user_toggled_task_item_status',
-    'i_code_review_user_create_mr_from_issue'
+    'i_code_review_user_create_mr_from_issue',
+    'i_code_review_user_mr_discussion_locked',
+    'i_code_review_user_mr_discussion_unlocked'
   ]
 - name: code_review_category_monthly_active_users
   operator: OR
@@ -78,7 +80,9 @@
     'i_code_review_user_approval_rule_deleted',
     'i_code_review_user_approval_rule_edited',
     'i_code_review_user_toggled_task_item_status',
-    'i_code_review_user_create_mr_from_issue'
+    'i_code_review_user_create_mr_from_issue',
+    'i_code_review_user_mr_discussion_locked',
+    'i_code_review_user_mr_discussion_unlocked'
   ]
 - name: code_review_extension_category_monthly_active_users
   operator: OR

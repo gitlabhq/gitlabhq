@@ -13384,6 +13384,86 @@ Count of unique users per week|month who merged a MR
 | `tier` |  |
 | `skip_validation` | true |
 
+## `redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_monthly`
+
+Count of unique users per month who locked a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_weekly`
+
+Count of unique users per week who locked a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_mr_discussion_unlocked_monthly`
+
+Count of unique users per month who unlocked a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_mr_discussion_unlocked_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_mr_discussion_unlocked_weekly`
+
+Count of unique users per week who unlocked a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_mr_discussion_unlocked_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
 ## `redis_hll_counters.code_review.i_code_review_user_publish_review_monthly`
 
 Missing description

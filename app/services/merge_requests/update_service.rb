@@ -47,6 +47,7 @@ module MergeRequests
       handle_draft_status_change(merge_request, changed_fields)
 
       track_title_and_desc_edits(changed_fields)
+      track_discussion_lock_toggle(merge_request, changed_fields)
 
       notify_if_labels_added(merge_request, old_labels)
       notify_if_mentions_added(merge_request, old_mentioned_users)
@@ -92,6 +93,16 @@ module MergeRequests
 
         merge_request_activity_counter
           .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
+      end
+    end
+
+    def track_discussion_lock_toggle(merge_request, changed_fields)
+      return unless changed_fields.include?('discussion_locked')
+
+      if merge_request.discussion_locked
+        merge_request_activity_counter.track_discussion_locked_action(user: current_user)
+      else
+        merge_request_activity_counter.track_discussion_unlocked_action(user: current_user)
       end
     end
 

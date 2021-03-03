@@ -446,6 +446,8 @@
 
 .frontend:rules:bundle-size-review:
   rules:
+    - <<: *if-not-canonical-namespace
+      when: never
     - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main")'
       changes: *frontend-patterns
       allow_failure: true

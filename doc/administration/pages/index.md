@@ -862,7 +862,7 @@ In installations from source:
        remote_directory: "pages" # The bucket name
        connection:
          provider: AWS # Only AWS supported at the moment
-         aws_access_key_id: AWS_ACESS_KEY_ID
+         aws_access_key_id: AWS_ACCESS_KEY_ID
          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
          region: eu-central-1
    ```
@@ -969,14 +969,15 @@ to define the explicit address that the GitLab Pages daemon should listen on:
 gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ```
 
-### 404 error after transferring project to a different group or user
+### 404 error after transferring the project to a different group or user, or changing project path
 
 If you encounter a `404 Not Found` error a Pages site after transferring a project to
-another group or user, you must trigger a domain configuration update for Pages. To do
-so, write something in the `.update` file. The Pages daemon monitors for changes to this
-file, and reloads the configuration when changes occur.
+another group or user, or changing project path, you must trigger a domain configuration
+update for Pages. To do so, write something in the `.update` file. The Pages daemon
+monitors for changes to this file, and reloads the configuration when changes occur.
 
-Use this example to fix a `404 Not Found` error after transferring a project with Pages:
+Use this example to fix a `404 Not Found` error after transferring a project or changing
+a project path with Pages:
 
 ```shell
 date > /var/opt/gitlab/gitlab-rails/shared/pages/.update

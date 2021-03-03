@@ -1540,6 +1540,10 @@ RSpec.describe API::Projects do
     end
 
     context 'when authenticated as an admin' do
+      before do
+        stub_container_registry_config(enabled: true, host_port: 'registry.example.org:5000')
+      end
+
       let(:project_attributes_file) { 'spec/requests/api/project_attributes.yml' }
       let(:project_attributes) { YAML.load_file(project_attributes_file) }
 
@@ -1569,7 +1573,7 @@ RSpec.describe API::Projects do
         keys
       end
 
-      it 'returns a project by id' do
+      it 'returns a project by id', :aggregate_failures do
         project
         project_member
         group = create(:group)
@@ -1587,6 +1591,7 @@ RSpec.describe API::Projects do
         expect(json_response['ssh_url_to_repo']).to be_present
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['container_registry_image_prefix']).to eq("registry.example.org:5000/#{project.full_path}")
         expect(json_response['owner']).to be_a Hash
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to be_present
@@ -1644,9 +1649,10 @@ RSpec.describe API::Projects do
       before do
         project
         project_member
+        stub_container_registry_config(enabled: true, host_port: 'registry.example.org:5000')
       end
 
-      it 'returns a project by id' do
+      it 'returns a project by id', :aggregate_failures do
         group = create(:group)
         link = create(:project_group_link, project: project, group: group)
 
@@ -1662,6 +1668,7 @@ RSpec.describe API::Projects do
         expect(json_response['ssh_url_to_repo']).to be_present
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
+        expect(json_response['container_registry_image_prefix']).to eq("registry.example.org:5000/#{project.full_path}")
         expect(json_response['owner']).to be_a Hash
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to be_present

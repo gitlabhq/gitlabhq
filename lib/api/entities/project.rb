@@ -5,6 +5,8 @@ module API
     class Project < BasicProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
+      expose :container_registry_url, as: :container_registry_image_prefix, if: -> (_, _) { Gitlab.config.registry.enabled }
+
       expose :_links do
         expose :self do |project|
           expose_url(api_v4_projects_path(id: project.id))
