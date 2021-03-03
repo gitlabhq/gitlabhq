@@ -64,8 +64,8 @@ RSpec.describe ProjectPolicy do
       end
 
       it 'disables boards and lists permissions' do
-        expect_disallowed :read_board, :create_board, :update_board
-        expect_disallowed :read_list, :create_list, :update_list, :admin_list
+        expect_disallowed :read_issue_board, :create_board, :update_board
+        expect_disallowed :read_issue_board_list, :create_list, :update_list, :admin_issue_board_list
       end
 
       context 'when external tracker configured' do

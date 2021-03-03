@@ -1469,7 +1469,7 @@ Kubernetes API, giving you access to more advanced querying capabilities. Log
 data is deleted after 30 days, using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
 
 The Elastic Stack cluster application is intended as a log aggregation solution
-and is not related to our [Advanced Search](../search/advanced_global_search.md)
+and is not related to our [Advanced Search](../search/advanced_search.md)
 functionality, which uses a separate Elasticsearch cluster.
 
 To enable log shipping:

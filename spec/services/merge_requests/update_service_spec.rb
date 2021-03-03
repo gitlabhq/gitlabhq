@@ -656,6 +656,48 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
     end
 
+    context 'when the draft status is changed' do
+      let!(:non_subscriber) { create(:user) }
+      let!(:subscriber) do
+        create(:user) { |u| merge_request.toggle_subscription(u, project) }
+      end
+
+      before do
+        project.add_developer(non_subscriber)
+        project.add_developer(subscriber)
+      end
+
+      context 'removing draft status' do
+        before do
+          merge_request.update_attribute(:title, 'Draft: New Title')
+        end
+
+        it 'sends notifications for subscribers', :sidekiq_might_not_need_inline do
+          opts = { title: 'New title' }
+
+          perform_enqueued_jobs do
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+
+      context 'adding draft status' do
+        it 'does not send notifications', :sidekiq_might_not_need_inline do
+          opts = { title: 'Draft: New title' }
+
+          perform_enqueued_jobs do
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+    end
+
     context 'when the merge request is relabeled' do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }

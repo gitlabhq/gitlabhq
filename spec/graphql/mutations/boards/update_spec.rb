@@ -20,7 +20,7 @@ RSpec.describe Mutations::Boards::Update do
 
   subject { mutation.resolve(**mutation_params) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_board) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_issue_board) }
 
   describe '#resolve' do
     context 'when the user cannot admin the board' do

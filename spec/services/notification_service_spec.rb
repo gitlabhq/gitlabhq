@@ -1868,6 +1868,42 @@ RSpec.describe NotificationService, :mailer do
       end
     end
 
+    describe '#change_in_merge_request_draft_status' do
+      let(:merge_request) { create(:merge_request, author: author, source_project: project) }
+
+      let_it_be(:current_user) { create(:user) }
+
+      it 'sends emails to relevant users only', :aggregate_failures do
+        notification.change_in_merge_request_draft_status(merge_request, current_user)
+
+        merge_request.reviewers.each { |reviewer| should_email(reviewer) }
+        merge_request.assignees.each { |assignee| should_email(assignee) }
+        should_email(merge_request.author)
+        should_email(@u_watcher)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@u_guest_custom)
+        should_not_email(@u_custom_global)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.change_in_merge_request_draft_status(merge_request, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.change_in_merge_request_draft_status(merge_request, @u_disabled) }
+      end
+    end
+
     describe '#push_to_merge_request' do
       before do
         update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)

@@ -97,9 +97,9 @@ class GroupPolicy < BasePolicy
 
   rule { can?(:read_group) }.policy do
     enable :read_milestone
-    enable :read_list
+    enable :read_issue_board_list
     enable :read_label
-    enable :read_board
+    enable :read_issue_board
     enable :read_group_member
     enable :read_custom_emoji
   end
@@ -122,9 +122,9 @@ class GroupPolicy < BasePolicy
   rule { reporter }.policy do
     enable :reporter_access
     enable :read_container_image
-    enable :admin_board
+    enable :admin_issue_board
     enable :admin_label
-    enable :admin_list
+    enable :admin_issue_board_list
     enable :admin_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus

@@ -12,7 +12,7 @@ type: reference, api
 
 Every API call to search must be authenticated.
 
-## Global Search API
+## Advanced Search API
 
 Search globally across the GitLab instance.
 

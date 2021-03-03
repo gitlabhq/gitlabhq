@@ -45,6 +45,6 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def authorize_read_board!
-    access_denied! unless can?(current_user, :read_board, project)
+    access_denied! unless can?(current_user, :read_issue_board, project)
   end
 end

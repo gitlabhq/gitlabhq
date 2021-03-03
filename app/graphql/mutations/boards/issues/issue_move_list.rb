@@ -83,7 +83,7 @@ module Mutations
         end
 
         def authorize_board!(board)
-          return if Ability.allowed?(current_user, :read_board, board.resource_parent)
+          return if Ability.allowed?(current_user, :read_issue_board, board.resource_parent)
 
           raise_resource_not_available_error!
         end

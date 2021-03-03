@@ -44,6 +44,6 @@ class Groups::BoardsController < Groups::ApplicationController
   end
 
   def authorize_read_board!
-    access_denied! unless can?(current_user, :read_board, group)
+    access_denied! unless can?(current_user, :read_issue_board, group)
   end
 end

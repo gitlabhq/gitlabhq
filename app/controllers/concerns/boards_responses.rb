@@ -35,7 +35,7 @@ module BoardsResponses
   end
 
   def authorize_read_list
-    authorize_action_for!(board, :read_list)
+    authorize_action_for!(board, :read_issue_board_list)
   end
 
   def authorize_read_issue
@@ -54,7 +54,7 @@ module BoardsResponses
   end
 
   def authorize_admin_list
-    authorize_action_for!(board, :admin_list)
+    authorize_action_for!(board, :admin_issue_board_list)
   end
 
   def authorize_action_for!(resource, ability)

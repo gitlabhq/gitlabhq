@@ -44,7 +44,7 @@ module Mutations
         def can_read_list?(list)
           return false unless list.present?
 
-          Ability.allowed?(current_user, :read_list, list.board)
+          Ability.allowed?(current_user, :read_issue_board_list, list.board)
         end
       end
     end

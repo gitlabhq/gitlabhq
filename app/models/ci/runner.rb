@@ -253,9 +253,10 @@ module Ci
     end
 
     def can_pick?(build)
-      return false if self.ref_protected? && !build.protected?
-
-      assignable_for?(build.project_id) && accepting_tags?(build)
+      #  Run `matches_build?` checks before, since they are cheaper than
+      # `assignable_for?`.
+      #
+      matches_build?(build) && assignable_for?(build.project_id)
     end
 
     def only_for?(project)
@@ -264,6 +265,16 @@ module Ci
 
     def short_sha
       token[0...8] if token
+    end
+
+    def tag_list
+      return super unless Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
+
+      if tags.loaded?
+        tags.map(&:name)
+      else
+        super
+      end
     end
 
     def has_tags?
@@ -305,8 +316,10 @@ module Ci
     end
 
     def pick_build!(build)
-      if can_pick?(build)
-        tick_runner_queue
+      if Feature.enabled?(:ci_reduce_queries_when_ticking_runner_queue, self, default_enabled: :yaml)
+        tick_runner_queue if matches_build?(build)
+      else
+        tick_runner_queue if can_pick?(build)
       end
     end
 
@@ -368,6 +381,13 @@ module Ci
       unless groups.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
+    end
+
+    # TODO: choose a better name and consider splitting this method into two
+    def matches_build?(build)
+      return false if self.ref_protected? && !build.protected?
+
+      accepting_tags?(build)
     end
 
     def accepting_tags?(build)

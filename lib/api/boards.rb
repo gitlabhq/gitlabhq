@@ -30,7 +30,7 @@ module API
           use :pagination
         end
         get '/' do
-          authorize!(:read_board, user_project)
+          authorize!(:read_issue_board, user_project)
           present paginate(board_parent.boards.with_associations), with: Entities::Board
         end
 
@@ -39,7 +39,7 @@ module API
           success Entities::Board
         end
         get '/:board_id' do
-          authorize!(:read_board, user_project)
+          authorize!(:read_issue_board, user_project)
           present board, with: Entities::Board
         end
 
@@ -51,7 +51,7 @@ module API
           requires :name, type: String, desc: 'The board name'
         end
         post '/' do
-          authorize!(:admin_board, board_parent)
+          authorize!(:admin_issue_board, board_parent)
 
           create_board
         end
@@ -64,7 +64,7 @@ module API
           use :update_params
         end
         put '/:board_id' do
-          authorize!(:admin_board, board_parent)
+          authorize!(:admin_issue_board, board_parent)
 
           update_board
         end
@@ -75,7 +75,7 @@ module API
         end
 
         delete '/:board_id' do
-          authorize!(:admin_board, board_parent)
+          authorize!(:admin_issue_board, board_parent)
 
           delete_board
         end
@@ -93,7 +93,7 @@ module API
           use :pagination
         end
         get '/lists' do
-          authorize!(:read_board, user_project)
+          authorize!(:read_issue_board, user_project)
           present paginate(board_lists), with: Entities::List
         end
 
@@ -105,7 +105,7 @@ module API
           requires :list_id, type: Integer, desc: 'The ID of a list'
         end
         get '/lists/:list_id' do
-          authorize!(:read_board, user_project)
+          authorize!(:read_issue_board, user_project)
           present board_lists.find(params[:list_id]), with: Entities::List
         end
 
@@ -117,7 +117,7 @@ module API
           use :list_creation_params
         end
         post '/lists' do
-          authorize!(:admin_list, user_project)
+          authorize!(:admin_issue_board_list, user_project)
 
           create_list
         end
@@ -133,7 +133,7 @@ module API
         put '/lists/:list_id' do
           list = board_lists.find(params[:list_id])
 
-          authorize!(:admin_list, user_project)
+          authorize!(:admin_issue_board_list, user_project)
 
           move_list(list)
         end
@@ -146,7 +146,7 @@ module API
           requires :list_id, type: Integer, desc: 'The ID of a board list'
         end
         delete "/lists/:list_id" do
-          authorize!(:admin_list, user_project)
+          authorize!(:admin_issue_board_list, user_project)
           list = board_lists.find(params[:list_id])
 
           destroy_list(list)

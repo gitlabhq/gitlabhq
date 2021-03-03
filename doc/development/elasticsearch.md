@@ -184,7 +184,7 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 1. Change the namespace for files under `v12p1` folder from `Latest` to `V12p1`
 1. Make changes to files under the `latest` folder as needed
 
-## Creating a new Global Search migration
+## Creating a new Advanced Search migration
 
 > This functionality was introduced by [#234046](https://gitlab.com/gitlab-org/gitlab/-/issues/234046).
 

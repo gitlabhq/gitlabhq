@@ -17,7 +17,7 @@ module ReadonlyAbilities
 
   READONLY_FEATURES = %i[
     issue
-    list
+    issue_board_list
     merge_request
     label
     milestone

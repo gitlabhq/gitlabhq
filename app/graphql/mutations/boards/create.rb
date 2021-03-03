@@ -14,7 +14,7 @@ module Mutations
             null: true,
             description: 'The board after mutation.'
 
-      authorize :admin_board
+      authorize :admin_issue_board
 
       def resolve(args)
         board_parent = authorized_resource_parent_find!(args)

@@ -15,7 +15,7 @@ module Mutations
               null: true,
               description: 'Issue list in the issue board.'
 
-        authorize :admin_list
+        authorize :admin_issue_board_list
 
         private
 

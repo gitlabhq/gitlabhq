@@ -4964,12 +4964,13 @@ Access level to a resource.
 
 | Value | Description |
 | ----- | ----------- |
-| `DEVELOPER` |  |
-| `GUEST` |  |
-| `MAINTAINER` |  |
-| `NO_ACCESS` |  |
-| `OWNER` |  |
-| `REPORTER` |  |
+| `DEVELOPER` | Developer access |
+| `GUEST` | Guest access |
+| `MAINTAINER` | Maintainer access |
+| `MINIMAL_ACCESS` | Minimal access |
+| `NO_ACCESS` | No access |
+| `OWNER` | Owner access |
+| `REPORTER` | Reporter access |
 
 ### AlertManagementAlertSort
 

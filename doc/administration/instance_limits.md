@@ -526,7 +526,7 @@ amount of memory during indexing.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
 
-You can set a limit on the content of text fields indexed for Global Search.
+You can set a limit on the content of text fields indexed for Advanced Search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
 text field exceeds this limit then the text will be truncated to this number of
 characters and the rest will not be indexed and hence will not be searchable.

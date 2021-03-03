@@ -80,7 +80,7 @@ module MultipleBoardsActions
   end
 
   def authorize_admin_board!
-    return render_404 unless can?(current_user, :admin_board, parent)
+    return render_404 unless can?(current_user, :admin_issue_board, parent)
   end
 
   def serializer

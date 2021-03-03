@@ -842,27 +842,50 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#pick_build!' do
+    let(:build) { create(:ci_build) }
+    let(:runner) { create(:ci_runner) }
+
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
-        ci_build = build(:ci_build)
-        runner = build(:ci_runner)
-        allow(runner).to receive(:can_pick?).with(ci_build).and_return(true)
-
         expect(runner).to receive(:tick_runner_queue)
 
-        runner.pick_build!(ci_build)
+        runner.pick_build!(build)
       end
     end
 
     context 'runner cannot pick the build' do
-      it 'does not call #tick_runner_queue' do
-        ci_build = build(:ci_build)
-        runner = build(:ci_runner)
-        allow(runner).to receive(:can_pick?).with(ci_build).and_return(false)
+      before do
+        build.tag_list = [:docker]
+      end
 
+      it 'does not call #tick_runner_queue' do
         expect(runner).not_to receive(:tick_runner_queue)
 
-        runner.pick_build!(ci_build)
+        runner.pick_build!(build)
+      end
+    end
+
+    context 'build picking improvement enabled' do
+      before do
+        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: true)
+      end
+
+      it 'does not check if the build is assignable to a runner' do
+        expect(runner).not_to receive(:can_pick?)
+
+        runner.pick_build!(build)
+      end
+    end
+
+    context 'build picking improvement disabled' do
+      before do
+        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: false)
+      end
+
+      it 'checks if the build is assignable to a runner' do
+        expect(runner).to receive(:can_pick?).and_call_original
+
+        runner.pick_build!(build)
       end
     end
   end

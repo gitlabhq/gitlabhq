@@ -189,6 +189,20 @@ class NotificationService
     end
   end
 
+  def change_in_merge_request_draft_status(merge_request, current_user)
+    recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "draft_status_change")
+
+    recipients.each do |recipient|
+      mailer.send(
+        :change_in_merge_request_draft_status_email,
+        recipient.user.id,
+        merge_request.id,
+        current_user.id,
+        recipient.reason
+      ).deliver_later
+    end
+  end
+
   # When a merge request is found to be unmergeable, we should send an email to:
   #
   #  * mr author

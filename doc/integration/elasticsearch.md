@@ -11,10 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This document describes how to enable Advanced Search. After
 Advanced Search is enabled, you'll have the benefit of fast search response times
-and the advantage of the following special searches:
-
-- [Advanced Search](../user/search/advanced_global_search.md)
-- [Advanced Search Syntax](../user/search/advanced_search_syntax.md)
+and the advantage of the [special searches](../user/search/advanced_search.md).
 
 ## Version requirements
 

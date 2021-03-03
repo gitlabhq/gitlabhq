@@ -154,9 +154,18 @@ module MergeRequests
       elsif old_title_wip && !new_title_wip
         # Unmarked as Draft/WIP
         #
+        notify_draft_status_changed(merge_request)
+
         merge_request_activity_counter
           .track_unmarked_as_draft_action(user: current_user)
       end
+    end
+
+    def notify_draft_status_changed(merge_request)
+      notification_service.async.change_in_merge_request_draft_status(
+        merge_request,
+        current_user
+      )
     end
 
     def handle_milestone_change(merge_request)

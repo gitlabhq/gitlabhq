@@ -87,7 +87,7 @@ In addition, the log contains the originating IP address,
 (`remote_ip`), the user's ID (`user_id`), and username (`username`).
 
 Some endpoints such as `/search` may make requests to Elasticsearch if using
-[Advanced Search](../user/search/advanced_global_search.md). These
+[Advanced Search](../user/search/advanced_search.md). These
 additionally log `elasticsearch_calls` and `elasticsearch_call_duration_s`,
 which correspond to:
 

@@ -1834,7 +1834,7 @@ RSpec.describe User do
   end
 
   describe '.instance_access_request_approvers_to_be_notified' do
-    let_it_be(:admin_list) { create_list(:user, 12, :admin, :with_sign_ins) }
+    let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
 
     it 'returns up to the ten most recently active instance admins' do
       active_admins_in_recent_sign_in_desc_order = User.admins.active.order_recent_sign_in.limit(10)
