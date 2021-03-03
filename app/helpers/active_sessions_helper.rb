@@ -24,11 +24,6 @@ module ActiveSessionsHelper
   end
 
   def revoke_session_path(active_session)
-    if active_session.session_private_id
-      profile_active_session_path(active_session.session_private_id)
-    else
-      # TODO: remove in 13.7
-      profile_active_session_path(active_session.public_id)
-    end
+    profile_active_session_path(active_session.session_private_id)
   end
 end
