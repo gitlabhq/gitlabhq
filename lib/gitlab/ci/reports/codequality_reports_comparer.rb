@@ -5,7 +5,7 @@ module Gitlab
     module Reports
       class CodequalityReportsComparer < ReportsComparer
         def initialize(base_report, head_report)
-          @base_report = base_report || CodequalityReports.new
+          @base_report = base_report
           @head_report = head_report
         end
 
@@ -15,12 +15,16 @@ module Gitlab
 
         def existing_errors
           strong_memoize(:existing_errors) do
+            next [] if not_found?
+
             base_report.all_degradations & head_report.all_degradations
           end
         end
 
         def new_errors
           strong_memoize(:new_errors) do
+            next [] if not_found?
+
             fingerprints = head_report.degradations.keys - base_report.degradations.keys
             head_report.degradations.fetch_values(*fingerprints)
           end
@@ -28,6 +32,8 @@ module Gitlab
 
         def resolved_errors
           strong_memoize(:resolved_errors) do
+            next [] if not_found?
+
             fingerprints = base_report.degradations.keys - head_report.degradations.keys
             base_report.degradations.fetch_values(*fingerprints)
           end

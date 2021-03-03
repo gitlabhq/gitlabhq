@@ -200,9 +200,9 @@ export default {
       <gl-form-input id="fork-name" v-model="fork.name" data-testid="fork-name-input" required />
     </gl-form-group>
 
-    <div class="gl-display-flex">
-      <div class="gl-w-half">
-        <gl-form-group label="Project URL" label-for="fork-url" class="gl-pr-2">
+    <div class="gl-md-display-flex">
+      <div class="gl-flex-basis-half">
+        <gl-form-group label="Project URL" label-for="fork-url" class="gl-md-mr-3">
           <gl-form-input-group>
             <template #prepend>
               <gl-input-group-text>
@@ -225,8 +225,8 @@ export default {
           </gl-form-input-group>
         </gl-form-group>
       </div>
-      <div class="gl-w-half">
-        <gl-form-group label="Project slug" label-for="fork-slug" class="gl-pl-2">
+      <div class="gl-flex-basis-half">
+        <gl-form-group label="Project slug" label-for="fork-slug" class="gl-md-ml-3">
           <gl-form-input
             id="fork-slug"
             v-model="fork.slug"

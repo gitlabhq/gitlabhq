@@ -74,6 +74,9 @@ gem 'acme-client', '~> 2.0', '>= 2.0.6'
 # Browser detection
 gem 'browser', '~> 4.2'
 
+# OS detection for usage ping
+gem 'ohai', '~> 16.10'
+
 # GPG
 gem 'gpgme', '~> 2.0.19'
 

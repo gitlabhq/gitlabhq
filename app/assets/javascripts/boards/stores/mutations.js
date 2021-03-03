@@ -105,6 +105,10 @@ export default {
     Vue.set(state, 'boardLists', backupList);
   },
 
+  [mutationTypes.TOGGLE_LIST_COLLAPSED]: (state, { listId, collapsed }) => {
+    Vue.set(state.boardLists[listId], 'collapsed', collapsed);
+  },
+
   [mutationTypes.REMOVE_LIST]: (state, listId) => {
     Vue.delete(state.boardLists, listId);
   },

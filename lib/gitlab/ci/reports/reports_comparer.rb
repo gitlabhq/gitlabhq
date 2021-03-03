@@ -18,10 +18,10 @@ module Gitlab
         end
 
         def status
-          if success?
-            STATUS_SUCCESS
-          elsif base_report.nil? || head_report.nil?
+          if base_report.nil? || head_report.nil?
             STATUS_NOT_FOUND
+          elsif success?
+            STATUS_SUCCESS
           else
             STATUS_FAILED
           end
@@ -53,6 +53,10 @@ module Gitlab
 
         def total_count
           existing_errors.size + new_errors.size
+        end
+
+        def not_found?
+          status == STATUS_NOT_FOUND
         end
       end
     end

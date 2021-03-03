@@ -256,6 +256,10 @@ export default {
       });
   },
 
+  toggleListCollapsed: ({ commit }, { listId, collapsed }) => {
+    commit(types.TOGGLE_LIST_COLLAPSED, { listId, collapsed });
+  },
+
   removeList: ({ state, commit }, listId) => {
     const listsBackup = { ...state.boardLists };
 

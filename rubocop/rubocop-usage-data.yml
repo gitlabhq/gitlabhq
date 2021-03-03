@@ -30,6 +30,7 @@ UsageData/LargeTable:
     - :Settings
     - :CE_MEMOIZED_VALUES
     - :EE_MEMOIZED_VALUES
+    - :Ohai::System
   CountMethods:
     - :count
     - :distinct_count

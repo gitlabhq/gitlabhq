@@ -452,6 +452,22 @@ describe('updateList', () => {
   });
 });
 
+describe('toggleListCollapsed', () => {
+  it('should commit TOGGLE_LIST_COLLAPSED mutation', async () => {
+    const payload = { listId: 'gid://gitlab/List/1', collapsed: true };
+    await testAction({
+      action: actions.toggleListCollapsed,
+      payload,
+      expectedMutations: [
+        {
+          type: types.TOGGLE_LIST_COLLAPSED,
+          payload,
+        },
+      ],
+    });
+  });
+});
+
 describe('removeList', () => {
   let state;
   const list = mockLists[0];

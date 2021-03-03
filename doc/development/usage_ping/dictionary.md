@@ -13730,6 +13730,86 @@ Count of unique users per week|month with diffs viewed file by file
 | `tier` |  |
 | `skip_validation` | true |
 
+## `redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_monthly`
+
+Count of unique users per month who changed time estimate of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55046) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_weekly`
+
+Count of unique users per week who changed time estimate of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55046) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_time_spent_changed_monthly`
+
+Count of unique users per month who changed time spent on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_time_spent_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55046) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_time_spent_changed_weekly`
+
+Count of unique users per week who changed time spent on a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_time_spent_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55046) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
 ## `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_monthly`
 
 Missing description
@@ -20845,6 +20925,26 @@ Is encrypted LDAP secrets configured?
 | `distribution` | ce, ee |
 | `tier` | free, premium, ultimate |
 | `skip_validation` | true |
+
+## `settings.operating_system`
+
+Information about the operating system running GitLab
+
+| field | value |
+| --- | --- |
+| `key_path` | **`settings.operating_system`** |
+| `product_section` | enablement |
+| `product_stage` | enablement |
+| `product_group` | `group::distribution` |
+| `product_category` | `collection` |
+| `value_type` | string |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54778) |
+| `time_frame` | none |
+| `data_source` | Ruby |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 
 ## `signup_enabled`
 

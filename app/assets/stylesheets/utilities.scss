@@ -117,6 +117,7 @@
   flex-basis: 25%;
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
 .gl-md-ml-3 {
   @media (min-width: $breakpoint-md) {
     margin-left: $gl-spacing-scale-3;

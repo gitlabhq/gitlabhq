@@ -1129,11 +1129,39 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    describe ".operating_system" do
+      let(:ohai_data) { { "platform" => "ubuntu", "platform_version" => "20.04" } }
+
+      before do
+        allow_next_instance_of(Ohai::System) do |ohai|
+          allow(ohai).to receive(:data).and_return(ohai_data)
+        end
+      end
+
+      subject { described_class.operating_system }
+
+      it { is_expected.to eq("ubuntu-20.04") }
+
+      context 'when on Debian with armv architecture' do
+        let(:ohai_data) { { "platform" => "debian", "platform_version" => "10", 'kernel' => { 'machine' => 'armv' } } }
+
+        it { is_expected.to eq("raspbian-10") }
+      end
+    end
+
     describe ".system_usage_data_settings" do
+      before do
+        allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
+      end
+
       subject { described_class.system_usage_data_settings }
 
       it 'gathers settings usage data', :aggregate_failures do
         expect(subject[:settings][:ldap_encrypted_secrets_enabled]).to eq(Gitlab::Auth::Ldap::Config.encrypted_secrets.active?)
+      end
+
+      it 'populates operating system information' do
+        expect(subject[:settings][:operating_system]).to eq('ubuntu-20.04')
       end
     end
   end

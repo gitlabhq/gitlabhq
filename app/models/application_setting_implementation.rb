@@ -280,21 +280,22 @@ module ApplicationSettingImplementation
     self.notes_create_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
-  def asset_proxy_allowlist=(values)
+  def asset_proxy_whitelist=(values)
     values = strings_to_array(values) if values.is_a?(String)
 
     # make sure we always allow the running host
     values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
 
-    self[:asset_proxy_allowlist] = values
+    self[:asset_proxy_whitelist] = values
+  end
+  alias_method :asset_proxy_allowlist=, :asset_proxy_whitelist=
+
+  def asset_proxy_allowlist
+    read_attribute(:asset_proxy_whitelist)
   end
 
   def repository_storages
     Array(read_attribute(:repository_storages))
-  end
-
-  def repository_storages_weighted
-    read_attribute(:repository_storages_weighted)
   end
 
   def commit_email_hostname
@@ -328,9 +329,10 @@ module ApplicationSettingImplementation
 
   def normalized_repository_storage_weights
     strong_memoize(:normalized_repository_storage_weights) do
-      weights_total = repository_storages_weighted.values.reduce(:+)
+      repository_storages_weights = repository_storages_weighted.slice(*Gitlab.config.repositories.storages.keys)
+      weights_total = repository_storages_weights.values.reduce(:+)
 
-      repository_storages_weighted.transform_values do |w|
+      repository_storages_weights.transform_values do |w|
         next w if weights_total == 0
 
         w.to_f / weights_total
@@ -468,16 +470,20 @@ module ApplicationSettingImplementation
       invalid.empty?
   end
 
+  def coerce_repository_storages_weighted
+    repository_storages_weighted.transform_values!(&:to_i)
+  end
+
   def check_repository_storages_weighted
     invalid = repository_storages_weighted.keys - Gitlab.config.repositories.storages.keys
-    errors.add(:repository_storages_weighted, "can't include: %{invalid_storages}" % { invalid_storages: invalid.join(", ") }) unless
+    errors.add(:repository_storages_weighted, _("can't include: %{invalid_storages}") % { invalid_storages: invalid.join(", ") }) unless
       invalid.empty?
 
     repository_storages_weighted.each do |key, val|
       next unless val.present?
 
-      errors.add(:"repository_storages_weighted_#{key}", "value must be an integer") unless val.is_a?(Integer)
-      errors.add(:"repository_storages_weighted_#{key}", "value must be between 0 and 100") unless val.between?(0, 100)
+      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key }) unless val.is_a?(Integer)
+      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key }) unless val.between?(0, 100)
     end
   end
 

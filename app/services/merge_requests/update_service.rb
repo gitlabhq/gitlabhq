@@ -31,6 +31,7 @@ module MergeRequests
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
       old_reviewers = old_associations.fetch(:reviewers, [])
+      old_timelogs = old_associations.fetch(:timelogs, [])
       changed_fields = merge_request.previous_changes.keys
 
       resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
@@ -48,6 +49,7 @@ module MergeRequests
 
       track_title_and_desc_edits(changed_fields)
       track_discussion_lock_toggle(merge_request, changed_fields)
+      track_time_estimate_and_spend_edits(merge_request, old_timelogs, changed_fields)
 
       notify_if_labels_added(merge_request, old_labels)
       notify_if_mentions_added(merge_request, old_mentioned_users)
@@ -104,6 +106,11 @@ module MergeRequests
       else
         merge_request_activity_counter.track_discussion_unlocked_action(user: current_user)
       end
+    end
+
+    def track_time_estimate_and_spend_edits(merge_request, old_timelogs, changed_fields)
+      merge_request_activity_counter.track_time_estimate_changed_action(user: current_user) if changed_fields.include?('time_estimate')
+      merge_request_activity_counter.track_time_spent_changed_action(user: current_user) if old_timelogs != merge_request.timelogs
     end
 
     def notify_if_labels_added(merge_request, old_labels)

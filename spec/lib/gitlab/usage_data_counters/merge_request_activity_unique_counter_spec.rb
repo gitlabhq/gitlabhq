@@ -300,4 +300,20 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_DISCUSSION_UNLOCKED_ACTION }
     end
   end
+
+  describe '.track_time_estimate_changed_action' do
+    subject { described_class.track_time_estimate_changed_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_TIME_ESTIMATE_CHANGED_ACTION }
+    end
+  end
+
+  describe '.track_time_spent_changed_action' do
+    subject { described_class.track_time_spent_changed_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_TIME_SPENT_CHANGED_ACTION }
+    end
+  end
 end
