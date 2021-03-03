@@ -22,11 +22,14 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    user = User.find_by_any_email(email)
-    if user
-      avatar_icon_for_user(user, size, scale, only_path: only_path)
+    return gravatar_icon(email, size, scale) if email.nil?
+
+    if Feature.enabled?(:avatar_cache_for_email, @current_user, type: :development)
+      Gitlab::AvatarCache.by_email(email, size, scale, only_path) do
+        avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path: only_path)
+      end
     else
-      gravatar_icon(email, size, scale)
+      avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path: only_path)
     end
   end
 
@@ -101,17 +104,21 @@ module AvatarsHelper
 
   private
 
-  def user_avatar_url_for(only_path: true, **options)
-    return options[:url] if options[:url]
-
-    email = options[:user_email]
-    user = options.key?(:user) ? options[:user] : User.find_by_any_email(email)
+  def avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path:)
+    user = User.find_by_any_email(email)
 
     if user
-      avatar_icon_for_user(user, options[:size], only_path: only_path)
+      avatar_icon_for_user(user, size, scale, only_path: only_path)
     else
-      gravatar_icon(email, options[:size])
+      gravatar_icon(email, size, scale)
     end
+  end
+
+  def user_avatar_url_for(only_path: true, **options)
+    return options[:url] if options[:url]
+    return avatar_icon_for_user(options[:user], options[:size], only_path: only_path) if options[:user]
+
+    avatar_icon_for_email(options[:user_email], options[:size], only_path: only_path)
   end
 
   def source_icon(source, options = {})

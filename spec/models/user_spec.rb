@@ -2499,6 +2499,38 @@ RSpec.describe User do
     end
   end
 
+  describe "#clear_avatar_caches" do
+    let(:user) { create(:user) }
+
+    context "when :avatar_cache_for_email flag is enabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: true)
+      end
+
+      it "clears the avatar cache when saving" do
+        allow(user).to receive(:avatar_changed?).and_return(true)
+
+        expect(Gitlab::AvatarCache).to receive(:delete_by_email).with(*user.verified_emails)
+
+        user.update(avatar: fixture_file_upload('spec/fixtures/dk.png'))
+      end
+    end
+
+    context "when :avatar_cache_for_email flag is disabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: false)
+      end
+
+      it "doesn't attempt to clear the avatar cache" do
+        allow(user).to receive(:avatar_changed?).and_return(true)
+
+        expect(Gitlab::AvatarCache).not_to receive(:delete_by_email)
+
+        user.update(avatar: fixture_file_upload('spec/fixtures/dk.png'))
+      end
+    end
+  end
+
   describe '#accept_pending_invitations!' do
     let(:user) { create(:user, email: 'user@email.com') }
     let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }

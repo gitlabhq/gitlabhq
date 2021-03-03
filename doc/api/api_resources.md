@@ -155,6 +155,7 @@ The following API resources are available outside of project and group contexts 
 | [Namespaces](namespaces.md)                        | `/namespaces`                                                           |
 | [Notification settings](notification_settings.md)  | `/notification_settings` (also available for groups and projects)       |
 | [Pages domains](pages_domains.md)                  | `/pages/domains` (also available for projects)                          |
+| [Plan limits](plan_limits.md)                      | `/application/plan_limits`                                              |
 | [Personal access tokens](personal_access_tokens.md) | `/personal_access_tokens`                                              |
 | [Projects](projects.md)                            | `/users/:id/projects` (also available for projects)                     |
 | [Project repository storage moves](project_repository_storage_moves.md) **(FREE SELF)** | `/project_repository_storage_moves` |
