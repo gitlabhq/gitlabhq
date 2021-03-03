@@ -986,6 +986,7 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
+- Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories_spec.rb).
 
 ### Fixtures
 

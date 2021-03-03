@@ -19,7 +19,7 @@
     %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default award emoji.')
 
   .settings-content
-    = form_for @project, remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+    = form_for @project, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
       %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
       .js-project-permissions-form
@@ -36,7 +36,7 @@
   .settings-content
     = render_if_exists 'shared/promotions/promote_mr_features'
 
-    = form_for @project, remote: true, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
+    = form_for @project, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/merge_request_settings', form: f
       = f.submit _('Save changes'), class: "btn gl-button btn-success rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }

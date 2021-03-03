@@ -384,20 +384,7 @@ RSpec.describe 'Admin updates settings' do
           click_button 'Save changes'
         end
 
-        expect(current_settings.repository_storages_weighted).to eq('default' => 50)
-      end
-
-      it 'still saves when settings are outdated' do
-        current_settings.update_attribute :repository_storages_weighted, { 'default' => 100, 'outdated' => 100 }
-
-        visit repository_admin_application_settings_path
-
-        page.within('.as-repository-storage') do
-          fill_in 'application_setting_repository_storages_weighted_default', with: 50
-          click_button 'Save changes'
-        end
-
-        expect(current_settings.repository_storages_weighted).to eq('default' => 50)
+        expect(current_settings.repository_storages_weighted_default).to be 50
       end
     end
 

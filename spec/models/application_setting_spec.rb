@@ -105,14 +105,14 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
-    it { is_expected.to allow_value('default' => 0).for(:repository_storages_weighted) }
-    it { is_expected.to allow_value('default' => 50).for(:repository_storages_weighted) }
-    it { is_expected.to allow_value('default' => 100).for(:repository_storages_weighted) }
-    it { is_expected.to allow_value('default' => '90').for(:repository_storages_weighted) }
-    it { is_expected.to allow_value('default' => nil).for(:repository_storages_weighted) }
-    it { is_expected.not_to allow_value('default' => -1).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
-    it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
-    it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
+    it { is_expected.not_to allow_value(101).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value('90').for(:repository_storages_weighted_default) }
+    it { is_expected.not_to allow_value(-1).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(100).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(0).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(50).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(nil).for(:repository_storages_weighted_default) }
+    it { is_expected.not_to allow_value({ default: 100, shouldntexist: 50 }).for(:repository_storages_weighted) }
 
     it { is_expected.to allow_value(400).for(:notes_create_limit) }
     it { is_expected.not_to allow_value('two').for(:notes_create_limit) }
@@ -984,6 +984,12 @@ RSpec.describe ApplicationSetting do
 
   it_behaves_like 'application settings examples'
 
+  describe 'repository_storages_weighted_attributes' do
+    it 'returns the keys for repository_storages_weighted' do
+      expect(subject.class.repository_storages_weighted_attributes).to eq([:repository_storages_weighted_default])
+    end
+  end
+
   describe 'kroki_format_supported?' do
     it 'returns true when Excalidraw is enabled' do
       subject.kroki_formats_excalidraw = true
@@ -1026,5 +1032,12 @@ RSpec.describe ApplicationSetting do
       expect(subject.kroki_formats_bpmn).to eq(false)
       expect(subject.kroki_formats_excalidraw).to eq(true)
     end
+  end
+
+  it 'does not allow to set weight for non existing storage' do
+    setting.repository_storages_weighted = { invalid_storage: 100 }
+
+    expect(setting).not_to be_valid
+    expect(setting.errors.messages[:repository_storages_weighted]).to match_array(["can't include: invalid_storage"])
   end
 end

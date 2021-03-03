@@ -1,19 +1,27 @@
 import { createWrapper } from '@vue/test-utils';
-
-import waitForPromises from 'helpers/wait_for_promises';
+import Vue from 'vue';
 
 import { initExpiresAtField, initProjectsField } from '~/access_tokens';
-import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
-import ProjectsField from '~/access_tokens/components/projects_field.vue';
+import * as ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
+import * as ProjectsField from '~/access_tokens/components/projects_field.vue';
 
 describe('access tokens', () => {
+  const FakeComponent = Vue.component('FakeComponent', {
+    props: {
+      inputAttrs: {
+        type: Object,
+        required: true,
+      },
+    },
+    render: () => null,
+  });
+
   beforeEach(() => {
     window.gon = { features: { personalAccessTokensScopedToProjects: true } };
   });
 
   afterEach(() => {
     document.body.innerHTML = '';
-    window.gon = {};
   });
 
   describe.each`
@@ -34,15 +42,17 @@ describe('access tokens', () => {
         mountEl.appendChild(input);
 
         document.body.appendChild(mountEl);
+
+        // Mock component so we don't have to deal with mocking Apollo
+        // eslint-disable-next-line no-param-reassign
+        expectedComponent.default = FakeComponent;
       });
 
-      it(`mounts component and sets \`inputAttrs\` prop`, async () => {
-        const wrapper = createWrapper(initFunction());
+      it('mounts component and sets `inputAttrs` prop', async () => {
+        const vueInstance = await initFunction();
 
-        // Wait for dynamic imports to resolve
-        await waitForPromises();
-
-        const component = wrapper.findComponent(expectedComponent);
+        const wrapper = createWrapper(vueInstance);
+        const component = wrapper.findComponent(FakeComponent);
 
         expect(component.exists()).toBe(true);
         expect(component.props('inputAttrs')).toEqual({

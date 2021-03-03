@@ -3467,6 +3467,9 @@ msgstr ""
 msgid "An error occurred while loading project creation UI"
 msgstr ""
 
+msgid "An error occurred while loading the access tokens form, please try again."
+msgstr ""
+
 msgid "An error occurred while loading the data. Please try again."
 msgstr ""
 
@@ -34923,9 +34926,6 @@ msgstr ""
 msgid "can't be enabled because signed commits are required for this project"
 msgstr ""
 
-msgid "can't include: %{invalid_storages}"
-msgstr ""
-
 msgid "cannot be a date in the past"
 msgstr ""
 
@@ -36330,12 +36330,6 @@ msgid "username"
 msgstr ""
 
 msgid "v%{version} published %{timeAgo}"
-msgstr ""
-
-msgid "value for '%{storage}' must be an integer"
-msgstr ""
-
-msgid "value for '%{storage}' must be between 0 and 100"
 msgstr ""
 
 msgid "verify ownership"

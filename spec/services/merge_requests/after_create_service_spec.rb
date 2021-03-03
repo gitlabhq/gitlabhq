@@ -67,5 +67,27 @@ RSpec.describe MergeRequests::AfterCreateService do
     it_behaves_like 'records an onboarding progress action', :merge_request_created do
       let(:namespace) { merge_request.target_project.namespace }
     end
+
+    context 'when merge request is in unchecked state' do
+      before do
+        merge_request.mark_as_unchecked!
+        execute_service
+      end
+
+      it 'does not change its state' do
+        expect(merge_request.reload).to be_unchecked
+      end
+    end
+
+    context 'when merge request is in preparing state' do
+      before do
+        merge_request.mark_as_preparing!
+        execute_service
+      end
+
+      it 'marks the merge request as unchecked' do
+        expect(merge_request.reload).to be_unchecked
+      end
+    end
   end
 end

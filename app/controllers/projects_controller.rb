@@ -90,21 +90,13 @@ class ProjectsController < Projects::ApplicationController
     # Refresh the repo in case anything changed
     @repository = @project.repository
 
-    respond_to do |format|
-      if result[:status] == :success
-        flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
-
-        format.html do
-          redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
-        end
-      else
-        flash[:alert] = result[:message]
-        @project.reset
-
-        format.html { render_edit }
-      end
-
-      format.js
+    if result[:status] == :success
+      flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+      redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
+    else
+      flash[:alert] = result[:message]
+      @project.reset
+      render 'edit'
     end
   end
 
