@@ -1,0 +1,5 @@
+---
+title: Allow only owners to manage group variables
+merge_request:
+author:
+type: security
