@@ -1,5 +1,0 @@
----
-title: Fix XSS vulnerability for swagger file viewer
-merge_request:
-author:
-type: security

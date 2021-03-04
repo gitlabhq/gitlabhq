@@ -1,5 +1,0 @@
----
-title: 'Workhorse: prevent escaped router path traversal'
-merge_request:
-author:
-type: security
