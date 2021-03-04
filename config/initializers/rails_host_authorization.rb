@@ -2,6 +2,11 @@
 
 # This file requires config/initializers/1_settings.rb
 
+if Gitlab.config.gitlab.allowed_hosts.present?
+  Rails.application.config.hosts << Gitlab.config.gitlab.host << 'unix'
+  Rails.application.config.hosts += Gitlab.config.gitlab.allowed_hosts
+end
+
 if Rails.env.development?
   Rails.application.config.hosts += [Gitlab.config.gitlab.host, 'unix', 'host.docker.internal']
 

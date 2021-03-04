@@ -15,13 +15,12 @@ import { IssuableType } from '~/issue_show/constants';
 import { __, n__ } from '~/locale';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { assigneesQueries } from '~/sidebar/constants';
+import { assigneesQueries, ASSIGNEES_DEBOUNCE_DELAY } from '~/sidebar/constants';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 
 export const assigneesWidget = Vue.observable({
   updateAssignees: null,
 });
-
 export default {
   i18n: {
     unassigned: __('Unassigned'),
@@ -88,10 +87,10 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.issuable || data.project?.issuable;
+        return data.workspace?.issuable;
       },
       result({ data }) {
-        const issuable = data.issuable || data.project?.issuable;
+        const issuable = data.workspace?.issuable;
         if (issuable) {
           this.selected = this.moveCurrentUserToStart(cloneDeep(issuable.assignees.nodes));
         }
@@ -109,7 +108,7 @@ export default {
         };
       },
       update(data) {
-        const searchResults = data.issuable?.users?.nodes.map(({ user }) => user) || [];
+        const searchResults = data.workspace?.users?.nodes.map(({ user }) => user) || [];
         const mergedSearchResults = this.participants.reduce((acc, current) => {
           if (
             !acc.some((user) => current.username === user.username) &&
@@ -121,7 +120,7 @@ export default {
         }, searchResults);
         return mergedSearchResults;
       },
-      debounce: 250,
+      debounce: ASSIGNEES_DEBOUNCE_DELAY,
       skip() {
         return this.isSearchEmpty;
       },
@@ -229,7 +228,7 @@ export default {
           },
         })
         .then(({ data }) => {
-          this.$emit('assignees-updated', data);
+          this.$emit('assignees-updated', data.issuableSetAssignees.issuable.assignees.nodes);
           return data;
         })
         .catch(() => {
@@ -378,7 +377,7 @@ export default {
             <template v-if="showCurrentUser">
               <gl-dropdown-divider />
               <gl-dropdown-item
-                data-testid="unselected-participant"
+                data-testid="current-user"
                 @click.stop="selectAssignee(currentUser)"
               >
                 <gl-avatar-link>
@@ -409,7 +408,7 @@ export default {
                 />
               </gl-avatar-link>
             </gl-dropdown-item>
-            <gl-dropdown-item v-if="noUsersFound && !isSearching">
+            <gl-dropdown-item v-if="noUsersFound && !isSearching" data-testid="empty-results">
               {{ __('No matching results') }}
             </gl-dropdown-item>
           </template>

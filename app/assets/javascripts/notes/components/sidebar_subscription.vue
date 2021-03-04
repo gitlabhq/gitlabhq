@@ -19,7 +19,7 @@ export default {
   computed: {
     fullPath() {
       if (this.noteableData.web_url) {
-        return this.noteableData.web_url.split('/-/')[0].substring(1);
+        return this.noteableData.web_url.split('/-/')[0].substring(1).replace('groups/', '');
       }
       return null;
     },
@@ -28,7 +28,7 @@ export default {
     },
   },
   created() {
-    if (this.issuableType !== IssuableType.Issue) {
+    if (this.issuableType !== IssuableType.Issue && this.issuableType !== IssuableType.Epic) {
       return;
     }
 

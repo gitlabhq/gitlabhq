@@ -87,7 +87,7 @@ export default {
       <gl-button
         v-if="canUpdate"
         variant="link"
-        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto js-sidebar-dropdown-toggle hide-collapsed"
+        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto hide-collapsed"
         data-testid="edit-button"
         :data-track-event="tracking.event"
         :data-track-label="tracking.label"

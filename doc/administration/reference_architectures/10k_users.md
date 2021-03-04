@@ -17,21 +17,21 @@ full list of reference architectures, see
 
 | Service                                    | Nodes       | Configuration           | GCP             | AWS         | Azure    |
 |--------------------------------------------|-------------|-------------------------|-----------------|-------------|----------|
-| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Consul                                     | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| PostgreSQL                                 | 3           | 8 vCPU, 30 GB memory    | n1-standard-8   | `m5.2xlarge`  | D8s v3   |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Redis - Cache                              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| Redis - Queues / Shared State              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| Redis Sentinel - Cache                     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
-| Redis Sentinel - Queues / Shared State     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
-| Gitaly Cluster                             | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | `m5.4xlarge`  | D16s v3  |
-| Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Praefect PostgreSQL                        | 1+*         | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | `c5.9xlarge`  | F32s v2  |
-| Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| Consul                                     | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| PostgreSQL                                 | 3           | 8 vCPU, 30 GB memory    | n1-standard-8   | m5.2xlarge  | D8s v3   |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| Redis - Cache                              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
+| Redis - Queues / Shared State              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
+| Redis Sentinel - Cache                     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
+| Redis Sentinel - Queues / Shared State     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
+| Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | m5.4xlarge  | D16s v3  |
+| Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| Praefect PostgreSQL                        | 1+*         | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
+| Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
+| GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge  | F32s v2  |
+| Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
 | Object storage                             | n/a         | n/a                     | n/a             | n/a         | n/a      |
 | NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
 
@@ -206,7 +206,7 @@ The following list includes descriptions of each server and its assigned IP:
 - `10.6.0.111`: GitLab application 1
 - `10.6.0.112`: GitLab application 2
 - `10.6.0.113`: GitLab application 3
-- `10.6.0.121`: Prometheus
+- `10.6.0.151`: Prometheus
 
 ## Configure the external load balancer
 
@@ -1927,7 +1927,7 @@ To configure the Sidekiq nodes, on each one:
    node_exporter['listen_address'] = '0.0.0.0:9100'
 
    # Rails Status for prometheus
-   gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
+   gitlab_rails['monitoring_whitelist'] = ['10.6.0.151/32', '127.0.0.0/8']
 
    #############################
    ###     Object storage    ###
@@ -2055,8 +2055,8 @@ On each node perform the following:
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
    # scrape the NGINX metrics
-   gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
-   nginx['status']['options']['allow'] = ['10.6.0.121/32', '127.0.0.0/8']
+   gitlab_rails['monitoring_whitelist'] = ['10.6.0.151/32', '127.0.0.0/8']
+   nginx['status']['options']['allow'] = ['10.6.0.151/32', '127.0.0.0/8']
 
    #############################
    ###     Object storage    ###
@@ -2192,7 +2192,7 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 
 The following IP will be used as an example:
 
-- `10.6.0.121`: Prometheus
+- `10.6.0.151`: Prometheus
 
 To configure the Monitoring node:
 

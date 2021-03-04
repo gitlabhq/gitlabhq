@@ -117,4 +117,10 @@ RSpec.describe Banzai::Filter::EmojiFilter do
 
     expect(doc.to_html).to match(/^This deserves a <gl-emoji.+>, big time\.\z/)
   end
+
+  context 'ancestor tags' do
+    let(:emoji_name) { ':see_no_evil:' }
+
+    it_behaves_like 'ignored ancestor tags'
+  end
 end

@@ -133,6 +133,28 @@ RSpec.describe API::API do
     end
   end
 
+  describe 'Marginalia comments' do
+    context 'GET /user/:id' do
+      let_it_be(:user) { create(:user) }
+      let(:component_map) do
+        {
+          "application" => "test",
+          "endpoint_id" => "/api/:version/users/:id"
+        }
+      end
+
+      subject { ActiveRecord::QueryRecorder.new { get api("/users/#{user.id}", user) } }
+
+      it 'generates a query that includes the expected annotations' do
+        expect(subject.log.last).to match(/correlation_id:.*/)
+
+        component_map.each do |component, value|
+          expect(subject.log.last).to include("#{component}:#{value}")
+        end
+      end
+    end
+  end
+
   describe 'supported content-types' do
     context 'GET /user/:id.txt' do
       let_it_be(:user) { create(:user) }

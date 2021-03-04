@@ -137,10 +137,10 @@ To execute a pipeline manually:
 1. Navigate to your project's **CI/CD > Pipelines**.
 1. Select the **Run Pipeline** button.
 1. On the **Run Pipeline** page:
-    1. Select the branch to run the pipeline for in the **Create for** field.
+    1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
        You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
-    1. Click the **Create pipeline** button.
+    1. Click the **Run pipeline** button.
 
 The pipeline now executes the jobs as configured.
 

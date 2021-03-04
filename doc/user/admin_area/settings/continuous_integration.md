@@ -99,6 +99,13 @@ are allowed to expire.
 This setting takes precedence over the [project level setting](../../../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 If disabled at the instance level, you cannot enable this per-project.
 
+To disable the setting:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
+1. Click **Save changes**
+
 When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.
 

@@ -48,6 +48,7 @@ describe('Pipelines stage component', () => {
   const findDropdownMenu = () =>
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
   const findCiActionBtn = () => wrapper.find('.js-ci-action');
+  const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
 
   const openStageDropdown = () => {
     findDropdownToggle().trigger('click');
@@ -170,6 +171,42 @@ describe('Pipelines stage component', () => {
       await clickCiAction();
 
       expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(1);
+    });
+  });
+
+  describe('With merge trains enabled', () => {
+    beforeEach(async () => {
+      mock.onGet(dropdownPath).reply(200, stageReply);
+      createComponent({
+        isMergeTrain: true,
+      });
+
+      await openStageDropdown();
+      await axios.waitForAll();
+    });
+
+    it('shows a warning on the dropdown', () => {
+      const warning = findMergeTrainWarning();
+
+      expect(warning.text()).toBe('Merge train pipeline jobs can not be retried');
+    });
+  });
+
+  describe('With merge trains disabled', () => {
+    beforeEach(async () => {
+      mock.onGet(dropdownPath).reply(200, stageReply);
+      createComponent({
+        isMergeTrain: false,
+      });
+
+      await openStageDropdown();
+      await axios.waitForAll();
+    });
+
+    it('does not show a warning on the dropdown', () => {
+      const warning = findMergeTrainWarning();
+
+      expect(warning.exists()).toBe(false);
     });
   });
 });

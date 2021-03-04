@@ -474,16 +474,4 @@ describe('issue_comment_form component', () => {
       expect(findTextArea().exists()).toBe(false);
     });
   });
-
-  describe('close/reopen button variants', () => {
-    it.each([
-      [constants.OPENED, 'warning'],
-      [constants.REOPENED, 'warning'],
-      [constants.CLOSED, 'default'],
-    ])('when %s, the variant of the btn is %s', (state, expected) => {
-      mountComponent({ noteableData: { ...noteableDataMock, state } });
-
-      expect(findCloseReopenButton().props('variant')).toBe(expected);
-    });
-  });
 });

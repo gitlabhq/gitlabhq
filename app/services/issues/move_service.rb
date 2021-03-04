@@ -48,13 +48,14 @@ module Issues
 
     def create_new_entity
       new_params = {
-                     id: nil,
-                     iid: nil,
-                     project: target_project,
-                     author: original_entity.author,
-                     assignee_ids: original_entity.assignee_ids,
-                     moved_issue: true
-                   }
+        id: nil,
+        iid: nil,
+        relative_position: relative_position,
+        project: target_project,
+        author: original_entity.author,
+        assignee_ids: original_entity.assignee_ids,
+        moved_issue: true
+      }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
 

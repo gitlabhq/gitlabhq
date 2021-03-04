@@ -86,6 +86,10 @@ describe('Sidebar Confidentiality Widget', () => {
       expect(findConfidentialityForm().props('confidential')).toBe(true);
       expect(findConfidentialityContent().props('confidential')).toBe(true);
     });
+
+    it('emits `confidentialityUpdated` event with a `false` payload', () => {
+      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[false]]);
+    });
   });
 
   describe('when issue is confidential', () => {
@@ -110,6 +114,10 @@ describe('Sidebar Confidentiality Widget', () => {
       await nextTick();
       expect(findConfidentialityForm().props('confidential')).toBe(false);
       expect(findConfidentialityContent().props('confidential')).toBe(false);
+    });
+
+    it('emits `confidentialityUpdated` event with a `true` payload', () => {
+      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[true]]);
     });
   });
 
@@ -138,5 +146,14 @@ describe('Sidebar Confidentiality Widget', () => {
     expect(findConfidentialityForm().isVisible()).toBe(false);
 
     expect(el.dispatchEvent).toHaveBeenCalled();
+    expect(wrapper.emitted('closeForm')).toHaveLength(1);
+  });
+
+  it('emits `expandSidebar` event when it is emitted from child component', async () => {
+    createComponent();
+    await waitForPromises();
+    findConfidentialityContent().vm.$emit('expandSidebar');
+
+    expect(wrapper.emitted('expandSidebar')).toHaveLength(1);
   });
 });

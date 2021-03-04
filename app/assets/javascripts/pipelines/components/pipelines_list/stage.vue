@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    isMergeTrain: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -126,6 +131,21 @@ export default {
           @pipelineActionRequestComplete="pipelineActionRequestComplete"
         />
       </li>
+      <template v-if="isMergeTrain">
+        <li class="gl-new-dropdown-divider" role="presentation">
+          <hr role="separator" aria-orientation="horizontal" class="dropdown-divider" />
+        </li>
+        <li>
+          <div
+            class="gl-display-flex gl-align-items-center"
+            data-testid="warning-message-merge-trains"
+          >
+            <div class="menu-item gl-font-sm gl-text-gray-300!">
+              {{ s__('Pipeline|Merge train pipeline jobs can not be retried') }}
+            </div>
+          </div>
+        </li>
+      </template>
     </ul>
   </gl-dropdown>
 </template>

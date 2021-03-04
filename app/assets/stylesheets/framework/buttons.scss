@@ -196,10 +196,6 @@
     @include btn-orange;
   }
 
-  &.btn-close {
-    @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
-  }
-
   &.btn-danger {
     @include btn-red;
   }

@@ -7,17 +7,26 @@ describe('Sidebar Confidentiality Content', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findText = () => wrapper.find('[data-testid="confidential-text"]');
+  const findCollapsedIcon = () => wrapper.find('[data-testid="sidebar-collapsed-icon"]');
 
-  const createComponent = (confidential = false) => {
+  const createComponent = ({ confidential = false, issuableType = 'issue' } = {}) => {
     wrapper = shallowMount(SidebarConfidentialityContent, {
       propsData: {
         confidential,
+        issuableType,
       },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('emits `expandSidebar` event on collapsed icon click', () => {
+    createComponent();
+    findCollapsedIcon().trigger('click');
+
+    expect(wrapper.emitted('expandSidebar')).toHaveLength(1);
   });
 
   describe('when issue is non-confidential', () => {
@@ -39,20 +48,24 @@ describe('Sidebar Confidentiality Content', () => {
   });
 
   describe('when issue is confidential', () => {
-    beforeEach(() => {
-      createComponent(true);
-    });
-
-    it('renders a non-confidential icon', () => {
+    it('renders a confidential icon', () => {
+      createComponent({ confidential: true });
       expect(findIcon().props('name')).toBe('eye-slash');
     });
 
-    it('does not add `is-active` class to the icon', () => {
+    it('adds `is-active` class to the icon', () => {
+      createComponent({ confidential: true });
       expect(findIcon().classes()).toContain('is-active');
     });
 
-    it('displays a non-confidential text', () => {
-      expect(findText().text()).toBe('This  is confidential');
+    it('displays a correct confidential text for issue', () => {
+      createComponent({ confidential: true });
+      expect(findText().text()).toBe('This issue is confidential');
+    });
+
+    it('displays a correct confidential text for epic', () => {
+      createComponent({ confidential: true, issuableType: 'epic' });
+      expect(findText().text()).toBe('This epic is confidential');
     });
   });
 });

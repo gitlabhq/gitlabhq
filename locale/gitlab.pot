@@ -1031,9 +1031,6 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
-msgid "(line: %{startLine})"
-msgstr ""
-
 msgid "(max size 15 MB)"
 msgstr ""
 
@@ -5200,6 +5197,9 @@ msgid "Business metrics (Custom)"
 msgstr ""
 
 msgid "Busy"
+msgstr ""
+
+msgid "Buy CI Minutes"
 msgstr ""
 
 msgid "Buy License"
@@ -11876,9 +11876,6 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|Unable to perform this action"
-msgstr ""
-
 msgid "Epics|Unable to save epic. Please try again"
 msgstr ""
 
@@ -16544,9 +16541,6 @@ msgid "Invite member"
 msgstr ""
 
 msgid "Invite members"
-msgstr ""
-
-msgid "Invite team members"
 msgstr ""
 
 msgid "Invite your team"
@@ -22031,9 +22025,6 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
-msgid "Pipeline cannot be run."
-msgstr ""
-
 msgid "Pipeline minutes quota"
 msgstr ""
 
@@ -22292,6 +22283,9 @@ msgstr ""
 msgid "Pipeline|Branch name"
 msgstr ""
 
+msgid "Pipeline|Branches or tags could not be loaded."
+msgstr ""
+
 msgid "Pipeline|Canceled"
 msgstr ""
 
@@ -22337,6 +22331,9 @@ msgstr ""
 msgid "Pipeline|Merge train pipeline"
 msgstr ""
 
+msgid "Pipeline|Merge train pipeline jobs can not be retried"
+msgstr ""
+
 msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
@@ -22350,6 +22347,9 @@ msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Pipeline %{idStart}#%{idEnd} %{statusStart}%{statusEnd} for %{commitStart}%{commitEnd}"
+msgstr ""
+
+msgid "Pipeline|Pipeline cannot be run."
 msgstr ""
 
 msgid "Pipeline|Pipelines"
@@ -27879,9 +27879,6 @@ msgstr ""
 msgid "Something went wrong on our end. Please try again."
 msgstr ""
 
-msgid "Something went wrong trying to change the confidentiality of this issue"
-msgstr ""
-
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
 msgstr ""
 
@@ -31573,12 +31570,6 @@ msgstr ""
 msgid "Trials|You can apply your trial to a new group or an existing group."
 msgstr ""
 
-msgid "Trials|You can apply your trial to a new group or your personal account."
-msgstr ""
-
-msgid "Trials|You can apply your trial to a new group, an existing group, or your personal account."
-msgstr ""
-
 msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
 msgstr ""
 
@@ -31706,12 +31697,6 @@ msgid "Tuesday"
 msgstr ""
 
 msgid "Tuning settings"
-msgstr ""
-
-msgid "Turn Off"
-msgstr ""
-
-msgid "Turn On"
 msgstr ""
 
 msgid "Turn off"
@@ -34031,9 +34016,6 @@ msgid "You are going to turn off the confidentiality. This means %{strongStart}e
 msgstr ""
 
 msgid "You are going to turn on confidentiality. Only team members with %{strongStart}at least Reporter access%{strongEnd} will be able to see and leave comments on the %{issuableType}."
-msgstr ""
-
-msgid "You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}."
 msgstr ""
 
 msgid "You are not allowed to approve a user"

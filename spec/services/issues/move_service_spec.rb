@@ -244,6 +244,12 @@ RSpec.describe Issues::MoveService do
           expect(new_issue.designs.first.notes.size).to eq(1)
         end
       end
+
+      context 'issue relative position' do
+        let(:subject) { move_service.execute(old_issue, new_project) }
+
+        it_behaves_like 'copy or reset relative position'
+      end
     end
 
     describe 'move permissions' do

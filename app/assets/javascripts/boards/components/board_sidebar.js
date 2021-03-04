@@ -107,8 +107,8 @@ export default Vue.extend({
     closeSidebar() {
       this.detail.issue = {};
     },
-    setAssignees(data) {
-      boardsStore.detail.issue.setAssignees(data.issueSetAssignees.issue.assignees.nodes);
+    setAssignees(assignees) {
+      boardsStore.detail.issue.setAssignees(assignees);
     },
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);

@@ -15,6 +15,7 @@ import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_a
 import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { MT_MERGE_STRATEGY } from '../constants';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -80,6 +81,11 @@ export default {
       type: String,
       required: true,
     },
+    mergeStrategy: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     hasPipeline() {
@@ -129,6 +135,9 @@ export default {
         'Coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
         this.buildsWithCoverage.length,
       );
+    },
+    isMergeTrain() {
+      return this.mergeStrategy === MT_MERGE_STRATEGY;
     },
   },
   errorText: s__(
@@ -249,7 +258,7 @@ export default {
                   class="stage-container dropdown mr-widget-pipeline-stages"
                   data-testid="widget-mini-pipeline-graph"
                 >
-                  <pipeline-stage :stage="stage" />
+                  <pipeline-stage :stage="stage" :is-merge-train="isMergeTrain" />
                 </div>
               </template>
             </span>

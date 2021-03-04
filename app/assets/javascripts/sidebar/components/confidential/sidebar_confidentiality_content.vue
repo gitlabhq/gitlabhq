@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     confidentialText() {
@@ -35,7 +39,13 @@ export default {
 
 <template>
   <div>
-    <div v-gl-tooltip.viewport.left :title="tooltipLabel" class="sidebar-collapsed-icon">
+    <div
+      v-gl-tooltip.viewport.left
+      :title="tooltipLabel"
+      class="sidebar-collapsed-icon"
+      data-testid="sidebar-collapsed-icon"
+      @click="$emit('expandSidebar')"
+    >
       <gl-icon
         :size="16"
         :name="confidentialIcon"

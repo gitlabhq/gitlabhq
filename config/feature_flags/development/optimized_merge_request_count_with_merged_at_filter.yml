@@ -1,8 +1,0 @@
----
-name: optimized_merge_request_count_with_merged_at_filter
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52113
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299347
-milestone: '13.9'
-type: development
-group: group::optimize
-default_enabled: true

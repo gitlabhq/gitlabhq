@@ -11,8 +11,7 @@ RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
       :invite_members_version_a,
       :invite_members_version_b,
       :invite_members_empty_group_version_a,
-      :contact_sales_btn_in_app,
-      :group_only_trials
+      :contact_sales_btn_in_app
     ]
 
     backwards_compatible_experiment_keys = described_class.filter { |_, v| v[:use_backwards_compatible_subject_index] }.keys

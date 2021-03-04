@@ -4,6 +4,7 @@ import { isNumber } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
 import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import MergeRequestStore from '../stores/mr_widget_store';
 import ArtifactsApp from './artifacts_list_app.vue';
 import MrCollapsibleExtension from './mr_collapsible_extension.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -84,6 +85,15 @@ export default {
         this.deployments.length,
       );
     },
+    preferredAutoMergeStrategy() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return MergeRequestStore.getPreferredAutoMergeStrategy(
+          this.mr.availableAutoMergeStrategies,
+        );
+      }
+
+      return this.mr.preferredAutoMergeStrategy;
+    },
   },
 };
 </script>
@@ -100,6 +110,7 @@ export default {
       :source-branch-link="branchLink"
       :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
       :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
+      :merge-strategy="preferredAutoMergeStrategy"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">

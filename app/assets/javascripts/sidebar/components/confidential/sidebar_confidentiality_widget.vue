@@ -47,11 +47,14 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          iid: this.iid,
+          iid: String(this.iid),
         };
       },
       update(data) {
         return data.workspace?.issuable?.confidential || false;
+      },
+      result({ data }) {
+        this.$emit('confidentialityUpdated', data.workspace?.issuable?.confidential);
       },
       error() {
         createFlash({
@@ -80,6 +83,7 @@ export default {
     closeForm() {
       this.$refs.editable.collapse();
       this.$el.dispatchEvent(hideDropdownEvent);
+      this.$emit('closeForm');
     },
     // synchronizing the quick action with the sidebar widget
     // this is a temporary solution until we have confidentiality real-time updates
@@ -101,6 +105,10 @@ export default {
         data,
       });
     },
+    expandSidebar() {
+      this.$refs.editable.expand();
+      this.$emit('expandSidebar');
+    },
   },
 };
 </script>
@@ -115,11 +123,16 @@ export default {
   >
     <template #collapsed>
       <div>
-        <sidebar-confidentiality-content v-if="!isLoading" :confidential="confidential" />
+        <sidebar-confidentiality-content
+          v-if="!isLoading"
+          :confidential="confidential"
+          :issuable-type="issuableType"
+          @expandSidebar="expandSidebar"
+        />
       </div>
     </template>
     <template #default>
-      <sidebar-confidentiality-content :confidential="confidential" />
+      <sidebar-confidentiality-content :confidential="confidential" :issuable-type="issuableType" />
       <sidebar-confidentiality-form
         :confidential="confidential"
         :issuable-type="issuableType"

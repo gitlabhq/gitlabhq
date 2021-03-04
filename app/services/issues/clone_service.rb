@@ -47,6 +47,7 @@ module Issues
       new_params = {
         id: nil,
         iid: nil,
+        relative_position: relative_position,
         project: target_project,
         author: current_user,
         assignee_ids: original_entity.assignee_ids

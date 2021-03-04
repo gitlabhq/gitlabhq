@@ -313,7 +313,7 @@ gem 'pg_query', '~> 1.3.0'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.14.0'
+gem 'gitlab-labkit', '~> 0.16.0'
 
 # I18n
 gem 'ruby_parser', '~> 3.15', require: false

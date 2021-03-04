@@ -12,8 +12,6 @@
   #{ _('This means you can not push code until you create an empty repository or import existing one.') }
 %hr
 
-= render 'projects/invite_members_modal', project: @project
-
 .no-repo-actions
   = link_to project_repository_path(@project), method: :post, class: 'btn gl-button btn-confirm' do
     #{ _('Create empty repository') }

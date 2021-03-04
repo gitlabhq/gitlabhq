@@ -54,10 +54,6 @@ module Gitlab
         tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp',
         use_backwards_compatible_subject_index: true
       },
-      group_only_trials: {
-        tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials',
-        use_backwards_compatible_subject_index: true
-      },
       remove_known_trial_form_fields: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
       },

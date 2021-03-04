@@ -143,4 +143,31 @@ describe('Sidebar Confidentiality Form', () => {
       });
     });
   });
+
+  describe('when issuable type is `epic`', () => {
+    beforeEach(() => {
+      createComponent({ props: { confidential: true, issuableType: 'epic' } });
+    });
+
+    it('renders a message about making an epic non-confidential', () => {
+      expect(findWarningMessage().text()).toBe(
+        'You are going to turn off the confidentiality. This means everyone will be able to see and leave a comment on this epic.',
+      );
+    });
+
+    it('calls a mutation to set epic confidentiality with correct parameters', () => {
+      findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
+        variables: {
+          input: {
+            confidential: false,
+            iid: '1',
+            groupPath: 'group/project',
+          },
+        },
+      });
+    });
+  });
 });

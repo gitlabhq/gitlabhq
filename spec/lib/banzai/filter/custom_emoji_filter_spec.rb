@@ -18,10 +18,10 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
   end
 
   it 'ignores non existent custom emoji' do
-    exp = act = '<p>:foo:</p>'
-    doc = filter(act)
+    exp = '<p>:foo:</p>'
+    doc = filter(exp)
 
-    expect(doc.to_html).to match Regexp.escape(exp)
+    expect(doc.to_html).to eq(exp)
   end
 
   it 'correctly uses the custom emoji URL' do
@@ -76,5 +76,11 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
     expect do
       filter('<p>:tanuki: :party-parrot:</p>')
     end.not_to exceed_all_query_limit(control_count.count)
+  end
+
+  context 'ancestor tags' do
+    let(:emoji_name) { ':tanuki:' }
+
+    it_behaves_like 'ignored ancestor tags'
   end
 end

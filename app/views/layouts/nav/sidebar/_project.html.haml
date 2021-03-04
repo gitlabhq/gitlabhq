@@ -378,8 +378,6 @@
               %strong.fly-out-top-item-name
                 = _('Members')
 
-      = content_for :invite_members_sidebar
-
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do
           = link_to edit_project_path(@project) do
