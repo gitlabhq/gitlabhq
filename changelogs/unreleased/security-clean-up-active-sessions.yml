@@ -1,5 +1,0 @@
----
-title: Do not store marshalled sessions ids in Redis
-merge_request:
-author:
-type: security
