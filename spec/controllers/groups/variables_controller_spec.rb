@@ -5,26 +5,35 @@ require 'spec_helper'
 RSpec.describe Groups::VariablesController do
   include ExternalAuthorizationServiceHelpers
 
-  let(:group) { create(:group) }
-  let(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:variable) { create(:ci_group_variable, group: group) }
+  let(:access_level) { :owner }
 
   before do
     sign_in(user)
-    group.add_maintainer(user)
+    group.add_user(user, access_level)
   end
 
   describe 'GET #show' do
-    let!(:variable) { create(:ci_group_variable, group: group) }
-
     subject do
       get :show, params: { group_id: group }, format: :json
     end
 
     include_examples 'GET #show lists all variables'
+
+    context 'when the user is a maintainer' do
+      let(:access_level) { :maintainer }
+
+      it 'returns not found response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'PATCH #update' do
-    let!(:variable) { create(:ci_group_variable, group: group) }
     let(:owner) { group }
 
     subject do
@@ -37,6 +46,19 @@ RSpec.describe Groups::VariablesController do
     end
 
     include_examples 'PATCH #update updates variables'
+
+    context 'when the user is a maintainer' do
+      let(:access_level) { :maintainer }
+      let(:variables_attributes) do
+        [{ id: variable.id, key: 'new_key' }]
+      end
+
+      it 'returns not found response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   context 'with external authorization enabled' do
@@ -45,8 +67,6 @@ RSpec.describe Groups::VariablesController do
     end
 
     describe 'GET #show' do
-      let!(:variable) { create(:ci_group_variable, group: group) }
-
       it 'is successful' do
         get :show, params: { group_id: group }, format: :json
 
@@ -55,9 +75,6 @@ RSpec.describe Groups::VariablesController do
     end
 
     describe 'PATCH #update' do
-      let!(:variable) { create(:ci_group_variable, group: group) }
-      let(:owner) { group }
-
       it 'is successful' do
         patch :update,
               params: {

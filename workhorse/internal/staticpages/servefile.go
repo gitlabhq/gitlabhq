@@ -1,16 +1,18 @@
 package staticpages
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/urlprefix"
 )
 
@@ -26,21 +28,28 @@ const (
 // upstream.
 func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoundHandler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		file := filepath.Join(s.DocumentRoot, prefix.Strip(r.URL.Path))
+		if notFoundHandler == nil {
+			notFoundHandler = http.HandlerFunc(http.NotFound)
+		}
 
-		// The filepath.Join does Clean traversing directories up
+		// We intentionally use r.URL.Path instead of r.URL.EscaptedPath() below.
+		// This is to make it possible to serve static files with e.g. a space
+		// %20 in their name.
+		relativePath, err := s.validatePath(prefix.Strip(r.URL.Path))
+		if err != nil {
+			notFoundHandler.ServeHTTP(w, r)
+			return
+		}
+
+		file := filepath.Join(s.DocumentRoot, relativePath)
 		if !strings.HasPrefix(file, s.DocumentRoot) {
-			helper.Fail500(w, r, &os.PathError{
-				Op:   "open",
-				Path: file,
-				Err:  os.ErrInvalid,
-			})
+			log.WithRequest(r).WithError(errPathTraversal).Error()
+			notFoundHandler.ServeHTTP(w, r)
 			return
 		}
 
 		var content *os.File
 		var fi os.FileInfo
-		var err error
 
 		// Serve pre-gzipped assets
 		if acceptEncoding := r.Header.Get("Accept-Encoding"); strings.Contains(acceptEncoding, "gzip") {
@@ -55,11 +64,7 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			content, fi, err = helper.OpenFile(file)
 		}
 		if err != nil {
-			if notFoundHandler != nil {
-				notFoundHandler.ServeHTTP(w, r)
-			} else {
-				http.NotFound(w, r)
-			}
+			notFoundHandler.ServeHTTP(w, r)
 			return
 		}
 		defer content.Close()
@@ -81,4 +86,18 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 
 		http.ServeContent(w, r, filepath.Base(file), fi.ModTime(), content)
 	})
+}
+
+var errPathTraversal = errors.New("path traversal")
+
+func (s *Static) validatePath(filename string) (string, error) {
+	filename = filepath.Clean(filename)
+
+	for _, exc := range s.Exclude {
+		if strings.HasPrefix(filename, exc) {
+			return "", fmt.Errorf("file is excluded: %s", exc)
+		}
+	}
+
+	return filename, nil
 }

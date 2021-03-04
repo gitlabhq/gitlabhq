@@ -8,9 +8,8 @@ class Profiles::ActiveSessionsController < Profiles::ApplicationController
   end
 
   def destroy
-    # params[:id] can be either an Rack::Session::SessionId#private_id
-    # or an encrypted Rack::Session::SessionId#public_id
-    ActiveSession.destroy_with_deprecated_encryption(current_user, params[:id])
+    # params[:id] can be an Rack::Session::SessionId#private_id
+    ActiveSession.destroy_session(current_user, params[:id])
     current_user.forget_me!
 
     respond_to do |format|
