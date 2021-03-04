@@ -12,7 +12,7 @@ RSpec.describe Profiles::ActiveSessionsController do
 
     it 'invalidates all remember user tokens' do
       ActiveSession.set(user, request)
-      session_id = request.session.id.public_id
+      session_id = request.session.id.private_id
       user.remember_me!
 
       delete :destroy, params: { id: session_id }

@@ -40,6 +40,10 @@ type upstream struct {
 }
 
 func NewUpstream(cfg config.Config, accessLogger *logrus.Logger) http.Handler {
+	return newUpstream(cfg, accessLogger, configureRoutes)
+}
+
+func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream)) http.Handler {
 	up := upstream{
 		Config:       cfg,
 		accessLogger: accessLogger,
@@ -56,7 +60,7 @@ func NewUpstream(cfg config.Config, accessLogger *logrus.Logger) http.Handler {
 	up.RoundTripper = roundtripper.NewBackendRoundTripper(up.Backend, up.Socket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.CableRoundTripper = roundtripper.NewBackendRoundTripper(up.CableBackend, up.CableSocket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.configureURLPrefix()
-	up.configureRoutes()
+	routesCallback(&up)
 
 	var correlationOpts []correlation.InboundHandlerOption
 	if cfg.PropagateCorrelationID {
@@ -95,7 +99,7 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check URL Root
-	URIPath := urlprefix.CleanURIPath(r.URL.Path)
+	URIPath := urlprefix.CleanURIPath(r.URL.EscapedPath())
 	prefix := u.URLPrefix
 	if !prefix.Match(URIPath) {
 		helper.HTTPError(w, r, fmt.Sprintf("Not found %q", URIPath), http.StatusNotFound)
