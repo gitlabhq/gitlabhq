@@ -195,9 +195,7 @@ describe('Pipelines stage component', () => {
   describe('With merge trains disabled', () => {
     beforeEach(async () => {
       mock.onGet(dropdownPath).reply(200, stageReply);
-      createComponent({
-        isMergeTrain: false,
-      });
+      createComponent();
 
       await openStageDropdown();
       await axios.waitForAll();

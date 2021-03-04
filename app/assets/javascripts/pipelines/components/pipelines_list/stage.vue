@@ -41,7 +41,7 @@ export default {
     isMergeTrain: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
   },
   data() {

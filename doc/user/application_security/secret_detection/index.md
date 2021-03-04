@@ -102,8 +102,7 @@ as shown in the following table:
 Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml)
 during the `secret-detection` job. It runs regardless of your app's programming language.
 
-The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and
-[TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) checks.
 
 Note that the Secret Detection analyzer ignores Password-in-URL vulnerabilities if the password
 begins with a dollar sign (`$`), as this likely indicates the password is an environment variable.
@@ -200,7 +199,7 @@ Secret Detection can be customized by defining available CI/CD variables:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 
 You can customize the default secret detection rules provided with GitLab.
-Customization allows you to exclude rules and add new rules.
+Customization allows replace the default secret detection rules with rules that you define.
 
 To create a custom ruleset:
 

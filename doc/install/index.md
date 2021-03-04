@@ -9,32 +9,10 @@ type: index
 
 # Installation **(FREE SELF)**
 
-GitLab can be installed in most GNU/Linux distributions and with several
+GitLab can be installed in most GNU/Linux distributions, and with several
 cloud providers. To get the best experience from GitLab, you must balance
 performance, reliability, ease of administration (backups, upgrades, and
 troubleshooting), and the cost of hosting.
-
-Depending on your platform, select from the following available methods to
-install GitLab:
-
-- [_Omnibus GitLab_](#installing-gitlab-on-linux-using-the-omnibus-gitlab-package-recommended):
-  The official deb/rpm packages that contain a bundle of GitLab and the
-  components it depends on, including PostgreSQL, Redis, and Sidekiq.
-- [_GitLab Helm chart_](#installing-gitlab-on-kubernetes-via-the-gitlab-helm-charts):
-  The cloud native Helm chart for installing GitLab and all of its components
-  on Kubernetes.
-- [_Docker_](#installing-gitlab-with-docker): The Omnibus GitLab packages,
-  Dockerized.
-- [_Source_](#installing-gitlab-from-source): Install GitLab and all of its
-  components from scratch.
-- [_Cloud provider_](#installing-gitlab-on-cloud-providers): Install directly
-  from platforms like AWS, Azure, and GCP.
-
-If you're not sure which installation method to use, we recommend you use
-Omnibus GitLab. The Omnibus GitLab packages are mature,
-[scalable](../administration/reference_architectures/index.md), and are used
-today on GitLab.com. The Helm charts are recommended for those who are familiar
-with Kubernetes.
 
 ## Requirements
 
@@ -42,77 +20,38 @@ Before you install GitLab, be sure to review the [system requirements](requireme
 The system requirements include details about the minimum hardware, software,
 database, and additional requirements to support GitLab.
 
-## Installing GitLab on Linux using the Omnibus GitLab package (recommended)
+## Choose the installation method
 
-The Omnibus GitLab package uses our official deb/rpm repositories, and is
-recommended for most users.
+Depending on your platform, select from the following available methods to
+install GitLab:
 
-If you need additional scale or resilience, we recommend deploying
-GitLab as described in our [reference architecture documentation](../administration/reference_architectures/index.md).
+| Installation method                                            | Description | When to choose |
+|----------------------------------------------------------------|-------------|----------------|
+| [Linux package](https://docs.gitlab.com/omnibus/installation/) | The official deb/rpm packages (also known as Omnibus GitLab) that contains a bundle of GitLab and the components it depends on, including PostgreSQL, Redis, and Sidekiq. | This is the recommended method for getting started. The Linux packages are mature, scalable, and are used today on GitLab.com. If you need additional flexibility and resilience, we recommend deploying GitLab as described in the [reference architecture documentation](../administration/reference_architectures/index.md). |
+| [Helm charts](https://docs.gitlab.com/charts/)                 | The cloud native Helm chart for installing GitLab and all of its components on Kubernetes. | When installing GitLab on Kubernetes, there are some trade-offs that you need to be aware of: <br/>- Administration and troubleshooting requires Kubernetes knowledge.<br/>- It can be more expensive for smaller installations. The default installation requires more resources than a single node Linux package deployment, as most services are deployed in a redundant fashion.<br/>- There are some feature [limitations to be aware of](https://docs.gitlab.com/charts/#limitations).<br/><br/> Use this method if your infrastructure is built on Kubernetes and you're familiar with how it works. The methods for management, observability, and some concepts are different than traditional deployments. |
+| [Docker](https://docs.gitlab.com/omnibus/docker/)              | The GitLab packages, Dockerized. | Use this method if you're familiar with Docker. |
+| [Source](installation.md)                                      | Install GitLab and all of its components from scratch. | Use this method if none of the previous methods are available for your platform. Useful for unsupported systems like \*BSD.|
+| [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit#documentation) | The GitLab Environment toolkit provides a set of automation tools to deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers. | Since GET is in beta and not yet recommended for production use, use this method if you want to test deploying GitLab in scalable environment. |
 
-[**> Install GitLab using the Omnibus GitLab package.**](https://about.gitlab.com/install/)
+## Install GitLab on cloud providers
 
-### GitLab Environment Toolkit (GET)
+Regardless of the installation method, you can install GitLab on several cloud
+providers, assuming the cloud provider supports it. Here are several possible installation
+methods, the majority which use the Linux packages:
 
-The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) (GET) provides a set of automation tools to easily deploy a [reference architecture](../administration/reference_architectures/index.md) on most major cloud providers.
-
-It is currently in beta, and is not yet recommended for production use.
-
-[**> Install a GitLab reference architecture using the GitLab Environment Toolkit.**](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit#documentation)
-
-## Installing GitLab on Kubernetes via the GitLab Helm charts
-
-When installing GitLab on Kubernetes, there are some trade-offs that you
-need to be aware of:
-
-- Administration and troubleshooting requires Kubernetes knowledge.
-- It can be more expensive for smaller installations. The default installation
-  requires more resources than a single node Omnibus deployment, as most services
-  are deployed in a redundant fashion.
-- There are some feature [limitations to be aware of](https://docs.gitlab.com/charts/#limitations).
-
-Due to these trade-offs, having Kubernetes experience is a requirement for
-using this method. We recommend being familiar with Kubernetes before using it
-to deploy GitLab in production. The methods for management, observability, and
-some concepts are different than traditional deployments.
-
-[**> Install GitLab on Kubernetes using the GitLab Helm charts.**](https://docs.gitlab.com/charts/)
-
-## Installing GitLab with Docker
-
-GitLab maintains a set of official Docker images based on the Omnibus GitLab
-package.
-
-[**> Install GitLab using the official GitLab Docker images.**](docker.md)
-
-## Installing GitLab from source
-
-If the Omnibus GitLab package isn't available for your distribution, you can
-install GitLab from source. This can be useful with unsupported systems, like
-\*BSD. For an overview of the directory structure, see the
-[structure documentation](installation.md#gitlab-directory-structure).
-
-[**> Install GitLab from source.**](installation.md)
-
-## Installing GitLab on cloud providers
-
-GitLab can be installed on a variety of cloud providers by using any of
-the above methods, provided the cloud provider supports it.
-
-- [Install on AWS](aws/index.md): Install Omnibus GitLab on AWS using the community AMIs that GitLab provides.
-- [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md): Install Omnibus GitLab on a VM in GCP.
-- [Install GitLab on Azure](azure/index.md): Install Omnibus GitLab from Azure Marketplace.
-- [Install GitLab on OpenShift](https://docs.gitlab.com/charts/installation/cloud/openshift.html): Install GitLab on OpenShift by using the GitLab Helm charts.
-- [Install GitLab on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-gitlab-on-ubuntu-18-04): Install Omnibus GitLab on DigitalOcean.
-- _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md):
-  Quickly test any version of GitLab on DigitalOcean using Docker Machine.
+| Cloud provider                                                | Description |
+|---------------------------------------------------------------|-------------|
+| [AWS (HA)](aws/index.md)                                      | Install GitLab on AWS using the community AMIs provided by GitLab. |
+| [Google Cloud Platform (GCP)](google_cloud_platform/index.md) | Install GitLab on a VM in GCP. |
+| [Azure](azure/index.md)                                       | Install GitLab from Azure Marketplace. |
+| [DigitalOcean](https://about.gitlab.com/blog/2016/04/27/getting-started-with-gitlab-and-digitalocean/) | Install GitLab on DigitalOcean. You can also [test GitLab on DigitalOcean using Docker Machine](digitaloceandocker.md). |
 
 ## Next steps
 
 Here are a few resources you might want to check out after completing the
 installation:
 
-- [Upload a license](../user/admin_area/license.md)  or [start a free trial](https://about.gitlab.com/free-trial/):
+- [Upload a license](../user/admin_area/license.md) or [start a free trial](https://about.gitlab.com/free-trial/):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Set up runners](https://docs.gitlab.com/runner/): Set up one or more GitLab
   Runners, the agents that are responsible for all of the GitLab CI/CD features.

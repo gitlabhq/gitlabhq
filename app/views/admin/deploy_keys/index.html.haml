@@ -2,7 +2,7 @@
 - if @deploy_keys.any?
   %h3.page-title.deploy-keys-title
     = _('Public deploy keys (%{deploy_keys_count})') % { deploy_keys_count: @deploy_keys.load.size }
-    = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'float-right btn gl-button btn-success btn-md gl-button'
+    = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'float-right btn gl-button btn-confirm btn-md gl-button'
   .table-holder.deploy-keys-list
     %table.table
       %thead

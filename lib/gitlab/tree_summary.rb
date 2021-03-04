@@ -104,12 +104,12 @@ module Gitlab
     end
 
     def fetch_last_cached_commits_list
-      cache_key = ['projects', project.id, 'last_commits_list', commit.id, ensured_path, offset, limit]
+      cache_key = ['projects', project.id, 'last_commits', commit.id, ensured_path, offset, limit]
 
       commits = Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
         repository
           .list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit, literal_pathspec: true)
-          .transform_values!(&:to_hash)
+          .transform_values! { |commit| commit_to_hash(commit) }
       end
 
       commits.transform_values! { |value| Commit.from_hash(value, project) }
@@ -119,6 +119,12 @@ module Gitlab
       return unless commit.present?
 
       resolved_commits[commit.id] ||= commit
+    end
+
+    def commit_to_hash(commit)
+      commit.to_hash.tap do |hash|
+        hash[:message] = hash[:message].to_s.truncate_bytes(1.kilobyte, omission: '...')
+      end
     end
 
     def commit_path(commit)

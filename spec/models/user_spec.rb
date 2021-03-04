@@ -3266,23 +3266,8 @@ RSpec.describe User do
         create(:group_group_link, shared_group: private_group, shared_with_group: other_group)
       end
 
-      context 'when shared_group_membership_auth is enabled' do
-        before do
-          stub_feature_flags(shared_group_membership_auth: user)
-        end
-
-        it { is_expected.to include shared_group }
-        it { is_expected.not_to include other_group }
-      end
-
-      context 'when shared_group_membership_auth is disabled' do
-        before do
-          stub_feature_flags(shared_group_membership_auth: false)
-        end
-
-        it { is_expected.not_to include shared_group }
-        it { is_expected.not_to include other_group }
-      end
+      it { is_expected.to include shared_group }
+      it { is_expected.not_to include other_group }
     end
   end
 
