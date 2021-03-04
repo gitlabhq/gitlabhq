@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Sentry::PaginationParser do
+RSpec.describe ErrorTracking::SentryClient::PaginationParser do
   describe '.parse' do
     subject { described_class.parse(headers) }
 

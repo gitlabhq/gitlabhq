@@ -3,7 +3,6 @@ import initUserPopovers from '~/user_popovers';
 
 describe('User Popovers', () => {
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
-  preloadFixtures(fixtureTemplate);
 
   const selector = '.js-user-link, .gfm-project_member';
   const findFixtureLinks = () => {

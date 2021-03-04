@@ -627,6 +627,35 @@ POST /projects/:id/external_approval_rules
 | `external_url`         | string         | yes      | URL of external approval resource                  |
 | `protected_branch_ids` | array<Integer> | no       | The ids of protected branches to scope the rule by |
 
+### Delete external approval rule **(ULTIMATE)**
+
+You can delete an external approval rule for a project using the following endpoint:
+
+```plaintext
+DELETE /projects/:id/external_approval_rules/:rule_id
+```
+
+| Attribute              | Type           | Required | Description                                        |
+|------------------------|----------------|----------|----------------------------------------------------|
+| `rule_id`              | integer        | yes      | The ID of an approval rule                         |
+| `id`                   | integer        | yes      | The ID of a project                                |
+
+### Update external approval rule **(ULTIMATE)**
+
+You can update an existing external approval rule for a project using the following endpoint:
+
+```plaintext
+PATCH /projects/:id/external_approval_rules/:rule_id
+```
+
+| Attribute              | Type           | Required | Description                                        |
+|------------------------|----------------|----------|----------------------------------------------------|
+| `id`                   | integer        | yes      | The ID of a project                                |
+| `rule_id`              | integer        | yes      | The ID of an external approval rule                |
+| `name`                 | string         | no       | Display name of approval rule                      |
+| `external_url`         | string         | no       | URL of external approval resource                  |
+| `protected_branch_ids` | array<Integer> | no       | The ids of protected branches to scope the rule by |
+
 ### Enable or disable External Project-level MR approvals **(ULTIMATE SELF)**
 
 Enable or disable External Project-level MR approvals is under development and not ready for production use. It is

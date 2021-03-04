@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Sentry::ApiUrls do
+RSpec.describe ErrorTracking::SentryClient::ApiUrls do
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' }
   let(:token) { 'test-token' }
   let(:issue_id) { '123456' }
   let(:issue_id_with_reserved_chars) { '123$%' }
   let(:escaped_issue_id) { '123%24%25' }
-  let(:api_urls) { Sentry::ApiUrls.new(sentry_url) }
+  let(:api_urls) { described_class.new(sentry_url) }
 
   # Sentry API returns 404 if there are extra slashes in the URL!
   shared_examples 'correct url with extra slashes' do

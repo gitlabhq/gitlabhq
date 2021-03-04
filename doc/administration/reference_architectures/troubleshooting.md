@@ -301,7 +301,7 @@ Confirm the following are all true:
 - Creating a new project and [initializing it with a README](../../user/project/working_with_projects.md#blank-projects)
   successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server) on an app node and reproducing the error, you get `401` errors
-  when reaching the `/api/v4/internal/allowed` endpoint:
+  when reaching the [`/api/v4/internal/allowed`](../../development/internal_api.md) endpoint:
 
   ```shell
   # api_json.log

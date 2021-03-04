@@ -45,6 +45,7 @@ export default {
 <template>
   <div>
     <pipeline-editor-header
+      :ci-file-content="ciFileContent"
       :ci-config-data="ciConfigData"
       :is-ci-config-data-loading="isCiConfigDataLoading"
     />

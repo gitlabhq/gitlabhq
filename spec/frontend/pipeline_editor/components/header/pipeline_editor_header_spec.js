@@ -3,7 +3,7 @@ import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_e
 import PipelineStatus from '~/pipeline_editor/components/header/pipeline_status.vue';
 import ValidationSegment from '~/pipeline_editor/components/header/validation_segment.vue';
 
-import { mockLintResponse } from '../../mock_data';
+import { mockCiYml, mockLintResponse } from '../../mock_data';
 
 describe('Pipeline editor header', () => {
   let wrapper;
@@ -19,8 +19,9 @@ describe('Pipeline editor header', () => {
         ...mockProvide,
         ...provide,
       },
-      props: {
+      propsData: {
         ciConfigData: mockLintResponse,
+        ciFileContent: mockCiYml,
         isCiConfigDataLoading: false,
       },
     });

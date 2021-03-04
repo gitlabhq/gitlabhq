@@ -78,7 +78,6 @@ describe('Dropdown User', () => {
 
   describe('hideCurrentUser', () => {
     const fixtureTemplate = 'issues/issue_list.html';
-    preloadFixtures(fixtureTemplate);
 
     let dropdown;
     let authorFilterDropdownElement;

@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Sentry::Client::Issue do
+RSpec.describe ErrorTracking::SentryClient::Issue do
   include SentryClientHelpers
 
   let(:token) { 'test-token' }
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
-  let(:client) { Sentry::Client.new(sentry_url, token) }
+  let(:client) { ErrorTracking::SentryClient.new(sentry_url, token) }
   let(:issue_id) { 11 }
 
   describe '#list_issues' do
@@ -136,7 +136,7 @@ RSpec.describe Sentry::Client::Issue do
       subject { client.list_issues(issue_status: issue_status, limit: limit, sort: 'fish') }
 
       it 'throws an error' do
-        expect { subject }.to raise_error(Sentry::Client::BadRequestError, 'Invalid value for sort param')
+        expect { subject }.to raise_error(ErrorTracking::SentryClient::BadRequestError, 'Invalid value for sort param')
       end
     end
 
@@ -164,7 +164,7 @@ RSpec.describe Sentry::Client::Issue do
       end
 
       it 'raises exception' do
-        expect { subject }.to raise_error(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
+        expect { subject }.to raise_error(ErrorTracking::SentryClient::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
       end
     end
 
@@ -173,7 +173,7 @@ RSpec.describe Sentry::Client::Issue do
         deep_size = double('Gitlab::Utils::DeepSize', valid?: false)
         allow(Gitlab::Utils::DeepSize).to receive(:new).with(sentry_api_response).and_return(deep_size)
 
-        expect { subject }.to raise_error(Sentry::Client::ResponseInvalidSizeError, 'Sentry API response is too big. Limit is 1 MB.')
+        expect { subject }.to raise_error(ErrorTracking::SentryClient::ResponseInvalidSizeError, 'Sentry API response is too big. Limit is 1 MB.')
       end
     end
 

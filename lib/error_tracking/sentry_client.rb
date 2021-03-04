@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module Sentry
-  class Client
-    include Sentry::Client::Event
-    include Sentry::Client::Projects
-    include Sentry::Client::Issue
-    include Sentry::Client::Repo
-    include Sentry::Client::IssueLink
+module ErrorTracking
+  class SentryClient
+    include SentryClient::Event
+    include SentryClient::Projects
+    include SentryClient::Issue
+    include SentryClient::Repo
+    include SentryClient::IssueLink
 
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
@@ -21,7 +21,7 @@ module Sentry
     private
 
     def api_urls
-      @api_urls ||= Sentry::ApiUrls.new(@url)
+      @api_urls ||= SentryClient::ApiUrls.new(@url)
     end
 
     def handle_mapping_exceptions(&block)
@@ -94,7 +94,7 @@ module Sentry
     end
 
     def raise_error(message)
-      raise Client::Error, message
+      raise SentryClient::Error, message
     end
   end
 end

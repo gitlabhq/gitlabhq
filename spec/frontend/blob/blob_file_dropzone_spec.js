@@ -7,7 +7,6 @@ jest.mock('~/projects/upload_file_experiment', () => ({
 }));
 
 describe('BlobFileDropzone', () => {
-  preloadFixtures('blob/show.html');
   let dropzone;
   let replaceFileButton;
 

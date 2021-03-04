@@ -26,7 +26,7 @@ RSpec.shared_examples 'no Sentry redirects' do |http_method|
   end
 
   it 'does not follow redirects' do
-    expect { subject }.to raise_exception(Sentry::Client::Error, 'Sentry response status code: 302')
+    expect { subject }.to raise_exception(ErrorTracking::SentryClient::Error, 'Sentry response status code: 302')
     expect(redirect_req_stub).to have_been_requested
     expect(redirected_req_stub).not_to have_been_requested
   end
@@ -53,7 +53,7 @@ RSpec.shared_examples 'maps Sentry exceptions' do |http_method|
 
       it do
         expect { subject }
-          .to raise_exception(Sentry::Client::Error, message)
+          .to raise_exception(ErrorTracking::SentryClient::Error, message)
       end
     end
   end

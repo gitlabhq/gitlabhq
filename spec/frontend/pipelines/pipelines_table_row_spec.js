@@ -19,8 +19,6 @@ describe('Pipelines Table Row', () => {
   let pipelineWithoutAuthor;
   let pipelineWithoutCommit;
 
-  preloadFixtures(jsonFixtureName);
-
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
 

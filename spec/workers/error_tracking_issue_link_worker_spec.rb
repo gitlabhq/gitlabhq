@@ -20,7 +20,7 @@ RSpec.describe ErrorTrackingIssueLinkWorker do
 
   describe '#perform' do
     it 'creates a link between an issue and a Sentry issue in Sentry' do
-      expect_next_instance_of(Sentry::Client) do |client|
+      expect_next_instance_of(ErrorTracking::SentryClient) do |client|
         expect(client).to receive(:repos).with('sentry-org').and_return([repo])
         expect(client)
           .to receive(:create_issue_link)
@@ -33,8 +33,8 @@ RSpec.describe ErrorTrackingIssueLinkWorker do
 
     shared_examples_for 'makes no external API requests' do
       it 'takes no action' do
-        expect_any_instance_of(Sentry::Client).not_to receive(:repos)
-        expect_any_instance_of(Sentry::Client).not_to receive(:create_issue_link)
+        expect_any_instance_of(ErrorTracking::SentryClient).not_to receive(:repos)
+        expect_any_instance_of(ErrorTracking::SentryClient).not_to receive(:create_issue_link)
 
         expect(subject).to be nil
       end
@@ -42,7 +42,7 @@ RSpec.describe ErrorTrackingIssueLinkWorker do
 
     shared_examples_for 'attempts to create a link via plugin' do
       it 'takes no action' do
-        expect_next_instance_of(Sentry::Client) do |client|
+        expect_next_instance_of(ErrorTracking::SentryClient) do |client|
           expect(client).to receive(:repos).with('sentry-org').and_return([repo])
           expect(client)
             .to receive(:create_issue_link)
@@ -98,8 +98,8 @@ RSpec.describe ErrorTrackingIssueLinkWorker do
 
     context 'when Sentry repos request errors' do
       it 'falls back to creating a link via plugin' do
-        expect_next_instance_of(Sentry::Client) do |client|
-          expect(client).to receive(:repos).with('sentry-org').and_raise(Sentry::Client::Error)
+        expect_next_instance_of(ErrorTracking::SentryClient) do |client|
+          expect(client).to receive(:repos).with('sentry-org').and_raise(ErrorTracking::SentryClient::Error)
           expect(client)
             .to receive(:create_issue_link)
             .with(nil, sentry_issue.sentry_issue_identifier, issue)

@@ -7,6 +7,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 
+import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
 import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
@@ -30,6 +31,9 @@ const MockEditorLite = {
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
+  glFeatures: {
+    pipelineEditorEmptyStateAction: false,
+  },
   projectFullPath: mockProjectFullPath,
 };
 
@@ -40,14 +44,17 @@ describe('Pipeline editor app component', () => {
   let mockBlobContentData;
   let mockCiConfigData;
 
-  const createComponent = ({ blobLoading = false, options = {} } = {}) => {
+  const createComponent = ({ blobLoading = false, options = {}, provide = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
-      provide: mockProvide,
+      provide: { ...mockProvide, ...provide },
       stubs: {
         GlTabs,
         GlButton,
         CommitForm,
+        PipelineEditorHome,
+        PipelineEditorTabs,
         EditorLite: MockEditorLite,
+        PipelineEditorEmptyState,
       },
       mocks: {
         $apollo: {
@@ -65,7 +72,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = ({ props = {} } = {}) => {
+  const createComponentWithApollo = ({ props = {}, provide = {} } = {}) => {
     const handlers = [[getCiConfigData, mockCiConfigData]];
     const resolvers = {
       Query: {
@@ -86,7 +93,7 @@ describe('Pipeline editor app component', () => {
       apolloProvider: mockApollo,
     };
 
-    createComponent({ props, options });
+    createComponent({ props, provide, options });
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -94,6 +101,8 @@ describe('Pipeline editor app component', () => {
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findTextEditor = () => wrapper.findComponent(TextEditor);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
+  const findEmptyStateButton = () =>
+    wrapper.findComponent(PipelineEditorEmptyState).findComponent(GlButton);
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
@@ -105,7 +114,6 @@ describe('Pipeline editor app component', () => {
     mockCiConfigData.mockReset();
 
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('displays a loading icon if the blob query is loading', () => {
@@ -193,6 +201,34 @@ describe('Pipeline editor app component', () => {
           expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[LOAD_FAILURE_UNKNOWN]);
           expect(findEditorHome().exists()).toBe(true);
         });
+      });
+    });
+
+    describe('when landing on the empty state with feature flag on', () => {
+      it('user can click on CTA button and see an empty editor', async () => {
+        mockBlobContentData.mockRejectedValueOnce({
+          response: {
+            status: httpStatusCodes.NOT_FOUND,
+          },
+        });
+
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineEditorEmptyStateAction: true,
+            },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findTextEditor().exists()).toBe(false);
+
+        await findEmptyStateButton().vm.$emit('click');
+
+        expect(findEmptyState().exists()).toBe(false);
+        expect(findTextEditor().exists()).toBe(true);
       });
     });
 

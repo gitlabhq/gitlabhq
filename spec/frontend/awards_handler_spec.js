@@ -60,7 +60,6 @@ describe('AwardsHandler', () => {
       u: '6.0',
     },
   };
-  preloadFixtures('snippets/show.html');
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
     $(sel).eq(0).click();

@@ -2,76 +2,155 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::InviteService do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
-  let(:project_user) { create(:user) }
+RSpec.describe Members::InviteService, :aggregate_failures do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { project.owner }
+  let_it_be(:project_user) { create(:user) }
+  let(:params) { {} }
+  let(:base_params) { { access_level: Gitlab::Access::GUEST } }
 
-  before do
-    project.add_maintainer(user)
+  subject(:result) { described_class.new(user, base_params.merge(params)).execute(project) }
+
+  context 'when email is previously unused by current members' do
+    let(:params) { { email: 'email@example.org' } }
+
+    it 'successfully creates a member' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:success)
+    end
   end
 
-  it 'adds an existing user to members' do
-    params = { email: project_user.email.to_s, access_level: Gitlab::Access::GUEST }
-    result = described_class.new(user, params).execute(project)
+  context 'when emails are passed as an array' do
+    let(:params) { { email: %w[email@example.org email2@example.org] } }
 
-    expect(result[:status]).to eq(:success)
-    expect(project.users).to include project_user
+    it 'successfully creates members' do
+      expect { result }.to change(ProjectMember, :count).by(2)
+      expect(result[:status]).to eq(:success)
+    end
   end
 
-  it 'creates a new user for an unknown email address' do
-    params = { email: 'email@example.org', access_level: Gitlab::Access::GUEST }
-    result = described_class.new(user, params).execute(project)
+  context 'when emails are passed as an empty string' do
+    let(:params) { { email: '' } }
 
-    expect(result[:status]).to eq(:success)
+    it 'returns an error' do
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Email cannot be blank')
+    end
   end
 
-  it 'limits the number of emails to 100' do
-    emails = Array.new(101).map { |n| "email#{n}@example.com" }
-    params = { email: emails, access_level: Gitlab::Access::GUEST }
-
-    result = described_class.new(user, params).execute(project)
-
-    expect(result[:status]).to eq(:error)
-    expect(result[:message]).to eq('Too many users specified (limit is 100)')
+  context 'when email param is not included' do
+    it 'returns an error' do
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Email cannot be blank')
+    end
   end
 
-  it 'does not invite an invalid email' do
-    params = { email: project_user.id.to_s, access_level: Gitlab::Access::GUEST }
-    result = described_class.new(user, params).execute(project)
+  context 'when email is not a valid email' do
+    let(:params) { { email: '_bogus_' } }
 
-    expect(result[:status]).to eq(:error)
-    expect(result[:message][project_user.id.to_s]).to eq("Invite email is invalid")
-    expect(project.users).not_to include project_user
+    it 'returns an error' do
+      expect { result }.not_to change(ProjectMember, :count)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]['_bogus_']).to eq("Invite email is invalid")
+    end
   end
 
-  it 'does not invite to an invalid access level' do
-    params = { email: project_user.email, access_level: -1 }
-    result = described_class.new(user, params).execute(project)
+  context 'when duplicate email addresses are passed' do
+    let(:params) { { email: 'email@example.org,email@example.org' } }
 
-    expect(result[:status]).to eq(:error)
-    expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+    it 'only creates one member per unique address' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:success)
+    end
   end
 
-  it 'does not add a member with an existing invite' do
-    invited_member = create(:project_member, :invited, project: project)
+  context 'when observing email limits' do
+    let_it_be(:emails) { Array(1..101).map { |n| "email#{n}@example.com" } }
 
-    params = { email: invited_member.invite_email,
-               access_level: Gitlab::Access::GUEST }
-    result = described_class.new(user, params).execute(project)
+    context 'when over the allowed default limit of emails' do
+      let(:params) { { email: emails } }
 
-    expect(result[:status]).to eq(:error)
-    expect(result[:message][invited_member.invite_email]).to eq("Member already invited to #{project.name}")
+      it 'limits the number of emails to 100' do
+        expect { result }.not_to change(ProjectMember, :count)
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('Too many users specified (limit is 100)')
+      end
+    end
+
+    context 'when over the allowed custom limit of emails' do
+      let(:params) { { email: 'email@example.org,email2@example.org', limit: 1 } }
+
+      it 'limits the number of emails to the limit supplied' do
+        expect { result }.not_to change(ProjectMember, :count)
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('Too many users specified (limit is 1)')
+      end
+    end
+
+    context 'when limit allowed is disabled via limit param' do
+      let(:params) { { email: emails, limit: -1 } }
+
+      it 'does not limit number of emails' do
+        expect { result }.to change(ProjectMember, :count).by(101)
+        expect(result[:status]).to eq(:success)
+      end
+    end
   end
 
-  it 'does not add a member with an access_request' do
-    requested_member = create(:project_member, :access_request, project: project)
+  context 'when email belongs to an existing user' do
+    let(:params) { { email: project_user.email } }
 
-    params = { email: requested_member.user.email,
-               access_level: Gitlab::Access::GUEST }
-    result = described_class.new(user, params).execute(project)
+    it 'adds an existing user to members' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:success)
+      expect(project.users).to include project_user
+    end
+  end
 
-    expect(result[:status]).to eq(:error)
-    expect(result[:message][requested_member.user.email]).to eq("Member cannot be invited because they already requested to join #{project.name}")
+  context 'when access level is not valid' do
+    let(:params) { { email: project_user.email, access_level: -1 } }
+
+    it 'returns an error' do
+      expect { result }.not_to change(ProjectMember, :count)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+    end
+  end
+
+  context 'when invite already exists for an included email' do
+    let!(:invited_member) { create(:project_member, :invited, project: project) }
+    let(:params) { { email: "#{invited_member.invite_email},#{project_user.email}" } }
+
+    it 'adds new email and returns an error for the already invited email' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][invited_member.invite_email]).to eq("Member already invited to #{project.name}")
+      expect(project.users).to include project_user
+    end
+  end
+
+  context 'when access request already exists for an included email' do
+    let!(:requested_member) { create(:project_member, :access_request, project: project) }
+    let(:params) { { email: "#{requested_member.user.email},#{project_user.email}" } }
+
+    it 'adds new email and returns an error for the already invited email' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][requested_member.user.email])
+        .to eq("Member cannot be invited because they already requested to join #{project.name}")
+      expect(project.users).to include project_user
+    end
+  end
+
+  context 'when email is already a member on the project' do
+    let!(:existing_member) { create(:project_member, :guest, project: project) }
+    let(:params) { { email: "#{existing_member.user.email},#{project_user.email}" } }
+
+    it 'adds new email and returns an error for the already invited email' do
+      expect { result }.to change(ProjectMember, :count).by(1)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][existing_member.user.email]).to eq("Already a member of #{project.name}")
+      expect(project.users).to include project_user
+    end
   end
 end

@@ -36,7 +36,8 @@ export default {
       // Success and failure state
       failureType: null,
       failureReasons: [],
-      hasNoCiConfigFile: false,
+      showStartScreen: false,
+      isNewConfigFile: false,
       initialCiFileContent: '',
       lastCommittedContent: '',
       currentCiFileContent: '',
@@ -48,6 +49,11 @@ export default {
   apollo: {
     initialCiFileContent: {
       query: getBlobContent,
+      // If we are working off a new file, we don't want to fetch
+      // the base data as there is nothing to fetch.
+      skip({ isNewConfigFile }) {
+        return isNewConfigFile;
+      },
       variables() {
         return {
           projectPath: this.projectFullPath,
@@ -157,7 +163,7 @@ export default {
         response?.status === httpStatusCodes.NOT_FOUND ||
         response?.status === httpStatusCodes.BAD_REQUEST
       ) {
-        this.hasNoCiConfigFile = true;
+        this.showStartScreen = true;
       } else {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       }
@@ -183,6 +189,10 @@ export default {
     resetContent() {
       this.currentCiFileContent = this.lastCommittedContent;
     },
+    setNewEmptyCiConfigFile() {
+      this.showStartScreen = false;
+      this.isNewConfigFile = true;
+    },
     showErrorAlert({ type, reasons = [] }) {
       this.reportFailure(type, reasons);
     },
@@ -202,7 +212,10 @@ export default {
 <template>
   <div class="gl-mt-4 gl-relative">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
-    <pipeline-editor-empty-state v-else-if="hasNoCiConfigFile" />
+    <pipeline-editor-empty-state
+      v-else-if="showStartScreen"
+      @createEmptyConfigFile="setNewEmptyCiConfigFile"
+    />
     <div v-else>
       <gl-alert v-if="showSuccessAlert" :variant="success.variant" @dismiss="dismissSuccess">
         {{ success.text }}

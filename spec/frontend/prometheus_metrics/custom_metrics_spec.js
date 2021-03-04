@@ -9,7 +9,6 @@ describe('PrometheusMetrics', () => {
   const customMetricsEndpoint =
     'http://test.host/frontend-fixtures/services-project/prometheus/metrics';
   let mock;
-  preloadFixtures(FIXTURE);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);

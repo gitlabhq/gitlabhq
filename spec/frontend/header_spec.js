@@ -15,7 +15,6 @@ describe('Header', () => {
       $(document).trigger('todo:toggle', newCount);
     }
 
-    preloadFixtures(fixtureTemplate);
     beforeEach(() => {
       initTodoToggle();
       loadFixtures(fixtureTemplate);

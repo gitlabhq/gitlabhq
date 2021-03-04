@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Sentry
-  class Client
+module ErrorTracking
+  class SentryClient
     module Repo
       def repos(organization_slug)
         repos_url = repos_api_url(organization_slug)

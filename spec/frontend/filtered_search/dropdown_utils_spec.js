@@ -5,7 +5,6 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 
 describe('Dropdown Utils', () => {
   const issueListFixture = 'issues/issue_list.html';
-  preloadFixtures(issueListFixture);
 
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {

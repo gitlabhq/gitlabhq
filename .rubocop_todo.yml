@@ -382,7 +382,6 @@ Performance/DeleteSuffix:
     - 'app/workers/concerns/application_worker.rb'
     - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/workers/geo/file_download_dispatch_worker/attachment_job_finder.rb'
-    - 'lib/sentry/client/issue.rb'
 
 # Offense count: 13
 # Cop supports --auto-correct.
@@ -1042,4 +1041,3 @@ Style/StringLiteralsInInterpolation:
 # IgnoredMethods: respond_to, define_method
 Style/SymbolProc:
   Enabled: false
-

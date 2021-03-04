@@ -20,7 +20,13 @@ module Types
       field :issue_iid,
             GraphQL::ID_TYPE,
             null: true,
+            deprecated: { reason: 'Use issue field', milestone: '13.10' },
             description: 'Internal ID of the GitLab issue attached to the alert.'
+
+      field :issue,
+            Types::IssueType,
+            null: true,
+            description: 'Issue attached to the alert.'
 
       field :title,
             GraphQL::STRING_TYPE,

@@ -138,7 +138,7 @@ export default {
             <gl-button
               v-gl-modal.confirmSaveIntegration
               category="primary"
-              variant="success"
+              variant="confirm"
               :loading="isSaving"
               :disabled="isDisabled"
               data-qa-selector="save_changes_button"
@@ -162,6 +162,8 @@ export default {
 
           <gl-button
             v-if="propsSource.canTest"
+            category="secondary"
+            variant="confirm"
             :loading="isTesting"
             :disabled="isDisabled"
             :href="propsSource.testPath"
@@ -174,7 +176,7 @@ export default {
             <gl-button
               v-gl-modal.confirmResetIntegration
               category="secondary"
-              variant="default"
+              variant="confirm"
               :loading="isResetting"
               :disabled="isDisabled"
               data-testid="reset-button"
@@ -184,9 +186,7 @@ export default {
             <reset-confirmation-modal @reset="onResetClick" />
           </template>
 
-          <gl-button class="btn-cancel" :href="propsSource.cancelPath">{{
-            __('Cancel')
-          }}</gl-button>
+          <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
         </div>
       </div>
     </div>

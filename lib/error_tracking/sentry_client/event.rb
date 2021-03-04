@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Sentry
-  class Client
+module ErrorTracking
+  class SentryClient
     module Event
       def issue_latest_event(issue_id:)
         latest_event = http_get(api_urls.issue_latest_event_url(issue_id))[:body]

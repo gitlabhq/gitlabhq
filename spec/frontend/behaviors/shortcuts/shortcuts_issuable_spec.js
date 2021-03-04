@@ -13,8 +13,6 @@ describe('ShortcutsIssuable', () => {
   const snippetShowFixtureName = 'snippets/show.html';
   const mrShowFixtureName = 'merge_requests/merge_request_of_current_user.html';
 
-  preloadFixtures(snippetShowFixtureName, mrShowFixtureName);
-
   beforeAll((done) => {
     initCopyAsGFM();
 

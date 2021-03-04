@@ -8,11 +8,6 @@ describe('Issue', () => {
   let testContext;
   let mock;
 
-  beforeAll(() => {
-    preloadFixtures('issues/closed-issue.html');
-    preloadFixtures('issues/open-issue.html');
-  });
-
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mock.onGet(/(.*)\/related_branches$/).reply(200, {});

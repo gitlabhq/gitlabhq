@@ -14,7 +14,6 @@ const TEST_COUNT_BIG = 2000;
 const TEST_DONE_COUNT_BIG = 7300;
 
 describe('Todos', () => {
-  preloadFixtures('todos/todos.html');
   let todoItem;
   let mock;
 

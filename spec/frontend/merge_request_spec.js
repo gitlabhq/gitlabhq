@@ -9,7 +9,6 @@ describe('MergeRequest', () => {
   describe('task lists', () => {
     let mock;
 
-    preloadFixtures('merge_requests/merge_request_with_task_list.html');
     beforeEach(() => {
       loadFixtures('merge_requests/merge_request_with_task_list.html');
 

@@ -24,8 +24,6 @@ describe('noteable_discussion component', () => {
   let wrapper;
   let originalGon;
 
-  preloadFixtures(discussionWithTwoUnresolvedNotes);
-
   beforeEach(() => {
     window.mrTabs = {};
     store = createStore();

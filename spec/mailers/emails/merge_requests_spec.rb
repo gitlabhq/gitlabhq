@@ -6,7 +6,8 @@ require 'email_spec'
 RSpec.describe Emails::MergeRequests do
   include EmailSpec::Matchers
 
-  let_it_be(:recipient) { create(:user) }
+  include_context 'gitlab email notification'
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:assignee, reload: true) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
   let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
@@ -18,6 +19,42 @@ RSpec.describe Emails::MergeRequests do
                            assignees: [assignee],
                            reviewers: [reviewer],
                            description: 'Awesome description')
+  end
+
+  let(:recipient) { assignee }
+
+  describe '#merged_merge_request_email' do
+    let(:merge_author) { assignee }
+
+    subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
+
+    it_behaves_like 'a multiple recipients email'
+    it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+      let(:model) { merge_request }
+    end
+
+    it_behaves_like 'it should show Gmail Actions View Merge request link'
+    it_behaves_like 'an unsubscribeable thread'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'is sent as the merge author' do
+      sender = subject.header[:from].addrs[0]
+      expect(sender.display_name).to eq(merge_author.name)
+      expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'has the correct subject and body' do
+      aggregate_failures do
+        is_expected.to have_referable_subject(merge_request, reply: true)
+        is_expected.to have_body_text('merged')
+        is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+
+        expect(subject.text_part).to have_content(assignee.name)
+        expect(subject.text_part).to have_content(reviewer.name)
+      end
+    end
   end
 
   describe "#merge_when_pipeline_succeeds_email" do

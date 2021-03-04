@@ -189,20 +189,4 @@ RSpec.describe BulkImports::Entity, type: :model do
       expect(entity.next_page_for(:relation)).to eq('nextPage')
     end
   end
-
-  describe 'caching', :clean_gitlab_redis_cache do
-    let(:entity) { create(:bulk_import_entity, :started) }
-
-    it 'removes entity cache keys' do
-      cache_key = "bulk_import:#{entity.bulk_import.id}:entity:#{entity.id}:relation:1"
-
-      Gitlab::Redis::Cache.with do |redis|
-        redis.set(cache_key, 1)
-
-        expect(redis).to receive(:del).with(cache_key)
-      end
-
-      entity.finish!
-    end
-  end
 end

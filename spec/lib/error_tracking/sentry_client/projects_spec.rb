@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Sentry::Client::Projects do
+RSpec.describe ErrorTracking::SentryClient::Projects do
   include SentryClientHelpers
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
-  let(:client) { Sentry::Client.new(sentry_url, token) }
+  let(:client) { ErrorTracking::SentryClient.new(sentry_url, token) }
   let(:projects_sample_response) do
     Gitlab::Utils.deep_indifferent_access(
       Gitlab::Json.parse(fixture_file('sentry/list_projects_sample_response.json'))
@@ -44,7 +44,7 @@ RSpec.describe Sentry::Client::Projects do
       end
 
       it 'raises exception' do
-        expect { subject }.to raise_error(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "slug"')
+        expect { subject }.to raise_error(ErrorTracking::SentryClient::MissingKeysError, 'Sentry API response is missing keys. key not found: "slug"')
       end
     end
 

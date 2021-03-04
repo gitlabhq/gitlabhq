@@ -191,12 +191,8 @@ class MergeRequest < ApplicationRecord
   end
 
   state_machine :merge_status, initial: :unchecked do
-    event :mark_as_preparing do
-      transition unchecked: :preparing
-    end
-
     event :mark_as_unchecked do
-      transition [:preparing, :can_be_merged, :checking] => :unchecked
+      transition [:can_be_merged, :checking] => :unchecked
       transition [:cannot_be_merged, :cannot_be_merged_rechecking] => :cannot_be_merged_recheck
     end
 
@@ -241,7 +237,7 @@ class MergeRequest < ApplicationRecord
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`
   # to avoid exposing unnecessary internal state
   def public_merge_status
-    cannot_be_merged_rechecking? || preparing? ? 'checking' : merge_status
+    cannot_be_merged_rechecking? ? 'checking' : merge_status
   end
 
   validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
@@ -1058,8 +1054,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable?(skip_ci_check: false, skip_discussions_check: false)
-    return false if preparing?
-
     return false unless mergeable_state?(skip_ci_check: skip_ci_check,
                                          skip_discussions_check: skip_discussions_check)
 

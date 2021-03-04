@@ -20,8 +20,6 @@ const DROPDOWN_ITEM_DATA = [
 ];
 
 describe('CreateItemDropdown', () => {
-  preloadFixtures('static/create_item_dropdown.html');
-
   let $wrapperEl;
   let createItemDropdown;
 

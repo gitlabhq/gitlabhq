@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe API::Invitations do
-  let(:maintainer) { create(:user, username: 'maintainer_user') }
-  let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
-  let(:stranger) { create(:user) }
+  let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
+  let_it_be(:stranger) { create(:user) }
   let(:email) { 'email1@example.com' }
   let(:email2) { 'email2@example.com' }
 
-  let(:project) do
+  let_it_be(:project) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
@@ -18,7 +18,7 @@ RSpec.describe API::Invitations do
     end
   end
 
-  let!(:group) do
+  let_it_be(:group, reload: true) do
     create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)

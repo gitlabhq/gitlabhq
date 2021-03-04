@@ -52,8 +52,6 @@ describe('Pipelines Table', () => {
   const findTimeAgoTh = () => wrapper.findByTestId('timeago-th');
   const findActionsTh = () => wrapper.findByTestId('actions-th');
 
-  preloadFixtures(jsonFixtureName);
-
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
     pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);

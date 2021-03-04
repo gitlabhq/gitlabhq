@@ -4,8 +4,6 @@ import SketchLoader from '~/blob/sketch';
 jest.mock('jszip');
 
 describe('Sketch viewer', () => {
-  preloadFixtures('static/sketch_viewer.html');
-
   beforeEach(() => {
     loadFixtures('static/sketch_viewer.html');
   });

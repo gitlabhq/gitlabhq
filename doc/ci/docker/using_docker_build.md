@@ -7,32 +7,16 @@ type: concepts, howto
 
 # Use Docker to build Docker images
 
-You can use GitLab CI/CD with Docker to build and test Docker images.
-
-For example, you might want to:
-
-1. Create a Docker image of your application.
-1. Run tests against the image.
-1. Push the image to a remote registry.
-1. Use the image to deploy your application to a server.
-
-Or, if your application already has a `Dockerfile`, you can
-use it to create and test an image:
-
-```shell
-docker build -t my-image dockerfiles/
-docker run my-image /script/to/run/tests
-docker tag my-image my-registry:5000/my-image
-docker push my-registry:5000/my-image
-```
+You can use GitLab CI/CD with Docker to create Docker images.
+For example, you can create a Docker image of your application,
+test it, and publish it to a container registry.
 
 To run Docker commands in your CI/CD jobs, you must configure
 GitLab Runner to support `docker` commands.
 
 ## Enable Docker commands in your CI/CD jobs
 
-There are three ways to enable the use of `docker build` and `docker run`
-during jobs, each with their own tradeoffs. You can use:
+To enable Docker commands for your CI/CD jobs, you can use:
 
 - [The shell executor](#use-the-shell-executor)
 - [The Docker executor with the Docker image (Docker-in-Docker)](#use-the-docker-executor-with-the-docker-image-docker-in-docker)
@@ -47,12 +31,9 @@ to learn more about how these runners are configured.
 
 ### Use the shell executor
 
-One way to configure GitLab Runner for `docker` support is to use the
-`shell` executor.
-
-After you register a runner and select the `shell` executor,
-your job scripts are executed as the `gitlab-runner` user.
-This user needs permission to run Docker commands.
+You can include Docker commands in your CI/CD jobs if your runner is configured to
+use the `shell` executor. The `gitlab-runner` user runs the Docker commands, but
+needs permission to run them.
 
 1. [Install](https://gitlab.com/gitlab-org/gitlab-runner/#installation) GitLab Runner.
 1. [Register](https://docs.gitlab.com/runner/register/) a runner.
@@ -100,9 +81,11 @@ Learn more about the [security of the `docker` group](https://blog.zopyx.com/on-
 
 ### Use the Docker executor with the Docker image (Docker-in-Docker)
 
-Another way to configure GitLab Runner for `docker` support is to
-register a runner with the Docker executor and use the [Docker image](https://hub.docker.com/_/docker/)
-to run your job scripts. This configuration is referred to as "Docker-in-Docker."
+You can use "Docker-in-Docker" to run commands in your CI/CD jobs:
+
+- Register a runner that uses the Docker executor.
+- Use the [Docker image](https://hub.docker.com/_/docker/) provided by Docker to
+  run the jobs that need Docker commands.
 
 The Docker image has all of the `docker` tools installed
 and can run the job script in context of the image in privileged mode.
@@ -111,14 +94,18 @@ The `docker-compose` command is not available in this configuration by default.
 To use `docker-compose` in your job scripts, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
 
+An example project that uses this approach can be found here: <https://gitlab.com/gitlab-examples/docker>.
+
 WARNING:
 When you enable `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
-escalation which can lead to container breakout. For more information, check
+escalation. Doing this can lead to container breakout. For more information, check
 out the official Docker documentation on
 [runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
 
-Docker-in-Docker works well, and is the recommended configuration, but it is
+#### Limitations of Docker-in-Docker
+
+Docker-in-Docker is the recommended configuration, but it is
 not without its own challenges:
 
 - When using Docker-in-Docker, each job is in a clean environment without the past
@@ -143,8 +130,6 @@ not without its own challenges:
     - mkdir -p "$MOUNT_POINT"
     - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
   ```
-
-An example project using this approach can be found here: <https://gitlab.com/gitlab-examples/docker>.
 
 In the examples below, we are using Docker images tags to specify a
 specific version, such as `docker:19.03.12`. If tags like `docker:stable`
@@ -373,9 +358,8 @@ build:
 
 ### Use Docker socket binding
 
-Another way to configure GitLab Runner for `docker` support is to
-bind-mount `/var/run/docker.sock` into the
-container so that Docker is available in the context of the image.
+To use Docker commands in your CI/CD jobs, you can bind-mount `/var/run/docker.sock` into the
+container. Docker is then available in the context of the image.
 
 NOTE:
 If you bind the Docker socket and you are
@@ -478,13 +462,10 @@ services:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
 
-If you are an administrator of GitLab Runner and you have the `dind`
-service defined for the [Docker
-executor](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section),
-or the [Kubernetes
-executor](https://docs.gitlab.com/runner/executors/kubernetes.html#using-services)
-you can specify the `command` to configure the registry mirror for the
-Docker daemon.
+If you are a GitLab Runner administrator, you can specify the `command` to configure the registry mirror
+for the Docker daemon. The `dind` service must be defined for the
+[Docker](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section)
+or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html#using-services).
 
 Docker:
 
@@ -516,11 +497,10 @@ Kubernetes:
 
 ##### Docker executor inside GitLab Runner configuration
 
-If you are an administrator of GitLab Runner and you want to use
-the mirror for every `dind` service, update the
+If you are a GitLab Runner administrator, you can use
+the mirror for every `dind` service. Update the
 [configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-to specify a [volume
-mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+to specify a [volume mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
 
 For example, if you have a `/opt/docker/daemon.json` file with the following
 content:
@@ -552,11 +532,10 @@ picked up by the `dind` service.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
 
-If you are an administrator of GitLab Runner and you want to use
-the mirror for every `dind` service, update the
+If you are a GitLab Runner administrator, you can use
+the mirror for every `dind` service. Update the
 [configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-to specify a [ConfigMap volume
-mount](https://docs.gitlab.com/runner/executors/kubernetes.html#using-volumes).
+to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes.html#using-volumes).
 
 For example, if you have a `/tmp/daemon.json` file with the following
 content:
@@ -602,7 +581,7 @@ The configuration is picked up by the `dind` service.
 
 When you use Docker-in-Docker, the [normal authentication
 methods](using_docker_images.html#define-an-image-from-a-private-container-registry)
-won't work because a fresh Docker daemon is started with the service.
+don't work because a fresh Docker daemon is started with the service.
 
 ### Option 1: Run `docker login`
 
@@ -634,14 +613,14 @@ empty or remove it.
 
 If you are an administrator for GitLab Runner, you can mount a file
 with the authentication configuration to `~/.docker/config.json`.
-Then every job that the runner picks up will be authenticated already. If you
+Then every job that the runner picks up is authenticated already. If you
 are using the official `docker:19.03.13` image, the home directory is
 under `/root`.
 
 If you mount the configuration file, any `docker` command
 that modifies the `~/.docker/config.json` (for example, `docker login`)
 fails, because the file is mounted as read-only. Do not change it from
-read-only, because other problems will occur.
+read-only, because problems occur.
 
 Here is an example of `/opt/.docker/config.json` that follows the
 [`DOCKER_AUTH_CONFIG`](using_docker_images.md#determining-your-docker_auth_config-data)
@@ -743,8 +722,8 @@ build:
 
 When using Docker-in-Docker, Docker downloads all layers of your image every
 time you create a build. Recent versions of Docker (Docker 1.13 and above) can
-use a pre-existing image as a cache during the `docker build` step, considerably
-speeding up the build process.
+use a pre-existing image as a cache during the `docker build` step. This considerably
+speeds up the build process.
 
 ### How Docker caching works
 
@@ -754,8 +733,8 @@ any changes. Change in one layer causes all subsequent layers to be recreated.
 
 You can specify a tagged image to be used as a cache source for the `docker build`
 command by using the `--cache-from` argument. Multiple images can be specified
-as a cache source by using multiple `--cache-from` arguments. Keep in mind that
-any image that's used with the `--cache-from` argument must first be pulled
+as a cache source by using multiple `--cache-from` arguments. Any image that's used
+with the `--cache-from` argument must first be pulled
 (using `docker pull`) before it can be used as a cache source.
 
 ### Using Docker caching

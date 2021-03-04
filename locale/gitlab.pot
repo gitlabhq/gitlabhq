@@ -1965,7 +1965,19 @@ msgstr ""
 msgid "AddContextCommits|Add/remove"
 msgstr ""
 
+msgid "AddMember|Already a member of %{source_name}"
+msgstr ""
+
+msgid "AddMember|Email cannot be blank"
+msgstr ""
+
 msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
+msgstr ""
+
+msgid "AddMember|Member already invited to %{source_name}"
+msgstr ""
+
+msgid "AddMember|Member cannot be invited because they already requested to join %{source_name}"
 msgstr ""
 
 msgid "AddMember|No users specified."
@@ -8673,6 +8685,9 @@ msgstr ""
 msgid "Create new %{name} by email"
 msgstr ""
 
+msgid "Create new CI/CD pipeline"
+msgstr ""
+
 msgid "Create new Value Stream"
 msgstr ""
 
@@ -11109,9 +11124,6 @@ msgid "Email a new %{name} to this project"
 msgstr ""
 
 msgid "Email address to use for Support Desk"
-msgstr ""
-
-msgid "Email cannot be blank"
 msgstr ""
 
 msgid "Email could not be sent"
@@ -17366,6 +17378,9 @@ msgid "Keep divergent refs"
 msgstr ""
 
 msgid "Keep editing"
+msgstr ""
+
+msgid "Keeping all SAST analyzers enabled future-proofs the project in case new languages are added later on. Determining which analyzers apply is a process that consumes minimal resources and adds minimal time to the pipeline. Leaving all SAST analyzers enabled ensures maximum coverage."
 msgstr ""
 
 msgid "Kerberos access denied"
@@ -31412,9 +31427,6 @@ msgstr ""
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
 msgstr ""
 
-msgid "Too many users specified (limit is %{user_limit})"
-msgstr ""
-
 msgid "Too much data"
 msgstr ""
 
@@ -33422,6 +33434,9 @@ msgstr ""
 msgid "We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device."
 msgstr ""
 
+msgid "We recommend leaving all SAST analyzers enabled"
+msgstr ""
+
 msgid "We recommend that you buy more Pipeline minutes to avoid any interruption of service."
 msgstr ""
 
@@ -33441,6 +33456,9 @@ msgid "We will notify %{inviter} that you declined their invitation to join GitL
 msgstr ""
 
 msgid "We would like to inform you that your subscription GitLab Enterprise Edition %{plan_name} is nearing its user limit. You have %{active_user_count} active users, which is almost at the user limit of %{maximum_user_count}."
+msgstr ""
+
+msgid "We'll continuously validate your pipeline configuration. The validation results will appear here."
 msgstr ""
 
 msgid "We've found no vulnerabilities"
@@ -34816,6 +34834,9 @@ msgstr ""
 msgid "[No reason]"
 msgstr ""
 
+msgid "[Unchanged]"
+msgstr ""
+
 msgid "`end_time` should not exceed one month after `start_time`"
 msgstr ""
 
@@ -35187,6 +35208,9 @@ msgid "ciReport|is loading"
 msgstr ""
 
 msgid "ciReport|is loading, errors when loading results"
+msgstr ""
+
+msgid "closed"
 msgstr ""
 
 msgid "closed issue"

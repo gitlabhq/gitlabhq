@@ -10,8 +10,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 describe('deprecatedJQueryDropdown', () => {
-  preloadFixtures('static/deprecated_jquery_dropdown.html');
-
   const NON_SELECTABLE_CLASSES =
     '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
   const SEARCH_INPUT_SELECTOR = '.dropdown-input-field';

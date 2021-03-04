@@ -27,7 +27,6 @@ const assertSidebarState = (state) => {
 describe('RightSidebar', () => {
   describe('fixture tests', () => {
     const fixtureName = 'issues/open-issue.html';
-    preloadFixtures(fixtureName);
     let mock;
 
     beforeEach(() => {

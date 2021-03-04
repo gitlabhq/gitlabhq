@@ -7,7 +7,7 @@ RSpec.describe 'getting Alert Management Alerts' do
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' }, 'runbook' => 'runbook' } }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low).present }
+  let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, severity: :low).present }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload).present }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields).present }
 
@@ -60,7 +60,6 @@ RSpec.describe 'getting Alert Management Alerts' do
       it 'returns the correct properties of the alerts' do
         expect(first_alert).to include(
           'iid' => triggered_alert.iid.to_s,
-          'issueIid' => triggered_alert.issue_iid.to_s,
           'title' => triggered_alert.title,
           'description' => triggered_alert.description,
           'severity' => triggered_alert.severity.upcase,
@@ -82,7 +81,6 @@ RSpec.describe 'getting Alert Management Alerts' do
 
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,
-          'issueIid' => resolved_alert.issue_iid.to_s,
           'status' => 'RESOLVED',
           'endedAt' => resolved_alert.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )

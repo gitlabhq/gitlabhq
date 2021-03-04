@@ -1,8 +1,6 @@
 import Pipelines from '~/pipelines';
 
 describe('Pipelines', () => {
-  preloadFixtures('static/pipeline_graph.html');
-
   beforeEach(() => {
     loadFixtures('static/pipeline_graph.html');
   });

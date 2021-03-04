@@ -16,8 +16,6 @@ describe('Blob viewer', () => {
 
   setTestTimeout(2000);
 
-  preloadFixtures('blob/show_readme.html');
-
   beforeEach(() => {
     $.fn.extend(jQueryMock);
     mock = new MockAdapter(axios);

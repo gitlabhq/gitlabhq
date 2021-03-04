@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Sentry
-  class Client
+module ErrorTracking
+  class SentryClient
     module Issue
       BadRequestError = Class.new(StandardError)
       ResponseInvalidSizeError = Class.new(StandardError)
@@ -49,7 +49,7 @@ module Sentry
 
         {
           issues: response[:body],
-          pagination: Sentry::PaginationParser.parse(response[:headers])
+          pagination: SentryClient::PaginationParser.parse(response[:headers])
         }
       end
 
@@ -113,7 +113,7 @@ module Sentry
         uri = URI(url)
         uri.path.squeeze!('/')
         # Remove trailing slash
-        uri = uri.to_s.gsub(/\/\z/, '')
+        uri = uri.to_s.delete_suffix('/')
 
         uri
       end

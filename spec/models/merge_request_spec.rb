@@ -2885,11 +2885,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
   describe '#mergeable?' do
     subject { build_stubbed(:merge_request) }
 
-    it 'returns false if still preparing' do
-      expect(subject).to receive(:preparing?) { true }
-      expect(subject.mergeable?).to be_falsey
-    end
-
     it 'returns false if #mergeable_state? is false' do
       expect(subject).to receive(:mergeable_state?) { false }
 
@@ -3080,7 +3075,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     subject { build(:merge_request, merge_status: status) }
 
     where(:status, :public_status) do
-      'preparing' | 'checking'
       'cannot_be_merged_rechecking' | 'checking'
       'checking'                    | 'checking'
       'cannot_be_merged'            | 'cannot_be_merged'
@@ -4131,13 +4125,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'when the status is checking' do
         let(:merge_status) { :checking }
-        let(:expected_merge_status) { 'unchecked' }
-
-        include_examples 'for an valid state transition'
-      end
-
-      context 'when the status is preparing' do
-        let(:merge_status) { :preparing }
         let(:expected_merge_status) { 'unchecked' }
 
         include_examples 'for an valid state transition'

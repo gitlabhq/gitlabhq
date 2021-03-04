@@ -281,7 +281,7 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
     after you install the `gitlab-kas` sub-chart, or enable `gitlab-kas` for Omnibus GitLab.
     When using the sub-chart, you must set `wss://kas.host.tld:443` as
     `kas-address`, where `host.tld` is the domain you've setup for your GitLab installation.
-    When using Omnibus GitLab, you must set `wss://GitLab.host.tld:443/-/kubernetes-agent` as
+    When using Omnibus GitLab, you must set `wss://GitLab.host.tld:443/-/kubernetes-agent/` as
     `kas-address`, where `GitLab.host.tld` is your GitLab hostname.
   - When using the sub-chart, specify the `ws` scheme (such as `ws://kas.host.tld:80`)
     to use an unencrypted WebSockets connection.
@@ -346,7 +346,7 @@ spec:
         - --token-file=/config/token
         - --kas-address
         - wss://kas.host.tld:443 # change this line for the one below if using Omnibus GitLab
-        # - wss://gitlab.host.tld:443/-/kubernetes-agent
+        # - wss://gitlab.host.tld:443/-/kubernetes-agent/
         volumeMounts:
         - name: token-volume
           mountPath: /config
@@ -569,7 +569,7 @@ This error is shown if there are some connectivity issues between the address
 specified as `kas-address`, and your Agent pod. To fix it, make sure that you
 specified the `kas-address` correctly.
 
-### Agent logs - ValidationError(Deployment.metadata
+### Agent logs - ValidationError(Deployment.metadata)
 
 ```plaintext
 {"level":"info","time":"2020-10-30T08:56:54.329Z","msg":"Synced","project_id":"root/kas-manifest001","resource_key":"apps/Deployment/kas-test001/nginx-deployment","sync_result":"error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"}
@@ -603,3 +603,72 @@ issue is in progress, directly edit the deployment with the
 
 This error is shown if the version of the agent is newer that the version of KAS.
 To fix it, make sure that both `agentk` and KAS use the same versions.
+
+### Agent logs - Certificate signed by unknown authority
+
+```plaintext
+{"level":"error","time":"2021-02-25T07:22:37.158Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent/\\\": x509: certificate signed by unknown authority\""}
+```
+
+This error is shown if your GitLab instance is using a certificate signed by an internal CA that
+is unknown to the agent. One approach to fixing it is to present the CA certificate file to the agent
+via a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
+will be picked up automatically.
+
+For example, if your internal CA certifciate is `myCA.pem`:
+
+```plaintext
+kubectl -n gitlab-agent create configmap ca-pemstore --from-file=myCA.pem
+```
+
+Then in `resources.yml`:
+
+```plaintext
+    spec:
+      serviceAccountName: gitlab-agent
+      containers:
+      - name: agent
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:latest"
+        args:
+        - --token-file=/config/token
+        - --kas-address
+        - wss://kas.host.tld:443 # change this line for the one below if using Omnibus GitLab
+        # - wss://gitlab.host.tld:443/-/kubernetes-agent
+        volumeMounts:
+        - name: token-volume
+          mountPath: /config
+        - name: ca-pemstore-volume
+          mountPath: /etc/ssl/certs/myCA.pem
+          subPath: myCA.pem
+      volumes:
+      - name: token-volume
+        secret:
+          secretName: gitlab-agent-token
+      - name: ca-pemstore-volume
+        configMap:
+          name: ca-pemstore
+          items:
+          - key: myCA.pem
+            path: myCA.pem
+```
+
+Alternatively, you can mount the certificate file at a different location and include it using the
+`--ca-cert-file` agent parameter:
+
+```plaintext
+      containers:
+      - name: agent
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:latest"
+        args:
+        - --ca-cert-file=/tmp/myCA.pem
+        - --token-file=/config/token
+        - --kas-address
+        - wss://kas.host.tld:443 # change this line for the one below if using Omnibus GitLab
+        # - wss://gitlab.host.tld:443/-/kubernetes-agent
+        volumeMounts:
+        - name: token-volume
+          mountPath: /config
+        - name: ca-pemstore-volume
+          mountPath: /tmp/myCA.pem
+          subPath: myCA.pem
+```

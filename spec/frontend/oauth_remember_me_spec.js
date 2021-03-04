@@ -6,8 +6,6 @@ describe('OAuthRememberMe', () => {
     return $(`#oauth-container .oauth-login${selector}`).parent('form').attr('action');
   };
 
-  preloadFixtures('static/oauth_remember_me.html');
-
   beforeEach(() => {
     loadFixtures('static/oauth_remember_me.html');
 

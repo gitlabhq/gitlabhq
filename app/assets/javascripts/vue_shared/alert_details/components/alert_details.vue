@@ -268,10 +268,10 @@ export default {
           </span>
         </div>
         <gl-button
-          v-if="alert.issueIid"
+          v-if="alert.issue"
           class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button"
           data-testid="viewIncidentBtn"
-          :href="incidentPath(alert.issueIid)"
+          :href="incidentPath(alert.issue.iid)"
           category="primary"
           variant="success"
         >

@@ -14,8 +14,6 @@ describe('Abuse Reports', () => {
   const findMessage = (searchText) =>
     $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
-  preloadFixtures(FIXTURE);
-
   beforeEach(() => {
     loadFixtures(FIXTURE);
     new AbuseReports(); // eslint-disable-line no-new

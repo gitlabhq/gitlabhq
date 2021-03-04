@@ -31,6 +31,10 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    ciFileContent: {
+      type: String,
+      required: true,
+    },
     ciConfigData: {
       type: Object,
       required: true,
@@ -60,6 +64,7 @@ export default {
     <validation-segment
       :class="validationStyling"
       :loading="isCiConfigDataLoading"
+      :ci-file-content="ciFileContent"
       :ci-config="ciConfigData"
     />
   </div>

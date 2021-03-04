@@ -7,7 +7,6 @@ jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('IntegrationSettingsForm', () => {
   const FIXTURE = 'services/edit_service.html';
-  preloadFixtures(FIXTURE);
 
   beforeEach(() => {
     loadFixtures(FIXTURE);

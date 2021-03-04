@@ -17,8 +17,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
     errorStateSvgPath: 'foo',
   };
 
-  preloadFixtures(jsonFixtureName);
-
   const findRunPipelineBtn = () => vm.$el.querySelector('[data-testid="run_pipeline_button"]');
   const findRunPipelineBtnMobile = () =>
     vm.$el.querySelector('[data-testid="run_pipeline_button_mobile"]');

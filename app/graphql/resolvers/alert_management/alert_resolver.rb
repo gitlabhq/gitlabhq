@@ -43,7 +43,8 @@ module Resolvers
       def preloads
         {
           assignees: [:assignees],
-          notes: [:ordered_notes, { ordered_notes: [:system_note_metadata, :project, :noteable] }]
+          notes: [:ordered_notes, { ordered_notes: [:system_note_metadata, :project, :noteable] }],
+          issue: [:issue]
         }
       end
     end

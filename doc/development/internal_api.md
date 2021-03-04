@@ -35,12 +35,12 @@ This is called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
-When called from GitLab Shell no changes are passed and the internal
-API replies with the information needed to pass the request on to
-Gitaly.
+- **When called from GitLab Shell**: No changes are passed, and the internal
+  API replies with the information needed to pass the request on to Gitaly.
+- **When called from Gitaly in a `pre-receive` hook**: The changes are passed
+  and validated to determine if the push is allowed.
 
-When called from Gitaly in a `pre-receive` hook the changes are passed
-and those are validated to determine if the push is allowed.
+Calls are limited to 50 seconds each.
 
 ```plaintext
 POST /internal/allowed

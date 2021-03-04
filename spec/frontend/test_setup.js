@@ -44,11 +44,6 @@ Object.assign(global, {
   getJSONFixture,
   loadFixtures: loadHTMLFixture,
   setFixtures: setHTMLFixture,
-
-  // The following functions fill the fixtures cache in Karma.
-  // This is not necessary in Jest because we make no Ajax request.
-  loadJSONFixtures() {},
-  preloadFixtures() {},
 });
 
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible

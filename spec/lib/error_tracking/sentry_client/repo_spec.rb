@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Sentry::Client::Repo do
+RSpec.describe ErrorTracking::SentryClient::Repo do
   include SentryClientHelpers
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
-  let(:client) { Sentry::Client.new(sentry_url, token) }
+  let(:client) { ErrorTracking::SentryClient.new(sentry_url, token) }
   let(:repos_sample_response) { Gitlab::Json.parse(fixture_file('sentry/repos_sample_response.json')) }
 
   describe '#repos' do

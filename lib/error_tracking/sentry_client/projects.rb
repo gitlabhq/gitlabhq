@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Sentry
-  class Client
+module ErrorTracking
+  class SentryClient
     module Projects
       def projects
         projects = get_projects

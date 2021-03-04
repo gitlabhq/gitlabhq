@@ -13,7 +13,6 @@ const mockResponse = {
 };
 
 describe('WebAuthnAuthenticate', () => {
-  preloadFixtures('webauthn/authenticate.html');
   useMockNavigatorCredentials();
 
   let fallbackElement;

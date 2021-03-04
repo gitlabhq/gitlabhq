@@ -66,16 +66,6 @@ class BulkImports::Entity < ApplicationRecord
     event :fail_op do
       transition any => :failed
     end
-
-    after_transition any => [:finished, :failed] do |entity|
-      Gitlab::Redis::Cache.with do |redis|
-        pattern = "bulk_import:#{entity.bulk_import.id}:entity:#{entity.id}:*"
-
-        redis.scan_each(match: pattern).each do |key|
-          redis.del(key)
-        end
-      end
-    end
   end
 
   def update_tracker_for(relation:, has_next_page:, next_page: nil)
