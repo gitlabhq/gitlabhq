@@ -31,9 +31,6 @@ module Gitlab
                           DIAGRAMS_FORMATS
                         end
 
-      # No additional diagram formats
-      return diagram_formats unless current_settings.kroki_formats.present?
-
       # Diagrams that require a companion container must be explicitly enabled from the settings
       diagram_formats.select do |diagram_type|
         current_settings.kroki_format_supported?(diagram_type)

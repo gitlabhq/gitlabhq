@@ -9766,6 +9766,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete %{issuableType}"
+msgstr ""
+
 msgid "Delete %{name}"
 msgstr ""
 
@@ -9821,6 +9824,9 @@ msgid "Delete subscription"
 msgstr ""
 
 msgid "Delete this attachment"
+msgstr ""
+
+msgid "Delete this epic and all descendants?"
 msgstr ""
 
 msgid "Delete user list"

@@ -75,6 +75,9 @@ A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
 
+WARNING:
+If you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
+
 ## Close an epic
 
 Whenever you decide that there is no longer need for that epic,
