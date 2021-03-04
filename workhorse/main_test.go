@@ -222,12 +222,15 @@ func TestDeniedPublicUploadsFile(t *testing.T) {
 	for _, resource := range []string{
 		"/uploads/static.txt",
 		"/uploads%2Fstatic.txt",
+		"/foobar%2F%2E%2E%2Fuploads/static.txt",
 	} {
-		resp, body := httpGet(t, ws.URL+resource, nil)
+		t.Run(resource, func(t *testing.T) {
+			resp, body := httpGet(t, ws.URL+resource, nil)
 
-		require.Equal(t, 404, resp.StatusCode, "GET %q: status code", resource)
-		require.Equal(t, "", body, "GET %q: response body", resource)
-		require.True(t, proxied, "GET %q: never made it to backend", resource)
+			require.Equal(t, 404, resp.StatusCode, "GET %q: status code", resource)
+			require.Equal(t, "", body, "GET %q: response body", resource)
+			require.True(t, proxied, "GET %q: never made it to backend", resource)
+		})
 	}
 }
 

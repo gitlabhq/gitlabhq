@@ -32,7 +32,7 @@ func TestIfErrorPageIsPresented(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(upstreamBody), n, "bytes written")
 	})
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.ErrorPagesUnless(false, ErrorFormatHTML, h).ServeHTTP(w, nil)
 	w.Flush()
 
@@ -54,7 +54,7 @@ func TestIfErrorPassedIfNoErrorPageIsFound(t *testing.T) {
 		w.WriteHeader(404)
 		fmt.Fprint(w, errorResponse)
 	})
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.ErrorPagesUnless(false, ErrorFormatHTML, h).ServeHTTP(w, nil)
 	w.Flush()
 
@@ -78,7 +78,7 @@ func TestIfErrorPageIsIgnoredInDevelopment(t *testing.T) {
 		w.WriteHeader(500)
 		fmt.Fprint(w, serverError)
 	})
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.ErrorPagesUnless(true, ErrorFormatHTML, h).ServeHTTP(w, nil)
 	w.Flush()
 	require.Equal(t, 500, w.Code)
@@ -102,7 +102,7 @@ func TestIfErrorPageIsIgnoredIfCustomError(t *testing.T) {
 		w.WriteHeader(500)
 		fmt.Fprint(w, serverError)
 	})
-	st := &Static{dir}
+	st := &Static{DocumentRoot: dir}
 	st.ErrorPagesUnless(false, ErrorFormatHTML, h).ServeHTTP(w, nil)
 	w.Flush()
 	require.Equal(t, 500, w.Code)
@@ -137,7 +137,7 @@ func TestErrorPageInterceptedByContentType(t *testing.T) {
 			w.WriteHeader(500)
 			fmt.Fprint(w, serverError)
 		})
-		st := &Static{dir}
+		st := &Static{DocumentRoot: dir}
 		st.ErrorPagesUnless(false, ErrorFormatHTML, h).ServeHTTP(w, nil)
 		w.Flush()
 		require.Equal(t, 500, w.Code)
@@ -161,7 +161,7 @@ func TestIfErrorPageIsPresentedJSON(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(upstreamBody), n, "bytes written")
 	})
-	st := &Static{""}
+	st := &Static{}
 	st.ErrorPagesUnless(false, ErrorFormatJSON, h).ServeHTTP(w, nil)
 	w.Flush()
 
@@ -181,7 +181,7 @@ func TestIfErrorPageIsPresentedText(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(upstreamBody), n, "bytes written")
 	})
-	st := &Static{""}
+	st := &Static{}
 	st.ErrorPagesUnless(false, ErrorFormatText, h).ServeHTTP(w, nil)
 	w.Flush()
 
