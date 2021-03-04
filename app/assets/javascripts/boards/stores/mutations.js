@@ -60,8 +60,11 @@ export default {
     state.filterParams = filterParams;
   },
 
-  [mutationTypes.CREATE_LIST_FAILURE]: (state) => {
-    state.error = s__('Boards|An error occurred while creating the list. Please try again.');
+  [mutationTypes.CREATE_LIST_FAILURE]: (
+    state,
+    error = s__('Boards|An error occurred while creating the list. Please try again.'),
+  ) => {
+    state.error = error;
   },
 
   [mutationTypes.RECEIVE_LABELS_REQUEST]: (state) => {

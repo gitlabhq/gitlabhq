@@ -13004,6 +13004,46 @@ Missing description
 | `tier` |  |
 | `skip_validation` | true |
 
+## `redis_hll_counters.code_review.i_code_review_user_assignees_changed_monthly`
+
+Count of unique users per month who changed assignees of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_assignees_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55486) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_assignees_changed_weekly`
+
+Count of unique users per week who changed assignees of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_assignees_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55486) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
 ## `redis_hll_counters.code_review.i_code_review_user_close_mr_monthly`
 
 Count of unique users per week|month who closed a MR
@@ -13691,6 +13731,46 @@ Missing description
 | `distribution` | ee |
 | `tier` |  |
 | `skip_validation` | true |
+
+## `redis_hll_counters.code_review.i_code_review_user_reviewers_changed_monthly`
+
+Count of unique users per month who changed reviewers of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_reviewers_changed_monthly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55486) |
+| `time_frame` | 28d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
+
+## `redis_hll_counters.code_review.i_code_review_user_reviewers_changed_weekly`
+
+Count of unique users per week who changed reviewers of a MR
+
+| field | value |
+| --- | --- |
+| `key_path` | **`redis_hll_counters.code_review.i_code_review_user_reviewers_changed_weekly`** |
+| `product_section` | dev |
+| `product_stage` | create |
+| `product_group` | `group::code review` |
+| `product_category` | `code_review` |
+| `value_type` | number |
+| `status` | implemented |
+| `milestone` | 13.10 |
+| `introduced_by_url` | [Introduced by](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55486) |
+| `time_frame` | 7d |
+| `data_source` | Redis_hll |
+| `distribution` | ce, ee |
+| `tier` | free, premium, ultimate |
 
 ## `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_monthly`
 

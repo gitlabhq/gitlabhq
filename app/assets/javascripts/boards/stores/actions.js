@@ -157,8 +157,8 @@ export default {
         },
       })
       .then(({ data }) => {
-        if (data?.boardListCreate?.errors.length) {
-          commit(types.CREATE_LIST_FAILURE);
+        if (data.boardListCreate?.errors.length) {
+          commit(types.CREATE_LIST_FAILURE, data.boardListCreate.errors[0]);
         } else {
           const list = data.boardListCreate?.list;
           dispatch('addList', list);

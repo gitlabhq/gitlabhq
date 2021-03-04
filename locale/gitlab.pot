@@ -1330,7 +1330,7 @@ msgstr ""
 msgid "A job artifact is an archive of files and directories saved by a job when it finishes."
 msgstr ""
 
-msgid "A label list displays all issues with the selected label."
+msgid "A label list displays issues with the selected label."
 msgstr ""
 
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
@@ -12053,6 +12053,9 @@ msgstr ""
 msgid "Error uploading file"
 msgstr ""
 
+msgid "Error uploading file. Please try again."
+msgstr ""
+
 msgid "Error uploading file: %{stripped}"
 msgstr ""
 
@@ -20298,7 +20301,7 @@ msgstr ""
 msgid "New label"
 msgstr ""
 
-msgid "New label list"
+msgid "New list"
 msgstr ""
 
 msgid "New merge request"
@@ -20518,9 +20521,6 @@ msgid "No jobs to show"
 msgstr ""
 
 msgid "No label"
-msgstr ""
-
-msgid "No label selected"
 msgstr ""
 
 msgid "No labels with such name or description"
@@ -25023,6 +25023,9 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
+msgid "Remove file"
+msgstr ""
+
 msgid "Remove fork relationship"
 msgstr ""
 
@@ -28384,6 +28387,9 @@ msgid "Start a new discussion…"
 msgstr ""
 
 msgid "Start a new merge request"
+msgstr ""
+
+msgid "Start a new merge request with these changes"
 msgstr ""
 
 msgid "Start a review"

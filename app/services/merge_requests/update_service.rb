@@ -205,6 +205,7 @@ module MergeRequests
 
       new_assignees = merge_request.assignees - old_assignees
       merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
+      merge_request_activity_counter.track_assignees_changed_action(user: current_user)
     end
 
     def handle_reviewers_change(merge_request, old_reviewers)
@@ -216,6 +217,7 @@ module MergeRequests
 
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
+      merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
     end
 
     def create_branch_change_note(issuable, branch_type, event_type, old_branch, new_branch)

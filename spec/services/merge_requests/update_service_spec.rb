@@ -186,6 +186,54 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
         end
+
+        context 'assignees' do
+          context 'when assignees changed' do
+            it 'tracks assignees changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_assignees_changed_action).once.with(user: user)
+
+              opts[:assignees] = [user2]
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when assignees did not change' do
+            it 'does not track assignees changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_assignees_changed_action)
+
+              opts[:assignees] = merge_request.assignees
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+        end
+
+        context 'reviewers' do
+          context 'when reviewers changed' do
+            it 'tracks reviewers changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_reviewers_changed_action).once.with(user: user)
+
+              opts[:reviewers] = [user2]
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when reviewers did not change' do
+            it 'does not track reviewers changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_reviewers_changed_action)
+
+              opts[:reviewers] = merge_request.reviewers
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+        end
       end
 
       context 'updating milestone' do

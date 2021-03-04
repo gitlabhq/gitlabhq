@@ -1277,7 +1277,7 @@ GEM
     validate_email (0.1.6)
       activemodel (>= 3.0)
       mail (>= 2.2.5)
-    validate_url (1.0.8)
+    validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
     validates_hostname (1.0.11)

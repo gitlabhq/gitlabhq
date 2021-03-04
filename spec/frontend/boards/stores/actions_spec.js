@@ -293,7 +293,7 @@ describe('createIssueList', () => {
         data: {
           boardListCreate: {
             list: {},
-            errors: [{ foo: 'bar' }],
+            errors: ['foo'],
           },
         },
       }),
@@ -301,7 +301,7 @@ describe('createIssueList', () => {
 
     await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
-    expect(commit).toHaveBeenCalledWith(types.CREATE_LIST_FAILURE);
+    expect(commit).toHaveBeenCalledWith(types.CREATE_LIST_FAILURE, 'foo');
   });
 
   it('highlights list and does not re-query if it already exists', async () => {
