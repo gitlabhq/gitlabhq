@@ -9,8 +9,6 @@ module Gitlab
       class ProjectPipelineStatus
         include Gitlab::Utils::StrongMemoize
 
-        ALL_PIPELINES_STATUS_PATTERN = 'projects/*/pipeline_status'
-
         attr_accessor :sha, :status, :ref, :project, :loaded
 
         def self.load_for_project(project)

@@ -92,6 +92,10 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
             variable: { key: 'VAR', value: 'something_${VAR2}_$VAR3' },
             expected_depends_on: %w(VAR2 VAR3)
           },
+          "complex expansion in raw variable": {
+            variable: { key: 'VAR', value: 'something_${VAR2}_$VAR3', raw: true },
+            expected_depends_on: nil
+          },
           "complex expansions for Windows": {
             variable: { key: 'variable3', value: 'key%variable%%variable2%' },
             expected_depends_on: %w(variable variable2)
@@ -156,6 +160,26 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
     end
   end
 
+  describe '#raw' do
+    it 'returns false when :raw is not specified' do
+      item = described_class.new(**variable)
+
+      expect(item.raw).to eq false
+    end
+
+    context 'when :raw is specified as true' do
+      let(:variable) do
+        { key: variable_key, value: variable_value, public: true, masked: false, raw: true }
+      end
+
+      it 'returns true' do
+        item = described_class.new(**variable)
+
+        expect(item.raw).to eq true
+      end
+    end
+  end
+
   describe '#to_runner_variable' do
     context 'when variable is not a file-related' do
       it 'returns a runner-compatible hash representation' do
@@ -183,6 +207,20 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
         runner_variable = described_class.new(key: 'CI_VAR', value: '${CI_VAR_2}-123-$CI_VAR_3')
 
         expect(runner_variable.depends_on).to eq(%w(CI_VAR_2 CI_VAR_3))
+      end
+    end
+
+    context 'when assigned the raw attribute' do
+      it 'retains a true raw attribute' do
+        runner_variable = described_class.new(key: 'CI_VAR', value: '123', raw: true)
+
+        expect(runner_variable).to eq(key: 'CI_VAR', value: '123', public: true, masked: false, raw: true)
+      end
+
+      it 'does not retain a false raw attribute' do
+        runner_variable = described_class.new(key: 'CI_VAR', value: '123', raw: false)
+
+        expect(runner_variable).to eq(key: 'CI_VAR', value: '123', public: true, masked: false)
       end
     end
   end

@@ -312,7 +312,7 @@ following command in your deployment job script, for Kubernetes to access the re
 The Kubernetes cluster integration exposes these
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
-[defined a target environment](../../../ci/environments/index.md#defining-environments).
+[defined a target environment](../../../ci/environments/index.md).
 
 | Deployment Variable        | Description |
 |----------------------------|-------------|
@@ -345,7 +345,7 @@ You can customize the deployment namespace in a few ways:
 - For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
   but the user is responsible for ensuring its existence. You can fully customize
   this value using
-  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
+  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments)
   in `.gitlab-ci.yml`.
 
 When you customize the namespace, existing environments remain linked to their current
@@ -432,7 +432,7 @@ Reasons for failure include:
 - The token you gave GitLab does not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
   privileges required by GitLab.
 - Missing `KUBECONFIG` or `KUBE_TOKEN` deployment variables. To be passed to your job, they must have a matching
-  [`environment:name`](../../../ci/environments/index.md#defining-environments). If your job has no
+  [`environment:name`](../../../ci/environments/index.md). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
 NOTE:

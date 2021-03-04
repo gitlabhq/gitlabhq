@@ -103,7 +103,7 @@ Feature.enable(:ci_config_visualization_tab)
 ## View expanded configuration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246801) in GitLab 13.9.
-> - It is [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It is [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-expanded-configuration). **(FREE SELF)**
 
 To view the fully expanded CI/CD configuration as one combined file, go to the
@@ -118,20 +118,20 @@ where:
 ### Enable or disable expanded configuration **(FREE SELF)**
 
 Expanded CI/CD configuration is under development and not ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_config_visualization_tab)
-```
 
 To disable it:
 
 ```ruby
-Feature.disable(:ci_config_visualization_tab)
+Feature.disable(:ci_config_merged_tab)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_config_merged_tab)
 ```
 
 ## Commit changes to CI configuration

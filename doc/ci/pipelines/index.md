@@ -96,7 +96,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#automatically-stopping-an-environment),
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
 and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
 that might run pipelines after branch deletion.
 
@@ -208,7 +208,7 @@ You can do this straight from the pipeline graph. Just click the play button
 to execute that particular job.
 
 For example, your pipeline might start automatically, but it requires manual action to
-[deploy to production](../environments/index.md#configuring-manual-deployments). In the example below, the `production`
+[deploy to production](../environments/index.md#configure-manual-deployments). In the example below, the `production`
 stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)

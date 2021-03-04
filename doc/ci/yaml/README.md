@@ -2322,7 +2322,7 @@ started by a user. You might want to use manual jobs for things like deploying t
 
 To make a job manual, add `when: manual` to its configuration.
 
-Manual jobs can be started from the pipeline, job, [environment](../environments/index.md#configuring-manual-deployments),
+Manual jobs can be started from the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
 and deployment views.
 
 Manual jobs can be either optional or blocking:
@@ -2562,7 +2562,7 @@ it is set to `manual`, so it needs a [manual action](#whenmanual) from
 the GitLab UI to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
-`stop_review_app` job is [automatically triggered](../environments/index.md#automatically-stopping-an-environment),
+`stop_review_app` job is [automatically triggered](../environments/index.md#stopping-an-environment),
 the runner won’t try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends
@@ -2608,7 +2608,7 @@ When the environment for `review_app` is created, the environment's lifetime is 
 Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 For more information, see
-[the environments auto-stop documentation](../environments/index.md#environments-auto-stop)
+[the environments auto-stop documentation](../environments/index.md#stop-an-environment-after-a-certain-time-period)
 
 #### `environment:kubernetes`
 
@@ -2634,7 +2634,7 @@ environment, using the `production`
 [Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
 
 For more information, see
-[Available settings for `kubernetes`](../environments/index.md#configuring-kubernetes-deployments).
+[Available settings for `kubernetes`](../environments/index.md#configure-kubernetes-deployments).
 
 NOTE:
 Kubernetes configuration is not supported for Kubernetes clusters

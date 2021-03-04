@@ -152,9 +152,13 @@ RSpec.describe Users::RefreshAuthorizedProjectsService do
       expect(Gitlab::AppJsonLogger).to(
         receive(:info)
           .with(event: 'authorized_projects_refresh',
+                user_id: user.id,
                 'authorized_projects_refresh.source': source,
-                'authorized_projects_refresh.rows_deleted': 0,
-                'authorized_projects_refresh.rows_added': 1))
+                'authorized_projects_refresh.rows_deleted_count': 0,
+                'authorized_projects_refresh.rows_added_count': 1,
+                'authorized_projects_refresh.rows_deleted_slice': [],
+                'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+      )
 
       service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
     end

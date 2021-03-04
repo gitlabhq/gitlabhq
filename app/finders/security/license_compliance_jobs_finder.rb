@@ -12,7 +12,7 @@
 module Security
   class LicenseComplianceJobsFinder < JobsFinder
     def self.allowed_job_types
-      [:license_management, :license_scanning]
+      [:license_scanning]
     end
   end
 end

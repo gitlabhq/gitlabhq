@@ -76,6 +76,13 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
                 { key: 'variable2', value: '$variable3' },
                 { key: 'variable3', value: 'key$variable$variable2' }
               ]
+            },
+            "array with raw variable": {
+              variables: [
+                { key: 'variable', value: '$variable2' },
+                { key: 'variable2', value: '$variable3' },
+                { key: 'variable3', value: 'key$variable$variable2', raw: true }
+              ]
             }
           }
         end
@@ -128,6 +135,14 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
                 { key: 'variable3', value: 'key$variable$variable2' }
               ],
               validation_result: 'circular variable reference detected: ["variable", "variable2", "variable3"]'
+            },
+            "array with raw variable": {
+              variables: [
+                { key: 'variable', value: '$variable2' },
+                { key: 'variable2', value: '$variable3' },
+                { key: 'variable3', value: 'key$variable$variable2', raw: true }
+              ],
+              validation_result: nil
             }
           }
         end
@@ -271,6 +286,22 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
                 { key: 'variable', value: '$variable2' }
               ],
               result: %w[variable2 variable3 variable]
+            },
+            "raw variable does not get resolved": {
+              variables: [
+                { key: 'variable', value: '$variable2' },
+                { key: 'variable2', value: '$variable3' },
+                { key: 'variable3', value: 'key$variable$variable2', raw: true }
+              ],
+              result: %w[variable3 variable2 variable]
+            },
+            "variable containing escaped variable reference": {
+              variables: [
+                { key: 'variable_c', value: '$variable_b' },
+                { key: 'variable_b', value: '$$variable_a' },
+                { key: 'variable_a', value: 'value' }
+              ],
+              result: %w[variable_a variable_b variable_c]
             }
           }
         end

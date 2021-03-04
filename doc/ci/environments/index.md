@@ -25,295 +25,73 @@ If you have a deployment service like [Kubernetes](../../user/project/clusters/i
 associated with your project, you can use it to assist with your deployments.
 You can even access a [web terminal](#web-terminals) for your environment from within GitLab.
 
-## Configuring environments
+## View environments and deployments
 
-Configuring environments involves:
+Prerequisites:
 
-1. Understanding how [pipelines](../pipelines/index.md) work.
-1. Defining environments in your project's [`.gitlab-ci.yml`](../yaml/README.md) file.
-1. Creating a job configured to deploy your application. For example, a deploy job configured with [`environment`](../yaml/README.md#environment) to deploy your application to a [Kubernetes cluster](../../user/project/clusters/index.md).
+- You must have a minimum of [Reporter permission](../../user/permissions.md#project-members-permissions).
 
-The rest of this section illustrates how to configure environments and deployments using
-an example scenario. It assumes you have already:
+To view a list of environments and deployments:
 
-- Created a [project](../../user/project/working_with_projects.md#create-a-project) in GitLab.
-- Set up [a runner](../runners/README.md).
+1. Go to the project's **Operations > Environments** page.
+   The environments are displayed.
 
-In the scenario:
+   ![Environments list](img/environments_list.png)
 
-- We are developing an application.
-- We want to run tests and build our app on all branches.
-- Our default branch is `master`.
-- We deploy the app only when a pipeline on `master` branch is run.
+1. To view a list of deployments for an environment, select the environment name,
+   for example, `staging`.
 
-### Defining environments
+   ![Deployments list](img/deployments_list.png)
 
-You can create environments manually in the web interface, but we recommend
-that you define your environments in the `.gitlab-ci.yml` file. After the first
-deploy, the environments are automatically created.
+Deployments show up in this list only after a deployment job has created them.
 
-Let's consider the following `.gitlab-ci.yml` example:
+## Types of environments
 
-```yaml
-stages:
-  - test
-  - build
-  - deploy
+There are two types of environments:
 
-test:
-  stage: test
-  script: echo "Running tests"
+- Static environments have static names, like `staging` or `production`.
+- Dynamic environments have dynamic names. Dynamic environments
+  are a fundamental part of [Review apps](../review_apps/index.md).
 
-build:
-  stage: build
-  script: echo "Building the app"
+### Create a static environment
 
-deploy_staging:
-  stage: deploy
-  script:
-    - echo "Deploy to staging server"
-  environment:
-    name: staging
-    url: https://staging.example.com
-  only:
-    - master
-```
+You can create an environment and deployment in the UI or in your `.gitlab-ci.yml` file.
 
-We have defined three [stages](../yaml/README.md#stages):
+In the UI:
 
-- `test`
-- `build`
-- `deploy`
+1. Go to the project's **Operations > Environments** page.
+1. Select **New environment**.
+1. Enter a name and external URL.
+1. Select **Save**.
 
-The jobs assigned to these stages run in this order. If any job fails, then
-the pipeline fails and jobs that are assigned to the next stage don't run.
+In your `.gitlab-ci.yml` file:
 
-In our case:
+1. Specify a name for the environment and optionally, a URL, which determines the deployment URL.
+   For example:
 
-- The `test` job runs first.
-- Then the `build` job.
-- Lastly the `deploy_staging` job.
+   ```yaml
+   deploy_staging:
+     stage: deploy
+     script:
+       - echo "Deploy to staging server"
+     environment:
+       name: staging
+       url: https://staging.example.com
+   ```
 
-With this configuration, we:
-
-- Check that the tests pass.
-- Ensure that our app is able to be built successfully.
-- Lastly we deploy to the staging server.
-
-Note that the `environment` keyword defines where the app is deployed. The environment `name` and
-`url` is exposed in various places within GitLab. Each time a job that has an environment specified
-succeeds, a deployment is recorded along with the Git SHA and environment name.
+1. Trigger a deployment. (For example, by creating and pushing a commit.)
 
-WARNING:
-Some characters are not allowed in environment names. Use only letters,
-numbers, spaces, and `-`, `_`, `/`, `{`, `}`, or `.`. Also, it must not start nor end with `/`.
-
-In summary, with the above `.gitlab-ci.yml` we have achieved the following:
-
-- All branches run the `test` and `build` jobs.
-- The `deploy_staging` job runs [only](../yaml/README.md#onlyexcept-basic) on the `master`
-  branch, which means all merge requests that are created from branches don't
-  get deployed to the staging server.
-- When a merge request is merged, all jobs run and the `deploy_staging`
-  job deploys our code to a staging server while the deployment
-  is recorded in an environment named `staging`.
-
-#### CI/CD variables and runners
-
-Starting with GitLab 8.15, the environment name is exposed to the runner in
-two forms:
-
-- `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any CI/CD variables
-  expanded).
-- `$CI_ENVIRONMENT_SLUG`. A "cleaned-up" version of the name, suitable for use in URLs,
-  DNS, etc.
-
-If you change the name of an existing environment, the:
-
-- `$CI_ENVIRONMENT_NAME` variable is updated with the new environment name.
-- `$CI_ENVIRONMENT_SLUG` variable remains unchanged to prevent unintended side
-  effects.
-
-Starting with GitLab 9.3, the environment URL is exposed to the runner via
-`$CI_ENVIRONMENT_URL`. The URL is expanded from either:
-
-- `.gitlab-ci.yml`.
-- The external URL from the environment if not defined in `.gitlab-ci.yml`.
-
-#### Set dynamic environment URLs after a job finishes
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
-
-In a job script, you can specify a static [environment URL](#using-the-environment-url).
-However, there may be times when you want a dynamic URL. For example,
-if you deploy a Review App to an external hosting
-service that generates a random URL per deployment, like `https://94dd65b.amazonaws.com/qa-lambda-1234567`,
-you don't know the URL before the deployment script finishes.
-If you want to use the environment URL in GitLab, you would have to update it manually.
-
-To address this problem, you can configure a deployment job to report back a set of
-variables, including the URL that was dynamically-generated by the external service.
-GitLab supports the [dotenv (`.env`)](https://github.com/bkeepers/dotenv) file format,
-and expands the `environment:url` value with variables defined in the `.env` file.
-
-To use this feature, specify the
-[`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
-
-##### Example of setting dynamic environment URLs
-
-The following example shows a Review App that creates a new environment
-per merge request. The `review` job is triggered by every push, and
-creates or updates an environment named `review/your-branch-name`.
-The environment URL is set to `$DYNAMIC_ENVIRONMENT_URL`:
-
-```yaml
-review:
-  script:
-    - DYNAMIC_ENVIRONMENT_URL=$(deploy-script)                                 # In script, get the environment URL.
-    - echo "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL" >> deploy.env    # Add the value to a dotenv file.
-  artifacts:
-    reports:
-      dotenv: deploy.env                                                       # Report back dotenv file to rails.
-  environment:
-    name: review/$CI_COMMIT_REF_SLUG
-    url: $DYNAMIC_ENVIRONMENT_URL                                              # and set the variable produced in script to `environment:url`
-    on_stop: stop_review
-
-stop_review:
-  script:
-    - ./teardown-environment
-  when: manual
-  environment:
-    name: review/$CI_COMMIT_REF_SLUG
-    action: stop
-```
-
-As soon as the `review` job finishes, GitLab updates the `review/your-branch-name`
-environment's URL.
-It parses the `deploy.env` report artifact, registers a list of variables as runtime-created,
-uses it for expanding `environment:url: $DYNAMIC_ENVIRONMENT_URL` and sets it to the environment URL.
-You can also specify a static part of the URL at `environment:url:`, such as
-`https://$DYNAMIC_ENVIRONMENT_URL`. If the value of `DYNAMIC_ENVIRONMENT_URL` is
-`example.com`, the final result is `https://example.com`.
-
-The assigned URL for the `review/your-branch-name` environment is [visible in the UI](#using-the-environment-url).
-
-Note the following:
-
-- `stop_review` doesn't generate a dotenv report artifact, so it doesn't recognize the
-  `DYNAMIC_ENVIRONMENT_URL` environment variable. Therefore you shouldn't set `environment:url:` in the
-  `stop_review` job.
-- If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
-  the environment URL.
-- If the script that runs in `stop_review` exists only in your repository and therefore can't use
-  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
-  for these jobs. This ensures that runners can fetch the repository even after a feature branch is
-  deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
-
-### Configuring manual deployments
-
-Adding `when: manual` to an automatically executed job's configuration converts it to
-a job requiring manual action.
-
-To expand on the [previous example](#defining-environments), the following includes
-another job that deploys our app to a production server and is
-tracked by a `production` environment.
-
-The `.gitlab-ci.yml` file for this is as follows:
-
-```yaml
-stages:
-  - test
-  - build
-  - deploy
-
-test:
-  stage: test
-  script: echo "Running tests"
-
-build:
-  stage: build
-  script: echo "Building the app"
-
-deploy_staging:
-  stage: deploy
-  script:
-    - echo "Deploy to staging server"
-  environment:
-    name: staging
-    url: https://staging.example.com
-  only:
-    - master
-
-deploy_prod:
-  stage: deploy
-  script:
-    - echo "Deploy to production server"
-  environment:
-    name: production
-    url: https://example.com
-  when: manual
-  only:
-    - master
-```
-
-The `when: manual` action:
-
-- Exposes a "play" button in the GitLab UI for that job.
-- Means the `deploy_prod` job is only triggered when the "play" button is clicked.
-
-You can find the "play" button in the pipelines, environments, deployments, and jobs views.
-
-| View            | Screenshot                                                                     |
-|:----------------|:-------------------------------------------------------------------------------|
-| Pipelines       | ![Pipelines manual action](../img/environments_manual_action_pipelines.png)       |
-| Single pipeline | ![Pipelines manual action](../img/environments_manual_action_single_pipeline.png) |
-| Environments    | ![Environments manual action](../img/environments_manual_action_environments.png) |
-| Deployments     | ![Deployments manual action](../img/environments_manual_action_deployments.png)   |
-| Jobs            | ![Builds manual action](../img/environments_manual_action_jobs.png)               |
-
-Clicking the play button in any view triggers the `deploy_prod` job. The deployment is recorded as a
-new environment named `production`.
-
-If your environment's name is `production` (all lowercase), it's recorded in
-[Value Stream Analytics](../../user/analytics/value_stream_analytics.md).
-
-### Configuring dynamic environments
-
-Regular environments are good when deploying to "stable" environments like staging or production.
-
-However, for environments for branches other than `master`, dynamic environments
-can be used. Dynamic environments make it possible to create environments on the fly by
-declaring their names dynamically in `.gitlab-ci.yml`.
-
-Dynamic environments are a fundamental part of [Review apps](../review_apps/index.md).
-
-#### Allowed variables
-
-The `name` and `url` keywords for dynamic environments can use most available CI/CD variables,
-including:
-
-- [Predefined CI/CD variables](../variables/README.md#predefined-cicd-variables)
-- [Project and group CI/CD variables](../variables/README.md)
-- [`.gitlab-ci.yml` CI/CD variables](../yaml/README.md#variables)
-
-However, you cannot use variables defined:
-
-- Under `script`.
-- On the runner's side.
-
-There are also other variables that are unsupported in the context of `environment:name`.
-For more information, see [Where variables can be used](../variables/where_variables_can_be_used.md).
-
-#### Example configuration
-
-Runners expose various [predefined CI/CD variables](../variables/predefined_variables.md) when a job runs, so
-you can use them as environment names.
-
-In the following example, the job deploys to all branches except `master`:
+When the job runs, the environment and deployment are created.
+
+NOTE:
+Some characters cannot be used in environment names.
+For more information about the `environment` keywords, see
+[the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
+
+### Create a dynamic environment
+
+To create a dynamic name and URL for an environment, you can use
+[predefined CI/CD variables](../variables/predefined_variables.md). For example:
 
 ```yaml
 deploy_review:
@@ -331,37 +109,47 @@ deploy_review:
 
 In this example:
 
-- The job's name is `deploy_review` and it runs on the `deploy` stage.
-- We set the `environment` with the `environment:name` as `review/$CI_COMMIT_REF_NAME`.
-  Since the [environment name](../yaml/README.md#environmentname) can contain slashes (`/`), we can
-  use this pattern to distinguish between dynamic and regular environments.
-- We tell the job to run [`only`](../yaml/README.md#onlyexcept-basic) on branches,
-  [`except`](../yaml/README.md#onlyexcept-basic) `master`.
+- The `name` is `review/$CI_COMMIT_REF_NAME`. Because the [environment name](../yaml/README.md#environmentname)
+  can contain slashes (`/`), you can use this pattern to distinguish between dynamic and static environments.
+- For the `url`, you could use `$CI_COMMIT_REF_NAME`, but because this value
+  may contain a `/` or other characters that would not be valid in a domain name or URL,
+  use `$CI_ENVIRONMENT_SLUG` instead. The `$CI_ENVIRONMENT_SLUG` variable is guaranteed to be unique.
 
-For the value of:
-
-- `environment:name`, the first part is `review`, followed by a `/` and then `$CI_COMMIT_REF_NAME`,
-  which receives the value of the branch name.
-- `environment:url`, we want a specific and distinct URL for each branch. `$CI_COMMIT_REF_NAME`
-  may contain a `/` or other characters that would be invalid in a domain name or URL,
-  so we use `$CI_ENVIRONMENT_SLUG` to guarantee that we get a valid URL.
-
-  For example, given a `$CI_COMMIT_REF_NAME` of `100-Do-The-Thing`, the URL is something
-  like `https://100-do-the-4f99a2.example.com`. Again, the way you set up
-  the web server to serve these requests is based on your setup.
-
-  We have used `$CI_ENVIRONMENT_SLUG` here because it is guaranteed to be unique. If
-  you're using a workflow like [GitLab Flow](../../topics/gitlab_flow.md), collisions
-  are unlikely and you may prefer environment names to be more closely based on the
-  branch name. In that case, you could use `$CI_COMMIT_REF_NAME` in `environment:url` in
-  the example above: `https://$CI_COMMIT_REF_NAME.example.com`, which would give a URL
-  of `https://100-do-the-thing.example.com`.
-
-You aren't required to use the same prefix or only slashes (`/`) in the dynamic environments' names.
-However, using this format enables the [grouping similar environments](#grouping-similar-environments)
+You do not have to use the same prefix or only slashes (`/`) in the dynamic environment name.
+However, when you use this format, you can use the [grouping similar environments](#grouping-similar-environments)
 feature.
 
-### Configuring Kubernetes deployments
+NOTE:
+Some variables cannot be used as environment names or URLs.
+For more information about the `environment` keywords, see
+[the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
+
+## Configure manual deployments
+
+You can create a job that requires someone to manually start the deployment.
+For example:
+
+```yaml
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: https://example.com
+  when: manual
+  only:
+    - master
+```
+
+The `when: manual` action:
+
+- Exposes a play button for the job in the GitLab UI.
+- Means the `deploy_prod` job is only triggered when the play button is clicked.
+
+You can find the play button in the pipelines, environments, deployments, and jobs views.
+
+## Configure Kubernetes deployments
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
@@ -402,132 +190,114 @@ trace on the deployment job page:
 
 ![Deployment cluster information](../img/environments_deployment_cluster_v12_8.png)
 
-#### Configuring incremental rollouts
+### Configure incremental rollouts
 
 Learn how to release production changes to only a portion of your Kubernetes pods with
 [incremental rollouts](../environments/incremental_rollouts.md).
 
-### Deployment safety
+## CI/CD variables for environments and deployments
+
+When you create an environment, you specify the name and URL.
+
+If you want to use the name or URL in another job, you can use:
+
+- `$CI_ENVIRONMENT_NAME`. The name defined in the `.gitlab-ci.yml` file.
+- `$CI_ENVIRONMENT_SLUG`. A "cleaned-up" version of the name, suitable for use in URLs,
+  DNS, etc. This variable is guaranteed to be unique.
+- `$CI_ENVIRONMENT_URL`. The environment's URL, which was specified in the
+  `.gitlab-ci.yml` file or automatically assigned.
+
+If you change the name of an existing environment, the:
+
+- `$CI_ENVIRONMENT_NAME` variable is updated with the new environment name.
+- `$CI_ENVIRONMENT_SLUG` variable remains unchanged to prevent unintended side
+  effects.
+
+## Set dynamic environment URLs after a job finishes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
+
+In a job script, you can specify a static environment URL.
+However, there may be times when you want a dynamic URL. For example,
+if you deploy a Review App to an external hosting
+service that generates a random URL per deployment, like `https://94dd65b.amazonaws.com/qa-lambda-1234567`,
+you don't know the URL before the deployment script finishes.
+If you want to use the environment URL in GitLab, you would have to update it manually.
+
+To address this problem, you can configure a deployment job to report back a set of
+variables, including the URL that was dynamically-generated by the external service.
+GitLab supports the [dotenv (`.env`)](https://github.com/bkeepers/dotenv) file format,
+and expands the `environment:url` value with variables defined in the `.env` file.
+
+To use this feature, specify the
+[`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
+
+### Example of setting dynamic environment URLs
+
+The following example shows a Review App that creates a new environment
+per merge request. The `review` job is triggered by every push, and
+creates or updates an environment named `review/your-branch-name`.
+The environment URL is set to `$DYNAMIC_ENVIRONMENT_URL`:
+
+```yaml
+review:
+  script:
+    - DYNAMIC_ENVIRONMENT_URL=$(deploy-script)                                 # In script, get the environment URL.
+    - echo "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL" >> deploy.env    # Add the value to a dotenv file.
+  artifacts:
+    reports:
+      dotenv: deploy.env                                                       # Report back dotenv file to rails.
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: $DYNAMIC_ENVIRONMENT_URL                                              # and set the variable produced in script to `environment:url`
+    on_stop: stop_review
+
+stop_review:
+  script:
+    - ./teardown-environment
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+```
+
+As soon as the `review` job finishes, GitLab updates the `review/your-branch-name`
+environment's URL.
+It parses the `deploy.env` report artifact, registers a list of variables as runtime-created,
+uses it for expanding `environment:url: $DYNAMIC_ENVIRONMENT_URL` and sets it to the environment URL.
+You can also specify a static part of the URL at `environment:url:`, such as
+`https://$DYNAMIC_ENVIRONMENT_URL`. If the value of `DYNAMIC_ENVIRONMENT_URL` is
+`example.com`, the final result is `https://example.com`.
+
+The assigned URL for the `review/your-branch-name` environment is visible in the UI.
+
+Note the following:
+
+- `stop_review` doesn't generate a dotenv report artifact, so it doesn't recognize the
+  `DYNAMIC_ENVIRONMENT_URL` environment variable. Therefore you shouldn't set `environment:url:` in the
+  `stop_review` job.
+- If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
+  the environment URL.
+- If the script that runs in `stop_review` exists only in your repository and therefore can't use
+  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
+  for these jobs. This ensures that runners can fetch the repository even after a feature branch is
+  deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
+
+## Deployment safety
 
 Deployment jobs can be more sensitive than other jobs in a pipeline,
 and might need to be treated with an extra care. There are multiple features
-in GitLab that helps maintain deployment security and stability.
+in GitLab that help maintain deployment security and stability.
 
 - [Restrict write-access to a critical environment](deployment_safety.md#restrict-write-access-to-a-critical-environment)
 - [Limit the job-concurrency for deployment jobs](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
 - [Skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs)
 - [Prevent deployments during deploy freeze windows](deployment_safety.md#prevent-deployments-during-deploy-freeze-windows)
 
-### Complete example
-
-The configuration in this section provides a full development workflow where your app is:
-
-- Tested.
-- Built.
-- Deployed as a Review App.
-- Deployed to a staging server after the merge request is merged.
-- Finally, able to be manually deployed to the production server.
-
-The following combines the previous configuration examples, including:
-
-- Defining [simple environments](#defining-environments) for testing, building, and deployment to staging.
-- Adding [manual actions](#configuring-manual-deployments) for deployment to production.
-- Creating [dynamic environments](#configuring-dynamic-environments) for deployments for reviewing.
-
-```yaml
-stages:
-  - test
-  - build
-  - deploy
-
-test:
-  stage: test
-  script: echo "Running tests"
-
-build:
-  stage: build
-  script: echo "Building the app"
-
-deploy_review:
-  stage: deploy
-  script:
-    - echo "Deploy a review app"
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - master
-
-deploy_staging:
-  stage: deploy
-  script:
-    - echo "Deploy to staging server"
-  environment:
-    name: staging
-    url: https://staging.example.com
-  only:
-    - master
-
-deploy_prod:
-  stage: deploy
-  script:
-    - echo "Deploy to production server"
-  environment:
-    name: production
-    url: https://example.com
-  when: manual
-  only:
-    - master
-```
-
-A more realistic example would also include copying files to a location where a
-webserver (for example, NGINX) could then access and serve them.
-
-The example below copies the `public` directory to `/srv/nginx/$CI_COMMIT_REF_SLUG/public`:
-
-```yaml
-review_app:
-  stage: deploy
-  script:
-    - rsync -av --delete public /srv/nginx/$CI_COMMIT_REF_SLUG
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_COMMIT_REF_SLUG.example.com
-```
-
-This example requires that NGINX and GitLab Runner are set up on the server this job runs on.
-
-See the [limitations](#limitations) section for some edge cases regarding the naming of your
-branches and Review Apps.
-
-The complete example provides the following workflow to developers:
-
-- Create a branch locally.
-- Make changes and commit them.
-- Push the branch to GitLab.
-- Create a merge request.
-
-Behind the scenes, the runner:
-
-- Picks up the changes and starts running the jobs.
-- Runs the jobs sequentially as defined in `stages`:
-  - First, run the tests.
-  - If the tests succeed, build the app.
-  - If the build succeeds, the app is deployed to an environment with a name specific to the
-    branch.
-
-So now, every branch:
-
-- Gets its own environment.
-- Is deployed to its own unique location, with the added benefit of:
-  - Having a [history of deployments](#view-the-deployment-history).
-  - Being able to [roll back changes](#retry-or-roll-back-a-deployment) if needed.
-
-For more information, see [Using the environment URL](#using-the-environment-url).
-
-### Protected environments
+## Protected environments
 
 Environments can be "protected", restricting access to them.
 
@@ -538,36 +308,16 @@ For more information, see [Protected environments](protected_environments.md).
 Once environments are configured, GitLab provides many features for working with them,
 as documented below.
 
-### View environments and deployments
+### Environment rollback
 
-Prerequisites:
+When you roll back a deployment on a specific commit,
+a _new_ deployment is created. This deployment has its own unique job ID.
+It points to the commit you're rolling back to.
 
-- You must have a minimum of [Reporter permission](../../user/permissions.md#project-members-permissions).
+For the rollback to succeed, the deployment process must be defined in
+the job's `script`.
 
-To view a list of environments and deployment statuses:
-
-- Go to the project's **Operations > Environments** page.
-
-The **Environments** page shows the latest deployments.
-
-- An environment can have multiple deployments. Some deployments may not be listed on the page.
-- Only deploys that happen after your `.gitlab-ci.yml` is properly configured
-  show up in the **Environment** and **Last deployment** lists.
-
-### View the deployment history
-
-GitLab tracks your deployments, so you:
-
-- Always know what is currently deployed on your servers.
-- Have the full history of your deployments for every environment.
-
-- Go to the project's **Operations > Environments** page.
-
-![Deployments](../img/deployments_view.png)
-
-This view is similar to the **Environments** page, but all deployments are shown.
-
-### Retry or roll back a deployment
+#### Retry or roll back a deployment
 
 If there is a problem with a deployment, you can retry it or roll it back.
 
@@ -575,32 +325,23 @@ To retry or rollback a deployment:
 
 1. Go to the project's **Operations > Environments**.
 1. Select the environment.
-1. In the deployment history list for the environment:
-   - To retry a deployment, select **Retry**.
-   - to roll back to a deployment, next to a previously successful deployment, select **Rollback**.
+1. To the right of the deployment name:
+   - To retry a deployment, select **Re-deploy to environment**.
+   - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
 
-#### What to expect with a rollback
-
-Pressing the **Rollback** button on a specific commit triggers a _new_ deployment with its own
-unique job ID. This new deployment points to the commit you're
-rolling back to.
-
-Note that the defined deployment process in the job's `script` determines whether the rollback
-succeeds.
-
-### Using the environment URL
+### Environment URL
 
 The [environment URL](../yaml/README.md#environmenturl) is exposed in a few
 places within GitLab:
 
-- In a merge request widget as a link:
+- In a merge request as a link:
   ![Environment URL in merge request](../img/environments_mr_review_app.png)
 - In the Environments view as a button:
-  ![Environment URL in environments](../img/environments_available_13_7.png)
+  ![Environment URL in environments](../img/environments_available_13_10.png)
 - In the Deployments view as a button:
   ![Environment URL in deployments](../img/deployments_view.png)
 
-You can see this information in a merge request itself if:
+You can see this information in a merge request if:
 
 - The merge request is eventually merged to the default branch (usually `master`).
 - That branch also deploys to an environment (for example, `staging` or `production`).
@@ -616,19 +357,16 @@ from source files to public pages in the environment set for Review Apps.
 
 ### Stopping an environment
 
-Stopping an environment:
+When you stop an environment:
 
-- Moves it from the list of **Available** environments to the list of **Stopped**
+- It moves from the list of **Available** environments to the list of **Stopped**
   environments on the [**Environments** page](#view-environments-and-deployments).
-- Executes an [`on_stop` action](../yaml/README.md#environmenton_stop), if defined.
+- An [`on_stop` action](../yaml/README.md#environmenton_stop), if defined, is executed.
 
-This is often used when multiple developers are working on a project at the same time,
-each of them pushing to their own branches, causing many dynamic environments to be created.
-
-Starting with GitLab 8.14, dynamic environments stop automatically when their associated branch is
+Dynamic environments stop automatically when their associated branch is
 deleted.
 
-#### Automatically stopping an environment
+#### Stop an environment when a branch is deleted
 
 Environments can be stopped automatically using special configuration.
 
@@ -678,7 +416,7 @@ possible to trigger `action: stop` to stop the environment automatically.
 
 You can read more in the [`.gitlab-ci.yml` reference](../yaml/README.md#environmenton_stop).
 
-#### Environments auto-stop
+#### Stop an environment after a certain time period
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
 
@@ -763,7 +501,7 @@ environment name to see its details and **Delete** it from there.
 You can also delete environments by viewing the details for a
 stopped environment:
 
-  1. Navigate to **Operations > Environments**.
+  1. Go to the project's **Operations > Environments** page.
   1. Click on the name of an environment within the **Stopped** environments list.
   1. Click on the **Delete** button that appears at the top for all stopped environments.
   1. Finally, confirm your chosen environment in the modal that appears to delete it.
@@ -776,7 +514,7 @@ Environments can also be deleted by using the [Environments API](../../api/envir
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
-By default, GitLab creates a [deployment](#view-the-deployment-history) every time a
+By default, GitLab creates a deployment every time a
 build with the specified environment runs. Newer deployments can also
 [cancel older ones](deployment_safety.md#skip-outdated-deployment-jobs).
 
@@ -801,15 +539,15 @@ build:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7015) in GitLab 8.14.
 
-As documented in [Configuring dynamic environments](#configuring-dynamic-environments), you can
+As documented in [Create a dynamic environment](#create-a-dynamic-environment), you can
 prepend environment name with a word, followed by a `/`, and finally the branch
 name, which is automatically defined by the `CI_COMMIT_REF_NAME` predefined CI/CD variable.
 
 In short, environments that are named like `type/foo` are all presented under the same
 group, named `type`.
 
-In our [minimal example](#example-configuration), we named the environments `review/$CI_COMMIT_REF_NAME`
-where `$CI_COMMIT_REF_NAME` is the branch name. Here is a snippet of the example:
+If you name the environments `review/$CI_COMMIT_REF_NAME`
+where `$CI_COMMIT_REF_NAME` is the branch name:
 
 ```yaml
 deploy_review:
@@ -820,7 +558,7 @@ deploy_review:
     name: review/$CI_COMMIT_REF_NAME
 ```
 
-In this case, if you visit the **Environments** page and the branches
+If you visit the **Environments** page and the branches
 exist, you should see something like:
 
 ![Environment groups](../img/environments_dynamic_groups.png)

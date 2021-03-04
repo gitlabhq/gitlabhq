@@ -204,7 +204,7 @@ into your project and edit it as needed.
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
-[`environment:kubernetes:namespace`](../../ci/environments/index.md#configuring-kubernetes-deployments).
+[`environment:kubernetes:namespace`](../../ci/environments/index.md#configure-kubernetes-deployments).
 For example, the following configuration overrides the namespace used for
 `production` deployments:
 

@@ -75,7 +75,7 @@ specific environment, there are a lot of use cases. To name a few:
 
 To display the Deploy Boards for a specific [environment](../../ci/environments/index.md) you should:
 
-1. Have [defined an environment](../../ci/environments/index.md#defining-environments) with a deploy stage.
+1. Have [defined an environment](../../ci/environments/index.md) with a deploy stage.
 
 1. Have a Kubernetes cluster up and running.
 
