@@ -155,7 +155,7 @@ To find members in a group, you can sort, filter, or search.
 
 Filter a group to find members. By default, all members in the group and subgroups are displayed.
 
-1. Go to the group and select **Members** (**{users}**).
+1. Go to the group and select **Members**.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
@@ -165,7 +165,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 
 You can search for members by name, username, or email.
 
-1. Go to the group and select **Members** (**{users}**).
+1. Go to the group and select **Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
 
@@ -173,7 +173,7 @@ You can search for members by name, username, or email.
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
-1. Go to the group and select **Members** (**{users}**).
+1. Go to the group and select **Members**.
 1. Above the list of members, on the top right, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -222,7 +222,7 @@ There are two different ways to add a new project to a group:
 
   ![Select group](img/select_group_dropdown.png)
 
-### Default project-creation level
+### Specify who can add projects to a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - Brought to [GitLab Starter](https://about.gitlab.com/pricing/) in 10.7.
@@ -239,131 +239,103 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
-## View group details
-
-A group's **Details** page includes tabs for:
-
-- Subgroups and projects.
-- Shared projects.
-- Archived projects.
-
-### Group activity analytics overview
+## Group activity analytics **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as
-a [beta feature](https://about.gitlab.com/handbook/product/#beta)
+a [beta feature](https://about.gitlab.com/handbook/product/#beta).
 
-The group details view also shows the number of the following items created in the last 90 days: **(PREMIUM)**
-
-- Merge requests.
-- Issues.
-- Members.
+For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 
 These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development).
 
-![Recent Group Activity](img/group_activity_analytics_v12_10.png)
+![Recent Group Activity](img/group_activity_analytics_v13_10.png)
 
-For details, see the section on how you can [View group activity](#view-group-activity).
+### View group activity
 
-## View group activity
+You can view the most recent actions taken in a group.
 
-A group's **Activity** page displays the most recent actions taken in a group, including:
+1. From the top menu, select **Groups > Your Groups**.
+1. Find the group and select it.
+1. From the left menu, select **Group overview > Activity**.
 
-- **Push events**: Recent pushes to branches.
-- **Merge events**: Recent merges.
-- **Issue events**: Issues opened or closed.
-- **Epic events**: Epics opened or closed.
-- **Comments**: Comments opened or closed.
-- **Team**: Team members who have joined or left the group.
-- **Wiki**: Wikis created, deleted, or updated.
-
-The entire activity feed is also available in Atom format by clicking the
-**RSS** icon.
-
-To view a group's **Activity** page:
-
-1. Go to the group's page.
-1. In the left navigation menu, go to **Group Overview** and select **Activity**.
+To view the activity feed in Atom format, select the
+**RSS** (**{rss}**) icon.
 
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 
-## Sharing a project with a group
+## Share a project with a group
 
 You can [share your projects with a group](../project/members/share_project_with_groups.md)
 and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 
-## Sharing a group with another group
+## Share a group with another group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
 
-Similarly to [sharing a project with a group](#sharing-a-project-with-a-group),
-you can share a group with another group to give direct group members access
+Similar to how you [share a project with a group](#share-a-project-with-a-group),
+you can share a group with another group. Members get direct access
 to the shared group. This is not valid for inherited members.
 
-To share a given group, for example, 'Frontend' with another group, for example,
-'Engineering':
+To share a given group, for example, `Frontend` with another group, for example,
+`Engineering`:
 
-1. Navigate to your 'Frontend' group page and use the left navigation menu to go
-   to your group **Members**.
+1. Go to the `Frontend` group.
+1. From the left menu, select **Members**.
 1. Select the **Invite group** tab.
-1. Add 'Engineering' with the maximum access level of your choice.
-1. Click **Invite**.
+1. In the **Select a group to invite** list, select `Engineering`.
+1. For the **Max access level**, select an access level.
+1. Select **Invite**.
 
-All the members of the 'Engineering' group will have been added to 'Frontend'.
+All the members of the `Engineering` group are added to the `Frontend` group.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 
-Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
+Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
 
-Group links can be created using either a CN or a filter. These group links are created on the **Group Settings -> LDAP Synchronization** page. After configuring the link, it may take over an hour for the users to sync with the GitLab group.
+Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group.
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync).
 
 NOTE:
-If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
+If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they are removed from the group.
 
-### Creating group links via CN **(PREMIUM SELF)**
+### Create group links via CN **(PREMIUM SELF)**
 
 To create group links via CN:
 
 <!-- vale gitlab.Spelling = NO -->
 
 1. Select the **LDAP Server** for the link.
-1. Select `LDAP Group cn` as the **Sync method**.
-1. In the **LDAP Group cn** text input box, begin typing the CN of the group. There will be a dropdown menu with matching CNs within the configured `group_base`. Select your CN from this list.
+1. As the **Sync method**, select `LDAP Group cn`.
+1. In the **LDAP Group cn** text input box, begin typing the CN of the group. There is a dropdown menu with matching CNs within the configured `group_base`. Select your CN from this list.
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
-1. Click the `Add Synchronization` button to save this group link.
-
-![Creating group links via CN](img/ldap_sync_cn_v13_1.png)
+1. Select the **Add Synchronization** button.
 
 <!-- vale gitlab.Spelling = YES -->
 
-### Creating group links via filter **(PREMIUM SELF)**
+### Create group links via filter **(PREMIUM SELF)**
 
 To create group links via filter:
 
 1. Select the **LDAP Server** for the link.
-1. Select `LDAP user filter` as the **Sync method**.
+1. As the **Sync method**, select `LDAP user filter`.
 1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter).
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
-1. Click the `Add Synchronization` button to save this group link.
+1. Select the **Add Synchronization** button.
 
-![Creating group links via filter](img/ldap_sync_filter_v13_1.png)
+### Override user permissions **(PREMIUM SELF)**
 
-### Overriding user permissions **(PREMIUM SELF)**
-
-In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and later, LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
+LDAP user permissions can be manually overridden by an admin user. To override a user's permissions:
 
 1. Go to your group's **Members** page.
-1. Select the pencil icon in the row for the user you are editing.
-1. Select the brown `Edit permissions` button in the modal.
+1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
+1. Select the brown **Edit permissions** button in the modal.
 
-![Setting manual permissions](img/manual_permissions_v13_7.png)
-
-Now you will be able to edit the user's permissions from the **Members** page.
+Now you can edit the user's permissions from the **Members** page.
 
 ## Epics **(ULTIMATE)**
 

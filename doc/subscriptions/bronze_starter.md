@@ -23,11 +23,11 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../tools/email.md)
 - Groups:
-  - [Creating group memberships via CN](../user/group/index.md#creating-group-links-via-cn)
+  - [Creating group memberships via CN](../user/group/index.md#create-group-links-via-cn)
   - [Group push rules](../user/group/index.md#group-push-rules)
   - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
   - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-a-group)
-  - [Overriding user permissions](../user/group/index.md#overriding-user-permissions)
+  - [Overriding user permissions](../user/group/index.md#override-user-permissions)
   - [User contribution analysis](../user/group/index.md#user-contribution-analysis)
   - [Kerberos integration](../integration/kerberos.md)
 - Issue Boards:

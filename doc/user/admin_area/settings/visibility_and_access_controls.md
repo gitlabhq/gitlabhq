@@ -55,7 +55,7 @@ To change the default project creation protection:
 1. Select the desired option.
 1. Click **Save changes**.
 
-For more details, see [Default project-creation level](../../group/index.md#default-project-creation-level).
+For more details, see [Specify who can add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group).
 
 ## Default project deletion protection **(PREMIUM SELF)**
 
