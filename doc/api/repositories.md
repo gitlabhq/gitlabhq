@@ -395,6 +395,26 @@ these as the changelog entries. You can enrich entries with additional data,
 such as a link to the merge request or details about the commit author. You can
 [customize the format of a changelog](#customize-the-changelog-output) section with a template.
 
+### Reverted commits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
+
+When generating a changelog for a range, GitLab ignores commits both added and
+reverted in that range. Revert commits themselves _are_ included if they use the
+Git trailer used for generating changelogs.
+
+Imagine the following scenario: you have three commits: A, B, and C. To generate
+changelogs, you use the default trailer `Changelog`. Both A and B use this
+trailer. Commit C is a commit that reverts commit B. When generating a changelog
+for this range, GitLab only includes commit A.
+
+Revert commits are detected by looking for commits where the message contains
+the pattern `This reverts commit SHA`, where `SHA` is the SHA of the commit that
+is reverted.
+
+If a revert commit includes the trailer used for generating changelogs
+(`Changelog` in the above example), the revert commit itself _is_ included.
+
 ### Customize the changelog output
 
 The output is customized using a YAML configuration file stored in your

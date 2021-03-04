@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Repositories
-  # Finder for obtaining commits between two refs, with a Git trailer set.
-  class CommitsWithTrailerFinder
+  # Finder for getting the commits to include in a changelog.
+  class ChangelogCommitsFinder
     # The maximum number of commits to retrieve per page.
     #
     # This value is arbitrarily chosen. Lowering it means more Gitaly calls, but
@@ -19,6 +19,9 @@ module Repositories
     # Using this limit should result in most (very large) projects only needing
     # 5-10 Gitaly calls, while keeping memory usage at a reasonable amount.
     COMMITS_PER_PAGE = 1024
+
+    # The regex to use for extracting the SHA of a reverted commit.
+    REVERT_REGEX = /^This reverts commit (?<sha>[0-9a-f]{40})/i.freeze
 
     # The `project` argument specifies the project for which to obtain the
     # commits.
@@ -44,7 +47,7 @@ module Repositories
     #
     # Example:
     #
-    #     CommitsWithTrailerFinder.new(...).each_page('Signed-off-by') do |commits|
+    #     ChangelogCommitsFinder.new(...).each_page('Changelog') do |commits|
     #       commits.each do |commit|
     #         ...
     #       end
@@ -53,12 +56,22 @@ module Repositories
       return to_enum(__method__, trailer) unless block_given?
 
       offset = 0
+      reverted = Set.new
       response = fetch_commits
 
       while response.any?
         commits = []
 
         response.each do |commit|
+          # If the commit is reverted in the same range (by a newer commit), we
+          # won't include it. This works here because commits are processed in
+          # reverse order (= newer first).
+          next if reverted.include?(commit.id)
+
+          if (sha = revert_commit_sha(commit))
+            reverted << sha
+          end
+
           commits.push(commit) if commit.trailers.key?(trailer)
         end
 
@@ -77,6 +90,12 @@ module Repositories
       @project
         .repository
         .commits(range, limit: @per_page, offset: offset, trailers: true)
+    end
+
+    def revert_commit_sha(commit)
+      matches = commit.description.match(REVERT_REGEX)
+
+      matches[:sha] if matches
     end
   end
 end

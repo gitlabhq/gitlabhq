@@ -73,7 +73,7 @@ module Repositories
         .new(version: @version, date: @date, config: config)
 
       commits =
-        CommitsWithTrailerFinder.new(project: @project, from: from, to: @to)
+        ChangelogCommitsFinder.new(project: @project, from: from, to: @to)
 
       commits.each_page(@trailer) do |page|
         mrs = mrs_finder.execute(page)

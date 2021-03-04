@@ -21,6 +21,10 @@ Contributions are welcome.
 For a list of the available resources and their endpoints, see
 [API resources](api_resources.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an introduction and basic steps, see
+[How to make GitLab API calls](https://www.youtube.com/watch?v=0LsMC3ZiXkA).
+
 ## SCIM **(PREMIUM SAAS)**
 
 GitLab provides an [SCIM API](scim.md) that both implements

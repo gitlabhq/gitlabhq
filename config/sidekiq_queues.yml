@@ -100,6 +100,8 @@
   - 1
 - - disallow_two_factor_for_subgroups
   - 1
+- - dora_metrics
+  - 1
 - - elastic_association_indexer
   - 1
 - - elastic_commit_indexer

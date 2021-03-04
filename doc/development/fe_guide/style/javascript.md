@@ -294,3 +294,24 @@ Strive to write many small pure functions and minimize where mutations occur
 
   var c = pureFunction(values.foo);
   ```
+
+## Export constants as primitives
+
+Prefer exporting constant primitives with a common namespace over exporting objects. This allows for better compile-time reference checks and helps to avoid accidential `undefined`s at runtime. In addition, it helps in reducing bundle sizes.
+
+Only export the constants as a collection (array, or object) when there is a need to iterate over them, for instance, for a prop validator.
+
+  ```javascript
+  // bad
+  export const VARIANT = {
+    WARNING: 'warning',
+    ERROR: 'error',
+  };
+
+  // good
+  export const VARIANT_WARNING = 'warning';
+  export const VARIANT_ERROR = 'error';
+
+  // good, if the constants need to be iterated over
+  export const VARIANTS = [VARIANT_WARNING, VARIANT_ERROR];
+  ```

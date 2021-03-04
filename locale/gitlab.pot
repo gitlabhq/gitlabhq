@@ -6317,7 +6317,13 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgents|Access tokens"
+msgstr ""
+
 msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
+msgstr ""
+
+msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr ""
 
 msgid "ClusterAgents|Configuration"
@@ -6326,10 +6332,25 @@ msgstr ""
 msgid "ClusterAgents|Connect your cluster with the GitLab Agent"
 msgstr ""
 
+msgid "ClusterAgents|Created by"
+msgstr ""
+
+msgid "ClusterAgents|Created by %{name} %{time}"
+msgstr ""
+
+msgid "ClusterAgents|Date created"
+msgstr ""
+
+msgid "ClusterAgents|Description"
+msgstr ""
+
 msgid "ClusterAgents|Integrate Kubernetes with a GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Integrate with the GitLab Agent"
+msgstr ""
+
+msgid "ClusterAgents|Learn how to create an agent access token"
 msgstr ""
 
 msgid "ClusterAgents|Name"
@@ -6339,6 +6360,15 @@ msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Age
 msgstr ""
 
 msgid "ClusterAgents|The GitLab Kubernetes Agent allows an Infrastructure as Code, GitOps approach to integrating Kubernetes clusters with GitLab. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "ClusterAgents|This agent has no tokens"
+msgstr ""
+
+msgid "ClusterAgents|Unknown user"
+msgstr ""
+
+msgid "ClusterAgents|You will need to create a token to connect to your agent"
 msgstr ""
 
 msgid "ClusterAgent|This feature is only available for premium plans"

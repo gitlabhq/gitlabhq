@@ -2027,13 +2027,3 @@ as soon as possible.
     Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
-
-## Troubleshooting
-
-See the [troubleshooting documentation](troubleshooting.md).
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>

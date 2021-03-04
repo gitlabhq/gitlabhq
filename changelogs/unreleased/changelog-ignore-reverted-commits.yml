@@ -1,0 +1,5 @@
+---
+title: Ignore reverted commits when generating changelogs
+merge_request: 55537
+author:
+type: added

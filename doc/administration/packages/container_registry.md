@@ -900,11 +900,11 @@ not directly accessible via `tag`:
 sudo gitlab-ctl registry-garbage-collect -m
 ```
 
-Without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
-
 Since this is a way more destructive operation, this behavior is disabled by default.
 You are likely expecting this way of operation, but before doing that, ensure
 that you have backed up all registry data.
+
+When the command is used without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
 
 ### Performing garbage collection without downtime
 

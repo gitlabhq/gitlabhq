@@ -648,7 +648,9 @@ RSpec.describe Projects::BranchesController do
       end
 
       it 'sets active and stale branches' do
-        expect(assigns[:active_branches]).to eq([])
+        expect(assigns[:active_branches].map(&:name)).not_to include(
+          "feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"
+        )
         expect(assigns[:stale_branches].map(&:name)).to eq(
           ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
         )
@@ -660,7 +662,9 @@ RSpec.describe Projects::BranchesController do
         end
 
         it 'sets active and stale branches' do
-          expect(assigns[:active_branches]).to eq([])
+          expect(assigns[:active_branches].map(&:name)).not_to include(
+            "feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"
+          )
           expect(assigns[:stale_branches].map(&:name)).to eq(
             ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
           )

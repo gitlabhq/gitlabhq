@@ -246,8 +246,9 @@ have been corrupted, you should reinstall the omnibus package.
 ## Check TCP connectivity to a remote site
 
 Sometimes you need to know if your GitLab installation can connect to a TCP
-service on another machine - perhaps a PostgreSQL or HTTPS server. A Rake task
-is included to help you with this:
+service on another machine (for example a PostgreSQL or web server)
+in order to troubleshoot proxy issues.
+A Rake task is included to help you with this.
 
 **Omnibus Installation**
 
