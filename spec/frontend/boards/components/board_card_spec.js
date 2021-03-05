@@ -29,6 +29,7 @@ describe('Board card layout', () => {
       actions: mockActions,
       getters: {
         isSwimlanesOn: () => isSwimlanesOn,
+        isEpicBoard: () => false,
       },
     });
   };

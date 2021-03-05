@@ -7729,10 +7729,16 @@ msgstr ""
 msgid "ComplianceFrameworks|Delete framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Edit framework"
+msgstr ""
+
 msgid "ComplianceFrameworks|Error deleting the compliance framework. Please try again"
 msgstr ""
 
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page"
+msgstr ""
+
+msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format: it should follow the format [PATH].y(a)ml@[GROUP]/[PROJECT]"
@@ -7757,6 +7763,9 @@ msgid "ComplianceFrameworks|You are about to permanently delete the compliance f
 msgstr ""
 
 msgid "ComplianceFrameworks|e.g. include-gitlab.ci.yml@group-name/project-name"
+msgstr ""
+
+msgid "ComplianceFramework|Edit Compliance Framework"
 msgstr ""
 
 msgid "ComplianceFramework|GDPR"

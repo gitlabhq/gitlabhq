@@ -38,6 +38,10 @@ export default {
     return find(state.boardLists, (l) => l.title === title);
   },
 
+  isEpicBoard: () => {
+    return false;
+  },
+
   shouldUseGraphQL: () => {
     return gon?.features?.graphqlBoardLists;
   },

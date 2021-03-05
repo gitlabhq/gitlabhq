@@ -19,6 +19,7 @@ const createStore = (state = defaultState) => {
   return new Vuex.Store({
     state,
     actions,
+    getters: { isEpicBoard: () => false },
   });
 };
 

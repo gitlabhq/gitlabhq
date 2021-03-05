@@ -362,38 +362,15 @@ RSpec.describe Gitlab::Utils::UsageData do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
     let(:event_name) { 'incident_management_alert_status_changed' }
     let(:unknown_event) { 'unknown' }
-    let(:feature) { "usage_data_#{event_name}" }
 
-    before do
-      skip_feature_flags_yaml_validation
+    it 'tracks redis hll event' do
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
+
+      described_class.track_usage_event(event_name, value)
     end
 
-    context 'with feature enabled' do
-      before do
-        stub_feature_flags(feature => true)
-      end
-
-      it 'tracks redis hll event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
-
-        described_class.track_usage_event(event_name, value)
-      end
-
-      it 'raise an error for unknown event' do
-        expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
-      end
-    end
-
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(feature => false)
-      end
-
-      it 'does not track event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-        described_class.track_usage_event(event_name, value)
-      end
+    it 'raise an error for unknown event' do
+      expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
     end
   end
 end

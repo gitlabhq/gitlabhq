@@ -23,6 +23,7 @@ import '~/boards/models/milestone';
 import '~/boards/models/project';
 import '~/boards/filters/due_date_filters';
 import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
+import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import modalMixin from '~/boards/mixins/modal_mixins';
@@ -124,6 +125,7 @@ export default () => {
         fullPath: $boardApp.dataset.fullPath,
         boardType: this.parent,
         disabled: this.disabled,
+        issuableType: issuableTypes.issue,
         boardConfig: {
           milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
           milestoneTitle: $boardApp.dataset.boardMilestoneTitle || '',

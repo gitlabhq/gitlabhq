@@ -1,7 +1,7 @@
 <script>
 import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { sortBy } from 'lodash';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -52,7 +52,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isShowingLabels', 'isEpicBoard']),
+    ...mapState(['isShowingLabels']),
+    ...mapGetters(['isEpicBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness

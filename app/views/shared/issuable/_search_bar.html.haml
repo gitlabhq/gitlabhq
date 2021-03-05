@@ -5,7 +5,10 @@
 - placeholder = local_assigns[:placeholder] || _('Search or filter results...')
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
-- user_can_admin_list = board && can?(current_user, :admin_issue_board_list, board.resource_parent)
+- if board && board.to_type == "EpicBoard"
+  - user_can_admin_list = can?(current_user, :admin_epic_board_list, board.resource_parent)
+- elsif board
+  - user_can_admin_list = can?(current_user, :admin_issue_board_list, board.resource_parent)
 
 .issues-filters{ class: ("w-100" if type == :boards_modal) }
   .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-lg-row{ class: block_css_class, "v-pre" => type == :boards_modal }

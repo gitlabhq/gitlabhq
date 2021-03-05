@@ -8,7 +8,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -69,7 +69,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeId', 'isEpicBoard']),
+    ...mapState(['activeId']),
+    ...mapGetters(['isEpicBoard']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },

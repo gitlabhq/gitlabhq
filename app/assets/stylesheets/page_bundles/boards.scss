@@ -30,6 +30,7 @@
   color: var(--gray-500, $gray-500);
 }
 
+[data-page$='epic_boards:index'],
 [data-page$='epic_boards:show'],
 .issue-boards-page {
   .content-wrapper {
@@ -37,8 +38,11 @@
   }
 }
 
-[data-page$='epic_boards:show'] .filter-form {
-  display: none;
+[data-page$='epic_boards:index'],
+[data-page$='epic_boards:show'] {
+  .filter-form {
+    display: none;
+  }
 }
 
 .boards-app {

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
@@ -49,6 +49,7 @@ export default {
   },
   computed: {
     ...mapState(['pageInfoByListId', 'listsFlags']),
+    ...mapGetters(['isEpicBoard']),
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} issues'), {
         pageSize: this.boardItems.length,
@@ -69,13 +70,13 @@ export default {
     },
     listRef() {
       // When  list is draggable, the reference to the list needs to be accessed differently
-      return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
+      return this.canAdminList && !this.isEpicBoard ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllIssues() {
       return this.boardItems.length === this.list.issuesCount;
     },
     treeRootWrapper() {
-      return this.canAdminList ? Draggable : 'ul';
+      return this.canAdminList && !this.isEpicBoard ? Draggable : 'ul';
     },
     treeRootOptions() {
       const options = {

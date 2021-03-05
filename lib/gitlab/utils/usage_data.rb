@@ -135,8 +135,6 @@ module Gitlab
       # @param event_name [String] the event name
       # @param values [Array|String] the values counted
       def track_usage_event(event_name, values)
-        return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
-
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
       end
 

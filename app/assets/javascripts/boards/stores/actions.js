@@ -176,7 +176,7 @@ export default {
   },
 
   fetchLabels: ({ state, commit, getters }, searchTerm) => {
-    const { fullPath, boardType, isEpicBoard } = state;
+    const { fullPath, boardType } = state;
 
     const variables = {
       fullPath,
@@ -195,7 +195,7 @@ export default {
       .then(({ data }) => {
         let labels = data[boardType]?.labels.nodes;
 
-        if (!getters.shouldUseGraphQL && !isEpicBoard) {
+        if (!getters.shouldUseGraphQL && !getters.isEpicBoard) {
           labels = labels.map((label) => ({
             ...label,
             id: getIdFromGraphQLId(label.id),

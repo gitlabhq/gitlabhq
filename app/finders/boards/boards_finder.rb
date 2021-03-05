@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Boards
-  class ListService < Boards::BaseService
+  class BoardsFinder < Boards::BaseService
     def execute
       find_boards
     end

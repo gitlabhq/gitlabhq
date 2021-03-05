@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::ListService do
+RSpec.describe Boards::BoardsFinder do
   describe '#execute' do
     context 'when board parent is a project' do
       let(:parent) { create(:project) }

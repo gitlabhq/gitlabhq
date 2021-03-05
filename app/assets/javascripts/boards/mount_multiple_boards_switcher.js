@@ -48,10 +48,10 @@ export default (params = {}) => {
       return { boardsSelectorProps };
     },
     computed: {
-      ...mapGetters(['shouldUseGraphQL']),
+      ...mapGetters(['shouldUseGraphQL', 'isEpicBoard']),
     },
     render(createElement) {
-      if (this.shouldUseGraphQL || params.isEpicBoard) {
+      if (this.shouldUseGraphQL || this.isEpicBoard) {
         return createElement(BoardsSelector, {
           props: this.boardsSelectorProps,
         });

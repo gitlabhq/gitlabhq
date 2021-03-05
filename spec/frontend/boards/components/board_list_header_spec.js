@@ -53,7 +53,7 @@ describe('Board List Header Component', () => {
     store = new Vuex.Store({
       state: {},
       actions: { updateList: updateListSpy, toggleListCollapsed: toggleListCollapsedSpy },
-      getters: {},
+      getters: { isEpicBoard: () => false },
     });
 
     wrapper = extendedWrapper(

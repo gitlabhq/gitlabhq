@@ -38,8 +38,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['boardLists', 'error', 'addColumnForm', 'isEpicBoard']),
-    ...mapGetters(['isSwimlanesOn']),
+    ...mapState(['boardLists', 'error', 'addColumnForm']),
+    ...mapGetters(['isSwimlanesOn', 'isEpicBoard']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },

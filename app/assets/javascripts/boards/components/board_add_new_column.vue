@@ -29,8 +29,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['labels', 'labelsLoading', 'isEpicBoard']),
-    ...mapGetters(['getListByLabelId', 'shouldUseGraphQL']),
+    ...mapState(['labels', 'labelsLoading']),
+    ...mapGetters(['getListByLabelId', 'shouldUseGraphQL', 'isEpicBoard']),
     selectedLabel() {
       if (!this.selectedId) {
         return null;
