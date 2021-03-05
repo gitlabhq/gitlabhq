@@ -170,6 +170,18 @@ RSpec.describe MergeRequests::RefreshService do
             .not_to change { @merge_request.reload.merge_request_diff }
         end
       end
+
+      it 'calls the merge request activity counter' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_including_ci_config)
+          .with(user: @merge_request.author, merge_request: @merge_request)
+
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_including_ci_config)
+          .with(user: @another_merge_request.author, merge_request: @another_merge_request)
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+      end
     end
 
     context 'when pipeline exists for the source branch' do

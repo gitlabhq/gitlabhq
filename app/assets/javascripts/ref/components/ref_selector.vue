@@ -22,7 +22,6 @@ import RefResultsSection from './ref_results_section.vue';
 
 export default {
   name: 'RefSelector',
-  store: createStore(),
   components: {
     GlDropdown,
     GlDropdownDivider,
@@ -60,6 +59,13 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+
+    /** The validation state of this component. */
+    state: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -104,6 +110,16 @@ export default {
     showSectionHeaders() {
       return this.enabledRefTypes.length > 1;
     },
+    toggleButtonClass() {
+      return { 'gl-inset-border-1-red-500!': !this.state };
+    },
+    footerSlotProps() {
+      return {
+        isLoading: this.isLoading,
+        matches: this.matches,
+        query: this.lastQuery,
+      };
+    },
   },
   watch: {
     // Keep the Vuex store synchronized if the parent
@@ -117,6 +133,14 @@ export default {
       },
     },
   },
+  beforeCreate() {
+    // Setting the store here instead of using
+    // the built in `store` component option because
+    // we need each new `RefSelector` instance to
+    // create a new Vuex store instance.
+    // See https://github.com/vuejs/vuex/issues/414#issue-184491718.
+    this.$store = createStore();
+  },
   created() {
     // This method is defined here instead of in `methods`
     // because we need to access the .cancel() method
@@ -124,7 +148,7 @@ export default {
     // made inaccessible by Vue. More info:
     // https://stackoverflow.com/a/52988020/1063392
     this.debouncedSearch = debounce(function search() {
-      this.search(this.query);
+      this.search();
     }, SEARCH_DEBOUNCE_MS);
 
     this.setProjectId(this.projectId);
@@ -133,19 +157,20 @@ export default {
       'enabledRefTypes',
       () => {
         this.setEnabledRefTypes(this.enabledRefTypes);
-        this.search(this.query);
+        this.search();
       },
       { immediate: true },
     );
   },
   methods: {
-    ...mapActions(['setEnabledRefTypes', 'setProjectId', 'setSelectedRef', 'search']),
+    ...mapActions(['setEnabledRefTypes', 'setProjectId', 'setSelectedRef']),
+    ...mapActions({ storeSearch: 'search' }),
     focusSearchBox() {
       this.$refs.searchBox.$el.querySelector('input').focus();
     },
     onSearchBoxEnter() {
       this.debouncedSearch.cancel();
-      this.search(this.query);
+      this.search();
     },
     onSearchBoxInput() {
       this.debouncedSearch();
@@ -154,15 +179,20 @@ export default {
       this.setSelectedRef(ref);
       this.$emit('input', this.selectedRef);
     },
+    search() {
+      this.storeSearch(this.query);
+    },
   },
 };
 </script>
 
 <template>
   <gl-dropdown
-    v-bind="$attrs"
     :header-text="i18n.dropdownHeader"
+    :toggle-class="toggleButtonClass"
     class="ref-selector"
+    v-bind="$attrs"
+    v-on="$listeners"
     @shown="focusSearchBox"
   >
     <template #button-content>
@@ -241,6 +271,10 @@ export default {
           @selected="selectRef($event)"
         />
       </template>
+    </template>
+
+    <template #footer>
+      <slot name="footer" v-bind="footerSlotProps"></slot>
     </template>
   </gl-dropdown>
 </template>

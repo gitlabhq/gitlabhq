@@ -73,7 +73,7 @@ export default class SingleFileDiff {
     this.collapsedContent.hide();
     this.loadingContent.show();
 
-    axios
+    return axios
       .get(this.diffForPath)
       .then(({ data }) => {
         this.loadingContent.hide();

@@ -36,6 +36,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
       context 'when feature flag ci_reduce_queries_when_ticking_runner_queue is disabled' do
         before do
           stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: false)
+          stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
         end
 
         it 'runs redundant queries using `owned_or_instance_wide` scope' do

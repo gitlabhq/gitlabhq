@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
   GlSprintf,
 } from '@gitlab/ui';
+import { capitalize } from 'lodash';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import {
@@ -77,6 +78,7 @@ export default {
     {
       key: 'type',
       label: __('Type'),
+      formatter: (value) => (value === typeSet.prometheus ? capitalize(value) : value),
     },
     {
       key: 'actions',
@@ -172,7 +174,7 @@ export default {
 
       <template #cell(actions)="{ item }">
         <gl-button-group class="gl-ml-3">
-          <gl-button icon="pencil" @click="editIntegration(item)" />
+          <gl-button icon="settings" @click="editIntegration(item)" />
           <gl-button
             v-gl-modal.deleteIntegration
             :disabled="item.type === $options.typeSet.prometheus"

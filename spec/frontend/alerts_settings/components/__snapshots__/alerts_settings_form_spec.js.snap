@@ -41,14 +41,14 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
           role="presentation"
         >
           <a
-            aria-controls="__BVID__22"
+            aria-controls="__BVID__19"
             aria-disabled="true"
             aria-posinset="2"
             aria-selected="false"
             aria-setsize="3"
             class="nav-link disabled disabled gl-tab-nav-item"
             href="#"
-            id="__BVID__22___BV_tab_button__"
+            id="__BVID__19___BV_tab_button__"
             role="tab"
             tabindex="-1"
             target="_self"
@@ -112,7 +112,7 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
               for="integration-type"
               id="integration-type__BV_label_"
             >
-              Select integration type
+              1.Select integration type
             </label>
             <div
               class="bv-no-focus-ring"
@@ -149,19 +149,6 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
             class="gl-mt-3"
           >
             <!---->
-             
-            <span>
-              Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the 
-              <a
-                class="gl-link gl-display-inline-block"
-                href="https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                GitLab documentation
-              </a>
-               to learn more about configuring your endpoint.
-            </span>
              
             <label
               class="gl-display-flex gl-flex-direction-column gl-mb-0 gl-w-max-content gl-my-4 gl-font-weight-normal"
@@ -202,10 +189,6 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
                
               <!---->
             </label>
-             
-            <!---->
-             
-            <!---->
              
             <!---->
              
@@ -264,12 +247,25 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
       >
         <div
           aria-hidden="true"
-          aria-labelledby="__BVID__22___BV_tab_button__"
+          aria-labelledby="__BVID__19___BV_tab_button__"
           class="tab-pane disabled"
-          id="__BVID__22"
+          id="__BVID__19"
           role="tabpanel"
           style="display: none;"
         >
+          <span>
+            Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the 
+            <a
+              class="gl-link gl-display-inline-block"
+              href="https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              GitLab documentation
+            </a>
+             to learn more about configuring your endpoint.
+          </span>
+           
           <fieldset
             class="form-group gl-form-group"
             id="integration-webhook"

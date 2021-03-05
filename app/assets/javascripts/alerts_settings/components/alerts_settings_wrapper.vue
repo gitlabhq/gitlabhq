@@ -165,6 +165,9 @@ export default {
           if (error) {
             return createFlash({ message: error });
           }
+          const { integration } = httpIntegrationCreate || prometheusIntegrationCreate;
+
+          this.editIntegration(integration);
 
           return createFlash({
             message: this.$options.i18n.changesSaved,

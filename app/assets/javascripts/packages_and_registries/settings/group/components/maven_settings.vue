@@ -79,6 +79,7 @@ export default {
     <form>
       <div class="gl-display-flex">
         <gl-toggle
+          data-qa-selector="allow_duplicates_checkbox"
           :value="mavenDuplicatesAllowed"
           @change="update($options.modelNames.MAVEN_DUPLICATES_ALLOWED, $event)"
         />

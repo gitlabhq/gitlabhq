@@ -1,7 +1,8 @@
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlDropdown, GlIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { merge, last } from 'lodash';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -34,26 +35,30 @@ describe('Ref selector component', () => {
   let commitApiCallSpy;
   let requestSpies;
 
-  const createComponent = (props = {}, attrs = {}) => {
-    wrapper = mount(RefSelector, {
-      propsData: {
-        projectId,
-        value: '',
-        ...props,
-      },
-      attrs,
-      listeners: {
-        // simulate a parent component v-model binding
-        input: (selectedRef) => {
-          wrapper.setProps({ value: selectedRef });
+  const createComponent = (mountOverrides = {}) => {
+    wrapper = mount(
+      RefSelector,
+      merge(
+        {
+          propsData: {
+            projectId,
+            value: '',
+          },
+          listeners: {
+            // simulate a parent component v-model binding
+            input: (selectedRef) => {
+              wrapper.setProps({ value: selectedRef });
+            },
+          },
+          stubs: {
+            GlSearchBoxByType: true,
+          },
+          localVue,
+          store: createStore(),
         },
-      },
-      stubs: {
-        GlSearchBoxByType: true,
-      },
-      localVue,
-      store: createStore(),
-    });
+        mountOverrides,
+      ),
+    );
   };
 
   beforeEach(() => {
@@ -183,7 +188,7 @@ describe('Ref selector component', () => {
       const id = 'git-ref';
 
       beforeEach(() => {
-        createComponent({}, { id });
+        createComponent({ attrs: { id } });
 
         return waitForRequests();
       });
@@ -197,7 +202,7 @@ describe('Ref selector component', () => {
       const preselectedRef = fixtures.branches[0].name;
 
       beforeEach(() => {
-        createComponent({ value: preselectedRef });
+        createComponent({ propsData: { value: preselectedRef } });
 
         return waitForRequests();
       });
@@ -611,7 +616,7 @@ describe('Ref selector component', () => {
     `(
       'only calls $reqsCalled requests when $enabledRefTypes are enabled',
       async ({ enabledRefTypes, reqsCalled, reqsNotCalled }) => {
-        createComponent({ enabledRefTypes });
+        createComponent({ propsData: { enabledRefTypes } });
 
         await waitForRequests();
 
@@ -621,7 +626,7 @@ describe('Ref selector component', () => {
     );
 
     it('only calls commitApiCallSpy when REF_TYPE_COMMITS is enabled', async () => {
-      createComponent({ enabledRefTypes: [REF_TYPE_COMMITS] });
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_COMMITS] } });
       updateQuery('abcd1234');
 
       await waitForRequests();
@@ -632,7 +637,7 @@ describe('Ref selector component', () => {
     });
 
     it('triggers another search if enabled ref types change', async () => {
-      createComponent({ enabledRefTypes: [REF_TYPE_BRANCHES] });
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_BRANCHES] } });
       await waitForRequests();
 
       expect(branchesApiCallSpy).toHaveBeenCalledTimes(1);
@@ -648,7 +653,7 @@ describe('Ref selector component', () => {
     });
 
     it('if a ref type becomes disabled, its section is hidden, even if it had some results in store', async () => {
-      createComponent({ enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_COMMITS] });
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_COMMITS] } });
       updateQuery('abcd1234');
       await waitForRequests();
 
@@ -670,7 +675,7 @@ describe('Ref selector component', () => {
     `(
       'hides section headers if a single ref type is enabled',
       async ({ enabledRefType, findVisibleSection, findHiddenSections }) => {
-        createComponent({ enabledRefTypes: [enabledRefType] });
+        createComponent({ propsData: { enabledRefTypes: [enabledRefType] } });
         updateQuery('abcd1234');
         await waitForRequests();
 
@@ -681,5 +686,71 @@ describe('Ref selector component', () => {
         );
       },
     );
+  });
+
+  describe('validation state', () => {
+    const invalidClass = 'gl-inset-border-1-red-500!';
+    const isInvalidClassApplied = () => wrapper.find(GlDropdown).props('toggleClass')[invalidClass];
+
+    describe('valid state', () => {
+      describe('when the state prop is not provided', () => {
+        it('does not render a red border', () => {
+          createComponent();
+
+          expect(isInvalidClassApplied()).toBe(false);
+        });
+      });
+
+      describe('when the state prop is true', () => {
+        it('does not render a red border', () => {
+          createComponent({ propsData: { state: true } });
+
+          expect(isInvalidClassApplied()).toBe(false);
+        });
+      });
+    });
+
+    describe('invalid state', () => {
+      it('renders the dropdown with a red border if the state prop is false', () => {
+        createComponent({ propsData: { state: false } });
+
+        expect(isInvalidClassApplied()).toBe(true);
+      });
+    });
+  });
+
+  describe('footer slot', () => {
+    const footerContent = 'This is the footer content';
+    const createFooter = jest.fn().mockImplementation(function createMockFooter() {
+      return this.$createElement('div', { attrs: { 'data-testid': 'footer-content' } }, [
+        footerContent,
+      ]);
+    });
+
+    beforeEach(() => {
+      createComponent({
+        scopedSlots: { footer: createFooter },
+      });
+
+      updateQuery('abcd1234');
+
+      return waitForRequests();
+    });
+
+    afterEach(() => {
+      createFooter.mockClear();
+    });
+
+    it('allows custom content to be shown at the bottom of the dropdown using the footer slot', () => {
+      expect(wrapper.find(`[data-testid="footer-content"]`).text()).toBe(footerContent);
+    });
+
+    it('passes the expected slot props', () => {
+      // The createFooter function gets called every time one of the scoped properties
+      // is updated. For the sake of this test, we'll just test the last call, which
+      // represents the final state of the slot props.
+      const lastCallProps = last(createFooter.mock.calls)[0];
+      expect(lastCallProps).toMatchSnapshot();
+    });
   });
 });

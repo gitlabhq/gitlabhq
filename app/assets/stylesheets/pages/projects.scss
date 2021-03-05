@@ -261,7 +261,6 @@
 }
 
 .fork-thumbnail {
-  height: 200px;
   width: calc((100% / 2) - #{$gl-padding * 2});
 
   @include media-breakpoint-up(md) {

@@ -1,7 +1,7 @@
 - avatar = namespace_icon(namespace, 100)
 - can_create_project = current_user.can?(:create_projects, namespace)
 
-.bordered-box.fork-thumbnail.text-center.gl-m-3{ class: ("disabled" unless can_create_project) }
+.bordered-box.fork-thumbnail.text-center.gl-m-3.gl-pb-5{ class: ("disabled" unless can_create_project) }
   - if /no_((\w*)_)*avatar/.match(avatar)
     = group_icon(namespace, class: "avatar rect-avatar s100 identicon mx-auto")
   - else

@@ -1,0 +1,5 @@
+---
+title: Shortcircuit expensive queries in Runner#can_pick?
+merge_request: 55518
+author:
+type: performance

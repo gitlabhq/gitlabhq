@@ -34,33 +34,23 @@ RSpec.describe 'Projects > Show > User uploads files' do
     include_examples 'it uploads and commit a new file to a forked project'
   end
 
-  context 'with an empty repo' do
-    let(:project) { create(:project, :empty_repo, creator: user) }
+  context 'when in the empty_repo_upload experiment' do
+    before do
+      stub_experiments(empty_repo_upload: :candidate)
 
-    context 'when in the empty_repo_upload experiment' do
-      before do
-        stub_experiments(empty_repo_upload: :candidate)
+      visit(project_path(project))
+    end
 
-        visit(project_path(project))
-      end
+    context 'with an empty repo' do
+      let(:project) { create(:project, :empty_repo, creator: user) }
 
-      it 'uploads and commits a new text file', :js do
-        click_link('Upload file')
+      include_examples 'uploads and commits a new text file via "upload file" button'
+    end
 
-        drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+    context 'with a nonempty repo' do
+      let(:project) { create(:project, :repository, creator: user) }
 
-        page.within('#modal-upload-blob') do
-          fill_in(:commit_message, with: 'New commit message')
-        end
-
-        click_button('Upload file')
-
-        wait_for_requests
-
-        expect(page).to have_content('New commit message')
-        expect(page).to have_content('Lorem ipsum dolor sit amet')
-        expect(page).to have_content('Sed ut perspiciatis unde omnis')
-      end
+      include_examples 'uploads and commits a new text file via "upload file" button'
     end
   end
 end

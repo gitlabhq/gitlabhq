@@ -94,3 +94,23 @@ RSpec.shared_examples 'it uploads and commit a new file to a forked project' do
     expect(page).to have_content('Sed ut perspiciatis unde omnis')
   end
 end
+
+RSpec.shared_examples 'uploads and commits a new text file via "upload file" button' do
+  it 'uploads and commits a new text file via "upload file" button', :js do
+    find('.js-upload-file-experiment-trigger', text: 'Upload file').click
+
+    drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+
+    page.within('#modal-upload-blob') do
+      fill_in(:commit_message, with: 'New commit message')
+    end
+
+    click_button('Upload file')
+
+    wait_for_requests
+
+    expect(page).to have_content('New commit message')
+    expect(page).to have_content('Lorem ipsum dolor sit amet')
+    expect(page).to have_content('Sed ut perspiciatis unde omnis')
+  end
+end

@@ -43,10 +43,10 @@ describe('AlertsSettingsForm', () => {
     });
   };
 
-  const findForm = () => wrapper.find(GlForm);
-  const findSelect = () => wrapper.find(GlFormSelect);
-  const findFormFields = () => wrapper.findAll(GlFormInput);
-  const findFormToggle = () => wrapper.find(GlToggle);
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findSelect = () => wrapper.findComponent(GlFormSelect);
+  const findFormFields = () => wrapper.findAllComponents(GlFormInput);
+  const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.find('[data-testid="sample-payload-section"]');
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
   const findMappingBuilder = () => wrapper.findComponent(MappingBuilder);
@@ -56,7 +56,7 @@ describe('AlertsSettingsForm', () => {
   const findJsonTestSubmit = () => wrapper.find(`[data-testid="send-test-alert"]`);
   const findJsonTextArea = () => wrapper.find(`[id = "test-payload"]`);
   const findActionBtn = () => wrapper.find(`[data-testid="payload-action-btn"]`);
-  const findTabs = () => wrapper.findAll(GlTab);
+  const findTabs = () => wrapper.findAllComponents(GlTab);
 
   afterEach(() => {
     if (wrapper) {

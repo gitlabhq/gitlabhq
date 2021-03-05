@@ -1854,6 +1854,10 @@ class User < ApplicationRecord
     created_at > Devise.confirm_within.ago
   end
 
+  def find_or_initialize_callout(feature_name)
+    callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
+  end
+
   protected
 
   # override, from Devise::Validatable

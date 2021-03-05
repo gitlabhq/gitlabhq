@@ -5482,4 +5482,43 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '#find_or_initialize_callout' do
+    subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
+
+    let(:user) { create(:user) }
+    let(:feature_name) { UserCallout.feature_names.each_key.first }
+
+    context 'when callout exists' do
+      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
+
+      it 'returns existing callout' do
+        expect(find_or_initialize_callout).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is valid' do
+          expect(find_or_initialize_callout).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is not valid' do
+          expect(find_or_initialize_callout).not_to be_valid
+        end
+      end
+    end
+  end
 end

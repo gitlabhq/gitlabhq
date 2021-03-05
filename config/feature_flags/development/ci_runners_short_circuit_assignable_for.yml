@@ -1,0 +1,8 @@
+---
+name: ci_runners_short_circuit_assignable_for
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55518
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323317 
+milestone: '13.10'
+type: development
+group: group::continuous integration
+default_enabled: false

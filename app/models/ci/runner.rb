@@ -252,11 +252,21 @@ module Ci
       runner_projects.any?
     end
 
+    # TODO: remove this method in favor of `matches_build?` once feature flag is removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/323317
     def can_pick?(build)
-      #  Run `matches_build?` checks before, since they are cheaper than
-      # `assignable_for?`.
-      #
-      matches_build?(build) && assignable_for?(build.project_id)
+      if Feature.enabled?(:ci_runners_short_circuit_assignable_for, self, default_enabled: :yaml)
+        matches_build?(build)
+      else
+        #  Run `matches_build?` checks before, since they are cheaper than
+        # `assignable_for?`.
+        #
+        matches_build?(build) && assignable_for?(build.project_id)
+      end
+    end
+
+    def match_build_if_online?(build)
+      active? && online? && can_pick?(build)
     end
 
     def only_for?(project)
@@ -355,6 +365,8 @@ module Ci
       end
     end
 
+    # TODO: remove this method once feature flag ci_runners_short_circuit_assignable_for
+    # is removed. https://gitlab.com/gitlab-org/gitlab/-/issues/323317
     def assignable_for?(project_id)
       self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
     end
@@ -383,7 +395,6 @@ module Ci
       end
     end
 
-    # TODO: choose a better name and consider splitting this method into two
     def matches_build?(build)
       return false if self.ref_protected? && !build.protected?
 

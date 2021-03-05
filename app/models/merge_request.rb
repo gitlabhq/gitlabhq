@@ -1863,6 +1863,12 @@ class MergeRequest < ApplicationRecord
     }
   end
 
+  def includes_ci_config?
+    return false unless diff_stats
+
+    diff_stats.map(&:path).include?(project.ci_config_path_or_default)
+  end
+
   private
 
   def missing_report_error(report_type)

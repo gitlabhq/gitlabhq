@@ -16,13 +16,23 @@
   - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
   - [`ee/config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/metrics)
 
-Each table includes a `milestone`, which corresponds to the GitLab version when the metric
-was released.
+  Each table includes a `milestone`, which corresponds to the GitLab version when the metric
+  was released.
+
+  ## Metrics Definitions
+
 \
 - metrics_definitions.each do |name, object|
 
   = render_name(name)
-
-  = render_description(object)
-
-  = render_attributes_table(object)
+  \
+  = render_description(object.attributes)
+  \
+  = render_yaml_link(object.yaml_path)
+  \
+  = render_owner(object.attributes)
+  \
+  = render_status(object.attributes)
+  \
+  = render_tiers(object.attributes)
+  \

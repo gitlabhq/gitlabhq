@@ -32,6 +32,10 @@ RSpec.describe MergeRequests::AfterCreateService do
         .to receive(:track_create_mr_action)
         .with(user: merge_request.author)
 
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .to receive(:track_mr_including_ci_config)
+        .with(user: merge_request.author, merge_request: merge_request)
+
       execute_service
     end
 

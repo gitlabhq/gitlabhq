@@ -12,12 +12,12 @@ module Gitlab
             "**`#{value}`**"
           when :data_source
             value.to_s.capitalize
-          when :product_group, :product_category
+          when :product_group, :product_category, :status
             "`#{value}`"
           when :introduced_by_url
             "[Introduced by](#{value})"
           when :distribution, :tier
-            Array(value).join(', ')
+            Array(value).map { |tier| "`#{tier}`" }.join(', ')
           else
             value
           end

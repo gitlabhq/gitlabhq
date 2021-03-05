@@ -693,7 +693,7 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
+      project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
     end
 
     def stuck?

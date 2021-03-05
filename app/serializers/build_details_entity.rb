@@ -99,7 +99,7 @@ class BuildDetailsEntity < JobEntity
     end
 
     expose :available do |build|
-      project.any_runners?
+      project.any_active_runners?
     end
 
     expose :settings_path, if: -> (*) { can_admin_build? } do |build|

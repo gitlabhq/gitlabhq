@@ -5,9 +5,6 @@ module Gitlab
     module Docs
       # Helper with functions to be used by HAML templates
       module Helper
-        HEADER = %w(field value).freeze
-        SKIP_KEYS = %i(description).freeze
-
         def auto_generated_comment
           <<-MARKDOWN.strip_heredoc
             ---
@@ -27,37 +24,33 @@ module Gitlab
         end
 
         def render_name(name)
-          "## `#{name}`\n"
+          "### `#{name}`"
         end
 
         def render_description(object)
-          return 'Missing description' unless object.attributes[:description].present?
+          return 'Missing description' unless object[:description].present?
 
-          object.attributes[:description]
+          object[:description]
         end
 
-        def render_attribute_row(key, value)
-          value = Gitlab::Usage::Docs::ValueFormatter.format(key, value)
-          table_row(["`#{key}`", value])
+        def render_yaml_link(yaml_path)
+          "[YAML definition](#{yaml_path})"
         end
 
-        def render_attributes_table(object)
-          <<~MARKDOWN
-
-            #{table_row(HEADER)}
-            #{table_row(HEADER.map { '---' })}
-            #{table_value_rows(object.attributes)}
-          MARKDOWN
+        def render_status(object)
+          "Status: #{format(:status, object[:status])}"
         end
 
-        def table_value_rows(attributes)
-          attributes.reject { |k, _| k.in?(SKIP_KEYS) }.map do |key, value|
-            render_attribute_row(key, value)
-          end.join("\n")
+        def render_owner(object)
+          "Group: `#{object[:product_group]}`"
         end
 
-        def table_row(array)
-          "| #{array.join(' | ')} |"
+        def render_tiers(object)
+          "Tiers: #{format(:tier, object[:tier])}"
+        end
+
+        def format(key, value)
+          Gitlab::Usage::Docs::ValueFormatter.format(key, value)
         end
       end
     end

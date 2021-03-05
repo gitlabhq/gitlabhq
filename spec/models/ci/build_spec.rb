@@ -581,7 +581,7 @@ RSpec.describe Ci::Build do
       end
 
       it 'that cannot handle build' do
-        expect_any_instance_of(Ci::Runner).to receive(:can_pick?).and_return(false)
+        expect_any_instance_of(Ci::Runner).to receive(:matches_build?).with(build).and_return(false)
         is_expected.to be_falsey
       end
     end

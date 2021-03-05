@@ -350,6 +350,8 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#can_pick?' do
+    using RSpec::Parameterized::TableSyntax
+
     let_it_be(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner_project) { build.project }
@@ -362,6 +364,11 @@ RSpec.describe Ci::Runner do
     context 'a different runner' do
       let(:other_project) { create(:project) }
       let(:other_runner) { create(:ci_runner, :project, projects: [other_project], tag_list: tag_list, run_untagged: run_untagged) }
+
+      before do
+        # `can_pick?` is not used outside the runners available for the project
+        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+      end
 
       it 'cannot handle builds' do
         expect(other_runner.can_pick?(build)).to be_falsey
@@ -430,9 +437,32 @@ RSpec.describe Ci::Runner do
           expect(runner.can_pick?(build)).to be_truthy
         end
       end
+
+      it 'does not query for owned or instance runners' do
+        expect(described_class).not_to receive(:owned_or_instance_wide)
+
+        runner.can_pick?(build)
+      end
+
+      context 'when feature flag ci_runners_short_circuit_assignable_for is disabled' do
+        before do
+          stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+        end
+
+        it 'does not query for owned or instance runners' do
+          expect(described_class).to receive(:owned_or_instance_wide).and_call_original
+
+          runner.can_pick?(build)
+        end
+      end
     end
 
     context 'when runner is not shared' do
+      before do
+        # `can_pick?` is not used outside the runners available for the project
+        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+      end
+
       context 'when runner is assigned to a project' do
         it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
@@ -498,6 +528,29 @@ RSpec.describe Ci::Runner do
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'matches tags' do
+      where(:run_untagged, :runner_tags, :build_tags, :result) do
+        true  | []      | []      | true
+        true  | []      | ['a']   | false
+        true  | %w[a b] | ['a']   | true
+        true  | ['a']   | %w[a b] | false
+        true  | ['a']   | ['a']   | true
+        false | ['a']   | ['a']   | true
+        false | ['b']   | ['a']   | false
+        false | %w[a b] | ['a']   | true
+      end
+
+      with_them do
+        let(:tag_list) { runner_tags }
+
+        before do
+          build.tag_list = build_tags
+        end
+
+        it { is_expected.to eq(result) }
       end
     end
   end

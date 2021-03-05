@@ -625,7 +625,7 @@ POST /projects/:id/external_approval_rules
 | `id`                   | integer        | yes      | The ID of a project                                |
 | `name`                 | string         | yes      | Display name of approval rule                      |
 | `external_url`         | string         | yes      | URL of external approval resource                  |
-| `protected_branch_ids` | array<Integer> | no       | The ids of protected branches to scope the rule by |
+| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
 
 ### Delete external approval rule **(ULTIMATE)**
 
@@ -654,7 +654,7 @@ PATCH /projects/:id/external_approval_rules/:rule_id
 | `rule_id`              | integer        | yes      | The ID of an external approval rule                |
 | `name`                 | string         | no       | Display name of approval rule                      |
 | `external_url`         | string         | no       | URL of external approval resource                  |
-| `protected_branch_ids` | array<Integer> | no       | The ids of protected branches to scope the rule by |
+| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
 
 ### Enable or disable External Project-level MR approvals **(ULTIMATE SELF)**
 

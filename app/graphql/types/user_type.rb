@@ -67,5 +67,9 @@ module Types
           null: true,
           description: 'Snippets authored by the user.',
           resolver: Resolvers::Users::SnippetsResolver
+    field :callouts,
+          Types::UserCalloutType.connection_type,
+          null: true,
+          description: 'User callouts that belong to the user.'
   end
 end
