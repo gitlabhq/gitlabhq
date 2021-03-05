@@ -19,7 +19,7 @@ const getQueryHeaders = (etagResource) => {
     headers: {
       'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'verify/ci/pipeline-graph',
       'X-GITLAB-GRAPHQL-RESOURCE-ETAG': etagResource,
-      'X-REQUESTED_WITH': 'XMLHttpRequest',
+      'X-Requested-With': 'XMLHttpRequest',
     },
   };
 };

@@ -107,7 +107,7 @@
         - if member.can_approve?
           = link_to polymorphic_path([:approve_access_request, member]),
                     method: :post,
-                    class: "btn btn-success btn-icon gl-button align-self-center m-0 mb-2 #{'mb-sm-0 ml-sm-2' unless force_mobile_view}",
+                    class: "btn btn-confirm btn-icon gl-button align-self-center m-0 mb-2 #{'mb-sm-0 ml-sm-2' unless force_mobile_view}",
                     title: _('Grant access') do
             %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
               = _('Grant access')

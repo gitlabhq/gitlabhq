@@ -18,10 +18,9 @@ module Gitlab
           Thread.current[:uses_db_connection] = true
 
           payload = event.payload
-          return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
+          return if ignored_query?(payload)
 
           increment_db_counters(payload)
-
           current_transaction&.observe(:gitlab_sql_duration_seconds, event.duration / 1000.0) do
             buckets [0.05, 0.1, 0.25]
           end
@@ -30,12 +29,22 @@ module Gitlab
         def self.db_counter_payload
           return {} unless Gitlab::SafeRequestStore.active?
 
-          DB_COUNTERS.map do |counter|
-            [counter, Gitlab::SafeRequestStore[counter].to_i]
-          end.to_h
+          payload = {}
+          DB_COUNTERS.each do |counter|
+            payload[counter] = Gitlab::SafeRequestStore[counter].to_i
+          end
+          payload
         end
 
         private
+
+        def ignored_query?(payload)
+          payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
+        end
+
+        def cached_query?(payload)
+          payload.fetch(:cached, payload[:name] == 'CACHE')
+        end
 
         def select_sql_command?(payload)
           payload[:sql].match(SQL_COMMANDS_WITH_COMMENTS_REGEX)
@@ -43,20 +52,14 @@ module Gitlab
 
         def increment_db_counters(payload)
           increment(:db_count)
-
-          if payload.fetch(:cached, payload[:name] == 'CACHE')
-            increment(:db_cached_count)
-          end
-
+          increment(:db_cached_count) if cached_query?(payload)
           increment(:db_write_count) unless select_sql_command?(payload)
         end
 
         def increment(counter)
           current_transaction&.increment("gitlab_transaction_#{counter}_total".to_sym, 1)
 
-          if Gitlab::SafeRequestStore.active?
-            Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1
-          end
+          Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1
         end
 
         def current_transaction
@@ -66,3 +69,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Metrics::Subscribers::ActiveRecord.prepend_if_ee('EE::Gitlab::Metrics::Subscribers::ActiveRecord')

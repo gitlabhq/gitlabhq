@@ -1111,6 +1111,45 @@ it('calls a mutation with correct parameters and reorders designs', async () => 
 });
 ```
 
+To mock multiple query response states, success and failure, Apollo Client's native retry behavior can combine with Jest's mock functions to create a series of responses. These do not need to be advanced manually, but they do need to be awaited in specific fashion.
+
+```javascript
+describe('when query times out', () => {
+  const advanceApolloTimers = async () => {
+    jest.runOnlyPendingTimers();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+  };
+
+  beforeEach(async () => {
+    const failSucceedFail = jest
+      .fn()
+      .mockResolvedValueOnce({ errors: [{ message: 'timeout' }] })
+      .mockResolvedValueOnce(mockPipelineResponse)
+      .mockResolvedValueOnce({ errors: [{ message: 'timeout' }] });
+
+    createComponentWithApollo(failSucceedFail);
+    await wrapper.vm.$nextTick();
+  });
+
+  it('shows correct errors and does not overwrite populated data when data is empty', async () => {
+    /* fails at first, shows error, no data yet */
+    expect(getAlert().exists()).toBe(true);
+    expect(getGraph().exists()).toBe(false);
+
+    /* succeeds, clears error, shows graph */
+    await advanceApolloTimers();
+    expect(getAlert().exists()).toBe(false);
+    expect(getGraph().exists()).toBe(true);
+
+    /* fails again, alert retuns but data persists */
+    await advanceApolloTimers();
+    expect(getAlert().exists()).toBe(true);
+    expect(getGraph().exists()).toBe(true);
+  });
+});
+```
+
 #### Testing `@client` queries
 
 ##### Using mock resolvers

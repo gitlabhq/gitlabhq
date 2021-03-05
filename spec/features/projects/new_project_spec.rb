@@ -86,7 +86,7 @@ RSpec.describe 'New project', :js do
           visit new_project_path
           find('[data-qa-selector="blank_project_link"]').click
 
-          choose(s_(key))
+          choose(key)
           click_button('Create project')
           page.within('#blank-project-pane') do
             expect(find_field("project_visibility_level_#{level}")).to be_checked

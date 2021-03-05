@@ -22,19 +22,21 @@ module Gitlab
         retry_attempts += 1
         retry
       ensure
-        elapsed_time = Gitlab::Metrics::System.monotonic_time - start_time
+        retry_lock_histogram.observe({}, retry_attempts)
 
         log_optimistic_lock_retries(
           name: name,
           retry_attempts: retry_attempts,
-          elapsed_time: elapsed_time)
+          start_time: start_time)
       end
     end
 
     alias_method :retry_optimistic_lock, :retry_lock
 
-    def log_optimistic_lock_retries(name:, retry_attempts:, elapsed_time:)
+    def log_optimistic_lock_retries(name:, retry_attempts:, start_time:)
       return unless retry_attempts > 0
+
+      elapsed_time = Gitlab::Metrics::System.monotonic_time - start_time
 
       retry_lock_logger.info(
         message: "Optimistic Lock released with retries",
@@ -45,6 +47,16 @@ module Gitlab
 
     def retry_lock_logger
       @retry_lock_logger ||= Gitlab::Services::Logger.build
+    end
+
+    def retry_lock_histogram
+      @retry_lock_histogram ||=
+        Gitlab::Metrics.histogram(
+          :gitlab_optimistic_locking_retries,
+          'Number of retry attempts to execute optimistic retry lock',
+          {},
+          [0, 1, 2, 3, 5, 10, 50]
+        )
     end
   end
 end

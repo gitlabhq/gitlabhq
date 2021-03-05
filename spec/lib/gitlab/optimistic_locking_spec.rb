@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::OptimisticLocking do
   let!(:pipeline) { create(:ci_pipeline) }
   let!(:pipeline2) { Ci::Pipeline.find(pipeline.id) }
+  let(:histogram) { spy('prometheus metric') }
+
+  before do
+    allow(described_class)
+      .to receive(:retry_lock_histogram)
+      .and_return(histogram)
+  end
 
   describe '#retry_lock' do
     let(:name) { 'optimistic_locking_spec' }
@@ -28,6 +35,12 @@ RSpec.describe Gitlab::OptimisticLocking do
 
         subject
       end
+
+      it 'adds number of retries to histogram' do
+        subject
+
+        expect(histogram).to have_received(:observe).with({}, 0)
+      end
     end
 
     context 'when at least one retry happened, the change succeeded' do
@@ -37,9 +50,11 @@ RSpec.describe Gitlab::OptimisticLocking do
         end
       end
 
-      it 'completes the action' do
+      before do
         pipeline.succeed
+      end
 
+      it 'completes the action' do
         expect(pipeline2).to receive(:reset).and_call_original
         expect(pipeline2).to receive(:drop).twice.and_call_original
 
@@ -47,14 +62,18 @@ RSpec.describe Gitlab::OptimisticLocking do
       end
 
       it 'creates a single log record' do
-        pipeline.succeed
-
         expect(described_class.retry_lock_logger)
           .to receive(:info)
           .once
           .with(hash_including(:time_s, name: name, retries: 1))
 
         subject
+      end
+
+      it 'adds number of retries to histogram' do
+        subject
+
+        expect(histogram).to have_received(:observe).with({}, 1)
       end
     end
 
@@ -81,6 +100,12 @@ RSpec.describe Gitlab::OptimisticLocking do
           .with(hash_including(:time_s, name: name, retries: max_retries))
 
         expect { subject }.to raise_error(ActiveRecord::StaleObjectError)
+      end
+
+      it 'adds number of retries to histogram' do
+        expect { subject }.to raise_error(ActiveRecord::StaleObjectError)
+
+        expect(histogram).to have_received(:observe).with({}, max_retries)
       end
     end
   end

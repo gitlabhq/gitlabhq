@@ -51,7 +51,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
             select2 group_to_share_with.id, from: '#link_group_id'
             page.find('body').click
-            find('.btn-success').click
+            find('.btn-confirm').click
 
             click_link 'Groups'
 
@@ -73,7 +73,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
             select2 group_to_share_with.id, from: '#link_group_id'
             page.find('body').click
-            find('.btn-success').click
+            find('.btn-confirm').click
 
             click_link 'Groups'
 
@@ -159,7 +159,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
       fill_in 'expires_at_groups', with: 5.days.from_now.strftime('%Y-%m-%d')
       click_on 'invite-group-tab'
-      find('.btn-success').click
+      find('.btn-confirm').click
     end
 
     context 'when `vue_project_members_list` feature flag is enabled' do

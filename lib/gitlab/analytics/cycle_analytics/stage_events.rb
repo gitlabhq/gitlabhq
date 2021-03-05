@@ -8,10 +8,12 @@ module Gitlab
         # Issue: < 100
         # MergeRequest: >= 100 && < 1000
         # Custom events for default stages: >= 1000 (legacy)
+        #
+        # To avoid duplications, verify that the value does not exist in ee/lib/ee/gitlab/analytics/cycle_analytics/stage_events.rb
         ENUM_MAPPING = {
           StageEvents::IssueCreated => 1,
           StageEvents::IssueFirstMentionedInCommit => 2,
-          StageEvents::IssueDeployedToProduction => 3,
+          StageEvents::IssueDeployedToProduction => 10,
           StageEvents::MergeRequestCreated => 100,
           StageEvents::MergeRequestFirstDeployedToProduction => 101,
           StageEvents::MergeRequestLastBuildFinished => 102,
