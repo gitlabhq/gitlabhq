@@ -266,7 +266,7 @@ This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-group owners can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
+group owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days
 specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).

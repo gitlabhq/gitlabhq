@@ -18,18 +18,18 @@ module Gitlab
               raise ArgumentError, "unknown cache keys: #{local_cache.keys}" if local_cache.any?
             end
 
-            def build_attributes
+            def attributes
               {
-                options: {
-                  cache: {
-                    key: key_string,
-                    paths: @paths,
-                    policy: @policy,
-                    untracked: @untracked,
-                    when: @when
-                  }.compact.presence
-                }.compact
-              }
+                key: key_string,
+                paths: @paths,
+                policy: @policy,
+                untracked: @untracked,
+                when: @when
+              }.compact
+            end
+
+            def build_attributes
+              { options: { cache: attributes.presence }.compact }
             end
 
             private

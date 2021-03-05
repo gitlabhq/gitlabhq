@@ -2754,7 +2754,62 @@ URI-encoded `%2F`. A value made only of dots (`.`, `%2E`) is also forbidden.
 
 You can specify a [fallback cache key](#fallback-cache-key) to use if the specified `cache:key` is not found.
 
-##### Fallback cache key
+##### Multiple caches
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-multiple-caches). **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You can have a maximum of four caches:
+
+```yaml
+test-job:
+  stage: build
+  cache:
+    - key:
+        files:
+          - Gemfile.lock
+      paths:
+        - vendor/ruby
+    - key:
+        files:
+          - yarn.lock
+      paths:
+        - .yarn-cache/
+  script:
+    - bundle install --path=vendor
+    - yarn install --cache-folder .yarn-cache
+    - echo Run tests...
+```
+
+If multiple caches are combined with a [Fallback cache key](#fallback-cache-key),
+the fallback is fetched multiple times if multiple caches are not found.
+
+##### Enable or disable multiple caches **(FREE SELF)**
+
+The multiple caches feature is under development and not ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:multiple_cache_per_job)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:multiple_cache_per_job)
+```
+
+#### Fallback cache key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 

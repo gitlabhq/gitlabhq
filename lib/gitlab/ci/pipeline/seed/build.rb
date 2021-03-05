@@ -28,8 +28,16 @@ module Gitlab
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules), default_when: 'on_success')
-            @cache = Seed::Build::Cache
-              .new(pipeline, attributes.delete(:cache))
+
+            if multiple_cache_per_job?
+              cache = Array.wrap(attributes.delete(:cache))
+              @cache = cache.map do |cache|
+                Seed::Build::Cache.new(pipeline, cache)
+              end
+            else
+              @cache = Seed::Build::Cache
+                .new(pipeline, attributes.delete(:cache))
+            end
           end
 
           def name
@@ -197,7 +205,21 @@ module Gitlab
 
           def cache_attributes
             strong_memoize(:cache_attributes) do
-              @cache.build_attributes
+              if multiple_cache_per_job?
+                if @cache.empty?
+                  {}
+                else
+                  { options: { cache: @cache.map(&:attributes) } }
+                end
+              else
+                @cache.build_attributes
+              end
+            end
+          end
+
+          def multiple_cache_per_job?
+            strong_memoize(:multiple_cache_per_job) do
+              ::Gitlab::Ci::Features.multiple_cache_per_job?
             end
           end
 

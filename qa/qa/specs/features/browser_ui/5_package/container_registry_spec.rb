@@ -10,6 +10,13 @@ module QA
         end
       end
 
+      let(:registry_repository) do
+        Resource::RegistryRepository.fabricate! do |repository|
+          repository.name = "#{project.path_with_namespace}"
+          repository.project = project
+        end
+      end
+
       let!(:gitlab_ci_yaml) do
         <<~YAML
           build:
@@ -24,6 +31,10 @@ module QA
               - docker build -t $IMAGE_TAG .
               - docker push $IMAGE_TAG
         YAML
+      end
+
+      after do
+        registry_repository&.remove_via_api!
       end
 
       it 'pushes project image to the container registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1699' do
@@ -52,9 +63,9 @@ module QA
         Page::Project::Menu.perform(&:go_to_container_registry)
 
         Page::Project::Registry::Show.perform do |registry|
-          expect(registry).to have_image_repository(project.path_with_namespace)
+          expect(registry).to have_registry_repository(registry_repository.name)
 
-          registry.click_on_image(project.path_with_namespace)
+          registry.click_on_image(registry_repository.name)
           expect(registry).to have_tag('master')
 
           registry.click_delete

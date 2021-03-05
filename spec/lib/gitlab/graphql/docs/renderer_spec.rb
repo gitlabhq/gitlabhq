@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ### ArrayTest
+          ### `ArrayTest`
 
           | Field | Type | Description |
           | ----- | ---- | ----------- |
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       context 'query generation' do
         let(:expectation) do
           <<~DOC
-            ### foo
+            ### `foo`
 
             List of objects.
 
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ### OrderingTest
+          ### `OrderingTest`
 
           | Field | Type | Description |
           | ----- | ---- | ----------- |
@@ -114,7 +114,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ### DeprecatedTest
+          ### `DeprecatedTest`
 
           | Field | Type | Description |
           | ----- | ---- | ----------- |
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ### MyEnum
+          ### `MyEnum`
 
           | Value | Description |
           | ----- | ----------- |

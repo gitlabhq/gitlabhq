@@ -6,7 +6,7 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, iid: '1234') }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, iid: '1234', sha: 'sha') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
   let(:current_user) { create(:user) }
 
@@ -30,7 +30,15 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
     expect(result).to eq(pipeline)
   end
 
-  it 'keeps the queries under the threshold' do
+  it 'resolves pipeline for the passed sha' do
+    result = batch_sync do
+      resolve_pipeline(project, { sha: 'sha' })
+    end
+
+    expect(result).to eq(pipeline)
+  end
+
+  it 'keeps the queries under the threshold for iid' do
     create(:ci_pipeline, project: project, iid: '1235')
 
     control = ActiveRecord::QueryRecorder.new do
@@ -45,6 +53,21 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
     end.not_to exceed_query_limit(control)
   end
 
+  it 'keeps the queries under the threshold for sha' do
+    create(:ci_pipeline, project: project, sha: 'sha2')
+
+    control = ActiveRecord::QueryRecorder.new do
+      batch_sync { resolve_pipeline(project, { sha: 'sha' }) }
+    end
+
+    expect do
+      batch_sync do
+        resolve_pipeline(project, { sha: 'sha' })
+        resolve_pipeline(project, { sha: 'sha2' })
+      end
+    end.not_to exceed_query_limit(control)
+  end
+
   it 'does not resolve a pipeline outside the project' do
     result = batch_sync do
       resolve_pipeline(other_pipeline.project, { iid: '1234' })
@@ -53,8 +76,14 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
     expect(result).to be_nil
   end
 
-  it 'errors when no iid is passed' do
-    expect { resolve_pipeline(project, {}) }.to raise_error(ArgumentError)
+  it 'errors when no iid or sha is passed' do
+    expect { resolve_pipeline(project, {}) }
+      .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+  end
+
+  it 'errors when both iid and sha are passed' do
+    expect { resolve_pipeline(project, { iid: '1234', sha: 'sha' }) }
+      .to raise_error(Gitlab::Graphql::Errors::ArgumentError)
   end
 
   context 'when the pipeline is a dangling pipeline' do

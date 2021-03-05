@@ -151,6 +151,10 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_registry_repositories_path
+        "#{api_get_path}/registry/repositories"
+      end
+
       def api_commits_path
         "#{api_get_path}/repository/commits"
       end
@@ -252,6 +256,12 @@ module QA
                    else
                      get Runtime::API::Request.new(api_client, "#{api_runners_path}").url
                    end
+
+        parse_body(response)
+      end
+
+      def registry_repositories
+        response = get Runtime::API::Request.new(api_client, "#{api_registry_repositories_path}").url
 
         parse_body(response)
       end

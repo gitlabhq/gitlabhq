@@ -1,0 +1,5 @@
+---
+title: Allow search for pipeline by SHA as well as IID via GraphQL
+merge_request: 54471
+author:
+type: changed

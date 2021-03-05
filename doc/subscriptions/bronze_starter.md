@@ -28,7 +28,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
   - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-a-group)
   - [Overriding user permissions](../user/group/index.md#override-user-permissions)
-  - [User contribution analysis](../user/group/index.md#user-contribution-analysis)
+  - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
 - Issue Boards:
   - [Configurable issue boards](../user/project/issue_board.md#configurable-issue-boards)

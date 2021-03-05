@@ -1890,7 +1890,7 @@ This endpoint:
   merge requests).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
-  admins can [configure](../user/group/index.md#enabling-delayed-project-removal)
+  admins can [configure](../user/group/index.md#enable-delayed-project-removal)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
@@ -1898,7 +1898,7 @@ This endpoint:
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
 in GitLab 12.6 was changed to [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382)
-in GitLab 13.2, as discussed in [Enabling delayed project removal](../user/group/index.md#enabling-delayed-project-removal).
+in GitLab 13.2, as discussed in [Enable delayed project removal](../user/group/index.md#enable-delayed-project-removal).
 
 ```plaintext
 DELETE /projects/:id

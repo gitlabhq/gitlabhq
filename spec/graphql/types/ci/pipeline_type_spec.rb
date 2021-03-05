@@ -12,7 +12,7 @@ RSpec.describe Types::Ci::PipelineType do
       id iid sha before_sha status detailed_status config_source duration
       coverage created_at updated_at started_at finished_at committed_at
       stages user retryable cancelable jobs source_job downstream
-      upstream path project active user_permissions warnings
+      upstream path project active user_permissions warnings commit_path
     ]
 
     if Gitlab.ee?

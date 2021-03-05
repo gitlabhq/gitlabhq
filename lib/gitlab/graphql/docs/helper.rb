@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def render_name_and_description(object)
-          content = "### #{object[:name]}\n"
+          content = "### `#{object[:name]}`\n"
 
           if object[:description].present?
             content += "\n#{object[:description]}"

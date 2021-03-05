@@ -87,86 +87,167 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
+    context 'with multiple_cache_per_job FF disabled' do
+      before do
+        stub_feature_flags(multiple_cache_per_job: false)
+      end
+
+      context 'with cache:key' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: {
+              key: 'a-value'
+            }
+          }
+        end
+
+        it { is_expected.to include(options: { cache: { key: 'a-value' } }) }
+      end
+
+      context 'with cache:key:files' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: {
+              key: {
+                files: ['VERSION']
+              }
+            }
+          }
+        end
+
+        it 'includes cache options' do
+          cache_options = {
+            options: {
+              cache: { key: 'f155568ad0933d8358f66b846133614f76dd0ca4' }
+            }
+          }
+
+          is_expected.to include(cache_options)
+        end
+      end
+
+      context 'with cache:key:prefix' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: {
+              key: {
+                prefix: 'something'
+              }
+            }
+          }
+        end
+
+        it { is_expected.to include(options: { cache: { key: 'something-default' } }) }
+      end
+
+      context 'with cache:key:files and prefix' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: {
+              key: {
+                files: ['VERSION'],
+                prefix: 'something'
+              }
+            }
+          }
+        end
+
+        it 'includes cache options' do
+          cache_options = {
+            options: {
+              cache: { key: 'something-f155568ad0933d8358f66b846133614f76dd0ca4' }
+            }
+          }
+
+          is_expected.to include(cache_options)
+        end
+      end
+    end
+
     context 'with cache:key' do
       let(:attributes) do
         {
           name: 'rspec',
           ref: 'master',
-          cache: {
+          cache: [{
             key: 'a-value'
-          }
+          }]
         }
       end
 
-      it { is_expected.to include(options: { cache: { key: 'a-value' } }) }
-    end
+      it { is_expected.to include(options: { cache: [a_hash_including(key: 'a-value')] }) }
 
-    context 'with cache:key:files' do
-      let(:attributes) do
-        {
-          name: 'rspec',
-          ref: 'master',
-          cache: {
-            key: {
-              files: ['VERSION']
+      context 'with cache:key:files' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: [{
+              key: {
+                files: ['VERSION']
+              }
+            }]
+          }
+        end
+
+        it 'includes cache options' do
+          cache_options = {
+            options: {
+              cache: [a_hash_including(key: 'f155568ad0933d8358f66b846133614f76dd0ca4')]
             }
           }
-        }
+
+          is_expected.to include(cache_options)
+        end
       end
 
-      it 'includes cache options' do
-        cache_options = {
-          options: {
-            cache: {
-              key: 'f155568ad0933d8358f66b846133614f76dd0ca4'
-            }
+      context 'with cache:key:prefix' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: [{
+              key: {
+                prefix: 'something'
+              }
+            }]
           }
-        }
+        end
 
-        is_expected.to include(cache_options)
-      end
-    end
-
-    context 'with cache:key:prefix' do
-      let(:attributes) do
-        {
-          name: 'rspec',
-          ref: 'master',
-          cache: {
-            key: {
-              prefix: 'something'
-            }
-          }
-        }
+        it { is_expected.to include(options: { cache: [a_hash_including( key: 'something-default' )] }) }
       end
 
-      it { is_expected.to include(options: { cache: { key: 'something-default' } }) }
-    end
+      context 'with cache:key:files and prefix' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            cache: [{
+              key: {
+                files: ['VERSION'],
+                prefix: 'something'
+              }
+            }]
+          }
+        end
 
-    context 'with cache:key:files and prefix' do
-      let(:attributes) do
-        {
-          name: 'rspec',
-          ref: 'master',
-          cache: {
-            key: {
-              files: ['VERSION'],
-              prefix: 'something'
+        it 'includes cache options' do
+          cache_options = {
+            options: {
+              cache: [a_hash_including(key: 'something-f155568ad0933d8358f66b846133614f76dd0ca4')]
             }
           }
-        }
-      end
 
-      it 'includes cache options' do
-        cache_options = {
-          options: {
-            cache: {
-              key: 'something-f155568ad0933d8358f66b846133614f76dd0ca4'
-            }
-          }
-        }
-
-        is_expected.to include(cache_options)
+          is_expected.to include(cache_options)
+        end
       end
     end
 
@@ -179,7 +260,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         }
       end
 
-      it { is_expected.to include(options: {}) }
+      it { is_expected.to include({}) }
     end
 
     context 'with allow_failure' do
@@ -296,7 +377,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it 'does not have environment' do
           expect(subject).not_to be_has_environment
           expect(subject.environment).to be_nil
-          expect(subject.metadata.expanded_environment_name).to be_nil
+          expect(subject.metadata).to be_nil
           expect(Environment.exists?(name: expected_environment_name)).to eq(false)
         end
       end

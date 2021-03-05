@@ -192,7 +192,17 @@ module TestEnv
   end
 
   def gitaly_dir
-    File.dirname(gitaly_socket_path)
+    socket_path = gitaly_socket_path
+    socket_path = File.expand_path(gitaly_socket_path) if expand_path?
+
+    File.dirname(socket_path)
+  end
+
+  # Linux fails with "bind: invalid argument" if a UNIX socket path exceeds 108 characters:
+  # https://github.com/golang/go/issues/6895. We use absolute paths in CI to ensure
+  # that changes in the current working directory don't affect GRPC reconnections.
+  def expand_path?
+    !!ENV['CI']
   end
 
   def start_gitaly(gitaly_dir)

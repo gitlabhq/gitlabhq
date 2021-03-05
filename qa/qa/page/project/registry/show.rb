@@ -13,7 +13,7 @@ module QA
             element :tag_delete_button
           end
 
-          def has_image_repository?(name)
+          def has_registry_repository?(name)
             find('a[data-testid="details-link"]', text: name)
           end
 

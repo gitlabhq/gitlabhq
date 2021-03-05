@@ -817,13 +817,69 @@ RSpec.describe Ci::Build do
   end
 
   describe '#cache' do
-    let(:options) { { cache: { key: "key", paths: ["public"], policy: "pull-push" } } }
+    let(:options) do
+      { cache: [{ key: "key", paths: ["public"], policy: "pull-push" }] }
+    end
+
+    context 'with multiple_cache_per_job FF disabled' do
+      before do
+        stub_feature_flags(multiple_cache_per_job: false)
+      end
+      let(:options) { { cache: { key: "key", paths: ["public"], policy: "pull-push" } } }
+
+      subject { build.cache }
+
+      context 'when build has cache' do
+        before do
+          allow(build).to receive(:options).and_return(options)
+        end
+
+        context 'when project has jobs_cache_index' do
+          before do
+            allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
+          end
+
+          it { is_expected.to be_an(Array).and all(include(key: "key-1")) }
+        end
+
+        context 'when project does not have jobs_cache_index' do
+          before do
+            allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
+          end
+
+          it { is_expected.to eq([options[:cache]]) }
+        end
+      end
+
+      context 'when build does not have cache' do
+        before do
+          allow(build).to receive(:options).and_return({})
+        end
+
+        it { is_expected.to eq([]) }
+      end
+    end
 
     subject { build.cache }
 
     context 'when build has cache' do
       before do
         allow(build).to receive(:options).and_return(options)
+      end
+
+      context 'when build has multiple caches' do
+        let(:options) do
+          { cache: [
+            { key: "key", paths: ["public"], policy: "pull-push" },
+            { key: "key2", paths: ["public"], policy: "pull-push" }
+          ] }
+        end
+
+        before do
+          allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
+        end
+
+        it { is_expected.to match([a_hash_including(key: "key-1"), a_hash_including(key: "key2-1")]) }
       end
 
       context 'when project has jobs_cache_index' do
@@ -839,7 +895,7 @@ RSpec.describe Ci::Build do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(nil)
         end
 
-        it { is_expected.to eq([options[:cache]]) }
+        it { is_expected.to eq(options[:cache]) }
       end
     end
 
@@ -848,7 +904,7 @@ RSpec.describe Ci::Build do
         allow(build).to receive(:options).and_return({})
       end
 
-      it { is_expected.to eq([nil]) }
+      it { is_expected.to be_empty }
     end
   end
 
