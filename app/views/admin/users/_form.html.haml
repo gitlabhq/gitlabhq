@@ -87,8 +87,8 @@
 
     .form-actions
       - if @user.new_record?
-        = f.submit 'Create user', class: "btn gl-button btn-success"
-        = link_to 'Cancel', admin_users_path, class: "gl-button btn btn-cancel"
+        = f.submit 'Create user', class: "btn gl-button btn-confirm"
+        = link_to 'Cancel', admin_users_path, class: "gl-button btn btn-default btn-cancel"
       - else
-        = f.submit 'Save changes', class: "btn gl-button btn-success"
-        = link_to 'Cancel', admin_user_path(@user), class: "btn gl-button btn-cancel"
+        = f.submit 'Save changes', class: "btn gl-button btn-confirm"
+        = link_to 'Cancel', admin_user_path(@user), class: "gl-button btn btn-default btn-cancel"

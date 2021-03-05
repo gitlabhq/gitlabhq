@@ -126,6 +126,11 @@ The following list depicts the network architecture of Gitaly:
 - Authentication is done through a static token which is shared among the Gitaly and GitLab Rails
   nodes.
 
+The following digraph illustrates communication between Gitaly servers and GitLab Rails showing
+the default ports for HTTP and HTTPs communication.
+
+![Gitaly network architecture diagram](img/gitaly_network_13_9.png)
+
 WARNING:
 Gitaly servers must not be exposed to the public internet as Gitaly's network traffic is unencrypted
 by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
