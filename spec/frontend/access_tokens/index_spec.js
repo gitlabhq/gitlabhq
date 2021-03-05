@@ -38,6 +38,7 @@ describe('access tokens', () => {
         input.setAttribute('name', 'foo-bar');
         input.setAttribute('id', 'foo-bar');
         input.setAttribute('placeholder', 'Foo bar');
+        input.setAttribute('value', '1,2');
 
         mountEl.appendChild(input);
 
@@ -58,6 +59,7 @@ describe('access tokens', () => {
         expect(component.props('inputAttrs')).toEqual({
           name: 'foo-bar',
           id: 'foo-bar',
+          value: '1,2',
           placeholder: 'Foo bar',
         });
       });

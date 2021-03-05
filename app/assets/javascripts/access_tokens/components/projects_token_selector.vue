@@ -8,12 +8,13 @@ import {
 } from '@gitlab/ui';
 import produce from 'immer';
 
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 
 import getProjectsQuery from '../graphql/queries/get_projects.query.graphql';
 
 const DEBOUNCE_DELAY = 250;
 const PROJECTS_PER_PAGE = 20;
+const GRAPHQL_ENTITY_TYPE = 'Project';
 
 export default {
   name: 'ProjectsTokenSelector',
@@ -32,6 +33,10 @@ export default {
       type: Array,
       required: true,
     },
+    initialProjectIds: {
+      type: Array,
+      required: true,
+    },
   },
   apollo: {
     projects: {
@@ -46,16 +51,28 @@ export default {
       },
       update({ projects }) {
         return {
-          list: projects.nodes.map((project) => ({
-            ...project,
-            id: getIdFromGraphQLId(project.id),
-          })),
+          list: this.formatProjectNodes(projects),
           pageInfo: projects.pageInfo,
         };
       },
       result() {
         this.isLoadingMoreProjects = false;
         this.isSearching = false;
+      },
+    },
+    initialProjects: {
+      query: getProjectsQuery,
+      variables() {
+        return {
+          ids: this.initialProjectIds.map((id) => convertToGraphQLId(GRAPHQL_ENTITY_TYPE, id)),
+        };
+      },
+      manual: true,
+      skip() {
+        return !this.initialProjectIds.length;
+      },
+      result({ data: { projects } }) {
+        this.$emit('input', this.formatProjectNodes(projects));
       },
     },
   },
@@ -71,6 +88,12 @@ export default {
     };
   },
   methods: {
+    formatProjectNodes(projects) {
+      return projects.nodes.map((project) => ({
+        ...project,
+        id: getIdFromGraphQLId(project.id),
+      }));
+    },
     handleSearch(query) {
       this.isSearching = true;
       this.searchQuery = query;

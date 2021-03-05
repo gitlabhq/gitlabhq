@@ -22283,6 +22283,9 @@ msgstr ""
 msgid "Pipelines|parent"
 msgstr ""
 
+msgid "Pipeline|Actions"
+msgstr ""
+
 msgid "Pipeline|Branch name"
 msgstr ""
 

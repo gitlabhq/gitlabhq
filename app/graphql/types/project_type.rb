@@ -181,7 +181,7 @@ module Types
 
     field :packages,
          description: 'Packages of the project.',
-         resolver: Resolvers::PackagesResolver
+         resolver: Resolvers::ProjectPackagesResolver
 
     field :pipelines,
           null: true,

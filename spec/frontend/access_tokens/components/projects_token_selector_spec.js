@@ -44,10 +44,15 @@ describe('ProjectsTokenSelector', () => {
   let wrapper;
 
   let resolveGetProjectsQuery;
+  let resolveGetInitialProjectsQuery;
   const getProjectsQueryRequestHandler = jest.fn(
-    () =>
+    ({ ids }) =>
       new Promise((resolve) => {
-        resolveGetProjectsQuery = resolve;
+        if (ids) {
+          resolveGetInitialProjectsQuery = resolve;
+        } else {
+          resolveGetProjectsQuery = resolve;
+        }
       }),
   );
 
@@ -63,6 +68,7 @@ describe('ProjectsTokenSelector', () => {
         apolloProvider,
         propsData: {
           selectedProjects: [],
+          initialProjectIds: [],
           ...propsData,
         },
         stubs: ['gl-intersection-observer'],
@@ -156,6 +162,7 @@ describe('ProjectsTokenSelector', () => {
         search: searchTerm,
         after: null,
         first: 20,
+        ids: null,
       });
     });
 
@@ -181,6 +188,7 @@ describe('ProjectsTokenSelector', () => {
         after: pageInfo.endCursor,
         first: 20,
         search: '',
+        ids: null,
       });
     });
 
@@ -219,6 +227,43 @@ describe('ProjectsTokenSelector', () => {
       findTokenSelector().vm.$emit('focus', event);
 
       expect(wrapper.emitted('focus')[0]).toEqual([event]);
+    });
+  });
+
+  describe('when `initialProjectIds` is an empty array', () => {
+    it('does not request initial projects', async () => {
+      await createComponent();
+
+      expect(getProjectsQueryRequestHandler).toHaveBeenCalledTimes(1);
+      expect(getProjectsQueryRequestHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ids: null,
+        }),
+      );
+    });
+  });
+
+  describe('when `initialProjectIds` is an array of project IDs', () => {
+    it('requests those projects and emits `input` event with result', async () => {
+      await createComponent({
+        propsData: {
+          initialProjectIds: [getIdFromGraphQLId(project1.id), getIdFromGraphQLId(project2.id)],
+        },
+      });
+
+      resolveGetInitialProjectsQuery(getProjectsQueryResponse);
+      await waitForPromises();
+
+      expect(getProjectsQueryRequestHandler).toHaveBeenCalledWith({
+        after: '',
+        first: null,
+        search: '',
+        ids: [project1.id, project2.id],
+      });
+      expect(wrapper.emitted('input')[0][0]).toEqual([
+        { ...project1, id: getIdFromGraphQLId(project1.id) },
+        { ...project2, id: getIdFromGraphQLId(project2.id) },
+      ]);
     });
   });
 });

@@ -10,6 +10,7 @@ const getInputAttrs = (el) => {
   return {
     id: input.id,
     name: input.name,
+    value: input.value,
     placeholder: input.placeholder,
   };
 };

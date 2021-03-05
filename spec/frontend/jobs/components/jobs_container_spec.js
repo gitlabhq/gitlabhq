@@ -1,10 +1,10 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import component from '~/jobs/components/jobs_container.vue';
+import { GlLink } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import JobsContainer from '~/jobs/components/jobs_container.vue';
 
 describe('Jobs List block', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
 
   const retried = {
     status: {
@@ -52,80 +52,96 @@ describe('Jobs List block', () => {
     tooltip: 'build - passed',
   };
 
+  const findAllJobs = () => wrapper.findAllComponents(GlLink);
+  const findJob = () => findAllJobs().at(0);
+
+  const findArrowIcon = () => wrapper.findByTestId('arrow-right-icon');
+  const findRetryIcon = () => wrapper.findByTestId('retry-icon');
+
+  const createComponent = (props) => {
+    wrapper = extendedWrapper(
+      mount(JobsContainer, {
+        propsData: {
+          ...props,
+        },
+      }),
+    );
+  };
+
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('renders list of jobs', () => {
-    vm = mountComponent(Component, {
+  it('renders a list of jobs', () => {
+    createComponent({
       jobs: [job, retried, active],
       jobId: 12313,
     });
 
-    expect(vm.$el.querySelectorAll('a').length).toEqual(3);
+    expect(findAllJobs()).toHaveLength(3);
   });
 
-  it('renders arrow right when job id matches `jobId`', () => {
-    vm = mountComponent(Component, {
+  it('renders the arrow right icon when job id matches `jobId`', () => {
+    createComponent({
       jobs: [active],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a .js-arrow-right')).not.toBeNull();
+    expect(findArrowIcon().exists()).toBe(true);
   });
 
-  it('does not render arrow right when job is not active', () => {
-    vm = mountComponent(Component, {
+  it('does not render the arrow right icon when the job is not active', () => {
+    createComponent({
       jobs: [job],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a .js-arrow-right')).toBeNull();
+    expect(findArrowIcon().exists()).toBe(false);
   });
 
-  it('renders job name when present', () => {
-    vm = mountComponent(Component, {
+  it('renders the job name when present', () => {
+    createComponent({
       jobs: [job],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a').textContent.trim()).toContain(job.name);
-    expect(vm.$el.querySelector('a').textContent.trim()).not.toContain(job.id);
+    expect(findJob().text()).toBe(job.name);
+    expect(findJob().text()).not.toContain(job.id);
   });
 
   it('renders job id when job name is not available', () => {
-    vm = mountComponent(Component, {
+    createComponent({
       jobs: [retried],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a').textContent.trim()).toContain(retried.id);
+    expect(findJob().text()).toBe(retried.id.toString());
   });
 
   it('links to the job page', () => {
-    vm = mountComponent(Component, {
+    createComponent({
       jobs: [job],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(job.status.details_path);
+    expect(findJob().attributes('href')).toBe(job.status.details_path);
   });
 
   it('renders retry icon when job was retried', () => {
-    vm = mountComponent(Component, {
+    createComponent({
       jobs: [retried],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('.js-retry-icon')).not.toBeNull();
+    expect(findRetryIcon().exists()).toBe(true);
   });
 
   it('does not render retry icon when job was not retried', () => {
-    vm = mountComponent(Component, {
+    createComponent({
       jobs: [job],
       jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('.js-retry-icon')).toBeNull();
+    expect(findRetryIcon().exists()).toBe(false);
   });
 });

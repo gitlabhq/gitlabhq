@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class PackagesResolver < BaseResolver
+  class ProjectPackagesResolver < BaseResolver
     type Types::Packages::PackageType.connection_type, null: true
 
     def resolve(**args)

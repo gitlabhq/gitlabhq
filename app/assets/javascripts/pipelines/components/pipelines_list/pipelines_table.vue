@@ -70,7 +70,6 @@ export default {
     },
     {
       key: 'actions',
-      label: '',
       thClass: DEFAULT_TH_CLASSES,
       tdClass: DEFAULT_TD_CLASS,
       columnClass: 'gl-w-20p',
@@ -190,6 +189,7 @@ export default {
       fixed
     >
       <template #head(actions)>
+        <span class="gl-display-block gl-lg-display-none!">{{ s__('Pipeline|Actions') }}</span>
         <slot name="table-header-actions"></slot>
       </template>
 
@@ -202,11 +202,7 @@ export default {
       </template>
 
       <template #cell(pipeline)="{ item }">
-        <pipeline-url
-          class="gl-text-truncate"
-          :pipeline="item"
-          :pipeline-schedule-url="pipelineScheduleUrl"
-        />
+        <pipeline-url :pipeline="item" :pipeline-schedule-url="pipelineScheduleUrl" />
       </template>
 
       <template #cell(triggerer)="{ item }">

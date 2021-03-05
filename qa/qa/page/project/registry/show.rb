@@ -14,11 +14,11 @@ module QA
           end
 
           def has_registry_repository?(name)
-            find('a[data-testid="details-link"]', text: name)
+            find_element(:registry_image_content, text: name)
           end
 
           def click_on_image(name)
-            find('a[data-testid="details-link"]', text: name).click
+            click_element(:registry_image_content, text: name)
           end
 
           def has_tag?(tag_name)
@@ -30,7 +30,7 @@ module QA
           end
 
           def click_delete
-            find('[data-testid="single-delete-button"]').click
+            click_element(:tag_delete_button)
             find_button('Confirm').click
           end
         end

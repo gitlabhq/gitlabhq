@@ -6,12 +6,13 @@ import ProjectsTokenSelector from '~/access_tokens/components/projects_token_sel
 describe('ProjectsField', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ inputAttrsValue = '' } = {}) => {
     wrapper = mount(ProjectsField, {
       propsData: {
         inputAttrs: {
           id: 'projects',
           name: 'projects',
+          value: inputAttrsValue,
         },
       },
     });
@@ -24,39 +25,63 @@ describe('ProjectsField', () => {
   const findProjectsTokenSelector = () => wrapper.findComponent(ProjectsTokenSelector);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
   });
 
   it('renders label and sub-label', () => {
+    createComponent();
+
     expect(queryByText('Projects')).not.toBe(null);
     expect(queryByText('Set access permissions for this token.')).not.toBe(null);
   });
 
-  it('renders "All projects" radio selected by default', () => {
-    const allProjectsRadio = findAllProjectsRadio();
+  describe('when `inputAttrs.value` is empty', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-    expect(allProjectsRadio).not.toBe(null);
-    expect(allProjectsRadio.checked).toBe(true);
+    it('renders "All projects" radio as checked', () => {
+      expect(findAllProjectsRadio().checked).toBe(true);
+    });
+
+    it('renders "Selected projects" radio as unchecked', () => {
+      expect(findSelectedProjectsRadio().checked).toBe(false);
+    });
+
+    it('sets `projects-token-selector` `initialProjectIds` prop to an empty array', () => {
+      expect(findProjectsTokenSelector().props('initialProjectIds')).toEqual([]);
+    });
   });
 
-  it('renders "Selected projects" radio unchecked by default', () => {
-    const selectedProjectsRadio = findSelectedProjectsRadio();
+  describe('when `inputAttrs.value` is a comma separated list of project IDs', () => {
+    beforeEach(() => {
+      createComponent({ inputAttrsValue: '1,2' });
+    });
 
-    expect(selectedProjectsRadio).not.toBe(null);
-    expect(selectedProjectsRadio.checked).toBe(false);
+    it('renders "All projects" radio as unchecked', () => {
+      expect(findAllProjectsRadio().checked).toBe(false);
+    });
+
+    it('renders "Selected projects" radio as checked', () => {
+      expect(findSelectedProjectsRadio().checked).toBe(true);
+    });
+
+    it('sets `projects-token-selector` `initialProjectIds` prop to an array of project IDs', () => {
+      expect(findProjectsTokenSelector().props('initialProjectIds')).toEqual(['1', '2']);
+    });
   });
 
   it('renders `projects-token-selector` component', () => {
+    createComponent();
+
     expect(findProjectsTokenSelector().exists()).toBe(true);
   });
 
   it('renders hidden input with correct `name` and `id` attributes', () => {
+    createComponent();
+
     expect(findHiddenInput().attributes()).toEqual(
       expect.objectContaining({
         id: 'projects',
@@ -67,6 +92,8 @@ describe('ProjectsField', () => {
 
   describe('when `projects-token-selector` is focused', () => {
     beforeEach(() => {
+      createComponent();
+
       findProjectsTokenSelector().vm.$emit('focus');
     });
 

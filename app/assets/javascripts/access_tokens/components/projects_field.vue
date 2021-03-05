@@ -15,7 +15,9 @@ export default {
   },
   data() {
     return {
-      selectedRadio: this.$options.ALL_PROJECTS,
+      selectedRadio: !this.inputAttrs.value
+        ? this.$options.ALL_PROJECTS
+        : this.$options.SELECTED_PROJECTS,
       selectedProjects: [],
     };
   },
@@ -27,6 +29,13 @@ export default {
       return this.allProjectsRadioSelected
         ? null
         : this.selectedProjects.map((project) => project.id).join(',');
+    },
+    initialProjectIds() {
+      if (!this.inputAttrs.value) {
+        return [];
+      }
+
+      return this.inputAttrs.value.split(',');
     },
   },
   methods: {
@@ -50,7 +59,11 @@ export default {
         __('Selected projects')
       }}</gl-form-radio>
       <input :id="inputAttrs.id" type="hidden" :name="inputAttrs.name" :value="hiddenInputValue" />
-      <projects-token-selector v-model="selectedProjects" @focus="handleTokenSelectorFocus" />
+      <projects-token-selector
+        v-model="selectedProjects"
+        :initial-project-ids="initialProjectIds"
+        @focus="handleTokenSelectorFocus"
+      />
     </gl-form-group>
   </div>
 </template>

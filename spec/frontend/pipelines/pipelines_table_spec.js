@@ -117,9 +117,7 @@ describe('Pipelines Table', () => {
       expect(findCommitTh().text()).toBe('Commit');
       expect(findStagesTh().text()).toBe('Stages');
       expect(findTimeAgoTh().text()).toBe('Duration');
-
-      // last column should have no text in th
-      expect(findActionsTh().text()).toBe('');
+      expect(findActionsTh().text()).toBe('Actions');
     });
 
     it('should display a table row', () => {
