@@ -280,13 +280,18 @@ module ApplicationSettingImplementation
     self.notes_create_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
-  def asset_proxy_allowlist=(values)
+  def asset_proxy_whitelist=(values)
     values = strings_to_array(values) if values.is_a?(String)
 
     # make sure we always allow the running host
     values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
 
-    self[:asset_proxy_allowlist] = values
+    self[:asset_proxy_whitelist] = values
+  end
+  alias_method :asset_proxy_allowlist=, :asset_proxy_whitelist=
+
+  def asset_proxy_allowlist
+    read_attribute(:asset_proxy_whitelist)
   end
 
   def repository_storages

@@ -6,9 +6,9 @@ module Gitlab
     class BackfillArtifactExpiryDate
       include Gitlab::Utils::StrongMemoize
 
-      BATCH_SIZE = 1_000
-      DEFAULT_EXPIRATION_SWITCH_DATE = Date.new(2020, 6, 22).freeze
+      SWITCH_DATE = Date.new(2020, 06, 22).freeze
       OLD_ARTIFACT_AGE = 15.months
+      BATCH_SIZE = 1_000
       OLD_ARTIFACT_EXPIRY_OFFSET = 3.months
       RECENT_ARTIFACT_EXPIRY_OFFSET = 1.year
 
@@ -18,16 +18,17 @@ module Gitlab
 
         self.table_name = 'ci_job_artifacts'
 
-        scope :between, -> (start_id, end_id) { where(id: start_id..end_id) }
-        scope :before_default_expiration_switch, -> { where('created_at < ?', DEFAULT_EXPIRATION_SWITCH_DATE) }
         scope :without_expiry_date, -> { where(expire_at: nil) }
+        scope :before_switch, -> { where("date(created_at AT TIME ZONE 'UTC') < ?::date", SWITCH_DATE) }
+        scope :between, -> (start_id, end_id) { where(id: start_id..end_id) }
         scope :old, -> { where(self.arel_table[:created_at].lt(OLD_ARTIFACT_AGE.ago)) }
         scope :recent, -> { where(self.arel_table[:created_at].gt(OLD_ARTIFACT_AGE.ago)) }
       end
 
       def perform(start_id, end_id)
-        Ci::JobArtifact.between(start_id, end_id)
-          .without_expiry_date.before_default_expiration_switch
+        Ci::JobArtifact
+          .without_expiry_date.before_switch
+          .between(start_id, end_id)
           .each_batch(of: BATCH_SIZE) do |batch|
           batch.old.update_all(expire_at: old_artifact_expiry_date)
           batch.recent.update_all(expire_at: recent_artifact_expiry_date)

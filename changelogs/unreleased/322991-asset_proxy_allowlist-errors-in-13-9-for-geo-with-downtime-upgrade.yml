@@ -1,0 +1,5 @@
+---
+title: Rename asset_proxy_allowlist column
+merge_request: 55884
+author:
+type: fixed
