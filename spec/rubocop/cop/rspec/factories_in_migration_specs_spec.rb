@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 
 RSpec.describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do

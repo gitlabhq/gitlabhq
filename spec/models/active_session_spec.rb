@@ -42,17 +42,6 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '#public_id' do
-    it 'returns an encrypted, url-encoded session id' do
-      original_session_id = Rack::Session::SessionId.new("!*'();:@&\n=+$,/?%abcd#123[4567]8")
-      active_session = ActiveSession.new(session_id: original_session_id.public_id)
-      encrypted_id = active_session.public_id
-      derived_session_id = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_id)
-
-      expect(original_session_id.public_id).to eq derived_session_id
-    end
-  end
-
   describe '.list' do
     it 'returns all sessions by user' do
       Gitlab::Redis::SharedState.with do |redis|
@@ -207,89 +196,9 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
         end
       end
     end
-
-    context 'ActiveSession stored by deprecated rack_session_public_key' do
-      let(:active_session) { ActiveSession.new(session_id: rack_session.public_id) }
-      let(:deprecated_active_session_lookup_key) { rack_session.public_id }
-
-      before do
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set("session:user:gitlab:#{user.id}:#{deprecated_active_session_lookup_key}",
-                    '')
-          redis.sadd(described_class.lookup_key_name(user.id),
-                     deprecated_active_session_lookup_key)
-        end
-      end
-
-      it 'removes deprecated key and stores only new one' do
-        expected_session_keys = ["session:user:gitlab:#{user.id}:#{rack_session.private_id}",
-                                 "session:lookup:user:gitlab:#{user.id}"]
-
-        ActiveSession.set(user, request)
-
-        Gitlab::Redis::SharedState.with do |redis|
-          actual_session_keys = redis.scan_each(match: 'session:*').to_a
-          expect(actual_session_keys).to(match_array(expected_session_keys))
-
-          expect(redis.smembers("session:lookup:user:gitlab:#{user.id}")).to eq [rack_session.private_id]
-        end
-      end
-    end
   end
 
-  describe '.destroy_with_rack_session_id' do
-    it 'gracefully handles a nil session ID' do
-      expect(described_class).not_to receive(:destroy_sessions)
-
-      ActiveSession.destroy_with_rack_session_id(user, nil)
-    end
-
-    it 'removes the entry associated with the currently killed user session' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d", '')
-        redis.set("session:user:gitlab:#{user.id}:59822c7d9fcdfa03725eff41782ad97d", '')
-        redis.set("session:user:gitlab:9999:5c8611e4f9c69645ad1a1492f4131358", '')
-      end
-
-      ActiveSession.destroy_with_rack_session_id(user, request.session.id)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.scan_each(match: "session:user:gitlab:*")).to match_array [
-          "session:user:gitlab:#{user.id}:59822c7d9fcdfa03725eff41782ad97d",
-          "session:user:gitlab:9999:5c8611e4f9c69645ad1a1492f4131358"
-        ]
-      end
-    end
-
-    it 'removes the lookup entry' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d", '')
-        redis.sadd("session:lookup:user:gitlab:#{user.id}", '6919a6f1bb119dd7396fadc38fd18d0d')
-      end
-
-      ActiveSession.destroy_with_rack_session_id(user, request.session.id)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.scan_each(match: "session:lookup:user:gitlab:#{user.id}").to_a).to be_empty
-      end
-    end
-
-    it 'removes the devise session' do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set("session:user:gitlab:#{user.id}:#{rack_session.private_id}", '')
-        # Emulate redis-rack: https://github.com/redis-store/redis-rack/blob/c75f7f1a6016ee224e2615017fbfee964f23a837/lib/rack/session/redis.rb#L88
-        redis.set("session:gitlab:#{rack_session.private_id}", '')
-      end
-
-      ActiveSession.destroy_with_rack_session_id(user, request.session.id)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.scan_each(match: "session:gitlab:*").to_a).to be_empty
-      end
-    end
-  end
-
-  describe '.destroy_with_deprecated_encryption' do
+  describe '.destroy_session' do
     shared_examples 'removes all session data' do
       before do
         Gitlab::Redis::SharedState.with do |redis|
@@ -330,7 +239,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     end
 
     context 'destroy called with Rack::Session::SessionId#private_id' do
-      subject { ActiveSession.destroy_with_deprecated_encryption(user, rack_session.private_id) }
+      subject { ActiveSession.destroy_session(user, rack_session.private_id) }
 
       it 'calls .destroy_sessions' do
         expect(ActiveSession).to(
@@ -344,26 +253,6 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
         let(:active_session) { ActiveSession.new(session_private_id: rack_session.private_id) }
         let(:active_session_lookup_key) { rack_session.private_id }
 
-        include_examples 'removes all session data'
-      end
-    end
-
-    context 'destroy called with ActiveSession#public_id (deprecated)' do
-      let(:active_session) { ActiveSession.new(session_id: rack_session.public_id) }
-      let(:encrypted_active_session_id) { active_session.public_id }
-      let(:active_session_lookup_key) { rack_session.public_id }
-
-      subject { ActiveSession.destroy_with_deprecated_encryption(user, encrypted_active_session_id) }
-
-      it 'calls .destroy_sessions' do
-        expect(ActiveSession).to(
-          receive(:destroy_sessions)
-            .with(anything, user, [encrypted_active_session_id, rack_session.public_id, rack_session.private_id]))
-
-        subject
-      end
-
-      context 'ActiveSession with session_id (deprecated)' do
         include_examples 'removes all session data'
       end
     end

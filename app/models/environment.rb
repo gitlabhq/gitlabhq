@@ -39,6 +39,7 @@ class Environment < ApplicationRecord
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
 
   before_save :set_environment_type
+  before_save :ensure_environment_tier
   after_save :clear_reactive_cache!
 
   validates :name,
@@ -87,12 +88,21 @@ class Environment < ApplicationRecord
   end
 
   scope :for_project, -> (project) { where(project_id: project) }
+  scope :for_tier, -> (tier) { where(tier: tier).where('tier IS NOT NULL') }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
   scope :for_id, -> (id) { where(id: id) }
+
+  enum tier: {
+    production: 0,
+    staging: 1,
+    testing: 2,
+    development: 3,
+    other: 4
+  }
 
   state_machine :state, initial: :available do
     event :start do
@@ -428,6 +438,24 @@ class Environment < ApplicationRecord
 
   def generate_slug
     self.slug = Gitlab::Slug::Environment.new(name).generate
+  end
+
+  def ensure_environment_tier
+    return unless ::Feature.enabled?(:environment_tier, project, default_enabled: :yaml)
+
+    self.tier ||= guess_tier
+  end
+
+  # Guessing the tier of the environment if it's not explicitly specified by users.
+  # See https://en.wikipedia.org/wiki/Deployment_environment for industry standard deployment environments
+  def guess_tier
+    case name
+    when %r{dev|review|trunk}i then self.class.tiers[:development]
+    when %r{test|qc}i then self.class.tiers[:testing]
+    when %r{st(a|)g|mod(e|)l|pre|demo}i then self.class.tiers[:staging]
+    when %r{pr(o|)d|live}i then self.class.tiers[:production]
+    else self.class.tiers[:other]
+    end
   end
 end
 

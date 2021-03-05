@@ -1,5 +1,17 @@
 # Changelog for gitlab-workhorse
 
+## v8.64.2
+
+### Security
+- Stop logging when path is excluded
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.64.1
+
+### Security
+- Use URL.EscapePath() in upstream router
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
 ## v8.64.0
 
 ### Other

@@ -27104,7 +27104,7 @@ msgstr ""
 msgid "SelfMonitoring|Self monitoring project has been successfully deleted."
 msgstr ""
 
-msgid "Send a separate email notification to Developers."
+msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr ""
 
 msgid "Send confirmation email"

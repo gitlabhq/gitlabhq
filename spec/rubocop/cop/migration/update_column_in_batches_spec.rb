@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/update_column_in_batches'
 
 RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do

@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../rubocop/cop/sidekiq_options_queue'
 
 RSpec.describe RuboCop::Cop::SidekiqOptionsQueue do

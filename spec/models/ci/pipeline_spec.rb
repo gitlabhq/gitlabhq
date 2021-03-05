@@ -807,7 +807,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(keys).to eq %w[
         CI_PIPELINE_IID
         CI_PIPELINE_SOURCE
-        CI_CONFIG_PATH
         CI_COMMIT_SHA
         CI_COMMIT_SHORT_SHA
         CI_COMMIT_BEFORE_SHA

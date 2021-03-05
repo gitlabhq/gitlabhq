@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_columns_to_wide_tables'
 
 RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do

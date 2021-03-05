@@ -7,7 +7,7 @@
   .nav-text.flex-fill
     %span.wiki-last-edit-by
       - if @page.last_version
-        = html_escape(_("Last edited by %{link_start}%{avatar} %{name}%{link_end}")) % { avatar: image_tag(avatar_icon_for_email(@page.last_version.author_email, 24), class: "avatar s24 float-none gl-mr-0!"), name: "<strong>#{@page.last_version.author_name}</strong>".html_safe, link_start: "<a href='#{@page.last_version.author_url}'>".html_safe, link_end: '</a>'.html_safe }
+        = wiki_page_version_author_header(@page.last_version)
         = time_ago_with_tooltip(@page.last_version.authored_date)
 
   .nav-controls.pb-md-3.pb-lg-0

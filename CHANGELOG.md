@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.9.2 (2021-03-04)
+
+### Security (6 changes)
+
+- Bump thrift gem to 0.14.0.
+- Allow only owners to manage group variables.
+- Do not store marshalled sessions ids in Redis.
+- Fix XSS in wiki author email and name.
+- Workhorse: prevent escaped router path traversal.
+- Fix XSS vulnerability for swagger file viewer.
+
+
 ## 13.9.1 (2021-02-23)
 
 ### Fixed (6 changes, 1 of them is from the community)
@@ -588,6 +600,18 @@ entry.
 - Apply new GitLab UI for buttons in pipeline schedules.
 
 
+## 13.8.5 (2021-03-04)
+
+### Security (6 changes)
+
+- Fix XSS in wiki author email and name.
+- Bump thrift gem to 0.14.0.
+- Allow only owners to manage group variables.
+- Do not store marshalled sessions ids in Redis.
+- Workhorse: prevent escaped router path traversal.
+- Fix XSS vulnerability for swagger file viewer.
+
+
 ## 13.8.4 (2021-02-11)
 
 ### Security (9 changes)
@@ -986,6 +1010,17 @@ entry.
 - Remove unneeded group label index. !51676
 - Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
 - Add verbiage + link sast to show it's in core. !51935
+
+
+## 13.7.8 (2021-03-04)
+
+### Security (5 changes)
+
+- Bump thrift gem to 0.14.0.
+- Allow only owners to manage group variables.
+- Do not store marshalled sessions ids in Redis.
+- Workhorse: prevent escaped router path traversal.
+- Fix XSS vulnerability for swagger file viewer.
 
 
 ## 13.7.7 (2021-02-11)

@@ -222,7 +222,9 @@ export default {
         });
     },
     incidentPath(issueId) {
-      return joinPaths(this.projectIssuesPath, issueId);
+      return this.isThreatMonitoringPage
+        ? joinPaths(this.projectIssuesPath, issueId)
+        : joinPaths(this.projectIssuesPath, 'incident', issueId);
     },
     trackPageViews() {
       const { category, action } = this.trackAlertsDetailsViewsOptions;

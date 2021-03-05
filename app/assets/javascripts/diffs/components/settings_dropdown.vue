@@ -85,7 +85,7 @@ export default {
     </div>
     <gl-form-checkbox
       data-testid="show-whitespace"
-      class="gl-mt-3 gl-pl-3"
+      class="gl-mt-3 gl-ml-3"
       :checked="showWhitespace"
       @input="toggleWhitespace"
     >
@@ -93,7 +93,7 @@ export default {
     </gl-form-checkbox>
     <gl-form-checkbox
       data-testid="file-by-file"
-      class="gl-pl-3 gl-mb-0"
+      class="gl-ml-3 gl-mb-0"
       :checked="viewDiffsFileByFile"
       @input="toggleFileByFile"
     >

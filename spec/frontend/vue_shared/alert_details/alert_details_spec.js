@@ -188,6 +188,18 @@ describe('AlertDetails', () => {
         });
         expect(findMetricsTab().exists()).toBe(false);
       });
+
+      it('should display "View incident" button that links the issues page when incident exists', () => {
+        const iid = '3';
+        mountComponent({
+          data: { alert: { ...mockAlert, issue: { iid } }, sidebarStatus: false },
+          provide: { isThreatMonitoringPage: true },
+        });
+
+        expect(findViewIncidentBtn().exists()).toBe(true);
+        expect(findViewIncidentBtn().attributes('href')).toBe(joinPaths(projectIssuesPath, iid));
+        expect(findCreateIncidentBtn().exists()).toBe(false);
+      });
     });
 
     describe('Create incident from alert', () => {
@@ -198,7 +210,9 @@ describe('AlertDetails', () => {
         });
 
         expect(findViewIncidentBtn().exists()).toBe(true);
-        expect(findViewIncidentBtn().attributes('href')).toBe(joinPaths(projectIssuesPath, iid));
+        expect(findViewIncidentBtn().attributes('href')).toBe(
+          joinPaths(projectIssuesPath, 'incident', iid),
+        );
         expect(findCreateIncidentBtn().exists()).toBe(false);
       });
 

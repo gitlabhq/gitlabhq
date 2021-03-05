@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require 'rspec-parameterized'
 
 require_relative '../../../rubocop/cop/static_translation_definition'

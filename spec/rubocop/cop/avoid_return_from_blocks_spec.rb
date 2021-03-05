@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
 RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do

@@ -251,7 +251,7 @@ describe('AlertManagementTable', () => {
         const tooltip = getBinding(issueField.element, 'gl-tooltip');
 
         expect(issueField.text()).toBe(`#1 (closed)`);
-        expect(issueField.attributes('href')).toBe('/gitlab-org/gitlab/-/issues/1');
+        expect(issueField.attributes('href')).toBe('/gitlab-org/gitlab/-/issues/incident/1');
         expect(issueField.attributes('title')).toBe('My test issue');
         expect(tooltip).not.toBe(undefined);
       });

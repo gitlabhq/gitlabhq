@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 
 RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher do

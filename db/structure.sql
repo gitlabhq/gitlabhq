@@ -12163,7 +12163,8 @@ CREATE TABLE environments (
     state character varying DEFAULT 'available'::character varying NOT NULL,
     slug character varying NOT NULL,
     auto_stop_at timestamp with time zone,
-    auto_delete_at timestamp with time zone
+    auto_delete_at timestamp with time zone,
+    tier smallint
 );
 
 CREATE SEQUENCE environments_id_seq
@@ -22206,6 +22207,8 @@ CREATE INDEX index_environments_on_name_varchar_pattern_ops ON environments USIN
 CREATE UNIQUE INDEX index_environments_on_project_id_and_name ON environments USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_environments_on_project_id_and_slug ON environments USING btree (project_id, slug);
+
+CREATE INDEX index_environments_on_project_id_and_tier ON environments USING btree (project_id, tier) WHERE (tier IS NOT NULL);
 
 CREATE INDEX index_environments_on_project_id_state_environment_type ON environments USING btree (project_id, state, environment_type);
 

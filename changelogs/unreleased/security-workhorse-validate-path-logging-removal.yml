@@ -1,0 +1,5 @@
+---
+title: 'Workhorse: Stop logging when path is excluded'
+merge_request:
+author:
+type: security

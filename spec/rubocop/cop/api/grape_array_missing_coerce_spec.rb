@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/api/grape_array_missing_coerce'
 
 RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do

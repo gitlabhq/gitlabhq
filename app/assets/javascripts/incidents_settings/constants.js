@@ -40,7 +40,7 @@ export const I18N_ALERT_SETTINGS_FORM = {
     label: __('Incident template (optional)'),
   },
   sendEmail: {
-    label: __('Send a separate email notification to Developers.'),
+    label: __('Send a single email notification to Owners and Maintainers for new alerts.'),
   },
   autoCloseIncidents: {
     label: __('Automatically close incidents when the associated Prometheus alert resolves.'),

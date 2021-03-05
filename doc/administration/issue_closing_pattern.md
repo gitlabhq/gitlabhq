@@ -12,7 +12,7 @@ This is the administration documentation. There is a separate [user documentatio
 on issue closing pattern.
 
 When a commit or merge request resolves one or more issues, it is possible to
-automatically have these issues closed when the commit or merge request lands
+automatically close these issues when the commit or merge request lands
 in the project's default branch.
 
 ## Change the issue closing pattern
@@ -35,7 +35,7 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
    expression of your liking:
 
    ```ruby
-   gitlab_rails['gitlab_issue_closing_pattern'] = "\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)"
+   gitlab_rails['gitlab_issue_closing_pattern'] = /\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)/.source
    ```
 
 1. [Reconfigure](restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.

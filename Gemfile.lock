@@ -1578,6 +1578,7 @@ DEPENDENCIES
   terser (= 1.0.2)
   test-prof (~> 0.12.0)
   thin (~> 1.8.0)
+  thrift (>= 0.14.0)
   timecop (~> 0.9.1)
   toml-rb (~> 1.0.0)
   truncato (~> 0.7.11)

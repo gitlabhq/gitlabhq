@@ -225,7 +225,7 @@ export default {
     getIssueMeta({ issue: { iid, state } }) {
       return {
         state: state === 'closed' ? `(${this.$options.i18n.closed})` : '',
-        link: joinPaths('/', this.projectPath, '-', 'issues', iid),
+        link: joinPaths('/', this.projectPath, '-', 'issues/incident', iid),
       };
     },
     tbodyTrClass(item) {

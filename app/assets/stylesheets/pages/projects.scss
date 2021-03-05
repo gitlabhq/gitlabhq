@@ -136,33 +136,9 @@
 
 .project-repo-buttons {
   .btn {
-    &:last-child {
-      margin-left: 0;
-    }
-
     svg {
-      fill: $layout-link-gray;
+      fill: $gray-500;
     }
-
-    .notifications-icon {
-      top: 1px;
-      margin-right: 0;
-    }
-  }
-
-  .icon {
-    top: 0;
-  }
-
-  .count-badge,
-  .btn-xs {
-    height: 24px;
-  }
-
-  .home-panel-action-button,
-  .project-action-button {
-    margin: $gl-padding $gl-padding-8 0 0;
-    vertical-align: top;
   }
 
   .notification-dropdown .dropdown-menu {
@@ -172,34 +148,6 @@
   .download-button {
     @include media-breakpoint-down(md) {
       margin-left: 0;
-    }
-  }
-
-  .count-buttons {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: $gl-padding;
-
-    .count-badge-count,
-    .count-badge-button {
-      border: 1px solid $border-color;
-      line-height: 1;
-    }
-
-    .count,
-    .count-badge-button {
-      color: $gl-text-color;
-    }
-
-    .count-badge-count {
-      padding: 0 12px;
-      background: $gray-light;
-      border-radius: 0 $border-radius-base $border-radius-base 0;
-    }
-
-    .count-badge-button {
-      border-right: 0;
-      border-radius: $border-radius-base 0 0 $border-radius-base;
     }
   }
 
@@ -887,10 +835,6 @@ pre.light-well {
 }
 
 .git-clone-holder {
-  .btn-clipboard {
-    border: 1px solid $border-color;
-  }
-
   .clone-options {
     display: table-cell;
 

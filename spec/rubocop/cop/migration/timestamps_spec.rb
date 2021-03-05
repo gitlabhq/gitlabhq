@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/timestamps'
 
 RSpec.describe RuboCop::Cop::Migration::Timestamps do

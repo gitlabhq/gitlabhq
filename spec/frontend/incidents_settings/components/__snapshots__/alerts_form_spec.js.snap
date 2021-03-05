@@ -78,7 +78,7 @@ exports[`Alert integration settings form default state should match the default 
     >
       <gl-form-checkbox-stub>
         <span>
-          Send a separate email notification to Developers.
+          Send a single email notification to Owners and Maintainers for new alerts.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>

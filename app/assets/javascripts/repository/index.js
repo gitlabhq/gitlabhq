@@ -1,3 +1,4 @@
+import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import { parseBoolean } from '../lib/utils/common_utils';
@@ -7,7 +8,6 @@ import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import LastCommit from './components/last_commit.vue';
-import TreeActionLink from './components/tree_action_link.vue';
 import apolloProvider from './graphql';
 import createRouter from './router';
 import { updateFormAction } from './utils/dom';
@@ -101,14 +101,17 @@ export default function setupVueRepositoryList() {
     el: treeHistoryLinkEl,
     router,
     render(h) {
-      return h(TreeActionLink, {
-        props: {
-          path: `${historyLink}/${
-            this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
-          }`,
-          text: __('History'),
+      return h(
+        GlButton,
+        {
+          attrs: {
+            href: `${historyLink}/${
+              this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
+            }`,
+          },
         },
-      });
+        [__('History')],
+      );
     },
   });
 

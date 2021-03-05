@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
 RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do

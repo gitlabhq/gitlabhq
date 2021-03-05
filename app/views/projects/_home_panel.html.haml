@@ -4,8 +4,8 @@
 - emails_disabled = @project.emails_disabled?
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
-  .row.gl-mb-3
-    .home-panel-title-row.col-md-12.col-lg-6.d-flex
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3
+    .home-panel-title-row.gl-display-flex
       .avatar-container.rect-avatar.s64.home-panel-avatar.gl-flex-shrink-0.gl-w-11.gl-h-11.gl-mr-3.float-none
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
       .d-flex.flex-column.flex-wrap.align-items-baseline
@@ -41,13 +41,13 @@
                   = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
 
 
-    .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
+    .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
       - if current_user
-        .d-inline-flex
+        .gl-display-flex.gl-align-items-start.gl-mr-3
           - if @notification_setting
-            .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, container_class: 'gl-mr-3 gl-mt-5 gl-vertical-align-top' } }
+            .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id } }
 
-      .count-buttons.d-inline-flex
+      .count-buttons.gl-display-flex.gl-align-items-flex-start
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 

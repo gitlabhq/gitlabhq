@@ -4466,7 +4466,11 @@ RSpec.describe Project, factory_default: :keep do
     subject { project.predefined_project_variables.to_runner_variables }
 
     specify do
-      expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false })
+      expect(subject).to include
+      [
+        { key: 'CI_PROJECT_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false },
+        { key: 'CI_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false }
+      ]
     end
 
     context 'when ci config path is overridden' do
@@ -4474,7 +4478,13 @@ RSpec.describe Project, factory_default: :keep do
         project.update!(ci_config_path: 'random.yml')
       end
 
-      it { expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: 'random.yml', public: true, masked: false }) }
+      it do
+        expect(subject).to include
+        [
+          { key: 'CI_PROJECT_CONFIG_PATH', value: 'random.yml', public: true, masked: false },
+          { key: 'CI_CONFIG_PATH', value: 'random.yml', public: true, masked: false }
+        ]
+      end
     end
   end
 

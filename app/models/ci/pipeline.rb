@@ -693,14 +693,6 @@ module Ci
         .exists?
     end
 
-    # TODO: this logic is duplicate with Pipeline::Chain::Config::Content
-    # we should persist this is `ci_pipelines.config_path`
-    def config_path
-      return unless repository_source? || unknown_source?
-
-      project.ci_config_path_or_default
-    end
-
     def has_yaml_errors?
       yaml_errors.present?
     end
@@ -785,8 +777,6 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-
-        variables.append(key: 'CI_CONFIG_PATH', value: config_path)
 
         variables.concat(predefined_commit_variables)
 

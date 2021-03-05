@@ -5,8 +5,7 @@ module API
     include PaginationParams
 
     before { authenticate! }
-    before { authorize! :admin_build, user_group }
-
+    before { authorize! :admin_group, user_group }
     feature_category :continuous_integration
 
     params do
