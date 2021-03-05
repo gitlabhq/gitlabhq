@@ -18,6 +18,9 @@ module Gitlab
       Directory.new('license',    'none', 'string')
     ].freeze
 
+    TOP_LEVEL_DIR = 'config'
+    TOP_LEVEL_DIR_EE = 'ee'
+
     VALID_INPUT_DIRS = (TIME_FRAME_DIRS.flat_map { |d| [d.name, d.time_frame] } - %w(none)).freeze
 
     source_root File.expand_path('../../../generator_templates/usage_metric_definition', __dir__)
@@ -56,9 +59,15 @@ module Gitlab
 
     private
 
+    def metric_name_suggestion
+      return unless Feature.enabled?(:product_intelligence_metrics_names_suggestions, default_enabled: :yaml)
+
+      "\nname: #{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}"
+    end
+
     def file_path
-      path = File.join('config', 'metrics', directory&.name, "#{file_name}.yml")
-      path = File.join('ee', path) if ee?
+      path = File.join(TOP_LEVEL_DIR, 'metrics', directory&.name, "#{file_name}.yml")
+      path = File.join(TOP_LEVEL_DIR_EE, path) if ee?
       path
     end
 

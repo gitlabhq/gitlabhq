@@ -2313,7 +2313,7 @@ in the future.
   </a>
 </div>
 
-## Configure Advanced Search **(PREMIUM SELF)**
+## Configure Advanced Search
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

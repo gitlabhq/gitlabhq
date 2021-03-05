@@ -7,20 +7,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Reference architecture: up to 3,000 users **(PREMIUM SELF)**
 
-This page describes GitLab reference architecture for up to 3,000 users.
-It is designed to help your organization achieve a
-highly-available GitLab deployment. If you do not have the expertise or need to
-maintain a highly-available environment, you can have a simpler and less
-costly-to-operate environment by using the
-[2,000-user reference architecture](2k_users.md).
-If you have fewer than 3,000 users and still want a highly-available GitLab deployment,
-you should still use this reference architecture but scale down the node sizes.
+This GitLab reference architecture can help you deploy GitLab to up to 3,000
+users, and then maintain uptime and access for those users. You can also use
+this architecture to provide improved GitLab uptime and availability for fewer
+than 3,000 users. For fewer users, reduce the stated node sizes as needed.
+
+If maintining a high level of uptime for your GitLab environment isn't a
+requirement, or if you don't have the expertise to maintain this sort of
+environment, we recommend using the [2,000-user reference architecture](2k_users.md)
+for your GitLab installation.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
 > - **Supported users (approximate):** 3,000
-> - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
+> - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
 > - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 
 | Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
@@ -135,10 +136,15 @@ uploads, or artifacts), using an [object storage service](#configure-the-object-
 is recommended instead of using NFS. Using an object storage service also
 doesn't require you to provision and maintain a node.
 
-It's also worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
-that to achieve full High Availability a third party PostgreSQL database solution will be required.
-We hope to offer a built in solutions for these restrictions in the future but in the meantime a non HA PostgreSQL server
-can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398)
+[Praefect requires its own database server](../gitaly/praefect.md#postgresql),
+and a third-party PostgreSQL database solution is required to achieve full
+high availability. Although we hope to offer a built-in solution for these
+restrictions in the future, you can set up a non-HA PostgreSQL server by using
+Omnibus GitLab (which the previous specifications reflect). Refer to the
+following issues for more information:
+
+- [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919)
+- [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398)
 
 ## Setup components
 
@@ -1997,7 +2003,7 @@ in the future.
   </a>
 </div>
 
-## Configure Advanced Search **(PREMIUM SELF)**
+## Configure Advanced Search
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

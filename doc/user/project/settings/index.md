@@ -103,8 +103,7 @@ Some features depend on others:
   When the **Issues** option is disabled, you can still access **Milestones**
   from merge requests.
 
-- Additionally, if you disable both **Issues** and **Merge Requests**, you will no
-  longer have access to:
+- Additionally, if you disable both **Issues** and **Merge Requests**, you cannot access:
   - **Labels**
   - **Milestones**
 
@@ -220,7 +219,7 @@ To rename a repository:
 1. Click **Change path**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL won't be able to push or pull. Read more about what happens with the
+old URL can't push or pull. Read more about what happens with the
 [redirects when renaming repositories](../repository/index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
@@ -243,7 +242,7 @@ To transfer a project:
    project to.
 1. Confirm the transfer by typing the project's path as instructed.
 
-Once done, you will be taken to the new project's namespace. At this point,
+Once done, you are redirected to the new project's namespace. At this point,
 read what happens with the
 [redirects from the old project to the new one](../repository/index.md#redirects-when-changing-repository-paths).
 
@@ -293,7 +292,7 @@ If you want to use the fork for yourself and don't need to send
 you can safely remove the fork relationship.
 
 WARNING:
-Once removed, the fork relationship cannot be restored. You will no longer be able to send merge requests to the source, and if anyone has forked your project, their fork will also lose the relationship.
+Once removed, the fork relationship cannot be restored. You can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
 
 To do so:
 

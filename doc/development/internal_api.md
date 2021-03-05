@@ -488,7 +488,7 @@ POST /namespaces/:id/gitlab_subscription
 | `plan_code` | string  | no       | Subscription tier code |
 | `seats`     | integer | no       | Number of seats in subscription |
 | `max_seats_used` | integer | no  | Highest number of active users in the last month |
-| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
 | `trial`     | boolean | no       | Whether subscription is a trial |
 | `trial_starts_on` | date | no    | Start date of trial |
 | `trial_ends_on` | date | no      | End date of trial |
@@ -539,7 +539,7 @@ PUT /namespaces/:id/gitlab_subscription
 | `plan_code` | string  | no       | Subscription tier code |
 | `seats`     | integer | no       | Number of seats in subscription |
 | `max_seats_used` | integer | no  | Highest number of active users in the last month |
-| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
 | `trial`     | boolean | no       | Whether subscription is a trial |
 | `trial_starts_on` | date | no    | Start date of trial. Required if trial is true. |
 | `trial_ends_on` | date | no      | End date of trial |

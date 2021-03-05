@@ -32,10 +32,6 @@ const reportToSentry = (component, failureType) => {
 };
 
 const serializeGqlErr = (gqlError) => {
-  if (!gqlError) {
-    return 'gqlError data not available.';
-  }
-
   const { locations, message, path } = gqlError;
 
   return `
@@ -46,6 +42,24 @@ const serializeGqlErr = (gqlError) => {
       .join(' ')}.
     Path: ${path.join(', ')}.
   `;
+};
+
+const serializeLoadErrors = (errors) => {
+  const { gqlError, graphQLErrors, networkError, message } = errors;
+
+  if (graphQLErrors) {
+    return graphQLErrors.map((err) => serializeGqlErr(err)).join('; ');
+  }
+
+  if (gqlError) {
+    return serializeGqlErr(gqlError);
+  }
+
+  if (networkError) {
+    return `Network error: ${networkError.message}`;
+  }
+
+  return message;
 };
 
 /* eslint-enable @gitlab/require-i18n-strings */
@@ -101,6 +115,7 @@ export {
   getQueryHeaders,
   reportToSentry,
   serializeGqlErr,
+  serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
   validateConfigPaths,

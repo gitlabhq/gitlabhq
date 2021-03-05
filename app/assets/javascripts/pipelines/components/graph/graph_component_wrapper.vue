@@ -7,7 +7,7 @@ import PipelineGraph from './graph_component.vue';
 import {
   getQueryHeaders,
   reportToSentry,
-  serializeGqlErr,
+  serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
 } from './utils';
@@ -61,8 +61,8 @@ export default {
       update(data) {
         return unwrapPipelineData(this.pipelineProjectPath, data);
       },
-      error({ gqlError }) {
-        this.reportFailure(LOAD_FAILURE, serializeGqlErr(gqlError));
+      error(err) {
+        this.reportFailure(LOAD_FAILURE, serializeLoadErrors(err));
       },
     },
   },

@@ -374,7 +374,7 @@ standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 
 Using the `with_lock_retries` helper method is advised when a database
-migration involves one of the [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3).
+migration involves one of the [high-traffic tables](#high-traffic-tables).
 
 Example changes:
 
@@ -606,7 +606,7 @@ we have to employ `add_concurrent_foreign_key` and `add_concurrent_index`
 instead of `add_reference`.
 
 If you have a new or empty table that doesn't reference a
-[high-traffic table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
+[high-traffic table](#high-traffic-tables),
 we recommend that you use `add_reference` in a single-transaction migration. You can
 combine it with other operations that don't require `disable_ddl_transaction!`.
 
@@ -709,11 +709,8 @@ Dropping a database table is uncommon, and the `drop_table` method
 provided by Rails is generally considered safe. Before dropping the table,
 please consider the following:
 
-If your table has foreign keys on a high-traffic table (like `projects`), then
-the `DROP TABLE` statement might fail with **statement timeout** error. Determining
-what tables are high traffic can be difficult. Self-managed instances might
-use different features of GitLab with different usage patterns, thus making
-assumptions based on GitLab.com is not enough.
+If your table has foreign keys on a [high-traffic table](#high-traffic-tables) (like `projects`), then
+the `DROP TABLE` statement is likely to stall concurrent traffic until it fails with **statement timeout** error.
 
 Table **has no records** (feature was never in use) and **no foreign
 keys**:
@@ -1028,3 +1025,20 @@ D, [2020-07-06T00:37:12.653459 #130101] DEBUG -- :   AddAndSeedMyColumn::User Up
 D, [2020-07-06T00:37:12.653648 #130101] DEBUG -- :   ↳ config/initializers/config_initializers_active_record_locking.rb:13:in `_update_row'
 == 20200705232821 AddAndSeedMyColumn: migrated (0.1706s) =====================
 ```
+
+## High traffic tables
+
+Here's a list of current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml). 
+
+Determining what tables are high-traffic can be difficult. Self-managed instances might use
+different features of GitLab with different usage patterns, thus making assumptions based 
+on GitLab.com not enough.
+
+To identify a high-traffic table for GitLab.com the following measures are considered.
+Note that the metrics linked here are GitLab-internal only:
+
+- [Read operations](https://thanos.gitlab.net/graph?g0.range_input=2h&g0.max_source_resolution=0s&g0.expr=topk(500%2C%20sum%20by%20(relname)%20(rate(pg_stat_user_tables_seq_tup_read%7Benvironment%3D%22gprd%22%7D%5B12h%5D)%20%2B%20rate(pg_stat_user_tables_idx_scan%7Benvironment%3D%22gprd%22%7D%5B12h%5D)%20%2B%20rate(pg_stat_user_tables_idx_tup_fetch%7Benvironment%3D%22gprd%22%7D%5B12h%5D)))&g0.tab=1)
+- [Number of records](https://thanos.gitlab.net/graph?g0.range_input=2h&g0.max_source_resolution=0s&g0.expr=topk(500%2C%20sum%20by%20(relname)%20(rate(pg_stat_user_tables_n_live_tup%7Benvironment%3D%22gprd%22%7D%5B12h%5D)))&g0.tab=1)
+- [Size](https://thanos.gitlab.net/graph?g0.range_input=2h&g0.max_source_resolution=0s&g0.expr=topk(500%2C%20sum%20by%20(relname)%20(rate(pg_total_relation_size_bytes%7Benvironment%3D%22gprd%22%7D%5B12h%5D)))&g0.tab=1) is greater than 10 GB
+
+Any table which has some high read operation compared to current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L4) might be a good candidate.

@@ -35629,9 +35629,6 @@ msgstr ""
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
-msgid "mrWidget|%{link_start}Learn more about resolving conflicts%{link_end}"
-msgstr ""
-
 msgid "mrWidget|%{mergeError}."
 msgstr ""
 
@@ -35747,6 +35744,9 @@ msgid "mrWidget|If the %{missingBranchName} branch exists in your local reposito
 msgstr ""
 
 msgid "mrWidget|Jump to first unresolved thread"
+msgstr ""
+
+msgid "mrWidget|Learn more about resolving conflicts"
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"

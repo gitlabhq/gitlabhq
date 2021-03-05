@@ -10266,7 +10266,6 @@ CREATE TABLE ci_builds (
     runner_id integer,
     coverage double precision,
     commit_id integer,
-    commands text,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
@@ -10279,14 +10278,11 @@ CREATE TABLE ci_builds (
     type character varying,
     target_url character varying,
     description character varying,
-    artifacts_file text,
     project_id integer,
-    artifacts_metadata text,
     erased_by_id integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
-    artifacts_size bigint,
     "when" character varying,
     yaml_variables text,
     queued_at timestamp without time zone,
@@ -10296,8 +10292,6 @@ CREATE TABLE ci_builds (
     auto_canceled_by_id integer,
     retried boolean,
     stage_id integer,
-    artifacts_file_store integer,
-    artifacts_metadata_store integer,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
@@ -10832,7 +10826,6 @@ CREATE TABLE ci_runners (
     description character varying,
     contacted_at timestamp without time zone,
     active boolean DEFAULT true NOT NULL,
-    is_shared boolean DEFAULT false,
     name character varying,
     version character varying,
     revision character varying,
@@ -21752,8 +21745,6 @@ CREATE INDEX index_ci_builds_metadata_on_build_id_and_id_and_interruptible ON ci
 
 CREATE INDEX index_ci_builds_metadata_on_project_id ON ci_builds_metadata USING btree (project_id);
 
-CREATE INDEX index_ci_builds_on_artifacts_expire_at ON ci_builds USING btree (artifacts_expire_at) WHERE (artifacts_file <> ''::text);
-
 CREATE INDEX index_ci_builds_on_auto_canceled_by_id ON ci_builds USING btree (auto_canceled_by_id);
 
 CREATE INDEX index_ci_builds_on_commit_id_and_stage_idx_and_created_at ON ci_builds USING btree (commit_id, stage_idx, created_at);
@@ -21915,8 +21906,6 @@ CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING 
 CREATE INDEX index_ci_runner_projects_on_runner_id ON ci_runner_projects USING btree (runner_id);
 
 CREATE INDEX index_ci_runners_on_contacted_at ON ci_runners USING btree (contacted_at);
-
-CREATE INDEX index_ci_runners_on_is_shared ON ci_runners USING btree (is_shared);
 
 CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 

@@ -40,7 +40,7 @@ For a commit to be verified by GitLab:
 
 ## Generating a GPG key
 
-If you don't already have a GPG key, the following steps will help you get
+If you don't already have a GPG key, the following steps can help you get
 started:
 
 1. [Install GPG](https://www.gnupg.org/download/index.html) for your operating system.
@@ -225,8 +225,8 @@ git config --global commit.gpgsign true
 ## Verifying commits
 
 1. Within a project or [merge request](../../merge_requests/index.md), navigate to
-   the **Commits** tab. Signed commits will show a badge containing either
-   "Verified" or "Unverified", depending on the verification status of the GPG
+   the **Commits** tab. Signed commits show a badge containing either
+   **Verified** or **Unverified**, depending on the verification status of the GPG
    signature.
 
    ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
@@ -240,8 +240,8 @@ git config --global commit.gpgsign true
 ## Revoking a GPG key
 
 Revoking a key **unverifies** already signed commits. Commits that were
-verified by using this key will change to an unverified state. Future commits
-will also stay unverified once you revoke this key. This action should be used
+verified by using this key changes to an unverified state. Future commits
+stay unverified after you revoke this key. This action should be used
 in case your key has been compromised.
 
 To revoke a GPG key:

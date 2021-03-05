@@ -6,7 +6,7 @@ import LinkedPipeline from './linked_pipeline.vue';
 import {
   getQueryHeaders,
   reportToSentry,
-  serializeGqlErr,
+  serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
   validateConfigPaths,
@@ -100,13 +100,13 @@ export default {
           this.loadingPipelineId = null;
           this.$emit('scrollContainer');
         },
-        error({ gqlError }, _vm, _key, type) {
+        error(err, _vm, _key, type) {
           this.$emit('error', LOAD_FAILURE);
 
           reportToSentry(
             'linked_pipelines_column',
-            `error type: ${LOAD_FAILURE}, error: ${serializeGqlErr(
-              gqlError,
+            `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(
+              err,
             )}, apollo error type: ${type}`,
           );
         },

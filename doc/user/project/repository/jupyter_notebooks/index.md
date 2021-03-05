@@ -12,12 +12,12 @@ type: reference
 interactive computing in many fields and contain a complete record of the
 user's sessions and include code, narrative text, equations, and rich output.
 
-When added to a repository, Jupyter Notebooks with a `.ipynb` extension will be
+When added to a repository, Jupyter Notebooks with a `.ipynb` extension are
 rendered to HTML when viewed.
 
 ![Jupyter Notebook Rich Output](img/jupyter_notebook.png)
 
-Interactive features, including JavaScript plots, will not work when viewed in
+Interactive features, including JavaScript plots, don't work when viewed in
 GitLab.
 
 ## Jupyter Hub as a GitLab Managed App

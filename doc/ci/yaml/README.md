@@ -110,7 +110,7 @@ rspec 2.6:
 
 ## Global keywords
 
-Some keywords are not defined within a job. These keywords control pipeline behavior
+Some keywords are not defined in a job. These keywords control pipeline behavior
 or import additional pipeline configuration:
 
 | Keyword                 | Description |
@@ -709,8 +709,8 @@ You can use syntax in [`script`](README.md#script) sections to:
 Use `stage` to define which stage a job runs in. Jobs in the same
 `stage` can execute in parallel (subject to [certain conditions](#use-your-own-runners)).
 
-Jobs without a `stage` entry use the `test` stage by default. If [`stages`](#stages)
-is not defined in the pipeline, you can use the 5 default stages, which execute in
+Jobs without a `stage` entry use the `test` stage by default. If you do not define
+[`stages`](#stages) in the pipeline, you can use the 5 default stages, which execute in
 this order:
 
 - [`.pre`](#pre-and-post)
@@ -1532,8 +1532,11 @@ job:
     - branches
 ```
 
-In the following example, `job` runs only for refs that are tagged, or if a build is
-explicitly requested by an API trigger or a [pipeline schedule](../pipelines/schedules.md):
+In the following example, `job` runs only for:
+
+- Git tags
+- [Triggers](../triggers/README.md#trigger-token)
+- [Scheduled pipelines](../pipelines/schedules.md)
 
 ```yaml
 job:
@@ -2092,12 +2095,13 @@ build_job:
       artifacts: true
 ```
 
-Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
+You can't download artifacts from jobs that run in [`parallel:`](#parallel).
 
-To download artifacts between [parent-child pipelines](../parent_child_pipelines.md) use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
-Downloading artifacts from the same ref as the currently running pipeline is not
-recommended because artifacts could be overridden by concurrent pipelines running
-on the same ref.
+To download artifacts between [parent-child pipelines](../parent_child_pipelines.md),
+use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
+
+You should not download artifacts from the same ref as a running pipeline. Concurrent
+pipelines running on the same ref could override the artifacts.
 
 ##### Artifact downloads to child pipelines
 
@@ -2504,11 +2508,6 @@ You can't use variables defined in a `script` section.
 
 #### `environment:on_stop`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22191) in GitLab 8.13.
-> - Starting with GitLab 8.14, when you have an environment that has a stop action
->   defined, GitLab automatically triggers a stop action when the associated
->   branch is deleted.
-
 Closing (stopping) environments can be achieved with the `on_stop` keyword
 defined under `environment`. It declares a different job that runs to close the
 environment.
@@ -2516,8 +2515,6 @@ environment.
 Read the `environment:action` section for an example.
 
 #### `environment:action`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22191) in GitLab 8.13.
 
 Use the `action` keyword to specify jobs that prepare, start, or stop environments.
 
@@ -3459,8 +3456,7 @@ for more details.
 
 ### `retry`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3442) in GitLab 9.5.
-> - [Behavior expanded](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5 to control which failures to retry on.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5, you can control which failures to retry on.
 
 Use `retry` to configure how many times a job is retried in
 case of a failure.

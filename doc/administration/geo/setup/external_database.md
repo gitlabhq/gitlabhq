@@ -49,7 +49,7 @@ developed and tested. We aim to be compatible with most external
 
 To set up an external database, you can either:
 
-- Set up streaming replication yourself (for example, in AWS RDS).
+- Set up [streaming replication](https://www.postgresql.org/docs/11/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example AWS RDS, bare metal not managed by Omnibus, etc.).
 - Perform the Omnibus configuration manually as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database

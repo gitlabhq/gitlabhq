@@ -1,9 +1,6 @@
 <script>
-import { GlButton, GlModalDirective, GlSkeletonLoader } from '@gitlab/ui';
-import $ from 'jquery';
-import { escape } from 'lodash';
-import { s__, sprintf } from '~/locale';
-import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
+import { GlButton, GlModalDirective, GlSkeletonLoader, GlPopover, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import userPermissionsQuery from '../../queries/permissions.query.graphql';
@@ -16,6 +13,8 @@ export default {
     GlSkeletonLoader,
     StatusIcon,
     GlButton,
+    GlPopover,
+    GlLink,
   },
   directives: {
     GlModalDirective,
@@ -106,48 +105,11 @@ export default {
       return this.showResolveButton && this.sourceBranchProtected;
     },
   },
-  watch: {
-    showPopover: {
-      handler(newVal) {
-        if (newVal) {
-          this.$nextTick(this.initPopover);
-        }
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    initPopover() {
-      const $el = $(this.$refs.popover);
-
-      $el
-        .popover({
-          html: true,
-          trigger: 'focus',
-          container: 'body',
-          placement: 'top',
-          template:
-            '<div class="popover" role="tooltip"><div class="arrow"></div><p class="popover-header"></p><div class="popover-body"></div></div>',
-          title: s__(
-            'mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected.',
-          ),
-          content: sprintf(
-            s__('mrWidget|%{link_start}Learn more about resolving conflicts%{link_end}'),
-            {
-              link_start: `<a href="${escape(
-                this.mr.conflictsDocsPath,
-              )}" target="_blank" rel="noopener noreferrer">`,
-              link_end: '</a>',
-            },
-            false,
-          ),
-        })
-        .on('mouseenter', mouseenter)
-        .on('mouseleave', debouncedMouseleave(300))
-        .on('show.bs.popover', () => {
-          window.addEventListener('scroll', togglePopover.bind($el, false), { once: true });
-        });
-    },
+  i18n: {
+    title: s__(
+      'mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected.',
+    ),
+    linkText: s__('mrWidget|Learn more about resolving conflicts'),
   },
 };
 </script>
@@ -181,17 +143,35 @@ export default {
         </span>
         <span v-if="showResolveButton" ref="popover">
           <gl-button
-            :href="!sourceBranchProtected && mr.conflictResolutionPath"
+            :href="mr.conflictResolutionPath"
             :disabled="sourceBranchProtected"
-            class="js-resolve-conflicts-button"
+            data-testid="resolve-conflicts-button"
           >
             {{ s__('mrWidget|Resolve conflicts') }}
           </gl-button>
+          <gl-popover
+            v-if="showPopover"
+            :target="() => $refs.popover"
+            placement="top"
+            triggers="hover focus"
+          >
+            <template #title>
+              <div class="gl-font-weight-normal gl-font-base">
+                {{ $options.i18n.title }}
+              </div>
+            </template>
+
+            <div class="gl-text-center">
+              <gl-link :href="mr.conflictsDocsPath" target="_blank" rel="noopener noreferrer">
+                {{ $options.i18n.linkText }}
+              </gl-link>
+            </div>
+          </gl-popover>
         </span>
         <gl-button
           v-if="canMerge"
           v-gl-modal-directive="'modal-merge-info'"
-          class="js-merge-locally-button"
+          data-testid="merge-locally-button"
         >
           {{ s__('mrWidget|Merge locally') }}
         </gl-button>

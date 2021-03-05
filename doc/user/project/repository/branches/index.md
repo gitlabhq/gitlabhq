@@ -64,7 +64,7 @@ against accidental deletion and forced pushes.
 
 By default, when you create a new project in GitLab, the initial branch is called `master`.
 For self-managed instances, a GitLab administrator can customize the initial branch name to something
-else. This way, every new project created from then on will start from the custom branch name rather than `master`. To do so:
+else. This way, every new project created from then on starts from the custom branch name rather than `master`. To do so:
 
 1. Go to the **Admin Area > Settings > Repository** and expand **Default initial
    branch name**.
@@ -108,7 +108,7 @@ To compare branches in a repository:
 ![Delete merged branches](img/delete_merged_branches.png)
 
 This feature allows merged branches to be deleted in bulk. Only branches that
-have been merged and [are not protected](../../protected_branches.md) will be deleted as part of
+have been merged and [are not protected](../../protected_branches.md) are deleted as part of
 this operation.
 
 It's particularly useful to clean up old branches that were not deleted
@@ -127,8 +127,8 @@ This feature allows you to search and select branches quickly. Search results ap
 
 Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following:
 
-- `^feature` will only match branch names that begin with 'feature'.
-- `feature$` will only match branch names that end with 'feature'.
+- `^feature` matches only branch names that begin with 'feature'.
+- `feature$` matches only branch names that end with 'feature'.
 
 <!-- ## Troubleshooting
 

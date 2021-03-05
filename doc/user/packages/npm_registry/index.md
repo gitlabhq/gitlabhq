@@ -153,7 +153,7 @@ npm config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' "<your_tok
 - `<your_token>` is your personal access token or deploy token.
 - Replace `gitlab.example.com` with your domain name.
 
-You should now be able to publish and install npm packages in your project.
+You should now be able to install npm packages in your project.
 
 If you encounter an error with [Yarn](https://classic.yarnpkg.com/en/), view
 [troubleshooting steps](#troubleshooting).

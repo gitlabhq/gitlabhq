@@ -19,7 +19,7 @@ project maintainers.
 
 ## Project badges
 
-Badges can be added to a project by Maintainers or Owners, and will then be visible on the project's overview page.
+Badges can be added to a project by Maintainers or Owners, and are visible on the project's overview page.
 If you find that you have to add the same badges to several projects, you may want to add them at the [group level](#group-badges).
 
 To add a new badge to a project:
@@ -52,7 +52,7 @@ To add this badge to a project:
 
 ## Group badges
 
-Badges can be added to a group and will then be visible on every project's
+Badges can be added to a group and are visible on every project's
 overview page that's under that group. In this case, they cannot be edited or
 deleted on the project level. If you need to have individual badges for each
 project, consider adding them on the [project level](#project-badges) or use
@@ -75,7 +75,7 @@ Badges directly associated with a project can be configured on the
 ## Placeholders
 
 The URL a badge points to, as well as the image URL, can contain placeholders
-which will be evaluated when displaying the badge. The following placeholders
+which are evaluated when displaying the badge. The following placeholders
 are available:
 
 - `%{project_path}`: Path of a project including the parent groups
