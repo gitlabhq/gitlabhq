@@ -1478,6 +1478,120 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe "GET /projects/:id/groups" do
+    let_it_be(:root_group) { create(:group, :public, name: 'root group') }
+    let_it_be(:project_group) { create(:group, :public, parent: root_group, name: 'project group') }
+    let_it_be(:shared_group_with_dev_access) { create(:group, :private, parent: root_group, name: 'shared group') }
+    let_it_be(:shared_group_with_reporter_access) { create(:group, :private) }
+    let_it_be(:private_project) { create(:project, :private, group: project_group) }
+    let_it_be(:public_project) { create(:project, :public, group: project_group) }
+
+    before_all do
+      create(:project_group_link, :developer, group: shared_group_with_dev_access, project: private_project)
+      create(:project_group_link, :reporter, group: shared_group_with_reporter_access, project: private_project)
+    end
+
+    shared_examples_for 'successful groups response' do
+      it 'returns an array of groups' do
+        request
+
+        aggregate_failures do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |g| g['name'] }).to match_array(expected_groups.map(&:name))
+        end
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'does not return groups for private projects' do
+        get api("/projects/#{private_project.id}/groups")
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'for public projects' do
+        let(:request) { get api("/projects/#{public_project.id}/groups") }
+
+        it_behaves_like 'successful groups response' do
+          let(:expected_groups) { [root_group, project_group] }
+        end
+      end
+    end
+
+    context 'when authenticated as user' do
+      context 'when user does not have access to the project' do
+        it 'does not return groups' do
+          get api("/projects/#{private_project.id}/groups", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user has access to the project' do
+        let(:request) { get api("/projects/#{private_project.id}/groups", user), params: params }
+        let(:params) { {} }
+
+        before do
+          private_project.add_developer(user)
+        end
+
+        it_behaves_like 'successful groups response' do
+          let(:expected_groups) { [root_group, project_group] }
+        end
+
+        context 'when search by root group name' do
+          let(:params) { { search: 'root' } }
+
+          it_behaves_like 'successful groups response' do
+            let(:expected_groups) { [root_group] }
+          end
+        end
+
+        context 'with_shared option is on' do
+          let(:params) { { with_shared: true } }
+
+          it_behaves_like 'successful groups response' do
+            let(:expected_groups) { [root_group, project_group, shared_group_with_dev_access, shared_group_with_reporter_access] }
+          end
+
+          context 'when shared_min_access_level is set' do
+            let(:params) { super().merge(shared_min_access_level: Gitlab::Access::DEVELOPER) }
+
+            it_behaves_like 'successful groups response' do
+              let(:expected_groups) { [root_group, project_group, shared_group_with_dev_access] }
+            end
+          end
+
+          context 'when search by shared group name' do
+            let(:params) { super().merge(search: 'shared') }
+
+            it_behaves_like 'successful groups response' do
+              let(:expected_groups) { [shared_group_with_dev_access] }
+            end
+          end
+
+          context 'when skip_groups is set' do
+            let(:params) { super().merge(skip_groups: [shared_group_with_dev_access.id, root_group.id]) }
+
+            it_behaves_like 'successful groups response' do
+              let(:expected_groups) { [shared_group_with_reporter_access, project_group] }
+            end
+          end
+        end
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let(:request) { get api("/projects/#{private_project.id}/groups", admin) }
+
+      it_behaves_like 'successful groups response' do
+        let(:expected_groups) { [root_group, project_group] }
+      end
+    end
+  end
+
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
       it 'does not return private projects' do

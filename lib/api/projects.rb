@@ -136,6 +136,17 @@ module API
         present records, options
       end
 
+      def present_groups(groups)
+        options = {
+          with: Entities::PublicGroupDetails,
+          current_user: current_user
+        }
+
+        groups, options = with_custom_attributes(groups, options)
+
+        present paginate(groups), options
+      end
+
       def translate_params_for_compatibility(params)
         params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
         params
@@ -559,6 +570,25 @@ module API
         users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?
 
         present paginate(users), with: Entities::UserBasic
+      end
+
+      desc 'Get ancestor and shared groups for a project' do
+        success Entities::PublicGroupDetails
+      end
+      params do
+        optional :search, type: String, desc: 'Return list of groups matching the search criteria'
+        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
+        optional :with_shared, type: Boolean, default: false,
+                 desc: 'Include shared groups'
+        optional :shared_min_access_level, type: Integer, values: Gitlab::Access.all_values,
+                 desc: 'Limit returned shared groups by minimum access level to the project'
+        use :pagination
+      end
+      get ':id/groups', feature_category: :source_code_management do
+        groups = ::Projects::GroupsFinder.new(project: user_project, current_user: current_user, params: declared_params(include_missing: false)).execute
+        groups = groups.search(params[:search]) if params[:search].present?
+
+        present_groups groups
       end
 
       desc 'Start the housekeeping task for a project' do

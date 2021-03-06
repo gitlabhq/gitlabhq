@@ -1040,6 +1040,43 @@ GET /projects/:id/users
 ]
 ```
 
+## List a project's groups
+
+Get a list of ancestor groups for this project.
+
+```plaintext
+GET /projects/:id/groups
+```
+
+| Attribute                   | Type              | Required               | Description |
+|-----------------------------|-------------------|------------------------|-------------|
+| `id`                        | integer/string    | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
+| `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
+| `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
+| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [access level](members.md#valid-access-levels). |
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+  },
+  {
+    "id": 2,
+    "name": "Shared Group",
+    "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
+    "web_url": "http://gitlab.example.com/groups/foo/bar",
+    "full_name": "Shared Group",
+    "full_path": "foo/shared",
+  }
+]
+```
+
 ## Get project events
 
 Refer to the [Events API documentation](events.md#list-a-projects-visible-events).
