@@ -20,7 +20,6 @@ import Subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue'
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import eventHub from '~/sidebar/event_hub';
 import boardsStore from '../stores/boards_store';
-import RemoveBtn from './sidebar/remove_issue.vue';
 
 export default Vue.extend({
   components: {
@@ -29,7 +28,6 @@ export default Vue.extend({
     GlLabel,
     SidebarEpicsSelect: () =>
       import('ee_component/sidebar/components/sidebar_item_epics_select.vue'),
-    RemoveBtn,
     Subscriptions,
     TimeTracker,
     SidebarAssigneesWidget,

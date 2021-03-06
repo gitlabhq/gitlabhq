@@ -87,9 +87,9 @@ To delete the currently active issue board:
 You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
 
-For examples of using issue boards along with [epics](../group/epics/index.md) **(PREMIUM)**,
-[issue health status](issues/index.md#health-status) **(ULTIMATE)**, and
-[scoped labels](labels.md#scoped-labels) **(PREMIUM)** for various Agile frameworks, check:
+For examples of using issue boards along with [epics](../group/epics/index.md),
+[issue health status](issues/index.md#health-status), and
+[scoped labels](labels.md#scoped-labels) for various Agile frameworks, check:
 
 - The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -485,11 +485,14 @@ the list by filtering by the following:
 
 ### Remove an issue from a list
 
-Removing an issue from a list can be done by clicking the issue card and then
-clicking the **Remove from board** button in the sidebar. The
-respective label is removed.
+> The **Remove from board** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229507) in GitLab 13.10.
 
-![Remove issue from list](img/issue_boards_remove_issue_v13_6.png)
+When an issue should no longer belong to a list, you can remove it.
+The steps depend on the scope of the list:
+
+1. To open the right sidebar, select the issue card.
+1. Remove what's keeping the issue in the list.
+   If it's a label list, remove the label. If it's an [assignee list](#assignee-lists), unassign the user.
 
 ### Filter issues
 

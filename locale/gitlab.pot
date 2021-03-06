@@ -12608,9 +12608,6 @@ msgstr ""
 msgid "Failed to remove a to-do item for the design."
 msgstr ""
 
-msgid "Failed to remove issue from board, please try again."
-msgstr ""
-
 msgid "Failed to remove mirror."
 msgstr ""
 
@@ -25036,9 +25033,6 @@ msgid "Remove fork relationship"
 msgstr ""
 
 msgid "Remove from batch"
-msgstr ""
-
-msgid "Remove from board"
 msgstr ""
 
 msgid "Remove from epic"
