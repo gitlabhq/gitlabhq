@@ -5,6 +5,7 @@ import {
   GlButtonGroup,
   GlDropdown,
   GlDropdownItem,
+  GlFormCheckbox,
   GlSprintf,
   GlLink,
   GlTooltipDirective,
@@ -81,6 +82,7 @@ export default {
     GlButtonGroup,
     GlDropdown,
     GlDropdownItem,
+    GlFormCheckbox,
     GlSkeletonLoader,
     MergeTrainHelperText: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_helper_text.vue'),
@@ -495,16 +497,15 @@ export default {
             </gl-button-group>
             <div class="media-body-wrap space-children">
               <template v-if="shouldShowMergeControls">
-                <label v-if="canRemoveSourceBranch">
-                  <input
-                    id="remove-source-branch-input"
-                    v-model="removeSourceBranch"
-                    :disabled="isRemoveSourceBranchButtonDisabled"
-                    class="js-remove-source-branch-checkbox"
-                    type="checkbox"
-                  />
+                <gl-form-checkbox
+                  v-if="canRemoveSourceBranch"
+                  id="remove-source-branch-input"
+                  v-model="removeSourceBranch"
+                  :disabled="isRemoveSourceBranchButtonDisabled"
+                  class="js-remove-source-branch-checkbox gl-min-h-7 gl-display-flex gl-align-items-center gl-mr-2"
+                >
                   {{ __('Delete source branch') }}
-                </label>
+                </gl-form-checkbox>
 
                 <!-- Placeholder for EE extension of this component -->
                 <squash-before-merge
