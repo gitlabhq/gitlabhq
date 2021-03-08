@@ -42,7 +42,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'terraform',
         'ci_templates',
         'quickactions',
-        'pipeline_authoring'
+        'pipeline_authoring',
+        'epics_usage'
       )
     end
   end

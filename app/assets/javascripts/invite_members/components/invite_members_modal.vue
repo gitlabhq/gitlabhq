@@ -49,7 +49,7 @@ export default {
       required: true,
     },
     defaultAccessLevel: {
-      type: String,
+      type: Number,
       required: true,
     },
     helpLink: {
@@ -280,6 +280,7 @@ export default {
             <gl-dropdown-item
               :key="key"
               active-class="is-active"
+              is-check-item
               :is-checked="key === selectedAccessLevel"
               @click="changeSelectedItem(key)"
             >

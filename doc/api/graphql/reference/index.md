@@ -2139,6 +2139,7 @@ Represents an external issue.
 | `containerRepositoriesMaxCapacity` | Int | The maximum concurrency of container repository sync for this secondary node. |
 | `enabled` | Boolean | Indicates whether this Geo node is enabled. |
 | `filesMaxCapacity` | Int | The maximum concurrency of LFS/attachment backfill for this secondary node. |
+| `groupWikiRepositoryRegistries` | GroupWikiRepositoryRegistryConnection | Find group wiki repository registries on this Geo node. Available only when feature flag `geo_group_wiki_repository_replication` is enabled. |
 | `id` | ID! | ID of this GeoNode. |
 | `internalUrl` | String | The URL defined on the primary node that secondary nodes should use to contact it. |
 | `mergeRequestDiffRegistries` | MergeRequestDiffRegistryConnection | Find merge request diff registries on this Geo node. |
@@ -2281,6 +2282,21 @@ Contains statistics about a group.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `releaseStats` | GroupReleaseStats | Statistics related to releases within the group. |
+
+### `GroupWikiRepositoryRegistry`
+
+Represents the Geo sync and verification state of a group wiki repository.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `createdAt` | Time | Timestamp when the GroupWikiRepositoryRegistry was created |
+| `groupWikiRepositoryId` | ID! | ID of the Group Wiki Repository. |
+| `id` | ID! | ID of the GroupWikiRepositoryRegistry |
+| `lastSyncFailure` | String | Error message during sync of the GroupWikiRepositoryRegistry |
+| `lastSyncedAt` | Time | Timestamp of the most recent successful sync of the GroupWikiRepositoryRegistry |
+| `retryAt` | Time | Timestamp after which the GroupWikiRepositoryRegistry should be resynced |
+| `retryCount` | Int | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry |
+| `state` | RegistryState | Sync state of the GroupWikiRepositoryRegistry |
 
 ### `HttpIntegrationCreatePayload`
 

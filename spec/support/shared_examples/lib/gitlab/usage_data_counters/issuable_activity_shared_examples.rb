@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a tracked issue edit event' do |event|
+RSpec.shared_examples 'a daily tracked issuable event' do
   before do
     stub_application_setting(usage_ping_enabled: true)
   end
@@ -23,5 +23,15 @@ RSpec.shared_examples 'a tracked issue edit event' do |event|
 
   it 'does not track edit actions if author is not present' do
     expect(track_action(author: nil)).to be_nil
+  end
+end
+
+RSpec.shared_examples 'does not track when feature flag is disabled' do |feature_flag|
+  context "when feature flag #{feature_flag} is disabled" do
+    it 'does not track action' do
+      stub_feature_flags(feature_flag => false)
+
+      expect(track_action(author: user1)).to be_nil
+    end
   end
 end

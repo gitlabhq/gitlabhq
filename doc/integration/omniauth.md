@@ -239,7 +239,6 @@ from the OmniAuth provider's documentation.
 If you have successfully set up a provider that is not shipped with GitLab itself,
 please let us know.
 
-Share your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 You can help others by reporting successful configurations and probably share a
 few insights or provide warnings for common errors or pitfalls.
 

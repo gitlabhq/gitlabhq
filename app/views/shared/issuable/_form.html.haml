@@ -72,9 +72,9 @@
 
   %span.gl-mr-3
     - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-success qa-issuable-create-button'
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm qa-issuable-create-button'
     - else
-      = form.submit 'Save changes', class: 'gl-button btn btn-success'
+      = form.submit 'Save changes', class: 'gl-button btn btn-confirm'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .inline.gl-mt-3

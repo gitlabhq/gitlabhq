@@ -383,7 +383,12 @@ Example response:
     "snippet_repositories_checksum_failed_count": 0,
     "snippet_repositories_registry_count": 10,
     "snippet_repositories_synced_count": 6,
-    "snippet_repositories_failed_count": 3
+    "snippet_repositories_failed_count": 3,
+    "group_wiki_repositories_checksummed_count": 10,
+    "group_wiki_repositories_checksum_failed_count": 0,
+    "group_wiki_repositories_registry_count": 10,
+    "group_wiki_repositories_synced_count": 6,
+    "group_wiki_repositories_failed_count": 3
   },
   {
     "geo_node_id": 2,
@@ -477,7 +482,12 @@ Example response:
     "snippet_repositories_checksum_failed_count": 0,
     "snippet_repositories_registry_count": 10,
     "snippet_repositories_synced_count": 6,
-    "snippet_repositories_failed_count": 3
+    "snippet_repositories_failed_count": 3,
+    "group_wiki_repositories_checksummed_count": 10,
+    "group_wiki_repositories_checksum_failed_count": 0,
+    "group_wiki_repositories_registry_count": 10,
+    "group_wiki_repositories_synced_count": 6,
+    "group_wiki_repositories_failed_count": 3
   }
 ]
 ```

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -25,7 +25,6 @@ export default {
     ArtifactsBlock,
     CommitBlock,
     GlButton,
-    GlLink,
     GlIcon,
     JobsContainer,
     JobSidebarRetryButton,
@@ -45,11 +44,8 @@ export default {
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
-    retryButtonClass() {
-      let className = 'btn gl-button gl-text-decoration-none!';
-      className +=
-        this.job.status && this.job.recoverable ? ' btn-confirm' : ' btn-confirm-secondary';
-      return className;
+    retryButtonCategory() {
+      return this.job.status && this.job.recoverable ? 'primary' : 'secondary';
     },
     hasArtifact() {
       return !isEmpty(this.job.artifact);
@@ -76,59 +72,61 @@ export default {
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
       <div class="blocks-container">
-        <div class="block d-flex flex-nowrap align-items-center">
+        <div class="block gl-display-flex gl-flex-nowrap gl-align-items-center">
           <tooltip-on-truncate :title="job.name" truncate-target="child"
             ><h4 class="my-0 mr-2 gl-text-truncate">
               {{ job.name }}
             </h4>
           </tooltip-on-truncate>
-          <div class="flex-grow-1 flex-shrink-0 text-right">
+          <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
             <job-sidebar-retry-button
               v-if="job.retry_path"
-              :class="retryButtonClass"
+              :category="retryButtonCategory"
               :href="job.retry_path"
               :modal-id="$options.forwardDeploymentFailureModalId"
+              variant="confirm"
               data-qa-selector="retry_button"
               data-testid="retry-button"
             />
-            <gl-link
+            <gl-button
               v-if="job.cancel_path"
               :href="job.cancel_path"
-              class="btn gl-button btn-default gl-text-decoration-none!"
               data-method="post"
               data-testid="cancel-button"
               rel="nofollow"
               >{{ $options.i18n.cancel }}
-            </gl-link>
+            </gl-button>
           </div>
 
           <gl-button
             :aria-label="$options.i18n.toggleSidebar"
             category="tertiary"
-            class="gl-md-display-none gl-ml-2 js-sidebar-build-toggle"
+            class="gl-md-display-none gl-ml-2"
             icon="chevron-double-lg-right"
             @click="toggleSidebar"
           />
         </div>
 
         <div v-if="job.terminal_path || job.new_issue_path" class="block retry-link">
-          <gl-link
+          <gl-button
             v-if="job.new_issue_path"
+            category="secondary"
+            variant="confirm"
             :href="job.new_issue_path"
-            class="btn gl-button btn-success-secondary float-left mr-2 gl-text-decoration-none!"
+            class="float-left gl-mr-2"
             data-testid="job-new-issue"
             >{{ $options.i18n.newIssue }}
-          </gl-link>
-          <gl-link
+          </gl-button>
+          <gl-button
             v-if="job.terminal_path"
             :href="job.terminal_path"
-            class="btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
+            class="gl-md-display-block gl-lg-display-block float-left"
             target="_blank"
             data-testid="terminal-link"
           >
             {{ $options.i18n.debug }}
             <gl-icon :size="14" name="external-link" />
-          </gl-link>
+          </gl-button>
         </div>
         <job-sidebar-details-container />
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
