@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.9.3 (2021-03-08)
+
+### Fixed (4 changes)
+
+- Upgrade gitlab-shell to v13.17.0. !55295
+- Update Kroki to fix Wavedrom graphs. !55659
+- Fix disabling of Kroki optional formats. !55665
+- Rename asset_proxy_allowlist column. !55884
+
+
 ## 13.9.2 (2021-03-04)
 
 ### Security (6 changes)
