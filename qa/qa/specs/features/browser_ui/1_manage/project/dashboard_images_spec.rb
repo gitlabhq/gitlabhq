@@ -47,7 +47,7 @@ module QA
         end
       end
 
-      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/463' do
+      context 'when logged in as a new admin', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1727' do
         it_behaves_like 'loads all images' do
           let(:new_user) { @new_admin }
         end
