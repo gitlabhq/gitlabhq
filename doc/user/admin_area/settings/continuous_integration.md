@@ -27,7 +27,7 @@ From now on, every existing project and newly created ones that don't have a
 `.gitlab-ci.yml`, will use the Auto DevOps pipelines.
 
 If you want to disable it for a specific project, you can do so in
-[its settings](../../../topics/autodevops/index.md#enablingdisabling-auto-devops).
+[its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
 ## Maximum artifacts size **(FREE SELF)**
 

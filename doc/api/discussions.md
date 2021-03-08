@@ -15,7 +15,7 @@ Discussions are a set of related notes on:
 - Merge requests
 - Commits
 
-This includes system notes, which are notes about changes to the object (for example, when a milestone changes, there will be a corresponding system note). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
+This includes system notes, which are notes about changes to the object (for example, when a milestone changes, a corresponding system note is added). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
 
 ## Discussions pagination
 

@@ -23,13 +23,13 @@ Git 2.22.0 or later is required.
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
 Storing large binary files in Git is normally discouraged, because every large
-file added will be downloaded by everyone who clones or fetches changes
+file added is downloaded by everyone who clones or fetches changes
 thereafter. This is slow, if not a complete obstruction when working from a slow
 or unreliable internet connection.
 
 Using partial clone with a file size filter solves this problem, by excluding
 troublesome large files from clones and fetches. When Git encounters a missing
-file, it will be downloaded on demand.
+file, it's downloaded on demand.
 
 When cloning a repository, use the `--filter=blob:limit=<size>` argument. For example,
 to clone the repository excluding files larger than 1 megabyte:
@@ -58,7 +58,7 @@ Updating files: 100% (13008/13008), done.
 Filtering content: 100% (3/3), 131.24 MiB | 4.65 MiB/s, done.
 ```
 
-The output will be longer because Git will first clone the repository excluding
+The output is longer because Git first clones the repository excluding
 files larger than 1 megabyte, and second download any missing large files needed
 to checkout the `master` branch.
 
@@ -109,8 +109,8 @@ For more details, see the Git documentation for
 ## Filter by file path
 
 WARNING:
-Partial Clone using `sparse` filters is experimental, slow, and will
-significantly increase Gitaly resource utilization when cloning and fetching.
+Partial Clone using `sparse` filters is experimental, slow, and
+significantly increases Gitaly resource utilization when cloning and fetching.
 
 Deeper integration between Partial Clone and Sparse Checkout is being explored
 through the `--filter=sparse:oid=<blob-ish>` filter spec, but this is highly
@@ -143,7 +143,7 @@ For more details, see the Git documentation for
    ```
 
 1. **Create a new Git repository and fetch.** Support for `--filter=sparse:oid`
-   using the clone command is incomplete, so we will emulate the clone command
+   using the clone command is incomplete, so we emulate the clone command
    by hand, using `git init` and `git fetch`. Follow
    [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/-/issues/4)
    for updates.
@@ -171,7 +171,7 @@ For more details, see the Git documentation for
 
    WARNING:
    Git integrations with `bash`, `zsh`, etc and editors that automatically
-   show Git status information often run `git fetch` which will fetch the
+   show Git status information often run `git fetch` which fetches the
    entire repository. You many need to disable or reconfigure these
    integrations.
 

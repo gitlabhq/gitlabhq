@@ -1375,25 +1375,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.aggregated_metrics_weekly' do
-    subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_weekly }
+  describe '.aggregated_metrics_data' do
+    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate methods', :aggregate_failures do
+      expected_payload = {
+        counts_weekly: { aggregated_metrics: { global_search_gmau: 123 } },
+        counts_monthly: { aggregated_metrics: { global_search_gmau: 456 } },
+        counts: { aggregate_global_search_gmau: 789 }
+      }
 
-    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate#weekly_data', :aggregate_failures do
       expect_next_instance_of(::Gitlab::Usage::Metrics::Aggregates::Aggregate) do |instance|
         expect(instance).to receive(:weekly_data).and_return(global_search_gmau: 123)
+        expect(instance).to receive(:monthly_data).and_return(global_search_gmau: 456)
+        expect(instance).to receive(:all_time_data).and_return(global_search_gmau: 789)
       end
-      expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
-    end
-  end
-
-  describe '.aggregated_metrics_monthly' do
-    subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_monthly }
-
-    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate#monthly_data', :aggregate_failures do
-      expect_next_instance_of(::Gitlab::Usage::Metrics::Aggregates::Aggregate) do |instance|
-        expect(instance).to receive(:monthly_data).and_return(global_search_gmau: 123)
-      end
-      expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
+      expect(described_class.aggregated_metrics_data).to eq(expected_payload)
     end
   end
 

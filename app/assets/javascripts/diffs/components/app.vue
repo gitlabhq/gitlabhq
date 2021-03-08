@@ -125,7 +125,7 @@ export default {
       required: false,
       default: '',
     },
-    mrReviews: {
+    rehydratedMrReviews: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -164,6 +164,7 @@ export default {
       'canMerge',
       'hasConflicts',
       'viewDiffsFileByFile',
+      'mrReviews',
     ]),
     ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
@@ -268,7 +269,7 @@ export default {
       showSuggestPopover: this.showSuggestPopover,
       viewDiffsFileByFile: fileByFile(this.fileByFileUserPreference),
       defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
-      mrReviews: this.mrReviews || {},
+      mrReviews: this.rehydratedMrReviews,
     });
 
     if (this.shouldShow) {
@@ -513,7 +514,7 @@ export default {
               v-for="(file, index) in diffs"
               :key="file.newPath"
               :file="file"
-              :reviewed="fileReviews[index]"
+              :reviewed="fileReviews[file.id]"
               :is-first-file="index === 0"
               :is-last-file="index === diffFilesLength - 1"
               :help-page-path="helpPagePath"

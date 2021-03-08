@@ -142,7 +142,7 @@ setup-test-env:
   extends:
     - .rails-job-base
     - .setup-test-env-cache
-    - .rails:rules:default-refs-code-backstage-qa
+    - .rails:rules:code-backstage-qa
     - .use-pg11
   stage: prepare
   variables:
@@ -244,7 +244,7 @@ update-static-analysis-cache:
 static-analysis:
   extends:
     - .static-analysis-base
-    - .rails:rules:default-refs-code-backstage-qa
+    - .rails:rules:code-backstage-qa
   stage: test
   parallel: 4
   script:

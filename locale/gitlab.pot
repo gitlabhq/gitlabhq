@@ -19638,6 +19638,9 @@ msgstr ""
 msgid "Mirroring will only be available if the feature is included in the plan of the selected group or user."
 msgstr ""
 
+msgid "Missing"
+msgstr ""
+
 msgid "Missing OAuth configuration for GitHub."
 msgstr ""
 
@@ -25330,6 +25333,9 @@ msgstr ""
 msgid "Reports|An error occurred while loading report"
 msgstr ""
 
+msgid "Reports|Base report parsing error:"
+msgstr ""
+
 msgid "Reports|Class"
 msgstr ""
 
@@ -25350,6 +25356,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Reports|Failure"
+msgstr ""
+
+msgid "Reports|Head report parsing error:"
 msgstr ""
 
 msgid "Reports|Identifier"

@@ -934,6 +934,10 @@ To add data for aggregated metrics into Usage Ping payload you should add corres
 - `operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
   - `OR`: Removes duplicates and counts all entries that triggered any of listed events.
   - `AND`: Removes duplicates and counts all elements that were observed triggering all of following events.
+- `time_frame`: One or more valid time frames. Use these to limit the data included in aggregated metric to events within a specific date-range. Valid time frames are:
+  - `7d`: Last seven days of data.
+  - `28d`: Last twenty eight days of data.
+  - `all`: All historical data, only available for `database` sourced aggregated metrics.
 - `source`: Data source used to collect all events data included in aggregated metric. Valid data sources are:
   - [`database`](#database-sourced-aggregated-metrics)
   - [`redis`](#redis-sourced-aggregated-metrics)
@@ -949,18 +953,24 @@ To add data for aggregated metrics into Usage Ping payload you should add corres
 Example aggregated metric entries:
 
 ```yaml
-- name: product_analytics_test_metrics_union_redis_sourced
+- name: example_metrics_union
   operator: OR
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
   source: redis
-- name: product_analytics_test_metrics_intersection_with_feautre_flag_database_sourced
+  time_frame:
+    - 7d
+    - 28d
+- name: example_metrics_intersection
   operator: AND
   source: database
+  time_frame:
+    - 28d
+    - all
   events: ['dependency_scanning_pipeline_all_time', 'container_scanning_pipeline_all_time']
   feature_flag: example_aggregated_metric
 ```
 
-Aggregated metrics are added under `aggregated_metrics` key in both `counts_weekly` and `counts_monthly` top level keys in Usage Ping payload.
+Aggregated metrics collected in `7d` and `28d` time frames are added into Usage Ping payload under the `aggregated_metrics` sub-key in the `counts_weekly` and `counts_monthly` top level keys.
 
 ```ruby
 {
@@ -973,10 +983,31 @@ Aggregated metrics are added under `aggregated_metrics` key in both `counts_week
     :project_snippets => 407,
     :promoted_issues => 719,
     :aggregated_metrics => {
-      :product_analytics_test_metrics_union => 7,
-      :product_analytics_test_metrics_intersection_with_feautre_flag => 2
+      :example_metrics_union => 7,
+      :example_metrics_intersection => 2
     },
     :snippets => 2513
+  }
+}
+```
+
+Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name. 
+
+For example:
+
+`example_metrics_intersection`
+
+Becomes:
+
+`counts.aggregate_example_metrics_intersection` 
+
+```ruby
+{
+  :counts => {
+    :deployments => 11003,
+    :successful_deployments => 178,
+    :failed_deployments => 1275,
+    :aggregate_example_metrics_intersection => 12
   }
 }
 ```
@@ -992,6 +1023,7 @@ you must fulfill the following requirements:
    [`known_events/*.yml`](#known-events-are-added-automatically-in-usage-data-payload) files.
 1. All events listed at `events` attribute must have the same `redis_slot` attribute.
 1. All events listed at `events` attribute must have the same `aggregation` attribute.
+1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.
 
 ### Database sourced aggregated metrics
 
@@ -1051,17 +1083,24 @@ end
 #### Add new aggregated metric definition
 
 After all metrics are persisted, you can add an aggregated metric definition at
-[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/). When adding definitions for metrics names listed in the
-`events:` attribute, use the same names you passed in the `metric_name` argument
-while persisting metrics in previous step.
+[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/).
+
+To declare the aggregate of metrics collected with [Estimated Batch Counters](#estimated-batch-counters),
+you must fulfill the following requirements:
+
+- Metrics names listed in the `events:` attribute, have to use the same names you passed in the `metric_name` argument while persisting metrics in previous step.
+- Every metric listed in the `events:` attribute, has to be persisted for **every** selected `time_frame:` value.
 
 Example definition:
 
 ```yaml
-- name: product_analytics_test_metrics_intersection_database_sourced
+- name: example_metrics_intersection_database_sourced
   operator: AND
   source: database
   events: ['dependency_scanning_pipeline', 'container_scanning_pipeline']
+  time_frame:
+    - 28d
+    - all
 ```
 
 ## Example Usage Ping payload

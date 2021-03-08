@@ -16,7 +16,7 @@ This API is a project-specific version of these endpoints:
 - [Issue and merge request templates](../user/project/description_templates.md)
   ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37890) in GitLab 13.3)
 
-It deprecates these endpoints, which will be removed for API version 5.
+It deprecates these endpoints, which are scheduled for removal in API version 5.
 
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.

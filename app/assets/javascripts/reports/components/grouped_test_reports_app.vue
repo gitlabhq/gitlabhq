@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { once } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf, s__ } from '~/locale';
@@ -26,6 +26,7 @@ export default {
     IssuesList,
     Modal,
     GlButton,
+    GlIcon,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -159,6 +160,18 @@ export default {
             <template #summary>
               <div class="gl-display-inline-flex gl-flex-direction-column">
                 <div>{{ reportText(report) }}</div>
+                <div v-if="report.suite_errors">
+                  <div v-if="report.suite_errors.head">
+                    <gl-icon name="warning" class="gl-mx-2 gl-text-orange-500" />
+                    {{ s__('Reports|Head report parsing error:') }}
+                    {{ report.suite_errors.head }}
+                  </div>
+                  <div v-if="report.suite_errors.base">
+                    <gl-icon name="warning" class="gl-mx-2 gl-text-orange-500" />
+                    {{ s__('Reports|Base report parsing error:') }}
+                    {{ report.suite_errors.base }}
+                  </div>
+                </div>
                 <div v-if="hasRecentFailures(report.summary)">
                   {{ recentFailuresText(report.summary) }}
                 </div>

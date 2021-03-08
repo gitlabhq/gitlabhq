@@ -79,7 +79,7 @@ An individual user can be added as an approver for a project if they are a membe
 - The project's immediate parent group.
 - A group that has access to the project via a [share](../members/share_project_with_groups.md).
 
-A group of users can also be added as approvers, though they will only count as approvers if
+A group of users can also be added as approvers, though they only count as approvers if
 they have direct membership to the group. In the future, group approvers may be
 [restricted to only groups with share access to the project](https://gitlab.com/gitlab-org/gitlab/-/issues/2048).
 

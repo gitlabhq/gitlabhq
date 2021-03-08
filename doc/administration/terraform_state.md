@@ -20,6 +20,33 @@ These locations can be configured using the options described below.
 
 Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer-terraform-state-dependency-proxy) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
 
+## Disabling Terraform state
+
+To disable terraform state site-wide, follow the steps below.
+A GitLab administrator may want to disable Terraform state to reduce diskspace or if Terraform is not used in your instance.
+To do so, follow the steps below according to your installation's type.
+
+**In Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+   ```ruby
+   gitlab_rails['terraform_state_enabled'] = false
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**In installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
+
+   ```yaml
+   terraform_state:
+     enabled: false
+   ```
+
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+
 ## Using local storage
 
 The default configuration uses local storage. To change the location where

@@ -388,7 +388,7 @@ You can update project approval rules using the following endpoint:
 PUT /projects/:id/approval_rules/:approval_rule_id
 ```
 
-**Important:** Approvers and groups not in the `users`/`groups` parameters will be **removed**
+**Important:** Approvers and groups not in the `users`/`groups` parameters are **removed**
 
 **Parameters:**
 
@@ -516,7 +516,7 @@ the following endpoint:
 PUT /projects/:id/approvers
 ```
 
-**Important:** Approvers and groups not in the request will be **removed**
+**Important:** Approvers and groups not in the request are **removed**
 
 **Parameters:**
 
@@ -784,7 +784,7 @@ the following endpoint:
 PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 ```
 
-**Important:** Approvers and groups not in the request will be **removed**
+**Important:** Approvers and groups not in the request are **removed**
 
 **Parameters:**
 
@@ -855,8 +855,8 @@ You can request information about a merge request's approval state by using the 
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 ```
 
-The `approval_rules_overwritten` will be `true` if the merge request level rules
-are created for the merge request. If there's none, it'll be `false`.
+The `approval_rules_overwritten` are `true` if the merge request level rules
+are created for the merge request. If there are none, it is `false`.
 
 This includes additional information about the users who have already approved
 (`approved_by`) and whether a rule is already approved (`approved`).
@@ -1019,8 +1019,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 | `group_ids`                | Array   | no       | The ids of groups as approvers                 |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
-`groups` of project-level rule will be copied. The `approvals_required` specified
-will be used.
+`groups` of project-level rule are copied. The `approvals_required` specified
+is used.
 
 ```json
 {
@@ -1091,7 +1091,7 @@ You can update merge request approval rules using the following endpoint:
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-**Important:** Approvers and groups not in the `users`/`groups` parameters will be **removed**
+**Important:** Approvers and groups not in the `users`/`groups` parameters are **removed**
 
 **Important:** Updating a `report_approver` or `code_owner` rule is not allowed.
 These are system generated rules.
@@ -1212,7 +1212,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must
 match the current HEAD of the merge request for the approval to be added. If it
-does not match, the response code will be `409`.
+does not match, the response code is `409`.
 
 ```json
 {

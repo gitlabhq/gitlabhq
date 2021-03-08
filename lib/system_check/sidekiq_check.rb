@@ -15,7 +15,7 @@ module SystemCheck
     def check_sidekiq_running
       $stdout.print "Running? ... "
 
-      if sidekiq_process_count > 0
+      if sidekiq_worker_process_count > 0
         $stdout.puts "yes".color(:green)
       else
         $stdout.puts "no".color(:red)
@@ -31,15 +31,16 @@ module SystemCheck
     end
 
     def only_one_sidekiq_running
-      process_count = sidekiq_process_count
-      return if process_count == 0
+      worker_count = sidekiq_worker_process_count
+      cluster_count = sidekiq_cluster_process_count
+      return if worker_count == 0
 
-      $stdout.print 'Number of Sidekiq processes ... '
+      $stdout.print 'Number of Sidekiq processes (cluster/worker) ... '
 
-      if process_count == 1
-        $stdout.puts '1'.color(:green)
+      if (cluster_count == 1 && worker_count > 0) || (cluster_count == 0 && worker_count == 1)
+        $stdout.puts "#{cluster_count}/#{worker_count}".color(:green)
       else
-        $stdout.puts "#{process_count}".color(:red)
+        $stdout.puts "#{cluster_count}/#{worker_count}".color(:red)
         try_fixing_it(
           'sudo service gitlab stop',
           "sudo pkill -u #{gitlab_user} -f sidekiq",
@@ -50,9 +51,14 @@ module SystemCheck
       end
     end
 
-    def sidekiq_process_count
+    def sidekiq_worker_process_count
       ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
-      ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
+      ps_ux.lines.grep(/sidekiq \d+\.\d+\.\d+/).count
+    end
+
+    def sidekiq_cluster_process_count
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
+      ps_ux.lines.grep(/sidekiq-cluster/).count
     end
   end
 end

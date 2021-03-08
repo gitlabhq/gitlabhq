@@ -9,7 +9,7 @@ type: index
 # GitLab basics guides **(FREE)**
 
 This section provides resources to help you start working with GitLab and Git by focusing
-on the basic features that you will need to use.
+on the basic features that you must use.
 
 This documentation is split into the following groups:
 
@@ -41,7 +41,7 @@ The following are guides to basic GitLab functionality:
 If you're familiar with Git on the command line, you can interact with your GitLab
 projects just as you would with any other Git repository.
 
-These resources will help you get further acclimated to working on the command line.
+These resources can help you get further acclimated to working on the command line.
 
 - [Start using Git on the command line](start-using-git.md), for some simple Git commands.
 - [Command line basics](command-line-commands.md), to create and edit files using the command line.

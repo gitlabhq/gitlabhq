@@ -610,10 +610,9 @@
     - <<: *if-merge-request
       changes: ["config/**/*"]
 
-.rails:rules:default-refs-code-backstage-qa:
+.rails:rules:code-backstage-qa:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+    - changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-migration:
@@ -825,8 +824,7 @@
 
 .rails:rules:detect-tests:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
+    - changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:rspec-foss-impact:
@@ -1139,8 +1137,7 @@
 #######################
 .test-metadata:rules:retrieve-tests-metadata:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
+    - changes: *code-backstage-patterns
       when: on_success
     - <<: *if-merge-request-title-run-all-rspec
 

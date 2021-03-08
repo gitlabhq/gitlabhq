@@ -55,13 +55,12 @@ There are several components that work in concert for the Agent to accomplish Gi
   Agent which repositories to synchronize with the cluster.
 - A manifest repository that contains manifest files. Any changes to manifest files are applied to the cluster.
 
-These repositories might be the same GitLab project or separate projects.
+You can use the same GitLab project or separate projects for configuration and manifest files, as follows:
 
-NOTE:
-GitLab recommends you use the same GitLab project for the agent configuration
-and manifest repositories. Our backlog contains issues for adding support for
+- Single GitLab project (recommended): when you use a single repository to hold both the manifest and the configuration files, these projects can be either private or public, as you prefer.
+- Two GitLab projects: when you opt to use two different GitLab projects, one for manifest files, and another for configuration files, the manifests project must be private, while the configuration project can be either private or public. Our backlog contains issues for adding support for
 [private manifest repositories outside of the configuration project](https://gitlab.com/gitlab-org/gitlab/-/issues/220912) and
-[group level agents](https://gitlab.com/gitlab-org/gitlab/-/issues/283885).
+[group level agents](https://gitlab.com/gitlab-org/gitlab/-/issues/283885) in the future.
 
 For more details, please refer to our [full architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md#high-level-architecture) in the Agent project.
 

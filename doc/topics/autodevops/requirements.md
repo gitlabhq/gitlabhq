@@ -101,7 +101,7 @@ If you don't have Kubernetes or Prometheus installed, then
 [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring)
 are skipped.
 
-After all requirements are met, you can [enable Auto DevOps](index.md#enablingdisabling-auto-devops).
+After all requirements are met, you can [enable Auto DevOps](index.md#enable-or-disable-auto-devops).
 
 ## Auto DevOps requirements for Amazon ECS
 

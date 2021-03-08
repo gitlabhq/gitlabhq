@@ -40,9 +40,9 @@ module Gitlab
 
       FALLBACK = -1
       DISTRIBUTED_HLL_FALLBACK = -2
-      ALL_TIME_PERIOD_HUMAN_NAME = "all_time"
-      WEEKLY_PERIOD_HUMAN_NAME = "weekly"
-      MONTHLY_PERIOD_HUMAN_NAME = "monthly"
+      ALL_TIME_TIME_FRAME_NAME = "all"
+      SEVEN_DAYS_TIME_FRAME_NAME = "7d"
+      TWENTY_EIGHT_DAYS_TIME_FRAME_NAME = "28d"
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch

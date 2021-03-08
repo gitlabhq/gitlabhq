@@ -22,7 +22,7 @@ More information is also available on the [Git website](https://git-scm.com).
 
 ## Getting started
 
-The following resources will help you get started with Git:
+The following resources can help you get started with Git:
 
 - [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4),
   a video introduction to Git.

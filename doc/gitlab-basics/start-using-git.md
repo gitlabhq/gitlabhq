@@ -17,10 +17,10 @@ directly in the browser, you’ll eventually need to use Git through the command
 tasks.
 
 For example, if you need to fix complex merge conflicts, rebase branches,
-merge manually, or undo and roll back commits, you'll need to use Git from
+merge manually, or undo and roll back commits, you musto use Git from
 the command line and then push your changes to the remote server.
 
-This guide will help you get started with Git through the command line and can be your reference
+This guide helps you get started with Git through the command line and can be your reference
 for Git commands in the future. If you're only looking for a quick reference of Git commands, you
 can download the GitLab [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
@@ -39,12 +39,12 @@ You don't need a GitLab account to use Git locally, but for the purpose of this 
 recommend registering and signing into your account before starting. Some commands need a
 connection between the files in your computer and their version on a remote server.
 
-You'll also need to open a [command shell](#command-shell) and have
+You must also open a [command shell](#command-shell) and have
 [Git installed](#install-git) in your computer.
 
 ### Command shell
 
-To execute Git commands in your computer, you'll need to open a command shell (also known as command
+To execute Git commands in your computer, you must open a command shell (also known as command
 prompt, terminal, and command line) of your preference. Here are some suggestions:
 
 - For macOS users:
@@ -66,18 +66,18 @@ computer:
 git --version
 ```
 
-If you have Git installed, the output will be:
+If you have Git installed, the output is:
 
 ```shell
 git version X.Y.Z
 ```
 
-If your computer doesn't recognize `git` as a command, you'll need to [install Git](../topics/git/how_to_install_git/index.md).
+If your computer doesn't recognize `git` as a command, you must [install Git](../topics/git/how_to_install_git/index.md).
 After that, run `git --version` again to verify whether it was correctly installed.
 
 ## Configure Git
 
-To start using Git from your computer, you'll need to enter your credentials (user name and email)
+To start using Git from your computer, you must enter your credentials (user name and email)
 to identify you as the author of your work. The user name and email should match the ones you're
 using on GitLab.
 
@@ -100,7 +100,7 @@ git config --global --list
 ```
 
 The `--global` option tells Git to always use this information for anything you do on your system.
-If you omit `--global` or use `--local`, the configuration will be applied only to the current
+If you omit `--global` or use `--local`, the configuration is applied only to the current
 repository.
 
 You can read more on how Git manages configurations in the
@@ -113,7 +113,7 @@ You have two options:
 
 - Authenticate on a project-by-project basis through HTTPS, and enter your credentials every time
   you perform an operation between your computer and GitLab.
-- Authenticate through SSH once and GitLab won't ask your credentials every time you pull, push,
+- Authenticate through SSH once and GitLab no longer requests your credentials every time you pull, push,
   and clone.
 
 To start the authentication process, we'll [clone](#clone-a-repository) an existing repository
@@ -121,8 +121,8 @@ to our computer:
 
 - If you want to use **SSH** to authenticate, follow the instructions on the [SSH documentation](../ssh/README.md)
   to set it up before cloning.
-- If you want to use **HTTPS**, GitLab will request your user name and password:
-  - If you have 2FA enabled for your account, you'll have to use a [Personal Access Token](../user/profile/personal_access_tokens.md)
+- If you want to use **HTTPS**, GitLab requests your user name and password:
+  - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
     with **read_repository** or **write_repository** permissions instead of your account's password.
     Create one before cloning.
   - If you don't have 2FA enabled, use your account's password.
@@ -161,11 +161,11 @@ Often, the word "repository" is shortened to "repo".
 ### Fork
 
 When you want to copy someone else's repository, you [**fork**](../user/project/repository/forking_workflow.md#creating-a-fork)
-the project. By forking it, you'll create a copy of the project into your own
+the project. By forking it, you create a copy of the project into your own
 namespace to have read and write permissions to modify the project files
 and settings.
 
-For example, if you fork this project, <https://gitlab.com/gitlab-tests/sample-project/> into your namespace, you'll create your own copy of the repository in your namespace (`https://gitlab.com/your-namespace/sample-project/`). From there, you can clone it into your computer,
+For example, if you fork this project, <https://gitlab.com/gitlab-tests/sample-project/> into your namespace, you create your own copy of the repository in your namespace (`https://gitlab.com/your-namespace/sample-project/`). From there, you can clone it into your computer,
 work on its files, and (optionally) submit proposed changes back to the
 original repository if you'd like.
 
@@ -185,19 +185,19 @@ After you saved a local copy of a repository and modified its files on your comp
 changes to GitLab. This is referred to as **pushing** to GitLab, as this is achieved by the command
 [`git push`](#send-changes-to-gitlabcom).
 
-When the remote repository changes, your local copy will be behind it. You can update it with the new
+When the remote repository changes, your local copy is behind it. You can update it with the new
 changes in the remote repository.
 This is referred to as **pulling** from GitLab, as this is achieved by the command
 [`git pull`](#download-the-latest-changes-in-the-project).
 
 ## Basic Git commands
 
-For the purposes of this guide, we will use this example project on GitLab.com:
+For the purposes of this guide, we use this example project on GitLab.com:
 [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
 
 To use it, log into GitLab.com and fork the example project into your
 namespace to have your own copy to playing with. Your sample
-project will be available under `https://gitlab.com/<your-namespace>/sample-project/`.
+project is available under `https://gitlab.com/<your-namespace>/sample-project/`.
 
 You can also choose any other project to follow this guide. Then, replace the
 example URLs with your own project's.
@@ -213,7 +213,7 @@ To start working locally on an existing remote repository, clone it with the
 command `git clone <repository path>`. You can either clone it via [HTTPS](#clone-via-https) or [SSH](#clone-via-ssh), according to your preferred [authentication method](#git-authentication-methods).
 
 You can find both paths (HTTPS and SSH) by navigating to your project's landing page
-and clicking **Clone**. GitLab will prompt you with both paths, from which you can copy
+and clicking **Clone**. GitLab prompts you with both paths, from which you can copy
 and paste in your command line.
 
 For example, considering our [sample project](https://gitlab.com/gitlab-tests/sample-project/):
@@ -224,7 +224,7 @@ For example, considering our [sample project](https://gitlab.com/gitlab-tests/sa
 To get started, open a terminal window in the directory you wish to add the
 repository files into, and run one of the `git clone` commands as described below.
 
-Both commands will download a copy of the files in a folder named after the project's
+Both commands download a copy of the files in a folder named after the project's
 name and preserve the connection with the remote repository.
 You can then navigate to the new directory with `cd sample-project` and start working on it
 locally.
@@ -253,8 +253,8 @@ git clone git@gitlab.com:gitlab-org/gitlab.git
 ### Convert a local directory into a repository
 
 When you have your files in a local folder and want to convert it into
-a repository, you'll need to _initialize_ the folder through the `git init`
-command. This will instruct Git to begin to track that directory as a
+a repository, you must _initialize_ the folder through the `git init`
+command. This instructs Git to begin to track that directory as a
 repository. To do so, open the terminal on the directory you'd like to convert
 and run:
 
@@ -271,9 +271,9 @@ so that Git can upload your files into the correct project.
 
 #### Add a remote repository
 
-By "adding a remote repository" to your local directory you'll tell Git that
+By "adding a remote repository" to your local directory you tell Git that
 the path to that specific project in GitLab corresponds to that specific
-folder you have in your computer. This way, your local folder will be
+folder you have in your computer. This way, your local folder is
 identified by Git as the local content for that specific remote project.
 
 To add a remote repository to your local copy:
@@ -320,7 +320,7 @@ The `-v` flag stands for verbose.
 
 ## Branching
 
-If you want to add code to a project but you're not sure if it will work properly, or you're
+If you want to add code to a project but you're not sure if it works properly, or you're
 collaborating on the project with others, and don't want your work to get mixed up, it's a good idea
 to work on a different **branch**.
 
@@ -384,7 +384,7 @@ git diff
 
 ### Add and commit local changes
 
-You'll see any local changes in red when you type `git status`. These changes may
+Local changes are shown in red when you type `git status`. These changes may
 be new, modified, or deleted files/folders. Use `git add` to first stage (prepare)
 a local file/folder for committing. Then use `git commit` to commit (save) the staged
 files:
@@ -420,8 +420,8 @@ For example, to push your local commits to the _`master`_ branch of the _`origin
 git push origin master
 ```
 
-On certain occasions, Git won't allow you to push to your repository, and then
-you'll need to [force an update](../topics/git/git_rebase.md#force-push).
+On certain occasions, Git disallows pushes to your repository, and then
+you must [force an update](../topics/git/git_rebase.md#force-push).
 
 NOTE:
 To create a merge request from a fork to an upstream repository, see the

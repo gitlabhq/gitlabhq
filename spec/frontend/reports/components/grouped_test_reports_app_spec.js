@@ -295,6 +295,27 @@ describe('Grouped test reports app', () => {
     });
   });
 
+  describe('with a report parsing errors', () => {
+    beforeEach(() => {
+      const reports = failedReport;
+      reports.suites[0].suite_errors = {
+        head: 'JUnit XML parsing failed: 2:24: FATAL: attributes construct error',
+        base: 'JUnit data parsing failed: string not matched',
+      };
+      setReports(reports);
+      mountComponent();
+    });
+
+    it('renders the error messages', () => {
+      expect(findSummaryDescription().text()).toContain(
+        'JUnit XML parsing failed: 2:24: FATAL: attributes construct error',
+      );
+      expect(findSummaryDescription().text()).toContain(
+        'JUnit data parsing failed: string not matched',
+      );
+    });
+  });
+
   describe('with error', () => {
     beforeEach(() => {
       mockStore.state.isLoading = false;

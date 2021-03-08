@@ -34,27 +34,106 @@ For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://yo
 
 For requirements, read [Requirements for Auto DevOps](requirements.md) for more information.
 
-For a developer's guide, read [Auto DevOps development guide](../../development/auto_devops.md).
+For GitLab contributors, see the [Auto DevOps development guide](../../development/auto_devops.md).
 
-## Enabled by default
+## Enable or disable Auto DevOps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
+Auto DevOps is enabled by default for all projects in self-managed instances
+(as of [GitLab 11.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729)),
+but not for GitLab SaaS instances.
 
-On self-managed instances, Auto DevOps is enabled by default for all projects.
-It attempts to run on all pipelines in each project. An instance administrator can
-enable or disable this default in the
-[Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
-Auto DevOps automatically disables in individual projects on their first pipeline failure,
+When first using Auto DevOps, review the [requirements](requirements.md) to
+ensure all the necessary components to make full use of Auto DevOps are
+available. First-time users should follow the [quick start guide](quick_start_guide.md).
 
-NOTE:
-Auto DevOps is not enabled by default on GitLab.com.
+Depending on your instance type, you can enable or disable Auto DevOps at the
+following levels:
 
-Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655), Auto DevOps
-runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
+| Instance type       | [Project](#at-the-project-level) | [Group](#at-the-group-level) | [Instance](#at-the-instance-level) (Admin Area)  |
+|---------------------|------------------------|------------------------|------------------------|
+| GitLab SaaS         | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+
+When you enable AutoDevOps for your instance, it attempts to run on all
+pipelines in each project, but will automatically disable itself for individual
+projects on their first pipeline failure. An instance administrator can enable
+or disable this default in the [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
+
+Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655),
+Auto DevOps runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
 exists.
 
-If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the project,
-it continues to be used, whether or not Auto DevOps is enabled.
+If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the
+project, it isn't changed and won't be affected by Auto DevOps.
+
+### At the project level
+
+When you enable Auto DevOps for a project, ensure that your project does not have a `.gitlab-ci.yml` present. If it exists, remove it before enabling Auto DevOps.
+
+To enable it:
+
+1. Go to your project's **Settings > CI/CD > Auto DevOps**.
+1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
+1. (Optional, but recommended) When enabling, you can add in the
+   [base domain](#auto-devops-base-domain) Auto DevOps uses to
+   [deploy your application](stages.md#auto-deploy),
+   and choose the [deployment strategy](#deployment-strategy).
+1. Click **Save changes** for the changes to take effect.
+
+After enabling the feature, an Auto DevOps pipeline is triggered on the `master` branch.
+
+### At the group level
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
+
+Only administrators and group owners can enable or disable Auto DevOps at the group level.
+
+When enabling or disabling Auto DevOps at group level, group configuration is
+implicitly used for the subgroups and projects inside that group, unless Auto DevOps
+is specifically enabled or disabled on the subgroup or project.
+
+To enable or disable Auto DevOps at the group level:
+
+1. Go to your group's **Settings > CI/CD > Auto DevOps** page.
+1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
+1. Click **Save changes** for the changes to take effect.
+
+### At the instance level **(FREE SELF)**
+
+Even when disabled at the instance level, group owners and project maintainers
+can still enable Auto DevOps at the group and project level, respectively.
+
+1. As an administrator, go to **Admin Area > Settings > CI/CD > Continuous Integration and Deployment**.
+1. Select **Default to Auto DevOps pipeline for all projects** to enable it.
+1. (Optional) You can set up the Auto DevOps [base domain](#auto-devops-base-domain),
+   for Auto Deploy and Auto Review Apps to use.
+1. Click **Save changes** for the changes to take effect.
+
+### Deployment strategy
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
+
+You can change the deployment strategy used by Auto DevOps by visiting your
+project's **Settings > CI/CD > Auto DevOps**. The following options
+are available:
+
+- **Continuous deployment to production**: Enables [Auto Deploy](stages.md#auto-deploy)
+  with `master` branch directly deployed to production.
+- **Continuous deployment to production using timed incremental rollout**: Sets the
+  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#timed-incremental-rollout-to-production) variable
+  to `timed`. Production deployments execute with a 5 minute delay between
+  each increment in rollout.
+- **Automatic deployment to staging, manual deployment to production**: Sets the
+  [`STAGING_ENABLED`](customize.md#deploy-policy-for-staging-and-production-environments) and
+  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#incremental-rollout-to-production) variables
+  to `1` and `manual`. This means:
+
+  - `master` branch is directly deployed to staging.
+  - Manual actions are provided for incremental rollout to production.
+
+NOTE:
+Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
+to minimize downtime and risk.
 
 ## Quick start
 
@@ -178,83 +257,6 @@ to the Kubernetes pods running your application.
 ### AWS ECS
 
 See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requirements-for-amazon-ecs).
-
-## Enabling/Disabling Auto DevOps
-
-When first using Auto DevOps, review the [requirements](requirements.md) to ensure
-all the necessary components to make full use of Auto DevOps are available. First-time
-users should follow the [quick start guide](quick_start_guide.md).
-
-GitLab.com users can enable or disable Auto DevOps only at the project level.
-Self-managed users can enable or disable Auto DevOps at the project, group, or
-instance level.
-
-### At the project level
-
-If enabling, check that your project does not have a `.gitlab-ci.yml`, or if one exists, remove it.
-
-1. Go to your project's **Settings > CI/CD > Auto DevOps**.
-1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
-1. (Optional, but recommended) When enabling, you can add in the
-   [base domain](#auto-devops-base-domain) Auto DevOps uses to
-   [deploy your application](stages.md#auto-deploy),
-   and choose the [deployment strategy](#deployment-strategy).
-1. Click **Save changes** for the changes to take effect.
-
-After enabling the feature, an Auto DevOps pipeline is triggered on the `master` branch.
-
-### At the group level
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
-
-Only administrators and group owners can enable or disable Auto DevOps at the group level.
-
-When enabling or disabling Auto DevOps at group level, group configuration is
-implicitly used for the subgroups and projects inside that group, unless Auto DevOps
-is specifically enabled or disabled on the subgroup or project.
-
-To enable or disable Auto DevOps at the group level:
-
-1. Go to your group's **Settings > CI/CD > Auto DevOps** page.
-1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
-1. Click **Save changes** for the changes to take effect.
-
-### At the instance level (Administrators only)
-
-Even when disabled at the instance level, group owners and project maintainers can still enable
-Auto DevOps at the group and project level, respectively.
-
-1. Go to **Admin Area > Settings > CI/CD > Continuous Integration and Deployment**.
-1. Select **Default to Auto DevOps pipeline for all projects** to enable it.
-1. (Optional) You can set up the Auto DevOps [base domain](#auto-devops-base-domain),
-   for Auto Deploy and Auto Review Apps to use.
-1. Click **Save changes** for the changes to take effect.
-
-### Deployment strategy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
-
-You can change the deployment strategy used by Auto DevOps by visiting your
-project's **Settings > CI/CD > Auto DevOps**. The following options
-are available:
-
-- **Continuous deployment to production**: Enables [Auto Deploy](stages.md#auto-deploy)
-  with `master` branch directly deployed to production.
-- **Continuous deployment to production using timed incremental rollout**: Sets the
-  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#timed-incremental-rollout-to-production) variable
-  to `timed`. Production deployments execute with a 5 minute delay between
-  each increment in rollout.
-- **Automatic deployment to staging, manual deployment to production**: Sets the
-  [`STAGING_ENABLED`](customize.md#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#incremental-rollout-to-production) variables
-  to `1` and `manual`. This means:
-
-  - `master` branch is directly deployed to staging.
-  - Manual actions are provided for incremental rollout to production.
-
-NOTE:
-Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
-to minimize downtime and risk.
 
 ## Using multiple Kubernetes clusters
 

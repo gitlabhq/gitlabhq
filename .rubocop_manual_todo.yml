@@ -44,7 +44,6 @@ Graphql/Descriptions:
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
 FactoryBot/InlineAssociation:
   Exclude:
-    - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
     - 'ee/spec/factories/geo/event_log.rb'
     - 'ee/spec/factories/merge_request_blocks.rb'
     - 'ee/spec/factories/vulnerabilities/feedback.rb'
@@ -57,8 +56,6 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/go_modules.rb'
     - 'spec/factories/group_group_links.rb'
     - 'spec/factories/import_export_uploads.rb'
-    - 'spec/factories/uploads.rb'
-    - 'spec/factories/wiki_pages.rb'
 
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:

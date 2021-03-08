@@ -11,6 +11,7 @@
   operator: OR
   feature_flag: usage_data_code_review_aggregation
   source: redis
+  time_frame: [7d, 28d]
   events: [
     'i_code_review_user_single_file_diffs',
     'i_code_review_user_create_mr',
@@ -54,6 +55,7 @@
   operator: OR
   feature_flag: usage_data_code_review_aggregation
   source: redis
+  time_frame: [7d, 28d]
   events: [
     'i_code_review_user_single_file_diffs',
     'i_code_review_user_create_mr',
@@ -96,6 +98,7 @@
   operator: OR
   feature_flag: usage_data_code_review_aggregation
   source: redis
+  time_frame: [7d, 28d]
   events: [
     'i_code_review_user_vs_code_api_request'
   ]

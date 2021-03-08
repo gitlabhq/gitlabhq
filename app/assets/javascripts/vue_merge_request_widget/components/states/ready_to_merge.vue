@@ -455,8 +455,8 @@ export default {
       <div class="mr-widget-body media" :class="{ 'gl-pb-3': shouldRenderMergeTrainHelperText }">
         <status-icon :status="iconClass" />
         <div class="media-body">
-          <div class="mr-widget-body-controls media space-children">
-            <gl-button-group>
+          <div class="mr-widget-body-controls gl-display-flex gl-align-items-center">
+            <gl-button-group class="gl-align-self-start">
               <gl-button
                 size="medium"
                 category="primary"
@@ -495,46 +495,48 @@ export default {
                 />
               </gl-dropdown>
             </gl-button-group>
-            <div class="media-body-wrap space-children">
-              <template v-if="shouldShowMergeControls">
-                <gl-form-checkbox
-                  v-if="canRemoveSourceBranch"
-                  id="remove-source-branch-input"
-                  v-model="removeSourceBranch"
-                  :disabled="isRemoveSourceBranchButtonDisabled"
-                  class="js-remove-source-branch-checkbox gl-min-h-7 gl-display-flex gl-align-items-center gl-mr-2"
-                >
-                  {{ __('Delete source branch') }}
-                </gl-form-checkbox>
+            <div
+              v-if="shouldShowMergeControls"
+              class="gl-display-flex gl-align-items-center gl-flex-wrap"
+            >
+              <gl-form-checkbox
+                v-if="canRemoveSourceBranch"
+                id="remove-source-branch-input"
+                v-model="removeSourceBranch"
+                :disabled="isRemoveSourceBranchButtonDisabled"
+                class="js-remove-source-branch-checkbox gl-mx-3 gl-display-flex gl-align-items-center"
+              >
+                {{ __('Delete source branch') }}
+              </gl-form-checkbox>
 
-                <!-- Placeholder for EE extension of this component -->
-                <squash-before-merge
-                  v-if="shouldShowSquashBeforeMerge"
-                  v-model="squashBeforeMerge"
-                  :help-path="mr.squashBeforeMergeHelpPath"
-                  :is-disabled="isSquashReadOnly"
-                />
-              </template>
-              <template v-else>
-                <div class="bold js-resolve-mr-widget-items-message">
-                  <div
-                    v-if="hasPipelineMustSucceedConflict"
-                    class="gl-display-flex gl-align-items-center"
-                    data-testid="pipeline-succeed-conflict"
-                  >
-                    <gl-sprintf :message="pipelineMustSucceedConflictText" />
-                    <gl-link
-                      :href="mr.pipelineMustSucceedDocsPath"
-                      target="_blank"
-                      class="gl-display-flex gl-ml-2"
-                    >
-                      <gl-icon name="question" />
-                    </gl-link>
-                  </div>
-                  <gl-sprintf v-else :message="mergeDisabledText" />
-                </div>
-              </template>
+              <!-- Placeholder for EE extension of this component -->
+              <squash-before-merge
+                v-if="shouldShowSquashBeforeMerge"
+                v-model="squashBeforeMerge"
+                :help-path="mr.squashBeforeMergeHelpPath"
+                :is-disabled="isSquashReadOnly"
+                class="gl-mx-3"
+              />
             </div>
+            <template v-else>
+              <div class="bold js-resolve-mr-widget-items-message gl-ml-3">
+                <div
+                  v-if="hasPipelineMustSucceedConflict"
+                  class="gl-display-flex gl-align-items-center"
+                  data-testid="pipeline-succeed-conflict"
+                >
+                  <gl-sprintf :message="pipelineMustSucceedConflictText" />
+                  <gl-link
+                    :href="mr.pipelineMustSucceedDocsPath"
+                    target="_blank"
+                    class="gl-display-flex gl-ml-2"
+                  >
+                    <gl-icon name="question" />
+                  </gl-link>
+                </div>
+                <gl-sprintf v-else :message="mergeDisabledText" />
+              </div>
+            </template>
           </div>
           <div v-if="isSHAMismatch" class="d-flex align-items-center mt-2 js-sha-mismatch">
             <gl-icon name="warning-solid" class="text-warning mr-1" />

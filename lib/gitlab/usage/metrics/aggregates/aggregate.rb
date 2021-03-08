@@ -11,6 +11,7 @@ module Gitlab
         AggregatedMetricError = Class.new(StandardError)
         UnknownAggregationOperator = Class.new(AggregatedMetricError)
         UnknownAggregationSource = Class.new(AggregatedMetricError)
+        DisallowedAggregationTimeFrame = Class.new(AggregatedMetricError)
 
         DATABASE_SOURCE = 'database'
         REDIS_SOURCE = 'redis'
@@ -30,25 +31,38 @@ module Gitlab
             @recorded_at = recorded_at
           end
 
+          def all_time_data
+            aggregated_metrics_data(start_date: nil, end_date: nil, time_frame: Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME)
+          end
+
           def monthly_data
-            aggregated_metrics_data(**monthly_time_range)
+            aggregated_metrics_data(**monthly_time_range.merge(time_frame: Gitlab::Utils::UsageData::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME))
           end
 
           def weekly_data
-            aggregated_metrics_data(**weekly_time_range)
+            aggregated_metrics_data(**weekly_time_range.merge(time_frame: Gitlab::Utils::UsageData::SEVEN_DAYS_TIME_FRAME_NAME))
           end
 
           private
 
           attr_accessor :aggregated_metrics, :recorded_at
 
-          def aggregated_metrics_data(start_date:, end_date:)
+          def aggregated_metrics_data(start_date:, end_date:, time_frame:)
             aggregated_metrics.each_with_object({}) do |aggregation, data|
               next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], default_enabled: :yaml, type: :development)
+              next unless aggregation[:time_frame].include?(time_frame)
 
               case aggregation[:source]
               when REDIS_SOURCE
-                data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, start_date: start_date, end_date: end_date)
+                if time_frame == Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME
+                  data[aggregation[:name]] = Gitlab::Utils::UsageData::FALLBACK
+                  Gitlab::ErrorTracking
+                    .track_and_raise_for_dev_exception(
+                      DisallowedAggregationTimeFrame.new("Aggregation time frame: 'all' is not allowed for aggregation with source: '#{REDIS_SOURCE}'")
+                    )
+                else
+                  data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, start_date: start_date, end_date: end_date)
+                end
               when DATABASE_SOURCE
                 next unless Feature.enabled?('database_sourced_aggregated_metrics', default_enabled: false, type: :development)
 

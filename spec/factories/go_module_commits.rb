@@ -7,7 +7,12 @@ FactoryBot.define do
     transient do
       files { { 'foo.txt' => 'content' } }
       message { 'Message' }
+      # rubocop: disable FactoryBot/InlineAssociation
+      # We need a persisted project so we can create commits and tags
+      # in `commit` otherwise linting this factory with `build` strategy
+      # will fail.
       project { create(:project, :repository) }
+      # rubocop: enable FactoryBot/InlineAssociation
 
       service do
         Files::MultiService.new(
@@ -44,14 +49,13 @@ FactoryBot.define do
 
     trait :files do
       transient do
-        files { raise ArgumentError.new("files is required") }
         message { 'Add files' }
       end
     end
 
     trait :package do
       transient do
-        path { raise ArgumentError.new("path is required") }
+        path { 'pkg' }
         message { 'Add package' }
         files { { "#{path}/b.go" => "package b\nfunc Bye() { println(\"Goodbye world!\") }\n" } }
       end
@@ -64,7 +68,7 @@ FactoryBot.define do
         host_prefix { "#{::Gitlab.config.gitlab.host}/#{project.path_with_namespace}" }
 
         url { name ? "#{host_prefix}/#{name}" : host_prefix }
-        path { name.to_s + '/' }
+        path { "#{name}/" }
 
         files do
           {
