@@ -93,7 +93,7 @@ Prefer **no** `tabindex` to using `tabindex`, since:
 ### Avoid using `tabindex="0"` to make an element interactive
 
 Use interactive elements instead of `div`s and `span`s.
-For example: 
+For example:
 
 - If the element should be clickable, use a `button`
 - If the element should be text editable, use an `input` or `textarea`
@@ -186,8 +186,8 @@ Use of ARIA would then only occur in [GitLab UI](https://gitlab.com/gitlab-org/g
 
 We have two options for Web accessibility testing:
 
-- [axe](https://www.deque.com/axe/) for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/axe-devtools/) 
-- [axe](https://www.deque.com/axe/) for [Chrome](https://chrome.google.com/webstore/detail/axe-web-accessibility-tes/lhdoppojpmngadmnindnejefpokejbdd) 
+- [axe](https://www.deque.com/axe/) for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/axe-devtools/)
+- [axe](https://www.deque.com/axe/) for [Chrome](https://chrome.google.com/webstore/detail/axe-web-accessibility-tes/lhdoppojpmngadmnindnejefpokejbdd)
 
 ### Other links
 

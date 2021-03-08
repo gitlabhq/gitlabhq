@@ -358,10 +358,10 @@ Elasticsearch administrator has more experience with.
 
 ### Troubleshooting background migrations
 
-Troubleshooting background migration failures can be difficult and may require contacting 
+Troubleshooting background migration failures can be difficult and may require contacting
 an Elasticsearch administrator or GitLab Support.
 
-The best place to start while debugging issues with a background migration is the 
+The best place to start while debugging issues with a background migration is the
 [`elasticsearch.log` file](../logs.md#elasticsearchlog). Migrations will
 print information while a migration is in progress and any errors encountered.
 Apply fixes for any errors found in the log and retry the migration.

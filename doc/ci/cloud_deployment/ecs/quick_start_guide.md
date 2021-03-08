@@ -145,7 +145,7 @@ Note the following:
 - Optionally, you can set a SSH key pair in the creation form. This allows you to SSH to the EC2
   instance for debugging.
 - If you don't choose an existing VPC, it creates a new VPC by default. This could cause an error if
-  it reaches the maximum allowed number of internet gateways on your account. 
+  it reaches the maximum allowed number of internet gateways on your account.
 - The cluster requires an EC2 instance, meaning it costs you [according to the instance-type](https://aws.amazon.com/ec2/pricing/on-demand/).
 
 ### Create an ECS Service

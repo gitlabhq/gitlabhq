@@ -24,9 +24,9 @@ a separate Git repository.
 
 ## First time creating the Home page
 
-The first time you visit a Wiki, you will be directed to create the Home page.
-The Home page is necessary to be created since it serves as the landing page
-when viewing a Wiki. You only have to fill in the **Content** section and click
+The first time you visit a Wiki, you are directed to create the Home page.
+The Home page is necessary to be created because it serves as the landing page
+when viewing a Wiki. Complete the **Content** section, and then select
 **Create page**. You can always edit it later, so go ahead and write a welcome
 message.
 
@@ -37,38 +37,38 @@ message.
 NOTE:
 Requires Developer [permissions](../../permissions.md).
 
-Create a new page by clicking the **New page** button that can be found
+Create a new page by selecting the **New page** button that can be found
 in all wiki pages.
 
-You will be asked to fill in a title for your new wiki page.
+Enter a title for your new wiki page.
 
 You can specify a full path for the wiki page by using '/' in the
-title to indicate subdirectories. Any missing directories will be created
-automatically. For example, a title of `docs/my-page` will create a wiki
+title to indicate subdirectories. Any missing directories are created
+automatically. For example, a title of `docs/my-page` creates a wiki
 page with a path `/wikis/docs/my-page`.
 
-Once you enter the page name, it's time to fill in its content. GitLab wikis
+After you enter the page name, it's time to fill in its content. GitLab wikis
 support Markdown, RDoc, AsciiDoc, and Org. For Markdown based pages, all the
 [Markdown features](../../markdown.md) are supported and for links there is
 some [wiki specific](../../markdown.md#wiki-specific-markdown) behavior.
 
 In the web interface the commit message is optional, but the GitLab Wiki is
-based on Git and needs a commit message, so one will be created for you if you
-do not enter one.
+based on Git and needs a commit message, so one is created for you if you
+don't enter one.
 
-When you're ready, click the **Create page** and the new page will be created.
+When you're ready, select **Create page** and the new page is created.
 
 ![New page](img/wiki_create_new_page.png)
 
 ### Attachment storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
-Starting with GitLab 11.3, any file that is uploaded to the wiki via the GitLab
-interface will be stored in the wiki Git repository, and it will be available
+Any file uploaded to the wiki with the GitLab
+interface is stored in the wiki Git repository, and is available
 if you clone the wiki repository locally. All uploaded files prior to GitLab
 11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
-repository, you will have to upload them again.
+repository, you must upload them again.
 
 ### Special characters in page titles
 
@@ -80,7 +80,7 @@ Wiki pages are stored as files in a Git repository, so certain characters have a
 
 ### Length restrictions for file and directory names
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
 
 Many common file systems have a [limit of 255 bytes for file and directory names](https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits), and while Git and GitLab both support paths exceeding those limits, the presence of them makes it impossible for users on those file systems to checkout a wiki repository locally.
 
@@ -99,9 +99,9 @@ Please note that:
 You need Developer [permissions](../../permissions.md) or higher to edit a wiki page.
 To do so:
 
-1. Click the edit icon (**{pencil}**).
+1. Select the edit icon (**{pencil}**).
 1. Edit the content.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Adding a table of contents
 
@@ -114,7 +114,7 @@ You need Maintainer [permissions](../../permissions.md) or higher to delete a wi
 To do so:
 
 1. Open the page you want to delete.
-1. Click the **Delete page** button.
+1. Select **Delete page**.
 1. Confirm the deletion.
 
 ## Moving a wiki page
@@ -122,22 +122,22 @@ To do so:
 You need Developer [permissions](../../permissions.md) or higher to move a wiki page.
 To do so:
 
-1. Click the edit icon (**{pencil}**).
+1. Select the edit icon (**{pencil}**).
 1. Add the new path to the **Title** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 For example, if you have a wiki page called `about` under `company` and you want to
 move it to the wiki's root:
 
-1. Click the edit icon (**{pencil}**).
+1. Select the edit icon (**{pencil}**).
 1. Change the **Title** from `about` to `/about`.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 If you want to do the opposite:
 
-1. Click the edit icon (**{pencil}**).
+1. Select the edit icon (**{pencil}**).
 1. Change the **Title** from `about` to `company/about`.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Viewing a list of all created wiki pages
 
@@ -148,37 +148,37 @@ found. The list is ordered alphabetically.
 
 ![Wiki sidebar](img/wiki_sidebar_v13_5.png)
 
-If you have many pages, not all will be listed in the sidebar. Click on
+If you have many pages, not all are listed in the sidebar. Select
 **View All Pages** to see all of them.
 
 ## Viewing the history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository,
-and you can view them by clicking the **Page history** button.
+and you can view them by selecting **Page history**.
 
 From the history page you can see the revision of the page (Git commit SHA), its
 author, the commit message, and when it was last updated.
-To see how a previous version of the page looked like, click on a revision
+To see how a previous version of the page looked like, select a revision
 number in the **Page version** column.
 
 ![Wiki page history](img/wiki_page_history.png)
 
 ### Viewing the changes between page versions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
 
 Similar to versioned diff file views, you can see the changes made in a given Wiki page version:
 
 1. Navigate to the Wiki page you're interested in.
-1. Click on **Page history** to see all page versions.
-1. Click on the commit message in the **Changes** column for the version you're interested in:
+1. Select **Page history** to see all page versions.
+1. Select the commit message in the **Changes** column for the version you're interested in.
 
    ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
 
 ## Wiki activity records
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in **GitLab 12.10.**
-> - Git events were [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
+> - Git events were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
 > - [Feature flag for Git events was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258665) in **GitLab 13.5**
 
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
@@ -191,12 +191,12 @@ and [project](../working_with_projects.md#project-activity) activity pages.
 Since wikis are based on Git repositories, you can clone them locally and edit
 them like you would do with every other Git repository.
 
-On the right sidebar, click on **Clone repository** and follow the on-screen
+In the right sidebar, select **Clone repository** and follow the on-screen
 instructions.
 
 Files that you add to your wiki locally must have one of the following
 supported extensions, depending on the markup language you wish to use,
-otherwise they will not display when pushed to GitLab:
+otherwise they don't display when pushed to GitLab:
 
 - Markdown extensions: `.mdown`, `.mkd`, `.mkdn`, `.md`, `.markdown`.
 - AsciiDoc extensions: `.adoc`, `.ad`, `.asciidoc`.
@@ -204,11 +204,11 @@ otherwise they will not display when pushed to GitLab:
 
 ## Customizing sidebar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by clicking the **Edit sidebar** button.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
 
 To customize the Wiki's navigation sidebar, you need Developer permissions to the project.
 
-On the top-right, click **Edit sidebar** and make your changes. This creates a wiki page named `_sidebar` which fully replaces the default sidebar navigation.
+In the top-right, select **Edit sidebar** and make your changes. This creates a wiki page named `_sidebar` which fully replaces the default sidebar navigation.
 
 Example for `_sidebar` (using Markdown format):
 

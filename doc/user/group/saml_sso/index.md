@@ -365,7 +365,7 @@ the user gets the highest access level from the groups. For example, if one grou
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
 access.
 
-Users who are not members of any mapped SAML groups are removed from the GitLab group. 
+Users who are not members of any mapped SAML groups are removed from the GitLab group.
 
 You can prevent accidental member removal. For example, if you have a SAML group link for `Owner` level access
 in a top-level group, you should also set up a group link for all other members.

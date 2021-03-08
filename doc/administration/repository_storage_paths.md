@@ -83,7 +83,7 @@ For [backups](../raketasks/backup_restore.md) to work correctly:
 Omnibus GitLab takes care of these issues for you, but for source installations you should be extra
 careful.
 
-While restoring a backup, the current contents of `/home/git/repositories` are moved to 
+While restoring a backup, the current contents of `/home/git/repositories` are moved to
 `/home/git/repositories.old`. If `/home/git/repositories` is a mount point, then `mv` would be
 moving things between mount points, and problems can occur.
 

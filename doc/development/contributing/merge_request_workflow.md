@@ -69,7 +69,7 @@ request is as follows:
       request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
       You must close them manually once the merge request is merged.
    1. The MR must include *Before* and *After* screenshots if UI changes are made.
-   1. Include any steps or setup required to ensure reviewers can view the changes you've made (e.g. include any information about feature flags).     
+   1. Include any steps or setup required to ensure reviewers can view the changes you've made (e.g. include any information about feature flags).
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
 1. UI changes should use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).

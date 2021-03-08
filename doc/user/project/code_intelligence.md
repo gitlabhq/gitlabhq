@@ -25,7 +25,7 @@ You can automate this feature in your applications by using [Auto DevOps](../../
 ## Configuration
 
 Enable code intelligence for a project by adding a GitLab CI/CD job to the project's
-`.gitlab-ci.yml` which will generate the LSIF artifact:
+`.gitlab-ci.yml` which generates the LSIF artifact:
 
 ```yaml
 code_navigation:

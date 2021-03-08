@@ -84,7 +84,7 @@ merge request widget:
 ![Dependencies in merge request widget](img/dependencies_view_v12_2.png)
 
 Until all dependencies have, themselves, been merged, the **Merge**
-button will be disabled for the dependent merge request. In
+button is disabled for the dependent merge request. In
 particular, note that **closed merge requests** still prevent their
 dependents from being merged - it is impossible to automatically
 determine whether the dependency expressed by a closed merge request

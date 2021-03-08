@@ -130,22 +130,22 @@ Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/se
 ## Deployment options
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
-the DAST template. A set of example applications with their configurations have been made available in our 
+the DAST template. A set of example applications with their configurations have been made available in our
 [DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
 
 ### Review Apps
 
 Review Apps are the most involved method of deploying your DAST target application. To assist in the process,
-we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our 
-[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project along with detailed 
-instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md) 
+we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
+[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project along with detailed
+instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
 on how to configure Review Apps for DAST.
 
 ### Docker Services
 
 If your application utilizes Docker containers you have another option for deploying and scanning with DAST.
-After your Docker build job completes and your image is added to your container registry, you can utilize the image as a 
-[service](../../../ci/docker/using_docker_images.md#what-is-a-service). 
+After your Docker build job completes and your image is added to your container registry, you can utilize the image as a
+[service](../../../ci/docker/using_docker_images.md#what-is-a-service).
 
 By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
 

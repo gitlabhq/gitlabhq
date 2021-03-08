@@ -17,7 +17,7 @@ exports[`MavenInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Maven XML"
     instruction="foo/xml"
-    label="Maven XML"
+    label=""
     multiline="true"
     trackingaction="copy_maven_xml"
     trackinglabel="code_instruction"

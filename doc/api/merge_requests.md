@@ -1064,7 +1064,7 @@ POST /projects/:id/merge_requests
 | `title`                    | string  | yes      | Title of MR.                                                                     |
 | `assignee_id`              | integer | no       | Assignee user ID.                                                                |
 | `assignee_ids`             | integer array | no | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees. |
-| `reviewer_ids`             | integer array | no | The ID of the user(s) added as a reviewer to the MR. If set to `0` or left empty, there will be no reviewers added.  |
+| `reviewer_ids`             | integer array | no | The ID of the user(s) added as a reviewer to the MR. If set to `0` or left empty, no reviewers are added.  |
 | `description`              | string  | no       | Description of MR. Limited to 1,048,576 characters. |
 | `target_project_id`        | integer | no       | The target project (numeric ID).                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list.                                         |

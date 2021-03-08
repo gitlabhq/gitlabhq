@@ -18,15 +18,15 @@ This feature is available for merge requests across forked projects that are
 publicly accessible.
 
 When enabled for a merge request, members with merge access to the target
-branch of the project will be granted write permissions to the source branch
+branch of the project is granted write permissions to the source branch
 of the merge request.
 
 ## Enabling commit edits from upstream members
 
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/23308),
 this setting is enabled by default. It can be changed by users with Developer
-permissions to the source project. Once enabled, upstream members will also be
-able to retry the pipelines and jobs of the merge request:
+permissions to the source project. Once enabled, upstream members can
+retry the pipelines and jobs of the merge request:
 
 1. While creating or editing a merge request, select the checkbox **Allow
    commits from members who can merge to the target branch**.
@@ -64,7 +64,7 @@ Here's how the process would look like:
    git checkout -b thedude-awesome-project-update-docs FETCH_HEAD
    ```
 
-   This will fetch the branch of the forked project and then create a local branch
+   This fetches the branch of the forked project and then create a local branch
    based off the fetched branch.
 
 1. Make any changes you want and commit.
@@ -74,7 +74,7 @@ Here's how the process would look like:
    git push git@gitlab.com:thedude/awesome-project.git thedude-awesome-project-update-docs:update-docs
    ```
 
-   Note the colon (`:`) between the two branches. The above command will push the
+   Note the colon (`:`) between the two branches. The above command pushes the
    local branch `thedude-awesome-project-update-docs` to the
    `update-docs` branch of the `git@gitlab.com:thedude/awesome-project.git` repository.
 

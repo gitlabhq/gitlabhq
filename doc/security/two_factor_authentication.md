@@ -137,7 +137,7 @@ Once the OTP is verified, Git over SSH operations can be used for a session dura
 2FA does not protect users with compromised *private* SSH keys.
 
 Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
-the configured [session duration](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled). 
+the configured [session duration](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 ### Enable or disable Two-factor Authentication (2FA) for Git operations
 

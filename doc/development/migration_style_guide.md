@@ -1028,10 +1028,10 @@ D, [2020-07-06T00:37:12.653648 #130101] DEBUG -- :   ↳ config/initializers/con
 
 ## High traffic tables
 
-Here's a list of current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml). 
+Here's a list of current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
 
 Determining what tables are high-traffic can be difficult. Self-managed instances might use
-different features of GitLab with different usage patterns, thus making assumptions based 
+different features of GitLab with different usage patterns, thus making assumptions based
 on GitLab.com not enough.
 
 To identify a high-traffic table for GitLab.com the following measures are considered.

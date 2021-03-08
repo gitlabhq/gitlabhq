@@ -577,7 +577,7 @@ Here are examples of regex patterns you may want to use:
   (?:v.+|master|release.*)
   ```
 
-### Set cleanup limits to conserve resources 
+### Set cleanup limits to conserve resources
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
@@ -595,7 +595,7 @@ To prevent server resource starvation, the following application settings are av
 - `container_registry_delete_tags_service_timeout`. The maximum time, in seconds, that the cleanup process can take to delete a batch of tags.
 - `container_registry_cleanup_tags_service_max_list_size`. The maximum number of tags that can be deleted in a single execution. Additional tags must be deleted in another execution.
    We recommend starting with a low number, like `100`, and increasing it after monitoring that container images are properly deleted.
-   
+
 For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby

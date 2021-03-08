@@ -46,8 +46,8 @@ Every thread in merge requests, commits, commit diffs, and
 snippets is initially displayed as unresolved. They can then be individually resolved by anyone
 with at least Developer access to the project or by the author of the change being reviewed.
 If the thread has been resolved and a non-member un-resolves their own response,
-this will also unresolve the discussion thread.
-If the non-member then resolves this same response, this will resolve the discussion thread.
+this also unresolves the discussion thread.
+If the non-member then resolves this same response, this resolves the discussion thread.
 
 The need to resolve threads prevents you from forgetting to address feedback and lets you
 hide threads that are no longer relevant.
@@ -56,10 +56,8 @@ hide threads that are no longer relevant.
 
 ### Commit threads in the context of a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/31847) in GitLab 10.3.
-
 For reviewers with commit-based workflow, it may be useful to add threads to
-specific commit diffs in the context of a merge request. These threads will
+specific commit diffs in the context of a merge request. These threads
 persist through a commit ID change when:
 
 - force-pushing after a rebase
@@ -68,27 +66,27 @@ persist through a commit ID change when:
 To create a commit diff thread:
 
 1. Navigate to the merge request **Commits** tab. A list of commits that
-   constitute the merge request will be shown.
+   constitute the merge request are shown.
 
    ![Merge request commits tab](img/merge_request_commits_tab.png)
 
-1. Navigate to a specific commit, click on the **Changes** tab (where you
-   will only be presented diffs from the selected commit), and leave a comment.
+1. Navigate to a specific commit, select the **Changes** tab (where you
+   are only be presented diffs from the selected commit), and leave a comment.
 
    ![Commit diff discussion in merge request context](img/commit_comment_mr_context.png)
 
-1. Any threads created this way will be shown in the merge request's
+1. Any threads created this way are shown in the merge request's
    **Discussions** tab and are resolvable.
 
    ![Merge request Discussions tab](img/commit_comment_mr_discussions_tab.png)
 
-Threads created this way will only appear in the original merge request
+Threads created this way only appear in the original merge request
 and not when navigating to that commit under your project's
 **Repository > Commits** page.
 
 NOTE:
 When a link of a commit reference is found in a thread inside a merge
-request, it will be automatically converted to a link in the context of the
+request, it is automatically converted to a link in the context of the
 current merge request.
 
 ### Marking a comment or thread as resolved
@@ -104,8 +102,6 @@ Alternatively, you can mark each comment as resolved individually.
 
 ### Move all unresolved threads in a merge request to an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8266) in GitLab 9.1
-
 To continue all open threads from a merge request in a new issue, click the
 **Resolve all threads in new issue** button.
 
@@ -113,17 +109,17 @@ To continue all open threads from a merge request in a new issue, click the
 
 Alternatively, when your project only accepts merge requests [when all threads
 are resolved](#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved),
-there will be an **open an issue to resolve them later** link in the merge
+an **open an issue to resolve them later** link displays in the merge
 request widget.
 
 ![Link in merge request widget](img/resolve_thread_open_issue_v13_9.png)
 
-This will prepare an issue with its content referring to the merge request and
+This prepares an issue with its content referring to the merge request and
 the unresolved threads.
 
 ![Issue mentioning threads in a merge request](img/preview_issue_for_threads.png)
 
-Hitting **Submit issue** will cause all threads to be marked as resolved and
+Hitting **Submit issue** causes all threads to be marked as resolved and
 add a note referring to the newly created issue.
 
 ![Mark threads as resolved notice](img/resolve_thread_issue_notice.png)
@@ -132,23 +128,19 @@ You can now proceed to merge the merge request from the UI.
 
 ### Moving a single thread to a new issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8266) in GitLab 9.1
-
 To create a new issue for a single thread, you can use the **Resolve this
 thread in a new issue** button.
 
 ![Create issue for thread](img/new_issue_for_thread.png)
 
-This will direct you to a new issue prefilled with the content of the
+This directs you to a new issue prefilled with the content of the
 thread, similar to the issues created for delegating multiple
-threads at once. Saving the issue will mark the thread as resolved and
+threads at once. Saving the issue marks the thread as resolved and
 add a note to the merge request thread referencing the new issue.
 
 ![New issue for a single thread](img/preview_issue_for_thread.png)
 
 ### Only allow merge requests to be merged if all threads are resolved
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7125) in GitLab 8.14.
 
 You can prevent merge requests from being merged until all threads are
 resolved.
@@ -159,14 +151,12 @@ box and hit **Save** for the changes to take effect.
 
 ![Only allow merge if all the threads are resolved settings](img/only_allow_merge_if_all_threads_are_resolved.png)
 
-From now on, you will not be able to merge from the UI until all threads
+From now on, you can't merge from the UI until all threads
 are resolved.
 
 ![Only allow merge if all the threads are resolved message](img/resolve_thread_open_issue_v13_9.png)
 
 ### Automatically resolve merge request diff threads when they become outdated
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14053) in GitLab 10.0.
 
 You can automatically resolve merge request diff threads on lines modified
 with a new push.
@@ -177,7 +167,7 @@ merge request diffs threads on lines changed with a push** check box and hit
 
 ![Automatically resolve merge request diff threads when they become outdated](img/automatically_resolve_outdated_discussions.png)
 
-From now on, any threads on a diff will be resolved by default if a push
+From now on, any threads on a diff are resolved by default if a push
 makes that diff section outdated. Threads on lines that don't change and
 top-level resolvable threads are not automatically resolved.
 
@@ -187,32 +177,28 @@ You can add comments and threads to a particular commit under your
 project's **Repository > Commits**.
 
 WARNING:
-Threads created this way will be lost if the commit ID changes after a
+Threads created this way are lost if the commit ID changes after a
 force push.
 
 ## Threaded discussions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7527) in GitLab 9.1.
-
 While resolvable threads are only available to merge request diffs,
 threads can also be added without a diff. You can start a specific
-thread which will look like a thread, on issues, commits, snippets, and
+thread which looks like a thread, on issues, commits, snippets, and
 merge requests.
 
-To start a threaded discussion, click on the **Comment** button toggle dropdown,
-select **Start thread** and click **Start thread** when you're ready to
+To start a threaded discussion, select the **Comment** button toggle dropdown,
+select **Start thread**, and then select **Start thread** when you're ready to
 post the comment.
 
 ![Comment type toggle](img/comment_type_toggle.gif)
 
-This will post a comment with a single thread to allow you to discuss specific
+This posts a comment with a single thread to allow you to discuss specific
 comments in greater detail.
 
 ![Thread comment](img/discussion_comment.png)
 
 ## Image threads
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14061) in GitLab 10.1.
 
 Sometimes a thread is revolved around an image. With image threads,
 you can easily target a specific coordinate of an image and start a thread
@@ -224,32 +210,30 @@ Simply click anywhere on the image to create a new thread.
 
 ![Start image thread](img/start_image_discussion.gif)
 
-After you click on the image, a comment form will be displayed that would be the start
-of your thread. Once you save your comment, you will see a new badge displayed on
+After you select the image, a comment form is displayed that would be the start
+of your thread. After you save your comment, a new badge is displayed on
 top of your image. This badge represents your thread.
 
 NOTE:
 This thread badge is typically associated with a number that is only used as a visual
 reference for each thread. In the merge request thread tab,
-this badge will be indicated with a comment icon since each thread will render a new
+this badge is indicated with a comment icon, because each thread renders a new
 image section.
 
 Image threads also work on diffs that replace an existing image. In this diff view
 mode, you can toggle the different view modes and still see the thread point badges.
 
-| 2-up | Swipe | Onion Skin |
-| :-----------: | :----------: | :----------: |
+| 2-up        | Swipe      | Onion Skin |
+|:-----------:|:----------:|:----------:|
 | ![2-up view](img/two_up_view.png) | ![swipe view](img/swipe_view.png) | ![onion skin view](img/onion_skin_view.png) |
 
 Image threads also work well with resolvable threads. Resolved threads
-on diffs (not on the merge request discussion tab) will appear collapsed on page
-load and will have a corresponding badge counter to match the counter on the image.
+on diffs (not on the merge request discussion tab) appear collapsed on page
+load and have a corresponding badge counter to match the counter on the image.
 
 ![Image resolved thread](img/image_resolved_discussion.png)
 
 ## Lock discussions
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14531) in GitLab 10.1.
 
 For large projects with many contributors, it may be useful to stop threads
 in issues or merge requests in these scenarios:
@@ -280,7 +264,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
-Additionally, locked issues and merge requests can not be reopened.
+Additionally, locked issues and merge requests can't be reopened.
 
 ## Confidential Comments
 
@@ -293,29 +277,29 @@ Additionally, locked issues and merge requests can not be reopened.
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-When creating a comment, you can decide to make it visible only to the project members (users with Reporter and higher permissions).
+When creating a comment, you can make it visible only to the project members (users with Reporter and higher permissions).
 
-To create a confidential comment, select the **Make this comment confidential** checkbox before you submit it.
+To create a confidential comment, select the **Make this comment confidential** check box before you submit it.
 
 ![Confidential comments](img/confidential_comments_v13_9.png)
 
-## Merge Request Reviews
+## Merge request reviews
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
 
-When looking at a Merge Request diff, you are able to start a review.
-This allows you to create comments inside a Merge Request that are **only visible to you** until published,
+When looking at a merge request diff, you are able to start a review.
+This allows you to create comments inside a merge request that are **only visible to you** until published,
 in order to allow you to submit them all as a single action.
 
 ### Starting a review
 
-In order to start a review, simply write a comment on a diff as normal under the **Changes** tab
-in an MR and click on the **Start a review** button.
+To start a review, write a comment on a diff as normal under the **Changes** tab
+in a merge request, and then select **Start a review**.
 
 ![Starting a review](img/mr_review_start.png)
 
-Once a review is started, you will see any comments that are part of this review marked `Pending`.
+After a review is started, any comments that are part of this review are marked `Pending`.
 All comments that are part of a review show two buttons:
 
 - **Finish review**: Submits all comments that are part of the review, making them visible to other users.
@@ -323,7 +307,7 @@ All comments that are part of a review show two buttons:
 
 ![A comment that is part of a review](img/pending_review_comment.png)
 
-You can use [quick actions](../project/quick_actions.md) inside review comments. The comment will show the actions that will be performed once published.
+You can use [quick actions](../project/quick_actions.md) inside review comments. The comment shows the actions to perform after publication.
 
 ![A review comment with quick actions](img/review_comment_quickactions.png)
 
@@ -331,19 +315,19 @@ To add more comments to a review, start writing a comment as normal and click th
 
 ![Adding a second comment to a review](img/mr_review_second_comment.png)
 
-This will add the comment to the review.
+This adds the comment to the review.
 
 ![Second review comment](img/mr_review_second_comment_added.png)
 
 ### Resolving/Unresolving threads
 
 Review comments can also resolve/unresolve [resolvable threads](#resolvable-comments-and-threads).
-When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
-the thread once published.
+When replying to a comment, a checkbox is displayed that you can click to resolve or unresolve
+the thread after publication.
 
 ![Resolve checkbox](img/mr_review_resolve.png)
 
-If a particular pending comment will resolve or unresolve the thread, this will be shown on the pending
+If a particular pending comment resolves or unresolves the thread, this is shown on the pending
 comment itself.
 
 ![Resolve status](img/mr_review_resolve2.png)
@@ -352,12 +336,12 @@ comment itself.
 
 ### Submitting a review
 
-If you have any comments that have not been submitted, you will see a bar at the
+If you have any comments that have not been submitted, a bar displays at the
 bottom of the screen with two buttons:
 
 - **Discard**: Discards all comments that have not been submitted.
 - **Finish review**: Opens a list of comments ready to be submitted for review.
-  Clicking **Submit review** will publish all comments. Any quick actions
+  Clicking **Submit review** publishes all comments. Any quick actions
   submitted are performed at this time.
 
 Alternatively, to finish the entire review from a pending comment:
@@ -367,14 +351,14 @@ Alternatively, to finish the entire review from a pending comment:
 
 ![Review submission](img/review_preview.png)
 
-Submitting the review will send a single email to every notifiable user of the
+Submitting the review sends a single email to every notifiable user of the
 merge request with all the comments associated to it.
 
 Replying to this email will, consequentially, create a new comment on the associated merge request.
 
 ## Filtering notes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
 
 For issues with many comments like activity notes and user comments, sometimes
 finding useful information can be hard. There is a way to filter comments from single notes and threads for merge requests and issues.
@@ -388,8 +372,8 @@ From a merge request's **Discussion** tab, or from an epic/issue overview, find 
 
 ![Notes filters dropdown options](img/index_notes_filters.png)
 
-After you select one of the filters in a given issue or MR, GitLab will save
-your preference, so that it will persist when you visit the same page again
+After you select one of the filters in a given issue or merge request, GitLab saves
+your preference, so that it persists when you visit the same page again
 from any device you're logged into.
 
 ## Suggest Changes
@@ -398,11 +382,11 @@ from any device you're logged into.
 > - Custom commit messages for suggestions was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9 behind a [feature flag](../feature_flags.md), disabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10.
 
-As a reviewer, you're able to suggest code changes with a simple
-Markdown syntax in Merge Request Diff threads. Then, the
-Merge Request author (or other users with appropriate
+As a reviewer, you're able to suggest code changes with a
+Markdown syntax in merge request diff threads. Then, the
+merge request author (or other users with appropriate
 [permission](../permissions.md)) is able to apply these
-Suggestions with a click, which will generate a commit in
+Suggestions with a click, which generates a commit in
 the merge request authored by the user that applied them.
 
 1. Choose a line of code to be changed, add a new comment, then click
@@ -423,18 +407,18 @@ the merge request authored by the user that applied them.
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
    you can opt to add a custom commit message to describe your change. If you don't
-   specify it, the default commit message will be used. It is not supported for [batch suggestions](#batch-suggestions).
+   specify it, the default commit message is used. It is not supported for [batch suggestions](#batch-suggestions).
 
    ![Custom commit](img/custom_commit_v13_9.png)
 
-After the author applies a Suggestion, it will be marked with the **Applied** label,
-the thread will be automatically resolved, and GitLab will create a new commit
+After the author applies a Suggestion, it is marked with the **Applied** label,
+the thread is automatically resolved, and GitLab creates a new commit
 and push the suggested change directly into the codebase in the merge request's
 branch. [Developer permission](../permissions.md) is required to do so.
 
 ### Multi-line Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
 
 Reviewers can also suggest changes to multiple lines with a single Suggestion
 within merge request diff threads by adjusting the range offsets. The
@@ -466,12 +450,12 @@ instead of the usual three.
 
 ### Configure the commit message for applied Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
 
 GitLab uses a default commit message
 when applying Suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
 
-For example, consider that a user applied 3 suggestions to 2 different files, the default commit message will be: **Apply 3 suggestion(s) to 2 file(s)**
+For example, consider that a user applied 3 suggestions to 2 different files, the default commit message is: **Apply 3 suggestion(s) to 2 file(s)**
 
 These commit messages can be customized to follow any guidelines you might have. To do so, expand the **Merge requests**
 tab within your project's **General** settings and change the
@@ -481,23 +465,23 @@ tab within your project's **General** settings and change the
 
 You can also use following variables besides static text:
 
-| Variable | Description | Output example |
-|---|---|---|
-| `%{branch_name}` | The name of the branch the Suggestion(s) was(were) applied to. | `my-feature-branch` |
-| `%{files_count}` | The number of file(s) to which Suggestion(s) was(were) applied.| **2** |
-| `%{file_paths}` | The path(s) of the file(s) Suggestion(s) was(were) applied to. Paths are separated by commas.| `docs/index.md, docs/about.md` |
-| `%{project_path}` | The project path. | `my-group/my-project` |
-| `%{project_name}` | The human-readable name of the project. | **My Project** |
+| Variable               | Description | Output example |
+|------------------------|-------------|----------------|
+| `%{branch_name}`       | The name of the branch the Suggestion(s) was(were) applied to. | `my-feature-branch` |
+| `%{files_count}`       | The number of file(s) to which Suggestion(s) was(were) applied.| **2** |
+| `%{file_paths}`        | The path(s) of the file(s) Suggestion(s) was(were) applied to. Paths are separated by commas.| `docs/index.md, docs/about.md` |
+| `%{project_path}`      | The project path. | `my-group/my-project` |
+| `%{project_name}`      | The human-readable name of the project. | **My Project** |
 | `%{suggestions_count}` | The number of Suggestions applied.| **3** |
-| `%{username}` | The username of the user applying Suggestion(s). | `user_1` |
-| `%{user_full_name}` | The full name of the user applying Suggestion(s). | **User 1** |
+| `%{username}`          | The username of the user applying Suggestion(s). | `user_1` |
+| `%{user_full_name}`    | The full name of the user applying Suggestion(s). | **User 1** |
 
 For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
 `Addresses %{username}'s review`.
 
 NOTE:
-Custom commit messages for each applied Suggestion will be
+Custom commit messages for each applied Suggestion is
 introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ### Batch Suggestions
@@ -511,7 +495,7 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 You can apply multiple suggestions at once to reduce the number of commits added
 to your branch to address your reviewers' requests.
 
-1. To start a batch of suggestions that will be applied with a single commit, click **Add suggestion to batch**:
+1. To start a batch of suggestions to apply with a single commit, click **Add suggestion to batch**:
 
    ![A code change suggestion displayed, with the button to add the suggestion to a batch highlighted.](img/add_first_suggestion_to_batch_v13_1.jpg "Add a suggestion to a batch")
 
@@ -529,7 +513,7 @@ to your branch to address your reviewers' requests.
 
 ## Start a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
 
 To reply to a standard (non-thread) comment, you can use the **Reply to comment** button.
 
@@ -537,20 +521,20 @@ To reply to a standard (non-thread) comment, you can use the **Reply to comment*
 
 The **Reply to comment** button is only displayed if you have permissions to reply to an existing thread, or start a thread from a standard comment.
 
-Clicking on the **Reply to comment** button will bring the reply area into focus and you can type your reply.
+Clicking on the **Reply to comment** button brings the reply area into focus and you can type your reply.
 
 ![Reply to comment feature](img/reply_to_comment.gif)
 
-Replying to a non-thread comment will convert the non-thread comment to a
+Replying to a non-thread comment converts the non-thread comment to a
 thread after the reply is submitted. This conversion is considered an edit
-to the original comment, so a note about when it was last edited will appear underneath it.
+to the original comment, so a note about when it was last edited appears underneath it.
 
-This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
+This feature exists only for issues, merge requests, and epics. Commits, snippets, and merge request diff threads are
 not supported yet.
 
 ## Assign an issue to the commenting user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
 
 You can assign an issue to a user who made a comment.
 

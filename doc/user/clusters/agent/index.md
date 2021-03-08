@@ -231,7 +231,7 @@ the Agent in subsequent steps. You can create an Agent record either:
 
 ### Install the Agent into the cluster
 
-Next, install the in-cluster component of the Agent. 
+Next, install the in-cluster component of the Agent.
 
 #### One-liner installation
 

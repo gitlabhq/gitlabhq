@@ -7,8 +7,8 @@ type: index, reference
 
 # Merge requests **(FREE)**
 
-Whenever you need to merge one branch into another branch with GitLab, you'll
-need to create a merge request (MR).
+Whenever you need to merge one branch into another branch with GitLab, you
+must create a merge request (MR).
 
 Using merge requests, you can visualize and collaborate on proposed changes to
 source code. Merge requests display information about the proposed code changes,

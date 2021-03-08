@@ -73,7 +73,7 @@ To enable Service Desk in your project:
 1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
    to the project.
 
-Service Desk is now enabled for this project! To access it in a project, in the left sidebar, select 
+Service Desk is now enabled for this project! To access it in a project, in the left sidebar, select
 **Issues > Service Desk**.
 
 WARNING:

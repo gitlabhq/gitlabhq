@@ -595,7 +595,7 @@ to restrict connections to and from selected pods, namespaces, and the internet.
 
 As the default network plugin for Kubernetes (`kubenet`)
 [does not implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
-support for it, you must have [Cilium](https://docs.cilium.io/en/v1.8/intro/) as your Kubernetes network plugin. 
+support for it, you must have [Cilium](https://docs.cilium.io/en/v1.8/intro/) as your Kubernetes network plugin.
 
 The [Cilium](https://cilium.io/) network plugin can be
 installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd)

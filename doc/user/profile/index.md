@@ -243,14 +243,14 @@ To set the busy status indicator, either:
 
   Issue and merge request sidebar:
 
-  | Sidebar| Collapsed sidebar | 
+  | Sidebar| Collapsed sidebar |
   | --- | --- |
-  | ![Busy status - sidebar](img/busy_indicator_sidebar_v13_9.png) | ![Busy status - sidebar collapsed](img/busy_indicator_sidebar_collapsed_v13_9.png) | 
+  | ![Busy status - sidebar](img/busy_indicator_sidebar_v13_9.png) | ![Busy status - sidebar collapsed](img/busy_indicator_sidebar_collapsed_v13_9.png) |
 
   Notes:
 
   | Notes | Note headers |
-  | --- | --- | 
+  | --- | --- |
   | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
 
 ### Disable busy status feature

@@ -20,7 +20,7 @@ This distinction is used by omnibus to determine which dependencies it requires 
 
 Exceptions are made for some tools that we require in the
 `compile-production-assets` CI job such as `webpack-bundle-analyzer` to analyze our
-production assets post-compile. 
+production assets post-compile.
 
 ## Updating dependencies
 

@@ -65,7 +65,7 @@ end
 ```
 
 On the other hand, a feature category may sometimes be too granular. Features tend to be
-treated differently according to Product and Marketing, while they may share a lot of 
+treated differently according to Product and Marketing, while they may share a lot of
 domain models and behavior under the hood. In this case, having too many bounded contexts
 could make them shallow and more coupled with other contexts.
 

@@ -108,7 +108,7 @@ of GitLab more efficient.
 
 New information that would be useful toward the future usage or troubleshooting
 of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation MR and then referenced, as described above. 
+but added to a documentation MR and then referenced, as described above.
 
 The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.

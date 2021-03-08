@@ -4,7 +4,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       Protected tags
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       Limit access to creating and updating tags. #{link_to "What are protected tags?", help_page_path("user/project/protected_tags")}

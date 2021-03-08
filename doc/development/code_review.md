@@ -283,7 +283,7 @@ first time.
   you forget to remove any debugging code?
 - Consider providing instructions on how to test the merge request. This can be
   helpful for reviewers not familiar with the product feature or area of the codebase.
-- If you know your change depends on another being merged first, note it in the 
+- If you know your change depends on another being merged first, note it in the
   description and set an [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - Be grateful for the reviewer's suggestions. (`Good call. I'll make that change.`)
 - Don't take it personally. The review is of the code, not of you.
@@ -348,7 +348,7 @@ experience, refactors the existing code). Then:
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - Ensure there are no open dependencies. Check [related issues](../user/project/issues/related_issues.md) for blockers. Clarify with the author(s)
-if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md). 
+if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
 - Assign the merge request to the author if changes are required following your
