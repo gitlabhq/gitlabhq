@@ -629,7 +629,7 @@ directory that you want to copy the tarballs to is the root of your mounted
 directory, use `.` instead.
 
 Because file system performance may affect overall GitLab performance,
-[GitLab doesn't recommend using EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
+[GitLab doesn't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 For Omnibus GitLab packages:
 

@@ -79,6 +79,18 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     subject(:execute_service) { chat_service.execute(data) }
 
+    shared_examples 'calls the service API with the event message' do |event_message|
+      specify do
+        expect_next_instance_of(Slack::Messenger) do |messenger|
+          expect(messenger).to receive(:ping).with(event_message, anything).and_call_original
+        end
+
+        execute_service
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
+      end
+    end
+
     context 'with username for slack configured' do
       let(:chat_service_params) { { username: 'slack_username' } }
 
@@ -92,11 +104,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
     context 'push events' do
       let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
-      it "calls #{service_name} API for push events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', /pushed to branch/
 
       context 'with event channel' do
         let(:chat_service_params) { { push_channel: 'random' } }
@@ -109,15 +117,20 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       end
     end
 
+    context 'tag_push events' do
+      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b' } # gitlab-test: git rev-parse refs/tags/v1.1.0
+      let(:ref) { 'refs/tags/v1.1.0' }
+      let(:data) { Git::TagHooksService.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }).send(:push_data) }
+
+      it_behaves_like 'calls the service API with the event message', /pushed new tag/
+    end
+
     context 'issue events' do
       let_it_be(:issue) { create(:issue) }
       let(:data) { issue.to_hook_data(user) }
 
-      it "calls #{service_name} API for issue events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', /Issue (.*?) opened by/
 
       context 'whith event channel' do
         let(:chat_service_params) { { issue_channel: 'random' } }
@@ -156,11 +169,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       let_it_be(:merge_request) { create(:merge_request) }
       let(:data) { merge_request.to_hook_data(user) }
 
-      it "calls #{service_name} API for merge requests events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', /opened merge request/
 
       context 'with event channel' do
         let(:chat_service_params) { { merge_request_channel: 'random' } }
@@ -177,11 +186,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
       let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
-      it "calls #{service_name} API for wiki page events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', / created (.*?)wikis\/(.*?)|wiki page> in/
 
       context 'with event channel' do
         let(:chat_service_params) { { wiki_page_channel: 'random' } }
@@ -198,22 +203,14 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       let_it_be(:deployment) { create(:deployment) }
       let(:data) { Gitlab::DataBuilder::Deployment.build(deployment) }
 
-      it "calls #{service_name} API for deployment events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', /Deploy to (.*?) created/
     end
 
     context 'note event' do
       let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note") }
       let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
 
-      it "calls #{service_name} API for note events" do
-        execute_service
-
-        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname).once
-      end
+      it_behaves_like 'calls the service API with the event message', /commented on issue/
 
       context 'with event channel' do
         let(:chat_service_params) { { note_channel: 'random' } }
