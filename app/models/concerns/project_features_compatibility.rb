@@ -86,6 +86,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:security_and_compliance_access_level, value)
   end
 
+  def container_registry_access_level=(value)
+    write_feature_attribute_string(:container_registry_access_level, value)
+  end
+
   private
 
   def write_feature_attribute_boolean(field, value)

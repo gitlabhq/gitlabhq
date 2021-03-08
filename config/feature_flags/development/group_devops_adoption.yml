@@ -1,0 +1,8 @@
+---
+name: group_devops_adoption
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55039
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323159
+milestone: '13.10'
+type: development
+group: group::optimize
+default_enabled: false

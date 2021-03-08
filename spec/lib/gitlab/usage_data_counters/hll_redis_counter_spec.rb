@@ -154,6 +154,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
         end
 
+        it 'reports an error if Feature.enabled raise an error' do
+          expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+          described_class.track_event(:g_analytics_contribution, values: entity1, time: Date.current)
+        end
+
         context 'for weekly events' do
           it 'sets the keys in Redis to expire automatically after the given expiry time' do
             described_class.track_event("g_analytics_contribution", values: entity1)

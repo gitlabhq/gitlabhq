@@ -124,7 +124,8 @@ RSpec.shared_context 'group navbar structure' do
     {
       nav_item: _('Analytics'),
       nav_sub_items: [
-        _('Contribution')
+        _('Contribution'),
+        _('DevOps Adoption')
       ]
     }
   end

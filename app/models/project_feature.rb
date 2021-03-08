@@ -3,7 +3,22 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
-  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard analytics operations security_and_compliance).freeze
+  FEATURES = %i[
+    issues
+    forking
+    merge_requests
+    wiki
+    snippets
+    builds
+    repository
+    pages
+    metrics_dashboard
+    analytics
+    operations
+    security_and_compliance
+    container_registry
+  ].freeze
+
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance]).freeze
 
   set_available_features(FEATURES)

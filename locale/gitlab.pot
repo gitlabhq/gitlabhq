@@ -8530,6 +8530,9 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
+msgid "Couldn't assign policy to project"
+msgstr ""
+
 msgid "Country"
 msgstr ""
 
@@ -10477,6 +10480,9 @@ msgid "Details (default)"
 msgstr ""
 
 msgid "Detect host keys"
+msgstr ""
+
+msgid "DevOps Adoption"
 msgstr ""
 
 msgid "DevOps Report"
@@ -22658,6 +22664,9 @@ msgstr ""
 msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed."
 msgstr ""
 
+msgid "Policy project doesn't exists"
+msgstr ""
+
 msgid "Pre-defined push rules."
 msgstr ""
 
@@ -26167,6 +26176,9 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
+msgid "Scan Policies"
+msgstr ""
+
 msgid "Scanner"
 msgstr ""
 
@@ -26585,6 +26597,15 @@ msgstr ""
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|A security policy project can be used enforce policies for a given project, group, or instance. It allows you to speficy security policies that are important to you  and enforce them with every commit."
+msgstr ""
+
+msgid "SecurityOrchestration|Create a policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Security policy project"
+msgstr ""
+
 msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
@@ -26820,9 +26841,6 @@ msgid "SecurityReports|You do not have sufficient permissions to access this rep
 msgstr ""
 
 msgid "SecurityReports|You must sign in as an authorized user to see this report"
-msgstr ""
-
-msgid "Security|Policies"
 msgstr ""
 
 msgid "See GitLab's %{password_policy_guidelines}"
@@ -28834,6 +28852,9 @@ msgid "Succeeded"
 msgstr ""
 
 msgid "Successful purchase image"
+msgstr ""
+
+msgid "Successfull"
 msgstr ""
 
 msgid "Successfully activated"
