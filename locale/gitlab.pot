@@ -15489,9 +15489,6 @@ msgstr ""
 msgid "Import/Export Rate Limits"
 msgstr ""
 
-msgid "Import/Export illustration"
-msgstr ""
-
 msgid "ImportButtons|Connect repositories from"
 msgstr ""
 

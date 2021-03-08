@@ -130,22 +130,6 @@ body.modal-open {
 
 .issues-import-modal,
 .issuable-export-modal {
-  .modal-header {
-    justify-content: flex-start;
-
-    .import-export-svg-container {
-      flex-grow: 1;
-      height: 56px;
-      padding: $gl-btn-padding $gl-btn-padding 0;
-      text-align: right;
-
-      .illustration {
-        height: inherit;
-        width: initial;
-      }
-    }
-  }
-
   .modal-body {
     padding: 0;
 

@@ -4,10 +4,8 @@
     .modal-dialog
       .modal-content{ data: { qa_selector: "export_issuable_modal" } }
         .modal-header
-          %h3
+          %h4.gl-m-0
             = _("Export %{issuable_type}" % { issuable_type: issuable_type.humanize(capitalize: false) })
-          .svg-content.import-export-svg-container
-            = image_tag 'illustrations/export-import.svg', role: "presentation", class: 'illustration'
           %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
             = sprite_icon('close', css_class: 'gl-icon')
         .modal-body

@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlIcon,
   GlFormCheckbox,
@@ -14,6 +15,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import httpStatusCodes from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -34,6 +36,8 @@ import CommentFieldLayout from './comment_field_layout.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 
+const { UNPROCESSABLE_ENTITY } = httpStatusCodes;
+
 export default {
   name: 'CommentForm',
   i18n: COMMENT_FORM,
@@ -43,6 +47,7 @@ export default {
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
+    GlAlert,
     GlButton,
     TimelineEntryItem,
     GlIcon,
@@ -66,6 +71,7 @@ export default {
     return {
       note: '',
       noteType: constants.COMMENT,
+      errors: [],
       noteIsConfidential: false,
       isSubmitting: false,
     };
@@ -201,11 +207,19 @@ export default {
       'reopenIssuable',
       'toggleIssueLocalState',
     ]),
+    handleSaveError({ data, status }) {
+      if (status === UNPROCESSABLE_ENTITY && data.errors?.commands_only?.length) {
+        this.errors = data.errors.commands_only;
+      } else {
+        this.errors = [this.$options.i18n.GENERIC_UNSUBMITTABLE_NETWORK];
+      }
+    },
     handleSave(withIssueAction) {
+      this.errors = [];
+
       if (this.note.length) {
         const noteData = {
           endpoint: this.endpoint,
-          flashContainer: this.$el,
           data: {
             note: {
               noteable_type: this.noteableType,
@@ -236,10 +250,10 @@ export default {
               this.toggleIssueState();
             }
           })
-          .catch(() => {
+          .catch(({ response }) => {
+            this.handleSaveError(response);
+
             this.discard(false);
-            const msg = this.$options.i18n.GENERIC_UNSUBMITTABLE_NETWORK;
-            Flash(msg, 'alert', this.$el);
             this.note = noteData.data.note.note; // Restore textarea content.
             this.removePlaceholderNotes();
           })
@@ -318,6 +332,9 @@ export default {
     hasEmailParticipants() {
       return this.getNoteableData.issue_email_participants?.length;
     },
+    dismissError(index) {
+      this.errors.splice(index, 1);
+    },
   },
 };
 </script>
@@ -328,7 +345,15 @@ export default {
     <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="issuableTypeTitle" />
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
-        <div class="flash-container error-alert timeline-content"></div>
+        <gl-alert
+          v-for="(error, index) in errors"
+          :key="index"
+          variant="danger"
+          class="gl-mb-2"
+          @dismiss="() => dismissError(index)"
+        >
+          {{ error }}
+        </gl-alert>
         <div class="timeline-content timeline-content-form">
           <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
             <comment-field-layout
