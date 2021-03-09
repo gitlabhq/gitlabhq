@@ -405,8 +405,8 @@ Rackspace Cloud is supported only with the storage-specific form.
 | `provider` | The provider name | `Rackspace` |
 | `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
 | `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
-| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
-| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
+| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://docs.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
+| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://docs.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
 
 Regardless of whether the container has public access enabled or disabled, Fog
 uses the TempURL method to grant access to LFS objects. If you see error

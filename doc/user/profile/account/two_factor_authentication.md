@@ -161,7 +161,7 @@ have FortiToken configured in FortiToken Cloud.
 
 You'll also need a `client_id` and `client_secret` to configure FortiToken Cloud.
 To get these, see the `REST API Guide` at
-[`Fortinet Document Library`](https://docs.fortinet.com/document/fortitoken-cloud/20.4.d/rest-api).
+[`Fortinet Document Library`](https://docs.fortinet.com/document/fortitoken-cloud/latest/rest-api).
 
 First configure FortiToken Cloud in GitLab. On your GitLab server:
 

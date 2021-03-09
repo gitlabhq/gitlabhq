@@ -161,7 +161,7 @@ unnecessary when using `gl-icon`.
 // good - decorative images hidden from screen readers
 <img src="decorative.jpg" alt="">
 <svg role="img" alt="">
-<gl-icon name="epic"/> 
+<gl-icon name="epic"/>
 ```
 
 ## When should ARIA be used
@@ -187,7 +187,7 @@ Use of ARIA would then only occur in [GitLab UI](https://gitlab.com/gitlab-org/g
 We have two options for Web accessibility testing:
 
 - [axe](https://www.deque.com/axe/) for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/axe-devtools/)
-- [axe](https://www.deque.com/axe/) for [Chrome](https://chrome.google.com/webstore/detail/axe-web-accessibility-tes/lhdoppojpmngadmnindnejefpokejbdd)
+- [axe](https://www.deque.com/axe/) for [Chrome](https://chrome.google.com/webstore/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd)
 
 ### Other links
 

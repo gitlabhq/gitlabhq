@@ -93,11 +93,9 @@ The available `agentk` and `kas` versions can be found in
 
 ### Install the Kubernetes Agent Server
 
-The GitLab Kubernetes Agent Server (KAS) can be deployed using [Omnibus
-GitLab](https://docs.gitlab.com/omnibus/) or the [GitLab
-chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
-GitLab installed, please refer to our [installation
-documentation](https://docs.gitlab.com/ee/install/README.html).
+The GitLab Kubernetes Agent Server (KAS) can be deployed using [Omnibus GitLab](https://docs.gitlab.com/omnibus/) or the
+[GitLab chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
+GitLab installed, please refer to our [installation documentation](../../../install/index.md).
 
 NOTE:
 GitLab plans to include the KAS on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
@@ -469,7 +467,7 @@ The following example projects can help you get started with the Kubernetes Agen
 ### Deploying GitLab Runner with the Agent
 
 You can use the Kubernetes Agent to
-[deploy GitLab Runner in a Kubernetes cluster](http://docs.gitlab.com/runner/install/kubernetes-agent.html).
+[deploy GitLab Runner in a Kubernetes cluster](https://docs.gitlab.com/runner/install/kubernetes-agent.html).
 
 ## Kubernetes Network Security Alerts
 

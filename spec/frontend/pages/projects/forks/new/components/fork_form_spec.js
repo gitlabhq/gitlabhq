@@ -30,9 +30,7 @@ describe('ForkForm component', () => {
 
   const DEFAULT_PROPS = {
     endpoint: '/some/project-full-path/-/forks/new.json',
-    newGroupPath: 'some/groups/path',
     projectFullPath: '/some/project-full-path',
-    visibilityHelpPath: 'some/visibility/help/path',
     projectId: '10',
     projectName: 'Project Name',
     projectPath: 'project-name',
@@ -46,6 +44,10 @@ describe('ForkForm component', () => {
 
   const createComponent = (props = {}, data = {}) => {
     wrapper = shallowMount(ForkForm, {
+      provide: {
+        newGroupPath: 'some/groups/path',
+        visibilityHelpPath: 'some/visibility/help/path',
+      },
       propsData: {
         ...DEFAULT_PROPS,
         ...props,

@@ -1005,6 +1005,20 @@ If the project is a fork, and you provide a valid token to authenticate, the
 }
 ```
 
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+can also see the `issues_template` and `merge_requests_template` parameters:
+[introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718)
+in GitLab 13.10.
+
+```json
+{
+  "id": 3,
+  "issues_template": null,
+  "merge_requests_template": null,
+  ...
+}
+```
+
 ## Get project users
 
 Get the users list of a project.
@@ -1303,6 +1317,8 @@ PUT /projects/:id
 | `visibility`                                                | string         | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                         | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                              | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
+| `issues_template` **(PREMIUM)**                             | string         | **{dotted-circle}** No | Default description for Issues. Description is parsed with GitLab Flavored Markdown. |
+| `merge_requests_template` **(PREMIUM)**                     | string         | **{dotted-circle}** No | Default description for Merge Requests. Description is parsed with GitLab Flavored Markdown.  |
 
 ## Fork project
 

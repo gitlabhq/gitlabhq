@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Experiments can be conducted by any GitLab team, most often the teams from the [Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). Experiments are not tied to releases because they primarily target GitLab.com.
 
-Experiments are run as an A/B test and are behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and should be made the new default or rolled back.
+Experiments are run as an A/B/n test, and are behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and should be made the new default, or rolled back.
 
 ## Experiment tracking issue
 
@@ -36,21 +36,39 @@ and link to the issue that resolves the experiment. If the experiment is
 successful and becomes part of the product, any follow up issues should be
 addressed.
 
-## Experiments using `gitlab-experiment`
+## Implement an experiment
+
+There are two options to conduct experiments:
+
+1. [GitLab Experiment](https://gitlab.com/gitlab-org/gitlab-experiment/) is a gem included in GitLab.
+1. [`Experimentation Module`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb) is built in the GitLab codebase.
+
+Both methods use [experiment](../feature_flags/development.md#experiment-type) feature flags.
+
+Historical Context: `Experimentation Module` was built iteratively with the needs that appeared while implementing Growth sub-department experiments. The `gitlab-experiment` gem was built with the learnings of the `Experimentation Module` and an easier to use API.
+
+Currently both methods for running experiments are included in the codebase. The features are slightly different:
+
+| Feature | `Experiment Module` | `gitlab-experiment` |
+| ------ | ------ | ------ |
+| Record user grouping | Yes | No (not natively) |
+| Uses feature flags | Yes | Yes |
+| Multivariate | No | Yes |
+
+However, there is currently no strong suggestion to use one over the other.
+
+### Experiments using `gitlab-experiment` **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300383) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 > - It's enabled on GitLab.com.
 > - It is not yet intended for use in GitLab self-managed instances.
 
-[GitLab Experiment](https://gitlab.com/gitlab-org/gitlab-experiment/) is a gem included
-in GitLab that can be used for running experiments.
+You find out how to conduct experiments using `gitlab-experiment` in the [README](https://gitlab.com/gitlab-org/gitlab-experiment/-/blob/master/README.md).
 
-## How to create an A/B test using `experimentation.rb`
+### Experiments using the `Experimentation Module`
 
-### Implement the experiment
-
-1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
+1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in the [`Experimentation Module`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
 
    ```ruby
    EXPERIMENTS = {
@@ -151,13 +169,13 @@ in GitLab that can be used for running experiments.
      end
      ```
 
-### Implement the tracking events
+#### Implement the tracking events
 
 To determine whether the experiment is a success or not, we must implement tracking events
 to acquire data for analyzing. We can send events to Snowplow via either the backend or frontend.
 Read the [product intelligence guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/) for more details.
 
-#### Track backend events
+##### Track backend events
 
 The framework provides the following helper method that is available in controllers:
 
@@ -190,7 +208,7 @@ context 'when the experiment is active and the user is in the experimental group
 end
 ```
 
-#### Track frontend events
+##### Track frontend events
 
 The framework provides the following helper method that is available in controllers:
 
@@ -273,7 +291,7 @@ describe('event tracking', () => {
 });
 ```
 
-### Record experiment user
+#### Record experiment user
 
 In addition to the anonymous tracking of events, we can also record which users have participated in which experiments and whether they were given the control experience or the experimental experience.
 
@@ -289,7 +307,7 @@ Subsequent calls to this method for the same experiment and the same user have n
 
 Note that this data is completely separate from the [events tracking data](#implement-the-tracking-events). They are not linked together in any way.
 
-#### Add context
+##### Add context
 
 You can add arbitrary context data in a hash which gets stored as part of the experiment user record. New calls to the `record_experiment_user` with newer contexts get merged deeply into the existing context.
 
@@ -306,7 +324,7 @@ record_experiment_user(:signup_flow, foo: 40, bar: { b: 2 }, thor: 3)
 # context becomes { "foo" => 40, "bar" => { "a" => 22, "b" => 2 }, "thor" => 3}
 ```
 
-### Record experiment conversion event
+#### Record experiment conversion event
 
 Along with the tracking of backend and frontend events and the [recording of experiment participants](#record-experiment-user), we can also record when a user performs the desired conversion event action. For example:
 
@@ -323,7 +341,7 @@ end
 
 Note that the use of this method requires that we have first [recorded the user as being part of the experiment](#record-experiment-user).
 
-### Enable the experiment
+#### Enable the experiment
 
 After all merge requests have been merged, use [`chatops`](../../ci/chatops/index.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
@@ -340,7 +358,7 @@ For visibility, please also share any commands run against production in the `#s
   /chatops run feature delete signup_flow_experiment_percentage
   ```
 
-### Manually force the current user to be in the experiment group
+#### Manually force the current user to be in the experiment group
 
 You may force the application to put your current user in the experiment group. To do so
 add a query string parameter to the path where the experiment runs. If you do so,
@@ -353,7 +371,7 @@ to the URL:
 https://gitlab.com/<EXPERIMENT_ENTRY_URL>?force_experiment=<EXPERIMENT_KEY>
 ```
 
-### A cookie-based approach to force an experiment
+#### A cookie-based approach to force an experiment
 
 It's possible to force the current user to be in the experiment group for `<EXPERIMENT_KEY>`
 during the browser session by using your browser's developer tools:
@@ -374,9 +392,9 @@ To clear the experiments, unset the `force_experiment` cookie:
 document.cookie = "force_experiment=; path=/";
 ```
 
-### Testing and test helpers
+#### Testing and test helpers
 
-#### RSpec
+##### RSpec
 
 Use the following in RSpec to mock the experiment:
 
@@ -404,7 +422,7 @@ context 'when the experiment is active' do
 end
 ```
 
-#### Jest
+##### Jest
 
 Use the following in Jest to mock the experiment:
 

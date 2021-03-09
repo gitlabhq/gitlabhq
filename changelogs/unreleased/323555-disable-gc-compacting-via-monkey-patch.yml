@@ -1,0 +1,5 @@
+---
+title: Temporary make `GC.compact` no-op
+merge_request: 56079
+author:
+type: changed

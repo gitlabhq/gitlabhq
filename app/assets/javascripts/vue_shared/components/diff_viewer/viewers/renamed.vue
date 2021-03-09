@@ -37,9 +37,11 @@ export default {
       required: true,
     },
   },
-  data: () => ({
-    state: STATE_IDLING,
-  }),
+  data() {
+    return {
+      state: STATE_IDLING,
+    };
+  },
   computed: {
     shortSha() {
       return truncateSha(this.diffFile.content_sha);

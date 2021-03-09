@@ -1315,9 +1315,6 @@ msgstr ""
 msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
-msgid "A fork is a copy of a project."
-msgstr ""
-
 msgid "A group is a collection of several projects"
 msgstr ""
 
@@ -8742,6 +8739,9 @@ msgstr ""
 msgid "Create snippet"
 msgstr ""
 
+msgid "Create tag %{tagName}"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -13303,6 +13303,9 @@ msgstr ""
 msgid "Fork project?"
 msgstr ""
 
+msgid "ForkProject|A fork is a copy of a project."
+msgstr ""
+
 msgid "ForkProject|Cancel"
 msgstr ""
 
@@ -13310,6 +13313,9 @@ msgid "ForkProject|Create a group"
 msgstr ""
 
 msgid "ForkProject|Fork project"
+msgstr ""
+
+msgid "ForkProject|Forking a repository allows you to make changes without affecting the original project."
 msgstr ""
 
 msgid "ForkProject|Internal"
@@ -13325,6 +13331,9 @@ msgid "ForkProject|Public"
 msgstr ""
 
 msgid "ForkProject|Select a namespace"
+msgstr ""
+
+msgid "ForkProject|Select a namespace to fork the project"
 msgstr ""
 
 msgid "ForkProject|The project can be accessed by any logged in user."
@@ -13343,9 +13352,6 @@ msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
 msgid "ForkedFromProjectPath|Forked from an inaccessible project"
-msgstr ""
-
-msgid "Forking a repository allows you to make changes without affecting the original project."
 msgstr ""
 
 msgid "Forking in progress"
@@ -20649,6 +20655,9 @@ msgstr ""
 msgid "No start date"
 msgstr ""
 
+msgid "No tag selected"
+msgstr ""
+
 msgid "No template"
 msgstr ""
 
@@ -26356,6 +26365,9 @@ msgstr ""
 msgid "Search milestones"
 msgstr ""
 
+msgid "Search or create tag"
+msgstr ""
+
 msgid "Search or filter results..."
 msgstr ""
 
@@ -26925,9 +26937,6 @@ msgid "Select a group to invite"
 msgstr ""
 
 msgid "Select a label"
-msgstr ""
-
-msgid "Select a namespace to fork the project"
 msgstr ""
 
 msgid "Select a new namespace"

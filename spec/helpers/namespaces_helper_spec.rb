@@ -46,13 +46,26 @@ RSpec.describe NamespacesHelper do
   end
 
   describe '#namespaces_options' do
-    it 'returns groups without being a member for admin' do
-      allow(helper).to receive(:current_user).and_return(admin)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'returns groups without being a member for admin' do
+        allow(helper).to receive(:current_user).and_return(admin)
 
-      options = helper.namespaces_options(user_group.id, display_path: true, extra_group: user_group.id)
+        options = helper.namespaces_options(user_group.id, display_path: true, extra_group: user_group.id)
 
-      expect(options).to include(admin_group.name)
-      expect(options).to include(user_group.name)
+        expect(options).to include(admin_group.name)
+        expect(options).to include(user_group.name)
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'returns only allowed namespaces for admin' do
+        allow(helper).to receive(:current_user).and_return(admin)
+
+        options = helper.namespaces_options(user_group.id, display_path: true, extra_group: user_group.id)
+
+        expect(options).to include(admin_group.name)
+        expect(options).not_to include(user_group.name)
+      end
     end
 
     it 'returns only allowed namespaces for user' do
@@ -74,13 +87,16 @@ RSpec.describe NamespacesHelper do
       expect(options).to include(admin_group.name)
     end
 
-    it 'selects existing group' do
-      allow(helper).to receive(:current_user).and_return(admin)
+    context 'when admin mode is disabled' do
+      it 'selects existing group' do
+        allow(helper).to receive(:current_user).and_return(admin)
+        user_group.add_owner(admin)
 
-      options = helper.namespaces_options(:extra_group, display_path: true, extra_group: user_group)
+        options = helper.namespaces_options(:extra_group, display_path: true, extra_group: user_group)
 
-      expect(options).to include("selected=\"selected\" value=\"#{user_group.id}\"")
-      expect(options).to include(admin_group.name)
+        expect(options).to include("selected=\"selected\" value=\"#{user_group.id}\"")
+        expect(options).to include(admin_group.name)
+      end
     end
 
     it 'selects the new group by default' do

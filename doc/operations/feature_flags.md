@@ -79,8 +79,8 @@ is 200. For GitLab SaaS, the maximum number is determined by [tier](https://abou
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
 
-GitLab Feature Flags use [Unleash](https://docs.getunleash.ai/) as the feature flag
-engine. In Unleash, there are [strategies](https://docs.getunleash.ai/docs/activation_strategy)
+GitLab Feature Flags use [Unleash](https://docs.getunleash.io/) as the feature flag
+engine. In Unleash, there are [strategies](https://docs.getunleash.io/docs/activation_strategy)
 for granular feature flag controls. GitLab Feature Flags can have multiple strategies,
 and the supported strategies are:
 
@@ -95,7 +95,7 @@ and clicking **{pencil}** (edit).
 
 ### All users
 
-Enables the feature for all users. It uses the [`default`](https://docs.getunleash.ai/docs/activation_strategy#default)
+Enables the feature for all users. It uses the [`default`](https://docs.getunleash.io/docs/activation_strategy#default)
 Unleash activation strategy.
 
 ### Percent Rollout

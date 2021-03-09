@@ -781,8 +781,16 @@ RSpec.describe Group do
     context 'evaluating admin access level' do
       let_it_be(:admin) { create(:admin) }
 
-      it 'returns OWNER by default' do
-        expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns OWNER by default' do
+          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns NO_ACCESS' do
+          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
 
       it 'returns NO_ACCESS when only concrete membership should be considered' do

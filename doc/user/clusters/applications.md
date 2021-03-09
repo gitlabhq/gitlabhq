@@ -86,10 +86,9 @@ is saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
 #### Usage in GitLab versions earlier than 13.5
 
-For GitLab versions 13.5 and below, the Ingress, Fluentd, Prometheus,
-and Sentry apps are fetched from the central Helm
-[stable repository](https://kubernetes-charts.storage.googleapis.com/). This repository
-[was deleted](https://github.com/helm/charts#deprecation-timeline)
+For GitLab versions 13.5 and earlier, the Ingress, Fluentd, Prometheus, and Sentry
+apps were fetched from the central Helm stable repository (`https://kubernetes-charts.storage.googleapis.com/`).
+This repository [was deleted](https://github.com/helm/charts#deprecation-timeline)
 on November 13, 2020. This causes the installation CI/CD pipeline to
 fail. Upgrade to GitLab 13.6, or alternatively, you can
 use the following `.gitlab-ci.yml`, which has been tested on GitLab 13.5:

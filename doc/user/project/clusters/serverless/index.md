@@ -90,7 +90,7 @@ memory. **RBAC must be enabled.**
    NOTE:
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.
    For clusters created on GKE, see [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl),
-   for other platforms [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+   for other platforms [Install kubectl](https://kubernetes.io/docs/tasks/tools/).
 
 1. The Ingress is now available at this address and routes incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS record should be created for the desired domain name. For example,
@@ -521,7 +521,7 @@ Running `kubectl` commands on your cluster requires setting up access to the
 cluster first. For clusters created on:
 
 - GKE, see [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
-- Other platforms, see [Install and Set Up kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+- Other platforms, see [Install and Set Up kubectl](https://kubernetes.io/docs/tasks/tools/).
 
 ### Enable request log template
 
@@ -769,7 +769,7 @@ or with other versions of Python.
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.
    For clusters created on GKE, see
    [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl).
-   For other platforms, [install `kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+   For other platforms, [install `kubectl`](https://kubernetes.io/docs/tasks/tools/).
 
    ```shell
    kubectl create --namespace istio-system secret tls istio-ingressgateway-certs \

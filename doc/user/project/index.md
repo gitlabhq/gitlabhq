@@ -154,9 +154,7 @@ There are numerous [APIs](../../api/README.md) to use with your projects:
 - [Aliases](../../api/project_aliases.md)
 - [DORA4 Analytics](../../api/dora4_project_analytics.md)
 
-## DORA4 analytics overview **(ULTIMATE ONLY)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab [Ultimate](https://about.gitlab.com/pricing/) 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+## DORA4 analytics overview
 
 Project details include the following analytics:
 

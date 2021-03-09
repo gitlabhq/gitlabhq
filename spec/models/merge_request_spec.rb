@@ -2899,6 +2899,14 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(subject.mergeable?).to be_truthy
     end
 
+    it 'return true if #mergeable_state? is true and the MR #can_be_merged? is false' do
+      allow(subject).to receive(:mergeable_state?) { true }
+      expect(subject).to receive(:check_mergeability)
+      expect(subject).to receive(:can_be_merged?) { false }
+
+      expect(subject.mergeable?).to be_falsey
+    end
+
     context 'with skip_ci_check option' do
       before do
         allow(subject).to receive_messages(check_mergeability: nil,
@@ -3076,6 +3084,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     where(:status, :public_status) do
       'cannot_be_merged_rechecking' | 'checking'
+      'preparing'                   | 'checking'
       'checking'                    | 'checking'
       'cannot_be_merged'            | 'cannot_be_merged'
     end

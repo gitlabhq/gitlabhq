@@ -27,7 +27,7 @@ involves:
 ## Prerequisites
 
 1. Install
-   [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+   [`kubectl`](https://kubernetes.io/docs/tasks/tools/).
 1. Ensure that you can access your Kubernetes cluster using `kubectl`.
    This varies based on Kubernetes providers.
 1. Prepare for downtime. The steps below include taking the application offline

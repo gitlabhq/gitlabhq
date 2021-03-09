@@ -23,7 +23,7 @@ export const REPORT_TYPE_SECRET_DETECTION = 'secret_detection';
 export const REPORT_TYPE_DEPENDENCY_SCANNING = 'dependency_scanning';
 export const REPORT_TYPE_CONTAINER_SCANNING = 'container_scanning';
 export const REPORT_TYPE_COVERAGE_FUZZING = 'coverage_fuzzing';
-export const REPORT_TYPE_LICENSE_COMPLIANCE = 'license_compliance';
+export const REPORT_TYPE_LICENSE_COMPLIANCE = 'license_scanning';
 export const REPORT_TYPE_API_FUZZING = 'api_fuzzing';
 
 /**

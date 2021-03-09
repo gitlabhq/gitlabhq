@@ -66,14 +66,11 @@ To create a new release through the GitLab UI:
 
 1. Navigate to **Project overview > Releases** and click the **New release**
    button.
-1. In the [**Tag name**](#tag-name) box, enter a name.
-
-   Creating a release based on an existing tag using the user
-   interface is not yet supported. However, this is possible using the
-   [Releases API](../../../api/releases/index.md#create-a-release).
-
-1. In the **Create from** list, select a branch, tag, or commit SHA to use when
-   creating the new tag.
+1. Open the [**Tag name**](#tag-name) dropdown. Select an existing tag or type
+   in a new tag name. Selecting an existing tag that is already associated with
+   a release will result in a validation error.
+1. If creating a new tag, open the **Create from** dropdown. Select a
+   branch, tag, or commit SHA to use when creating the new tag.
 1. Optionally, fill out any additional information about the release, such as its
    [title](#title), [milestones](#associate-milestones-with-a-release),
    [release notes](#release-notes-description), or [assets links](#links).

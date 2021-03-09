@@ -1,0 +1,5 @@
+---
+title: Allow release to be created on existing tag through the UI
+merge_request: 55697
+author:
+type: added

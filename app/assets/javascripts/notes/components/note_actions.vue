@@ -259,19 +259,28 @@ export default {
       class="line-resolve-btn note-action-button"
       @click="onResolve"
     />
-    <a
+    <gl-button
       v-if="canAwardEmoji"
       v-gl-tooltip
       :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-      class="note-action-button note-emoji-button js-add-award js-note-emoji gl-text-gray-600 gl-m-2"
-      href="#"
+      class="note-action-button note-emoji-button add-reaction-button js-add-award js-note-emoji"
+      category="tertiary"
+      variant="default"
+      size="small"
       title="Add reaction"
       data-position="right"
+      :aria-label="__('Add reaction')"
     >
-      <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
-      <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
-      <gl-icon class="link-highlight award-control-icon-super-positive" name="smile" />
-    </a>
+      <span class="reaction-control-icon reaction-control-icon-neutral">
+        <gl-icon name="slight-smile" />
+      </span>
+      <span class="reaction-control-icon reaction-control-icon-positive">
+        <gl-icon name="smiley" />
+      </span>
+      <span class="reaction-control-icon reaction-control-icon-super-positive">
+        <gl-icon name="smile" />
+      </span>
+    </gl-button>
     <reply-button
       v-if="showReply"
       ref="replyButton"

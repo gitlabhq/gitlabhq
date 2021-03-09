@@ -505,7 +505,7 @@ class Group < Namespace
   # @param only_concrete_membership [Bool] whether require admin concrete membership status
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
-    return GroupMember::OWNER if user.admin? && !only_concrete_membership
+    return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
 
     max_member_access = members_with_parents.where(user_id: user)
                                             .reorder(access_level: :desc)

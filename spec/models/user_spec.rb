@@ -3961,6 +3961,37 @@ RSpec.describe User do
     end
   end
 
+  describe '#can_admin_all_resources?', :request_store do
+    it 'returns false for regular user' do
+      user = build_stubbed(:user)
+
+      expect(user.can_admin_all_resources?).to be_falsy
+    end
+
+    context 'for admin user' do
+      include_context 'custom session'
+
+      let(:user) { build_stubbed(:user, :admin) }
+
+      context 'when admin mode is disabled' do
+        it 'returns false' do
+          expect(user.can_admin_all_resources?).to be_falsy
+        end
+      end
+
+      context 'when admin mode is enabled' do
+        before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
+          Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
+        end
+
+        it 'returns true' do
+          expect(user.can_admin_all_resources?).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '.ghost' do
     it "creates a ghost user if one isn't already present" do
       ghost = described_class.ghost

@@ -131,7 +131,7 @@ initial troubleshooting steps that resolve the most common problems:
 1. If things still aren't working, a more assertive set of actions may help get things back into a
    good state:
 
-   - Stop and [delete the problematic environment](../../../../../ci/environments/index.md#delete-environments-through-the-ui) in GitLab.
+   - Stop and [delete the problematic environment](../../../../../ci/environments/index.md#delete-a-stopped-environment) in GitLab.
    - Delete the relevant namespace in Kubernetes by running `kubectl delete namespaces <insert-some-namespace-name>` in your Kubernetes cluster.
    - Rerun the application project pipeline to redeploy the application.
 

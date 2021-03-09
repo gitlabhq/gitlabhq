@@ -521,7 +521,7 @@ class ProjectsController < Projects::ApplicationController
   def export_rate_limit
     prefixed_action = "project_#{params[:action]}".to_sym
 
-    project_scope = params[:action] == :download_export ? @project : nil
+    project_scope = params[:action] == 'download_export' ? @project : nil
 
     if rate_limiter.throttled?(prefixed_action, scope: [current_user, project_scope].compact)
       rate_limiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)

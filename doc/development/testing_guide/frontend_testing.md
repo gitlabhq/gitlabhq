@@ -212,7 +212,7 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/queries/byrole)
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/queries/byrole/)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage

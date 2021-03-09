@@ -1,11 +1,12 @@
 import Vue from 'vue';
-import ForkForm from './components/fork_form.vue';
+import App from './components/app.vue';
 import ForkGroupsList from './components/fork_groups_list.vue';
 
 const mountElement = document.getElementById('fork-groups-mount-element');
 
 if (gon.features.forkProjectForm) {
   const {
+    forkIllustration,
     endpoint,
     newGroupPath,
     projectFullPath,
@@ -20,9 +21,14 @@ if (gon.features.forkProjectForm) {
   // eslint-disable-next-line no-new
   new Vue({
     el: mountElement,
+    provide: {
+      newGroupPath,
+      visibilityHelpPath,
+    },
     render(h) {
-      return h(ForkForm, {
+      return h(App, {
         props: {
+          forkIllustration,
           endpoint,
           newGroupPath,
           projectFullPath,

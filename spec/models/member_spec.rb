@@ -425,12 +425,10 @@ RSpec.describe Member do
         end
 
         context 'when admin mode is disabled' do
-          # Skipped because `Group#max_member_access_for_user` needs to be migrated to use admin mode
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/207950
-          xit 'rejects setting members.created_by to the given admin current_user' do
+          it 'rejects setting members.created_by to the given admin current_user' do
             member = described_class.add_user(source, user, :maintainer, current_user: admin)
 
-            expect(member.created_by).not_to be_persisted
+            expect(member.created_by).to be_nil
           end
         end
 

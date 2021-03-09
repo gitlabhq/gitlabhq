@@ -14,9 +14,8 @@ for updating Geo nodes.
 ## Updating to GitLab 13.9
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/322991)
-that prevents regular downtime upgrades to GitLab 13.9.0 and 13.9.1. Zero-downtime upgrades are not
-affected. We are working on a patch and recommend delaying any upgrade attempt until a fixed version
-is released.
+that prevents regular downtime upgrades to GitLab 13.9.0, 13.9.1 and 13.9.2. Zero-downtime upgrades are not
+affected. To avoid this issue, upgrade to GitLab 13.9.3 or later.
 
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/322991).
 

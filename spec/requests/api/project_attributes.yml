@@ -12,7 +12,6 @@ itself: # project
     - import_source
     - import_type
     - import_url
-    - issues_template
     - jobs_cache_index
     - last_repository_check_at
     - last_repository_check_failed
@@ -24,7 +23,6 @@ itself: # project
     - merge_requests_author_approval
     - merge_requests_disable_committers_approval
     - merge_requests_rebase_enabled
-    - merge_requests_template
     - mirror_last_successful_update_at
     - mirror_last_update_at
     - mirror_overwrites_diverged_branches

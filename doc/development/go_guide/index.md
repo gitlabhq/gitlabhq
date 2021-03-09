@@ -91,7 +91,7 @@ projects:
 - Avoid global variables, even in packages. By doing so you introduce side
   effects if the package is included multiple times.
 - Use `goimports` before committing.
-  [`goimports`](https://godoc.org/golang.org/x/tools/cmd/goimports)
+  [`goimports`](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
   is a tool that automatically formats Go source code using
   [`Gofmt`](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
   adding missing ones and removing unreferenced ones.

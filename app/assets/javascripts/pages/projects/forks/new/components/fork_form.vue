@@ -45,20 +45,20 @@ export default {
     GlFormRadioGroup,
     GlFormSelect,
   },
+  inject: {
+    newGroupPath: {
+      default: '',
+    },
+    visibilityHelpPath: {
+      default: '',
+    },
+  },
   props: {
     endpoint: {
       type: String,
       required: true,
     },
-    newGroupPath: {
-      type: String,
-      required: true,
-    },
     projectFullPath: {
-      type: String,
-      required: true,
-    },
-    visibilityHelpPath: {
       type: String,
       required: true,
     },

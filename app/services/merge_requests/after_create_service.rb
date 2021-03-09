@@ -3,6 +3,13 @@
 module MergeRequests
   class AfterCreateService < MergeRequests::BaseService
     def execute(merge_request)
+      prepare_merge_request(merge_request)
+      merge_request.mark_as_unchecked if merge_request.preparing?
+    end
+
+    private
+
+    def prepare_merge_request(merge_request)
       event_service.open_mr(merge_request, current_user)
 
       merge_request_activity_counter.track_create_mr_action(user: current_user)

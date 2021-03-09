@@ -33,7 +33,7 @@ RSpec.describe 'User creates release', :js do
   end
 
   it 'defaults the "Create from" dropdown to the project\'s default branch' do
-    expect(page.find('.ref-selector button')).to have_content(project.default_branch)
+    expect(page.find('[data-testid="create-from-field"] .ref-selector button')).to have_content(project.default_branch)
   end
 
   context 'when the "Save release" button is clicked', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297507' do

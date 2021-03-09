@@ -59,7 +59,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { sort: :similarity, search: 'test' } }
 
         it 'returns projects by similarity' do
-          expect(projects).to eq([project_2, project_4])
+          expect(projects).to contain_exactly(project_2, project_4)
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { sort: :similarity } }
 
         it 'returns all projects' do
-          expect(projects).to eq([project_1, project_2, project_4])
+          expect(projects).to contain_exactly(project_1, project_2, project_4)
         end
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { search: 'test' } }
 
         it 'returns matching projects' do
-          expect(projects).to eq([project_2, project_4])
+          expect(projects).to contain_exactly(project_2, project_4)
         end
       end
     end

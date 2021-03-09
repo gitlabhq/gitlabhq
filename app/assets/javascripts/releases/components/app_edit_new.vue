@@ -86,12 +86,11 @@ export default {
       ];
     },
   },
-  mounted() {
-    // eslint-disable-next-line promise/catch-or-return
-    this.initializeRelease().then(() => {
-      // Focus the first non-disabled input element
-      this.$el.querySelector('input:enabled').focus();
-    });
+  async mounted() {
+    await this.initializeRelease();
+
+    // Focus the first non-disabled input or button element
+    this.$el.querySelector('input:enabled, button:enabled').focus();
   },
   methods: {
     ...mapActions('detail', [

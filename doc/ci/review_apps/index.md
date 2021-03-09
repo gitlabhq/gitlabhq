@@ -321,7 +321,3 @@ the user must enter a [personal access token](../../user/profile/personal_access
 with `api` scope before submitting feedback.
 
 This same method can be used to require authentication for any public projects.
-
-## Limitations
-
-Review App limitations are the same as [environments limitations](../environments/index.md#limitations).

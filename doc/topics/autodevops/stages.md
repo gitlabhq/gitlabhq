@@ -635,7 +635,7 @@ ciliumNetworkPolicy:
 #### Enabling Alerts
 
 You can also enable alerts. Network policies with alerts are considered only if
-[GitLab Kubernetes Agent](https://docs.gitlab.com/13.6/ee/user/clusters/agent/)
+[GitLab Kubernetes Agent](../../user/clusters/agent/index.md)
 has been integrated.
 
 You can enable alerts as follows:

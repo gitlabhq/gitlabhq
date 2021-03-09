@@ -1704,6 +1704,10 @@ class User < ApplicationRecord
     can?(:read_all_resources)
   end
 
+  def can_admin_all_resources?
+    can?(:admin_all_resources)
+  end
+
   def update_two_factor_requirement
     periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 

@@ -1,28 +1,29 @@
-- page_title _("Fork project")
+- page_title s_("ForkProject|Fork project")
 
-.row.gl-mt-3
-  .col-lg-3
-    %h4.gl-mt-0
-      = _("Fork project")
-    %p
-      = _("A fork is a copy of a project.")
-      %br
-      = _('Forking a repository allows you to make changes without affecting the original project.')
-  .col-lg-9
-    - if Feature.enabled?(:fork_project_form)
-      #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json),
-        new_group_path: new_group_path,
-        project_full_path: project_path(@project),
-        visibility_help_path: help_page_path("public_access/public_access"),
-        project_id: @project.id,
-        project_name: @project.name,
-        project_path: @project.path,
-        project_description: @project.description,
-        project_visibility: @project.visibility } }
-    - else
+- if Feature.enabled?(:fork_project_form)
+  #fork-groups-mount-element{ data: { fork_illustration: image_path('illustrations/project-create-new-sm.svg'),
+    endpoint: new_project_fork_path(@project, format: :json),
+    new_group_path: new_group_path,
+    project_full_path: project_path(@project),
+    visibility_help_path: help_page_path("public_access/public_access"),
+    project_id: @project.id,
+    project_name: @project.name,
+    project_path: @project.path,
+    project_description: @project.description,
+    project_visibility: @project.visibility } }
+- else
+  .row.gl-mt-3
+    .col-lg-3
+      %h4.gl-mt-0
+        = s_("ForkProject|Fork project")
+      %p
+        = s_("ForkProject|A fork is a copy of a project.")
+        %br
+        = s_('ForkProject|Forking a repository allows you to make changes without affecting the original project.')
+    .col-lg-9
       - if @own_namespace.present?
         .fork-thumbnail-container.js-fork-content
           %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
-            = _("Select a namespace to fork the project")
+            = s_("ForkProject|Select a namespace to fork the project")
           = render 'fork_button', namespace: @own_namespace
       #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json) } }

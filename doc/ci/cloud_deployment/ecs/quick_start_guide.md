@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Getting started with Continuous Deployment to AWS Elastic Container Service **(FREE)**
 
 This step-by-step guide helps you use [Continuous Deployment to ECS](../index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs)
-that deploys a project hosted on GitLab.com to [Elastic Container Service](https://aws.amazon.com/ecs)
+that deploys a project hosted on GitLab.com to [Elastic Container Service](https://aws.amazon.com/ecs/)
 (ECS) on AWS.
 
 In this guide, you begin by creating an ECS cluster manually using the AWS console. You create and
@@ -59,7 +59,7 @@ container registry.
 
 ### Push a containerized application image to GitLab Container Registry
 
-[ECS](https://aws.amazon.com/ecs) is a container orchestration service, meaning that you must
+[ECS](https://aws.amazon.com/ecs/) is a container orchestration service, meaning that you must
 provide a containerized application image during the infrastructure build. To do so, you can use
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/index.md).

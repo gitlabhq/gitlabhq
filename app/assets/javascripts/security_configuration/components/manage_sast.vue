@@ -14,9 +14,11 @@ export default {
       default: '',
     },
   },
-  data: () => ({
-    isLoading: false,
-  }),
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
   methods: {
     async mutate() {
       this.isLoading = true;
