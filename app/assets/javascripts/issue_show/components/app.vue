@@ -5,7 +5,6 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
 import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
 import eventHub from '../event_hub';
 import Service from '../services/index';
@@ -25,7 +24,6 @@ export default {
     formComponent,
     PinnedLinks,
   },
-  mixins: [recaptchaModalImplementor],
   props: {
     endpoint: {
       required: true,
@@ -250,6 +248,7 @@ export default {
     },
   },
   created() {
+    this.flashContainer = null;
     this.service = new Service(this.endpoint);
     this.poll = new Poll({
       resource: this.service,
@@ -289,7 +288,7 @@ export default {
   methods: {
     handleBeforeUnloadEvent(e) {
       const event = e;
-      if (this.showForm && this.issueChanged && !this.showRecaptcha) {
+      if (this.showForm && this.issueChanged) {
         event.returnValue = __('Are you sure you want to lose your issue information?');
       }
       return undefined;
@@ -347,10 +346,10 @@ export default {
     },
 
     updateIssuable() {
+      this.clearFlash();
       return this.service
         .updateIssuable(this.store.formState)
         .then((res) => res.data)
-        .then((data) => this.checkForSpam(data))
         .then((data) => {
           if (!window.location.pathname.includes(data.web_url)) {
             visitUrl(data.web_url);
@@ -361,28 +360,22 @@ export default {
           eventHub.$emit('close.form');
         })
         .catch((error = {}) => {
-          const { name, response = {} } = error;
+          const { message, response = {} } = error;
 
-          if (name === 'SpamError') {
-            this.openRecaptcha();
-          } else {
-            let errMsg = this.defaultErrorMessage;
+          this.store.setFormState({
+            updateLoading: false,
+          });
 
-            if (response.data && response.data.errors) {
-              errMsg += `. ${response.data.errors.join(' ')}`;
-            }
+          let errMsg = this.defaultErrorMessage;
 
-            createFlash(errMsg);
+          if (response.data && response.data.errors) {
+            errMsg += `. ${response.data.errors.join(' ')}`;
+          } else if (message) {
+            errMsg += `. ${message}`;
           }
+
+          this.flashContainer = createFlash(errMsg);
         });
-    },
-
-    closeRecaptchaModal() {
-      this.store.setFormState({
-        updateLoading: false,
-      });
-
-      this.closeRecaptcha();
     },
 
     deleteIssuable(payload) {
@@ -409,6 +402,13 @@ export default {
     showStickyHeader() {
       this.isStickyHeaderShowing = true;
     },
+
+    clearFlash() {
+      if (this.flashContainer) {
+        this.flashContainer.style.display = 'none';
+        this.flashContainer = null;
+      }
+    },
   },
 };
 </script>
@@ -429,13 +429,6 @@ export default {
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
-      />
-
-      <recaptcha-modal
-        v-show="showRecaptcha"
-        ref="recaptchaModal"
-        :html="recaptchaHTML"
-        @close="closeRecaptchaModal"
       />
     </div>
     <div v-else>

@@ -22,6 +22,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   const {
     // Add to apollo cache as it can be updated by future queries
     commitSha,
+    initialBranchName,
     // Add to provide/inject API for static values
     ciConfigPath,
     defaultBranch,
@@ -42,6 +43,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
+      currentBranch: initialBranchName || defaultBranch,
       commitSha,
     },
   });

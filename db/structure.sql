@@ -41,6 +41,62 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM web_hook_logs_part_0c5294f417 where id = OLD.id;
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE web_hook_logs_part_0c5294f417
+  SET web_hook_id = NEW.web_hook_id,
+    trigger = NEW.trigger,
+    url = NEW.url,
+    request_headers = NEW.request_headers,
+    request_data = NEW.request_data,
+    response_headers = NEW.response_headers,
+    response_body = NEW.response_body,
+    response_status = NEW.response_status,
+    execution_duration = NEW.execution_duration,
+    internal_error_message = NEW.internal_error_message,
+    updated_at = NEW.updated_at,
+    created_at = NEW.created_at
+  WHERE web_hook_logs_part_0c5294f417.id = NEW.id;
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO web_hook_logs_part_0c5294f417 (id,
+    web_hook_id,
+    trigger,
+    url,
+    request_headers,
+    request_data,
+    response_headers,
+    response_body,
+    response_status,
+    execution_duration,
+    internal_error_message,
+    updated_at,
+    created_at)
+  VALUES (NEW.id,
+    NEW.web_hook_id,
+    NEW.trigger,
+    NEW.url,
+    NEW.request_headers,
+    NEW.request_data,
+    NEW.response_headers,
+    NEW.response_body,
+    NEW.response_status,
+    NEW.execution_duration,
+    NEW.internal_error_message,
+    NEW.updated_at,
+    NEW.created_at);
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_29bc99d6db() IS 'Partitioning migration: table sync for web_hook_logs table';
+
 CREATE FUNCTION table_sync_function_2be879775d() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -111,6 +167,23 @@ CREATE TABLE audit_events (
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
     CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
+)
+PARTITION BY RANGE (created_at);
+
+CREATE TABLE web_hook_logs_part_0c5294f417 (
+    id bigint NOT NULL,
+    web_hook_id integer NOT NULL,
+    trigger character varying,
+    url character varying,
+    request_headers text,
+    request_data text,
+    response_headers text,
+    response_body text,
+    response_status character varying,
+    execution_duration double precision,
+    internal_error_message character varying,
+    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL
 )
 PARTITION BY RANGE (created_at);
 
@@ -14613,7 +14686,8 @@ CREATE TABLE notes (
     change_position text,
     resolved_by_push boolean,
     review_id bigint,
-    confidential boolean
+    confidential boolean,
+    last_edited_at timestamp with time zone
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -21254,6 +21328,9 @@ ALTER TABLE ONLY vulnerability_statistics
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY web_hook_logs_part_0c5294f417
+    ADD CONSTRAINT web_hook_logs_part_0c5294f417_pkey PRIMARY KEY (id, created_at);
+
 ALTER TABLE ONLY web_hook_logs
     ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id);
 
@@ -24318,6 +24395,8 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
+
+CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE PROCEDURE table_sync_function_29bc99d6db();
 
 CREATE TRIGGER table_sync_trigger_ee39a25f9d AFTER INSERT OR DELETE OR UPDATE ON audit_events FOR EACH ROW EXECUTE PROCEDURE table_sync_function_2be879775d();
 

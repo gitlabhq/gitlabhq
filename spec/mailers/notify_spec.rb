@@ -464,37 +464,6 @@ RSpec.describe Notify do
         end
       end
 
-      describe 'status changed' do
-        let(:status) { 'reopened' }
-
-        subject { described_class.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
-
-        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-          let(:model) { merge_request }
-        end
-
-        it_behaves_like 'it should show Gmail Actions View Merge request link'
-        it_behaves_like 'an unsubscribeable thread'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
-        end
-
-        it 'has the correct subject and body' do
-          aggregate_failures do
-            is_expected.to have_referable_subject(merge_request, reply: true)
-            is_expected.to have_body_text(status)
-            is_expected.to have_body_text(current_user_sanitized)
-            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-            is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
-          end
-        end
-      end
-
       describe 'that are unmergeable' do
         let_it_be(:merge_request) do
           create(:merge_request, :conflict,

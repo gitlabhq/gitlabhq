@@ -5,7 +5,7 @@
 
 %section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { qa_selector: 'mirroring_repositories_settings_content' } }
   .settings-header
-    %h4= _('Mirroring repositories')
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Mirroring repositories')
     %button.btn.gl-button.btn-default.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p

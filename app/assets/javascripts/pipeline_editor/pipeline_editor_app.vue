@@ -9,6 +9,7 @@ import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_stat
 import { COMMIT_FAILURE, COMMIT_SUCCESS, DEFAULT_FAILURE, LOAD_FAILURE_UNKNOWN } from './constants';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
+import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
 export default {
@@ -22,9 +23,6 @@ export default {
   inject: {
     ciConfigPath: {
       default: '',
-    },
-    defaultBranch: {
-      default: null,
     },
     projectFullPath: {
       default: '',
@@ -58,7 +56,7 @@ export default {
         return {
           projectPath: this.projectFullPath,
           path: this.ciConfigPath,
-          ref: this.defaultBranch,
+          ref: this.currentBranch,
         };
       },
       update(data) {
@@ -96,6 +94,9 @@ export default {
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
+    },
+    currentBranch: {
+      query: getCurrentBranch,
     },
   },
   computed: {

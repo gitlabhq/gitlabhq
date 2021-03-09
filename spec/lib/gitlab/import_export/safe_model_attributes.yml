@@ -84,6 +84,7 @@ Note:
 - discussion_id
 - original_discussion_id
 - confidential
+- last_edited_at
 LabelLink:
 - id
 - target_type

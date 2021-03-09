@@ -2,6 +2,7 @@
 
 module SpammableActions
   extend ActiveSupport::Concern
+  include Spam::Concerns::HasSpamActionResponseFields
 
   included do
     before_action :authorize_submit_spammable!, only: :mark_as_spam
@@ -25,14 +26,20 @@ module SpammableActions
 
       respond_to do |format|
         format.html do
+          # NOTE: format.html is still used by issue create, and uses the legacy HAML
+          # `_recaptcha_form.html.haml` rendered via the `projects/issues/verify` template.
           render :verify
         end
 
         format.json do
-          locals = { spammable: spammable, script: false, has_submit: false }
-          recaptcha_html = render_to_string(partial: 'shared/recaptcha_form', formats: :html, locals: locals)
+          # format.json is used by all new Vue-based CAPTCHA implementations, which
+          # handle all of the CAPTCHA form rendering on the client via the Pajamas-based
+          # app/assets/javascripts/captcha/captcha_modal.vue
 
-          render json: { recaptcha_html: recaptcha_html }
+          # NOTE: "409 - Conflict" seems to be the most appropriate HTTP status code for a response
+          # which requires a CAPTCHA to be solved in order for the request to be resubmitted.
+          # See https://stackoverflow.com/q/26547466/25192
+          render json: spam_action_response_fields(spammable), status: :conflict
         end
       end
     else
@@ -58,7 +65,7 @@ module SpammableActions
 
     # After this newer GraphQL/JS API process is fully supported by the backend, we can remove the
     # check for the 'g-recaptcha-response' field and other HTML/HAML form-specific support.
-    captcha_response = params['g-recaptcha-response']
+    captcha_response = params['g-recaptcha-response'] || params[:captcha_response]
 
     {
       request: request,

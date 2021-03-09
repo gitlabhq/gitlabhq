@@ -1,0 +1,5 @@
+---
+title: Add web_hook_logs partitioning migration
+merge_request: 55938
+author:
+type: other

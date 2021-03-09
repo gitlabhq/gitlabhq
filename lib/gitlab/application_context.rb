@@ -7,6 +7,9 @@ module Gitlab
 
     Attribute = Struct.new(:name, :type)
 
+    LOG_KEY = Labkit::Context::LOG_KEY
+    KNOWN_KEYS = Labkit::Context::KNOWN_KEYS
+
     APPLICATION_ATTRIBUTES = [
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
@@ -20,6 +23,10 @@ module Gitlab
     def self.with_context(args, &block)
       application_context = new(**args)
       application_context.use(&block)
+    end
+
+    def self.with_raw_context(attributes = {}, &block)
+      Labkit::Context.with_context(attributes, &block)
     end
 
     def self.push(args)

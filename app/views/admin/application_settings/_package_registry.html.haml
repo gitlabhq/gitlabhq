@@ -47,4 +47,4 @@
                   .form-group
                     = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
                     = f.number_field :generic_packages_max_file_size, class: 'form-control gl-form-input'
-                  = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-success'
+                  = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-confirm'

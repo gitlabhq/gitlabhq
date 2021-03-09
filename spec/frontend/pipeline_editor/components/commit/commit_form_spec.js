@@ -12,7 +12,7 @@ describe('Pipeline Editor | Commit Form', () => {
     wrapper = mountFn(CommitForm, {
       propsData: {
         defaultMessage: mockCommitMessage,
-        defaultBranch: mockDefaultBranch,
+        currentBranch: mockDefaultBranch,
         ...props,
       },
 
@@ -41,7 +41,7 @@ describe('Pipeline Editor | Commit Form', () => {
       expect(findCommitTextarea().attributes('value')).toBe(mockCommitMessage);
     });
 
-    it('shows a default branch', () => {
+    it('shows current branch', () => {
       expect(findBranchInput().attributes('value')).toBe(mockDefaultBranch);
     });
 
@@ -66,7 +66,7 @@ describe('Pipeline Editor | Commit Form', () => {
       expect(wrapper.emitted('submit')[0]).toEqual([
         {
           message: mockCommitMessage,
-          branch: mockDefaultBranch,
+          targetBranch: mockDefaultBranch,
           openMergeRequest: false,
         },
       ]);
@@ -101,7 +101,7 @@ describe('Pipeline Editor | Commit Form', () => {
       expect(wrapper.emitted('submit')[0]).toEqual([
         {
           message: anotherMessage,
-          branch: anotherBranch,
+          targetBranch: anotherBranch,
           openMergeRequest: true,
         },
       ]);

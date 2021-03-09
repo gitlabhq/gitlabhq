@@ -2,7 +2,7 @@
 
 module PagerDuty
   class WebhookPayloadParser
-    SCHEMA_PATH = File.join('lib', 'pager_duty', 'validator', 'schemas', 'message.json')
+    SCHEMA_PATH = Rails.root.join('lib', 'pager_duty', 'validator', 'schemas', 'message.json')
 
     def initialize(payload)
       @payload = payload
@@ -66,7 +66,7 @@ module PagerDuty
     end
 
     def valid_message?(message)
-      ::JSONSchemer.schema(Pathname.new(SCHEMA_PATH)).valid?(message)
+      ::JSONSchemer.schema(SCHEMA_PATH).valid?(message)
     end
   end
 end

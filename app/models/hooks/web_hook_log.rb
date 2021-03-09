@@ -6,6 +6,8 @@ class WebHookLog < ApplicationRecord
   include DeleteWithLimit
   include CreatedAtFilterable
 
+  self.primary_key = :id
+
   belongs_to :web_hook
 
   serialize :request_headers, Hash # rubocop:disable Cop/ActiveRecordSerialize

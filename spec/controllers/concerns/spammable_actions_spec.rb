@@ -69,8 +69,11 @@ RSpec.describe SpammableActions do
       end
 
       context 'when spammable.render_recaptcha? is true' do
+        let(:spam_log) { instance_double(SpamLog, id: 123) }
+        let(:captcha_site_key) { 'abc123' }
+
         before do
-          expect(spammable).to receive(:render_recaptcha?) { true }
+          expect(spammable).to receive(:render_recaptcha?).at_least(:once) { true }
         end
 
         context 'when format is :html' do
@@ -83,24 +86,24 @@ RSpec.describe SpammableActions do
 
         context 'when format is :json' do
           let(:format) { :json }
-          let(:recaptcha_html) { '<recaptcha-html/>' }
 
-          it 'renders json with recaptcha_html' do
-            expect(controller).to receive(:render_to_string).with(
-              {
-                partial: 'shared/recaptcha_form',
-                formats: :html,
-                locals: {
-                  spammable: spammable,
-                  script: false,
-                  has_submit: false
-                }
-              }
-            ) { recaptcha_html }
+          before do
+            expect(spammable).to receive(:spam?) { false }
+            expect(spammable).to receive(:spam_log) { spam_log }
+            expect(Gitlab::CurrentSettings).to receive(:recaptcha_site_key) { captcha_site_key }
+          end
 
+          it 'renders json with spam_action_response_fields' do
             subject
 
-            expect(json_response).to eq({ 'recaptcha_html' => recaptcha_html })
+            expected_json_response = HashWithIndifferentAccess.new(
+              {
+                spam: false,
+                needs_captcha_response: true,
+                spam_log_id: spam_log.id,
+                captcha_site_key: captcha_site_key
+              })
+            expect(json_response).to eq(expected_json_response)
           end
         end
       end

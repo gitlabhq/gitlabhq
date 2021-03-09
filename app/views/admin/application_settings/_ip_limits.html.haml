@@ -57,4 +57,4 @@
         = _('A plain-text response to show to clients that hit the rate limit.')
       = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control gl-form-input', rows: 5
 
-  = f.submit 'Save changes', class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }
+  = f.submit 'Save changes', class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

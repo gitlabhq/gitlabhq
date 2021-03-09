@@ -304,10 +304,10 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
-  config.around do |example|
+  config.around(:example, :context_aware) do |example|
     # Wrap each example in it's own context to make sure the contexts don't
     # leak
-    Labkit::Context.with_context { example.run }
+    Gitlab::ApplicationContext.with_raw_context { example.run }
   end
 
   config.around do |example|

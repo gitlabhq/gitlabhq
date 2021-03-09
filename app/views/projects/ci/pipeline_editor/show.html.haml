@@ -4,6 +4,7 @@
   "commit-sha" => @project.commit ? @project.commit.sha : '',
   "default-branch" => @project.default_branch,
   "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
+  "initial-branch-name": params[:branch_name],
   "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
   "new-merge-request-path" => namespace_project_new_merge_request_path,
   "project-path" => @project.path,

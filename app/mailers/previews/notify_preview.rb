@@ -89,7 +89,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def merge_request_status_email
-    Notify.merge_request_status_email(user.id, merge_request.id, 'closed', user.id).message
+    Notify.merge_request_status_email(user.id, merge_request.id, 'reopened', user.id).message
   end
 
   def merged_merge_request_email

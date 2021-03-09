@@ -41,10 +41,17 @@ export default {
       }
     },
   },
+  mounted() {
+    // If this is true, we need to present the captcha modal to the user.
+    // When the modal is shown we will also initialize and render the form.
+    if (this.needsCaptchaResponse) {
+      this.$refs.modal.show();
+    }
+  },
   methods: {
     emitReceivedCaptchaResponse(captchaResponse) {
-      this.$emit('receivedCaptchaResponse', captchaResponse);
       this.$refs.modal.hide();
+      this.$emit('receivedCaptchaResponse', captchaResponse);
     },
     emitNullReceivedCaptchaResponse() {
       this.emitReceivedCaptchaResponse(null);
@@ -103,6 +110,7 @@ export default {
     :action-cancel="{ text: __('Cancel') }"
     @shown="shown"
     @hide="hide"
+    @hidden="$emit('hidden')"
   >
     <div ref="captcha"></div>
     <p>{{ __('We want to be sure it is you, please confirm you are not a robot.') }}</p>

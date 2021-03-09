@@ -35,7 +35,6 @@ const mockVariables = {
 
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
-  defaultBranch: mockDefaultBranch,
   projectFullPath: mockProjectFullPath,
   newMergeRequestPath: mockNewMergeRequestPath,
 };
@@ -64,6 +63,7 @@ describe('Pipeline Editor | Commit section', () => {
       data() {
         return {
           commitSha: mockCommitSha,
+          currentBranch: mockDefaultBranch,
         };
       },
       mocks: {
@@ -116,7 +116,7 @@ describe('Pipeline Editor | Commit section', () => {
       await submitCommit();
     });
 
-    it('calls the mutation with the default branch', () => {
+    it('calls the mutation with the current branch', () => {
       expect(mockMutate).toHaveBeenCalledTimes(1);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
