@@ -352,6 +352,20 @@ describe('Api', () => {
     });
   });
 
+  describe('projectGroups', () => {
+    it('fetches a project group', async () => {
+      const options = { unused: 'option' };
+      const projectId = 1;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/groups.json`;
+      mock.onGet(expectedUrl, { params: options }).reply(httpStatus.OK, {
+        name: 'test',
+      });
+
+      const { name } = await Api.projectGroups(projectId, options);
+      expect(name).toBe('test');
+    });
+  });
+
   describe('projectUsers', () => {
     it('fetches all users of a particular project', (done) => {
       const query = 'dummy query';

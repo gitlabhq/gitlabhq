@@ -1,8 +1,0 @@
----
-name: invite_members_version_a_experiment_percentage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33210
-rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/299
-milestone: '13.1'
-type: experiment
-group: group::expansion
-default_enabled: false

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Git push over HTTP', :ldap_no_tls do
+    describe 'Git push over HTTP' do
       it 'user pushes code to the repository', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1702' do
         Flow::Login.sign_in
 

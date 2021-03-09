@@ -53,7 +53,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_to_gon_attributes(:features, real_time_feature_flag, real_time_enabled)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
 
-    record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
   end
 

@@ -107,12 +107,7 @@ module Projects
       end
 
       project.leave_pool_repository
-
-      if Gitlab::Ci::Features.project_transactionless_destroy?(project)
-        destroy_project_related_records(project)
-      else
-        Project.transaction { destroy_project_related_records(project) }
-      end
+      destroy_project_related_records(project)
     end
 
     def destroy_project_related_records(project)

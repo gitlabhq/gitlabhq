@@ -71,15 +71,7 @@ RSpec.describe InviteMembersHelper do
           allow(helper).to receive(:current_user) { owner }
         end
 
-        it 'returns false' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { false }
-
-          expect(helper.directly_invite_members?).to eq false
-        end
-
         it 'returns true' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { true }
-
           expect(helper.directly_invite_members?).to eq true
         end
       end
@@ -90,8 +82,6 @@ RSpec.describe InviteMembersHelper do
         end
 
         it 'returns false' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { true }
-
           expect(helper.directly_invite_members?).to eq false
         end
       end

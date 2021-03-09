@@ -15,6 +15,10 @@ RSpec.describe Resolvers::BranchCommitResolver do
       is_expected.to eq(repository.commits('master', limit: 1).last)
     end
 
+    it 'sets project container' do
+      expect(commit.container).to eq(repository.project)
+    end
+
     context 'when branch does not exist' do
       let(:branch) { nil }
 

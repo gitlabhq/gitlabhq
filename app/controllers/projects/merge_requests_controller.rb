@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
 
-    record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
   end
 

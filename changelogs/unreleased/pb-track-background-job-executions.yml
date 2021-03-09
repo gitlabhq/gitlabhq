@@ -1,0 +1,5 @@
+---
+title: Create tables to track auto-batched background migrations
+merge_request: 54628
+author:
+type: added

@@ -84,6 +84,8 @@ class CommitStatus < ApplicationRecord
   # extend this `Hash` with new values.
   enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
+  default_value_for :retried, false
+
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.
   #
@@ -288,6 +290,14 @@ class CommitStatus < ApplicationRecord
 
   def recoverable?
     failed? && !unrecoverable_failure?
+  end
+
+  def update_older_statuses_retried!
+    self.class
+      .latest
+      .where(name: name)
+      .where.not(id: id)
+      .update_all(retried: true, processed: true)
   end
 
   private

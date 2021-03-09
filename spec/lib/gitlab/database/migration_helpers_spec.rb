@@ -1720,7 +1720,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           .with(
             2.minutes,
             'CopyColumnUsingBackgroundMigrationJob',
-            [event.id, event.id, :events, :id, :id, 'id_convert_to_bigint', 100]
+            [event.id, event.id, :events, :id, 100, :id, 'id_convert_to_bigint']
           )
 
         expect(Gitlab::BackgroundMigration)

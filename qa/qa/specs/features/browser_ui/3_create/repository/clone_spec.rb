@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Git clone over HTTP', :ldap_no_tls do
+    describe 'Git clone over HTTP' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |scenario|
           scenario.name = 'project-with-code'

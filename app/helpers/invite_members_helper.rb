@@ -13,7 +13,7 @@ module InviteMembersHelper
 
   def directly_invite_members?
     strong_memoize(:directly_invite_members) do
-      experiment_enabled?(:invite_members_version_a) && can_import_members?
+      can_import_members?
     end
   end
 

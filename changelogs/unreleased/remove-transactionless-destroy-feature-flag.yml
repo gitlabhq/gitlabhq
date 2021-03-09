@@ -1,0 +1,5 @@
+---
+title: Remove project_transactionless_destroy feature flag
+merge_request: 55795
+author:
+type: changed

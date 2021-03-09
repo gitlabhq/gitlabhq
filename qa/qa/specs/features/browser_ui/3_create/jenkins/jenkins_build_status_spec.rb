@@ -107,7 +107,7 @@ module QA
       def fabricate_personal_access_token
         login_to_gitlab
 
-        token = Resource::PersonalAccessToken.fabricate!.access_token
+        token = Resource::PersonalAccessToken.fabricate!.token
         Page::Main::Menu.perform(&:sign_out)
         token
       end

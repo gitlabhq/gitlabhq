@@ -8,7 +8,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :personal_access_token
+      attr_writer :personal_access_token, :admin_personal_access_token
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
@@ -78,18 +78,6 @@ module QA
         ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
       end
 
-      def admin_password
-        ENV['GITLAB_ADMIN_PASSWORD']
-      end
-
-      def admin_username
-        ENV['GITLAB_ADMIN_USERNAME']
-      end
-
-      def admin_personal_access_token
-        ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
-      end
-
       def ci_job_url
         ENV['CI_JOB_URL']
       end
@@ -138,6 +126,18 @@ module QA
 
       def signup_disabled?
         enabled?(ENV['SIGNUP_DISABLED'], default: false)
+      end
+
+      def admin_password
+        ENV['GITLAB_ADMIN_PASSWORD']
+      end
+
+      def admin_username
+        ENV['GITLAB_ADMIN_USERNAME']
+      end
+
+      def admin_personal_access_token
+        @admin_personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
       end
 
       # specifies token that can be used for the api

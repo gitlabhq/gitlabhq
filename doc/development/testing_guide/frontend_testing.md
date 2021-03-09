@@ -126,7 +126,7 @@ It does not make sense to test our `getFahrenheit` function because underneath i
 Let's take a short look into Vue land. Vue is a critical part of the GitLab JavaScript codebase. When writing specs for Vue components, a common gotcha is to actually end up testing Vue provided functionality, because it appears to be the easiest thing to test. Here's an example taken from our codebase.
 
 ```javascript
-// Component
+// Component script
 {
   computed: {
     hasMetricTypes() {
@@ -135,27 +135,46 @@ Let's take a short look into Vue land. Vue is a critical part of the GitLab Java
 }
 ```
 
-and here's the corresponding spec
+```html
+<!-- Component template -->
+<template>
+  <gl-dropdown v-if="hasMetricTypes">
+    <!-- Dropdown content -->
+  </gl-dropdown>
+</template>
+```
+
+Testing the `hasMetricTypes` computed prop would seem like a given here. But to test if the computed property is returning the length of `metricTypes`, is testing the Vue library itself. There is no value in this, besides it adding to the test suite. It's better to test a component in the way the user interacts with it: checking the rendered template.
 
 ```javascript
- describe('computed', () => {
-    describe('hasMetricTypes', () => {
-      it('returns true if metricTypes exist', () => {
-        factory({ metricTypes });
-        expect(wrapper.vm.hasMetricTypes).toBe(2);
-      });
-
-      it('returns true if no metricTypes exist', () => {
-        factory();
-        expect(wrapper.vm.hasMetricTypes).toBe(0);
-      });
+// Bad
+describe('computed', () => {
+  describe('hasMetricTypes', () => {
+    it('returns true if metricTypes exist', () => {
+      factory({ metricTypes });
+      expect(wrapper.vm.hasMetricTypes).toBe(2);
     });
+
+    it('returns true if no metricTypes exist', () => {
+      factory();
+      expect(wrapper.vm.hasMetricTypes).toBe(0);
+    });
+  });
+});
+
+// Good
+it('displays a dropdown if metricTypes exist', () => {
+  factory({ metricTypes });
+  expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
+});
+
+it('does not display a dropdown if no metricTypes exist', () => {
+  factory();
+  expect(wrapper.findComponent(GlDropdown).exists()).toBe(false);
 });
 ```
 
-Testing the `hasMetricTypes` computed prop would seem like a given, but to test if the computed property is returning the length of `metricTypes`, is testing the Vue library itself. There is no value in this, besides it adding to the test suite. Better is to test it in the way the user interacts with it. Probably through the template.
-
-Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries.
+Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A rule of thumb here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
 
 Some more examples can be found in the [Frontend unit tests section](testing_levels.md#frontend-unit-tests)
 

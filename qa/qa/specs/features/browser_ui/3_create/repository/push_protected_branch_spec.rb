@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Protected branch support', :ldap_no_tls do
+    describe 'Protected branch support' do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
       let(:project) do

@@ -30946,9 +30946,6 @@ msgstr ""
 msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure the web application firewall is installed and enabled for your cluster."
 msgstr ""
 
-msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
-msgstr ""
-
 msgid "ThreatMonitoring|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
@@ -32225,6 +32222,9 @@ msgid "Upload"
 msgstr ""
 
 msgid "Upload CSV file"
+msgstr ""
+
+msgid "Upload File"
 msgstr ""
 
 msgid "Upload License"

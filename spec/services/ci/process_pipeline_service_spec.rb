@@ -43,41 +43,58 @@ RSpec.describe Ci::ProcessPipelineService do
     let!(:build) { create_build('build') }
     let!(:test) { create_build('test') }
 
-    it 'returns unique statuses' do
-      subject.execute
+    context 'when FF ci_remove_update_retried_from_process_pipeline is enabled' do
+      it 'does not update older builds as retried' do
+        subject.execute
 
-      expect(all_builds.latest).to contain_exactly(build, test)
-      expect(all_builds.retried).to contain_exactly(build_retried)
+        expect(all_builds.latest).to contain_exactly(build, build_retried, test)
+        expect(all_builds.retried).to be_empty
+      end
     end
 
-    context 'counter ci_legacy_update_jobs_as_retried_total' do
-      let(:counter) { double(increment: true) }
-
+    context 'when FF ci_remove_update_retried_from_process_pipeline is disabled' do
       before do
-        allow(Gitlab::Metrics).to receive(:counter).and_call_original
-        allow(Gitlab::Metrics).to receive(:counter)
-                                    .with(:ci_legacy_update_jobs_as_retried_total, anything)
-                                    .and_return(counter)
+        stub_feature_flags(ci_remove_update_retried_from_process_pipeline: false)
       end
 
-      it 'increments the counter' do
-        expect(counter).to receive(:increment)
-
+      it 'returns unique statuses' do
         subject.execute
+
+        expect(all_builds.latest).to contain_exactly(build, test)
+        expect(all_builds.retried).to contain_exactly(build_retried)
       end
 
-      context 'when the previous build has already retried column true' do
+      context 'counter ci_legacy_update_jobs_as_retried_total' do
+        let(:counter) { double(increment: true) }
+
         before do
-          build_retried.update_columns(retried: true)
+          allow(Gitlab::Metrics).to receive(:counter).and_call_original
+          allow(Gitlab::Metrics).to receive(:counter)
+                                      .with(:ci_legacy_update_jobs_as_retried_total, anything)
+                                      .and_return(counter)
         end
 
-        it 'does not increment the counter' do
-          expect(counter).not_to receive(:increment)
+        it 'increments the counter' do
+          expect(counter).to receive(:increment)
 
           subject.execute
         end
+
+        context 'when the previous build has already retried column true' do
+          before do
+            build_retried.update_columns(retried: true)
+          end
+
+          it 'does not increment the counter' do
+            expect(counter).not_to receive(:increment)
+
+            subject.execute
+          end
+        end
       end
     end
+
+    private
 
     def create_build(name, **opts)
       create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
