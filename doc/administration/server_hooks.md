@@ -51,7 +51,7 @@ repository directory might not exactly match the instructions below. In that cas
 
 Follow the steps below to set up a server-side hook for a repository:
 
-1. Navigate to **Admin area > Projects** and click on the project you want to add a server hook to.
+1. Go to **Admin area > Projects** and select the project you want to add a server hook to.
 1. Locate the **Gitaly relative path** on the page that appears. This is where the server hook
    must be implemented. For information on interpreting the relative path, see
    [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths).

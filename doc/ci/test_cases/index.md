@@ -13,7 +13,7 @@ type: reference
 
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 
-This can help the Implementation and Testing teams collaborate, because they no longer have to
+Now your Implementation and Testing teams can collaborate better, as they no longer have to
 use external test planning tools, which require additional overhead, context switching, and expense.
 
 ## Create a test case
@@ -22,7 +22,7 @@ Users with Reporter or higher [permissions](../../user/permissions.md) can creat
 
 To create a test case in a GitLab project:
 
-1. Navigate to **CI/CD > Test Cases**.
+1. Go to **CI/CD > Test Cases**.
 1. Select the **New test case** button. You are taken to the new test case form. Here you can enter
    the new case's title, [description](../../user/markdown.md), attach a file, and assign [labels](../../user/project/labels.md).
 1. Select the **Submit test case** button. You are taken to view the new test case.
@@ -34,14 +34,12 @@ issue list with a search query, including labels or the test case's title.
 
 Users with Guest or higher [permissions](../../user/permissions.md) can view test cases.
 
-![Test case list page](img/test_case_list_v13_6.png)
-
 To view a test case:
 
-1. In a project, navigate to **CI/CD > Test Cases**.
+1. In a project, go to **CI/CD > Test Cases**.
 1. Select the title of the test case you want to view. You are taken to the test case page.
 
-![An example test case page](img/test_case_show_v13_6.png)
+![An example test case page](img/test_case_show_v13_10.png)
 
 ## Edit a test case
 
@@ -68,7 +66,7 @@ To archive a test case, on the test case's page, select the **Archive test case*
 
 To view archived test cases:
 
-1. Navigate to **CI/CD > Test Cases**.
+1. Go to **CI/CD > Test Cases**.
 1. Select **Archived**.
 
 ## Reopen an archived test case

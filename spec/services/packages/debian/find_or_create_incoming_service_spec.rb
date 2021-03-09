@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::GetOrCreateIncomingService do
+RSpec.describe Packages::Debian::FindOrCreateIncomingService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 module Packages
   module Debian
-    class GetOrCreateIncomingService < ::Packages::CreatePackageService
+    class FindOrCreateIncomingService < ::Packages::CreatePackageService
       def execute
         find_or_create_package!(:debian, name: 'incoming', version: nil)
       end

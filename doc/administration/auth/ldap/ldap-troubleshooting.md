@@ -330,10 +330,10 @@ things to check to debug the situation.
   group](index.md#adding-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. Navigate to **Admin area -> Users**.
+  1. Go to **Admin area > Users**.
   1. Search for the user
-  1. Open the user, by clicking on their name. Do not click 'Edit'.
-  1. Navigate to the **Identities** tab. There should be an LDAP identity with
+  1. Open the user by clicking their name. Do not click **Edit**.
+  1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured

@@ -110,7 +110,7 @@ The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-Navigate to the **Admin Area > Geo** dashboard on the **secondary** node to
+Go to the **Admin Area > Geo** dashboard on the **secondary** node to
 review status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in gray), consider giving the node more

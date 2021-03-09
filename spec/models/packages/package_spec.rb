@@ -22,6 +22,14 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
   end
 
+  describe '.with_debian_codename' do
+    let_it_be(:publication) { create(:debian_publication) }
+
+    subject { described_class.with_debian_codename(publication.distribution.codename).to_a }
+
+    it { is_expected.to contain_exactly(publication.package) }
+  end
+
   describe '.with_composer_target' do
     let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
     let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }
