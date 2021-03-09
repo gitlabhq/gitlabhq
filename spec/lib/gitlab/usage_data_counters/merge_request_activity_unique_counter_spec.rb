@@ -370,4 +370,20 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       it_behaves_like 'not tracked merge request unique event'
     end
   end
+
+  describe '.track_milestone_changed_action' do
+    subject { described_class.track_milestone_changed_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_MILESTONE_CHANGED_ACTION }
+    end
+  end
+
+  describe '.track_labels_changed_action' do
+    subject { described_class.track_labels_changed_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_LABELS_CHANGED_ACTION }
+    end
+  end
 end

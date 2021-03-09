@@ -534,7 +534,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     end
 
     it 'records the conversion event for the experiment & user' do
-      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user)
+      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user, {})
       record_conversion_event
     end
 

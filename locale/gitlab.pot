@@ -7955,9 +7955,6 @@ msgid_plural "ContainerRegistry|%{count} Tags"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|%{imageName} tags"
-msgstr ""
-
 msgid "ContainerRegistry|%{strongStart}Disabled%{strongEnd} - Tags will not be automatically deleted."
 msgstr ""
 
@@ -8060,6 +8057,9 @@ msgstr ""
 msgid "ContainerRegistry|Image repository will be deleted"
 msgstr ""
 
+msgid "ContainerRegistry|Image repository with no name located at the project URL."
+msgstr ""
+
 msgid "ContainerRegistry|Image tags"
 msgstr ""
 
@@ -8123,6 +8123,9 @@ msgid "ContainerRegistry|Remove tags older than:"
 msgstr ""
 
 msgid "ContainerRegistry|Remove these tags"
+msgstr ""
+
+msgid "ContainerRegistry|Root image"
 msgstr ""
 
 msgid "ContainerRegistry|Run cleanup:"
@@ -16681,16 +16684,16 @@ msgstr ""
 msgid "InviteMembersModal|Some of the members could not be added"
 msgstr ""
 
-msgid "InviteMembersModal|You're inviting a group to the %{name} group"
+msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
 msgstr ""
 
-msgid "InviteMembersModal|You're inviting a group to the %{name} project"
+msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project."
 msgstr ""
 
-msgid "InviteMembersModal|You're inviting members to the %{name} group"
+msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group."
 msgstr ""
 
-msgid "InviteMembersModal|You're inviting members to the %{name} project"
+msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project."
 msgstr ""
 
 msgid "InviteMembers|Invite a group"

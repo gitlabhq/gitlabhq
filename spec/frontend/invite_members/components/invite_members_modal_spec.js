@@ -129,7 +129,7 @@ describe('InviteMembersModal', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           wrapper = createInviteMembersToProjectWrapper();
 
-          expect(findIntroText()).toBe("You're inviting members to the TEST NAME project");
+          expect(findIntroText()).toBe("You're inviting members to the test name project.");
         });
       });
 
@@ -137,7 +137,7 @@ describe('InviteMembersModal', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           wrapper = createInviteGroupToProjectWrapper();
 
-          expect(findIntroText()).toBe("You're inviting a group to the TEST NAME project");
+          expect(findIntroText()).toBe("You're inviting a group to the test name project.");
         });
       });
     });
@@ -147,7 +147,7 @@ describe('InviteMembersModal', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           wrapper = createInviteMembersToGroupWrapper();
 
-          expect(wrapper.html()).toContain("You're inviting members to the TEST NAME group");
+          expect(findIntroText()).toBe("You're inviting members to the test name group.");
         });
       });
 
@@ -155,7 +155,7 @@ describe('InviteMembersModal', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           wrapper = createInviteGroupToGroupWrapper();
 
-          expect(wrapper.html()).toContain("You're inviting a group to the TEST NAME group");
+          expect(findIntroText()).toBe("You're inviting a group to the test name group.");
         });
       });
     });

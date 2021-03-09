@@ -50,6 +50,7 @@ module MergeRequests
       track_title_and_desc_edits(changed_fields)
       track_discussion_lock_toggle(merge_request, changed_fields)
       track_time_estimate_and_spend_edits(merge_request, old_timelogs, changed_fields)
+      track_labels_change(merge_request, old_labels)
 
       notify_if_labels_added(merge_request, old_labels)
       notify_if_mentions_added(merge_request, old_mentioned_users)
@@ -111,6 +112,12 @@ module MergeRequests
     def track_time_estimate_and_spend_edits(merge_request, old_timelogs, changed_fields)
       merge_request_activity_counter.track_time_estimate_changed_action(user: current_user) if changed_fields.include?('time_estimate')
       merge_request_activity_counter.track_time_spent_changed_action(user: current_user) if old_timelogs != merge_request.timelogs
+    end
+
+    def track_labels_change(merge_request, old_labels)
+      return if Set.new(merge_request.labels) == Set.new(old_labels)
+
+      merge_request_activity_counter.track_labels_changed_action(user: current_user)
     end
 
     def notify_if_labels_added(merge_request, old_labels)
@@ -190,6 +197,8 @@ module MergeRequests
       return if skip_milestone_email
 
       return unless merge_request.previous_changes.include?('milestone_id')
+
+      merge_request_activity_counter.track_milestone_changed_action(user: current_user)
 
       if merge_request.milestone.nil?
         notification_service.async.removed_milestone_merge_request(merge_request, current_user)

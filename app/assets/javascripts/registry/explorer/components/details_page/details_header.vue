@@ -1,11 +1,10 @@
 <script>
-import { GlSprintf, GlButton } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
-  DETAILS_PAGE_TITLE,
   UPDATED_AT,
   CLEANUP_UNSCHEDULED_TEXT,
   CLEANUP_SCHEDULED_TEXT,
@@ -20,11 +19,16 @@ import {
   UNSCHEDULED_STATUS,
   SCHEDULED_STATUS,
   ONGOING_STATUS,
+  ROOT_IMAGE_TEXT,
+  ROOT_IMAGE_TOOLTIP,
 } from '../../constants/index';
 
 export default {
   name: 'DetailsHeader',
-  components: { GlSprintf, GlButton, TitleArea, MetadataItem },
+  components: { GlButton, GlIcon, TitleArea, MetadataItem },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   mixins: [timeagoMixin],
   props: {
     image: {
@@ -73,9 +77,12 @@ export default {
     deleteButtonDisabled() {
       return this.disabled || !this.image.canDelete;
     },
-  },
-  i18n: {
-    DETAILS_PAGE_TITLE,
+    rootImageTooltip() {
+      return !this.image.name ? ROOT_IMAGE_TOOLTIP : '';
+    },
+    imageName() {
+      return this.image.name || ROOT_IMAGE_TEXT;
+    },
   },
 };
 </script>
@@ -84,12 +91,15 @@ export default {
   <title-area :metadata-loading="metadataLoading">
     <template #title>
       <span data-testid="title">
-        <gl-sprintf :message="$options.i18n.DETAILS_PAGE_TITLE">
-          <template #imageName>
-            {{ image.name }}
-          </template>
-        </gl-sprintf>
+        {{ imageName }}
       </span>
+      <gl-icon
+        v-if="rootImageTooltip"
+        v-gl-tooltip="rootImageTooltip"
+        class="gl-text-blue-600"
+        name="information-o"
+        :aria-label="rootImageTooltip"
+      />
     </template>
     <template #metadata-tags-count>
       <metadata-item icon="tag" :text="tagCountText" data-testid="tags-count" />

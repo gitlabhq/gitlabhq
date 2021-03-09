@@ -17,6 +17,8 @@ import {
   UNFINISHED_STATUS,
   DELETE_SCHEDULED,
   ALERT_DANGER_IMAGE,
+  MISSING_OR_DELETED_IMAGE_BREADCRUMB,
+  ROOT_IMAGE_TEXT,
 } from '~/registry/explorer/constants';
 import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
@@ -514,6 +516,26 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
 
       expect(breadCrumbState.updateName).toHaveBeenCalledWith(containerRepositoryMock.name);
+    });
+
+    it(`when the image is missing set the breadcrumb to ${MISSING_OR_DELETED_IMAGE_BREADCRUMB}`, async () => {
+      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLEmptyImageDetailsMock) });
+
+      await waitForApolloRequestRender();
+
+      expect(breadCrumbState.updateName).toHaveBeenCalledWith(MISSING_OR_DELETED_IMAGE_BREADCRUMB);
+    });
+
+    it(`when the image has no name set the breadcrumb to ${ROOT_IMAGE_TEXT}`, async () => {
+      mountComponent({
+        resolver: jest
+          .fn()
+          .mockResolvedValue(graphQLImageDetailsMock({ ...containerRepositoryMock, name: null })),
+      });
+
+      await waitForApolloRequestRender();
+
+      expect(breadCrumbState.updateName).toHaveBeenCalledWith(ROOT_IMAGE_TEXT);
     });
   });
 

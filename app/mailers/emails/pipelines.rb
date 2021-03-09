@@ -3,7 +3,7 @@
 module Emails
   module Pipelines
     def pipeline_success_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'Succesful')
+      pipeline_mail(pipeline, recipients, 'Successful')
     end
 
     def pipeline_failed_email(pipeline, recipients)

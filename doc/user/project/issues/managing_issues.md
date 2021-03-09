@@ -298,7 +298,7 @@ To promote an issue to an epic:
 1. In an issue, select the vertical ellipsis (**{ellipsis_v}**) button.
 1. Select **Promote to epic**.
 
-Alternatively, you can use the `/promote` [quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
+Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
 Read more about promoting an issue to an epic on the [Manage epics page](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
@@ -313,5 +313,5 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 1. Click an iteration you'd like to associate this issue with.
 
 You can also use the `/iteration`
-[quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
+[quick action](../quick_actions.md#issues-merge-requests-and-epics)
 in a comment or description field.

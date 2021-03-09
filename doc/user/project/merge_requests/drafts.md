@@ -27,7 +27,7 @@ There are several ways to flag a merge request as a draft:
   the beginning of the merge request's title, or click **Start the title with Draft:**
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/draft`
-  [quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
+  [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment. This quick action is a toggle, and can be repeated to change the status
   again. This quick action discards any other text in the comment.
 - **Creating a commit**: Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the
@@ -53,7 +53,7 @@ When a merge request is ready to be merged, you can remove the `Draft` flag in s
   from the beginning of the title, or click **Remove the Draft: prefix from the title**
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/draft`
-  [quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
+  [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment in the merge request. This quick action is a toggle, and can be repeated
   to change the status back. This quick action discards any other text in the comment.
 

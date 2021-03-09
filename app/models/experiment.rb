@@ -14,22 +14,30 @@ class Experiment < ApplicationRecord
     find_or_create_by!(name: name).record_group_and_variant!(group, variant)
   end
 
-  def self.record_conversion_event(name, user)
-    find_or_create_by!(name: name).record_conversion_event_for_user(user)
+  def self.record_conversion_event(name, user, context = {})
+    find_or_create_by!(name: name).record_conversion_event_for_user(user, context)
   end
 
   # Create or update the recorded experiment_user row for the user in this experiment.
   def record_user_and_group(user, group_type, context = {})
     experiment_user = experiment_users.find_or_initialize_by(user: user)
-    merged_context = experiment_user.context.deep_merge(context.deep_stringify_keys)
-    experiment_user.update!(group_type: group_type, context: merged_context)
+    experiment_user.update!(group_type: group_type, context: merged_context(experiment_user, context))
   end
 
-  def record_conversion_event_for_user(user)
-    experiment_users.find_by(user: user, converted_at: nil)&.touch(:converted_at)
+  def record_conversion_event_for_user(user, context = {})
+    experiment_user = experiment_users.find_by(user: user)
+    return unless experiment_user
+
+    experiment_user.update!(converted_at: Time.current, context: merged_context(experiment_user, context))
   end
 
   def record_group_and_variant!(group, variant)
     experiment_subjects.find_or_initialize_by(group: group).update!(variant: variant)
+  end
+
+  private
+
+  def merged_context(experiment_user, new_context)
+    experiment_user.context.deep_merge(new_context.deep_stringify_keys)
   end
 end

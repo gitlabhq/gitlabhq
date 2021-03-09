@@ -8468,6 +8468,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.code_review.i_code_review_user_labels_changed_monthly`
+
+Count of unique users per month who changed labels of a MR
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210302110607_i_code_review_user_labels_changed_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_labels_changed_weekly`
+
+Count of unique users per week who changed labels of a MR
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302110548_i_code_review_user_labels_changed_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`
 
 Missing description
@@ -8515,6 +8539,30 @@ Group: `group::code review`
 Status: `data_available`
 
 Tiers:
+
+### `redis_hll_counters.code_review.i_code_review_user_milestone_changed_monthly`
+
+Count of unique users per month who changed milestone of a MR
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210302110520_i_code_review_user_milestone_changed_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_milestone_changed_weekly`
+
+Count of unique users per week who changed milestone of a MR
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302110403_i_code_review_user_milestone_changed_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_monthly`
 

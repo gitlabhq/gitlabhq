@@ -110,7 +110,7 @@ dropdown menu.
 It is also possible to manage multiple assignees:
 
 - When creating a merge request.
-- Using [quick actions](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
+- Using [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
 ### Reviewer
 

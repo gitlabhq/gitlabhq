@@ -76,7 +76,7 @@ export default {
       const inviteTo = this.isProject ? 'toProject' : 'toGroup';
 
       return sprintf(this.$options.labels[this.inviteeType][inviteTo].introText, {
-        name: this.name.toUpperCase(),
+        name: this.name,
       });
     },
     toastOptions() {
@@ -215,10 +215,14 @@ export default {
       searchField: s__('InviteMembersModal|GitLab member or Email address'),
       placeHolder: s__('InviteMembersModal|Search for members to invite'),
       toGroup: {
-        introText: s__("InviteMembersModal|You're inviting members to the %{name} group"),
+        introText: s__(
+          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",
+        ),
       },
       toProject: {
-        introText: s__("InviteMembersModal|You're inviting members to the %{name} project"),
+        introText: s__(
+          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
+        ),
       },
     },
     group: {
@@ -226,10 +230,14 @@ export default {
       searchField: s__('InviteMembersModal|Select a group to invite'),
       placeHolder: s__('InviteMembersModal|Search for a group to invite'),
       toGroup: {
-        introText: s__("InviteMembersModal|You're inviting a group to the %{name} group"),
+        introText: s__(
+          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group.",
+        ),
       },
       toProject: {
-        introText: s__("InviteMembersModal|You're inviting a group to the %{name} project"),
+        introText: s__(
+          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
+        ),
       },
     },
     accessLevel: s__('InviteMembersModal|Choose a role permission'),
@@ -253,7 +261,13 @@ export default {
     :header-close-label="$options.labels.headerCloseLabel"
   >
     <div>
-      <p ref="introText">{{ introText }}</p>
+      <p ref="introText">
+        <gl-sprintf :message="introText">
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </p>
 
       <label :id="$options.membersTokenSelectLabelId" class="gl-font-weight-bold gl-mt-5">{{
         $options.labels[inviteeType].searchField

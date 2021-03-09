@@ -49,7 +49,9 @@
     'i_code_review_user_time_estimate_changed',
     'i_code_review_user_time_spent_changed',
     'i_code_review_user_assignees_changed',
-    'i_code_review_user_reviewers_changed'
+    'i_code_review_user_reviewers_changed',
+    'i_code_review_user_milestone_changed',
+    'i_code_review_user_labels_changed'
   ]
 - name: code_review_category_monthly_active_users
   operator: OR
@@ -92,7 +94,9 @@
     'i_code_review_user_time_estimate_changed',
     'i_code_review_user_time_spent_changed',
     'i_code_review_user_assignees_changed',
-    'i_code_review_user_reviewers_changed'
+    'i_code_review_user_reviewers_changed',
+    'i_code_review_user_milestone_changed',
+    'i_code_review_user_labels_changed'
   ]
 - name: code_review_extension_category_monthly_active_users
   operator: OR
