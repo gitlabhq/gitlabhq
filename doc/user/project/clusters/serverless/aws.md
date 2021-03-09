@@ -371,7 +371,7 @@ In order to interact with your AWS account, the GitLab CI/CD pipelines require b
 
 To set these:
 
-1. Navigate to the project's **Settings > CI / CD**.
+1. Navigate to the project's **Settings > CI/CD**.
 1. Expand the **Variables** section and create entries for `AWS_ACCESS_KEY_ID` and
    `AWS_SECRET_ACCESS_KEY`.
 1. Mask the credentials so they do not show in logs using the **Masked** toggle.

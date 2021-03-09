@@ -152,7 +152,7 @@ pages:
 ```
 
 Now save and commit the `.gitlab-ci.yml` file. You can watch the pipeline run
-by going to **CI / CD > Pipelines**.
+by going to **CI/CD > Pipelines**.
 
 When it succeeds, go to **Settings > Pages** to view the URL where your site
 is now available.

@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def render_tiers(object)
-          "Tiers: #{format(:tier, object[:tier])}"
+          "Tiers:#{format(:tier, object[:tier])}"
         end
 
         def format(key, value)

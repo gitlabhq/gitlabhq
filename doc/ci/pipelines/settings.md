@@ -82,7 +82,7 @@ directory. If needed, you can specify an alternate path and filename, including 
 
 To customize the path:
 
-1. Go to the project's **Settings > CI / CD**.
+1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines** section.
 1. Provide a value in the **CI/CD configuration file** field.
 1. Click **Save changes**.
@@ -120,7 +120,7 @@ able to edit it.
 If you use test coverage in your code, GitLab can capture its output in the
 job log using a regular expression.
 
-In your project, go to **Settings > CI / CD** and expand the **General pipelines**
+In your project, go to **Settings > CI/CD** and expand the **General pipelines**
 section. Enter the regular expression in the **Test coverage parsing** field.
 
 Leave blank if you want to disable it or enter a Ruby regular expression. You
@@ -225,7 +225,7 @@ If **Public pipelines** is disabled:
 
 You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
 
-1. Go to **Settings > CI / CD**.
+1. Go to **Settings > CI/CD**.
 1. Expand **General Pipelines**.
 1. Check the **Auto-cancel redundant pipelines** checkbox.
 1. Click **Save changes**.
@@ -245,7 +245,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. Go to **Settings > CI / CD**.
+1. Go to **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Check the **Skip outdated deployment jobs** checkbox.
 1. Click **Save changes**.

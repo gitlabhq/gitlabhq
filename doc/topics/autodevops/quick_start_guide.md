@@ -235,7 +235,7 @@ takes you to the pod's logs page.
 NOTE:
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` CI/CD variable](customize.md#cicd-variables)
-in **Settings > CI / CD > Variables**.
+in **Settings > CI/CD > Variables**.
 
 ### Work with branches
 

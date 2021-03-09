@@ -36,7 +36,7 @@ Otherwise the pipeline is not created.
 
 To schedule a pipeline for project:
 
-1. Navigate to the project's **CI / CD > Schedules** page.
+1. Navigate to the project's **CI/CD > Schedules** page.
 1. Click the **New schedule** button.
 1. Fill in the **Schedule a new pipeline** form.
 1. Click the **Save pipeline schedule** button.

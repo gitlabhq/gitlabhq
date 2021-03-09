@@ -17,7 +17,7 @@ module Gitlab
           when :introduced_by_url
             "[Introduced by](#{value})"
           when :distribution, :tier
-            Array(value).map { |tier| "`#{tier}`" }.join(', ')
+            Array(value).map { |tier| " `#{tier}`" }.join(',')
           else
             value
           end

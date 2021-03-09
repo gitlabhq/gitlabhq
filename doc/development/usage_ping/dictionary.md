@@ -438,7 +438,7 @@ Group: `group::plan`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.auto_devops_disabled`
 
@@ -990,7 +990,7 @@ Group: `group::portfolio management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.failed_deployments`
 
@@ -4842,7 +4842,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_10`
 
@@ -4854,7 +4854,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_100`
 
@@ -4866,7 +4866,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_25`
 
@@ -4878,7 +4878,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_5`
 
@@ -4890,7 +4890,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_50`
 
@@ -4902,7 +4902,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_keep_n_unset`
 
@@ -4914,7 +4914,7 @@ Group: `group::package`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts.projects_with_expiration_policy_enabled_with_older_than_set_to_14d`
 
@@ -6234,7 +6234,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts_weekly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
 
@@ -6246,7 +6246,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts_weekly.aggregated_metrics.incident_management_alerts_total_unique_counts`
 
@@ -6258,7 +6258,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts`
 
@@ -6270,7 +6270,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection`
 
@@ -6282,7 +6282,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `counts_weekly.aggregated_metrics.product_analytics_test_metrics_union`
 
@@ -6294,7 +6294,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `database.adapter`
 
@@ -7146,7 +7146,7 @@ Group: `group::product intelligence`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.analytics_total_unique_counts_monthly`
 
@@ -7170,7 +7170,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_contribution_monthly`
 
@@ -7194,7 +7194,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_insights_monthly`
 
@@ -7218,7 +7218,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_issues_monthly`
 
@@ -7242,7 +7242,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_merge_request_monthly`
 
@@ -7266,7 +7266,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_productivity_monthly`
 
@@ -7290,7 +7290,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_valuestream_monthly`
 
@@ -7314,7 +7314,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.i_analytics_cohorts_monthly`
 
@@ -7338,7 +7338,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.i_analytics_dev_ops_score_monthly`
 
@@ -7362,7 +7362,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.i_analytics_instance_statistics_monthly`
 
@@ -7386,7 +7386,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_code_reviews_monthly`
 
@@ -7410,7 +7410,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_insights_monthly`
 
@@ -7434,7 +7434,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_issues_monthly`
 
@@ -7458,7 +7458,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_merge_request_monthly`
 
@@ -7482,7 +7482,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_pipelines_monthly`
 
@@ -7506,7 +7506,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_repo_monthly`
 
@@ -7530,7 +7530,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_valuestream_monthly`
 
@@ -7554,7 +7554,7 @@ Group: `group::analytics`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_monthly`
 
@@ -7578,7 +7578,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly`
 
@@ -7602,7 +7602,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly`
 
@@ -7626,7 +7626,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_monthly`
 
@@ -7650,7 +7650,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_monthly`
 
@@ -7674,7 +7674,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_monthly`
 
@@ -7698,7 +7698,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_monthly`
 
@@ -7722,7 +7722,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_monthly`
 
@@ -7746,7 +7746,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_monthly`
 
@@ -7770,7 +7770,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_monthly`
 
@@ -7794,7 +7794,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_monthly`
 
@@ -7818,7 +7818,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_monthly`
 
@@ -7842,7 +7842,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_monthly`
 
@@ -7866,7 +7866,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_security_secret_detection_monthly`
 
@@ -7890,7 +7890,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_security_sast_monthly`
 
@@ -7914,7 +7914,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_security_secret_detection_monthly`
 
@@ -7938,7 +7938,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_monthly`
 
@@ -7962,7 +7962,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.code_review_total_unique_counts_monthly`
 
@@ -7986,7 +7986,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_desc_monthly`
 
@@ -8010,7 +8010,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_title_monthly`
 
@@ -8034,7 +8034,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_mr_diffs_monthly`
 
@@ -8058,7 +8058,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly`
 
@@ -8082,7 +8082,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`
 
@@ -8106,7 +8106,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_monthly`
 
@@ -8130,7 +8130,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_monthly`
 
@@ -8154,7 +8154,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_monthly`
 
@@ -8178,7 +8178,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_monthly`
 
@@ -8202,7 +8202,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly`
 
@@ -8226,7 +8226,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_assigned_monthly`
 
@@ -8250,7 +8250,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_assignees_changed_monthly`
 
@@ -8298,7 +8298,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_monthly`
 
@@ -8322,7 +8322,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_monthly`
 
@@ -8346,7 +8346,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_monthly`
 
@@ -8370,7 +8370,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_monthly`
 
@@ -8394,7 +8394,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_review_note_monthly`
 
@@ -8418,7 +8418,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly`
 
@@ -8442,7 +8442,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly`
 
@@ -8466,7 +8466,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`
 
@@ -8490,7 +8490,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_merge_mr_monthly`
 
@@ -8514,7 +8514,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_mr_discussion_locked_monthly`
 
@@ -8586,7 +8586,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_monthly`
 
@@ -8610,7 +8610,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_monthly`
 
@@ -8634,7 +8634,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_reopen_mr_monthly`
 
@@ -8658,7 +8658,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_resolve_thread_monthly`
 
@@ -8682,7 +8682,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_review_requested_monthly`
 
@@ -8706,7 +8706,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_reviewers_changed_monthly`
 
@@ -8754,7 +8754,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_monthly`
 
@@ -8826,7 +8826,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_monthly`
 
@@ -8850,7 +8850,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_monthly`
 
@@ -8874,7 +8874,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_monthly`
 
@@ -8898,7 +8898,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_monthly`
 
@@ -8922,7 +8922,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.a_compliance_audit_events_api_monthly`
 
@@ -8946,7 +8946,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.compliance_total_unique_counts_monthly`
 
@@ -8970,7 +8970,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.g_compliance_audit_events_monthly`
 
@@ -8994,7 +8994,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.g_compliance_dashboard_monthly`
 
@@ -9018,7 +9018,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.i_compliance_audit_events_monthly`
 
@@ -9042,7 +9042,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.compliance.i_compliance_credential_inventory_monthly`
 
@@ -9066,7 +9066,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly`
 
@@ -9090,7 +9090,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_composer_deploy_token_monthly`
 
@@ -9114,7 +9114,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_monthly`
 
@@ -9138,7 +9138,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_monthly`
 
@@ -9162,7 +9162,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_debian_deploy_token_monthly`
 
@@ -9186,7 +9186,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_generic_deploy_token_monthly`
 
@@ -9210,7 +9210,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_golang_deploy_token_monthly`
 
@@ -9234,7 +9234,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_monthly`
 
@@ -9258,7 +9258,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_npm_deploy_token_monthly`
 
@@ -9282,7 +9282,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_monthly`
 
@@ -9306,7 +9306,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_monthly`
 
@@ -9330,7 +9330,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_monthly`
 
@@ -9354,7 +9354,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly`
 
@@ -9378,7 +9378,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_monthly`
 
@@ -9402,7 +9402,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ecosystem.i_ecosystem_jira_service_create_issue_monthly`
 
@@ -9426,7 +9426,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_monthly`
 
@@ -9450,7 +9450,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ecosystem.i_ecosystem_jira_service_list_issues_monthly`
 
@@ -9474,7 +9474,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`
 
@@ -9498,7 +9498,7 @@ Group: `group::editor`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ide_edit.g_edit_by_snippet_ide_monthly`
 
@@ -9522,7 +9522,7 @@ Group: `group::editor`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ide_edit.g_edit_by_sse_monthly`
 
@@ -9546,7 +9546,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ide_edit.g_edit_by_web_ide_monthly`
 
@@ -9570,7 +9570,7 @@ Group: `group::editor`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.ide_edit.ide_edit_total_unique_counts_monthly`
 
@@ -9594,7 +9594,7 @@ Group: `group::editor`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
 
@@ -9618,7 +9618,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly`
 
@@ -9642,7 +9642,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_alert_todo_monthly`
 
@@ -9666,7 +9666,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_assigned_monthly`
 
@@ -9690,7 +9690,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly`
 
@@ -9714,7 +9714,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_closed_monthly`
 
@@ -9738,7 +9738,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_comment_monthly`
 
@@ -9762,7 +9762,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_created_monthly`
 
@@ -9786,7 +9786,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_published_monthly`
 
@@ -9810,7 +9810,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_relate_monthly`
 
@@ -9834,7 +9834,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_reopened_monthly`
 
@@ -9858,7 +9858,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_todo_monthly`
 
@@ -9882,7 +9882,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly`
 
@@ -9906,7 +9906,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_monthly`
 
@@ -9918,7 +9918,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_weekly`
 
@@ -9930,7 +9930,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly`
 
@@ -9954,7 +9954,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly`
 
@@ -9978,7 +9978,7 @@ Group: `group::health`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_monthly`
 
@@ -10002,7 +10002,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_monthly`
 
@@ -10014,7 +10014,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_weekly`
 
@@ -10026,7 +10026,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_monthly`
 
@@ -10050,7 +10050,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly`
 
@@ -10074,7 +10074,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_closed_monthly`
 
@@ -10098,7 +10098,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_monthly`
 
@@ -10122,7 +10122,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly`
 
@@ -10146,7 +10146,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_monthly`
 
@@ -10170,7 +10170,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_created_monthly`
 
@@ -10194,7 +10194,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_monthly`
 
@@ -10218,7 +10218,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_monthly`
 
@@ -10242,7 +10242,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly`
 
@@ -10266,7 +10266,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly`
 
@@ -10290,7 +10290,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly`
 
@@ -10314,7 +10314,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_monthly`
 
@@ -10338,7 +10338,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_monthly`
 
@@ -10362,7 +10362,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_monthly`
 
@@ -10386,7 +10386,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_monthly`
 
@@ -10410,7 +10410,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_locked_monthly`
 
@@ -10434,7 +10434,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_monthly`
 
@@ -10458,7 +10458,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_monthly`
 
@@ -10482,7 +10482,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_monthly`
 
@@ -10506,7 +10506,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_monthly`
 
@@ -10530,7 +10530,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_moved_monthly`
 
@@ -10554,7 +10554,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_related_monthly`
 
@@ -10578,7 +10578,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_monthly`
 
@@ -10602,7 +10602,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_reopened_monthly`
 
@@ -10626,7 +10626,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_monthly`
 
@@ -10650,7 +10650,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_monthly`
 
@@ -10674,7 +10674,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_monthly`
 
@@ -10722,7 +10722,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_monthly`
 
@@ -10746,7 +10746,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_monthly`
 
@@ -10770,7 +10770,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly`
 
@@ -10794,7 +10794,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`
 
@@ -10818,7 +10818,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_monthly`
 
@@ -10866,7 +10866,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_multiple_monthly`
 
@@ -10890,7 +10890,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_monthly`
 
@@ -10914,7 +10914,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_self_monthly`
 
@@ -10938,7 +10938,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_single_monthly`
 
@@ -10962,7 +10962,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_award_monthly`
 
@@ -10986,7 +10986,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_board_move_monthly`
 
@@ -11010,7 +11010,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_child_epic_monthly`
 
@@ -11034,7 +11034,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_clear_weight_monthly`
 
@@ -11058,7 +11058,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_clone_monthly`
 
@@ -11082,7 +11082,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_close_monthly`
 
@@ -11106,7 +11106,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_confidential_monthly`
 
@@ -11130,7 +11130,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_monthly`
 
@@ -11154,7 +11154,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_monthly`
 
@@ -11178,7 +11178,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_create_merge_request_monthly`
 
@@ -11202,7 +11202,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_done_monthly`
 
@@ -11226,7 +11226,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_draft_monthly`
 
@@ -11250,7 +11250,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_due_monthly`
 
@@ -11274,7 +11274,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_duplicate_monthly`
 
@@ -11298,7 +11298,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_epic_monthly`
 
@@ -11322,7 +11322,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_estimate_monthly`
 
@@ -11346,7 +11346,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_monthly`
 
@@ -11394,7 +11394,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_label_monthly`
 
@@ -11418,7 +11418,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_lock_monthly`
 
@@ -11442,7 +11442,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_merge_monthly`
 
@@ -11466,7 +11466,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_milestone_monthly`
 
@@ -11490,7 +11490,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_move_monthly`
 
@@ -11514,7 +11514,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_parent_epic_monthly`
 
@@ -11538,7 +11538,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_promote_monthly`
 
@@ -11562,7 +11562,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_publish_monthly`
 
@@ -11586,7 +11586,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_monthly`
 
@@ -11622,7 +11622,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_weekly`
 
@@ -11634,7 +11634,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_rebase_monthly`
 
@@ -11658,7 +11658,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_relabel_monthly`
 
@@ -11682,7 +11682,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_relate_monthly`
 
@@ -11706,7 +11706,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_monthly`
 
@@ -11730,7 +11730,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_due_date_monthly`
 
@@ -11754,7 +11754,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_epic_monthly`
 
@@ -11778,7 +11778,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_estimate_monthly`
 
@@ -11802,7 +11802,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_iteration_monthly`
 
@@ -11826,7 +11826,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_milestone_monthly`
 
@@ -11850,7 +11850,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_monthly`
 
@@ -11874,7 +11874,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_monthly`
 
@@ -11898,7 +11898,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_zoom_monthly`
 
@@ -11922,7 +11922,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_reopen_monthly`
 
@@ -11946,7 +11946,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_shrug_monthly`
 
@@ -11970,7 +11970,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_add_monthly`
 
@@ -11994,7 +11994,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_subtract_monthly`
 
@@ -12018,7 +12018,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_submit_review_monthly`
 
@@ -12042,7 +12042,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_subscribe_monthly`
 
@@ -12066,7 +12066,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_tableflip_monthly`
 
@@ -12090,7 +12090,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_tag_monthly`
 
@@ -12114,7 +12114,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_target_branch_monthly`
 
@@ -12138,7 +12138,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_title_monthly`
 
@@ -12162,7 +12162,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_todo_monthly`
 
@@ -12186,7 +12186,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_all_monthly`
 
@@ -12210,7 +12210,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_monthly`
 
@@ -12234,7 +12234,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_specific_monthly`
 
@@ -12258,7 +12258,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_all_monthly`
 
@@ -12282,7 +12282,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_monthly`
 
@@ -12306,7 +12306,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlock_monthly`
 
@@ -12330,7 +12330,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_unsubscribe_monthly`
 
@@ -12354,7 +12354,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_weight_monthly`
 
@@ -12378,7 +12378,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_wip_monthly`
 
@@ -12402,7 +12402,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_zoom_monthly`
 
@@ -12426,7 +12426,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.quickactions.quickactions_total_unique_counts_monthly`
 
@@ -12450,7 +12450,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.search.i_search_advanced_monthly`
 
@@ -12570,7 +12570,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.design_action_monthly`
 
@@ -12594,7 +12594,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.git_write_action_monthly`
 
@@ -12618,7 +12618,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.i_source_code_code_intelligence_monthly`
 
@@ -12642,7 +12642,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.merge_request_action_monthly`
 
@@ -12666,7 +12666,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.project_action_monthly`
 
@@ -12690,7 +12690,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.source_code.wiki_action_monthly`
 
@@ -12714,7 +12714,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly`
 
@@ -12738,7 +12738,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.testing.i_testing_full_code_quality_report_total_monthly`
 
@@ -12786,7 +12786,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_monthly`
 
@@ -12954,7 +12954,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_composer_user_monthly`
 
@@ -12978,7 +12978,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_conan_user_monthly`
 
@@ -13002,7 +13002,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_container_user_monthly`
 
@@ -13026,7 +13026,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_debian_user_monthly`
 
@@ -13050,7 +13050,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_generic_user_monthly`
 
@@ -13074,7 +13074,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_golang_user_monthly`
 
@@ -13098,7 +13098,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_maven_user_monthly`
 
@@ -13122,7 +13122,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_npm_user_monthly`
 
@@ -13146,7 +13146,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_nuget_user_monthly`
 
@@ -13170,7 +13170,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_pypi_user_monthly`
 
@@ -13194,7 +13194,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.i_package_tag_user_monthly`
 
@@ -13218,7 +13218,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly`
 
@@ -13242,7 +13242,7 @@ Group: ``
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `reply_by_email_enabled`
 
@@ -13578,7 +13578,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.configure.projects_slack_slash_active`
 
@@ -13590,7 +13590,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.configure.projects_with_prometheus_alerts`
 
@@ -13614,7 +13614,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.create.approval_project_rules_with_exact_required_approvers`
 
@@ -13662,7 +13662,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.create.deploy_keys`
 
@@ -13710,7 +13710,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.create.merge_requests_with_optional_codeowners`
 
@@ -13722,7 +13722,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.create.merge_requests_with_overridden_project_rules`
 
@@ -13746,7 +13746,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.create.projects_enforcing_code_owner_approval`
 
@@ -14118,7 +14118,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.manage.ldap_group_sync_enabled`
 
@@ -14130,7 +14130,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.manage.ldap_keys`
 
@@ -14154,7 +14154,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.manage.ldap_users`
 
@@ -14406,7 +14406,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.manage.unique_users_all_imports`
 
@@ -14502,7 +14502,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.monitor.clusters`
 
@@ -14634,7 +14634,7 @@ Group: `group::plan`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.plan.epics`
 
@@ -14850,7 +14850,7 @@ Group: `group::fuzz testing`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.secure.container_scanning_scans`
 
@@ -14874,7 +14874,7 @@ Group: `group::fuzz testing`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.secure.dast_scans`
 
@@ -14886,7 +14886,7 @@ Group: `group::static analysis`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.secure.dependency_scanning_scans`
 
@@ -14910,7 +14910,7 @@ Group: `group::static analysis`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.secure.secret_detection_scans`
 
@@ -14922,7 +14922,7 @@ Group: `group::static analysis`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage.secure.user_api_fuzzing_dnd_jobs`
 
@@ -15378,7 +15378,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.configure.projects_slack_slash_active`
 
@@ -15390,7 +15390,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.configure.projects_with_prometheus_alerts`
 
@@ -15522,7 +15522,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.approval_project_rules_with_exact_required_approvers`
 
@@ -15570,7 +15570,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.deploy_keys`
 
@@ -15630,7 +15630,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_optional_codeowners`
 
@@ -15642,7 +15642,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_overridden_project_rules`
 
@@ -15654,7 +15654,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_required_codeowners`
 
@@ -15666,7 +15666,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.projects_enforcing_code_owner_approval`
 
@@ -15822,7 +15822,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.create.users_using_path_locks`
 
@@ -15834,7 +15834,7 @@ Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.bulk_imports.gitlab`
 
@@ -15906,7 +15906,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.groups`
 
@@ -16038,7 +16038,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.ldap_group_sync_enabled`
 
@@ -16050,7 +16050,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.ldap_keys`
 
@@ -16074,7 +16074,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.ldap_users`
 
@@ -16326,7 +16326,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.unique_users_all_imports`
 
@@ -16422,7 +16422,7 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.monitor.clusters`
 
@@ -16554,7 +16554,7 @@ Group: `group::plan`
 
 Status: `data_available`
 
-Tiers: 
+Tiers:
 
 ### `usage_activity_by_stage_monthly.plan.epics`
 

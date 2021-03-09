@@ -41,7 +41,7 @@ configuration for the Pages site to generate properly.
 
 If everything is configured correctly, the site can take approximately 30 minutes to deploy.
 
-You can watch the pipeline run by navigating to **CI / CD > Pipelines**.
+You can watch the pipeline run by navigating to **CI/CD > Pipelines**.
 When the pipeline is finished, go to **Settings > Pages** to find the link to
 your Pages website.
 

@@ -1,8 +1,0 @@
----
-name: usage_data_i_source_code_code_intelligence
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41881
-rollout_issue_url: 
-milestone: '13.4'
-type: development
-group: group::code review
-default_enabled: true

@@ -42,7 +42,7 @@ Some credentials are required to be able to run `aws` commands:
    NOTE:
    A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
-1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
+1. In your GitLab project, go to **Settings > CI/CD**. Set the following as
    [CI/CD variables](../variables/README.md)
    (see table below):
 

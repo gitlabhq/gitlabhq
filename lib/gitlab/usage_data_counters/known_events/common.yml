@@ -165,7 +165,6 @@
   redis_slot: source_code
   category: source_code
   aggregation: daily
-  feature_flag: usage_data_i_source_code_code_intelligence
 # Incident management
 - name: incident_management_alert_status_changed
   redis_slot: incident_management

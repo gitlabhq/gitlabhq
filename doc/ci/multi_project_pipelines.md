@@ -314,7 +314,7 @@ Some features are not implemented yet. For example, support for environments.
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project:
 
-1. Go to the project's **Settings > CI / CD** page, and expand the **Pipeline subscriptions** section.
+1. Go to the project's **Settings > CI/CD** page, and expand the **Pipeline subscriptions** section.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
 1. Click subscribe.

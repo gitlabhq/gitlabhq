@@ -38,7 +38,7 @@ multiple projects.
 If you are using a self-managed instance of GitLab:
 
 - Your administrator can install and register shared runners by
-  going to your project's **Settings > CI / CD**, expanding the **Runners** section,
+  going to your project's **Settings > CI/CD**, expanding the **Runners** section,
   and clicking **Show runner installation instructions**.
   These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
 - The administrator can also configure a maximum number of shared runner [pipeline minutes for
@@ -220,7 +220,7 @@ Specific runners process jobs by using a first in, first out ([FIFO](https://en.
 
 NOTE:
 Specific runners do not get shared with forked projects automatically.
-A fork *does* copy the CI / CD settings of the cloned repository.
+A fork *does* copy the CI/CD settings of the cloned repository.
 
 #### Create a specific runner
 
