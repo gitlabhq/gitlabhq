@@ -118,6 +118,8 @@
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
+        = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
+
       %script#js-lock-issue-data{ type: "application/json" }= { is_locked: !!issuable_sidebar[:discussion_locked], is_editable: can_edit_issuable }.to_json.html_safe
       #js-lock-entry-point
 

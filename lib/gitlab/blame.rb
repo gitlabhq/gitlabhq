@@ -19,16 +19,14 @@ module Gitlab
         commit = Commit.new(commit, project)
         commit.lazy_author # preload author
 
-        sha = commit.sha
-        if prev_sha != sha
+        if prev_sha != commit.sha
           groups << current_group if current_group
           current_group = { commit: commit, lines: [] }
         end
 
-        line = highlighted_lines[i].html_safe if highlight
-        current_group[:lines] << line
+        current_group[:lines] << (highlight ? highlighted_lines[i].html_safe : line)
 
-        prev_sha = sha
+        prev_sha = commit.sha
         i += 1
       end
       groups << current_group if current_group

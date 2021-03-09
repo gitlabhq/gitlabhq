@@ -9,7 +9,10 @@ class MergeRequestPolicy < IssuablePolicy
   # Although :read_merge_request is computed in the policy context,
   # it would not be safe to prevent :create_note there, since
   # note permissions are shared, and this would apply too broadly.
-  rule { ~can?(:read_merge_request) }.prevent :create_note
+  rule { ~can?(:read_merge_request) }.policy do
+    prevent :create_note
+    prevent :accept_merge_request
+  end
 
   rule { can?(:update_merge_request) }.policy do
     enable :approve_merge_request
@@ -17,6 +20,12 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { ~anonymous & can?(:read_merge_request) }.policy do
     enable :create_todo
+  end
+
+  condition(:can_merge) { @subject.can_be_merged_by?(@user) }
+
+  rule { can_merge }.policy do
+    enable :accept_merge_request
   end
 end
 

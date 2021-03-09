@@ -6,12 +6,18 @@ module Mutations
       # This is a Base class for the Note update mutations and is not
       # mounted as a GraphQL mutation itself.
       class Base < Mutations::Notes::Base
+        QUICK_ACTION_ONLY_WARNING = <<~NB
+          If the body of the Note contains only quick actions,
+          the Note will be destroyed during the update, and no Note will be
+          returned.
+        NB
+
         authorize :admin_note
 
         argument :id,
-                  ::Types::GlobalIDType[::Note],
-                  required: true,
-                  description: 'The global ID of the note to update.'
+                 ::Types::GlobalIDType[::Note],
+                 required: true,
+                 description: 'The global ID of the note to update.'
 
         def resolve(args)
           note = authorized_find!(id: args[:id])

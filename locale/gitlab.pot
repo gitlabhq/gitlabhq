@@ -5312,6 +5312,27 @@ msgstr ""
 msgid "CPU"
 msgstr ""
 
+msgid "CVE|As a maintainer, requesting a CVE for a vulnerability in your project will help your users stay secure and informed."
+msgstr ""
+
+msgid "CVE|CVE ID Request"
+msgstr ""
+
+msgid "CVE|Common Vulnerability Enumeration (CVE) identifiers are used to track distinct vulnerabilities in specific versions of code."
+msgstr ""
+
+msgid "CVE|Create CVE ID Request"
+msgstr ""
+
+msgid "CVE|Enable CVE ID requests in the issue sidebar"
+msgstr ""
+
+msgid "CVE|Request CVE ID"
+msgstr ""
+
+msgid "CVE|Why Request a CVE ID?"
+msgstr ""
+
 msgid "Callback URL"
 msgstr ""
 

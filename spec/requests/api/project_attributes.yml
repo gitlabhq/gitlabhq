@@ -141,6 +141,7 @@ project_setting:
     - show_default_award_emojis
     - squash_option
     - updated_at
+    - cve_id_request_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

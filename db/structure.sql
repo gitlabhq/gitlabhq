@@ -16270,6 +16270,7 @@ CREATE TABLE project_settings (
     has_vulnerabilities boolean DEFAULT false NOT NULL,
     allow_editing_commit_messages boolean DEFAULT false NOT NULL,
     prevent_merge_without_jira_issue boolean DEFAULT false NOT NULL,
+    cve_id_request_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -19951,6 +19952,9 @@ ALTER TABLE ONLY chat_names
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
+
+ALTER TABLE cluster_agent_tokens
+    ADD CONSTRAINT check_0fb634d04d CHECK ((name IS NOT NULL)) NOT VALID;
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;

@@ -44,6 +44,7 @@ module Types
     mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Labels::Create
+    mount_mutation Mutations::MergeRequests::Accept
     mount_mutation Mutations::MergeRequests::Create
     mount_mutation Mutations::MergeRequests::Update
     mount_mutation Mutations::MergeRequests::SetLabels
@@ -58,14 +59,8 @@ module Types
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
-    mount_mutation Mutations::Notes::Update::Note,
-                   description: 'Updates a Note. If the body of the Note contains only quick actions, ' \
-                                'the Note will be destroyed during the update, and no Note will be ' \
-                                'returned'
-    mount_mutation Mutations::Notes::Update::ImageDiffNote,
-                   description: 'Updates a DiffNote on an image (a `Note` where the `position.positionType` is `"image"`). ' \
-                                'If the body of the Note contains only quick actions, the Note will be ' \
-                                'destroyed during the update, and no Note will be returned'
+    mount_mutation Mutations::Notes::Update::Note
+    mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Releases::Create

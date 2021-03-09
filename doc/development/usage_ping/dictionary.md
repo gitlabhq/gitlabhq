@@ -6360,13 +6360,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Whether Elasticsearch is enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124924_elasticsearch_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210204124924_elasticsearch_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::global search`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `g_project_management_epic_created_monthly`
 
