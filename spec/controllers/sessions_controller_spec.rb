@@ -524,7 +524,7 @@ RSpec.describe SessionsController do
 
       it 'sets the username and caller_id in the context' do
         expect(controller).to receive(:destroy).and_wrap_original do |m, *args|
-          expect(Gitlab::ApplicationContext.current)
+          expect(Labkit::Context.current.to_h)
             .to include('meta.user' => user.username,
                         'meta.caller_id' => 'SessionsController#destroy')
 
@@ -538,9 +538,9 @@ RSpec.describe SessionsController do
     context 'when not signed in' do
       it 'sets the caller_id in the context' do
         expect(controller).to receive(:new).and_wrap_original do |m, *args|
-          expect(Gitlab::ApplicationContext.current)
+          expect(Labkit::Context.current.to_h)
             .to include('meta.caller_id' => 'SessionsController#new')
-          expect(Gitlab::ApplicationContext.current)
+          expect(Labkit::Context.current.to_h)
             .not_to include('meta.user')
 
           m.call(*args)
@@ -557,9 +557,9 @@ RSpec.describe SessionsController do
 
       it 'sets the caller_id in the context' do
         allow_any_instance_of(User).to receive(:lock_access!).and_wrap_original do |m, *args|
-          expect(Gitlab::ApplicationContext.current)
+          expect(Labkit::Context.current.to_h)
             .to include('meta.caller_id' => 'SessionsController#create')
-          expect(Gitlab::ApplicationContext.current)
+          expect(Labkit::Context.current.to_h)
             .not_to include('meta.user')
 
           m.call(*args)

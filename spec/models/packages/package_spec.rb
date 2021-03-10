@@ -813,4 +813,45 @@ RSpec.describe Packages::Package, type: :model do
       expect(package.package_settings).to eq(group.package_settings)
     end
   end
+
+  describe '#sync_maven_metadata' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:package) { create(:maven_package) }
+
+    subject { package.sync_maven_metadata(user) }
+
+    shared_examples 'not enqueuing a sync worker job' do
+      it 'does not enqueue a sync worker job' do
+        expect(::Packages::Maven::Metadata::SyncWorker)
+          .not_to receive(:perform_async)
+
+        subject
+      end
+    end
+
+    it 'enqueues a sync worker job' do
+      expect(::Packages::Maven::Metadata::SyncWorker)
+        .to receive(:perform_async).with(user.id, package.project.id, package.name)
+
+      subject
+    end
+
+    context 'with no user' do
+      let(:user) { nil }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+
+    context 'with a versionless maven package' do
+      let_it_be(:package) { create(:maven_package, version: nil) }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+
+    context 'with a non maven package' do
+      let_it_be(:package) { create(:npm_package) }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+  end
 end

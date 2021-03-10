@@ -1083,6 +1083,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: package_repositories:packages_maven_metadata_sync
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_nuget_extraction
   :feature_category: :package_registry
   :has_external_dependencies:

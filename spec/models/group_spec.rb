@@ -1318,9 +1318,10 @@ RSpec.describe Group do
 
   describe '#ci_variables_for' do
     let(:project) { create(:project, group: group) }
+    let(:environment_scope) { '*' }
 
     let!(:ci_variable) do
-      create(:ci_group_variable, value: 'secret', group: group)
+      create(:ci_group_variable, value: 'secret', group: group, environment_scope: environment_scope)
     end
 
     let!(:protected_variable) do
@@ -1329,13 +1330,16 @@ RSpec.describe Group do
 
     subject { group.ci_variables_for('ref', project) }
 
-    it 'memoizes the result by ref', :request_store do
+    it 'memoizes the result by ref and environment', :request_store do
+      scoped_variable = create(:ci_group_variable, value: 'secret', group: group, environment_scope: 'scoped')
+
       expect(project).to receive(:protected_for?).with('ref').once.and_return(true)
-      expect(project).to receive(:protected_for?).with('other').once.and_return(false)
+      expect(project).to receive(:protected_for?).with('other').twice.and_return(false)
 
       2.times do
-        expect(group.ci_variables_for('ref', project)).to contain_exactly(ci_variable, protected_variable)
+        expect(group.ci_variables_for('ref', project, environment: 'production')).to contain_exactly(ci_variable, protected_variable)
         expect(group.ci_variables_for('other', project)).to contain_exactly(ci_variable)
+        expect(group.ci_variables_for('other', project, environment: 'scoped')).to contain_exactly(ci_variable, scoped_variable)
       end
     end
 
@@ -1370,6 +1374,120 @@ RSpec.describe Group do
       end
 
       it_behaves_like 'ref is protected'
+    end
+
+    context 'when environment name is specified' do
+      let(:environment) { 'review/name' }
+
+      subject do
+        group.ci_variables_for('ref', project, environment: environment)
+      end
+
+      context 'when environment scope is exactly matched' do
+        let(:environment_scope) { 'review/name' }
+
+        it { is_expected.to contain_exactly(ci_variable) }
+      end
+
+      context 'when environment scope is matched by wildcard' do
+        let(:environment_scope) { 'review/*' }
+
+        it { is_expected.to contain_exactly(ci_variable) }
+      end
+
+      context 'when environment scope does not match' do
+        let(:environment_scope) { 'review/*/special' }
+
+        it { is_expected.not_to contain_exactly(ci_variable) }
+      end
+
+      context 'when environment scope has _' do
+        let(:environment_scope) { '*_*' }
+
+        it 'does not treat it as wildcard' do
+          is_expected.not_to contain_exactly(ci_variable)
+        end
+
+        context 'when environment name contains underscore' do
+          let(:environment) { 'foo_bar/test' }
+          let(:environment_scope) { 'foo_bar/*' }
+
+          it 'matches literally for _' do
+            is_expected.to contain_exactly(ci_variable)
+          end
+        end
+      end
+
+      # The environment name and scope cannot have % at the moment,
+      # but we're considering relaxing it and we should also make sure
+      # it doesn't break in case some data sneaked in somehow as we're
+      # not checking this integrity in database level.
+      context 'when environment scope has %' do
+        it 'does not treat it as wildcard' do
+          ci_variable.update_attribute(:environment_scope, '*%*')
+
+          is_expected.not_to contain_exactly(ci_variable)
+        end
+
+        context 'when environment name contains a percent' do
+          let(:environment) { 'foo%bar/test' }
+
+          it 'matches literally for %' do
+            ci_variable.update(environment_scope: 'foo%bar/*')
+
+            is_expected.to contain_exactly(ci_variable)
+          end
+        end
+      end
+
+      context 'when variables with the same name have different environment scopes' do
+        let!(:partially_matched_variable) do
+          create(:ci_group_variable,
+                 key: ci_variable.key,
+                 value: 'partial',
+                 environment_scope: 'review/*',
+                 group: group)
+        end
+
+        let!(:perfectly_matched_variable) do
+          create(:ci_group_variable,
+                 key: ci_variable.key,
+                 value: 'prefect',
+                 environment_scope: 'review/name',
+                 group: group)
+        end
+
+        it 'puts variables matching environment scope more in the end' do
+          is_expected.to eq(
+            [ci_variable,
+             partially_matched_variable,
+             perfectly_matched_variable])
+        end
+      end
+
+      context 'when :scoped_group_variables feature flag is disabled' do
+        before do
+          stub_feature_flags(scoped_group_variables: false)
+        end
+
+        context 'when environment scope is exactly matched' do
+          let(:environment_scope) { 'review/name' }
+
+          it { is_expected.to contain_exactly(ci_variable) }
+        end
+
+        context 'when environment scope is partially matched' do
+          let(:environment_scope) { 'review/*' }
+
+          it { is_expected.to contain_exactly(ci_variable) }
+        end
+
+        context 'when environment scope does not match' do
+          let(:environment_scope) { 'review/*/special' }
+
+          it { is_expected.to contain_exactly(ci_variable) }
+        end
+      end
     end
 
     context 'when group has children' do

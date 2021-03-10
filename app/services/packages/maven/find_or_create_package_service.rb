@@ -2,7 +2,6 @@
 module Packages
   module Maven
     class FindOrCreatePackageService < BaseService
-      MAVEN_METADATA_FILE = 'maven-metadata.xml'
       SNAPSHOT_TERM = '-SNAPSHOT'
 
       def execute
@@ -33,7 +32,7 @@ module Packages
           #   - my-company/my-app/maven-metadata.xml
           #
           # The first upload has to create the proper package (the one with the version set).
-          if params[:file_name] == MAVEN_METADATA_FILE && !params[:path]&.ends_with?(SNAPSHOT_TERM)
+          if params[:file_name] == Packages::Maven::Metadata.filename && !params[:path]&.ends_with?(SNAPSHOT_TERM)
             package_name, version = params[:path], nil
           else
             package_name, _, version = params[:path].rpartition('/')

@@ -6,7 +6,7 @@ module Gitlab
     module Loggers
       class ContextLogger < ::GrapeLogging::Loggers::Base
         def parameters(_, _)
-          Gitlab::ApplicationContext.current
+          Labkit::Context.current.to_h
         end
       end
     end

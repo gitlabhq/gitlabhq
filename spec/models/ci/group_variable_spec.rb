@@ -9,7 +9,17 @@ RSpec.describe Ci::GroupVariable do
 
   it { is_expected.to include_module(Presentable) }
   it { is_expected.to include_module(Ci::Maskable) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:group_id).with_message(/\(\w+\) has already been taken/) }
+  it { is_expected.to include_module(HasEnvironmentScope) }
+  it { is_expected.to validate_uniqueness_of(:key).scoped_to([:group_id, :environment_scope]).with_message(/\(\w+\) has already been taken/) }
+
+  describe '.by_environment_scope' do
+    let!(:matching_variable) { create(:ci_group_variable, environment_scope: 'production ') }
+    let!(:non_matching_variable) { create(:ci_group_variable, environment_scope: 'staging') }
+
+    subject { Ci::GroupVariable.by_environment_scope('production') }
+
+    it { is_expected.to contain_exactly(matching_variable) }
+  end
 
   describe '.unprotected' do
     subject { described_class.unprotected }

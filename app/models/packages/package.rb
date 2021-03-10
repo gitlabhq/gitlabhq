@@ -224,6 +224,12 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def sync_maven_metadata(user)
+    return unless maven? && version? && user
+
+    ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project.id, name)
+  end
+
   private
 
   def composer_tag_version?

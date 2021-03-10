@@ -1681,6 +1681,8 @@ RSpec.describe API::Projects do
             mirror
             requirements_enabled
             security_and_compliance_enabled
+            issues_template
+            merge_requests_template
           ]
         end
 

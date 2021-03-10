@@ -70,7 +70,11 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        destroy_conditionally!(package)
+        destroy_conditionally!(package) do |package|
+          if package.destroy
+            package.sync_maven_metadata(current_user)
+          end
+        end
       end
     end
   end

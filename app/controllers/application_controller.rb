@@ -463,7 +463,7 @@ class ApplicationController < ActionController::Base
       feature_category: feature_category) do
       yield
     ensure
-      @current_context = Gitlab::ApplicationContext.current
+      @current_context = Labkit::Context.current.to_h
     end
   end
 
