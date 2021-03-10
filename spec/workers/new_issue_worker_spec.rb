@@ -38,21 +38,48 @@ RSpec.describe NewIssueWorker do
       end
     end
 
-    context 'when everything is ok' do
-      let_it_be(:user) { create_default(:user) }
+    context 'with a user' do
       let_it_be(:project) { create(:project, :public) }
       let_it_be(:mentioned) { create(:user) }
+      let_it_be(:user) { nil }
       let_it_be(:issue) { create(:issue, project: project, description: "issue for #{mentioned.to_reference}") }
 
-      it 'creates a new event record' do
-        expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)
+      shared_examples 'a new issue where the current_user cannot trigger notifications' do
+        it 'does not create a notification for the mentioned user' do
+          expect(Notify).not_to receive(:new_issue_email)
+            .with(mentioned.id, issue.id, NotificationReason::MENTIONED)
+
+          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: issue.class, object_id: issue.id)
+
+          worker.perform(issue.id, user.id)
+        end
       end
 
-      it 'creates a notification for the mentioned user' do
-        expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id, NotificationReason::MENTIONED)
-          .and_return(double(deliver_later: true))
+      context 'when the new issue author is blocked' do
+        let_it_be(:user) { create_default(:user, :blocked) }
 
-        worker.perform(issue.id, user.id)
+        it_behaves_like 'a new issue where the current_user cannot trigger notifications'
+      end
+
+      context 'when the new issue author is a ghost' do
+        let_it_be(:user) { create_default(:user, :ghost) }
+
+        it_behaves_like 'a new issue where the current_user cannot trigger notifications'
+      end
+
+      context 'when everything is ok' do
+        let_it_be(:user) { create_default(:user) }
+
+        it 'creates a new event record' do
+          expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)
+        end
+
+        it 'creates a notification for the mentioned user' do
+          expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id, NotificationReason::MENTIONED)
+            .and_return(double(deliver_later: true))
+
+          worker.perform(issue.id, user.id)
+        end
       end
     end
   end

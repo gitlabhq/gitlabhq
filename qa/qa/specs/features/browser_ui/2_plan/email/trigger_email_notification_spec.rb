@@ -16,13 +16,8 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable('vue_project_members_list', project: project)
         Runtime::Feature.enable(:invite_members_group_modal)
         Flow::Login.sign_in
-      end
-
-      after do
-        Runtime::Feature.disable('vue_project_members_list', project: project)
       end
 
       it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/676' do

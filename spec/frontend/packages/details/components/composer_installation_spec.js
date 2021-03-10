@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import { registryUrl as composerHelpPath } from 'jest/packages/details/mock_data';
 import { composerPackage as packageEntity } from 'jest/packages/mock_data';
 import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
+import InstallationTitle from '~/packages/details/components/installation_title.vue';
 
 import { TrackingActions } from '~/packages/details/constants';
 
@@ -33,6 +34,7 @@ describe('ComposerInstallation', () => {
   const findPackageInclude = () => wrapper.find('[data-testid="package-include"]');
   const findHelpText = () => wrapper.find('[data-testid="help-text"]');
   const findHelpLink = () => wrapper.find(GlLink);
+  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
 
   function createComponent() {
     wrapper = shallowMount(ComposerInstallation, {
@@ -46,6 +48,19 @@ describe('ComposerInstallation', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('install command switch', () => {
+    it('has the installation title component', () => {
+      createStore();
+      createComponent();
+
+      expect(findInstallationTitle().exists()).toBe(true);
+      expect(findInstallationTitle().props()).toMatchObject({
+        packageType: 'composer',
+        options: [{ value: 'composer', label: 'Show Composer commands' }],
+      });
+    });
   });
 
   describe('registry include command', () => {

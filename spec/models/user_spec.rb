@@ -5425,6 +5425,40 @@ RSpec.describe User do
     end
   end
 
+  describe 'can_trigger_notifications?' do
+    context 'when user is not confirmed' do
+      let_it_be(:user) { create(:user, :unconfirmed) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is blocked' do
+      let_it_be(:user) { create(:user, :blocked) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is a ghost' do
+      let_it_be(:user) { create(:user, :ghost) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is confirmed and neither blocked or a ghost' do
+      let_it_be(:user) { create(:user) }
+
+      it 'returns true' do
+        expect(user.can_trigger_notifications?).to be(true)
+      end
+    end
+  end
+
   context 'bot users' do
     shared_examples 'bot users' do |bot_type|
       it 'creates the user if it does not exist' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Sorting' do
+RSpec.describe 'Projects > Members > Sorting', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:maintainer) { create(:user, name: 'John Doe') }
@@ -15,165 +15,85 @@ RSpec.describe 'Projects > Members > Sorting' do
     sign_in(maintainer)
   end
 
-  context 'when `vue_project_members_list` feature flag is enabled', :js do
-    it 'sorts by account by default' do
-      visit_members_list(sort: nil)
+  it 'sorts by account by default' do
+    visit_members_list(sort: nil)
 
-      expect(first_row).to have_content(maintainer.name)
-      expect(second_row).to have_content(developer.name)
+    expect(first_row).to have_content(maintainer.name)
+    expect(second_row).to have_content(developer.name)
 
-      expect_sort_by('Account', :asc)
-    end
-
-    it 'sorts by max role ascending' do
-      visit_members_list(sort: :access_level_asc)
-
-      expect(first_row).to have_content(developer.name)
-      expect(second_row).to have_content(maintainer.name)
-
-      expect_sort_by('Max role', :asc)
-    end
-
-    it 'sorts by max role descending' do
-      visit_members_list(sort: :access_level_desc)
-
-      expect(first_row).to have_content(maintainer.name)
-      expect(second_row).to have_content(developer.name)
-
-      expect_sort_by('Max role', :desc)
-    end
-
-    it 'sorts by access granted ascending' do
-      visit_members_list(sort: :last_joined)
-
-      expect(first_row).to have_content(maintainer.name)
-      expect(second_row).to have_content(developer.name)
-
-      expect_sort_by('Access granted', :asc)
-    end
-
-    it 'sorts by access granted descending' do
-      visit_members_list(sort: :oldest_joined)
-
-      expect(first_row).to have_content(developer.name)
-      expect(second_row).to have_content(maintainer.name)
-
-      expect_sort_by('Access granted', :desc)
-    end
-
-    it 'sorts by account ascending' do
-      visit_members_list(sort: :name_asc)
-
-      expect(first_row).to have_content(maintainer.name)
-      expect(second_row).to have_content(developer.name)
-
-      expect_sort_by('Account', :asc)
-    end
-
-    it 'sorts by account descending' do
-      visit_members_list(sort: :name_desc)
-
-      expect(first_row).to have_content(developer.name)
-      expect(second_row).to have_content(maintainer.name)
-
-      expect_sort_by('Account', :desc)
-    end
-
-    it 'sorts by last sign-in ascending', :clean_gitlab_redis_shared_state do
-      visit_members_list(sort: :recent_sign_in)
-
-      expect(first_row).to have_content(maintainer.name)
-      expect(second_row).to have_content(developer.name)
-
-      expect_sort_by('Last sign-in', :asc)
-    end
-
-    it 'sorts by last sign-in descending', :clean_gitlab_redis_shared_state do
-      visit_members_list(sort: :oldest_sign_in)
-
-      expect(first_row).to have_content(developer.name)
-      expect(second_row).to have_content(maintainer.name)
-
-      expect_sort_by('Last sign-in', :desc)
-    end
+    expect_sort_by('Account', :asc)
   end
 
-  context 'when `vue_project_members_list` feature flag is disabled' do
-    before do
-      stub_feature_flags(vue_project_members_list: false)
-    end
+  it 'sorts by max role ascending' do
+    visit_members_list(sort: :access_level_asc)
 
-    it 'sorts alphabetically by default' do
-      visit_members_list(sort: nil)
+    expect(first_row).to have_content(developer.name)
+    expect(second_row).to have_content(maintainer.name)
 
-      expect(first_member).to include(maintainer.name)
-      expect(second_member).to include(developer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
-    end
+    expect_sort_by('Max role', :asc)
+  end
 
-    it 'sorts by access level ascending' do
-      visit_members_list(sort: :access_level_asc)
+  it 'sorts by max role descending' do
+    visit_members_list(sort: :access_level_desc)
 
-      expect(first_member).to include(developer.name)
-      expect(second_member).to include(maintainer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Access level, ascending')
-    end
+    expect(first_row).to have_content(maintainer.name)
+    expect(second_row).to have_content(developer.name)
 
-    it 'sorts by access level descending' do
-      visit_members_list(sort: :access_level_desc)
+    expect_sort_by('Max role', :desc)
+  end
 
-      expect(first_member).to include(maintainer.name)
-      expect(second_member).to include(developer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Access level, descending')
-    end
+  it 'sorts by access granted ascending' do
+    visit_members_list(sort: :last_joined)
 
-    it 'sorts by last joined' do
-      visit_members_list(sort: :last_joined)
+    expect(first_row).to have_content(maintainer.name)
+    expect(second_row).to have_content(developer.name)
 
-      expect(first_member).to include(maintainer.name)
-      expect(second_member).to include(developer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
-    end
+    expect_sort_by('Access granted', :asc)
+  end
 
-    it 'sorts by oldest joined' do
-      visit_members_list(sort: :oldest_joined)
+  it 'sorts by access granted descending' do
+    visit_members_list(sort: :oldest_joined)
 
-      expect(first_member).to include(developer.name)
-      expect(second_member).to include(maintainer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
-    end
+    expect(first_row).to have_content(developer.name)
+    expect(second_row).to have_content(maintainer.name)
 
-    it 'sorts by name ascending' do
-      visit_members_list(sort: :name_asc)
+    expect_sort_by('Access granted', :desc)
+  end
 
-      expect(first_member).to include(maintainer.name)
-      expect(second_member).to include(developer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
-    end
+  it 'sorts by account ascending' do
+    visit_members_list(sort: :name_asc)
 
-    it 'sorts by name descending' do
-      visit_members_list(sort: :name_desc)
+    expect(first_row).to have_content(maintainer.name)
+    expect(second_row).to have_content(developer.name)
 
-      expect(first_member).to include(developer.name)
-      expect(second_member).to include(maintainer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
-    end
+    expect_sort_by('Account', :asc)
+  end
 
-    it 'sorts by recent sign in', :clean_gitlab_redis_shared_state do
-      visit_members_list(sort: :recent_sign_in)
+  it 'sorts by account descending' do
+    visit_members_list(sort: :name_desc)
 
-      expect(first_member).to include(maintainer.name)
-      expect(second_member).to include(developer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
-    end
+    expect(first_row).to have_content(developer.name)
+    expect(second_row).to have_content(maintainer.name)
 
-    it 'sorts by oldest sign in', :clean_gitlab_redis_shared_state do
-      visit_members_list(sort: :oldest_sign_in)
+    expect_sort_by('Account', :desc)
+  end
 
-      expect(first_member).to include(developer.name)
-      expect(second_member).to include(maintainer.name)
-      expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Oldest sign in')
-    end
+  it 'sorts by last sign-in ascending', :clean_gitlab_redis_shared_state do
+    visit_members_list(sort: :recent_sign_in)
+
+    expect(first_row).to have_content(maintainer.name)
+    expect(second_row).to have_content(developer.name)
+
+    expect_sort_by('Last sign-in', :asc)
+  end
+
+  it 'sorts by last sign-in descending', :clean_gitlab_redis_shared_state do
+    visit_members_list(sort: :oldest_sign_in)
+
+    expect(first_row).to have_content(developer.name)
+    expect(second_row).to have_content(maintainer.name)
+
+    expect_sort_by('Last sign-in', :desc)
   end
 
   private

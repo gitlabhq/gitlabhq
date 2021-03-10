@@ -99,6 +99,23 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  shared_examples 'is not able to send notifications' do
+    it 'does not send any notification' do
+      user_1 = create(:user)
+      recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
+      allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1])
+
+      expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: current_user.id, klass: object.class, object_id: object.id)
+
+      action
+
+      should_not_email(@u_mentioned)
+      should_not_email(@u_guest_watcher)
+      should_not_email(user_1)
+      should_not_email(current_user)
+    end
+  end
+
   # Next shared examples are intended to test notifications of "participants"
   #
   # they take the following parameters:
@@ -882,8 +899,24 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe '#send_new_release_notifications', :deliver_mails_inline do
+    let(:release) { create(:release, author: current_user) }
+    let(:object) { release }
+    let(:action) { notification.send_new_release_notifications(release) }
+
+    context 'when release author is blocked' do
+      let(:current_user) { create(:user, :blocked) }
+
+      include_examples 'is not able to send notifications'
+    end
+
+    context 'when release author is a ghost' do
+      let(:current_user) { create(:user, :ghost) }
+
+      include_examples 'is not able to send notifications'
+    end
+
     context 'when recipients for a new release exist' do
-      let(:release) { create(:release) }
+      let(:current_user) { create(:user) }
 
       it 'calls new_release_email for each relevant recipient' do
         user_1 = create(:user)
@@ -1128,17 +1161,49 @@ RSpec.describe NotificationService, :mailer do
           should_email(admin)
         end
       end
+
+      context 'when the author is not allowed to trigger notifications' do
+        let(:current_user) { nil }
+        let(:object) { issue }
+        let(:action) { notification.new_issue(issue, current_user) }
+
+        context 'because they are blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          include_examples 'is not able to send notifications'
+        end
+
+        context 'because they are a ghost' do
+          let(:current_user) { create(:user, :ghost) }
+
+          include_examples 'is not able to send notifications'
+        end
+      end
     end
 
     describe '#new_mentions_in_issue' do
       let(:notification_method) { :new_mentions_in_issue }
       let(:mentionable) { issue }
+      let(:object) { mentionable }
+      let(:action) { send_notifications(@u_mentioned, current_user: current_user) }
 
       include_examples 'notifications for new mentions'
 
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { issue }
         let(:notification_trigger) { send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned) }
+      end
+
+      context 'where current_user is blocked' do
+        let(:current_user) { create(:user, :blocked) }
+
+        include_examples 'is not able to send notifications'
+      end
+
+      context 'where current_user is a ghost' do
+        let(:current_user) { create(:user, :ghost) }
+
+        include_examples 'is not able to send notifications'
       end
     end
 
@@ -1752,17 +1817,49 @@ RSpec.describe NotificationService, :mailer do
           it { should_not_email(participant) }
         end
       end
+
+      context 'when the author is not allowed to trigger notifications' do
+        let(:current_user) { nil }
+        let(:object) { merge_request }
+        let(:action) { notification.new_merge_request(merge_request, current_user) }
+
+        context 'because they are blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          it_behaves_like 'is not able to send notifications'
+        end
+
+        context 'because they are a ghost' do
+          let(:current_user) { create(:user, :ghost) }
+
+          it_behaves_like 'is not able to send notifications'
+        end
+      end
     end
 
     describe '#new_mentions_in_merge_request' do
       let(:notification_method) { :new_mentions_in_merge_request }
       let(:mentionable) { merge_request }
+      let(:object) { mentionable }
+      let(:action) { send_notifications(@u_mentioned, current_user: current_user) }
 
       include_examples 'notifications for new mentions'
 
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { merge_request }
         let(:notification_trigger) { send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned) }
+      end
+
+      context 'where current_user is blocked' do
+        let(:current_user) { create(:user, :blocked) }
+
+        include_examples 'is not able to send notifications'
+      end
+
+      context 'where current_user is a ghost' do
+        let(:current_user) { create(:user, :ghost) }
+
+        include_examples 'is not able to send notifications'
       end
     end
 
@@ -2761,7 +2858,7 @@ RSpec.describe NotificationService, :mailer do
     end
 
     it 'filters out guests when new merge request is created' do
-      notification.new_merge_request(merge_request1, @u_disabled)
+      notification.new_merge_request(merge_request1, developer)
 
       should_not_email(guest)
       should_email(assignee)

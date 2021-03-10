@@ -552,7 +552,7 @@ class Note < ApplicationRecord
   end
 
   def skip_notification?
-    review.present? || author.blocked? || author.ghost?
+    review.present? || !author.can_trigger_notifications?
   end
 
   private

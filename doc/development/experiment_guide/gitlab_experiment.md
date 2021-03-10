@@ -44,7 +44,7 @@ given how the experiment has been defined and using the provided context:
 
 ```mermaid
 graph TD
-    GP[General Pool/Population] --> Enabled?
+    GP[General Pool/Population] --> Running?
     Running? -->|Yes| Cached?[Cached? / Pre-segmented?]
     Running? -->|No| Excluded[Control / No Tracking]
     Cached? -->|No| Excluded?
@@ -123,7 +123,7 @@ This command creates a scenario where half of everyone who encounters
 the experiment would be assigned the _control_, 25% would be assigned the _red_
 variant, and 25% would be assigned the _blue_ variant:
 
-```slack_slash_commands
+```slack
 /chatops run feature set pill_color 50 --actors
 ```
 
@@ -134,19 +134,10 @@ NOTE:
 To immediately stop running an experiment, use the
 `/chatops run feature set pill_color false` command.
 
-<div class="panel panel-danger">
-**DANGER**
-{: .panel-heading}
-<div class="panel-body">
-
+WARNING:
 We strongly recommend using the `--actors` flag when using the ChatOps commands,
-because anything else may give odd behaviors due to:
-
-- How the caching of variant assignment is handled.
-- How the default `percentage_of_time` is unpredictable and pseudo-random.
-
-</div>
-</div>
+as anything else may give odd behaviors due to how the caching of variant assignment is
+handled.
 
 We can also implement this experiment in a HAML file with HTML wrappings:
 

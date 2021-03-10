@@ -37,10 +37,7 @@ From the image above, we can deduce the following things:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/4901) in GitLab 13.9.
-> - Improvements are [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - Improvements are enabled on GitLab.com.
-> - Improvements are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-project-member-management). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299954) in GitLab 13.10.
 
 The following sections illustrate how you can filter and sort members in a project. To view these options,
 navigate to your desired project, go to **Members**, and include the noted search terms.
@@ -199,27 +196,3 @@ To remove a member from a project:
    A **Remove member** modal appears.
 1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
 1. Click **Remove member**.
-
-## Enable or disable improvements to project member management **(FREE SELF)**
-
-Project member management improvements are deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable the improvements.
-
-To disable them:
-
-```ruby
-# For the instance
-Feature.disable(:vue_project_members_list)
-# For a single project
-Feature.disable(:vue_project_members_list, Project.find(<project id>))
-```
-
-To enable them:
-
-```ruby
-# For the instance
-Feature.enable(:vue_project_members_list)
-# For a single project
-Feature.enable(:vue_project_members_list, Project.find(<project id>))
-```

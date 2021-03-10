@@ -1862,6 +1862,10 @@ class User < ApplicationRecord
     callouts.find_or_initialize_by(feature_name: ::UserCallout.feature_names[feature_name])
   end
 
+  def can_trigger_notifications?
+    confirmed? && !blocked? && !ghost?
+  end
+
   protected
 
   # override, from Devise::Validatable

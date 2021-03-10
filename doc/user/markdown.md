@@ -462,7 +462,8 @@ GitLab Flavored Markdown recognizes the following:
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
-recognized and formatted with text `#123`.
+recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
+add a leading backslash `\#123`.
 
 In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
 

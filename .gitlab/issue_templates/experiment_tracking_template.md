@@ -31,6 +31,8 @@ As well as defining the experiment rollout and cleanup, this issue incorporates 
 
 ### Tracked data
 <!-- brief description or link to issue or Sisense dashboard -->
+ 
+ Note: you can utilize [CXL calculator](https://cxl.com/ab-test-calculator/) to determine if your experiment has reached signifigance, it also includes an estimate for how much longer an experiment will need to run for before reaching signifigance.
 
 ### Staging Test
 <!-- For experiments using `experimentation.rb`: To force this experiment on staging use `?force_experiment=<experiment-key>` -->
