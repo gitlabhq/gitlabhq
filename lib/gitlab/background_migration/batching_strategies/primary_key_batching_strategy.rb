@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Database
-    module BackgroundMigration
+  module BackgroundMigration
+    module BatchingStrategies
+      # Generic batching class for use with a BatchedBackgroundMigration.
+      # Batches over the given table and column combination, returning the MIN() and MAX()
+      # values for the next batch as an array.
+      #
+      # If no more batches exist in the table, returns nil.
       class PrimaryKeyBatchingStrategy
         include Gitlab::Database::DynamicModelHelpers
 
+        # Finds and returns the next batch in the table.
+        #
+        # table_name - The table to batch over
+        # column_name - The column to batch over
+        # batch_min_value - The minimum value which the next batch will start at
+        # batch_size - The size of the next batch
         def next_batch(table_name, column_name, batch_min_value:, batch_size:)
           model_class = define_batchable_model(table_name)
 

@@ -49,8 +49,9 @@ The steps you take depend on whether you are importing from GitHub.com or GitHub
   [GitHub Rake task](../../../administration/raketasks/github_import.md) to import
   projects without the constraints of a [Sidekiq](../../../development/sidekiq_style_guide.md) worker.
 - If you're importing from GitHub Enterprise to your self-managed GitLab instance, you must first enable
-  [GitHub integration](../../../integration/github.md). However, you cannot import projects from GitHub Enterprise to GitLab.com.
-- If you're importing from GitHub.com to your self-managed GitLab instance, you do not need to set up GitHub integration.
+  [GitHub integration](../../../integration/github.md).
+  - To import projects from GitHub Enterprise to GitLab.com, use the [Import API](../../../api/import.md).
+- If you're importing from GitHub.com to your self-managed GitLab instance, you do not need to set up GitHub integration. You can use the [Import API](../../../api/import.md).
 
 ## How it works
 

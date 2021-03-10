@@ -158,6 +158,7 @@ A **project** in GitLab is what holds a repository, which holds your files.
 Often, the word "repository" is shortened to "repo".
 <!-- vale gitlab.Spelling = YES -->
 <!-- vale gitlab.SubstitutionWarning = YES -->
+
 ### Fork
 
 When you want to copy someone else's repository, you [**fork**](../user/project/repository/forking_workflow.md#creating-a-fork)
@@ -175,7 +176,7 @@ To create a copy of a remote repository's files on your computer, you can either
 **download** or **clone**. If you download, you cannot sync it with the
 remote repository on GitLab.
 
-Cloning a repository is the same as downloading, except it preserves the Git connection
+[Cloning](#clone-a-repository) a repository is the same as downloading, except it preserves the Git connection
 with the remote repository. This allows you to modify the files locally and
 upload the changes to the remote repository on GitLab.
 
@@ -210,11 +211,13 @@ to GitLab, see how to [convert a local folder into a Git repository](#convert-a-
 ### Clone a repository
 
 To start working locally on an existing remote repository, clone it with the
-command `git clone <repository path>`. You can either clone it via [HTTPS](#clone-via-https) or [SSH](#clone-via-ssh), according to your preferred [authentication method](#git-authentication-methods).
+command `git clone <repository path>`. You can either clone it via [HTTPS](#clone-via-https)
+or [SSH](#clone-via-ssh), according to your preferred [authentication method](#git-authentication-methods).
 
 You can find both paths (HTTPS and SSH) by navigating to your project's landing page
 and clicking **Clone**. GitLab prompts you with both paths, from which you can copy
-and paste in your command line.
+and paste in your command line. You can also
+[clone and open directly in Visual Studio Code](../user/project/repository/index.md#clone-and-open-in-apple-xcode).
 
 For example, considering our [sample project](https://gitlab.com/gitlab-tests/sample-project/):
 

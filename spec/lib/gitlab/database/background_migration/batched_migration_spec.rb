@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#batch_class' do
-    let(:batch_class) { Gitlab::Database::BackgroundMigration::PrimaryKeyBatchingStrategy}
+    let(:batch_class) { Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy}
     let(:batched_migration) { build(:batched_background_migration) }
 
     it 'returns the class of the batch strategy for the migration' do
@@ -130,31 +130,31 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
-  shared_examples_for 'an attr_writer that normalizes assigned class names' do |attribute_name|
+  shared_examples_for 'an attr_writer that demodulizes assigned class names' do |attribute_name|
     let(:batched_migration) { build(:batched_background_migration) }
 
-    context 'when the toplevel namespace prefix exists' do
-      it 'removes the leading prefix' do
+    context 'when a module name exists' do
+      it 'removes the module name' do
         batched_migration.public_send(:"#{attribute_name}=", '::Foo::Bar')
 
-        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
+        expect(batched_migration[attribute_name]).to eq('Bar')
       end
     end
 
-    context 'when the toplevel namespace prefix does not exist' do
+    context 'when a module name does not exist' do
       it 'does not change the given class name' do
-        batched_migration.public_send(:"#{attribute_name}=", '::Foo::Bar')
+        batched_migration.public_send(:"#{attribute_name}=", 'Bar')
 
-        expect(batched_migration[attribute_name]).to eq('Foo::Bar')
+        expect(batched_migration[attribute_name]).to eq('Bar')
       end
     end
   end
 
   describe '#job_class_name=' do
-    it_behaves_like 'an attr_writer that normalizes assigned class names', :job_class_name
+    it_behaves_like 'an attr_writer that demodulizes assigned class names', :job_class_name
   end
 
   describe '#batch_class_name=' do
-    it_behaves_like 'an attr_writer that normalizes assigned class names', :batch_class_name
+    it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
   end
 end

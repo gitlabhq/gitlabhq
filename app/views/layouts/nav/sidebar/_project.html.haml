@@ -179,13 +179,13 @@
             .nav-icon-container
               = sprite_icon('rocket')
             %span.nav-item-name#js-onboarding-pipelines-link
-              = _('CI / CD')
+              = _('CI/CD')
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases, :pipeline_editor], html_options: { class: "fly-out-top-item" }) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
-                  =  _('CI / CD')
+                  =  _('CI/CD')
             %li.divider.fly-out-top-item
             - if project_nav_tab? :pipelines
               = nav_link(path: ['pipelines#index', 'pipelines#show']) do
@@ -418,9 +418,9 @@
                     = _('Repository')
               - if !@project.archived? && @project.feature_available?(:builds, current_user)
                 = nav_link(controller: :ci_cd) do
-                  = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
+                  = link_to project_settings_ci_cd_path(@project), title: _('CI/CD') do
                     %span
-                      = _('CI / CD')
+                      = _('CI/CD')
               - if settings_operations_available?
                 = nav_link(controller: [:operations]) do
                   = link_to project_settings_operations_path(@project), title: _('Operations'), data: { qa_selector: 'operations_settings_link' } do

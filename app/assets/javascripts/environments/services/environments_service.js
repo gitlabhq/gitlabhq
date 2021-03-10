@@ -21,7 +21,7 @@ export default class EnvironmentsService {
     return axios.delete(endpoint, {});
   }
 
-  getFolderContent(folderUrl) {
-    return axios.get(`${folderUrl}.json?per_page=${this.folderResults}`);
+  getFolderContent(folderUrl, scope) {
+    return axios.get(`${folderUrl}.json?per_page=${this.folderResults}&scope=${scope}`);
   }
 }

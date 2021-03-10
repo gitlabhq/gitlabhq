@@ -292,7 +292,7 @@ export default {
       failure.text
     }}</gl-alert>
     <div class="gl-mb-3">
-      <h3>{{ s__('PipelineCharts|CI / CD Analytics') }}</h3>
+      <h3>{{ s__('PipelineCharts|CI/CD Analytics') }}</h3>
     </div>
     <h4 class="gl-my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
     <div class="row">

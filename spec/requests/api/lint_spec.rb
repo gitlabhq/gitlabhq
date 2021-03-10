@@ -406,6 +406,24 @@ RSpec.describe API::Lint do
       end
     end
 
+    context 'with an empty repository' do
+      let_it_be(:empty_project) { create(:project_empty_repo) }
+      let_it_be(:yaml_content) do
+        File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+      end
+
+      before do
+        empty_project.add_developer(api_user)
+      end
+
+      it 'passes validation without errors' do
+        post api("/projects/#{empty_project.id}/ci/lint", api_user), params: { content: yaml_content }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['valid']).to eq(true)
+        expect(json_response['errors']).to eq([])
+      end
+    end
+
     context 'when unauthenticated' do
       let_it_be(:api_user) { nil }
 

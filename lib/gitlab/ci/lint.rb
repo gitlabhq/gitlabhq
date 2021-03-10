@@ -21,7 +21,7 @@ module Gitlab
       def initialize(project:, current_user:, sha: nil)
         @project = project
         @current_user = current_user
-        @sha = sha || project.repository.commit.sha
+        @sha = sha || project.repository.commit&.sha
       end
 
       def validate(content, dry_run: false)

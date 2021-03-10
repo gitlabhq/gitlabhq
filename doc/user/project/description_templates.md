@@ -146,6 +146,10 @@ After you add the description, hit **Save changes** for the settings to take
 effect. Now, every time a new merge request or issue is created, it is
 pre-filled with the text you entered in the template(s).
 
+[GitLab versions 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/885)
+provide `issues_template` and `merge_requests_template` attributes in the
+[Projects API](../../api/projects.md) to help you keep your templates up to date.
+
 ## Description template example
 
 We make use of description templates for issues and merge requests in the GitLab project.

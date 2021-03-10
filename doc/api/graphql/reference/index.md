@@ -5386,8 +5386,8 @@ Type of file the position refers to.
 
 | Value | Description |
 | ----- | ----------- |
-| `image` |  |
-| `text` |  |
+| `image` | An image |
+| `text` | A text file |
 
 ### `EntryType`
 

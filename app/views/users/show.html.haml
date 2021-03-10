@@ -13,13 +13,6 @@
 .user-profile
   .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
     = render layout: 'users/cover_controls' do
-      - if current_user && current_user.id != @user.id
-        - if current_user.following?(@user)
-          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Unfollow')
-        - else
-          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Follow')
       - if @user == current_user
         = link_to profile_path, class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
           title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
@@ -41,6 +34,13 @@
         = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default btn-icon', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
           = sprite_icon('user')
+      - if current_user && current_user.id != @user.id
+        - if current_user.following?(@user)
+          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
+            = _('Unfollow')
+        - else
+          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post do
+            = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder

@@ -6,7 +6,7 @@ FactoryBot.define do
     batch_size { 5 }
     sub_batch_size { 1 }
     interval { 2.minutes }
-    job_class_name { 'Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob' }
+    job_class_name { 'CopyColumnUsingBackgroundMigrationJob' }
     table_name { :events }
     column_name { :id }
   end

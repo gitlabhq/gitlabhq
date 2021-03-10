@@ -201,7 +201,7 @@ RSpec.describe 'Projects > User sees sidebar' do
         expect(page).to have_content 'Operations'
 
         expect(page).not_to have_content 'Repository'
-        expect(page).not_to have_content 'CI / CD'
+        expect(page).not_to have_content 'CI/CD'
         expect(page).not_to have_content 'Merge Requests'
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe 'Projects > User sees sidebar' do
       visit project_path(project)
 
       within('.nav-sidebar') do
-        expect(page).to have_content 'CI / CD'
+        expect(page).to have_content 'CI/CD'
       end
     end
 
