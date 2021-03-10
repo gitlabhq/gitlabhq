@@ -9,6 +9,7 @@ import {
   GlModalDirective,
 } from '@gitlab/ui';
 import { throttle } from 'lodash';
+import { mapGetters, mapState } from 'vuex';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
@@ -109,8 +110,10 @@ export default {
     };
   },
   computed: {
+    ...mapState(['boardType']),
+    ...mapGetters(['isGroupBoard']),
     parentType() {
-      return this.groupId ? 'group' : 'project';
+      return this.boardType;
     },
     loading() {
       return this.loadingRecentBoards || Boolean(this.loadingBoards);
@@ -171,7 +174,7 @@ export default {
       }));
     },
     boardQuery() {
-      return this.groupId ? groupQuery : projectQuery;
+      return this.isGroupBoard ? groupQuery : projectQuery;
     },
     loadBoards(toggleDropdown = true) {
       if (toggleDropdown && this.boards.length > 0) {

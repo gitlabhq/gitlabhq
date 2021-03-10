@@ -1,0 +1,13 @@
+---
+# Error: gitlab.RelativeLinksDoubleSlashes
+#
+# Checks for the presence of double slashes in relative URLs.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Relative links must not include a double slash.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links-to-internal-documentation
+level: error
+scope: raw
+raw:
+  - '\.//'

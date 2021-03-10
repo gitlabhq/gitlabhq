@@ -6,6 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import noteActions from '~/notes/components/note_actions.vue';
 import createStore from '~/notes/stores';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { userDataMock } from '../mock_data';
 
 describe('noteActions', () => {
@@ -14,6 +15,9 @@ describe('noteActions', () => {
   let props;
   let actions;
   let axiosMock;
+
+  const findUserAccessRoleBadge = (idx) => wrapper.findAll(UserAccessRoleBadge).at(idx);
+  const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
 
   const mountNoteActions = (propsData, computed) => {
     const localVue = createLocalVue();
@@ -66,11 +70,11 @@ describe('noteActions', () => {
     });
 
     it('should render noteable author badge', () => {
-      expect(wrapper.findAll('.note-role').at(0).text().trim()).toEqual('Author');
+      expect(findUserAccessRoleBadgeText(0)).toBe('Author');
     });
 
     it('should render access level badge', () => {
-      expect(wrapper.findAll('.note-role').at(1).text().trim()).toEqual(props.accessLevel);
+      expect(findUserAccessRoleBadgeText(1)).toBe(props.accessLevel);
     });
 
     it('should render contributor badge', () => {
@@ -80,7 +84,7 @@ describe('noteActions', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.findAll('.note-role').at(1).text().trim()).toBe('Contributor');
+        expect(findUserAccessRoleBadgeText(1)).toBe('Contributor');
       });
     });
 

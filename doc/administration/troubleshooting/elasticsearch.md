@@ -36,7 +36,7 @@ The type of problem will determine what steps to take. The possible troubleshoot
 - Indexing.
 - Integration.
 - Performance.
-- Background Migrations.
+- Advanced Search Migrations.
 
 ### Search Results workflow
 
@@ -148,7 +148,7 @@ graph TD;
   F7(Escalate to<br>GitLab support.)
 ```
 
-### Background Migrations workflow
+### Advanced Search Migrations workflow
 
 ```mermaid
 graph TD;
@@ -180,7 +180,7 @@ Most Elasticsearch troubleshooting can be broken down into 4 categories:
 - [Troubleshooting indexing](#troubleshooting-indexing)
 - [Troubleshooting integration](#troubleshooting-integration)
 - [Troubleshooting performance](#troubleshooting-performance)
-- [Troubleshooting background migrations](#troubleshooting-background-migrations)
+- [Troubleshooting Advanced Search migrations](#troubleshooting-advanced-search-migrations)
 
 Generally speaking, if it does not fall into those four categories, it is either:
 
@@ -356,15 +356,16 @@ dig further into these.
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
 Elasticsearch administrator has more experience with.
 
-### Troubleshooting background migrations
+### Troubleshooting Advanced Search migrations
 
-Troubleshooting background migration failures can be difficult and may require contacting
-an Elasticsearch administrator or GitLab Support.
+Troubleshooting Advanced Search migration failures can be difficult and may
+require contacting an Elasticsearch administrator or GitLab Support.
 
-The best place to start while debugging issues with a background migration is the
-[`elasticsearch.log` file](../logs.md#elasticsearchlog). Migrations will
-print information while a migration is in progress and any errors encountered.
-Apply fixes for any errors found in the log and retry the migration.
+The best place to start while debugging issues with an Advanced Search
+migration is the [`elasticsearch.log` file](../logs.md#elasticsearchlog).
+Migrations will log information while a migration is in progress and any
+errors encountered. Apply fixes for any errors found in the log and retry
+the migration.
 
 If you still encounter issues after retrying the migration, reach out to GitLab support.
 

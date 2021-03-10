@@ -27,7 +27,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['groupId', 'rootPath', 'scopedLabelsAvailable'],
+  inject: ['rootPath', 'scopedLabelsAvailable'],
   props: {
     item: {
       type: Object,

@@ -9,6 +9,7 @@ import {
   GlModalDirective,
 } from '@gitlab/ui';
 import { throttle } from 'lodash';
+import { mapGetters, mapState } from 'vuex';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -108,8 +109,10 @@ export default {
     };
   },
   computed: {
+    ...mapState(['boardType']),
+    ...mapGetters(['isGroupBoard']),
     parentType() {
-      return this.groupId ? 'group' : 'project';
+      return this.boardType;
     },
     loading() {
       return this.loadingRecentBoards || Boolean(this.loadingBoards);
@@ -167,7 +170,7 @@ export default {
           return { fullPath: this.state.endpoints.fullPath };
         },
         query() {
-          return this.groupId ? groupQuery : projectQuery;
+          return this.isGroupBoard ? groupQuery : projectQuery;
         },
         loadingKey: 'loadingBoards',
         update(data) {

@@ -53,7 +53,6 @@ let issueBoardsApp;
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
-
   // check for browser back and trigger a hard reload to circumvent browser caching.
   window.addEventListener('pageshow', (event) => {
     const isNavTypeBackForward =
@@ -71,6 +70,14 @@ export default () => {
   if (!gon?.features?.graphqlBoardLists) {
     boardsStore.create();
     boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
+  }
+
+  if (gon?.features?.boardsFilteredSearch) {
+    import('~/boards/filtered_search')
+      .then(({ default: initFilteredSearch }) => {
+        initFilteredSearch(apolloProvider);
+      })
+      .catch(() => {});
   }
 
   // eslint-disable-next-line @gitlab/no-runtime-template-compiler
@@ -164,8 +171,15 @@ export default () => {
       eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
-      this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
-      this.filterManager.setup();
+      if (!gon.features?.boardsFilteredSearch) {
+        this.filterManager = new FilteredSearchBoards(
+          boardsStore.filter,
+          true,
+          boardsStore.cantEdit,
+        );
+
+        this.filterManager.setup();
+      }
 
       this.performSearch();
 

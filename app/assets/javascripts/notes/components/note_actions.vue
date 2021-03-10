@@ -7,6 +7,7 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { splitCamelCase } from '../../lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
@@ -17,6 +18,7 @@ export default {
     ReplyButton,
     GlButton,
     GlDropdownItem,
+    UserAccessRoleBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -226,24 +228,30 @@ export default {
 
 <template>
   <div class="note-actions">
-    <span
+    <user-access-role-badge
       v-if="isAuthor"
-      class="note-role user-access-role has-tooltip d-none d-md-inline-block"
+      v-gl-tooltip
+      class="gl-mx-3 d-none d-md-inline-block"
       :title="displayAuthorBadgeText"
-      >{{ __('Author') }}</span
     >
-    <span
+      {{ __('Author') }}
+    </user-access-role-badge>
+    <user-access-role-badge
       v-if="accessLevel"
-      class="note-role user-access-role has-tooltip"
+      v-gl-tooltip
+      class="gl-mx-3"
       :title="displayMemberBadgeText"
-      >{{ accessLevel }}</span
     >
-    <span
+      {{ accessLevel }}
+    </user-access-role-badge>
+    <user-access-role-badge
       v-else-if="isContributor"
-      class="note-role user-access-role has-tooltip"
+      v-gl-tooltip
+      class="gl-mx-3"
       :title="displayContributorBadgeText"
-      >{{ __('Contributor') }}</span
     >
+      {{ __('Contributor') }}
+    </user-access-role-badge>
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

@@ -107,7 +107,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isEpicBoard']),
+    ...mapGetters(['isEpicBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },
@@ -178,8 +178,8 @@ export default {
           }
         : {
             ...variables,
-            projectPath: this.projectId ? this.fullPath : undefined,
-            groupPath: this.groupId ? this.fullPath : undefined,
+            projectPath: this.isProjectBoard ? this.fullPath : undefined,
+            groupPath: this.isGroupBoard ? this.fullPath : undefined,
           };
     },
     boardScopeMutationVariables() {

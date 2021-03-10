@@ -188,7 +188,7 @@ describe('GroupItemComponent', () => {
     });
 
     it('should render component template correctly', () => {
-      const visibilityIconEl = vm.$el.querySelector('.item-visibility');
+      const visibilityIconEl = vm.$el.querySelector('[data-testid="group-visibility-icon"]');
 
       expect(vm.$el.getAttribute('id')).toBe('group-55');
       expect(vm.$el.classList.contains('group-row')).toBeTruthy();
@@ -209,8 +209,7 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.title a.no-expand')).toBeDefined();
 
       expect(visibilityIconEl).not.toBe(null);
-      expect(visibilityIconEl.title).toBe(vm.visibilityTooltip);
-      expect(visibilityIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
+      expect(visibilityIconEl.getAttribute('title')).toBe(vm.visibilityTooltip);
 
       expect(vm.$el.querySelector('.access-type')).toBeDefined();
       expect(vm.$el.querySelector('.description')).toBeDefined();

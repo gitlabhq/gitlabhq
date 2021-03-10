@@ -42,7 +42,6 @@ describe('Board card component', () => {
         GlLabel: true,
       },
       provide: {
-        groupId: null,
         rootPath: '/',
         scopedLabelsAvailable: false,
       },

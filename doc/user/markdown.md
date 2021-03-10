@@ -1322,7 +1322,7 @@ Examples:
 <!--
 The "2." and "4." in the example above are changed to "1." below, to match the style
 standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+See https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#lists
 -->
 
 1. First ordered list item
@@ -1356,7 +1356,7 @@ They can even:
 <!--
 The "*" and "+" in the example above are changed to "-" below, to match the style
 standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+See https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#lists
 -->
 
 Unordered lists can:
