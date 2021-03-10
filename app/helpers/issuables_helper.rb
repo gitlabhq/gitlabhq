@@ -151,7 +151,7 @@ module IssuablesHelper
 
   def issuable_meta(issuable, project)
     output = []
-    output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+    output << "Created #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
 
     if issuable.is_a?(Issue) && issuable.service_desk_reply_to
       output << "#{html_escape(issuable.service_desk_reply_to)} via "

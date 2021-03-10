@@ -2278,6 +2278,7 @@ Gitlab/NamespacedClass:
     - 'ee/app/policies/instance_security_dashboard_policy.rb'
     - 'ee/app/policies/issuable_metric_image_policy.rb'
     - 'ee/app/policies/iteration_policy.rb'
+    - 'ee/app/policies/push_rule_policy.rb'
     - 'ee/app/policies/saml_provider_policy.rb'
     - 'ee/app/policies/timelog_policy.rb'
     - 'ee/app/policies/vulnerability_policy.rb'

@@ -192,9 +192,9 @@ describe('Issuable component', () => {
       expect(wrapper.classes('closed')).toBe(false);
     });
 
-    it('renders fuzzy opened date and author', () => {
+    it('renders fuzzy created date and author', () => {
       expect(trimText(findOpenedAgoContainer().text())).toContain(
-        `opened 1 month ago by ${TEST_USER_NAME}`,
+        `created 1 month ago by ${TEST_USER_NAME}`,
       );
     });
 

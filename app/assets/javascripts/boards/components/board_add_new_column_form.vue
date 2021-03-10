@@ -5,10 +5,11 @@ import { __ } from '~/locale';
 
 export default {
   i18n: {
-    add: __('Add'),
+    add: __('Add to board'),
     cancel: __('Cancel'),
     newList: __('New list'),
     noneSelected: __('None'),
+    noResults: __('No matching results'),
     selected: __('Selected'),
   },
   components: {
@@ -39,6 +40,11 @@ export default {
       required: false,
       default: null,
     },
+  },
+  data() {
+    return {
+      searchValue: '',
+    };
   },
   methods: {
     ...mapActions(['setAddColumnFormVisibility']),
@@ -83,6 +89,7 @@ export default {
         >
           <gl-search-box-by-type
             id="board-available-column-entities"
+            v-model="searchValue"
             debounce="250"
             :placeholder="searchPlaceholder"
             @input="$emit('filter-items', $event)"
@@ -97,10 +104,12 @@ export default {
           </gl-skeleton-loader>
         </div>
 
-        <slot v-else name="items"></slot>
+        <slot v-else name="items">
+          <p class="gl-mx-5">{{ $options.i18n.noResults }}</p>
+        </slot>
       </div>
       <div
-        class="gl-display-flex gl-p-3 gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10"
+        class="gl-display-flex gl-p-3 gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
       >
         <gl-button
           data-testid="cancelAddNewColumn"
@@ -111,7 +120,7 @@ export default {
         <gl-button
           data-testid="addNewColumnButton"
           :disabled="!selectedId"
-          variant="success"
+          variant="confirm"
           class="gl-mr-4"
           @click="$emit('add-list')"
           >{{ $options.i18n.add }}</gl-button

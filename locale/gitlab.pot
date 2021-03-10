@@ -1345,6 +1345,9 @@ msgstr ""
 msgid "A merge request hasn't yet been merged"
 msgstr ""
 
+msgid "A milestone list displays issues in the selected milestone."
+msgstr ""
+
 msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
 msgstr ""
 
@@ -1924,6 +1927,9 @@ msgid "Add system hook"
 msgstr ""
 
 msgid "Add to Slack"
+msgstr ""
+
+msgid "Add to board"
 msgstr ""
 
 msgid "Add to epic"
@@ -12590,6 +12596,9 @@ msgstr ""
 msgid "Failed to load labels. Please try again."
 msgstr ""
 
+msgid "Failed to load milestones."
+msgstr ""
+
 msgid "Failed to load milestones. Please try again."
 msgstr ""
 
@@ -18177,6 +18186,9 @@ msgid "List settings"
 msgstr ""
 
 msgid "List the merge requests that must be merged before this one."
+msgstr ""
+
+msgid "List type"
 msgstr ""
 
 msgid "List view"
@@ -35297,6 +35309,15 @@ msgstr ""
 msgid "created"
 msgstr ""
 
+msgid "created %{timeAgoString} by %{email} via %{user}"
+msgstr ""
+
+msgid "created %{timeAgoString} by %{user}"
+msgstr ""
+
+msgid "created %{timeAgoString} by %{user} in Jira"
+msgstr ""
+
 msgid "created %{timeAgo}"
 msgstr ""
 
@@ -36068,15 +36089,6 @@ msgid "on track"
 msgstr ""
 
 msgid "open issue"
-msgstr ""
-
-msgid "opened %{timeAgoString} by %{email} via %{user}"
-msgstr ""
-
-msgid "opened %{timeAgoString} by %{user}"
-msgstr ""
-
-msgid "opened %{timeAgoString} by %{user} in Jira"
 msgstr ""
 
 msgid "opened %{timeAgo}"

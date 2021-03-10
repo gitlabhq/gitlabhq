@@ -72,6 +72,9 @@ starting in GitLab 14.0, GitLab will not check your repository's root for config
 
 ### OpenAPI Specification
 
+> Support for OpenAPI Specification v3 was
+> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
+
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an
 API description format for REST APIs. This section shows you how to configure API fuzzing by using
 an OpenAPI specification to provide information about the target API to test. OpenAPI specifications

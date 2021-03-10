@@ -96,10 +96,11 @@ To compare branches in a repository:
 
 1. Navigate to your project's repository.
 1. Select **Repository > Compare** in the sidebar.
-1. Select branches to compare using the [branch filter search box](#branch-filter-search-box)
+1. Select the target repository to compare with the [repository filter search box](#repository-filter-search-box).
+1. Select branches to compare using the [branch filter search box](#branch-filter-search-box).
 1. Click **Compare** to view the changes inline:
 
-![compare branches](img/compare_branches.png)
+   ![compare branches](img/compare_branches_v13_10.png)
 
 ## Delete merged branches
 
@@ -114,11 +115,24 @@ this operation.
 It's particularly useful to clean up old branches that were not deleted
 automatically when a merge request was merged.
 
+## Repository filter search box
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52967) in GitLab 13.10.
+
+This feature allows you to search and select a repository quickly when [comparing branches](#compare).
+
+![Repository filter search box](img/repository_filter_search_box_v13_10.png)
+
+Search results appear in the following order:
+
+- Repositories with names exactly matching the search terms.
+- Other repositories with names that include search terms, sorted alphabetically.
+
 ## Branch filter search box
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22166) in GitLab 11.5.
 
-![Branch filter search box](img/branch_filter_search_box.png)
+![Branch filter search box](img/branch_filter_search_box_v13_10.png)
 
 This feature allows you to search and select branches quickly. Search results appear in the following order:
 

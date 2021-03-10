@@ -32,9 +32,9 @@ import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
 export default {
   i18n: {
-    openedAgo: __('opened %{timeAgoString} by %{user}'),
-    openedAgoJira: __('opened %{timeAgoString} by %{user} in Jira'),
-    openedAgoServiceDesk: __('opened %{timeAgoString} by %{email} via %{user}'),
+    openedAgo: __('created %{timeAgoString} by %{user}'),
+    openedAgoJira: __('created %{timeAgoString} by %{user} in Jira'),
+    openedAgoServiceDesk: __('created %{timeAgoString} by %{email} via %{user}'),
   },
   components: {
     IssueAssignees,

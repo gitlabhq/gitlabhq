@@ -777,6 +777,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        variables.append(key: 'CI_PIPELINE_CREATED_AT', value: created_at&.iso8601)
 
         variables.concat(predefined_commit_variables)
 

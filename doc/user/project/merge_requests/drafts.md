@@ -57,6 +57,10 @@ When a merge request is ready to be merged, you can remove the `Draft` flag in s
   in a comment in the merge request. This quick action is a toggle, and can be repeated
   to change the status back. This quick action discards any other text in the comment.
 
+In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/15332),
+when you mark a merge request as ready, notifications are triggered to
+[merge request participants and watchers](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics).
+
 ## Include or exclude drafts when searching
 
 When viewing or searching in your project's merge requests list, you can include or exclude

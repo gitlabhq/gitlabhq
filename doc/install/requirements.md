@@ -152,18 +152,24 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
 available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
 
-We highly recommend users to use the minimum PostgreSQL versions specified below as these are the versions used for development and testing.
+We highly recommend using the minimum PostgreSQL versions (as specified in
+the following table) as these were used for development and testing:
 
-GitLab version | Minimum PostgreSQL version
--|-
-10.0 | 9.6
-13.0 | 11
+| GitLab version | Minimum PostgreSQL version |
+|----------------|----------------------------|
+| 10.0           | 9.6                        |
+| 13.0           | 11                         |
 
-You must also ensure the `pg_trgm` and `btree_gist` extensions are [loaded into every
-GitLab database](postgresql_extensions.html).
+You must also ensure the following extensions are [loaded into every
+GitLab database](postgresql_extensions.html):
+
+| Extension    | Minimum GitLab version |
+| ------------ | ---------------------- |
+| `pg_trgm`    | 8.6                    |
+| `btree_gist` | 13.1                   |
 
 NOTE:
-Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
+Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
 
 #### Additional requirements for GitLab Geo
 

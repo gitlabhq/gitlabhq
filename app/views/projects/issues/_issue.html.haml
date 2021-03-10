@@ -22,7 +22,7 @@
           #{issuable_reference(issue)}
         %span.issuable-authored.d-none.d-sm-inline-block
           &middot;
-          opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by
+          created #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by
           - if issue.service_desk_reply_to
             #{issue.service_desk_reply_to} via
           #{link_to_member(@project, issue.author, avatar: false)}

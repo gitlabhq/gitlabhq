@@ -207,6 +207,7 @@ epics:
 | Fixed pipeline ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1.)    | The author of the pipeline. Enabled by default. |
 | Merge merge request    |         |
 | Merge when pipeline succeeds ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. `Note:` Custom notification level is ignored for Author, Watchers and Subscribers   |
+| Merge request [marked as ready](../project/merge_requests/drafts.md) (introduced in [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/15332)) | Watchers and participants |
 | New comment            | Participants, Watchers, Subscribers, and Custom notification level with this event selected, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | New epic               |         |
 | New issue              |         |

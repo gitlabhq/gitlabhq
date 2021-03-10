@@ -167,9 +167,12 @@ sudo make prefix=/usr/local install
 WARNING:
 From GitLab 13.0, you must use at least PostgreSQL 11.
 
-The latest version of GitLab might depend on a more recent PostgreSQL version than what you are currently running (see the [PostgreSQL requirements](../install/requirements.md#postgresql-requirements)).
+The latest version of GitLab might depend on a more recent PostgreSQL version
+than what you're currently running. You may also need to enable some
+extensions. For more information, see the
+[PostgreSQL requirements](../install/requirements.md#postgresql-requirements)
 
-In order to upgrade PostgreSQL, please refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
+To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
 
 ### 8. Get latest code
 
