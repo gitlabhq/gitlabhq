@@ -120,6 +120,11 @@ msgid_plural "%d changed files"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d character remaining"
+msgid_plural "%d characters remaining"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d child epic"
 msgid_plural "%d child epics"
 msgstr[0] ""
@@ -3811,6 +3816,9 @@ msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCoun
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ApprovalRule|Add approvers"
+msgstr ""
+
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
@@ -3820,6 +3828,9 @@ msgstr ""
 msgid "ApprovalRule|Approvers"
 msgstr ""
 
+msgid "ApprovalRule|Examples: QA, Security."
+msgstr ""
+
 msgid "ApprovalRule|Name"
 msgstr ""
 
@@ -3827,9 +3838,6 @@ msgid "ApprovalRule|Rule name"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
-msgstr ""
-
-msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
 
 msgid "ApprovalStatusTooltip|Adheres to separation of duties"
@@ -9434,6 +9442,12 @@ msgstr ""
 msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
+msgid "DastProfiles|Enter URLs in a comma-separated list."
+msgstr ""
+
+msgid "DastProfiles|Enter headers in a comma-separated list."
+msgstr ""
+
 msgid "DastProfiles|Error Details"
 msgstr ""
 
@@ -9492,6 +9506,9 @@ msgid "DastProfiles|Please enter a valid timeout value"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
+msgstr ""
+
+msgid "DastProfiles|Request header names and values. Headers are added to every request made by DAST."
 msgstr ""
 
 msgid "DastProfiles|Request headers"
@@ -9561,6 +9578,9 @@ msgid "DastProfiles|Turn on AJAX spider"
 msgstr ""
 
 msgid "DastProfiles|URL"
+msgstr ""
+
+msgid "DastProfiles|URLs to skip during the authenticated scan. Use regular expression syntax to match multiple URLs."
 msgstr ""
 
 msgid "DastProfiles|Username"
@@ -16360,6 +16380,9 @@ msgstr ""
 msgid "Integrations|Linked namespaces"
 msgstr ""
 
+msgid "Integrations|Namespace successfully linked"
+msgstr ""
+
 msgid "Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance."
 msgstr ""
 
@@ -16430,6 +16453,9 @@ msgid "Integrations|You can now close this window and return to the GitLab for J
 msgstr ""
 
 msgid "Integrations|You must have owner or maintainer permissions to link namespaces."
+msgstr ""
+
+msgid "Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "Interactive mode"
@@ -18621,6 +18647,9 @@ msgid "Maximum bulk request size (MiB)"
 msgstr ""
 
 msgid "Maximum capacity"
+msgstr ""
+
+msgid "Maximum character limit - %{limit}"
 msgstr ""
 
 msgid "Maximum concurrency of Elasticsearch bulk requests per indexing operation."
@@ -21091,9 +21120,6 @@ msgid "OnCallSchedules|For this rotation, on-call will be:"
 msgstr ""
 
 msgid "OnCallSchedules|On-call schedule"
-msgstr ""
-
-msgid "OnCallSchedules|On-call schedule for the %{timezone}"
 msgstr ""
 
 msgid "OnCallSchedules|Please note, rotations with shifts that are less than four hours are currently not supported in the weekly view."
@@ -26943,6 +26969,9 @@ msgid "Select Page"
 msgstr ""
 
 msgid "Select Stack"
+msgstr ""
+
+msgid "Select a branch"
 msgstr ""
 
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."

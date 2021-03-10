@@ -16,6 +16,7 @@ module AuthHelper
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze
+  TRIAL_REGISTRATION_PROVIDERS = %w(google_oauth2 github).freeze
 
   def ldap_enabled?
     Gitlab::Auth::Ldap::Config.enabled?
@@ -126,8 +127,8 @@ module AuthHelper
     end
   end
 
-  def experiment_enabled_button_based_providers
-    enabled_button_based_providers & %w(google_oauth2 github).freeze
+  def trial_enabled_button_based_providers
+    enabled_button_based_providers & TRIAL_REGISTRATION_PROVIDERS
   end
 
   def button_based_providers_enabled?

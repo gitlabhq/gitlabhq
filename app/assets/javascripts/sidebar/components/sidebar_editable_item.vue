@@ -3,7 +3,12 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: { GlButton, GlLoadingIcon },
-  inject: ['canUpdate'],
+  inject: {
+    canUpdate: {},
+    isClassicSidebar: {
+      default: false,
+    },
+  },
   props: {
     title: {
       type: String,
@@ -83,7 +88,11 @@ export default {
     <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
       <span class="hide-collapsed" data-testid="title">{{ title }}</span>
       <gl-loading-icon v-if="loading" inline class="gl-ml-2 hide-collapsed" />
-      <gl-loading-icon v-if="loading" inline class="gl-mx-auto gl-my-0 hide-expanded" />
+      <gl-loading-icon
+        v-if="loading && isClassicSidebar"
+        inline
+        class="gl-mx-auto gl-my-0 hide-expanded"
+      />
       <gl-button
         v-if="canUpdate"
         variant="link"
@@ -92,6 +101,7 @@ export default {
         :data-track-event="tracking.event"
         :data-track-label="tracking.label"
         :data-track-property="tracking.property"
+        data-qa-selector="edit_link"
         @keyup.esc="toggle"
         @click="toggle"
       >
@@ -101,7 +111,7 @@ export default {
     <div v-show="!edit" data-testid="collapsed-content">
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>
-    <div v-show="edit" data-testid="expanded-content">
+    <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">
       <slot :edit="edit"></slot>
     </div>
   </div>

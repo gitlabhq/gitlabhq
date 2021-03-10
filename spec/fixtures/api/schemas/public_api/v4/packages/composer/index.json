@@ -1,12 +1,15 @@
 {
   "type": "object",
-  "required": ["packages", "provider-includes", "providers-url"],
+  "required": ["packages", "provider-includes", "providers-url", "metadata-url"],
   "properties": {
     "packages": {
       "type": "array",
       "items": { "type": "integer" }
     },
     "providers-url": {
+      "type": "string"
+    },
+    "metadata-url": {
       "type": "string"
     },
     "provider-includes": {

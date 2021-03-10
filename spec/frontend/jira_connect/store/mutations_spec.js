@@ -8,11 +8,21 @@ describe('JiraConnect store mutations', () => {
     localState = state();
   });
 
-  describe('SET_ERROR_MESSAGE', () => {
-    it('sets error message', () => {
-      mutations.SET_ERROR_MESSAGE(localState, 'test error');
+  describe('SET_ALERT', () => {
+    it('sets alert state', () => {
+      mutations.SET_ALERT(localState, {
+        message: 'test error',
+        variant: 'danger',
+        title: 'test title',
+        linkUrl: 'linkUrl',
+      });
 
-      expect(localState.errorMessage).toBe('test error');
+      expect(localState.alert).toMatchObject({
+        message: 'test error',
+        variant: 'danger',
+        title: 'test title',
+        linkUrl: 'linkUrl',
+      });
     });
   });
 });

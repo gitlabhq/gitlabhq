@@ -1,1 +1,1 @@
-export const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
+export const SET_ALERT = 'SET_ALERT';

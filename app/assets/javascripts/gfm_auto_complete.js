@@ -3,11 +3,12 @@ import '~/lib/utils/jquery_at_who';
 import { escape, template } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
-import { s__ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
+import { parsePikadayDate } from './lib/utils/datetime_utility';
 import glRegexp from './lib/utils/regexp';
 
 function sanitize(str) {
@@ -392,7 +393,7 @@ class GfmAutoComplete {
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
-          tmpl = GfmAutoComplete.Milestones.templateFunction(value.title);
+          tmpl = GfmAutoComplete.Milestones.templateFunction(value.title, value.expired);
         }
         return tmpl;
       },
@@ -400,16 +401,39 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         beforeSave(milestones) {
-          return $.map(milestones, (m) => {
+          const parsedMilestones = $.map(milestones, (m) => {
             if (m.title == null) {
               return m;
             }
+
+            const dueDate = m.due_date ? parsePikadayDate(m.due_date) : null;
+            const expired = dueDate ? Date.now() > dueDate.getTime() : false;
+
             return {
               id: m.iid,
               title: sanitize(m.title),
               search: m.title,
+              expired,
+              dueDate,
             };
           });
+
+          // Sort milestones by due date when present.
+          if (typeof parsedMilestones[0] === 'object') {
+            return parsedMilestones.sort((mA, mB) => {
+              // Move all expired milestones to the bottom.
+              if (mA.expired) return 1;
+              if (mB.expired) return -1;
+
+              // Move milestones without due dates just above expired milestones.
+              if (!mA.dueDate) return 1;
+              if (!mB.dueDate) return -1;
+
+              // Sort by due date in ascending order.
+              return mA.dueDate - mB.dueDate;
+            });
+          }
+          return parsedMilestones;
         },
       },
     });
@@ -833,7 +857,12 @@ GfmAutoComplete.Issues = {
 };
 // Milestones
 GfmAutoComplete.Milestones = {
-  templateFunction(title) {
+  templateFunction(title, expired) {
+    if (expired) {
+      return `<li>${sprintf(__('%{milestone} (expired)'), {
+        milestone: escape(title),
+      })}</li>`;
+    }
     return `<li>${escape(title)}</li>`;
   },
 };

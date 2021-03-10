@@ -146,10 +146,10 @@ To enable this access:
    based on the Reporter role.
 1. Navigate to your project's **Settings > General**, and in the
    **Merge request approvals** section, click **Expand**.
-1. [Add the group](../../group/index.md#create-a-group) to the permission list
-   for the protected branch.
+1. Select **Add approval rule** or **Update approval rule**.
+1. [Add the group](../../group/index.md#create-a-group) to the permission list.
 
-![Update approval rule](img/update_approval_rule_v13_4.png)
+![Update approval rule](img/update_approval_rule_v13_10.png)
 
 #### Adding / editing a default approval rule
 
@@ -240,7 +240,7 @@ the **Target branch** dropdown.
 
 Alternatively, you can select a very specific protected branch from the **Target branch** dropdown:
 
-![Scoped to protected branch](img/scoped_to_protected_branch_v12_8.png)
+![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 
 To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
 

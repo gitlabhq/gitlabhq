@@ -10,7 +10,7 @@ type: reference, howto
 GitLab can be configured to use one or multiple repository storages. These storages can be:
 
 - Accessed via [Gitaly](gitaly/index.md), optionally on
-  [its own server](gitaly/index.md#run-gitaly-on-its-own-server).
+  [its own server](gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
 - Mounted to the local disk. This [method](repository_storage_paths.md#configure-repository-storage-paths)
   is deprecated and [scheduled to be removed](https://gitlab.com/groups/gitlab-org/-/epics/2320) in
   GitLab 14.0.

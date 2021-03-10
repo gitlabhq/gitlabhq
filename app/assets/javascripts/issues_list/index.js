@@ -36,7 +36,7 @@ function mountJiraIssuesListApp() {
 }
 
 function mountIssuablesListApp() {
-  if (!gon.features?.vueIssuablesList && !gon.features?.jiraIssuesIntegration) {
+  if (!gon.features?.vueIssuablesList) {
     return;
   }
 

@@ -130,4 +130,48 @@ describe('Pipeline graph wrapper', () => {
       expect(wrapper.vm.$apollo.queries.pipeline.refetch).toHaveBeenCalled();
     });
   });
+
+  describe('when query times out', () => {
+    const advanceApolloTimers = async () => {
+      jest.runOnlyPendingTimers();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+    };
+
+    beforeEach(async () => {
+      const errorData = {
+        data: {
+          project: {
+            pipelines: null,
+          },
+        },
+        errors: [{ message: 'timeout' }],
+      };
+
+      const failSucceedFail = jest
+        .fn()
+        .mockResolvedValueOnce(errorData)
+        .mockResolvedValueOnce(mockPipelineResponse)
+        .mockResolvedValueOnce(errorData);
+
+      createComponentWithApollo(failSucceedFail);
+      await wrapper.vm.$nextTick();
+    });
+
+    it('shows correct errors and does not overwrite populated data when data is empty', async () => {
+      /* fails at first, shows error, no data yet */
+      expect(getAlert().exists()).toBe(true);
+      expect(getGraph().exists()).toBe(false);
+
+      /* succeeds, clears error, shows graph */
+      await advanceApolloTimers();
+      expect(getAlert().exists()).toBe(false);
+      expect(getGraph().exists()).toBe(true);
+
+      /* fails again, alert returns but data persists */
+      await advanceApolloTimers();
+      expect(getAlert().exists()).toBe(true);
+      expect(getGraph().exists()).toBe(true);
+    });
+  });
 });

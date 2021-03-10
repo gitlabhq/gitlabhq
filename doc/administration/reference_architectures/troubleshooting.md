@@ -257,7 +257,7 @@ sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 
 ### Observing `gitaly-ruby` traffic
 
-[`gitaly-ruby`](../gitaly/index.md#gitaly-ruby) is an internal implementation detail of Gitaly,
+[`gitaly-ruby`](../gitaly/configure_gitaly.md#gitaly-ruby) is an internal implementation detail of Gitaly,
 so, there's not that much visibility into what goes on inside
 `gitaly-ruby` processes.
 

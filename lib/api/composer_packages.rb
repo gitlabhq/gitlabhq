@@ -93,6 +93,20 @@ module API
 
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
+      get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
+        not_found! if packages.empty?
+
+        presenter.package_versions
+      end
+
+      desc 'Composer packages endpoint at group level for package versions metadata'
+
+      params do
+        requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
+      end
+
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
       get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
         not_found! if packages.empty?
         not_found! if params[:sha].blank?

@@ -61,9 +61,6 @@ export default {
         this.customState.integrationLevel === integrationLevels.GROUP
       );
     },
-    showJiraIssuesFields() {
-      return this.isJira && this.glFeatures.jiraIssuesIntegration;
-    },
     showReset() {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
     },
@@ -129,7 +126,7 @@ export default {
           v-bind="field"
         />
         <jira-issues-fields
-          v-if="showJiraIssuesFields"
+          v-if="isJira"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
         />

@@ -4,7 +4,6 @@ import {
   GlDropdownDivider,
   GlSearchBoxByType,
   GlSprintf,
-  GlIcon,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce, isArray } from 'lodash';
@@ -27,7 +26,6 @@ export default {
     GlDropdownDivider,
     GlSearchBoxByType,
     GlSprintf,
-    GlIcon,
     GlLoadingIcon,
     RefResultsSection,
   },
@@ -111,7 +109,10 @@ export default {
       return this.enabledRefTypes.length > 1;
     },
     toggleButtonClass() {
-      return { 'gl-inset-border-1-red-500!': !this.state };
+      return {
+        'gl-inset-border-1-red-500!': !this.state,
+        'gl-font-monospace': Boolean(this.selectedRef),
+      };
     },
     footerSlotProps() {
       return {
@@ -119,6 +120,9 @@ export default {
         matches: this.matches,
         query: this.lastQuery,
       };
+    },
+    buttonText() {
+      return this.selectedRef || this.i18n.noRefSelected;
     },
   },
   watch: {
@@ -190,19 +194,12 @@ export default {
   <gl-dropdown
     :header-text="i18n.dropdownHeader"
     :toggle-class="toggleButtonClass"
+    :text="buttonText"
     class="ref-selector"
     v-bind="$attrs"
     v-on="$listeners"
     @shown="focusSearchBox"
   >
-    <template #button-content>
-      <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-400" data-testid="button-content">
-        <span v-if="selectedRef" class="gl-font-monospace">{{ selectedRef }}</span>
-        <span v-else>{{ i18n.noRefSelected }}</span>
-      </span>
-      <gl-icon name="chevron-down" />
-    </template>
-
     <template #header>
       <gl-search-box-by-type
         ref="searchBox"

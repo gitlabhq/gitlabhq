@@ -620,3 +620,12 @@ Gitlab/NamespacedClass:
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
     - 'spec/migrations/**/*.rb'
+
+Lint/HashCompareByIdentity:
+  Enabled: true
+
+Lint/RedundantSafeNavigation:
+  Enabled: true
+
+Style/ClassEqualityComparison:
+  Enabled: true

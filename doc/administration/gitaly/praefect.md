@@ -701,7 +701,7 @@ Particular attention should be shown to:
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
 
 For more information on Gitaly server configuration, see our [Gitaly
-documentation](index.md#configure-gitaly-servers).
+documentation](configure_gitaly.md#configure-gitaly-servers).
 
 1. SSH into the **Gitaly** node and login as root:
 
@@ -834,7 +834,7 @@ scope of the GitLab documentation.
 NOTE:
 The load balancer must be configured to accept traffic from the Gitaly nodes in
 addition to the GitLab nodes. Some requests handled by
-[`gitaly-ruby`](index.md#gitaly-ruby) sidecar processes call into the main Gitaly
+[`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) sidecar processes call into the main Gitaly
 process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
 `git_data_dirs` setting to make this connection.
 

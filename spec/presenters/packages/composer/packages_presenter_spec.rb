@@ -67,7 +67,8 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
       {
         'packages' => [],
         'provider-includes' => { 'p/%hash%.json' => { 'sha256' => /^\h+$/ } },
-        'providers-url' => "prefix/api/v4/group/#{group.id}/-/packages/composer/%package%$%hash%.json"
+        'providers-url' => "prefix/api/v4/group/#{group.id}/-/packages/composer/%package%$%hash%.json",
+        'metadata-url' => "prefix/api/v4/group/#{group.id}/-/packages/composer/p2/%package%.json"
       }
     end
 

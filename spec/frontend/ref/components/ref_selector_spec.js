@@ -91,7 +91,7 @@ describe('Ref selector component', () => {
   //
   // Finders
   //
-  const findButtonContent = () => wrapper.find('[data-testid="button-content"]');
+  const findButtonContent = () => wrapper.find('button');
 
   const findNoResults = () => wrapper.find('[data-testid="no-results"]');
 

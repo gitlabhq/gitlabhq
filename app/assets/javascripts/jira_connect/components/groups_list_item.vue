@@ -1,7 +1,9 @@
 <script>
 import { GlAvatar, GlButton, GlIcon } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { addSubscription } from '~/jira_connect/api';
 import { s__ } from '~/locale';
+import { persistAlert } from '../utils';
 
 export default {
   components: {
@@ -31,6 +33,15 @@ export default {
 
       addSubscription(this.subscriptionsPath, this.group.full_path)
         .then(() => {
+          persistAlert({
+            title: s__('Integrations|Namespace successfully linked'),
+            message: s__(
+              'Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}',
+            ),
+            linkUrl: helpPagePath('integration/jira_development_panel.html', { anchor: 'usage' }),
+            variant: 'success',
+          });
+
           AP.navigator.reload();
         })
         .catch((error) => {

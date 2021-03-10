@@ -20,7 +20,7 @@ The GitLab API is the recommended way to move Git repositories:
 
 For more information, see:
 
-- [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture). This
+- [Configuring additional storage for Gitaly](../gitaly/configure_gitaly.md#network-architecture). This
   example configures additional storage called `storage1` and `storage2`.
 - [The API documentation](../../api/project_repository_storage_moves.md) details the endpoints for
   querying and scheduling project repository moves.

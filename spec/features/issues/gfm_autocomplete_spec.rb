@@ -402,10 +402,40 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     context 'milestone' do
-      let!(:object) { create(:milestone, project: project) }
-      let(:expected_body) { object.to_reference }
+      let_it_be(:milestone_expired) { create(:milestone, project: project, due_date: 5.days.ago) }
+      let_it_be(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
+      let_it_be(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
+      let_it_be(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
+      let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
 
-      it_behaves_like 'autocomplete suggestions'
+      before do
+        fill_in 'Comment', with: '/milestone %'
+
+        wait_for_requests
+      end
+
+      it 'shows milestons list in the autocomplete menu' do
+        page.within(find_autocomplete_menu) do
+          expect(page).to have_selector('li', count: 5)
+        end
+      end
+
+      it 'shows expired milestone at the bottom of the list' do
+        page.within(find_autocomplete_menu) do
+          expect(page.find('li:last-child')).to have_content milestone_expired.title
+        end
+      end
+
+      it 'shows milestone due earliest at the top of the list' do
+        page.within(find_autocomplete_menu) do
+          aggregate_failures do
+            expect(page.all('li')[0]).to have_content milestone3.title
+            expect(page.all('li')[1]).to have_content milestone2.title
+            expect(page.all('li')[2]).to have_content milestone1.title
+            expect(page.all('li')[3]).to have_content milestone_no_duedate.title
+          end
+        end
+      end
     end
   end
 

@@ -82,7 +82,7 @@ export default {
     </gl-alert>
     <div v-else>
       <div class="gl-display-flex gl-align-items-center">
-        <gl-icon :size="18" name="lock" class="gl-text-gray-500 gl-mr-3" />
+        <gl-icon :size="18" name="lock" use-deprecated-sizes class="gl-text-gray-500 gl-mr-3" />
         {{ $options.i18n.viewOnlyMessage }}
       </div>
       <div class="gl-mt-3 gl-border-solid gl-border-gray-100 gl-border-1">

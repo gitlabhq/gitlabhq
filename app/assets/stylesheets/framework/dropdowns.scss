@@ -1109,3 +1109,11 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     width: $gl-dropdown-width-wide;
   }
 }
+
+// This class won't be needed once we can add a prop for this in the GitLab UI component
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
+.gl-new-dropdown.gl-dropdown-menu-full-width {
+  .dropdown-menu {
+    width: 100%;
+  }
+}

@@ -32,7 +32,7 @@ const reportToSentry = (component, failureType) => {
 };
 
 const serializeGqlErr = (gqlError) => {
-  const { locations, message, path } = gqlError;
+  const { locations = [], message = '', path = [] } = gqlError;
 
   return `
     ${message}.

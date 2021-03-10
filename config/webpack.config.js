@@ -103,7 +103,6 @@ function generateEntries() {
     default: defaultEntries,
     sentry: './sentry/index.js',
     performance_bar: './performance_bar/index.js',
-    chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
     jira_connect_app: './jira_connect/index.js',
   };
 

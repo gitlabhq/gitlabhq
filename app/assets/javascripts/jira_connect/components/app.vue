@@ -1,10 +1,11 @@
 <script>
-import { GlAlert, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
-import { mapState } from 'vuex';
+import { GlAlert, GlButton, GlModal, GlModalDirective, GlLink, GlSprintf } from '@gitlab/ui';
+import { mapState, mapMutations } from 'vuex';
 import { getLocation } from '~/jira_connect/api';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
+import { SET_ALERT } from '../store/mutation_types';
+import { retrieveAlert } from '../utils';
 import GroupsList from './groups_list.vue';
 
 export default {
@@ -14,6 +15,8 @@ export default {
     GlButton,
     GlModal,
     GroupsList,
+    GlLink,
+    GlSprintf,
   },
   directives: {
     GlModalDirective,
@@ -30,13 +33,16 @@ export default {
     };
   },
   computed: {
-    ...mapState(['errorMessage']),
+    ...mapState(['alert']),
     usersPathWithReturnTo() {
       if (this.location) {
         return `${this.usersPath}?return_to=${this.location}`;
       }
 
       return this.usersPath;
+    },
+    shouldShowAlert() {
+      return Boolean(this.alert?.message);
     },
   },
   modal: {
@@ -45,11 +51,19 @@ export default {
     },
   },
   created() {
+    this.setInitialAlert();
     this.setLocation();
   },
   methods: {
+    ...mapMutations({
+      setAlert: SET_ALERT,
+    }),
     async setLocation() {
       this.location = await getLocation();
+    },
+    setInitialAlert() {
+      const { linkUrl, title, message, variant } = retrieveAlert() || {};
+      this.setAlert({ linkUrl, title, message, variant });
     },
   },
 };
@@ -57,8 +71,22 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="errorMessage" class="gl-mb-7" variant="danger" :dismissible="false">
-      {{ errorMessage }}
+    <gl-alert
+      v-if="shouldShowAlert"
+      class="gl-mb-7"
+      :variant="alert.variant"
+      :title="alert.title"
+      @dismiss="setAlert"
+    >
+      <gl-sprintf v-if="alert.linkUrl" :message="alert.message">
+        <template #link="{ content }">
+          <gl-link :href="alert.linkUrl" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+
+      <template v-else>
+        {{ alert.message }}
+      </template>
     </gl-alert>
 
     <h2 class="gl-text-center">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>

@@ -4673,7 +4673,7 @@ Represents a vulnerability.
 | `notes` | NoteConnection! | All notes on this noteable. |
 | `primaryIdentifier` | VulnerabilityIdentifier | Primary identifier of the vulnerability. |
 | `project` | Project | The project on which the vulnerability was found. |
-| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING) |
+| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING). `Scan Type` in the UI. |
 | `resolvedAt` | Time | Timestamp of when the vulnerability state was changed to resolved. |
 | `resolvedBy` | User | The user that resolved the vulnerability. |
 | `resolvedOnDefaultBranch` | Boolean! | Indicates whether the vulnerability is fixed on the default branch or not. |

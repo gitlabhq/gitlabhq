@@ -270,10 +270,15 @@ the following parameters:
 }
 ```
 
-Also you must use HTTP Basic authentication using the `client_id` and`client_secret`
-values to authenticate the client that performs a request.
-
 Example cURL request:
+
+```shell
+echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
+curl --data "@auth.txt" --request POST "https://gitlab.example.com/oauth/token"
+```
+
+You can also use this grant flow with registered OAuth applications, by using
+HTTP Basic Authentication with the application's `client_id` and `client_secret`:
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
