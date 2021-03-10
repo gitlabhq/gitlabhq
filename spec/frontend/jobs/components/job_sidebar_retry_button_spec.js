@@ -54,7 +54,7 @@ describe('Job Sidebar Retry Button', () => {
 
       expect(findRetryButton().attributes()).toMatchObject({
         category: 'primary',
-        variant: 'info',
+        variant: 'confirm',
       });
     });
   });

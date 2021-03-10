@@ -74,6 +74,7 @@ module Gitlab
     def validate!
       raise "--dir option is required" unless input_dir.present?
       raise "Invalid dir #{input_dir}, allowed options are #{VALID_INPUT_DIRS.join(', ')}" unless directory.present?
+      raise "Metric definition with key path '#{key_path}' already exists" if metric_definition_exists?
     end
 
     def ee?
@@ -88,11 +89,23 @@ module Gitlab
     #
     # 20210201124931_g_project_management_issue_title_changed_weekly.yml
     def file_name
-      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{key_path.split('.').last}"
+      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{metric_name}"
     end
 
     def directory
       @directory ||= TIME_FRAME_DIRS.find { |d| d.match?(input_dir) }
+    end
+
+    def metric_name
+      key_path.split('.').last
+    end
+
+    def metric_definitions
+      @definitions ||= Gitlab::Usage::MetricDefinition.definitions
+    end
+
+    def metric_definition_exists?
+      metric_definitions[key_path].present?
     end
   end
 end

@@ -36,10 +36,10 @@ export default {
     v-gl-modal="modalId"
     :aria-label="$options.i18n.retryLabel"
     category="primary"
-    variant="info"
+    variant="confirm"
     >{{ $options.i18n.retryLabel }}</gl-button
   >
-  <gl-link v-else :href="href" data-method="post" rel="nofollow"
+  <gl-link v-else :href="href" class="btn gl-button btn-confirm" data-method="post" rel="nofollow"
     >{{ $options.i18n.retryLabel }}
   </gl-link>
 </template>
