@@ -1,5 +1,15 @@
 const Sequencer = require('@jest/test-sequencer').default;
 
+const sortByPath = (test1, test2) => {
+  if (test1.path < test2.path) {
+    return -1;
+  }
+  if (test1.path > test2.path) {
+    return 1;
+  }
+  return 0;
+};
+
 class ParallelCISequencer extends Sequencer {
   constructor() {
     super();
@@ -8,7 +18,7 @@ class ParallelCISequencer extends Sequencer {
   }
 
   sort(tests) {
-    const sortedTests = this.sortByPath(tests);
+    const sortedTests = [...tests].sort(sortByPath);
     const testsForThisRunner = this.distributeAcrossCINodes(sortedTests);
 
     console.log(`CI_NODE_INDEX: ${this.ciNodeIndex}`);
@@ -17,18 +27,6 @@ class ParallelCISequencer extends Sequencer {
     console.log(`Total number of tests for this runner: ${testsForThisRunner.length}`);
 
     return testsForThisRunner;
-  }
-
-  sortByPath(tests) {
-    return tests.sort((test1, test2) => {
-      if (test1.path < test2.path) {
-        return -1;
-      }
-      if (test1.path > test2.path) {
-        return 1;
-      }
-      return 0;
-    });
   }
 
   distributeAcrossCINodes(tests) {

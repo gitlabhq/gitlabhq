@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const vendorDllHash = require('./helpers/vendor_dll_hash');
 const { YarnCheck } = require('yarn-check-webpack-plugin');
+const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 

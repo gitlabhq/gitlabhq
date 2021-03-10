@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import produce from 'immer';
 
-import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLIds, convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
 
 import getProjectsQuery from '../graphql/queries/get_projects.query.graphql';
 
@@ -51,7 +51,7 @@ export default {
       },
       update({ projects }) {
         return {
-          list: this.formatProjectNodes(projects),
+          list: convertNodeIdsFromGraphQLIds(projects.nodes),
           pageInfo: projects.pageInfo,
         };
       },
@@ -64,7 +64,7 @@ export default {
       query: getProjectsQuery,
       variables() {
         return {
-          ids: this.initialProjectIds.map((id) => convertToGraphQLId(GRAPHQL_ENTITY_TYPE, id)),
+          ids: convertToGraphQLIds(GRAPHQL_ENTITY_TYPE, this.initialProjectIds),
         };
       },
       manual: true,
@@ -72,7 +72,7 @@ export default {
         return !this.initialProjectIds.length;
       },
       result({ data: { projects } }) {
-        this.$emit('input', this.formatProjectNodes(projects));
+        this.$emit('input', convertNodeIdsFromGraphQLIds(projects.nodes));
       },
     },
   },
@@ -88,12 +88,6 @@ export default {
     };
   },
   methods: {
-    formatProjectNodes(projects) {
-      return projects.nodes.map((project) => ({
-        ...project,
-        id: getIdFromGraphQLId(project.id),
-      }));
-    },
     handleSearch(query) {
       this.isSearching = true;
       this.searchQuery = query;

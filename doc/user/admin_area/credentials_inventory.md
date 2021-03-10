@@ -11,7 +11,9 @@ type: howto
 
 GitLab administrators are responsible for the overall security of their instance. To assist, GitLab provides a Credentials inventory to keep track of all the credentials that can be used to access their self-managed instance.
 
-Using Credentials inventory, you can see all the personal access tokens (PAT) and SSH keys that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token) and [delete](#delete-a-users-ssh-key) and see:
+Using Credentials inventory, you can see all the personal access tokens (PAT), SSH keys, and GPG keys 
+that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token) 
+and [delete](#delete-a-users-ssh-key) and see:
 
 - Who they belong to.
 - Their access scope.
@@ -23,7 +25,7 @@ To access the Credentials inventory, navigate to **Admin Area > Credentials**.
 
 The following is an example of the Credentials inventory page:
 
-![Credentials inventory page](img/credentials_inventory_v13_4.png)
+![Credentials inventory page](img/credentials_inventory_v13_10.png)
 
 ## Revoke a user's personal access token
 
@@ -50,3 +52,39 @@ You can **Delete** a user's SSH key by navigating to the credentials inventory's
 The instance then notifies the user.
 
 ![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v13_5.png)
+
+## Review existing GPG keys
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-gpg-keys-view).
+
+You can view all existing GPG in your GitLab instance by navigating to the 
+credentials inventory GPG Keys tab, as well as the following properties:
+
+- Who the GPG key belongs to.
+- The ID of the GPG key.
+- Whether the GPG key is [verified or unverified](../project/repository/gpg_signed_commits/index.md)
+
+![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v13_10.png)
+
+### Enable or disable the GPG keys view
+
+Enabling or disabling the GPG keys view is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:credential_inventory_gpg_keys)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:credential_inventory_gpg_keys)
+```

@@ -1,16 +1,15 @@
-import { get } from 'lodash';
 import Tracking from '~/tracking';
-
-const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0';
+import { TRACKING_CONTEXT_SCHEMA } from './constants';
+import { getExperimentData } from './utils';
 
 export default class ExperimentTracking {
   constructor(experimentName, trackingArgs = {}) {
     this.trackingArgs = trackingArgs;
-    this.experimentData = get(window, ['gon', 'global', 'experiment', experimentName]);
+    this.data = getExperimentData(experimentName);
   }
 
   event(action) {
-    if (!this.experimentData) {
+    if (!this.data) {
       return false;
     }
 
@@ -18,7 +17,7 @@ export default class ExperimentTracking {
       ...this.trackingArgs,
       context: {
         schema: TRACKING_CONTEXT_SCHEMA,
-        data: this.experimentData,
+        data: this.data,
       },
     });
   }

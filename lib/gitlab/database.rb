@@ -313,28 +313,18 @@ module Gitlab
       ActiveRecord::Base.prepend(ActiveRecordBaseTransactionMetrics)
     end
 
-    # observe_transaction_duration is called from ActiveRecordBaseTransactionMetrics.transaction and used to
-    # record transaction durations.
-    def self.observe_transaction_duration(duration_seconds)
-      if current_transaction = ::Gitlab::Metrics::Transaction.current
-        current_transaction.observe(:gitlab_database_transaction_seconds, duration_seconds) do
-          docstring "Time spent in database transactions, in seconds"
-        end
-      end
-    rescue Prometheus::Client::LabelSetValidator::LabelSetError => err
-      # Ensure that errors in recording these metrics don't affect the operation of the application
-      Gitlab::AppLogger.error("Unable to observe database transaction duration: #{err}")
-    end
-
     # MonkeyPatch for ActiveRecord::Base for adding observability
     module ActiveRecordBaseTransactionMetrics
-      # A monkeypatch over ActiveRecord::Base.transaction.
-      # It provides observability into transactional methods.
-      def transaction(options = {}, &block)
-        start_time = Gitlab::Metrics::System.monotonic_time
-        super(options, &block)
-      ensure
-        Gitlab::Database.observe_transaction_duration(Gitlab::Metrics::System.monotonic_time - start_time)
+      extend ActiveSupport::Concern
+
+      class_methods do
+        # A monkeypatch over ActiveRecord::Base.transaction.
+        # It provides observability into transactional methods.
+        def transaction(**options, &block)
+          ActiveSupport::Notifications.instrument('transaction.active_record', { connection: connection }) do
+            super(**options, &block)
+          end
+        end
       end
     end
   end

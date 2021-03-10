@@ -1,5 +1,9 @@
 import { setHTMLFixture } from 'helpers/fixtures';
+import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
+import { getExperimentData } from '~/experimentation/utils';
 import Tracking, { initUserTracking, initDefaultTrackers, STANDARD_CONTEXT } from '~/tracking';
+
+jest.mock('~/experimentation/utils', () => ({ getExperimentData: jest.fn() }));
 
 describe('Tracking', () => {
   let snowplowSpy;
@@ -7,6 +11,8 @@ describe('Tracking', () => {
   let trackLoadEventsSpy;
 
   beforeEach(() => {
+    getExperimentData.mockReturnValue(undefined);
+
     window.snowplow = window.snowplow || (() => {});
     window.snowplowOptions = {
       namespace: '_namespace_',
@@ -245,18 +251,18 @@ describe('Tracking', () => {
     });
 
     it('brings in experiment data if linked to an experiment', () => {
-      const data = {
+      const mockExperimentData = {
         variant: 'candidate',
         experiment: 'repo_integrations_link',
         key: '2bff73f6bb8cc11156c50a8ba66b9b8b',
       };
+      getExperimentData.mockReturnValue(mockExperimentData);
 
-      window.gon.global = { experiment: { example: data } };
       document.querySelector('[data-track-event="click_input3"]').click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input3', {
         value: '_value_',
-        context: { schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', data },
+        context: { schema: TRACKING_CONTEXT_SCHEMA, data: mockExperimentData },
       });
     });
   });
@@ -301,21 +307,21 @@ describe('Tracking', () => {
 
   describe('tracking mixin', () => {
     describe('trackingOptions', () => {
-      it('return the options defined on initialisation', () => {
+      it('returns the options defined on initialisation', () => {
         const mixin = Tracking.mixin({ foo: 'bar' });
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'bar' });
       });
 
-      it('local tracking value override and extend options', () => {
+      it('lets local tracking value override and extend options', () => {
         const mixin = Tracking.mixin({ foo: 'bar' });
-        //  the value of this in the  vue lifecyle is different, but this serve the tests purposes
+        // The value of this in the Vue lifecyle is different, but this serves the test's purposes
         mixin.computed.tracking = { foo: 'baz', baz: 'bar' };
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'baz', baz: 'bar' });
       });
     });
 
     describe('trackingCategory', () => {
-      it('return the category set in the component properties first', () => {
+      it('returns the category set in the component properties first', () => {
         const mixin = Tracking.mixin({ category: 'foo' });
         mixin.computed.tracking = {
           category: 'bar',
@@ -323,12 +329,12 @@ describe('Tracking', () => {
         expect(mixin.computed.trackingCategory()).toBe('bar');
       });
 
-      it('return the category set in the options', () => {
+      it('returns the category set in the options', () => {
         const mixin = Tracking.mixin({ category: 'foo' });
         expect(mixin.computed.trackingCategory()).toBe('foo');
       });
 
-      it('if no category is selected returns undefined', () => {
+      it('returns undefined if no category is selected', () => {
         const mixin = Tracking.mixin();
         expect(mixin.computed.trackingCategory()).toBe(undefined);
       });
@@ -363,7 +369,7 @@ describe('Tracking', () => {
         expect(eventSpy).toHaveBeenCalledWith(undefined, 'foo', {});
       });
 
-      it('give precedence to data for category and options', () => {
+      it('gives precedence to data for category and options', () => {
         mixin.trackingCategory = mixin.trackingCategory();
         mixin.trackingOptions = mixin.trackingOptions();
         const data = { category: 'foo', label: 'baz' };

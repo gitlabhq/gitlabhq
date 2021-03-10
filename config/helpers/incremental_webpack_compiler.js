@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file, no-underscore-dangle */
 const fs = require('fs');
 const path = require('path');
 
@@ -7,6 +8,7 @@ const log = (msg, ...rest) => console.log(`IncrementalWebpackCompiler: ${msg}`, 
 // Five seconds seem to work fine and the user can read the message
 const TIMEOUT = 5000;
 
+/* eslint-disable class-methods-use-this */
 class NoopCompiler {
   constructor() {
     this.enabled = false;
@@ -20,6 +22,7 @@ class NoopCompiler {
 
   setupMiddleware() {}
 }
+/* eslint-enable class-methods-use-this */
 
 class IncrementalWebpackCompiler {
   constructor(historyFilePath) {

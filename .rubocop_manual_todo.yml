@@ -2355,7 +2355,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/serializers/vulnerability_note_serializer.rb'
     - 'ee/app/serializers/vulnerability_serializer.rb'
     - 'ee/app/services/clear_namespace_shared_runners_minutes_service.rb'
-    - 'ee/app/services/fetch_subscription_plans_service.rb'
     - 'ee/app/services/ldap_group_reset_service.rb'
     - 'ee/app/services/start_pull_mirroring_service.rb'
     - 'ee/app/services/timebox_report_service.rb'
@@ -2518,7 +2517,3 @@ Style/ClassEqualityComparison:
   Exclude:
     - spec/lib/peek/views/active_record_spec.rb
     - ee/spec/lib/peek/views/active_record_spec.rb
-
-Lint/HashCompareByIdentity:
-  Exclude:
-    - ee/lib/gitlab/database/load_balancing/load_balancer.rb

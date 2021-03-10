@@ -33,6 +33,7 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
           include ::Gitlab::Graphql::ConnectionCollectionMethods
           prepend ::Gitlab::Graphql::ConnectionRedaction
+          prepend GenericKeysetPagination
 
           # rubocop: disable Naming/PredicateName
           # https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo.Fields

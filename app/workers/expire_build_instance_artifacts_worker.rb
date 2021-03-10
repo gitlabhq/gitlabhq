@@ -4,7 +4,6 @@ class ExpireBuildInstanceArtifactsWorker # rubocop:disable Scalability/Idempoten
   include ApplicationWorker
 
   feature_category :continuous_integration
-  tags :requires_disk_io
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

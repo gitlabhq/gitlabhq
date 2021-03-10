@@ -1,4 +1,4 @@
-import ExperimentTracking from '~/experiment_tracking';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
 
 function trackEvent(eventName) {
   const isEmpty = Boolean(document.querySelector('.project-home-panel.empty-project'));

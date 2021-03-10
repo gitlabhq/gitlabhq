@@ -1106,8 +1106,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
+  :tags: []
 - :name: pipeline_background:ci_build_trace_chunk_flush
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1251,8 +1250,7 @@
   :resource_boundary: :cpu
   :weight: 5
   :idempotent:
-  :tags:
-  - :requires_disk_io
+  :tags: []
 - :name: pipeline_processing:build_queue
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1484,8 +1482,7 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags:
-  - :requires_disk_io
+  :tags: []
 - :name: ci_delete_objects
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1645,8 +1642,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags:
-  - :requires_disk_io
+  :tags: []
 - :name: export_csv
   :feature_category: :issue_tracking
   :has_external_dependencies:

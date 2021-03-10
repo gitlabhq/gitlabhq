@@ -11,7 +11,9 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def publish(_result)
     track(:assignment) # track that we've assigned a variant for this context
-    Gon.global.push({ experiment: { name => signature } }, true) # push the experiment data to the client
+
+    # push the experiment data to the client
+    Gon.push({ experiment: { name => signature } }, true) if in_request_cycle?
   end
 
   def track(action, **event_args)
@@ -45,6 +47,12 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def feature_flag_name
     name.tr('/', '_')
+  end
+
+  def in_request_cycle?
+    # Gon is only accessible when having a request. This will be fixed with
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/323352
+    context.instance_variable_defined?(:@request)
   end
 
   def resolve_variant_name

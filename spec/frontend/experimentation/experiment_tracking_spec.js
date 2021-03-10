@@ -1,17 +1,16 @@
-import ExperimentTracking from '~/experiment_tracking';
+import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
+import { getExperimentData } from '~/experimentation/utils';
 import Tracking from '~/tracking';
 
-jest.mock('~/tracking');
-
-const oldGon = window.gon;
-
-let newGon = {};
 let experimentTracking;
 let label;
 let property;
 
+jest.mock('~/tracking');
+jest.mock('~/experimentation/utils', () => ({ getExperimentData: jest.fn() }));
+
 const setup = () => {
-  window.gon = newGon;
   experimentTracking = new ExperimentTracking('sidebar_experiment', { label, property });
 };
 
@@ -20,16 +19,18 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  window.gon = oldGon;
-  Tracking.mockClear();
   label = undefined;
   property = undefined;
 });
 
 describe('event', () => {
+  beforeEach(() => {
+    getExperimentData.mockReturnValue(undefined);
+  });
+
   describe('when experiment data exists for experimentName', () => {
     beforeEach(() => {
-      newGon = { global: { experiment: { sidebar_experiment: 'experiment-data' } } };
+      getExperimentData.mockReturnValue('experiment-data');
       setup();
     });
 
@@ -45,7 +46,7 @@ describe('event', () => {
           label: 'sidebar-drawer',
           property: 'dark-mode',
           context: {
-            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+            schema: TRACKING_CONTEXT_SCHEMA,
             data: 'experiment-data',
           },
         });
@@ -58,7 +59,7 @@ describe('event', () => {
       expect(Tracking.event).toHaveBeenCalledTimes(1);
       expect(Tracking.event).toHaveBeenCalledWith('issues-page', 'click_sidebar_trigger', {
         context: {
-          schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+          schema: TRACKING_CONTEXT_SCHEMA,
           data: 'experiment-data',
         },
       });
@@ -67,7 +68,6 @@ describe('event', () => {
 
   describe('when experiment data does NOT exists for the experimentName', () => {
     beforeEach(() => {
-      newGon = { global: { experiment: { unrelated_experiment: 'not happening' } } };
       setup();
     });
 

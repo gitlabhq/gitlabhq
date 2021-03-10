@@ -1,6 +1,6 @@
 const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
+const path = require('path');
 
 const CACHE_PATHS = [
   './config/webpack.config.js',

@@ -1,0 +1,5 @@
+---
+title: Handle RestClient errors in Discord integration
+merge_request: 56112
+author:
+type: fixed

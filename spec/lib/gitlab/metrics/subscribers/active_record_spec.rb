@@ -6,8 +6,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   using RSpec::Parameterized::TableSyntax
 
   let(:env) { {} }
-  let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
-  let(:subscriber)  { described_class.new }
+  let(:subscriber) { described_class.new }
   let(:connection) { double(:connection) }
   let(:payload) { { sql: 'SELECT * FROM users WHERE id = 10', connection: connection } }
 
@@ -47,33 +46,15 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
     with_them do
       let(:payload) { { name: name, sql: sql(sql_query, comments: comments), connection: connection } }
 
-      describe 'with a current transaction' do
-        before do
-          allow(subscriber).to receive(:current_transaction)
-            .at_least(:once)
-            .and_return(transaction)
-        end
+      it 'marks the current thread as using the database' do
+        # since it would already have been toggled by other specs
+        Thread.current[:uses_db_connection] = nil
 
-        it 'marks the current thread as using the database' do
-          # since it would already have been toggled by other specs
-          Thread.current[:uses_db_connection] = nil
-
-          expect { subscriber.sql(event) }.to change { Thread.current[:uses_db_connection] }.from(nil).to(true)
-        end
-
-        it_behaves_like 'record ActiveRecord metrics'
-        it_behaves_like 'store ActiveRecord info in RequestStore'
+        expect { subscriber.sql(event) }.to change { Thread.current[:uses_db_connection] }.from(nil).to(true)
       end
 
-      describe 'without a current transaction' do
-        it 'does not track any metrics' do
-          expect_any_instance_of(Gitlab::Metrics::Transaction)
-            .not_to receive(:increment)
-          subscriber.sql(event)
-        end
-
-        it_behaves_like 'store ActiveRecord info in RequestStore'
-      end
+      it_behaves_like 'record ActiveRecord metrics'
+      it_behaves_like 'store ActiveRecord info in RequestStore'
     end
   end
 

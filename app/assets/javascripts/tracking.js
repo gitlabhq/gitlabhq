@@ -1,4 +1,6 @@
-import { omitBy, isUndefined, get } from 'lodash';
+import { omitBy, isUndefined } from 'lodash';
+import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
+import { getExperimentData } from '~/experimentation/utils';
 
 const standardContext = { ...window.gl?.snowplowStandardContext };
 
@@ -32,8 +34,8 @@ const createEventPayload = (el, { suffix = '' } = {}) => {
 
   let context = el.dataset.trackContext;
   if (el.dataset.trackExperiment) {
-    const data = get(window, ['gon', 'global', 'experiment', el.dataset.trackExperiment]);
-    if (data) context = { schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', data };
+    const data = getExperimentData(el.dataset.trackExperiment);
+    if (data) context = { schema: TRACKING_CONTEXT_SCHEMA, data };
   }
 
   const data = {

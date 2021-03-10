@@ -10,12 +10,13 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
   },
 });
 
-module.exports = stylelint.createPlugin(ruleName, function (enabled) {
+module.exports = stylelint.createPlugin(ruleName, (enabled) => {
   if (!enabled) {
     return;
   }
 
-  return function (root, result) {
+  // eslint-disable-next-line consistent-return
+  return (root, result) => {
     utils.createPropertiesHashmap(root, result, ruleName, messages, utilityClasses, false);
   };
 });

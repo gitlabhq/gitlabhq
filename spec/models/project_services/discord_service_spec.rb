@@ -67,5 +67,16 @@ RSpec.describe DiscordService do
         expect { subject.execute(sample_data) }.to raise_error(ArgumentError, /is blocked/)
       end
     end
+
+    context 'when the Discord request fails' do
+      before do
+        WebMock.stub_request(:post, webhook_url).to_return(status: 400)
+      end
+
+      it 'logs an error and returns false' do
+        expect(subject).to receive(:log_error).with('400 Bad Request')
+        expect(subject.execute(sample_data)).to be(false)
+      end
+    end
   end
 end

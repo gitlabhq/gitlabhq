@@ -64,21 +64,35 @@ RSpec.describe ApplicationExperiment, :experiment do
       subject.publish(nil)
     end
 
-    it "pushes the experiment knowledge into the client using Gon.global" do
-      expect(Gon.global).to receive(:push).with(
-        {
-          experiment: {
-            'namespaced/stub' => { # string key because it can be namespaced
-              experiment: 'namespaced/stub',
-              key: '86208ac54ca798e11f127e8b23ec396a',
-              variant: 'control'
-            }
-          }
-        },
-        true
-      )
+    context "when inside a request cycle" do
+      before do
+        subject.context.instance_variable_set(:@request, double('Request', headers: 'true'))
+      end
 
-      subject.publish(nil)
+      it "pushes the experiment knowledge into the client using Gon" do
+        expect(Gon).to receive(:push).with(
+          {
+            experiment: {
+              'namespaced/stub' => { # string key because it can be namespaced
+                                     experiment: 'namespaced/stub',
+                                     key: '86208ac54ca798e11f127e8b23ec396a',
+                                     variant: 'control'
+              }
+            }
+          },
+          true
+        )
+
+        subject.publish(nil)
+      end
+    end
+
+    context "when outside a request cycle" do
+      it "does not push to gon when outside request cycle" do
+        expect(Gon).not_to receive(:push)
+
+        subject.publish(nil)
+      end
     end
   end
 

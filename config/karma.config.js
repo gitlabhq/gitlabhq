@@ -1,13 +1,14 @@
-const path = require('path');
-const glob = require('glob');
+/* eslint-disable no-inner-declarations, no-param-reassign */
 const chalk = require('chalk');
-const webpack = require('webpack');
 const argumentsParser = require('commander');
-const webpackConfig = require('./webpack.config.js');
+const glob = require('glob');
+const path = require('path');
+const webpack = require('webpack');
 const IS_EE = require('./helpers/is_ee_env');
+const webpackConfig = require('./webpack.config.js');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
-const SPECS_PATH = /^(?:\.[\\\/])?(ee[\\\/])?spec[\\\/]javascripts[\\\/]/;
+const SPECS_PATH = /^(?:\.[\\/])?(ee[\\/])?spec[\\/]javascripts[\\/]/;
 
 function exitError(message) {
   console.error(chalk.red(`\nError: ${message}\n`));
@@ -77,7 +78,7 @@ if (specFilters.length) {
         root: ROOT_PATH,
         matchBase: true,
       })
-      .filter((path) => path.endsWith('spec.js')),
+      .filter((filePath) => filePath.endsWith('spec.js')),
   );
 
   // flatten
@@ -97,14 +98,14 @@ if (specFilters.length) {
   }
 
   const CE_FILES = filteredSpecFiles.filter((file) => !file.startsWith('ee'));
-  createContext(CE_FILES, /[^e]{2}[\\\/]spec[\\\/]javascripts$/, 'spec/javascripts');
+  createContext(CE_FILES, /[^e]{2}[\\/]spec[\\/]javascripts$/, 'spec/javascripts');
 
   const EE_FILES = filteredSpecFiles.filter((file) => file.startsWith('ee'));
-  createContext(EE_FILES, /ee[\\\/]spec[\\\/]javascripts$/, 'ee/spec/javascripts');
+  createContext(EE_FILES, /ee[\\/]spec[\\/]javascripts$/, 'ee/spec/javascripts');
 }
 
 // Karma configuration
-module.exports = function (config) {
+module.exports = (config) => {
   process.env.TZ = 'Etc/UTC';
 
   const fixturesPath = `tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;

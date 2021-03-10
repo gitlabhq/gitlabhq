@@ -2,7 +2,7 @@
  * Returns true if the given module is required from eslint
  */
 const isESLint = (mod) => {
-  let parent = mod.parent;
+  let { parent } = mod;
 
   while (parent) {
     if (parent.filename && parent.filename.includes('/eslint')) {

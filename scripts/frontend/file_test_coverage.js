@@ -31,28 +31,6 @@ let numTestFiles = 0;
 
 const isVerbose = process.argv.some((arg) => arg === '-v');
 
-const countSourceFiles = (path) =>
-  forEachFileIn(path, (fileName) => {
-    if (fileName.endsWith('.vue') || fileName.endsWith('.js')) {
-      if (isVerbose) {
-        console.log(`source file: ${fileName}`);
-      }
-
-      numSourceFiles += 1;
-    }
-  });
-
-const countTestFiles = (path) =>
-  forEachFileIn(path, (fileName) => {
-    if (fileName.endsWith('_spec.js')) {
-      if (isVerbose) {
-        console.log(`test file: ${fileName}`);
-      }
-
-      numTestFiles += 1;
-    }
-  });
-
 function forEachFileIn(dirPath, callback) {
   fs.readdir(dirPath, (err, files) => {
     if (err) {
@@ -74,6 +52,28 @@ function forEachFileIn(dirPath, callback) {
     });
   });
 }
+
+const countSourceFiles = (currentPath) =>
+  forEachFileIn(currentPath, (fileName) => {
+    if (fileName.endsWith('.vue') || fileName.endsWith('.js')) {
+      if (isVerbose) {
+        console.log(`source file: ${fileName}`);
+      }
+
+      numSourceFiles += 1;
+    }
+  });
+
+const countTestFiles = (currentPath) =>
+  forEachFileIn(currentPath, (fileName) => {
+    if (fileName.endsWith('_spec.js')) {
+      if (isVerbose) {
+        console.log(`test file: ${fileName}`);
+      }
+
+      numTestFiles += 1;
+    }
+  });
 
 console.log(`Source directories: ${sourceDirectories.join(', ')}`);
 console.log(`Test directories: ${testDirectories.join(', ')}`);

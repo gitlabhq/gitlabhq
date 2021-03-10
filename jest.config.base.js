@@ -27,7 +27,7 @@ module.exports = (path) => {
   // workaround for eslint-import-resolver-jest only resolving in test files
   // see https://github.com/JoinColony/eslint-import-resolver-jest#note
   if (isESLint(module)) {
-    testMatch = testMatch.map((path) => path.replace('_spec.js', ''));
+    testMatch = testMatch.map((modulePath) => modulePath.replace('_spec.js', ''));
   }
 
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';

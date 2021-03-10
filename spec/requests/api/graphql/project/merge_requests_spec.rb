@@ -381,29 +381,41 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
 
     context 'when sorting by merged_at DESC' do
+      let(:sort_param) { :MERGED_AT_DESC }
+      let(:expected_results) do
+        [
+          merge_request_b,
+          merge_request_d,
+          merge_request_c,
+          merge_request_e,
+          merge_request_a
+        ].map { |mr| global_id_of(mr) }
+      end
+
+      before do
+        five_days_ago = 5.days.ago
+
+        merge_request_d.metrics.update!(merged_at: five_days_ago)
+
+        # same merged_at, the second order column will decide (merge_request.id)
+        merge_request_c.metrics.update!(merged_at: five_days_ago)
+
+        merge_request_b.metrics.update!(merged_at: 1.day.ago)
+      end
+
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param) { :MERGED_AT_DESC }
         let(:first_param) { 2 }
+      end
 
-        let(:expected_results) do
-          [
-            merge_request_b,
-            merge_request_d,
-            merge_request_c,
-            merge_request_e,
-            merge_request_a
-          ].map { |mr| global_id_of(mr) }
-        end
+      context 'when last parameter is given' do
+        let(:params) { graphql_args(sort: sort_param, last: 2) }
+        let(:page_info) { nil }
 
-        before do
-          five_days_ago = 5.days.ago
+        it 'takes the last 2 records' do
+          query = pagination_query(params)
+          post_graphql(query, current_user: current_user)
 
-          merge_request_d.metrics.update!(merged_at: five_days_ago)
-
-          # same merged_at, the second order column will decide (merge_request.id)
-          merge_request_c.metrics.update!(merged_at: five_days_ago)
-
-          merge_request_b.metrics.update!(merged_at: 1.day.ago)
+          expect(results.map { |item| item["id"] }).to eq(expected_results.last(2))
         end
       end
     end
