@@ -2512,8 +2512,3 @@ Style/HashTransformation:
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/import_export/project_tree_expectations.rb'
     - 'spec/support/shared_contexts/services/projects/container_repository/delete_tags_service_shared_context.rb'
-
-Style/ClassEqualityComparison:
-  Exclude:
-    - spec/lib/peek/views/active_record_spec.rb
-    - ee/spec/lib/peek/views/active_record_spec.rb

@@ -11,8 +11,8 @@ import {
   statusIcon,
   recentFailuresTextBuilder,
 } from '../store/utils';
+import GroupedIssuesList from './grouped_issues_list.vue';
 import { componentNames } from './issue_body';
-import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
 import ReportSection from './report_section.vue';
 import SummaryRow from './summary_row.vue';
@@ -23,7 +23,7 @@ export default {
   components: {
     ReportSection,
     SummaryRow,
-    IssuesList,
+    GroupedIssuesList,
     Modal,
     GlButton,
     GlIcon,
@@ -112,10 +112,12 @@ export default {
       );
     },
     unresolvedIssues(report) {
-      return report.existing_failures.concat(report.existing_errors);
-    },
-    newIssues(report) {
-      return report.new_failures.concat(report.new_errors);
+      return [
+        ...report.new_failures,
+        ...report.new_errors,
+        ...report.existing_failures,
+        ...report.existing_errors,
+      ];
     },
     resolvedIssues(report) {
       return report.resolved_failures.concat(report.resolved_errors);
@@ -178,11 +180,10 @@ export default {
               </div>
             </template>
           </summary-row>
-          <issues-list
+          <grouped-issues-list
             v-if="shouldRenderIssuesList(report)"
             :key="`issues-list-${i}`"
             :unresolved-issues="unresolvedIssues(report)"
-            :new-issues="newIssues(report)"
             :resolved-issues="resolvedIssues(report)"
             :component="$options.componentNames.TestIssueBody"
             :nested-level="2"

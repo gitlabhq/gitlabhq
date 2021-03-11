@@ -1017,7 +1017,7 @@ issue.
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
-### Restoring only one or a few project(s) or group(s) from a backup
+### Restoring only one or a few projects or groups from a backup
 
 Although the Rake task used to restore a GitLab instance doesn't support
 restoring a single project or group, you can use a workaround by restoring

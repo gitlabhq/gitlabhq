@@ -4,11 +4,11 @@ import { __ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import eventHub from '../../event_hub';
+import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelineUrl from './pipeline_url.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
 import PipelinesManualActionsComponent from './pipelines_manual_actions.vue';
-import PipelineStage from './stage.vue';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {
@@ -24,7 +24,7 @@ export default {
     PipelinesManualActionsComponent,
     PipelinesArtifactsComponent,
     CommitComponent,
-    PipelineStage,
+    PipelineMiniGraph,
     PipelineUrl,
     PipelineTriggerer,
     CiBadge,
@@ -134,6 +134,9 @@ export default {
     pipelineStatus() {
       return this.pipeline?.details?.status ?? {};
     },
+    hasStages() {
+      return this.pipeline?.details?.stages?.length > 0;
+    },
     displayPipelineActions() {
       return (
         this.pipeline.flags.retryable ||
@@ -208,20 +211,12 @@ export default {
     <div class="table-section section-wrap section-15 stage-cell">
       <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Stages') }}</div>
       <div class="table-mobile-content">
-        <template v-if="pipeline.details.stages.length > 0">
-          <div
-            v-for="(stage, index) in pipeline.details.stages"
-            :key="index"
-            class="stage-container dropdown"
-            data-testid="widget-mini-pipeline-graph"
-          >
-            <pipeline-stage
-              :stage="stage"
-              :update-dropdown="updateGraphDropdown"
-              @pipelineActionRequestComplete="handlePipelineActionRequestComplete"
-            />
-          </div>
-        </template>
+        <pipeline-mini-graph
+          v-if="hasStages"
+          :stages="pipeline.details.stages"
+          :update-dropdown="updateGraphDropdown"
+          @pipelineActionRequestComplete="handlePipelineActionRequestComplete"
+        />
       </div>
     </div>
 

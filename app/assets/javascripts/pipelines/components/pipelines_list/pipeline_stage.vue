@@ -11,6 +11,7 @@
  * 3. Merge request widget
  * 4. Commit widget
  */
+
 import { GlDropdown, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';

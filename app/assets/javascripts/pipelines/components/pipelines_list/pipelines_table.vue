@@ -3,6 +3,7 @@ import { GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
+import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineOperations from './pipeline_operations.vue';
 import PipelineStopModal from './pipeline_stop_modal.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
@@ -10,7 +11,6 @@ import PipelineUrl from './pipeline_url.vue';
 import PipelinesCommit from './pipelines_commit.vue';
 import PipelinesStatusBadge from './pipelines_status_badge.vue';
 import PipelinesTableRowComponent from './pipelines_table_row.vue';
-import PipelineStage from './stage.vue';
 import PipelinesTimeago from './time_ago.vue';
 
 const DEFAULT_TD_CLASS = 'gl-p-5!';
@@ -79,8 +79,8 @@ export default {
   components: {
     GlTable,
     PipelinesCommit,
+    PipelineMiniGraph,
     PipelineOperations,
-    PipelineStage,
     PipelinesStatusBadge,
     PipelineStopModal,
     PipelinesTableRowComponent,
@@ -140,6 +140,9 @@ export default {
     onSubmit() {
       eventHub.$emit('postAction', this.endpoint);
       this.cancelingPipeline = this.pipelineId;
+    },
+    onPipelineActionRequestComplete() {
+      eventHub.$emit('refreshPipelinesTable');
     },
   },
 };
@@ -215,21 +218,14 @@ export default {
 
       <template #cell(stages)="{ item }">
         <div class="stage-cell">
+          <!-- This empty div should be removed, see https://gitlab.com/gitlab-org/gitlab/-/issues/323488 -->
           <div></div>
-          <template v-if="item.details.stages.length > 0">
-            <div
-              v-for="(stage, index) in item.details.stages"
-              :key="index"
-              class="stage-container dropdown"
-              data-testid="widget-mini-pipeline-graph"
-            >
-              <pipeline-stage
-                :type="$options.pipelinesTable"
-                :stage="stage"
-                :update-dropdown="updateGraphDropdown"
-              />
-            </div>
-          </template>
+          <pipeline-mini-graph
+            v-if="item.details && item.details.stages && item.details.stages.length > 0"
+            :stages="item.details.stages"
+            :update-dropdown="updateGraphDropdown"
+            @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+          />
         </div>
       </template>
 

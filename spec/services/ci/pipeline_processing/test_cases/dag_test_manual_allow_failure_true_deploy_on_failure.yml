@@ -13,13 +13,13 @@ config:
 
 init:
   expect:
-    pipeline: created
+    pipeline: skipped
     stages:
       test: skipped
-      deploy: created
+      deploy: skipped
     jobs:
       test: manual
-      deploy: created
+      deploy: skipped
 
 transitions:
   - event: enqueue
@@ -28,10 +28,10 @@ transitions:
       pipeline: pending
       stages:
         test: pending
-        deploy: created
+        deploy: skipped
       jobs:
         test: pending
-        deploy: created
+        deploy: skipped
 
   - event: drop
     jobs: [test]
@@ -43,6 +43,3 @@ transitions:
       jobs:
         test: failed
         deploy: skipped
-
-# TODO: should we run `deploy`?
-# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Peek::Views::ActiveRecord, :request_store do
-  subject { Peek.views.find { |v| v.class.name == Peek::Views::ActiveRecord.name } }
+  subject { Peek.views.find { |v| v.instance_of?(Peek::Views::ActiveRecord) } }
 
   let(:connection) { double(:connection) }
 

@@ -2,9 +2,9 @@ import { GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import StageComponent from '~/pipelines/components/pipelines_list/stage.vue';
+import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
-import { stageReply } from './mock_data';
+import { stageReply } from '../../mock_data';
 
 const dropdownPath = 'path.json';
 
@@ -13,7 +13,7 @@ describe('Pipelines stage component', () => {
   let mock;
 
   const createComponent = (props = {}) => {
-    wrapper = mount(StageComponent, {
+    wrapper = mount(PipelineStage, {
       attachTo: document.body,
       propsData: {
         stage: {

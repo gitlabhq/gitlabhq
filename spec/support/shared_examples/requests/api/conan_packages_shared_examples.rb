@@ -1,61 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'conan ping endpoint' do
-  it 'responds with 401 Unauthorized when no token provided' do
+  it 'responds with 200 OK when no token provided' do
     get api(url)
 
-    expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it 'responds with 200 OK when valid token is provided' do
-    jwt = build_jwt(personal_access_token)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
     expect(response).to have_gitlab_http_status(:ok)
     expect(response.headers['X-Conan-Server-Capabilities']).to eq("")
-  end
-
-  it 'responds with 200 OK when valid job token is provided' do
-    jwt = build_jwt_from_job(job)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(response.headers['X-Conan-Server-Capabilities']).to eq("")
-  end
-
-  it 'responds with 200 OK when valid deploy token is provided' do
-    jwt = build_jwt_from_deploy_token(deploy_token)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(response.headers['X-Conan-Server-Capabilities']).to eq("")
-  end
-
-  it 'responds with 401 Unauthorized when invalid access token ID is provided' do
-    jwt = build_jwt(double(id: 12345), user_id: personal_access_token.user_id)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it 'responds with 401 Unauthorized when invalid user is provided' do
-    jwt = build_jwt(personal_access_token, user_id: 12345)
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it 'responds with 401 Unauthorized when the provided JWT is signed with different secret' do
-    jwt = build_jwt(personal_access_token, secret: SecureRandom.base64(32))
-    get api(url), headers: build_token_auth_header(jwt.encoded)
-
-    expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it 'responds with 401 Unauthorized when invalid JWT is provided' do
-    get api(url), headers: build_token_auth_header('invalid-jwt')
-
-    expect(response).to have_gitlab_http_status(:unauthorized)
   end
 
   context 'packages feature disabled' do
@@ -72,7 +22,10 @@ RSpec.shared_examples 'conan search endpoint' do
   before do
     project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
 
-    get api(url), headers: headers, params: params
+    # Do not pass the HTTP_AUTHORIZATION header,
+    # in order to test that this public project's packages
+    # are visible to anonymous search.
+    get api(url), params: params
   end
 
   subject { json_response['results'] }
@@ -107,6 +60,33 @@ RSpec.shared_examples 'conan authenticate endpoint' do
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
+  end
+
+  it 'responds with 401 Unauthorized when an invalid access token ID is provided' do
+    jwt = build_jwt(double(id: 12345), user_id: personal_access_token.user_id)
+    get api(url), headers: build_token_auth_header(jwt.encoded)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  it 'responds with 401 Unauthorized when invalid user is provided' do
+    jwt = build_jwt(personal_access_token, user_id: 12345)
+    get api(url), headers: build_token_auth_header(jwt.encoded)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  it 'responds with 401 Unauthorized when the provided JWT is signed with different secret' do
+    jwt = build_jwt(personal_access_token, secret: SecureRandom.base64(32))
+    get api(url), headers: build_token_auth_header(jwt.encoded)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  it 'responds with 401 UnauthorizedOK when invalid JWT is provided' do
+    get api(url), headers: build_token_auth_header('invalid-jwt')
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
   end
 
   context 'when valid JWT access token is provided' do
@@ -507,19 +487,37 @@ RSpec.shared_examples 'delete package endpoint' do
   end
 end
 
+RSpec.shared_examples 'allows download with no token' do
+  context 'with no private token' do
+    let(:headers) { {} }
+
+    it 'returns 200' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+end
+
 RSpec.shared_examples 'denies download with no token' do
   context 'with no private token' do
     let(:headers) { {} }
 
-    it 'returns 400' do
+    it 'returns 404' do
       subject
 
-      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end
 
 RSpec.shared_examples 'a public project with packages' do
+  before do
+    project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+  end
+
+  it_behaves_like 'allows download with no token'
+
   it 'returns the file' do
     subject
 

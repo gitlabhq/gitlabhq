@@ -138,7 +138,7 @@ module Ci
     end
 
     def latest_stage_status
-      statuses.latest.composite_status || 'skipped'
+      statuses.latest.composite_status(project: project) || 'skipped'
     end
   end
 end

@@ -14,6 +14,12 @@ export default {
       required: false,
       default: '',
     },
+    nestedLevel: {
+      type: Number,
+      required: false,
+      default: 0,
+      validator: (value) => [0, 1, 2].includes(value),
+    },
     resolvedIssues: {
       type: Array,
       required: false,
@@ -58,6 +64,12 @@ export default {
 
       return groupsCount + issuesCount;
     },
+    listClasses() {
+      return {
+        'gl-pl-7': this.nestedLevel === 1,
+        'gl-pl-9': this.nestedLevel === 2,
+      };
+    },
   },
 };
 </script>
@@ -67,6 +79,7 @@ export default {
     :length="listLength"
     :remain="$options.maxShownReportItems"
     :size="$options.typicalReportItemHeight"
+    :class="listClasses"
     class="report-block-container"
     wtag="ul"
     wclass="report-block-list"

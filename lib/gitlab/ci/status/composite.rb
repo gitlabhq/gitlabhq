@@ -7,7 +7,10 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         # This class accepts an array of arrays/hashes/or objects
-        def initialize(all_statuses, with_allow_failure: true, dag: false)
+        #
+        # The parameter `project` is only used for the feature flag check, and will be removed with
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/321972
+        def initialize(all_statuses, with_allow_failure: true, dag: false, project: nil)
           unless all_statuses.respond_to?(:pluck)
             raise ArgumentError, "all_statuses needs to respond to `.pluck`"
           end
@@ -16,6 +19,7 @@ module Gitlab
           @status_key = 0
           @allow_failure_key = 1 if with_allow_failure
           @dag = dag
+          @project = project
 
           consume_all_statuses(all_statuses)
         end
@@ -32,7 +36,7 @@ module Gitlab
           return if none?
 
           strong_memoize(:status) do
-            if @dag && any_of?(:skipped)
+            if @dag && any_skipped_or_ignored?
               # The DAG job is skipped if one of the needs does not run at all.
               'skipped'
             elsif @dag && !only_of?(:success, :failed, :canceled, :skipped, :success_with_warnings)
@@ -88,6 +92,14 @@ module Gitlab
           matching = names.count { |name| @status_set.include?(name) }
           matching > 0 &&
             matching == @status_set.size
+        end
+
+        def any_skipped_or_ignored?
+          if ::Feature.enabled?(:ci_fix_pipeline_status_for_dag_needs_manual, @project, default_enabled: :yaml)
+            any_of?(:skipped) || any_of?(:ignored)
+          else
+            any_of?(:skipped)
+          end
         end
 
         def consume_all_statuses(all_statuses)

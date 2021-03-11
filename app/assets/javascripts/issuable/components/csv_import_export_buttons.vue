@@ -60,11 +60,13 @@ export default {
         v-gl-tooltip.hover="__('Export as CSV')"
         v-gl-modal="exportModalId"
         icon="export"
+        data-qa-selector="export_as_csv_button"
         data-testid="export-csv-button"
       />
       <gl-dropdown
         v-if="showImportButton"
         v-gl-tooltip.hover="__('Import issues')"
+        data-qa-selector="import_issues_dropdown"
         data-testid="import-csv-dropdown"
         icon="import"
       >

@@ -897,10 +897,24 @@ RSpec.describe Namespace do
       it { expect(namespace.all_projects.to_a).to match_array([project2, project1]) }
       it { expect(child.all_projects.to_a).to match_array([project2]) }
 
-      it 'queries for the namespace and its descendants' do
-        expect(Project).to receive(:where).with(namespace: [namespace, child])
+      context 'when recursive_namespace_lookup_as_inner_join feature flag is on' do
+        before do
+          stub_feature_flags(recursive_namespace_lookup_as_inner_join: true)
+        end
 
-        namespace.all_projects
+        it 'queries for the namespace and its descendants' do
+          expect(namespace.all_projects).to match_array([project1, project2])
+        end
+      end
+
+      context 'when recursive_namespace_lookup_as_inner_join feature flag is off' do
+        before do
+          stub_feature_flags(recursive_namespace_lookup_as_inner_join: false)
+        end
+
+        it 'queries for the namespace and its descendants' do
+          expect(namespace.all_projects).to match_array([project1, project2])
+        end
       end
     end
 

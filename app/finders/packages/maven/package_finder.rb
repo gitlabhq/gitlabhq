@@ -59,9 +59,8 @@ module Packages
 
       # Returns the projects that the current user can view within a group.
       def projects_visible_to_current_user
-        ::Project
-          .in_namespace(group.self_and_descendants.select(:id))
-          .public_or_visible_to_user(current_user)
+        group.all_projects
+             .public_or_visible_to_user(current_user)
       end
     end
   end

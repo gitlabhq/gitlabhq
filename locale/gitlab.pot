@@ -9326,8 +9326,10 @@ msgstr ""
 msgid "CycleAnalytics|Show"
 msgstr ""
 
-msgid "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} labels"
-msgstr ""
+msgid "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} label"
+msgid_plural "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} labels"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{startDate} to %{endDate}"
 msgstr ""
@@ -24560,6 +24562,15 @@ msgstr ""
 msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
 msgstr ""
 
+msgid "ProtectedBranch|Allow force push"
+msgstr ""
+
+msgid "ProtectedBranch|Allow force push for all users with push access."
+msgstr ""
+
+msgid "ProtectedBranch|Allow force push:"
+msgstr ""
+
 msgid "ProtectedBranch|Allowed to merge"
 msgstr ""
 
@@ -24600,6 +24611,9 @@ msgid "ProtectedBranch|Require approval from code owners:"
 msgstr ""
 
 msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."
+msgstr ""
+
+msgid "ProtectedBranch|Toggle allow force push"
 msgstr ""
 
 msgid "ProtectedBranch|Toggle code owner approval"
@@ -30683,6 +30697,9 @@ msgid "This group, its subgroups and projects will be removed on %{date} since i
 msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
+msgstr ""
+
+msgid "This is a Jira user."
 msgstr ""
 
 msgid "This is a Premium feature"

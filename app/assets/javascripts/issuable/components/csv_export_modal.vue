@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <gl-modal :modal-id="modalId" body-class="gl-p-0!">
+  <gl-modal :modal-id="modalId" body-class="gl-p-0!" data-qa-selector="export_issuable_modal">
     <template #modal-title>
       <gl-sprintf :message="__('Export %{name}')">
         <template #name>{{ issuableName }}</template>

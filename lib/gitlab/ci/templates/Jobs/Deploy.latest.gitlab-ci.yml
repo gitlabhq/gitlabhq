@@ -152,7 +152,7 @@ production_manual:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CANARY_ENABLED'
       when: manual
 
-# This job implements incremental rollout on for every push to `master`.
+# This job implements incremental rollout on for every push to the default branch.
 
 .rollout: &rollout_template
   extends: .auto-deploy

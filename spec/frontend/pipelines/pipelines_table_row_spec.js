@@ -147,15 +147,22 @@ describe('Pipelines Table Row', () => {
   });
 
   describe('stages column', () => {
-    beforeEach(() => {
-      wrapper = createWrapper(pipeline);
-    });
+    const findAllMiniPipelineStages = () =>
+      wrapper.findAll('.table-section:nth-child(5) [data-testid="mini-pipeline-graph-dropdown"]');
 
     it('should render an icon for each stage', () => {
-      const stages = wrapper.findAll(
-        '.table-section:nth-child(5) [data-testid="mini-pipeline-graph-dropdown"]',
-      );
-      expect(stages).toHaveLength(pipeline.details.stages.length);
+      wrapper = createWrapper(pipeline);
+
+      expect(findAllMiniPipelineStages()).toHaveLength(pipeline.details.stages.length);
+    });
+
+    it('should not render stages when stages are empty', () => {
+      const withoutStages = { ...pipeline };
+      withoutStages.details = { ...withoutStages.details, stages: null };
+
+      wrapper = createWrapper(withoutStages);
+
+      expect(findAllMiniPipelineStages()).toHaveLength(0);
     });
   });
 

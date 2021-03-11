@@ -9,7 +9,7 @@ module Gitlab
       # https://github.com/mperham/sidekiq/wiki/Best-Practices#1-make-your-job-parameters-small-and-simple
       class Client
         def call(worker_class, job, queue, _redis_pool)
-          Validator.validate!(worker_class, job)
+          ::Gitlab::SidekiqMiddleware::SizeLimiter::Validator.validate!(worker_class, job)
 
           yield
         end

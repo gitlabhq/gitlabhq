@@ -280,3 +280,6 @@ Dangerfile @gl-quality/eng-prod
 
 [Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
+
+[Workhorse]
+/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao 

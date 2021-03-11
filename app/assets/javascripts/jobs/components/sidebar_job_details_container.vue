@@ -73,7 +73,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="shouldRenderBlock" class="block">
+  <div v-if="shouldRenderBlock">
     <detail-row v-if="job.duration" :value="duration" title="Duration" />
     <detail-row
       v-if="job.finished_at"

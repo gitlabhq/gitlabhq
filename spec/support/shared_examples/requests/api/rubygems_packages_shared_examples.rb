@@ -128,3 +128,50 @@ RSpec.shared_examples 'process rubygems upload' do |user_type, status, add_membe
     end
   end
 end
+
+RSpec.shared_examples 'dependency endpoint success' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    raise 'Status is not :success' if status != :success
+
+    context 'with no params', :aggregate_failures do
+      it 'returns empty' do
+        subject
+
+        expect(response.body).to eq('200')
+        expect(response).to have_gitlab_http_status(status)
+      end
+    end
+
+    context 'with gems params' do
+      let(:params) { { gems: 'foo,bar' } }
+      let(:expected_response) { Marshal.dump(%w(result result)) }
+
+      it 'returns successfully', :aggregate_failures do
+        service_result = double('DependencyResolverService', execute: ServiceResponse.success(payload: 'result'))
+
+        expect(Packages::Rubygems::DependencyResolverService).to receive(:new).with(project, anything, gem_name: 'foo').and_return(service_result)
+        expect(Packages::Rubygems::DependencyResolverService).to receive(:new).with(project, anything, gem_name: 'bar').and_return(service_result)
+
+        subject
+
+        expect(response.body).to eq(expected_response) # rubocop:disable Security/MarshalLoad
+        expect(response).to have_gitlab_http_status(status)
+      end
+
+      it 'rejects if the service fails', :aggregate_failures do
+        service_result = double('DependencyResolverService', execute: ServiceResponse.error(message: 'rejected', http_status: :bad_request))
+
+        expect(Packages::Rubygems::DependencyResolverService).to receive(:new).with(project, anything, gem_name: 'foo').and_return(service_result)
+
+        subject
+
+        expect(response.body).to match(/rejected/)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+end

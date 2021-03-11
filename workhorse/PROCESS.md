@@ -31,6 +31,10 @@ The final merge must be performed by a maintainer.
 
 ## Releases
 
+> Below we describe the legacy release process, from when Workhorse
+> had its own repository. These instructions are still useful for
+> security backports.
+
 New versions of Workhorse can be released by one of the Workhorse
 maintainers. The release process is:
 

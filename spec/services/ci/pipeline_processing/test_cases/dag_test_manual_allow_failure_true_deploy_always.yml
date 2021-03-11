@@ -13,15 +13,12 @@ config:
 
 init:
   expect:
-    pipeline: created
+    pipeline: pending
     stages:
       test: skipped
-      deploy: created
+      deploy: pending
     jobs:
       test: manual
-      deploy: created
+      deploy: pending
 
 transitions: []
-
-# TODO: should we run `deploy`?
-# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

@@ -14,6 +14,7 @@ export default class ProtectedBranchEdit {
     this.$wrap = options.$wrap;
     this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
     this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+    this.$forcePushToggle = this.$wrap.find('.js-force-push-toggle');
     this.$codeOwnerToggle = this.$wrap.find('.js-code-owner-toggle');
 
     this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(
@@ -28,9 +29,21 @@ export default class ProtectedBranchEdit {
   }
 
   bindEvents() {
+    this.$forcePushToggle.on('click', this.onForcePushToggleClick.bind(this));
     if (this.hasLicense) {
       this.$codeOwnerToggle.on('click', this.onCodeOwnerToggleClick.bind(this));
     }
+  }
+
+  onForcePushToggleClick() {
+    this.$forcePushToggle.toggleClass('is-checked');
+    this.$forcePushToggle.prop('disabled', true);
+
+    const formData = {
+      allow_force_push: this.$forcePushToggle.hasClass('is-checked'),
+    };
+
+    this.updateProtectedBranch(formData, () => this.$forcePushToggle.prop('disabled', false));
   }
 
   onCodeOwnerToggleClick() {
@@ -41,17 +54,15 @@ export default class ProtectedBranchEdit {
       code_owner_approval_required: this.$codeOwnerToggle.hasClass('is-checked'),
     };
 
-    this.updateCodeOwnerApproval(formData);
+    this.updateProtectedBranch(formData, () => this.$codeOwnerToggle.prop('disabled', false));
   }
 
-  updateCodeOwnerApproval(formData) {
+  updateProtectedBranch(formData, callback) {
     axios
       .patch(this.$wrap.data('url'), {
         protected_branch: formData,
       })
-      .then(() => {
-        this.$codeOwnerToggle.prop('disabled', false);
-      })
+      .then(callback)
       .catch(() => {
         flash(__('Failed to update branch!'));
       });

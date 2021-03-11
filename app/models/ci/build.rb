@@ -486,6 +486,10 @@ module Ci
       self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
     end
 
+    def environment_deployment_tier
+      self.options.dig(:environment, :deployment_tier) if self.options
+    end
+
     def outdated_deployment?
       success? && !deployment.try(:last?)
     end

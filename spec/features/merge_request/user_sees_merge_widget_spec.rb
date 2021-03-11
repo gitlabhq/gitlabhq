@@ -651,7 +651,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
             within(".js-report-section-container") do
               expect(page).to have_content('rspec found 1 failed out of 1 total test')
               expect(page).to have_content('junit found no changed test results out of 1 total test')
-              expect(page).not_to have_content('New')
               expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary')
             end
           end
@@ -792,7 +791,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
             within(".js-report-section-container") do
               expect(page).to have_content('rspec found 1 error out of 1 total test')
               expect(page).to have_content('junit found no changed test results out of 1 total test')
-              expect(page).not_to have_content('New')
               expect(page).to have_content('Test#sum when a is 4 and b is 4 returns summary')
             end
           end

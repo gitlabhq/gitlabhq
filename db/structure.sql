@@ -16676,7 +16676,8 @@ CREATE TABLE protected_branches (
     name character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    code_owner_approval_required boolean DEFAULT false NOT NULL
+    code_owner_approval_required boolean DEFAULT false NOT NULL,
+    allow_force_push boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE protected_branches_id_seq

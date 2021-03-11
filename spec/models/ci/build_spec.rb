@@ -1261,6 +1261,21 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#environment_deployment_tier' do
+    subject { build.environment_deployment_tier }
+
+    let(:build) { described_class.new(options: options) }
+    let(:options) { { environment: { deployment_tier: 'production' } } }
+
+    it { is_expected.to eq('production') }
+
+    context 'when options does not include deployment_tier' do
+      let(:options) { { environment: { name: 'production' } } }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'deployment' do
     describe '#outdated_deployment?' do
       subject { build.outdated_deployment? }

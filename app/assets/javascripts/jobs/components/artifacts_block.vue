@@ -37,7 +37,7 @@ export default {
 };
 </script>
 <template>
-  <div class="block">
+  <div>
     <div class="title gl-font-weight-bold">{{ s__('Job|Job artifacts') }}</div>
     <p
       v-if="isExpired || willExpire"

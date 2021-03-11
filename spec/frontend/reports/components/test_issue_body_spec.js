@@ -1,72 +1,97 @@
-import Vue from 'vue';
-import { trimText } from 'helpers/text_helper';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
-import component from '~/reports/components/test_issue_body.vue';
-import createStore from '~/reports/store';
-import { issue } from '../mock_data/mock_data';
+import { GlBadge, GlButton } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
+import TestIssueBody from '~/reports/components/test_issue_body.vue';
+import { failedIssue, successIssue } from '../mock_data/mock_data';
 
-describe('Test Issue body', () => {
-  let vm;
-  const Component = Vue.extend(component);
-  const store = createStore();
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-  const commonProps = {
-    issue,
-    status: 'failed',
+describe('Test issue body', () => {
+  let wrapper;
+  let store;
+
+  const findDescription = () => wrapper.findByTestId('test-issue-body-description');
+  const findStatusIcon = () => wrapper.findComponent(IssueStatusIcon);
+  const findBadge = () => wrapper.findComponent(GlBadge);
+
+  const actionSpies = {
+    openModal: jest.fn(),
+  };
+
+  const createComponent = ({ issue = failedIssue } = {}) => {
+    store = new Vuex.Store({
+      actions: actionSpies,
+    });
+
+    wrapper = extendedWrapper(
+      shallowMount(TestIssueBody, {
+        store,
+        localVue,
+        propsData: {
+          issue,
+        },
+        stubs: {
+          GlBadge,
+          GlButton,
+          IssueStatusIcon,
+        },
+      }),
+    );
   };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  describe('on click', () => {
+  describe('when issue has failed status', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders issue name', () => {
+      expect(findDescription().text()).toBe(failedIssue.name);
+    });
+
+    it('renders failed status icon', () => {
+      expect(findStatusIcon().props('status')).toBe('failed');
+    });
+
+    describe('when issue has recent failures', () => {
+      it('renders recent failures badge', () => {
+        expect(findBadge().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('when issue has success status', () => {
+    beforeEach(() => {
+      createComponent({ issue: successIssue });
+    });
+
+    it('does not render recent failures', () => {
+      expect(findBadge().exists()).toBe(false);
+    });
+
+    it('renders issue name', () => {
+      expect(findDescription().text()).toBe(successIssue.name);
+    });
+
+    it('renders success status icon', () => {
+      expect(findStatusIcon().props('status')).toBe('success');
+    });
+  });
+
+  describe('when clicking on an issue', () => {
     it('calls openModal action', () => {
-      vm = mountComponentWithStore(Component, {
-        store,
-        props: commonProps,
+      createComponent();
+      wrapper.findComponent(GlButton).trigger('click');
+
+      expect(actionSpies.openModal).toHaveBeenCalledWith(expect.any(Object), {
+        issue: failedIssue,
       });
-
-      jest.spyOn(vm, 'openModal').mockImplementation(() => {});
-
-      vm.$el.querySelector('button').click();
-
-      expect(vm.openModal).toHaveBeenCalledWith({
-        issue: commonProps.issue,
-      });
-    });
-  });
-
-  describe('is new', () => {
-    beforeEach(() => {
-      vm = mountComponentWithStore(Component, {
-        store,
-        props: { ...commonProps, isNew: true },
-      });
-    });
-
-    it('renders issue name', () => {
-      expect(vm.$el.textContent).toContain(commonProps.issue.name);
-    });
-
-    it('renders new badge', () => {
-      expect(trimText(vm.$el.querySelector('.badge').textContent)).toEqual('New');
-    });
-  });
-
-  describe('not new', () => {
-    beforeEach(() => {
-      vm = mountComponentWithStore(Component, {
-        store,
-        props: commonProps,
-      });
-    });
-
-    it('renders issue name', () => {
-      expect(vm.$el.textContent).toContain(commonProps.issue.name);
-    });
-
-    it('does not renders new badge', () => {
-      expect(vm.$el.querySelector('.badge')).toEqual(null);
     });
   });
 });

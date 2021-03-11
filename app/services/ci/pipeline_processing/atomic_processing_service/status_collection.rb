@@ -78,7 +78,7 @@ module Ci
 
         def status_for_array(statuses, dag:)
           result = Gitlab::Ci::Status::Composite
-            .new(statuses, dag: dag)
+            .new(statuses, dag: dag, project: pipeline.project)
             .status
           result || 'success'
         end

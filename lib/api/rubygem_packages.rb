@@ -26,7 +26,7 @@ module API
 
     before do
       require_packages_enabled!
-      authenticate!
+      authenticate_non_get!
       not_found! unless Feature.enabled?(:rubygem_packages, user_project)
     end
 
@@ -118,11 +118,24 @@ module API
             detail 'This feature was introduced in GitLab 13.9'
           end
           params do
-            optional :gems, type: String, desc: 'Comma delimited gem names'
+            optional :gems, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma delimited gem names'
           end
           get 'dependencies' do
-            # To be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/299282
-            not_found!
+            authorize_read_package!
+
+            if params[:gems].blank?
+              status :ok
+            else
+              results = params[:gems].map do |gem_name|
+                service_result = Packages::Rubygems::DependencyResolverService.new(user_project, current_user, gem_name: gem_name).execute
+                render_api_error!(service_result.message, service_result.http_status) if service_result.error?
+
+                service_result.payload
+              end
+
+              content_type 'application/octet-stream'
+              Marshal.dump(results.flatten)
+            end
           end
         end
       end
