@@ -57,7 +57,7 @@ RSpec.describe 'Project group variables', :js do
 
     wait_for_requests
 
-    page.within('.ci-variable-table') do
+    page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:nth-child(1) [data-label="Key"]').text).to eq(key1)
     end
   end

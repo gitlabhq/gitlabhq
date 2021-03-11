@@ -234,6 +234,12 @@ control over how the Pages daemon runs and serves content in your environment.
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
 | `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10s). |
 | `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30s). |
+| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600s). |
+| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: 60s). |
+| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: 60s). |
+| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30s). |
+| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1s). |
+| `gitlab_retrieval_retries`              | The maximum number of times to retry to resolve a domain's configuration via the API (default: 3). |
 | `domain_config_source`                  | Domain configuration source (default: `auto`) |
 | `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
@@ -791,6 +797,44 @@ gitlab_pages['domain_config_source'] = "disk"
 
 For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
 or report an issue.
+
+### GitLab API cache configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/520) in GitLab 13.10.
+
+API-based configuration uses a caching mechanism to improve performance and reliability of serving Pages.
+The cache behavior can be modified by changing the cache settings, however, the recommended values are set for you and should only be modified if needed.
+Incorrect configuration of these values may result in intermittent
+or persistent errors, or the Pages Daemon serving old content.
+
+NOTE:
+Expiry, interval and timeout flags use [Golang's duration formatting](https://golang.org/pkg/time/#ParseDuration).
+A duration string is a possibly signed sequence of decimal numbers,
+each with optional fraction and a unit suffix, such as "300ms", "1.5h" or "2h45m". 
+Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+Examples:
+
+- Increasing `gitlab_cache_expiry` will allow items to exist in the cache longer.
+This setting might be useful if the communication between GitLab Pages and GitLab Rails
+is not stable.
+
+- Increasing `gitlab_cache_refresh` will reduce the frequency at which GitLab Pages
+requests a domain's configuration from GitLab Rails. This setting might be useful
+GitLab Pages generates too many requests to GitLab API and content does not change frequently.
+
+- Decreasing `gitlab_cache_cleanup` will remove expired items from the cache more frequently,
+reducing the memory usage of your Pages node.
+
+- Decreasing `gitlab_retrieval_timeout` allows you to stop the request to GitLab Rails
+more quickly. Increasing it will allow more time to receive a response from the API,
+useful in slow networking environments.
+
+- Decreasing `gitlab_retrieval_interval` will make requests to the API more frequently,
+only when there is an error response from the API, for example a connection timeout.
+
+- Decreasing `gitlab_retrieval_retries` will reduce the number of times a domain's
+configuration is tried to be resolved automatically before reporting an error.
 
 ## Using object storage
 

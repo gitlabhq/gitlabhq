@@ -113,31 +113,31 @@ export function formatIssueInput(issueInput, boardConfig) {
   };
 }
 
-export function moveIssueListHelper(issue, fromList, toList) {
-  const updatedIssue = issue;
+export function moveItemListHelper(item, fromList, toList) {
+  const updatedItem = item;
   if (
     toList.listType === ListType.label &&
-    !updatedIssue.labels.find((label) => label.id === toList.label.id)
+    !updatedItem.labels.find((label) => label.id === toList.label.id)
   ) {
-    updatedIssue.labels.push(toList.label);
+    updatedItem.labels.push(toList.label);
   }
   if (fromList?.label && fromList.listType === ListType.label) {
-    updatedIssue.labels = updatedIssue.labels.filter((label) => fromList.label.id !== label.id);
+    updatedItem.labels = updatedItem.labels.filter((label) => fromList.label.id !== label.id);
   }
 
   if (
     toList.listType === ListType.assignee &&
-    !updatedIssue.assignees.find((assignee) => assignee.id === toList.assignee.id)
+    !updatedItem.assignees.find((assignee) => assignee.id === toList.assignee.id)
   ) {
-    updatedIssue.assignees.push(toList.assignee);
+    updatedItem.assignees.push(toList.assignee);
   }
   if (fromList?.assignee && fromList.listType === ListType.assignee) {
-    updatedIssue.assignees = updatedIssue.assignees.filter(
+    updatedItem.assignees = updatedItem.assignees.filter(
       (assignee) => assignee.id !== fromList.assignee.id,
     );
   }
 
-  return updatedIssue;
+  return updatedItem;
 }
 
 export function isListDraggable(list) {

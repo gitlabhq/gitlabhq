@@ -24,11 +24,20 @@ export default {
       default: '',
     },
   },
+  model: {
+    prop: 'visible',
+    event: 'change',
+  },
   props: {
     modalId: {
       type: String,
       required: false,
       default: 'custom-notifications-modal',
+    },
+    visible: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -95,9 +104,11 @@ export default {
 <template>
   <gl-modal
     ref="modal"
+    :visible="visible"
     :modal-id="modalId"
     :title="$options.i18n.customNotificationsModal.title"
     @show="onOpen"
+    v-on="$listeners"
   >
     <div class="container-fluid">
       <div class="row">

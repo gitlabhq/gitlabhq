@@ -1,0 +1,161 @@
+import { shallowMount } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
+import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
+
+describe('CsvImportExportButtons', () => {
+  let wrapper;
+  let glModalDirective;
+
+  function createComponent(injectedProperties = {}) {
+    glModalDirective = jest.fn();
+    return extendedWrapper(
+      shallowMount(CsvImportExportButtons, {
+        directives: {
+          GlTooltip: createMockDirective(),
+          glModal: {
+            bind(_, { value }) {
+              glModalDirective(value);
+            },
+          },
+        },
+        provide: {
+          ...injectedProperties,
+        },
+      }),
+    );
+  }
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  const findExportCsvButton = () => wrapper.findByTestId('export-csv-button');
+  const findImportDropdown = () => wrapper.findByTestId('import-csv-dropdown');
+  const findImportCsvButton = () => wrapper.findByTestId('import-csv-dropdown');
+  const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
+  const findExportCsvModal = () => wrapper.findComponent(CsvExportModal);
+  const findImportCsvModal = () => wrapper.findComponent(CsvImportModal);
+
+  describe('template', () => {
+    describe('when the showExportButton=true', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ showExportButton: true });
+      });
+
+      it('displays the export button', () => {
+        expect(findExportCsvButton().exists()).toBe(true);
+      });
+
+      it('export button has a tooltip', () => {
+        const tooltip = getBinding(findExportCsvButton().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Export as CSV');
+      });
+
+      it('renders the export modal', () => {
+        expect(findExportCsvModal().exists()).toBe(true);
+      });
+
+      it('opens the export modal', () => {
+        findExportCsvButton().trigger('click');
+
+        expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.exportModalId);
+      });
+    });
+
+    describe('when the showExportButton=false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ showExportButton: false });
+      });
+
+      it('does not display the export button', () => {
+        expect(findExportCsvButton().exists()).toBe(false);
+      });
+
+      it('does not render the export modal', () => {
+        expect(findExportCsvModal().exists()).toBe(false);
+      });
+    });
+
+    describe('when the showImportButton=true', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ showImportButton: true });
+      });
+
+      it('displays the import dropdown', () => {
+        expect(findImportDropdown().exists()).toBe(true);
+      });
+
+      it('renders the import button', () => {
+        expect(findImportCsvButton().exists()).toBe(true);
+      });
+
+      it('import button has a tooltip', () => {
+        const tooltip = getBinding(findImportDropdown().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Import issues');
+      });
+
+      it('renders the import modal', () => {
+        expect(findImportCsvModal().exists()).toBe(true);
+      });
+
+      it('opens the import modal', () => {
+        findImportCsvButton().trigger('click');
+
+        expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.importModalId);
+      });
+
+      describe('import from jira link', () => {
+        const projectImportJiraPath = 'gitlab-org/gitlab-test/-/import/jira';
+
+        beforeEach(() => {
+          wrapper = createComponent({
+            showImportButton: true,
+            canEdit: true,
+            projectImportJiraPath,
+          });
+        });
+
+        describe('when canEdit=true', () => {
+          it('renders the import dropdown item', () => {
+            expect(findImportFromJiraLink().exists()).toBe(true);
+          });
+
+          it('passes the proper path to the link', () => {
+            expect(findImportFromJiraLink().attributes('href')).toBe(projectImportJiraPath);
+          });
+        });
+
+        describe('when canEdit=false', () => {
+          beforeEach(() => {
+            wrapper = createComponent({ showImportButton: true, canEdit: false });
+          });
+
+          it('does not render the import dropdown item', () => {
+            expect(findImportFromJiraLink().exists()).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe('when the showImportButton=false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ showImportButton: false });
+      });
+
+      it('does not display the import dropdown', () => {
+        expect(findImportDropdown().exists()).toBe(false);
+      });
+
+      it('does not render the import modal', () => {
+        expect(findImportCsvModal().exists()).toBe(false);
+      });
+    });
+  });
+});

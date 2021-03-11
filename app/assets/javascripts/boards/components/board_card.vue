@@ -13,7 +13,7 @@ export default {
       default: () => ({}),
       required: false,
     },
-    issue: {
+    item: {
       type: Object,
       default: () => ({}),
       required: false,
@@ -33,12 +33,12 @@ export default {
     ...mapState(['selectedBoardItems', 'activeId']),
     ...mapGetters(['isSwimlanesOn']),
     isActive() {
-      return this.issue.id === this.activeId;
+      return this.item.id === this.activeId;
     },
     multiSelectVisible() {
       return (
         !this.activeId &&
-        this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.issue.id) > -1
+        this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.item.id) > -1
       );
     },
   },
@@ -50,9 +50,9 @@ export default {
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
       if (isMultiSelect) {
-        this.toggleBoardItemMultiSelection(this.issue);
+        this.toggleBoardItemMultiSelection(this.item);
       } else {
-        this.toggleBoardItem({ boardItem: this.issue });
+        this.toggleBoardItem({ boardItem: this.item });
       }
     },
   },
@@ -64,18 +64,18 @@ export default {
     data-qa-selector="board_card"
     :class="{
       'multi-select': multiSelectVisible,
-      'user-can-drag': !disabled && issue.id,
-      'is-disabled': disabled || !issue.id,
+      'user-can-drag': !disabled && item.id,
+      'is-disabled': disabled || !item.id,
       'is-active': isActive,
     }"
     :index="index"
-    :data-issue-id="issue.id"
-    :data-issue-iid="issue.iid"
-    :data-issue-path="issue.referencePath"
+    :data-item-id="item.id"
+    :data-item-iid="item.iid"
+    :data-item-path="item.referencePath"
     data-testid="board_card"
     class="board-card gl-p-5 gl-rounded-base"
     @mouseup="toggleIssue($event)"
   >
-    <board-card-inner :list="list" :item="issue" :update-filters="true" />
+    <board-card-inner :list="list" :item="item" :update-filters="true" />
   </li>
 </template>

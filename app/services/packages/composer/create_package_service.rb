@@ -17,6 +17,8 @@ module Packages
           })
         end
 
+        ::Packages::Composer::CacheUpdateWorker.perform_async(created_package.project_id, created_package.name, nil)
+
         created_package
       end
 

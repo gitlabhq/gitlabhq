@@ -125,7 +125,7 @@ describe('Board list component', () => {
     });
 
     it('sets data attribute with issue id', () => {
-      expect(wrapper.find('.board-card').attributes('data-issue-id')).toBe('1');
+      expect(wrapper.find('.board-card').attributes('data-item-id')).toBe('1');
     });
 
     it('shows new issue form', async () => {
@@ -258,7 +258,7 @@ describe('Board list component', () => {
 
     describe('handleDragOnEnd', () => {
       it('removes class `is-dragging` from document body', () => {
-        jest.spyOn(wrapper.vm, 'moveIssue').mockImplementation(() => {});
+        jest.spyOn(wrapper.vm, 'moveItem').mockImplementation(() => {});
         document.body.classList.add('is-dragging');
 
         findByTestId('tree-root-wrapper').vm.$emit('end', {
@@ -266,9 +266,9 @@ describe('Board list component', () => {
           newIndex: 0,
           item: {
             dataset: {
-              issueId: mockIssues[0].id,
-              issueIid: mockIssues[0].iid,
-              issuePath: mockIssues[0].referencePath,
+              itemId: mockIssues[0].id,
+              itemIid: mockIssues[0].iid,
+              itemPath: mockIssues[0].referencePath,
             },
           },
           to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },

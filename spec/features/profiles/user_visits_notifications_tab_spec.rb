@@ -15,17 +15,17 @@ RSpec.describe 'User visits the notifications tab', :js do
   it 'changes the project notifications setting' do
     expect(page).to have_content('Notifications')
 
-    first('[data-testid="notification-button"]').click
+    first('[data-testid="notification-dropdown"]').click
     click_button('On mention')
 
-    expect(page).to have_selector('[data-testid="notification-button"]', text: 'On mention')
+    expect(page).to have_selector('[data-testid="notification-dropdown"]', text: 'On mention')
   end
 
   context 'when project emails are disabled' do
     let(:project) { create(:project, emails_disabled: true) }
 
     it 'notification button is disabled' do
-      expect(page).to have_selector('[data-testid="notification-button"].disabled')
+      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled')
     end
   end
 end

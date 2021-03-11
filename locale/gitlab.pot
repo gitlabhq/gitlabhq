@@ -1171,6 +1171,16 @@ msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 issue selected"
+msgid_plural "%d issues selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 merge request selected"
+msgid_plural "%d merge request selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 merged merge request"
 msgid_plural "%{merge_requests} merged merge requests"
 msgstr[0] ""
@@ -3977,6 +3987,12 @@ msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Are you sure you want to lock %{path}?"
+msgstr ""
+
+msgid "Are you sure you want to lock this directory?"
+msgstr ""
+
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
@@ -4035,6 +4051,12 @@ msgid "Are you sure you want to stop this environment?"
 msgstr ""
 
 msgid "Are you sure you want to unlock %{path_lock_path}?"
+msgstr ""
+
+msgid "Are you sure you want to unlock %{path}?"
+msgstr ""
+
+msgid "Are you sure you want to unlock this directory?"
 msgstr ""
 
 msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
@@ -4848,6 +4870,9 @@ msgid "Boards|An error occurred while fetching the board swimlanes. Please reloa
 msgstr ""
 
 msgid "Boards|An error occurred while generating lists. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while moving the epic. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the issue. Please try again."
@@ -12422,6 +12447,9 @@ msgid "Explore public groups"
 msgstr ""
 
 msgid "Export"
+msgstr ""
+
+msgid "Export %{name}"
 msgstr ""
 
 msgid "Export %{requirementsCount} requirements?"

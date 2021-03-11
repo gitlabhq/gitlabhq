@@ -28,6 +28,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         let(:branch) { project.repository.find_branch('master') }
 
         it 'creates the package' do
+          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
+
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
@@ -54,6 +56,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it 'creates the package' do
+          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
+
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
@@ -80,6 +84,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         end
 
         it 'does not create a new package' do
+          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
+
           expect { subject }
             .to change { Packages::Package.composer.count }.by(0)
             .and change { Packages::Composer::Metadatum.count }.by(0)
@@ -101,6 +107,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         let!(:other_package) { create(:package, name: package_name, version: 'dev-master', project: other_project) }
 
         it 'creates the package' do
+          expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, nil)
+
           expect { subject }
             .to change { Packages::Package.composer.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)

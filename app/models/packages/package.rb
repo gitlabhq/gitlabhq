@@ -132,6 +132,8 @@ class Packages::Package < ApplicationRecord
   scope :order_project_path_desc, -> { joins(:project).reorder('projects.path DESC, id DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
+  after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
+
   def self.for_projects(projects)
     return none unless projects.any?
 
@@ -231,6 +233,12 @@ class Packages::Package < ApplicationRecord
   end
 
   private
+
+  def update_composer_cache
+    return unless composer?
+
+    ::Packages::Composer::CacheUpdateWorker.perform_async(project_id, name, composer_metadatum.version_cache_sha) # rubocop:disable CodeReuse/Worker
+  end
 
   def composer_tag_version?
     composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)

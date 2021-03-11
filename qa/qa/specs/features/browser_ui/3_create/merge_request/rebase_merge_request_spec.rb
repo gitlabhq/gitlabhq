@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/30226', type: :bug } do
+  RSpec.describe 'Create', quarantine: { only: { subdomain: :staging }, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/323990', type: :flaky } do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1274' do
         Flow::Login.sign_in
@@ -34,7 +34,7 @@ module QA
 
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_content('Needs rebasing')
-          expect(merge_request).not_to be_fast_forward_possible
+          expect(merge_request).to be_fast_forward_not_possible
           expect(merge_request).not_to have_merge_button
 
           merge_request.rebase!

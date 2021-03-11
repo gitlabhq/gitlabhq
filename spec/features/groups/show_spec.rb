@@ -170,14 +170,14 @@ RSpec.describe 'Group show page' do
     it 'is enabled by default' do
       visit path
 
-      expect(page).to have_selector('[data-testid="notification-button"]:not(.disabled)')
+      expect(page).to have_selector('[data-testid="notification-dropdown"] button:not(.disabled)')
     end
 
     it 'is disabled if emails are disabled' do
       group.update_attribute(:emails_disabled, true)
       visit path
 
-      expect(page).to have_selector('[data-testid="notification-button"].disabled')
+      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled')
     end
   end
 

@@ -10,7 +10,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
   end
 
   def click_notifications_button
-    first('[data-testid="notification-button"]').click
+    first('[data-testid="notification-dropdown"]').click
   end
 
   it 'changes the notification setting' do
@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
 
     click_notifications_button
 
-    page.within first('[data-testid="notification-button"]') do
+    page.within first('[data-testid="notification-dropdown"]') do
       expect(page.find('.gl-new-dropdown-item.is-active')).to have_content('On mention')
       expect(page).to have_css('[data-testid="notifications-icon"]')
     end
@@ -33,7 +33,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     click_notifications_button
     click_button 'Disabled'
 
-    page.within first('[data-testid="notification-button"]') do
+    page.within first('[data-testid="notification-dropdown"]') do
       expect(page).to have_css('[data-testid="notifications-off-icon"]')
     end
   end
@@ -80,7 +80,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
 
     it 'is disabled' do
       visit project_path(project)
-      expect(page).to have_selector('[data-testid="notification-button"].disabled', visible: true)
+      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled', visible: true)
     end
   end
 end

@@ -240,6 +240,8 @@
   - 1
 - - package_repositories
   - 1
+- - packages_composer_cache_update
+  - 1
 - - pages
   - 1
 - - pages_domain_ssl_renewal

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
@@ -49,7 +49,6 @@ export default {
   },
   computed: {
     ...mapState(['pageInfoByListId', 'listsFlags']),
-    ...mapGetters(['isEpicBoard']),
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} issues'), {
         pageSize: this.boardItems.length,
@@ -70,13 +69,13 @@ export default {
     },
     listRef() {
       // When  list is draggable, the reference to the list needs to be accessed differently
-      return this.canAdminList && !this.isEpicBoard ? this.$refs.list.$el : this.$refs.list;
+      return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllIssues() {
       return this.boardItems.length === this.list.issuesCount;
     },
     treeRootWrapper() {
-      return this.canAdminList && !this.isEpicBoard ? Draggable : 'ul';
+      return this.canAdminList ? Draggable : 'ul';
     },
     treeRootOptions() {
       const options = {
@@ -113,7 +112,7 @@ export default {
     this.listRef.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    ...mapActions(['fetchItemsForList', 'moveIssue']),
+    ...mapActions(['fetchItemsForList', 'moveItem']),
     listHeight() {
       return this.listRef.getBoundingClientRect().height;
     },
@@ -149,40 +148,40 @@ export default {
     handleDragOnEnd(params) {
       sortableEnd();
       const { newIndex, oldIndex, from, to, item } = params;
-      const { issueId, issueIid, issuePath } = item.dataset;
+      const { itemId, itemIid, itemPath } = item.dataset;
       const { children } = to;
       let moveBeforeId;
       let moveAfterId;
 
-      const getIssueId = (el) => Number(el.dataset.issueId);
+      const getItemId = (el) => Number(el.dataset.itemId);
 
-      // If issue is being moved within the same list
+      // If item is being moved within the same list
       if (from === to) {
         if (newIndex > oldIndex && children.length > 1) {
-          // If issue is being moved down we look for the issue that ends up before
-          moveBeforeId = getIssueId(children[newIndex]);
+          // If item is being moved down we look for the item that ends up before
+          moveBeforeId = getItemId(children[newIndex]);
         } else if (newIndex < oldIndex && children.length > 1) {
-          // If issue is being moved up we look for the issue that ends up after
-          moveAfterId = getIssueId(children[newIndex]);
+          // If item is being moved up we look for the item that ends up after
+          moveAfterId = getItemId(children[newIndex]);
         } else {
-          // If issue remains in the same list at the same position we do nothing
+          // If item remains in the same list at the same position we do nothing
           return;
         }
       } else {
-        // We look for the issue that ends up before the moved issue if it exists
+        // We look for the item that ends up before the moved item if it exists
         if (children[newIndex - 1]) {
-          moveBeforeId = getIssueId(children[newIndex - 1]);
+          moveBeforeId = getItemId(children[newIndex - 1]);
         }
-        // We look for the issue that ends up after the moved issue if it exists
+        // We look for the item that ends up after the moved item if it exists
         if (children[newIndex]) {
-          moveAfterId = getIssueId(children[newIndex]);
+          moveAfterId = getItemId(children[newIndex]);
         }
       }
 
-      this.moveIssue({
-        issueId,
-        issueIid,
-        issuePath,
+      this.moveItem({
+        itemId,
+        itemIid,
+        itemPath,
         fromListId: from.dataset.listId,
         toListId: to.dataset.listId,
         moveBeforeId,
@@ -227,7 +226,7 @@ export default {
         :key="item.id"
         :index="index"
         :list="list"
-        :issue="item"
+        :item="item"
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">

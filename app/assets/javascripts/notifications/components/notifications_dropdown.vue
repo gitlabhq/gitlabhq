@@ -1,12 +1,5 @@
 <script>
-import {
-  GlButtonGroup,
-  GlButton,
-  GlDropdown,
-  GlDropdownDivider,
-  GlTooltipDirective,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownDivider, GlTooltipDirective } from '@gitlab/ui';
 import Api from '~/api';
 import { sprintf } from '~/locale';
 import { CUSTOM_LEVEL, i18n } from '../constants';
@@ -16,8 +9,6 @@ import NotificationsDropdownItem from './notifications_dropdown_item.vue';
 export default {
   name: 'NotificationsDropdown',
   components: {
-    GlButtonGroup,
-    GlButton,
     GlDropdown,
     GlDropdownDivider,
     NotificationsDropdownItem,
@@ -25,7 +16,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    'gl-modal': GlModalDirective,
   },
   inject: {
     containerClass: {
@@ -57,6 +47,7 @@ export default {
     return {
       selectedNotificationLevel: this.initialNotificationLevel,
       isLoading: false,
+      notificationsModalVisible: false,
     };
   },
   computed: {
@@ -95,6 +86,11 @@ export default {
     },
   },
   methods: {
+    openNotificationsModal() {
+      if (this.isCustomNotification) {
+        this.notificationsModalVisible = true;
+      }
+    },
     selectItem(level) {
       if (level !== this.selectedNotificationLevel) {
         this.updateNotificationLevel(level);
@@ -106,10 +102,7 @@ export default {
       try {
         await Api.updateNotificationSettings(this.projectId, this.groupId, { level });
         this.selectedNotificationLevel = level;
-
-        if (level === CUSTOM_LEVEL) {
-          this.$refs.customNotificationsModal.open();
-        }
+        this.openNotificationsModal();
       } catch (error) {
         this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage, { type: 'error' });
       } finally {
@@ -125,54 +118,16 @@ export default {
 
 <template>
   <div :class="containerClass">
-    <gl-button-group
-      v-if="isCustomNotification"
-      v-gl-tooltip="{ title: buttonTooltip }"
-      data-testid="notification-button"
-      :class="{ disabled: disabled }"
-      :size="buttonSize"
-    >
-      <gl-button
-        v-gl-modal="$options.modalId"
-        :size="buttonSize"
-        :icon="buttonIcon"
-        :loading="isLoading"
-        :disabled="disabled"
-      >
-        <template v-if="buttonText">{{ buttonText }}</template>
-      </gl-button>
-      <gl-dropdown :size="buttonSize" :disabled="disabled">
-        <notifications-dropdown-item
-          v-for="item in notificationLevels"
-          :key="item.level"
-          :level="item.level"
-          :title="item.title"
-          :description="item.description"
-          :notification-level="selectedNotificationLevel"
-          @item-selected="selectItem"
-        />
-        <gl-dropdown-divider />
-        <notifications-dropdown-item
-          :key="$options.customLevel"
-          :level="$options.customLevel"
-          :title="$options.i18n.notificationTitles.custom"
-          :description="$options.i18n.notificationDescriptions.custom"
-          :notification-level="selectedNotificationLevel"
-          @item-selected="selectItem"
-        />
-      </gl-dropdown>
-    </gl-button-group>
-
     <gl-dropdown
-      v-else
       v-gl-tooltip="{ title: buttonTooltip }"
-      data-testid="notification-button"
-      :text="buttonText"
+      data-testid="notification-dropdown"
+      :size="buttonSize"
       :icon="buttonIcon"
       :loading="isLoading"
-      :size="buttonSize"
       :disabled="disabled"
-      :class="{ disabled: disabled }"
+      :split="isCustomNotification"
+      :text="buttonText"
+      @click="openNotificationsModal"
     >
       <notifications-dropdown-item
         v-for="item in notificationLevels"
@@ -193,6 +148,6 @@ export default {
         @item-selected="selectItem"
       />
     </gl-dropdown>
-    <custom-notifications-modal ref="customNotificationsModal" :modal-id="$options.modalId" />
+    <custom-notifications-modal v-model="notificationsModalVisible" :modal-id="$options.modalId" />
   </div>
 </template>

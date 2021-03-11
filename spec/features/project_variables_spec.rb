@@ -32,7 +32,7 @@ RSpec.describe 'Project variables', :js do
 
     wait_for_requests
 
-    page.within('.ci-variable-table') do
+    page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
     end
   end

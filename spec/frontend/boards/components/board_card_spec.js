@@ -6,7 +6,7 @@ import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
 import { mockLabelList, mockIssue } from '../mock_data';
 
-describe('Board card layout', () => {
+describe('Board card', () => {
   let wrapper;
   let store;
   let mockActions;
@@ -44,7 +44,7 @@ describe('Board card layout', () => {
       store,
       propsData: {
         list: mockLabelList,
-        issue: mockIssue,
+        item: mockIssue,
         disabled: false,
         index: 0,
         ...propsData,
@@ -113,7 +113,7 @@ describe('Board card layout', () => {
       expect(wrapper.classes()).not.toContain('is-active');
     });
 
-    describe('when mouseup event is called on the issue card', () => {
+    describe('when mouseup event is called on the card', () => {
       beforeEach(() => {
         createStore({ isSwimlanesOn });
         mountComponent();

@@ -2,7 +2,8 @@ import { pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
-import { formatIssue, moveIssueListHelper } from '../boards_util';
+import { formatIssue, moveItemListHelper } from '../boards_util';
+import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
 
 const notImplemented = () => {
@@ -10,13 +11,21 @@ const notImplemented = () => {
   throw new Error('Not implemented!');
 };
 
-export const removeIssueFromList = ({ state, listId, issueId }) => {
-  Vue.set(state.boardItemsByListId, listId, pull(state.boardItemsByListId[listId], issueId));
+const updateListItemsCount = ({ state, listId, value }) => {
   const list = state.boardLists[listId];
-  Vue.set(state.boardLists, listId, { ...list, issuesCount: list.issuesCount - 1 });
+  if (state.issuableType === issuableTypes.epic) {
+    Vue.set(state.boardLists, listId, { ...list, epicsCount: list.epicsCount + value });
+  } else {
+    Vue.set(state.boardLists, listId, { ...list, issuesCount: list.issuesCount + value });
+  }
 };
 
-export const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
+export const removeItemFromList = ({ state, listId, itemId }) => {
+  Vue.set(state.boardItemsByListId, listId, pull(state.boardItemsByListId[listId], itemId));
+  updateListItemsCount({ state, listId, value: -1 });
+};
+
+export const addItemToList = ({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex }) => {
   const listIssues = state.boardItemsByListId[listId];
   let newIndex = atIndex || 0;
   if (moveBeforeId) {
@@ -24,10 +33,9 @@ export const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfter
   } else if (moveAfterId) {
     newIndex = listIssues.indexOf(moveAfterId);
   }
-  listIssues.splice(newIndex, 0, issueId);
+  listIssues.splice(newIndex, 0, itemId);
   Vue.set(state.boardItemsByListId, listId, listIssues);
-  const list = state.boardLists[listId];
-  Vue.set(state.boardLists, listId, { ...list, issuesCount: list.issuesCount + 1 });
+  updateListItemsCount({ state, listId, value: 1 });
 };
 
 export default {
@@ -182,11 +190,11 @@ export default {
     const fromList = state.boardLists[fromListId];
     const toList = state.boardLists[toListId];
 
-    const issue = moveIssueListHelper(originalIssue, fromList, toList);
+    const issue = moveItemListHelper(originalIssue, fromList, toList);
     Vue.set(state.boardItems, issue.id, issue);
 
-    removeIssueFromList({ state, listId: fromListId, issueId: issue.id });
-    addIssueToList({ state, listId: toListId, issueId: issue.id, moveBeforeId, moveAfterId });
+    removeItemFromList({ state, listId: fromListId, itemId: issue.id });
+    addItemToList({ state, listId: toListId, itemId: issue.id, moveBeforeId, moveAfterId });
   },
 
   [mutationTypes.MOVE_ISSUE_SUCCESS]: (state, { issue }) => {
@@ -200,11 +208,11 @@ export default {
   ) => {
     state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
     Vue.set(state.boardItems, originalIssue.id, originalIssue);
-    removeIssueFromList({ state, listId: toListId, issueId: originalIssue.id });
-    addIssueToList({
+    removeItemFromList({ state, listId: toListId, itemId: originalIssue.id });
+    addItemToList({
       state,
       listId: fromListId,
-      issueId: originalIssue.id,
+      itemId: originalIssue.id,
       atIndex: originalIndex,
     });
   },
@@ -226,10 +234,10 @@ export default {
   },
 
   [mutationTypes.ADD_ISSUE_TO_LIST]: (state, { list, issue, position }) => {
-    addIssueToList({
+    addItemToList({
       state,
       listId: list.id,
-      issueId: issue.id,
+      itemId: issue.id,
       atIndex: position,
     });
     Vue.set(state.boardItems, issue.id, issue);
@@ -237,11 +245,11 @@ export default {
 
   [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issueId }) => {
     state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
-    removeIssueFromList({ state, listId: list.id, issueId });
+    removeItemFromList({ state, listId: list.id, itemId: issueId });
   },
 
   [mutationTypes.REMOVE_ISSUE_FROM_LIST]: (state, { list, issue }) => {
-    removeIssueFromList({ state, listId: list.id, issueId: issue.id });
+    removeItemFromList({ state, listId: list.id, itemId: issue.id });
     Vue.delete(state.boardItems, issue.id);
   },
 

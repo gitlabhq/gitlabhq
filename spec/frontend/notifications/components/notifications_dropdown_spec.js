@@ -1,4 +1,4 @@
-import { GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -15,14 +15,10 @@ const mockToastShow = jest.fn();
 describe('NotificationsDropdown', () => {
   let wrapper;
   let mockAxios;
-  let glModalDirective;
 
   function createComponent(injectedProperties = {}) {
-    glModalDirective = jest.fn();
-
     return shallowMount(NotificationsDropdown, {
       stubs: {
-        GlButtonGroup,
         GlDropdown,
         GlDropdownItem,
         NotificationsDropdownItem,
@@ -30,11 +26,6 @@ describe('NotificationsDropdown', () => {
       },
       directives: {
         GlTooltip: createMockDirective(),
-        glModal: {
-          bind(_, { value }) {
-            glModalDirective(value);
-          },
-        },
       },
       provide: {
         dropdownItems: mockDropdownItems,
@@ -49,13 +40,12 @@ describe('NotificationsDropdown', () => {
     });
   }
 
-  const findButtonGroup = () => wrapper.find(GlButtonGroup);
-  const findButton = () => wrapper.find(GlButton);
   const findDropdown = () => wrapper.find(GlDropdown);
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findAllNotificationsDropdownItems = () => wrapper.findAll(NotificationsDropdownItem);
   const findDropdownItemAt = (index) =>
     findAllNotificationsDropdownItems().at(index).find(GlDropdownItem);
+  const findNotificationsModal = () => wrapper.find(CustomNotificationsModal);
 
   const clickDropdownItemAt = async (index) => {
     const dropdownItem = findDropdownItemAt(index);
@@ -83,8 +73,8 @@ describe('NotificationsDropdown', () => {
         });
       });
 
-      it('renders a button group', () => {
-        expect(findButtonGroup().exists()).toBe(true);
+      it('renders split dropdown', () => {
+        expect(findDropdown().props().split).toBe(true);
       });
 
       it('shows the button text when showLabel is true', () => {
@@ -93,7 +83,7 @@ describe('NotificationsDropdown', () => {
           showLabel: true,
         });
 
-        expect(findButton().text()).toBe('Custom');
+        expect(findDropdown().props().text).toBe('Custom');
       });
 
       it("doesn't show the button text when showLabel is false", () => {
@@ -102,7 +92,7 @@ describe('NotificationsDropdown', () => {
           showLabel: false,
         });
 
-        expect(findButton().text()).toBe('');
+        expect(findDropdown().props().text).toBe(null);
       });
 
       it('opens the modal when the user clicks the button', async () => {
@@ -113,9 +103,9 @@ describe('NotificationsDropdown', () => {
           initialNotificationLevel: 'custom',
         });
 
-        findButton().vm.$emit('click');
+        await findDropdown().vm.$emit('click');
 
-        expect(glModalDirective).toHaveBeenCalled();
+        expect(findNotificationsModal().props().visible).toBe(true);
       });
     });
 
@@ -126,8 +116,8 @@ describe('NotificationsDropdown', () => {
         });
       });
 
-      it('does not render a button group', () => {
-        expect(findButtonGroup().exists()).toBe(false);
+      it('renders unified dropdown', () => {
+        expect(findDropdown().props().split).toBe(false);
       });
 
       it('shows the button text when showLabel is true', () => {
@@ -162,7 +152,7 @@ describe('NotificationsDropdown', () => {
           initialNotificationLevel: level,
         });
 
-        const tooltipElement = findByTestId('notification-button');
+        const tooltipElement = findByTestId('notification-dropdown');
         const tooltip = getBinding(tooltipElement.element, 'gl-tooltip');
 
         expect(tooltip.value.title).toBe(`${tooltipTitlePrefix} - ${title}`);
@@ -264,11 +254,9 @@ describe('NotificationsDropdown', () => {
       mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
       wrapper = createComponent();
 
-      const mockModalShow = jest.spyOn(wrapper.vm.$refs.customNotificationsModal, 'open');
-
       await clickDropdownItemAt(5);
 
-      expect(mockModalShow).toHaveBeenCalled();
+      expect(findNotificationsModal().props().visible).toBe(true);
     });
   });
 });
