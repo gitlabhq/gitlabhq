@@ -1,3 +1,4 @@
+- add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?

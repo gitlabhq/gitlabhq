@@ -2,7 +2,9 @@
 /* eslint-disable vue/no-v-html */
 import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { groupBy } from 'lodash';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glEmojiTag } from '../../emoji';
 
 // Internal constant, specific to this component, used when no `currentUserId` is given
@@ -12,10 +14,12 @@ export default {
   components: {
     GlButton,
     GlIcon,
+    EmojiPicker,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     awards: {
       type: Array,
@@ -166,7 +170,25 @@ export default {
       <span class="js-counter">{{ awardList.list.length }}</span>
     </gl-button>
     <div v-if="canAwardEmoji" class="award-menu-holder">
+      <emoji-picker
+        v-if="glFeatures.improvedEmojiPicker"
+        toggle-class="add-reaction-button gl-relative!"
+        @click="handleAward"
+      >
+        <template #button-content>
+          <span class="reaction-control-icon reaction-control-icon-neutral">
+            <gl-icon name="slight-smile" />
+          </span>
+          <span class="reaction-control-icon reaction-control-icon-positive">
+            <gl-icon name="smiley" />
+          </span>
+          <span class="reaction-control-icon reaction-control-icon-super-positive">
+            <gl-icon name="smile" />
+          </span>
+        </template>
+      </emoji-picker>
       <gl-button
+        v-else
         v-gl-tooltip.viewport
         :class="addButtonClass"
         class="add-reaction-button js-add-award"

@@ -135,11 +135,9 @@ RSpec.describe 'User interacts with awards' do
 
       it 'allows adding a new emoji' do
         page.within('.note-actions') do
-          find('.btn.js-add-award').click
+          find('.note-emoji-button').click
         end
-        page.within('.emoji-menu-content') do
-          find('gl-emoji[data-name="8ball"]').click
-        end
+        find('gl-emoji[data-name="8ball"]').click
         wait_for_requests
 
         page.within('.note-awards') do

@@ -24,6 +24,23 @@ RSpec.describe Emails::MergeRequests do
   let(:recipient) { assignee }
   let(:current_user_sanitized) { 'www_example_com' }
 
+  describe '#new_mention_in_merge_request_email' do
+    subject { Notify.new_mention_in_merge_request_email(recipient.id, merge_request.id, current_user.id) }
+
+    it 'has the correct subject and body' do
+      aggregate_failures do
+        is_expected.to have_referable_subject(merge_request, reply: true)
+        is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+        is_expected.to have_body_text('You have been mentioned in Merge Request')
+        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_text_part_content(reviewer.name)
+        is_expected.to have_html_part_content(assignee.name)
+        is_expected.to have_html_part_content(reviewer.name)
+      end
+    end
+  end
+
   describe '#merge_request_unmergeable_email' do
     subject { Notify.merge_request_unmergeable_email(recipient.id, merge_request.id) }
 

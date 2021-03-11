@@ -12,8 +12,17 @@ module Resolvers
       @requires_argument = true
     end
 
+    def self.calls_gitaly!
+      @calls_gitaly = true
+    end
+
     def self.field_options
-      super.merge(requires_argument: @requires_argument)
+      extra_options = {
+        requires_argument: @requires_argument,
+        calls_gitaly: @calls_gitaly
+      }.compact
+
+      super.merge(extra_options)
     end
 
     def self.singular_type

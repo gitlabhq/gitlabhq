@@ -205,6 +205,10 @@
     }
   }
 
+  .emoji-picker-category-active {
+    border-bottom-color: $active-tab-border;
+  }
+
   .branch-header-title {
     color: $border-and-box-shadow;
   }

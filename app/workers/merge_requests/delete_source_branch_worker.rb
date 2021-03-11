@@ -16,6 +16,9 @@ class MergeRequests::DeleteSourceBranchWorker
 
     ::Branches::DeleteService.new(merge_request.source_project, user)
       .execute(merge_request.source_branch)
+
+    ::MergeRequests::RetargetChainService.new(merge_request.source_project, user)
+      .execute(merge_request)
   rescue ActiveRecord::RecordNotFound
   end
 end

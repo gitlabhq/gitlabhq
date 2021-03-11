@@ -93,7 +93,7 @@ module Repositories
     end
 
     def revert_commit_sha(commit)
-      matches = commit.description.match(REVERT_REGEX)
+      matches = commit.description&.match(REVERT_REGEX)
 
       matches[:sha] if matches
     end

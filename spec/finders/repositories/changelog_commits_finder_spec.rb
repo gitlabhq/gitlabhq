@@ -64,4 +64,30 @@ RSpec.describe Repositories::ChangelogCommitsFinder do
       expect(commits.count).to eq(4)
     end
   end
+
+  describe '#revert_commit_sha' do
+    let(:finder) { described_class.new(project: project, from: 'a', to: 'b') }
+
+    it 'returns the SHA of a reverted commit' do
+      commit = double(
+        :commit,
+        description: 'This reverts commit 152c03af1b09f50fa4b567501032b106a3a81ff3.'
+      )
+
+      expect(finder.send(:revert_commit_sha, commit))
+        .to eq('152c03af1b09f50fa4b567501032b106a3a81ff3')
+    end
+
+    it 'returns nil when the commit is not a revert commit' do
+      commit = double(:commit, description: 'foo')
+
+      expect(finder.send(:revert_commit_sha, commit)).to be_nil
+    end
+
+    it 'returns nil when the commit has no description' do
+      commit = double(:commit, description: nil)
+
+      expect(finder.send(:revert_commit_sha, commit)).to be_nil
+    end
+  end
 end

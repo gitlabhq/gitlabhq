@@ -274,7 +274,9 @@
   // `position:absolute`
   &::after {
     content: '\a0';
+    display: block !important;
     width: 1em;
+    color: transparent;
   }
 
   .reaction-control-icon {

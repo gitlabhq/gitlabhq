@@ -8,6 +8,7 @@ module Resolvers
 
       type Types::Snippets::BlobType.connection_type, null: true
       authorize :read_snippet
+      calls_gitaly!
 
       alias_method :snippet, :object
 

@@ -9,16 +9,25 @@ module Types
 
     DEFAULT_COMPLEXITY = 1
 
-    def initialize(*args, **kwargs, &block)
+    def initialize(**kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
-      @constant_complexity = !!kwargs[:complexity]
+      @constant_complexity = kwargs[:complexity].is_a?(Integer) && kwargs[:complexity] > 0
       @requires_argument = !!kwargs.delete(:requires_argument)
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
       kwargs = gitlab_deprecation(kwargs)
 
-      super(*args, **kwargs, &block)
+      super(**kwargs, &block)
+
+      # We want to avoid the overhead of this in prod
+      extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
+
+      extension ::Gitlab::Graphql::Present::FieldExtension
+    end
+
+    def may_call_gitaly?
+      @constant_complexity || @calls_gitaly
     end
 
     def requires_argument?
@@ -54,8 +63,10 @@ module Types
     end
 
     def check_feature_flag(args)
-      args[:description] = feature_documentation_message(args[:feature_flag], args[:description]) if args[:feature_flag].present?
-      args.delete(:feature_flag)
+      ff = args.delete(:feature_flag)
+      return args unless ff.present?
+
+      args[:description] = feature_documentation_message(ff, args[:description])
 
       args
     end
@@ -78,7 +89,9 @@ module Types
       # items which can be loaded.
       proc do |ctx, args, child_complexity|
         # Resolvers may add extra complexity depending on used arguments
-        complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
+        complexity = child_complexity + resolver&.try(
+          :resolver_complexity, args, child_complexity: child_complexity
+        ).to_i
         complexity += 1 if calls_gitaly?
         complexity += complexity * connection_complexity_multiplier(ctx, args)
 
@@ -93,7 +106,7 @@ module Types
 
       page_size   = field_defn.connection_max_page_size || ctx.schema.default_max_page_size
       limit_value = [args[:first], args[:last], page_size].compact.min
-      multiplier  = self.resolver&.try(:complexity_multiplier, args).to_f
+      multiplier  = resolver&.try(:complexity_multiplier, args).to_f
       limit_value * multiplier
     end
   end

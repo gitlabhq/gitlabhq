@@ -13,6 +13,7 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker do
     context 'with a non-existing merge request' do
       it 'does nothing' do
         expect(::Branches::DeleteService).not_to receive(:new)
+        expect(::MergeRequests::RetargetChainService).not_to receive(:new)
 
         worker.perform(non_existing_record_id, sha, user.id)
       end
@@ -21,6 +22,7 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker do
     context 'with a non-existing user' do
       it 'does nothing' do
         expect(::Branches::DeleteService).not_to receive(:new)
+        expect(::MergeRequests::RetargetChainService).not_to receive(:new)
 
         worker.perform(merge_request.id, sha, non_existing_record_id)
       end
@@ -35,9 +37,18 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker do
         worker.perform(merge_request.id, sha, user.id)
       end
 
+      it 'calls service to try retarget merge requests' do
+        expect_next_instance_of(::MergeRequests::RetargetChainService) do |instance|
+          expect(instance).to receive(:execute).with(merge_request)
+        end
+
+        worker.perform(merge_request.id, sha, user.id)
+      end
+
       context 'source branch sha does not match' do
         it 'does nothing' do
           expect(::Branches::DeleteService).not_to receive(:new)
+          expect(::MergeRequests::RetargetChainService).not_to receive(:new)
 
           worker.perform(merge_request.id, 'new-source-branch-sha', user.id)
         end

@@ -1,0 +1,121 @@
+<script>
+import { GlIcon, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import VirtualList from 'vue-virtual-scroll-list';
+import { CATEGORY_NAMES } from '~/emoji';
+import { CATEGORY_ICON_MAP } from '../constants';
+import Category from './category.vue';
+import EmojiList from './emoji_list.vue';
+import { getEmojiCategories } from './utils';
+
+export default {
+  components: {
+    GlIcon,
+    GlDropdown,
+    GlSearchBoxByType,
+    VirtualList,
+    Category,
+    EmojiList,
+  },
+  props: {
+    toggleClass: {
+      type: [Array, String, Object],
+      required: false,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      currentCategory: null,
+      searchValue: '',
+    };
+  },
+  computed: {
+    categoryNames() {
+      return CATEGORY_NAMES.map((category) => ({
+        name: category,
+        icon: CATEGORY_ICON_MAP[category],
+      }));
+    },
+  },
+  methods: {
+    categoryAppeared(category) {
+      this.currentCategory = category;
+    },
+    async scrollToCategory(categoryName) {
+      const categories = await getEmojiCategories();
+      const { top } = categories[categoryName];
+
+      this.$refs.virtualScoller.setScrollTop(top);
+    },
+    selectEmoji(name) {
+      this.$emit('click', name);
+      this.$refs.dropdown.hide();
+    },
+    getBoundaryElement() {
+      return document.querySelector('.content-wrapper') || 'scrollParent';
+    },
+    onSearchInput() {
+      this.$refs.virtualScoller.setScrollTop(0);
+      this.$refs.virtualScoller.forceRender();
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="emoji-picker">
+    <gl-dropdown
+      ref="dropdown"
+      :toggle-class="toggleClass"
+      :boundary="getBoundaryElement()"
+      menu-class="dropdown-extended-height"
+      no-flip
+      right
+      lazy
+    >
+      <template #button-content><slot name="button-content"></slot></template>
+      <gl-search-box-by-type
+        v-model="searchValue"
+        class="gl-mx-5! gl-mb-2!"
+        autofocus
+        debounce="500"
+        @input="onSearchInput"
+      />
+      <div
+        v-show="!searchValue"
+        class="gl-display-flex gl-mx-5 gl-border-b-solid gl-border-gray-100 gl-border-b-1"
+      >
+        <button
+          v-for="category in categoryNames"
+          :key="category.name"
+          :class="{
+            'gl-text-black-normal! emoji-picker-category-active': category.name === currentCategory,
+          }"
+          type="button"
+          class="gl-border-0 gl-border-b-2 gl-border-b-solid gl-flex-fill-1 gl-text-gray-300 gl-pt-3 gl-pb-3 gl-bg-transparent emoji-picker-category-tab"
+          @click="scrollToCategory(category.name)"
+        >
+          <gl-icon :name="category.icon" :size="12" />
+        </button>
+      </div>
+      <emoji-list :search-value="searchValue">
+        <template #default="{ filteredCategories }">
+          <virtual-list ref="virtualScoller" :size="258" :remain="1" :bench="2" variable>
+            <div
+              v-for="(category, categoryKey) in filteredCategories"
+              :key="categoryKey"
+              :style="{ height: category.height + 'px' }"
+            >
+              <category
+                :category="categoryKey"
+                :emojis="category.emojis"
+                @appear="categoryAppeared"
+                @click="selectEmoji"
+              />
+            </div>
+          </virtual-list>
+        </template>
+      </emoji-list>
+    </gl-dropdown>
+  </div>
+</template>

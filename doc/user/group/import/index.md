@@ -57,6 +57,15 @@ The following resources are migrated to the target instance:
   - due date
   - created at
   - updated at
+- Iterations ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428))
+  - iid
+  - title
+  - description
+  - state (upcoming / started / closed)
+  - start date
+  - due date
+  - created at
+  - updated at
 
 Any other items are **not** migrated.
 

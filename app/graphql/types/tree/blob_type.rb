@@ -15,6 +15,7 @@ module Types
       field :web_path, GraphQL::STRING_TYPE, null: true,
             description: 'Web path of the blob.'
       field :lfs_oid, GraphQL::STRING_TYPE, null: true,
+            calls_gitaly: true,
             description: 'LFS ID of the blob.'
       field :mode, GraphQL::STRING_TYPE, null: true,
             description: 'Blob mode in numeric format.'
