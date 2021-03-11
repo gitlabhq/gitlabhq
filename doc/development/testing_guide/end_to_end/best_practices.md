@@ -309,10 +309,10 @@ This action can also unintentionally click other elements, altering the test sta
 # Clicking another element to blur an input
 def add_issue_to_epic(issue_url)
   find_element(:issue_actions_split_button).find('button', text: 'Add an issue').click
-  fill_element :add_issue_input, issue_url
+  fill_element(:add_issue_input, issue_url)
   # Clicking the title blurs the input
-  click_element :title
-  click_element :add_issue_button
+  click_element(:title)
+  click_element(:add_issue_button)
 end
 
 # Using native mouse click events in the case of a mask/overlay

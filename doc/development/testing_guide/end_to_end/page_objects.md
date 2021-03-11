@@ -201,7 +201,7 @@ We can select on that specific issue by matching on the Rails model.
 ```ruby
 class Page::Project::Issues::Index < Page::Base
   def has_issue?(issue)
-    has_element? :issue, issue_title: issue
+    has_element?(:issue, issue_title: issue)
   end
 end
 ```

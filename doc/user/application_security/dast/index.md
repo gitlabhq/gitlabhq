@@ -1170,7 +1170,7 @@ variables:
 ## Interacting with the vulnerabilities
 
 Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+[address the vulnerabilities](../index.md#addressing-vulnerabilities).
 
 ## Vulnerabilities database update
 

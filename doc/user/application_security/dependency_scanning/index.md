@@ -226,13 +226,13 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 ## Interacting with the vulnerabilities
 
 Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+[address the vulnerabilities](../index.md#addressing-vulnerabilities).
 
 ## Solutions for vulnerabilities (auto-remediation)
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates. Read more about the
-[solutions for vulnerabilities](../index.md#automatic-remediation-for-vulnerabilities).
+[solutions for vulnerabilities](../index.md#apply-an-automatic-remediation-for-a-vulnerability).
 
 ## Security Dashboard
 

@@ -19,7 +19,7 @@ E.g.:
 ```ruby
 def click_ci_cd_pipelines
   within_sidebar do
-    click_element :link_pipelines
+    click_element(:link_pipelines)
   end
 end
 ```

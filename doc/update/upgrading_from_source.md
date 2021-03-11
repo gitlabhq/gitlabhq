@@ -127,40 +127,29 @@ Git v2.28 is recommended.
 To check you are running the minimum required Git version, see
 [Git versions](../install/requirements.md#git-versions).
 
-In Debian or Ubuntu:
+From GitLab 13.6, we recommend you use the [Git version provided by
+Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
+that:
+
+- Is always at the version required by GitLab.
+- May contain custom patches required for proper operation.
 
 ```shell
-# Make sure Git is version 2.29.0 or higher
-git --version
-
-# Remove packaged Git
-sudo apt-get remove git-core
-
 # Install dependencies
-sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
+sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev libpcre2-dev build-essential
 
-# Download and compile pcre2 from source
-curl --silent --show-error --location "https://ftp.pcre.org/pub/pcre/pcre2-10.33.tar.gz" --output pcre2.tar.gz
-tar -xzf pcre2.tar.gz
-cd pcre2-10.33
-chmod +x configure
-./configure --prefix=/usr --enable-jit
-make
-make install
+# Clone the Gitaly repository
+git clone https://gitlab.com/gitlab-org/gitaly.git -b <X-Y-stable> /tmp/gitaly
 
-# Download and compile from source
-cd /tmp
-curl --remote-name --location --progress "https://www.kernel.org/pub/software/scm/git/git-2.29.0.tar.gz"
-echo 'fa08dc8424ef80c0f9bf307877f9e2e49f1a6049e873530d6747c2be770742ff  git-2.29.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.29.0.tar.gz
-cd git-2.29.0/
-./configure --with-libpcre
-make prefix=/usr/local all
-
-# Install into /usr/local/bin
-sudo make prefix=/usr/local install
-
-# You should edit config/gitlab.yml, change the git -> bin_path to /usr/local/bin/git
+# Compile and install Git
+cd /tmp/gitaly
+sudo make git GIT_PREFIX=/usr/local
 ```
+
+Replace `<X-Y-stable>` with the stable branch that matches the GitLab version you want to
+install. For example, if you want to install GitLab 13.6, use the branch name `13-6-stable`.
+
+Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`.
 
 ### 7. Update PostgreSQL
 
@@ -180,8 +169,7 @@ To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/d
 cd /home/git/gitlab
 
 sudo -u git -H git fetch --all --prune
-sudo -u git -H git checkout -- db/structure.sql # local changes will be restored automatically
-sudo -u git -H git checkout -- locale
+sudo -u git -H git checkout -- Gemfile.lock db/structure.sql locale
 ```
 
 For GitLab Community Edition:
@@ -202,55 +190,7 @@ cd /home/git/gitlab
 sudo -u git -H git checkout BRANCH-ee
 ```
 
-### 9. Update GitLab Shell
-
-```shell
-cd /home/git/gitlab-shell
-
-sudo -u git -H git fetch --all --tags --prune
-sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
-sudo -u git -H make build
-```
-
-### 10. Update GitLab Workhorse
-
-Install and compile GitLab Workhorse.
-
-```shell
-cd /home/git/gitlab
-
-sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
-```
-
-### 11. Update Gitaly
-
-#### Compile Gitaly
-
-```shell
-cd /home/git/gitaly
-sudo -u git -H git fetch --all --tags --prune
-sudo -u git -H git checkout v$(</home/git/gitlab/GITALY_SERVER_VERSION)
-sudo -u git -H make
-```
-
-### 12. Update GitLab Pages
-
-#### Only needed if you use GitLab Pages
-
-Install and compile GitLab Pages. GitLab Pages uses
-[GNU Make](https://www.gnu.org/software/make/).
-If you are not using Linux you may have to run `gmake` instead of
-`make` below.
-
-```shell
-cd /home/git/gitlab-pages
-
-sudo -u git -H git fetch --all --tags --prune
-sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
-sudo -u git -H make
-```
-
-### 13. Update configuration files
+### 9. Update configuration files
 
 #### New configuration options for `gitlab.yml`
 
@@ -323,12 +263,17 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 14. Install libraries, migrations, etc
+### 10. Install libraries, migrations, etc
 
 ```shell
 cd /home/git/gitlab
 
-sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
+# If you haven't done so during installation or a previous upgrade already
+sudo -u git -H bundle config set deployment 'true'
+sudo -u git -H bundle config set without 'development test mysql aws kerberos'
+
+# Update gems
+sudo -u git -H bundle install
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean
@@ -337,7 +282,6 @@ sudo -u git -H bundle clean
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
 # Compile GetText PO files
-
 sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 # Update node dependencies and recompile assets
@@ -345,6 +289,54 @@ sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:c
 
 # Clean up cache
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
+```
+
+### 11. Update GitLab Shell
+
+```shell
+cd /home/git/gitlab-shell
+
+sudo -u git -H git fetch --all --tags --prune
+sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
+sudo -u git -H make build
+```
+
+### 12. Update GitLab Workhorse
+
+Install and compile GitLab Workhorse.
+
+```shell
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+```
+
+### 13. Update Gitaly
+
+#### Compile Gitaly
+
+```shell
+cd /home/git/gitaly
+sudo -u git -H git fetch --all --tags --prune
+sudo -u git -H git checkout v$(</home/git/gitlab/GITALY_SERVER_VERSION)
+sudo -u git -H make
+```
+
+### 14. Update GitLab Pages
+
+#### Only needed if you use GitLab Pages
+
+Install and compile GitLab Pages. GitLab Pages uses
+[GNU Make](https://www.gnu.org/software/make/).
+If you are not using Linux you may have to run `gmake` instead of
+`make` below.
+
+```shell
+cd /home/git/gitlab-pages
+
+sudo -u git -H git fetch --all --tags --prune
+sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+sudo -u git -H make
 ```
 
 ### 15. Start application

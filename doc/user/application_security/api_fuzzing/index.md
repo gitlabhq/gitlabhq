@@ -944,7 +944,7 @@ pipelines. For more information, see the [Security Dashboard documentation](../s
 
 Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 Once a fault is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+[address the vulnerabilities](../index.md#addressing-vulnerabilities).
 
 ## Handling False Positives
 

@@ -123,4 +123,4 @@ Linked issues are shown in the Vulnerability Report and the vulnerability's page
 ## Automatically remediate the vulnerability
 
 You can fix some vulnerabilities by applying the solution that GitLab automatically
-generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#automatic-remediation-for-vulnerabilities).
+generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#apply-an-automatic-remediation-for-a-vulnerability).
