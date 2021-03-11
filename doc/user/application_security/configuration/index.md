@@ -68,11 +68,11 @@ This does not apply to GitLab Ultimate.
 To enable it:
 
 ```ruby
-Feature.enable(:secure_security_and_compliance_configuration_page_on_ce, Project.find(<project id>))
+Feature.enable(:secure_security_and_compliance_configuration_page_on_ce)
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:secure_security_and_compliance_configuration_page_on_ce, Project.find(<project id>))
+Feature.disable(:secure_security_and_compliance_configuration_page_on_ce)
 ```

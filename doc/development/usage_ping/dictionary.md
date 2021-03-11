@@ -9524,6 +9524,222 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_confidential_issue_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing an action on a confidential issue by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303152233_i_ecosystem_slack_service_confidential_issue_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_confidential_issue_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing an action on a confidential issue by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302104814_i_ecosystem_slack_service_confidential_issue_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_confidential_note_notification_monthly`
+
+Calculated unique users to trigger a Slack message by creating a confidential note by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303152144_i_ecosystem_slack_service_confidential_note_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_confidential_note_notification_weekly`
+
+Calculated unique users to trigger a Slack message by creating a confidential note by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302104556_i_ecosystem_slack_service_confidential_note_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_deployment_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing a deployment by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303150912_i_ecosystem_slack_service_deployment_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_deployment_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing a deployment by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302103755_i_ecosystem_slack_service_deployment_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_issue_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing an action on an issue by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303150507_i_ecosystem_slack_service_issue_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_issue_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing an action on an issue by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302103002_i_ecosystem_slack_service_issue_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_merge_request_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing an action on a merge request by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303151831_i_ecosystem_slack_service_merge_request_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_merge_request_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing an action on a merge request by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302104007_i_ecosystem_slack_service_merge_request_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_note_notification_monthly`
+
+Calculated unique users to trigger a Slack message by creating a note by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303151946_i_ecosystem_slack_service_note_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_note_notification_weekly`
+
+Calculated unique users to trigger a Slack message by creating a note by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302104047_i_ecosystem_slack_service_note_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_push_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing a Git push by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303150654_i_ecosystem_slack_service_push_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_push_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing a Git push by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302103629_i_ecosystem_slack_service_push_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_tag_push_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing a tag push by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303152049_i_ecosystem_slack_service_tag_push_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_tag_push_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing a tag push by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302104144_i_ecosystem_slack_service_tag_push_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_wiki_page_notification_monthly`
+
+Calculated unique users to trigger a Slack message by performing an action on a wiki page by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303151609_i_ecosystem_slack_service_wiki_page_notification_monthly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.ecosystem.i_ecosystem_slack_service_wiki_page_notification_weekly`
+
+Calculated unique users to trigger a Slack message by performing an action on a wiki page by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210302103907_i_ecosystem_slack_service_wiki_page_notification_weekly.yml)
+
+Group: `group::ecosystem`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`
 
 Missing description

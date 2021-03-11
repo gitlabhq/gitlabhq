@@ -24,6 +24,37 @@ RSpec.describe Emails::MergeRequests do
   let(:recipient) { assignee }
   let(:current_user_sanitized) { 'www_example_com' }
 
+  describe '#merge_request_unmergeable_email' do
+    subject { Notify.merge_request_unmergeable_email(recipient.id, merge_request.id) }
+
+    it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+      let(:model) { merge_request }
+    end
+
+    it_behaves_like 'a multiple recipients email'
+    it_behaves_like 'it should show Gmail Actions View Merge request link'
+    it_behaves_like 'an unsubscribeable thread'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'is sent as the merge request author' do
+      sender = subject.header[:from].addrs[0]
+      expect(sender.display_name).to eq(merge_request.author.name)
+      expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'has the correct subject and body' do
+      aggregate_failures do
+        is_expected.to have_referable_subject(merge_request, reply: true)
+        is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+        is_expected.to have_body_text('due to conflict.')
+        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_text_part_content(reviewer.name)
+      end
+    end
+  end
+
   describe '#closed_merge_request_email' do
     subject { Notify.closed_merge_request_email(recipient.id, merge_request.id, current_user.id) }
 
@@ -131,13 +162,13 @@ RSpec.describe Emails::MergeRequests do
 
     it "has required details" do
       aggregate_failures do
-        expect(subject).to have_content title
-        expect(subject).to have_content merge_request.to_reference
-        expect(subject).to have_content current_user.name
-        expect(subject.html_part).to have_content(assignee.name)
-        expect(subject.text_part).to have_content(assignee.name)
-        expect(subject.html_part).to have_content(reviewer.name)
-        expect(subject.text_part).to have_content(reviewer.name)
+        is_expected.to have_content(title)
+        is_expected.to have_content(merge_request.to_reference)
+        is_expected.to have_content(current_user.name)
+        is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_html_part_content(assignee.name)
+        is_expected.to have_text_part_content(reviewer.name)
+        is_expected.to have_html_part_content(reviewer.name)
       end
     end
   end

@@ -84,12 +84,20 @@ class NotifyPreview < ActionMailer::Preview
     Notify.issues_csv_email(user, project, '1997,Ford,E350', { truncated: false, rows_expected: 3, rows_written: 3 }).message
   end
 
+  def new_merge_request_email
+    Notify.new_merge_request_email(user.id, merge_request.id).message
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, issue.id, user.id).message
   end
 
   def merge_request_status_email
     Notify.merge_request_status_email(user.id, merge_request.id, 'reopened', user.id).message
+  end
+
+  def merge_request_unmergeable_email
+    Notify.merge_request_unmergeable_email(user.id, merge_request.id, 'conflict').message
   end
 
   def merged_merge_request_email

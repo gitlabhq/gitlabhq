@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.ecosystem.i_ecosystem_slack_service_deployment_notification_monthly
+description: Calculated unique users to trigger a Slack message by performing a deployment by month
+product_section: dev
+product_stage: create
+product_group: group::ecosystem
+product_category: integrations
+value_type: number
+status: implemented
+milestone: "13.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54347
+time_frame: 28d
+data_source: redis_hll
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate
