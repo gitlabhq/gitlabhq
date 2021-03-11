@@ -7,7 +7,7 @@ type: reference
 
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab.Spelling = NO -->
-# Keyword reference for the .gitlab-ci.yml file
+# Keyword reference for the .gitlab-ci.yml file **(FREE)**
 <!-- vale gitlab.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->
 
@@ -312,9 +312,7 @@ does not block triggered pipelines.
 
 ### `include`
 
-> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> - Available for Starter, Premium, and Ultimate in GitLab 10.6 and later.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
+> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
 
 Use `include` to include external YAML files in your CI/CD configuration.
 You can break down one long `gitlab-ci.yml` file into multiple files to increase readability,
