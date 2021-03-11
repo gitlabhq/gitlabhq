@@ -120,7 +120,7 @@ module Banzai
       end
 
       def autolink_filter(text)
-        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_PATTERN) do |link, left:, right:|
+        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_PATTERN) do |link, left:, right:, mode:|
           autolink_match(link).html_safe
         end
       end

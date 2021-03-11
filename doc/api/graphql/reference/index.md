@@ -5190,6 +5190,7 @@ All possible ways to specify the API surface for an API fuzzing scan.
 | ----- | ----------- |
 | `HAR` | The API surface is specified by a HAR file. |
 | `OPENAPI` | The API surface is specified by a OPENAPI file. |
+| `POSTMAN` | The API surface is specified by a POSTMAN file. |
 
 ### `AvailabilityEnum`
 

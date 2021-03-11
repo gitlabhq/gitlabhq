@@ -3,12 +3,13 @@
 module Gitlab
   module Diff
     class Highlight
-      attr_reader :diff_file, :diff_lines, :raw_lines, :repository
+      attr_reader :diff_file, :diff_lines, :raw_lines, :repository, :project
 
       delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
       def initialize(diff_lines, repository: nil)
         @repository = repository
+        @project = repository&.project
 
         if diff_lines.is_a?(Gitlab::Diff::File)
           @diff_file = diff_lines
@@ -30,6 +31,12 @@ module Gitlab
 
           if line_inline_diffs = inline_diffs[i]
             begin
+              # MarkerRange objects are converted to Ranges to keep the previous behavior
+              # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/324068
+              if Feature.disabled?(:introduce_marker_ranges, project, default_enabled: :yaml)
+                line_inline_diffs = line_inline_diffs.map { |marker_range| marker_range.to_range }
+              end
+
               rich_line = InlineDiffMarker.new(diff_line.text, rich_line).mark(line_inline_diffs)
             # This should only happen when the encoding of the diff doesn't
             # match the blob, which is a bug. But we shouldn't fail to render

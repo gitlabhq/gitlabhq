@@ -32,12 +32,12 @@ module Gitlab
           end
 
           if action == :delete
-            old_diffs << (old_pointer..(old_pointer + content_size - 1))
+            old_diffs << MarkerRange.new(old_pointer, old_pointer + content_size - 1, mode: MarkerRange::DELETION)
             old_pointer += content_size
           end
 
           if action == :insert
-            new_diffs << (new_pointer..(new_pointer + content_size - 1))
+            new_diffs << MarkerRange.new(new_pointer, new_pointer + content_size - 1, mode: MarkerRange::ADDITION)
             new_pointer += content_size
           end
         end

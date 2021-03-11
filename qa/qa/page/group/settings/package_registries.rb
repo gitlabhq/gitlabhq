@@ -12,18 +12,28 @@ module QA
           end
 
           view 'app/assets/javascripts/packages_and_registries/settings/group/components/maven_settings.vue' do
-            element :allow_duplicates_checkbox
+            element :allow_duplicates_toggle
+            element :allow_duplicates_label
           end
 
           def set_allow_duplicates_disabled
             expand_content :package_registry_settings_content do
-              uncheck_element :allow_duplicates_checkbox
+              click_element(:allow_duplicates_toggle) if duplicates_enabled?
             end
           end
 
-          def has_allow_duplicates_enabled?
-            expand_content :package_registry_settings_content
-            !find_element(:allow_duplicates_checkbox).checked?
+          def set_allow_duplicates_enabled
+            expand_content :package_registry_settings_content do
+              click_element(:allow_duplicates_toggle) if duplicates_disabled?
+            end
+          end
+
+          def duplicates_enabled?
+            has_element?(:allow_duplicates_label, text: 'Allow duplicates')
+          end
+
+          def duplicates_disabled?
+            has_element?(:allow_duplicates_label, text: 'Do not allow duplicates')
           end
         end
       end

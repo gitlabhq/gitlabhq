@@ -71,7 +71,7 @@ Where:
 | `enabled` | `true` or `false`. Enables the Registry in GitLab. By default this is `false`. |
 | `host`    | The host URL under which the Registry runs and users can use. |
 | `port`    | The port the external Registry domain listens on. |
-| `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. |
+| `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. Do not change this unless you are setting up an [external Docker registry](#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). |
 | `key`     | The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 | `path`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation](https://docs.docker.com/registry/configuration/#storage). This path needs to be readable by the GitLab user, the web-server user and the Registry user. Read more in [#configure-storage-for-the-container-registry](#configure-storage-for-the-container-registry). |
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
@@ -630,18 +630,18 @@ You can use GitLab as an auth endpoint with an external container registry.
 
    ```ruby
    gitlab_rails['registry_enabled'] = true
-   gitlab_rails['registry_api_url'] = "http://localhost:5000"
+   gitlab_rails['registry_api_url'] = "https://<external_registry_host>:5000"
    gitlab_rails['registry_issuer'] = "gitlab-issuer"
    ```
 
-   `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
-   Container Registry features and authentication endpoint. The GitLab bundled
-   Container Registry service does not start, even with this enabled.
-
-   `gitlab_rails['registry_api_url'] = "http://localhost:5000"` can
-   carry a different hostname and port depending on where the external registry
-   is hosted. It must also specify `https` if the external registry is
-   configured to use TLS.
+   - `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
+     Container Registry features and authentication endpoint. The GitLab bundled
+     Container Registry service does not start, even with this enabled.
+   - `gitlab_rails['registry_api_url'] = "http://<external_registry_host>:5000"`
+     must be changed to match the host where Registry is installed.
+     It must also specify `https` if the external registry is
+     configured to use TLS. Read more on the
+     [Docker registry documentation](https://docs.docker.com/registry/deploying/).
 
 1. A certificate-key pair is required for GitLab and the external container
    registry to communicate securely. You need to create a certificate-key
@@ -688,11 +688,13 @@ You can use GitLab as an auth endpoint with an external container registry.
      enabled: true
      host: "registry.gitlab.example.com"
      port: "5005"
-     api_url: "http://localhost:5000"
-     path: /var/opt/gitlab/gitlab-rails/shared/registry
-     key: /var/opt/gitlab/gitlab-rails/certificate.key
+     api_url: "https://<external_registry_host>:5000"
+     path: /var/lib/registry
+     key: /path/to/keyfile
      issuer: gitlab-issuer
    ```
+
+   [Read more](#enable-the-container-registry) about what these parameters mean.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 

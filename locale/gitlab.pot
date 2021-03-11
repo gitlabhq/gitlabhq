@@ -1483,6 +1483,9 @@ msgstr ""
 msgid "APIFuzzing|Ex: $TestUsername"
 msgstr ""
 
+msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz"
+msgstr ""
+
 msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.har"
 msgstr ""
 
@@ -1505,6 +1508,9 @@ msgid "APIFuzzing|Make sure your credentials are secured"
 msgstr ""
 
 msgid "APIFuzzing|Password for basic authentication"
+msgstr ""
+
+msgid "APIFuzzing|Postman collections are a group of saved requests you can organize into folders."
 msgstr ""
 
 msgid "APIFuzzing|Scan mode"
@@ -3222,6 +3228,9 @@ msgid "An alert has been triggered in %{project_path}."
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
+msgstr ""
+
+msgid "An assignee list displays issues assigned to the selected user"
 msgstr ""
 
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
@@ -9413,6 +9422,9 @@ msgstr ""
 msgid "DastProfiles|Authentication URL"
 msgstr ""
 
+msgid "DastProfiles|Branch missing"
+msgstr ""
+
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -9582,6 +9594,9 @@ msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
 msgid "DastProfiles|Scanner name"
+msgstr ""
+
+msgid "DastProfiles|Select branch"
 msgstr ""
 
 msgid "DastProfiles|Show debug messages"
@@ -12627,6 +12642,9 @@ msgid "Failed to get ref."
 msgstr ""
 
 msgid "Failed to install."
+msgstr ""
+
+msgid "Failed to load assignees."
 msgstr ""
 
 msgid "Failed to load assignees. Please try again."
@@ -22817,6 +22835,9 @@ msgstr ""
 msgid "Policy project doesn't exists"
 msgstr ""
 
+msgid "Postman collection"
+msgstr ""
+
 msgid "Pre-defined push rules."
 msgstr ""
 
@@ -26411,6 +26432,9 @@ msgid "Search a group"
 msgstr ""
 
 msgid "Search an environment spec"
+msgstr ""
+
+msgid "Search assignees"
 msgstr ""
 
 msgid "Search authors"
@@ -35100,6 +35124,9 @@ msgstr ""
 msgid "can't be enabled because signed commits are required for this project"
 msgstr ""
 
+msgid "can't include: %{invalid_storages}"
+msgstr ""
+
 msgid "cannot be a date in the past"
 msgstr ""
 
@@ -36504,6 +36531,12 @@ msgid "username"
 msgstr ""
 
 msgid "v%{version} published %{timeAgo}"
+msgstr ""
+
+msgid "value for '%{storage}' must be an integer"
+msgstr ""
+
+msgid "value for '%{storage}' must be between 0 and 100"
 msgstr ""
 
 msgid "verify ownership"

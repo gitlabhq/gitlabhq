@@ -21,7 +21,7 @@ module Gitlab
           i2, j2 = match.offset(:checksum)
 
           marker = StringRangeMarker.new(plain_line, rich_line.html_safe)
-          marker.mark([i0..(j0 - 1), i2..(j2 - 1)]) do |text, left:, right:|
+          marker.mark([i0..(j0 - 1), i2..(j2 - 1)]) do |text, left:, right:, mode:|
             if left
               url = package_url(text, match[:version])
               url ? link_tag(text, url) : text

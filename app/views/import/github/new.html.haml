@@ -30,5 +30,5 @@
   = render_if_exists 'import/github/ci_cd_only'
 
   .form-actions.d-flex.justify-content-end
-    = link_to _('Cancel'), new_project_path, class: 'btn'
-    = submit_tag _('Authenticate'), class: 'btn btn-success ml-2', data: { qa_selector: 'authenticate_button' }
+    = link_to _('Cancel'), new_project_path, class: 'gl-button btn btn-default'
+    = submit_tag _('Authenticate'), class: 'gl-button btn btn-confirm ml-2', data: { qa_selector: 'authenticate_button' }

@@ -12,12 +12,7 @@ describe('AlertsSettingsForm', () => {
   let wrapper;
   const mockToastShow = jest.fn();
 
-  const createComponent = ({
-    data = {},
-    props = {},
-    multipleHttpIntegrationsCustomMapping = false,
-    multiIntegrations = true,
-  } = {}) => {
+  const createComponent = ({ data = {}, props = {}, multiIntegrations = true } = {}) => {
     wrapper = mount(AlertsSettingsForm, {
       data() {
         return { ...data };
@@ -29,7 +24,6 @@ describe('AlertsSettingsForm', () => {
       },
       provide: {
         ...defaultAlertSettingsConfig,
-        glFeatures: { multipleHttpIntegrationsCustomMapping },
         multiIntegrations,
       },
       mocks: {
@@ -142,27 +136,8 @@ describe('AlertsSettingsForm', () => {
 
   describe('submitting integration form', () => {
     describe('HTTP', () => {
-      it('create', async () => {
-        createComponent();
-
-        const integrationName = 'Test integration';
-        await selectOptionAtIndex(1);
-        enableIntegration(0, integrationName);
-
-        const submitBtn = findSubmitButton();
-        expect(submitBtn.exists()).toBe(true);
-        expect(submitBtn.text()).toBe('Save integration');
-
-        findForm().trigger('submit');
-
-        expect(wrapper.emitted('create-new-integration')[0]).toEqual([
-          { type: typeSet.http, variables: { name: integrationName, active: true } },
-        ]);
-      });
-
       it('create with custom mapping', async () => {
         createComponent({
-          multipleHttpIntegrationsCustomMapping: true,
           multiIntegrations: true,
           props: { alertFields },
         });
@@ -208,9 +183,19 @@ describe('AlertsSettingsForm', () => {
 
         findForm().trigger('submit');
 
-        expect(wrapper.emitted('update-integration')[0]).toEqual([
-          { type: typeSet.http, variables: { name: updatedIntegrationName, active: true } },
-        ]);
+        expect(wrapper.emitted('update-integration')[0]).toEqual(
+          expect.arrayContaining([
+            {
+              type: typeSet.http,
+              variables: {
+                name: updatedIntegrationName,
+                active: true,
+                payloadAttributeMappings: [],
+                payloadExample: '{}',
+              },
+            },
+          ]),
+        );
       });
     });
 
@@ -301,7 +286,6 @@ describe('AlertsSettingsForm', () => {
 
     beforeEach(() => {
       createComponent({
-        multipleHttpIntegrationsCustomMapping: true,
         data: {
           currentIntegration: {
             type: typeSet.http,
@@ -408,22 +392,18 @@ describe('AlertsSettingsForm', () => {
 
   describe('Mapping builder section', () => {
     describe.each`
-      alertFieldsProvided | multiIntegrations | featureFlag | integrationOption | visible
-      ${true}             | ${true}           | ${true}     | ${1}              | ${true}
-      ${true}             | ${true}           | ${true}     | ${2}              | ${false}
-      ${true}             | ${true}           | ${false}    | ${1}              | ${false}
-      ${true}             | ${true}           | ${false}    | ${2}              | ${false}
-      ${true}             | ${false}          | ${true}     | ${1}              | ${false}
-      ${false}            | ${true}           | ${true}     | ${1}              | ${false}
-    `('', ({ alertFieldsProvided, multiIntegrations, featureFlag, integrationOption, visible }) => {
+      alertFieldsProvided | multiIntegrations | integrationOption | visible
+      ${true}             | ${true}           | ${1}              | ${true}
+      ${true}             | ${true}           | ${2}              | ${false}
+      ${true}             | ${false}          | ${1}              | ${false}
+      ${false}            | ${true}           | ${1}              | ${false}
+    `('', ({ alertFieldsProvided, multiIntegrations, integrationOption, visible }) => {
       const visibleMsg = visible ? 'is rendered' : 'is not rendered';
-      const featureFlagMsg = featureFlag ? 'is enabled' : 'is disabled';
       const alertFieldsMsg = alertFieldsProvided ? 'are provided' : 'are not provided';
       const integrationType = integrationOption === 1 ? typeSet.http : typeSet.prometheus;
 
-      it(`${visibleMsg} when multipleHttpIntegrationsCustomMapping feature flag ${featureFlagMsg} and integration type is ${integrationType} and alert fields ${alertFieldsMsg}`, async () => {
+      it(`${visibleMsg} when integration type is ${integrationType} and alert fields ${alertFieldsMsg}`, async () => {
         createComponent({
-          multipleHttpIntegrationsCustomMapping: featureFlag,
           multiIntegrations,
           props: {
             alertFields: alertFieldsProvided ? alertFields : [],

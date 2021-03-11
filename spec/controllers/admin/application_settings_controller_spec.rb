@@ -144,10 +144,10 @@ RSpec.describe Admin::ApplicationSettingsController do
     end
 
     it 'updates repository_storages_weighted setting' do
-      put :update, params: { application_setting: { repository_storages_weighted_default: 75 } }
+      put :update, params: { application_setting: { repository_storages_weighted: { default: 75 } } }
 
       expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(ApplicationSetting.current.repository_storages_weighted_default).to eq(75)
+      expect(ApplicationSetting.current.repository_storages_weighted).to eq('default' => 75)
     end
 
     it 'updates kroki_formats setting' do

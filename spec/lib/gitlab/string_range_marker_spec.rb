@@ -8,7 +8,7 @@ RSpec.describe Gitlab::StringRangeMarker do
       raw = 'abc <def>'
       inline_diffs = [2..5]
 
-      described_class.new(raw, rich).mark(inline_diffs) do |text, left:, right:|
+      described_class.new(raw, rich).mark(inline_diffs) do |text, left:, right:, mode:|
         "LEFT#{text}RIGHT".html_safe
       end
     end

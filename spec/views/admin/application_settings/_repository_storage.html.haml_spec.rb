@@ -3,34 +3,49 @@
 require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/_repository_storage.html.haml' do
-  let(:app_settings) { create(:application_setting) }
-  let(:repository_storages_weighted_attributes) { [:repository_storages_weighted_default, :repository_storages_weighted_mepmep, :repository_storages_weighted_foobar]}
-  let(:repository_storages_weighted) do
-    {
-      "default" => 100,
-      "mepmep" => 50
-    }
-  end
+  let(:app_settings) { build(:application_setting, repository_storages_weighted: repository_storages_weighted) }
 
   before do
-    allow(app_settings).to receive(:repository_storages_weighted).and_return(repository_storages_weighted)
-    allow(app_settings).to receive(:repository_storages_weighted_mepmep).and_return(100)
-    allow(app_settings).to receive(:repository_storages_weighted_foobar).and_return(50)
+    stub_storage_settings({ 'default': {}, 'mepmep': {}, 'foobar': {} })
     assign(:application_setting, app_settings)
-    allow(ApplicationSetting).to receive(:repository_storages_weighted_attributes).and_return(repository_storages_weighted_attributes)
   end
 
-  context 'when multiple storages are available' do
+  context 'additional storage config' do
+    let(:repository_storages_weighted) do
+      {
+        'default' => 100,
+        'mepmep' => 50
+      }
+    end
+
     it 'lists them all' do
       render
 
-      # lists storages that are saved with weights
-      repository_storages_weighted.each do |storage_name, storage_weight|
+      Gitlab.config.repositories.storages.keys.each do |storage_name|
         expect(rendered).to have_content(storage_name)
       end
 
-      # lists storage not saved with weight
       expect(rendered).to have_content('foobar')
+    end
+  end
+
+  context 'fewer storage configs' do
+    let(:repository_storages_weighted) do
+      {
+        'default' => 100,
+        'mepmep' => 50,
+        'something_old' => 100
+      }
+    end
+
+    it 'lists only configured storages' do
+      render
+
+      Gitlab.config.repositories.storages.keys.each do |storage_name|
+        expect(rendered).to have_content(storage_name)
+      end
+
+      expect(rendered).not_to have_content('something_old')
     end
   end
 end

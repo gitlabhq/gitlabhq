@@ -1,0 +1,5 @@
+---
+title: "Introduce `info` column for the `security_scans` table"
+merge_request: 55983
+author:
+type: added

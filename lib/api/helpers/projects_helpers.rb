@@ -91,8 +91,6 @@ module API
       end
 
       params :optional_update_params_ee do
-        optional :issues_template, type: String, desc: 'Default description for Issues'
-        optional :merge_requests_template, type: String, desc: 'Default description for Merge Requests'
       end
 
       params :optional_update_params do
@@ -130,10 +128,8 @@ module API
           :emails_disabled,
           :forking_access_level,
           :issues_access_level,
-          :issues_template,
           :lfs_enabled,
           :merge_requests_access_level,
-          :merge_requests_template,
           :merge_method,
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,

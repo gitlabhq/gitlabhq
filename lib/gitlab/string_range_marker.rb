@@ -15,8 +15,10 @@ module Gitlab
       end
     end
 
-    def mark(marker_ranges)
-      return rich_line unless marker_ranges&.any?
+    def mark(ranges)
+      return rich_line unless ranges&.any?
+
+      marker_ranges = ranges.map { |range| Gitlab::MarkerRange.from_range(range) }
 
       if html_escaped
         rich_marker_ranges = []
@@ -24,7 +26,7 @@ module Gitlab
           # Map the inline-diff range based on the raw line to character positions in the rich line
           rich_positions = position_mapping[range].flatten
           # Turn the array of character positions into ranges
-          rich_marker_ranges.concat(collapse_ranges(rich_positions))
+          rich_marker_ranges.concat(collapse_ranges(rich_positions, range.mode))
         end
       else
         rich_marker_ranges = marker_ranges
@@ -36,7 +38,7 @@ module Gitlab
         offset_range = (range.begin + offset)..(range.end + offset)
         original_text = rich_line[offset_range]
 
-        text = yield(original_text, left: i == 0, right: i == rich_marker_ranges.length - 1)
+        text = yield(original_text, left: i == 0, right: i == rich_marker_ranges.length - 1, mode: range.mode)
 
         rich_line[offset_range] = text
 
@@ -90,21 +92,21 @@ module Gitlab
     end
 
     # Takes an array of integers, and returns an array of ranges covering the same integers
-    def collapse_ranges(positions)
+    def collapse_ranges(positions, mode)
       return [] if positions.empty?
 
       ranges = []
 
       start = prev = positions[0]
-      range = start..prev
+      range = MarkerRange.new(start, prev, mode: mode)
       positions[1..-1].each do |pos|
         if pos == prev + 1
-          range = start..pos
+          range = MarkerRange.new(start, pos, mode: mode)
           prev = pos
         else
           ranges << range
           start = prev = pos
-          range = start..prev
+          range = MarkerRange.new(start, prev, mode: mode)
         end
       end
       ranges << range

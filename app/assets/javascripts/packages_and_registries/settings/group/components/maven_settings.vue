@@ -79,12 +79,12 @@ export default {
     <form>
       <div class="gl-display-flex">
         <gl-toggle
-          data-qa-selector="allow_duplicates_checkbox"
+          data-qa-selector="allow_duplicates_toggle"
           :value="mavenDuplicatesAllowed"
           @change="update($options.modelNames.MAVEN_DUPLICATES_ALLOWED, $event)"
         />
         <div class="gl-ml-5">
-          <div data-testid="toggle-label">
+          <div data-testid="toggle-label" data-qa-selector="allow_duplicates_label">
             <gl-sprintf :message="enabledButtonLabel">
               <template #bold="{ content }">
                 <strong>{{ content }}</strong>

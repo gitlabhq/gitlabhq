@@ -223,9 +223,7 @@ module QA
           project.group.visit!
 
           Page::Group::Menu.perform(&:go_to_package_settings)
-          Page::Group::Settings::PackageRegistries.perform do |settings|
-            expect(settings).to have_allow_duplicates_enabled
-          end
+          Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_enabled)
         end
 
         it 'allows users to publish duplicate Maven packages at the group level', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1722' do

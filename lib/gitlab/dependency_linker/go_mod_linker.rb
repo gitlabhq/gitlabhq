@@ -22,7 +22,7 @@ module Gitlab
 
           i, j = match.offset(:name)
           marker = StringRangeMarker.new(plain_line, rich_line.html_safe)
-          marker.mark([i..(j - 1)]) do |text, left:, right:|
+          marker.mark([i..(j - 1)]) do |text, left:, right:, mode:|
             url = package_url(text, match[:version])
             url ? link_tag(text, url) : text
           end

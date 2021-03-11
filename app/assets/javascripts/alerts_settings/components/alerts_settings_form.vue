@@ -16,7 +16,6 @@ import {
 import * as Sentry from '@sentry/browser';
 import { isEmpty, omit } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   integrationTypes,
   integrationSteps,
@@ -60,7 +59,6 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     generic: {
       default: {},
@@ -163,12 +161,7 @@ export default {
       };
     },
     showMappingBuilder() {
-      return (
-        this.multiIntegrations &&
-        this.glFeatures.multipleHttpIntegrationsCustomMapping &&
-        this.isHttp &&
-        this.alertFields?.length
-      );
+      return this.multiIntegrations && this.isHttp && this.alertFields?.length;
     },
     hasSamplePayload() {
       return this.isValidNonEmptyJSON(this.currentIntegration?.payloadExample);
@@ -234,12 +227,10 @@ export default {
     },
     submit() {
       const { name, apiUrl } = this.integrationForm;
-      const customMappingVariables = this.glFeatures.multipleHttpIntegrationsCustomMapping
-        ? {
-            payloadAttributeMappings: this.mapping,
-            payloadExample: this.samplePayload.json || '{}',
-          }
-        : {};
+      const customMappingVariables = {
+        payloadAttributeMappings: this.mapping,
+        payloadExample: this.samplePayload.json || '{}',
+      };
 
       const variables =
         this.selectedIntegration === typeSet.http

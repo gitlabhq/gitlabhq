@@ -68,7 +68,7 @@ For more details, please refer to our [full architecture documentation](https://
 
 The setup process involves a few steps to enable GitOps deployments:
 
-1. [Install the Agent server](#install-the-kubernetes-agent-server).
+1. [Install the Agent server](#install-the-kubernetes-agent-server) for your GitLab instance.
 1. [Define a configuration repository](#define-a-configuration-repository).
 1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
 1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
@@ -91,14 +91,19 @@ Upgrade your agent installations together with GitLab upgrades. To decide which 
 The available `agentk` and `kas` versions can be found in
 [the container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/).
 
-### Install the Kubernetes Agent Server
+### Install the Kubernetes Agent Server **(FREE SELF)**
 
-The GitLab Kubernetes Agent Server (KAS) can be deployed using [Omnibus GitLab](https://docs.gitlab.com/omnibus/) or the
-[GitLab chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
-GitLab installed, please refer to our [installation documentation](../../../install/index.md).
+[Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10,
+the GitLab Kubernetes Agent Server (KAS) is available on GitLab.com under `wss://kas.gitlab.com`.
+If you are a GitLab.com user, skip this step and directly
+[set up the configuration repository](#define-a-configuration-repository) 
+for your agent.
 
-NOTE:
-GitLab plans to include the KAS on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
+The GitLab Kubernetes Agent Server (KAS) can be deployed using [Omnibus
+GitLab](https://docs.gitlab.com/omnibus/) or the [GitLab
+chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
+GitLab installed, please refer to our [installation
+documentation](https://docs.gitlab.com/ee/install/README.html).
 
 #### Install with Omnibus
 
@@ -229,6 +234,9 @@ the Agent in subsequent steps. You can create an Agent record either:
 ### Install the Agent into the cluster
 
 Next, install the in-cluster component of the Agent.
+
+NOTE:
+For GitLab.com users, the KAS is available at `wss://kas.gitlab.com`.
 
 #### One-liner installation
 
