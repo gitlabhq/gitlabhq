@@ -470,7 +470,7 @@ fails. Consider this when toggling the visibility of the feature on or off on
 production.
 
 The `feature_flag` property does not allow the use of
-[feature gates based on actors](../development/feature_flags/development.md).
+[feature gates based on actors](../development/feature_flags/index.md).
 This means that the feature flag cannot be toggled only for particular
 projects, groups, or users, but instead can only be toggled globally for
 everyone.

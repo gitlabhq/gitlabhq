@@ -40,7 +40,7 @@ On your profile page, you can see the following information:
 - Contributed projects: [projects](../project/index.md) you contributed to
 - Personal projects: your personal projects (respecting the project's visibility level)
 - Starred projects: projects you starred
-- Snippets: your personal code [snippets](../snippets.md#personal-snippets)
+- Snippets: your personal code [snippets](../snippets.md)
 - Followers: people [following](../index.md#user-activity) you
 - Following: people you are [following](../index.md#user-activity)
 

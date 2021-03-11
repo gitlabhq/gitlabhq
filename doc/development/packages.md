@@ -122,7 +122,7 @@ There are usually 2 phases for the MVC:
 
 When implementing a new package manager, it is tempting to create one large merge request containing all of the
 necessary endpoints and services necessary to support basic usage. Instead, put the
-API endpoints behind a [feature flag](feature_flags/development.md) and
+API endpoints behind a [feature flag](feature_flags/index.md) and
 submit each endpoint or behavior (download, upload, etc) in a different merge request to shorten the review
 process.
 

@@ -9,11 +9,15 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     Feature.get(feature_flag_name).state != :off # rubocop:disable Gitlab/AvoidFeatureGet
   end
 
-  def publish(_result)
+  def publish(_result = nil)
     track(:assignment) # track that we've assigned a variant for this context
 
     # push the experiment data to the client
-    Gon.push({ experiment: { name => signature } }, true) if in_request_cycle?
+    begin
+      Gon.push({ experiment: { name => signature } }, true) # push the experiment data to the client
+    rescue NoMethodError
+      # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
+    end
   end
 
   def track(action, **event_args)
@@ -47,12 +51,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def feature_flag_name
     name.tr('/', '_')
-  end
-
-  def in_request_cycle?
-    # Gon is only accessible when having a request. This will be fixed with
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/323352
-    context.instance_variable_defined?(:@request)
   end
 
   def resolve_variant_name

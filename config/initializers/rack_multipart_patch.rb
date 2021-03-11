@@ -13,7 +13,7 @@ module Rack
         def log_multipart_warning(req)
           content_length = req.content_length.to_i
 
-          return unless content_length > 500_000_000
+          return unless content_length > log_threshold
 
           message = {
             message: "Large multipart body detected",
@@ -31,6 +31,10 @@ module Rack
 
         def log_large_multipart?
           Gitlab::Utils.to_boolean(ENV['ENABLE_RACK_MULTIPART_LOGGING'], default: true) && Gitlab.com?
+        end
+
+        def log_threshold
+          ENV.fetch('RACK_MULTIPART_LOGGING_BYTES', 100_000_000).to_i
         end
       end
 

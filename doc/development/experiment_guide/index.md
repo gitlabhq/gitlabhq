@@ -45,7 +45,7 @@ One is built into GitLab directly and has been around for a while (this is calle
 [`gitlab-experiment`](https://gitlab.com/gitlab-org/gitlab-experiment) and is referred
 to as `Gitlab::Experiment` -- GLEX for short.
 
-Both approaches use [experiment](../feature_flags/development.md#experiment-type)
+Both approaches use [experiment](../feature_flags/index.md#experiment-type)
 feature flags, and there is currently no strong suggestion to use one over the other.
 
 | Feature              | `Experimentation Module` | GLEX |

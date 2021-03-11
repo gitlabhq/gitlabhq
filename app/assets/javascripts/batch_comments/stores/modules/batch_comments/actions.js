@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -88,18 +89,23 @@ export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGet
 export const updateDraft = (
   { commit, getters },
   { note, noteText, resolveDiscussion, position, callback },
-) =>
-  service
-    .update(getters.getNotesData.draftsPath, {
-      draftId: note.id,
-      note: noteText,
-      resolveDiscussion,
-      position: JSON.stringify(position),
-    })
+) => {
+  const params = {
+    draftId: note.id,
+    note: noteText,
+    resolveDiscussion,
+  };
+  // Stringifying an empty object yields `{}` which breaks graphql queries
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/298827
+  if (!isEmpty(position)) params.position = JSON.stringify(position);
+
+  return service
+    .update(getters.getNotesData.draftsPath, params)
     .then((res) => res.data)
     .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
     .then(callback)
     .catch(() => flash(__('An error occurred while updating the comment')));
+};
 
 export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {
   const discussion = draft.discussion_id && rootGetters.getDiscussion(draft.discussion_id);

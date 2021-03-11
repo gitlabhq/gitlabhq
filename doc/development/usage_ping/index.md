@@ -947,7 +947,7 @@ Each aggregate definition includes following parts:
   relay on the same data source. Additional data source requirements are described in the
   [Database sourced aggregated metrics](#database-sourced-aggregated-metrics) and
   [Redis sourced aggregated metrics](#redis-sourced-aggregated-metrics) sections.
-- `feature_flag`: Name of [development feature flag](../feature_flags/development.md#development-type)
+- `feature_flag`: Name of [development feature flag](../feature_flags/index.md#development-type)
   that is checked before metrics aggregation is performed. Corresponding feature flag
   should have `default_enabled` attribute set to `false`. The `feature_flag` attribute
   is optional and can be omitted. When `feature_flag` is missing, no feature flag is checked.

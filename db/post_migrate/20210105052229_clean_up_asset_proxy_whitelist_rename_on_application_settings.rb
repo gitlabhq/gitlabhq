@@ -8,14 +8,12 @@ class CleanUpAssetProxyWhitelistRenameOnApplicationSettings < ActiveRecord::Migr
   disable_ddl_transaction!
 
   def up
-    cleanup_concurrent_column_rename :application_settings,
-      :asset_proxy_whitelist,
-      :asset_proxy_allowlist
+    # This migration has been made a no-op in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56352
+    # because to revert the rename in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55419 we need
+    # to cleanup the triggers on the `asset_proxy_allowlist` column. As such, this migration would do nothing.
   end
 
   def down
-    undo_cleanup_concurrent_column_rename :application_settings,
-      :asset_proxy_whitelist,
-      :asset_proxy_allowlist
+    # no-op
   end
 end

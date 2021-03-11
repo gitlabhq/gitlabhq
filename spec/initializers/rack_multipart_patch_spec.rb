@@ -42,20 +42,38 @@ EOF
   end
 
   context 'with Content-Length over the limit' do
-    it 'extracts multipart message' do
-      env = Rack::MockRequest.env_for("/", multipart_fixture(:text, 500_000_001))
+    shared_examples 'logs multipart message' do
+      it 'extracts multipart message' do
+        env = Rack::MockRequest.env_for("/", multipart_fixture(:text, length))
 
-      expect(described_class).to receive(:log_large_multipart?).and_return(true)
-      expect(described_class).to receive(:log_multipart_warning).and_call_original
-      expect(described_class).to receive(:log_warn).with({
-                                                           message: 'Large multipart body detected',
-                                                           path: '/',
-                                                           content_length: anything,
-                                                           correlation_id: anything
-                                                         })
-      params = described_class.parse_multipart(env)
+        expect(described_class).to receive(:log_large_multipart?).and_return(true)
+        expect(described_class).to receive(:log_multipart_warning).and_call_original
+        expect(described_class).to receive(:log_warn).with({
+                                                             message: 'Large multipart body detected',
+                                                             path: '/',
+                                                             content_length: anything,
+                                                             correlation_id: anything
+                                                           })
+        params = described_class.parse_multipart(env)
 
-      expect(params.keys).to include(*%w(reply fileupload))
+        expect(params.keys).to include(*%w(reply fileupload))
+      end
+    end
+
+    context 'from environment' do
+      let(:length) { 1001 }
+
+      before do
+        stub_env('RACK_MULTIPART_LOGGING_BYTES', 1000)
+      end
+
+      it_behaves_like 'logs multipart message'
+    end
+
+    context 'default limit' do
+      let(:length) { 100_000_001 }
+
+      it_behaves_like 'logs multipart message'
     end
   end
 end

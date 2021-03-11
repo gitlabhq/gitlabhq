@@ -66,7 +66,6 @@ export default {
       <gl-dropdown
         v-if="showImportButton"
         v-gl-tooltip.hover="__('Import issues')"
-        data-qa-selector="import_issues_dropdown"
         data-testid="import-csv-dropdown"
         icon="import"
       >

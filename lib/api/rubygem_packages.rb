@@ -64,8 +64,15 @@ module API
           requires :file_name, type: String, desc: 'Package file name'
         end
         get "gems/:file_name", requirements: FILE_NAME_REQUIREMENTS do
-          # To be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/299283
-          not_found!
+          authorize!(:read_package, user_project)
+
+          package_file = ::Packages::PackageFile.for_rubygem_with_file_name(
+            user_project, params[:file_name]
+          ).last!
+
+          track_package_event('pull_package', :rubygems)
+
+          present_carrierwave_file!(package_file.file)
         end
 
         namespace 'api/v1' do

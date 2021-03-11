@@ -1611,11 +1611,12 @@ If all content in a section is related, add version text after the header for
 the section. The version information must:
 
 - Be surrounded by blank lines.
-- Start with `>`.
-- Version histories with more than one entry should have each entry on its own
-  line (long lines are okay). Start each line with `> -` to get unordered list
-  formatting.
-- Whenever possible, have a link to the completed issue, merge request, or epic
+- Start with `>`. If there are multiple bullets, each line must start with `> -`.
+- The string must include these words in this order (capitalization doesn't matter):
+  - `introduced`, `deprecated`, `moved`
+  - `in` or `to`
+  - `GitLab`
+- Whenever possible, include a link to the completed issue, merge request, or epic
   that introduced the feature. An issue is preferred over a merge request, and
   a merge request is preferred over an epic.
 

@@ -7,83 +7,98 @@ type: reference
 
 # Snippets **(FREE)**
 
-With GitLab Snippets you can store and share bits of code and text with other users.
+With GitLab snippets, you can store and share bits of code and text with other users.
+You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
+[use version control](#versioned-snippets) in snippets. They can
+[contain multiple files](#add-or-remove-multiple-files). They also support
+[syntax highlighting](#filenames), [embedding](#embed-snippets), [downloading](#download-snippets),
+and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
-![GitLab Snippet](img/gitlab_snippet_v13_0.png)
+GitLab provides two types of snippets:
 
-Snippets can be maintained using [snippets API](../api/snippets.md).
+- **Personal snippets**: Created independent of any project.
+  You can set a [visibility level](../public_access/public_access.md)
+  for your snippet: public, internal, or private.
+- **Project snippets**: Always related to a specific project.
+  Project snippets can be visible publicly or to only group members.
 
-There are two types of snippets:
+## Create snippets
 
-- Personal snippets.
-- Project snippets.
+You can create snippets in multiple ways, depending on whether you want to create a personal or project snippet:
 
-## Personal snippets
+1. Select the kind of snippet you want to create:
+   - **To create a personal snippet**:
+     - *If you're on a project's page,* select the plus icon (**{plus-square-o}**)
+       in the top navigation bar, then select **New snippet** from the **GitLab** (for GitLab.com)
+       or **Your Instance** (self-managed) section of the same dropdown menu.
+     - *For all other pages,* select the plus icon (**{plus-square-o}**)
+       in the top navigation bar, then select **New snippet** from the dropdown menu.
+   - **To create a project snippet**: Go to your project's page. Select the plus icon
+     (**{plus-square-o}**), then select **New snippet** from the **This project** section
+     of the dropdown menu.
+1. Add a **Title** and **Description**.
+1. Name your **File** with an appropriate extension, such as `example.rb` or `index.html`.
+   Filenames with appropriate extensions display [syntax highlighting](#filenames).
+   Failure to add a filename can cause a known
+   [copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870). If you don't provide a filename, GitLab [creates a name for you](#filenames).
+1. (Optional) Add [multiple files](#add-or-remove-multiple-files) to your snippet.
+1. Select a visibility level, and select **Create snippet**.
 
-Personal snippets are not related to any project and can be created completely
-independently. There are 3 visibility levels that can be set, public, internal
-and private. See [Public access](../public_access/public_access.md) for more information.
+After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).
+In GitLab versions 13.0 and later, snippets are [versioned by default](#versioned-snippets).
 
-## Project snippets
+## Discover snippets
 
-Project snippets are always related to a specific project.
-See [Project features](project/index.md#project-features) for more information.
+To discover all snippets visible to you in GitLab, you can:
 
-## Create a snippet
+- **View all snippets visible to you**: In the top navigation bar of your GitLab
+  instance, go to **More > Snippets** to view your snippets dashboard.
+- **Visit [GitLab snippets](http://snippets.gitlab.com/)** for your snippets on GitLab.com.
+- **Explore all public snippets**: In the top navigation bar of your GitLab
+  instance, go to **More > Snippets** and select **Explore snippets** to view
+  [all public snippets](https://gitlab.com/explore/snippets).
+- **View a project's snippets**: In your project,
+  go to **Snippets**.
 
-To create a personal snippet, click the plus icon (**{plus-square-o}**)
-on the top navigation and select **New snippet** from the dropdown menu:
+## Change default visibility of snippets
 
-![New personal snippet from non-project pages](img/new_personal_snippet_v12_10.png)
+Project snippets are enabled and available by default. To change their
+default visibility:
 
-If you're on a project's page but you want to create a new personal snippet,
-click the plus icon (**{plus-square-o}**) and select **New snippet** from the
-lower part of the dropdown (**GitLab** on GitLab.com; **Your Instance** on
-self-managed instances):
+1. In your project,
+   go to **Settings**.
+1. Expand the **Visibility, project features, permissions** section, and scroll to **Snippets**.
+1. Toggle the default visibility, and select whether snippets can be viewed by
+   everyone, or only project members.
+1. Select **Save changes**.
 
-![New personal snippet from project pages](img/new_personal_snippet_from_project_v12_10.png)
-
-To create a project snippet, navigate to your project's page and click the
-plus icon (**{plus-square-o}**), then select **New snippet** from the upper
-part of the dropdown (**This project**).
-
-![New personal snippet from project pages](img/new_project_snippet_from_project_v12_10.png)
-
-From there, add the **Title**, **Description**, and a **File** name with the
-appropriate extension (for example, `example.rb`, `index.html`).
-
-WARNING:
-Make sure to add the filename to get code highlighting and to avoid this
-[copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
-
-## Versioned Snippets
+## Versioned snippets
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/239) in GitLab 13.0.
 
-Starting in 13.0, snippets (both personal and project snippets)
+In GitLab versions 13.0 and later, snippets (both personal and project snippets)
 have version control enabled by default.
 
 This means that all snippets get their own underlying repository initialized with
-a `master` branch at the moment the snippet is created. Whenever a change to the snippet is saved, a
-new commit to the `master` branch is recorded. Commit messages are automatically
-generated. The snippet's repository has only one branch (`master`) by default, deleting
-it or creating other branches is not supported.
+a default branch at the moment the snippet is created. Whenever a change to the snippet is saved, a
+new commit to the default branch is recorded. Commit messages are automatically
+generated. The snippet's repository has only one branch. You can't delete this branch,
+or create other branches.
 
-Existing snippets are automatically migrated in 13.0. Their current
-content is saved as the initial commit to the snippets' repository.
+Existing snippets were automatically migrated in 13.0. Their current
+content was saved as the initial commit to the snippets' repository.
 
-### Filenames
+## Filenames
 
 Snippets support syntax highlighting based on the filename and
 extension provided for them. While you can submit a snippet
-without specifying a filename and extension, it needs a valid name so the
+without a filename and extension, it needs a valid name so the
 content can be created as a file in the snippet's repository.
 
-If you don't attribute a filename and extension to a snippet,
+If you don't give a snippet a filename and extension,
 GitLab adds a filename in the format `snippetfile<x>.txt`
 where `<x>` represents a number added to the file, starting with 1. This
-number increments when more snippets without an attributed
-filename are added.
+number increments if you add more unnamed snippets.
 
 When upgrading from an earlier version of GitLab to 13.0, existing snippets
 without a supported filename are renamed to a compatible format. For
@@ -92,64 +107,96 @@ changed to `http-a-weird-filename-me` to be included in the snippet's
 repository. As snippets are stored by ID, changing their filenames breaks
 direct or embedded links to the snippet.
 
-### Multiple files by Snippet
+## Add or remove multiple files
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2829) in GitLab 13.5.
 
-GitLab Snippets support multiple files in one single snippet. This is helpful
-when your code snippet is composed of multiple parts or when they relate
-to a certain context. For example:
+A single snippet can support up to 10 files, which helps keep related files together, such as:
 
 - A snippet that includes a script and its output.
-- A snippet that includes HTML, CSS, and JS code.
+- A snippet that includes HTML, CSS, and JavaScript code.
 - A snippet with a `docker-compose.yml` file and its associated `.env` file.
-- A `gulpfile.js` file coupled with a `package.json` file, which together can be
+- A `gulpfile.js` file and a `package.json` file, which together can be
   used to bootstrap a project and manage its dependencies.
 
-Snippets support between 1 and 10 files. They can be managed via Git (because they're [versioned](#versioned-snippets)
-by a Git repository), through the [Snippets API](../api/snippets.md), or in the GitLab UI.
-
-![Multi-file Snippet](img/gitlab_snippet_v13_5.png)
+You can manage these by using Git (because they're [versioned](#versioned-snippets)
+by a Git repository), through the [Snippets API](../api/snippets.md), and in the GitLab UI.
 
 To add a new file to your snippet through the GitLab UI:
 
 1. Go to your snippet in the GitLab UI.
-1. Click **Edit** in the top right.
+1. Select **Edit** in the top right corner.
 1. Select **Add another file**.
 1. Add your content to the file in the form fields provided.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 To delete a file from your snippet through the GitLab UI:
 
 1. Go to your snippet in the GitLab UI.
-1. Click **Edit** in the top right.
+1. Select **Edit** in the top right corner.
 1. Select **Delete file** alongside the filename of each file
 you wish to delete.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
-### Cloning snippets
+## Clone snippets
 
-Snippets can be cloned as a regular Git repository using SSH or HTTPS. Click the **Clone**
-button above the snippet content to copy the URL of your choice.
+Instead of copying a snippet to a local file, you may want to clone a snippet to
+preserve its relationship with the repository, so you can receive or make updates
+as needed. Select the **Clone** button on a snippet to display the URLs to clone with SSH or HTTPS:
 
-![Clone Snippet](img/snippet_clone_button_v13_0.png)
+![Clone snippet](img/snippet_clone_button_v13_0.png)
 
-This allows you to have a local copy of the snippet's repository and make
-changes as needed. You can commit those changes and push them to the remote
-`master` branch.
+You can commit changes to a cloned snippet, and push the changes to GitLab.
 
-### Reduce snippets repository size
+## Embed snippets
 
-Because versioned Snippets are considered as part of the [namespace storage size](../user/admin_area/settings/account_and_limit_settings.md),
-it's recommended to keep snippets' repositories as compact as possible.
+Public snippets can be shared and embedded on any website. You can reuse a GitLab snippet in multiple places, and any change to the source
+is reflected in the embedded snippets. When embedded, users can download it, or view the snippet in raw format.
 
-For more information about tools to compact repositories,
-see the documentation on [reducing repository size](../user/project/repository/reducing_the_repo_size_using_git.md).
+To embed a snippet:
 
-### Limitations
+1. Confirm your snippet is publicly visible:
+   - *If it's a project snippet*, the project must be public.
+   - The snippet is publicly visible.
+   - In **Project > Settings > Permissions**, the snippets
+     permissions are set to **Everyone with access**.
+1. In your snippet's **Embed** section, select **Copy** to copy a one-line script you can add to any website or blog post. For example:
+
+   ```html
+   <script src="https://gitlab.com/namespace/project/snippets/SNIPPET_ID.js"></script>
+   ```
+
+1. Add your script to your file.
+
+Embedded snippets display a header that shows:
+
+- The filename, if defined.
+- The snippet size.
+- A link to GitLab.
+- The actual snippet content.
+
+For example:
+
+<script src="https://gitlab.com/gitlab-org/gitlab-foss/snippets/1717978.js"></script>
+
+## Download snippets
+
+You can download the raw content of a snippet. By default, they download with Linux-style line endings (`LF`). If
+you want to preserve the original line endings you need to add a parameter `line_ending=raw`
+(For example: `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
+snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
+
+## Comment on snippets
+
+With snippets, you engage in a conversation about that piece of code,
+which can encourage user collaboration.
+
+## Troubleshooting
+
+### Snippet limitations
 
 - Binary files are not supported.
-- Creating or deleting branches is not supported. Only a default `master` branch is used.
+- Creating or deleting branches is not supported. Only the default branch is used.
 - Git tags are not supported in snippet repositories.
 - Snippets' repositories are limited to 10 files. Attempting to push more
   than 10 files results in an error.
@@ -160,71 +207,10 @@ see the documentation on [reducing repository size](../user/project/repository/r
   is 50 MB, by default.
 - Git LFS is not supported.
 
-## Discover snippets
+### Reduce snippets repository size
 
-There are two main ways of how you can discover snippets in GitLab.
+Because versioned snippets are considered as part of the [namespace storage size](../user/admin_area/settings/account_and_limit_settings.md),
+it's recommended to keep snippets' repositories as compact as possible.
 
-For exploring all snippets that are visible to you, you can go to the Snippets
-dashboard of your GitLab instance via the top navigation. For GitLab.com you can
-visit [GitLab Snippets](http://snippets.gitlab.com/) or navigate to an [overview]((https://gitlab.com/dashboard/snippets)) that shows snippets
-you created and allows you to explore all snippets. 
-
-To discover snippets that belong to a specific project, navigate
-to the Snippets page via the left side navigation on the project page.
-Project snippets are enabled and available by default. You can
-disable them by navigating to your project's **Settings**, expanding
-**Visibility, project features, permissions** and scrolling down to
-**Snippets**. From there, you can toggle to disable them or select a
-different visibility level from the dropdown menu.
-
-## Snippet comments
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12910) in GitLab 9.2.
-
-With GitLab Snippets you engage in a conversation about that piece of code,
-encouraging user collaboration.
-
-## Downloading snippets
-
-You can download the raw content of a snippet.
-
-By default snippets are downloaded with Linux-style line endings (`LF`). If
-you want to preserve the original line endings you need to add a parameter `line_ending=raw`
-(For example: `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
-snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
-
-## Embedded snippets
-
-> Introduced in GitLab 10.8.
-
-Public snippets can not only be shared, but also embedded on any website. With
-this, you can reuse a GitLab snippet in multiple places and any change to the source
-is automatically reflected in the embedded snippet.
-
-To embed a snippet, first make sure that:
-
-- The project is public (if it's a project snippet)
-- The snippet is public
-- In **Project > Settings > Permissions**, the snippets permissions are
-  set to **Everyone with access**
-
-After the above conditions are met, the **Embed** section appears in your
-snippet. Click the **Copy** button to copy a one-line
-script that you can add to any website or blog post. For example:
-
-```html
-<script src="https://gitlab.com/namespace/project/snippets/SNIPPET_ID.js"></script>
-```
-
-Here's what an embedded snippet looks like:
-
-<script src="https://gitlab.com/gitlab-org/gitlab-foss/snippets/1717978.js"></script>
-
-Embedded snippets are displayed with a header that shows:
-
-- The filename, if defined.
-- The snippet size.
-- A link to GitLab.
-- The actual snippet content.
-
-Actions in the header enable users to see the snippet in raw format, and download it.
+For more information about tools to compact repositories,
+see the documentation on [reducing repository size](../user/project/repository/reducing_the_repo_size_using_git.md).

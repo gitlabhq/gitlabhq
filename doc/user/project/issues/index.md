@@ -137,7 +137,7 @@ You can mark two issues as related, so that when viewing one, the other is alway
 listed in its [Related Issues](related_issues.md) section. This can help display important
 context, such as past work, dependencies, or duplicates.
 
-Users on [GitLab Starter, GitLab Bronze, and higher tiers](https://about.gitlab.com/pricing/), can
+Users of [GitLab Premium](https://about.gitlab.com/pricing/) or higher can
 also mark issues as blocking or blocked by another issue.
 
 ### Crosslinking issues
@@ -162,9 +162,9 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 
 ### Health status **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4 and later.
-> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab Ultimate 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab Ultimate 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab Ultimate 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
 To help you track issue statuses, you can assign a status to each issue.

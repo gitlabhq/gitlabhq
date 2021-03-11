@@ -4,8 +4,12 @@ module Gitlab
   module Database
     module Migrations
       module BackgroundMigrationHelpers
-        BACKGROUND_MIGRATION_BATCH_SIZE = 1_000 # Number of rows to process per job
-        BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1_000 # Number of jobs to bulk queue at a time
+        BATCH_SIZE = 1_000 # Number of rows to process per job
+        SUB_BATCH_SIZE = 100 # Number of rows to process per sub-batch
+        JOB_BUFFER_SIZE = 1_000 # Number of jobs to bulk queue at a time
+        BATCH_CLASS_NAME = 'PrimaryKeyBatchingStrategy' # Default batch class for batched migrations
+        BATCH_MIN_VALUE = 1 # Default minimum value for batched migrations
+        BATCH_MIN_DELAY = 2.minutes.freeze # Minimum delay between batched migrations
 
         # Bulk queues background migration jobs for an entire table, batched by ID range.
         # "Bulk" meaning many jobs will be pushed at a time for efficiency.
@@ -31,7 +35,7 @@ module Gitlab
         #         # do something
         #       end
         #     end
-        def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BATCH_SIZE)
           raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
           jobs = []
@@ -40,7 +44,7 @@ module Gitlab
           model_class.each_batch(of: batch_size) do |relation|
             start_id, end_id = relation.pluck("MIN(#{table_name}.id)", "MAX(#{table_name}.id)").first
 
-            if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
+            if jobs.length >= JOB_BUFFER_SIZE
               # Note: This code path generally only helps with many millions of rows
               # We push multiple jobs at a time to reduce the time spent in
               # Sidekiq/Redis operations. We're using this buffer based approach so we
@@ -89,7 +93,7 @@ module Gitlab
         #         # do something
         #       end
         #     end
-        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false, primary_column_name: :id)
+        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false, primary_column_name: :id)
           raise "#{model_class} does not have an ID column of #{primary_column_name} to use for batch ranges" unless model_class.column_names.include?(primary_column_name.to_s)
           raise "#{primary_column_name} is not an integer column" unless model_class.columns_hash[primary_column_name.to_s].type == :integer
 
@@ -125,6 +129,79 @@ module Gitlab
           SAY
 
           final_delay
+        end
+
+        # Creates a batched background migration for the given table. A batched migration runs one job
+        # at a time, computing the bounds of the next batch based on the current migration settings and the previous
+        # batch bounds. Each job's execution status is tracked in the database as the migration runs. The given job
+        # class must be present in the Gitlab::BackgroundMigration module, and the batch class (if specified) must be
+        # present in the Gitlab::BackgroundMigration::BatchingStrategies module.
+        #
+        # job_class_name - The background migration job class as a string
+        # batch_table_name - The name of the table the migration will batch over
+        # batch_column_name - The name of the column the migration will batch over
+        # job_arguments - Extra arguments to pass to the job instance when the migration runs
+        # job_interval - The pause interval between each job's execution, minimum of 2 minutes
+        # batch_min_value - The value in the column the batching will begin at
+        # batch_max_value - The value in the column the batching will end at, defaults to `SELECT MAX(batch_column)`
+        # batch_class_name - The name of the class that will be called to find the range of each next batch
+        # batch_size - The maximum number of rows per job
+        # sub_batch_size - The maximum number of rows processed per "iteration" within the job
+        #
+        #
+        # *Returns the created BatchedMigration record*
+        #
+        # Example:
+        #
+        #     queue_batched_background_migration(
+        #       'CopyColumnUsingBackgroundMigrationJob',
+        #       :events,
+        #       :id,
+        #       job_interval: 2.minutes,
+        #       other_job_arguments: ['column1', 'column2'])
+        #
+        # Where the the background migration exists:
+        #
+        #     class Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob
+        #       def perform(start_id, end_id, batch_table, batch_column, sub_batch_size, *other_args)
+        #         # do something
+        #       end
+        #     end
+        def queue_batched_background_migration( # rubocop:disable Metrics/ParameterLists
+          job_class_name,
+          batch_table_name,
+          batch_column_name,
+          *job_arguments,
+          job_interval:,
+          batch_min_value: BATCH_MIN_VALUE,
+          batch_max_value: nil,
+          batch_class_name: BATCH_CLASS_NAME,
+          batch_size: BATCH_SIZE,
+          sub_batch_size: SUB_BATCH_SIZE
+        )
+
+          job_interval = BATCH_MIN_DELAY if job_interval < BATCH_MIN_DELAY
+
+          batch_max_value ||= connection.select_value(<<~SQL)
+            SELECT MAX(#{connection.quote_column_name(batch_column_name)})
+            FROM #{connection.quote_table_name(batch_table_name)}
+          SQL
+
+          migration_status = batch_max_value.nil? ? :finished : :active
+          batch_max_value ||= batch_min_value
+
+          Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
+            job_class_name: job_class_name,
+            table_name: batch_table_name,
+            column_name: batch_column_name,
+            interval: job_interval,
+            min_value: batch_min_value,
+            max_value: batch_max_value,
+            batch_class_name: batch_class_name,
+            batch_size: batch_size,
+            sub_batch_size: sub_batch_size,
+            job_arguments: job_arguments,
+            status: migration_status)
         end
 
         def perform_background_migration_inline?

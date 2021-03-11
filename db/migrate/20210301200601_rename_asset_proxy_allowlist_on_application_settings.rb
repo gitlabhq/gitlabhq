@@ -8,6 +8,10 @@ class RenameAssetProxyAllowlistOnApplicationSettings < ActiveRecord::Migration[6
   disable_ddl_transaction!
 
   def up
+    cleanup_concurrent_column_rename :application_settings,
+      :asset_proxy_whitelist,
+      :asset_proxy_allowlist
+
     rename_column_concurrently :application_settings,
       :asset_proxy_allowlist,
       :asset_proxy_whitelist
@@ -17,5 +21,9 @@ class RenameAssetProxyAllowlistOnApplicationSettings < ActiveRecord::Migration[6
     undo_rename_column_concurrently :application_settings,
       :asset_proxy_allowlist,
       :asset_proxy_whitelist
+
+    undo_cleanup_concurrent_column_rename :application_settings,
+      :asset_proxy_whitelist,
+      :asset_proxy_allowlist
   end
 end

@@ -53,10 +53,26 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 
 Provide the file context in the request body.
 
-Example request:
+Example request using a personal access token:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
+```
+
+Example response:
+
+```json
+{
+  "message":"201 Created"
+}
+```
+
+Example request using a deploy token:
+
+```shell
+curl --header "DEPLOY-TOKEN: <deploy_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
 ```

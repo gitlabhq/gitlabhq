@@ -61,4 +61,4 @@ To request access to ChatOps on GitLab.com:
 
 - [ChatOps Usage](../ci/chatops/index.md)
 - [Understanding EXPLAIN plans](understanding_explain_plans.md)
-- [Feature Groups](feature_flags/development.md#feature-groups)
+- [Feature Groups](feature_flags/index.md#feature-groups)

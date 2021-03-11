@@ -476,8 +476,8 @@ be mandatory and clients cannot be authenticated with the TLS protocol.
 
 ## Multiple LDAP servers **(PREMIUM SELF)**
 
-With GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
-that your GitLab instance connects to.
+With GitLab, you can configure multiple LDAP servers that your GitLab instance
+connects to.
 
 To add another LDAP server:
 

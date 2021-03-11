@@ -61,38 +61,19 @@ RSpec.describe ApplicationExperiment, :experiment do
     it "tracks the assignment" do
       expect(subject).to receive(:track).with(:assignment)
 
-      subject.publish(nil)
+      subject.publish
     end
 
-    context "when inside a request cycle" do
-      before do
-        subject.context.instance_variable_set(:@request, double('Request', headers: 'true'))
-      end
+    it "pushes the experiment knowledge into the client using Gon" do
+      expect(Gon).to receive(:push).with({ experiment: { 'namespaced/stub' => subject.signature } }, true)
 
-      it "pushes the experiment knowledge into the client using Gon" do
-        expect(Gon).to receive(:push).with(
-          {
-            experiment: {
-              'namespaced/stub' => { # string key because it can be namespaced
-                                     experiment: 'namespaced/stub',
-                                     key: '86208ac54ca798e11f127e8b23ec396a',
-                                     variant: 'control'
-              }
-            }
-          },
-          true
-        )
-
-        subject.publish(nil)
-      end
+      subject.publish
     end
 
-    context "when outside a request cycle" do
-      it "does not push to gon when outside request cycle" do
-        expect(Gon).not_to receive(:push)
+    it "handles when Gon raises exceptions (like when it can't be pushed into)" do
+      expect(Gon).to receive(:push).and_raise(NoMethodError)
 
-        subject.publish(nil)
-      end
+      expect { subject.publish }.not_to raise_error
     end
   end
 

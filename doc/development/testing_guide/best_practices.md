@@ -545,7 +545,7 @@ end
 
 ### Feature flags in tests
 
-This section was moved to [developing with feature flags](../feature_flags/development.md).
+This section was moved to [developing with feature flags](../feature_flags/index.md).
 
 ### Pristine test environments
 

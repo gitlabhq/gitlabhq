@@ -423,7 +423,7 @@ query getAuthorData($authorNameEnabled: Boolean = false) {
 ```
 
 Then in the Vue (or JavaScript) call to the query we can pass in our feature flag. This feature
-flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/development.md)
+flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/index.md)
 for the correct way to do this.
 
 ```javascript

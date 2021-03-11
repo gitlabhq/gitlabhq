@@ -129,7 +129,7 @@ export default {
           :href="newEnvironmentPath"
           data-testid="new-environment"
           category="primary"
-          variant="success"
+          variant="confirm"
           >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
         >
       </div>
@@ -164,7 +164,7 @@ export default {
               :href="newEnvironmentPath"
               data-testid="new-environment"
               category="primary"
-              variant="success"
+              variant="confirm"
               >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
             >
           </div>

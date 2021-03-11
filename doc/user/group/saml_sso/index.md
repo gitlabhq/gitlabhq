@@ -103,7 +103,6 @@ With this option enabled, users must go through your group's GitLab single sign-
 However, users are not prompted to sign in through SSO on each visit. GitLab checks whether a user
 has authenticated through SSO. If it's been more than 1 day since the last sign-in, GitLab
 prompts the user to sign in again through SSO.
-You can see more information about how long a session is valid in our [user profile documentation](../../profile/#why-do-i-keep-getting-signed-out).
 
 We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/9152).
 

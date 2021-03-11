@@ -175,3 +175,20 @@ RSpec.shared_examples 'dependency endpoint success' do |user_type, status, add_m
     end
   end
 end
+
+RSpec.shared_examples 'Rubygems gem download' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it 'returns the gem', :aggregate_failures do
+      subject
+
+      expect(response.media_type).to eq('application/octet-stream')
+      expect(response).to have_gitlab_http_status(status)
+    end
+
+    it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+  end
+end

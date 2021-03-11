@@ -1,3 +1,3 @@
 import Todos from './todos';
 
-document.addEventListener('DOMContentLoaded', () => new Todos());
+new Todos(); // eslint-disable-line no-new
