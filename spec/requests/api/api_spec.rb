@@ -112,6 +112,7 @@ RSpec.describe API::API do
                                        'meta.project' => project.full_path,
                                        'meta.root_namespace' => project.namespace.full_path,
                                        'meta.user' => user.username,
+                                       'meta.client_id' => an_instance_of(String),
                                        'meta.feature_category' => 'issue_tracking')
         end
       end
@@ -125,6 +126,7 @@ RSpec.describe API::API do
           expect(log_context).to match('correlation_id' => an_instance_of(String),
                                        'meta.caller_id' => '/api/:version/users',
                                        'meta.remote_ip' => an_instance_of(String),
+                                       'meta.client_id' => an_instance_of(String),
                                        'meta.feature_category' => 'users')
         end
       end

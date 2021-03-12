@@ -44,12 +44,12 @@ module API
               forbidden!
             end
 
-          runner = ::Ci::Runner.create(attributes)
+          @runner = ::Ci::Runner.create(attributes)
 
-          if runner.persisted?
-            present runner, with: Entities::RunnerRegistrationDetails
+          if @runner.persisted?
+            present @runner, with: Entities::RunnerRegistrationDetails
           else
-            render_validation_error!(runner)
+            render_validation_error!(@runner)
           end
         end
 
@@ -62,9 +62,7 @@ module API
         delete '/' do
           authenticate_runner!
 
-          runner = ::Ci::Runner.find_by_token(params[:token])
-
-          destroy_conditionally!(runner)
+          destroy_conditionally!(current_runner)
         end
 
         desc 'Validates authentication credentials' do

@@ -96,6 +96,6 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   def valid_recipients(recipients)
     recipients.split.select do |recipient|
       recipient.include?('@')
-    end
+    end.uniq(&:downcase)
   end
 end

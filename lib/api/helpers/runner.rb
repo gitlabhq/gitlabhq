@@ -73,23 +73,12 @@ module API
       end
 
       def set_application_context
-        if current_job
-          Gitlab::ApplicationContext.push(
-            user: -> { current_job.user },
-            project: -> { current_job.project }
-          )
-        elsif current_runner&.project_type?
-          Gitlab::ApplicationContext.push(
-            project: -> do
-              projects = current_runner.projects.limit(2) # rubocop: disable CodeReuse/ActiveRecord
-              projects.first if projects.length == 1
-            end
-          )
-        elsif current_runner&.group_type?
-          Gitlab::ApplicationContext.push(
-            namespace: -> { current_runner.groups.first }
-          )
-        end
+        return unless current_job
+
+        Gitlab::ApplicationContext.push(
+          user: -> { current_job.user },
+          project: -> { current_job.project }
+        )
       end
     end
   end

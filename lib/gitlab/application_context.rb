@@ -4,6 +4,7 @@ module Gitlab
   # A GitLab-rails specific accessor for `Labkit::Logging::ApplicationContext`
   class ApplicationContext
     include Gitlab::Utils::LazyAttributes
+    include Gitlab::Utils::StrongMemoize
 
     Attribute = Struct.new(:name, :type)
 
@@ -11,6 +12,7 @@ module Gitlab
       Attribute.new(:project, Project),
       Attribute.new(:namespace, Namespace),
       Attribute.new(:user, User),
+      Attribute.new(:runner, ::Ci::Runner),
       Attribute.new(:caller_id, String),
       Attribute.new(:remote_ip, String),
       Attribute.new(:related_class, String),
@@ -47,8 +49,9 @@ module Gitlab
     def to_lazy_hash
       {}.tap do |hash|
         hash[:user] = -> { username } if set_values.include?(:user)
-        hash[:project] = -> { project_path } if set_values.include?(:project)
+        hash[:project] = -> { project_path } if set_values.include?(:project) || set_values.include?(:runner)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
+        hash[:client_id] = -> { client } if include_client?
         hash[:caller_id] = caller_id if set_values.include?(:caller_id)
         hash[:remote_ip] = remote_ip if set_values.include?(:remote_ip)
         hash[:related_class] = related_class if set_values.include?(:related_class)
@@ -75,7 +78,8 @@ module Gitlab
     end
 
     def project_path
-      project&.full_path
+      associated_routable = project || runner_project
+      associated_routable&.full_path
     end
 
     def username
@@ -83,15 +87,43 @@ module Gitlab
     end
 
     def root_namespace_path
-      if namespace
-        namespace.full_path_components.first
-      else
-        project&.full_path_components&.first
-      end
+      associated_routable = namespace || project || runner_project || runner_group
+      associated_routable&.full_path_components&.first
     end
 
     def include_namespace?
-      set_values.include?(:namespace) || set_values.include?(:project)
+      set_values.include?(:namespace) || set_values.include?(:project) || set_values.include?(:runner)
+    end
+
+    def include_client?
+      set_values.include?(:user) || set_values.include?(:runner) || set_values.include?(:remote_ip)
+    end
+
+    def client
+      if user
+        "user/#{user.id}"
+      elsif runner
+        "runner/#{runner.id}"
+      else
+        "ip/#{remote_ip}"
+      end
+    end
+
+    def runner_project
+      strong_memoize(:runner_project) do
+        next unless runner&.project_type?
+
+        projects = runner.projects.take(2) # rubocop: disable CodeReuse/ActiveRecord
+        projects.first if projects.one?
+      end
+    end
+
+    def runner_group
+      strong_memoize(:runner_group) do
+        next unless runner&.group_type?
+
+        runner.groups.first
+      end
     end
   end
 end
