@@ -32,6 +32,8 @@ FactoryBot.define do
     end
 
     trait :with_review_app do |environment|
+      sequence(:name) { |n| "review/#{n}" }
+
       transient do
         ref { 'master' }
       end

@@ -84,6 +84,62 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe ".stopped_review_apps" do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
+    let_it_be(:new_stopped_review_env) { create(:environment, :with_review_app, :stopped, project: project) }
+    let_it_be(:old_active_review_env) { create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project) }
+    let_it_be(:old_stopped_other_env) { create(:environment, :stopped, created_at: 31.days.ago, project: project) }
+    let_it_be(:new_stopped_other_env) { create(:environment, :stopped, project: project) }
+    let_it_be(:old_active_other_env) { create(:environment, :available, created_at: 31.days.ago, project: project) }
+
+    let(:before) { 30.days.ago }
+    let(:limit) { 1000 }
+
+    subject { project.environments.stopped_review_apps(before, limit) } # rubocop: disable RSpec/SingleLineHook
+
+    it { is_expected.to contain_exactly(old_stopped_review_env) }
+
+    context "current timestamp" do
+      let(:before) { Time.zone.now }
+
+      it { is_expected.to contain_exactly(old_stopped_review_env, new_stopped_review_env) }
+    end
+  end
+
+  describe "scheduled deletion" do
+    let_it_be(:deletable_environment) { create(:environment, auto_delete_at: Time.zone.now) }
+    let_it_be(:undeletable_environment) { create(:environment, auto_delete_at: nil) }
+
+    describe ".scheduled_for_deletion" do
+      subject { described_class.scheduled_for_deletion }
+
+      it { is_expected.to contain_exactly(deletable_environment) }
+    end
+
+    describe ".not_scheduled_for_deletion" do
+      subject { described_class.not_scheduled_for_deletion }
+
+      it { is_expected.to contain_exactly(undeletable_environment) }
+    end
+
+    describe ".schedule_to_delete" do
+      subject { described_class.for_id(deletable_environment).schedule_to_delete }
+
+      it "schedules the record for deletion" do
+        freeze_time do
+          subject
+
+          deletable_environment.reload
+          undeletable_environment.reload
+
+          expect(deletable_environment.auto_delete_at).to eq(1.week.from_now)
+          expect(undeletable_environment.auto_delete_at).to be_nil
+        end
+      end
+    end
+  end
+
   describe 'state machine' do
     it 'invalidates the cache after a change' do
       expect(environment).to receive(:expire_etag_cache)

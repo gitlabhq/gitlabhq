@@ -4666,6 +4666,9 @@ msgstr ""
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
+msgid "Before this can be merged, a Jira issue must be linked in the title or description"
+msgstr ""
+
 msgid "Begin with the selected commit"
 msgstr ""
 

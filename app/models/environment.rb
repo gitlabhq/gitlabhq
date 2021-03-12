@@ -96,6 +96,22 @@ class Environment < ApplicationRecord
   end
   scope :for_id, -> (id) { where(id: id) }
 
+  scope :stopped_review_apps, -> (before, limit) do
+    stopped
+      .in_review_folder
+      .where("created_at < ?", before)
+      .order("created_at ASC")
+      .limit(limit)
+  end
+
+  scope :scheduled_for_deletion, -> do
+    where.not(auto_delete_at: nil)
+  end
+
+  scope :not_scheduled_for_deletion, -> do
+    where(auto_delete_at: nil)
+  end
+
   enum tier: {
     production: 0,
     staging: 1,
@@ -145,6 +161,10 @@ class Environment < ApplicationRecord
 
   def self.valid_states
     self.state_machine.states.map(&:name)
+  end
+
+  def self.schedule_to_delete(at_time = 1.week.from_now)
+    update_all(auto_delete_at: at_time)
   end
 
   class << self

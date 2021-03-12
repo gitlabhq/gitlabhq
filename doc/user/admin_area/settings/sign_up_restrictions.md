@@ -62,25 +62,6 @@ their account.
 If an administrator [increases](#set-the-user-cap-number) or [removes](#remove-the-user-cap) the
 user cap, the users in pending approval state are automatically approved in a background job.
 
-### Enable or disable User cap **(FREE SELF)**
-
-User cap is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:admin_new_user_signups_cap)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:admin_new_user_signups_cap)
-```
-
 ### Set the user cap number
 
 1. Go to  **Admin Area > Settings > General**.

@@ -11,7 +11,8 @@ test:
     - pip install hyde
     - hyde gen
   except:
-    - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 pages:
   stage: deploy
@@ -22,4 +23,5 @@ pages:
     paths:
       - public
   only:
-    - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

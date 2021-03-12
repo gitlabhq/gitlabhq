@@ -265,4 +265,76 @@ RSpec.describe API::Environments do
       end
     end
   end
+
+  describe "DELETE /projects/:id/environments/review_apps" do
+    shared_examples "delete stopped review environments" do
+      around do |example|
+        freeze_time { example.run }
+      end
+
+      it "deletes the old stopped review apps" do
+        old_stopped_review_env = create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project)
+        new_stopped_review_env = create(:environment, :with_review_app, :stopped, project: project)
+        old_active_review_env  = create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project)
+        old_stopped_other_env  = create(:environment, :stopped, created_at: 31.days.ago, project: project)
+        new_stopped_other_env  = create(:environment, :stopped, project: project)
+        old_active_other_env   = create(:environment, :available, created_at: 31.days.ago, project: project)
+
+        delete api("/projects/#{project.id}/environments/review_apps", current_user), params: { dry_run: false }
+        project.environments.reload
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["scheduled_entries"].size).to eq(1)
+        expect(json_response["scheduled_entries"].first["id"]).to eq(old_stopped_review_env.id)
+        expect(json_response["unprocessable_entries"].size).to eq(0)
+
+        expect(old_stopped_review_env.reload.auto_delete_at).to eq(1.week.from_now)
+        expect(new_stopped_review_env.reload.auto_delete_at).to be_nil
+        expect(old_active_review_env.reload.auto_delete_at).to be_nil
+        expect(old_stopped_other_env.reload.auto_delete_at).to be_nil
+        expect(new_stopped_other_env.reload.auto_delete_at).to be_nil
+        expect(old_active_other_env.reload.auto_delete_at).to be_nil
+      end
+    end
+
+    context "as a maintainer" do
+      it_behaves_like "delete stopped review environments" do
+        let(:current_user) { user }
+      end
+    end
+
+    context "as a developer" do
+      let(:developer) { create(:user) }
+
+      before do
+        project.add_developer(developer)
+      end
+
+      it_behaves_like "delete stopped review environments" do
+        let(:current_user) { developer }
+      end
+    end
+
+    context "as a reporter" do
+      let(:reporter) { create(:user) }
+
+      before do
+        project.add_reporter(reporter)
+      end
+
+      it "rejects the request" do
+        delete api("/projects/#{project.id}/environments/review_apps", reporter)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context "as a non member" do
+      it "rejects the request" do
+        delete api("/projects/#{project.id}/environments/review_apps", non_member)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end
