@@ -29,6 +29,10 @@ export default {
     return referencePath.slice(0, referencePath.indexOf('#'));
   },
 
+  activeGroupProjects: (state) => {
+    return state.groupProjects.filter((p) => !p.archived);
+  },
+
   getListByLabelId: (state) => (labelId) => {
     if (!labelId) {
       return null;

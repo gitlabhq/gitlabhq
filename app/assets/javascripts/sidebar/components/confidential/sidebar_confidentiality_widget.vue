@@ -95,7 +95,6 @@ export default {
       });
 
       const data = produce(sourceData, (draftData) => {
-        // eslint-disable-next-line no-param-reassign
         draftData.workspace.issuable.confidential = !this.confidential;
       });
 

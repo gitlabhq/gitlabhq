@@ -20,7 +20,6 @@ export default (selector) => {
       toggleSidebarStatus: (_, __, { cache }) => {
         const sourceData = cache.readQuery({ query: sidebarStatusQuery });
         const data = produce(sourceData, (draftData) => {
-          // eslint-disable-next-line no-param-reassign
           draftData.sidebarStatus = !draftData.sidebarStatus;
         });
         cache.writeQuery({ query: sidebarStatusQuery, data });

@@ -25,6 +25,7 @@ export default {
     with_shared: false,
     include_subgroups: true,
     order_by: 'similarity',
+    archived: false,
   },
   components: {
     GlLoadingIcon,

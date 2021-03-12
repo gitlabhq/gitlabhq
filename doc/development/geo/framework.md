@@ -289,7 +289,7 @@ For example, to add support for files referenced by a `Widget` model with a
              t.binary :verification_checksum
              t.binary :verification_checksum_mismatched
              t.string :verification_failure, limit: 255
-             t.text :last_sync_failure
+             t.string :last_sync_failure, limit: 255
 
              t.index :widget_id, name: :index_widget_registry_on_widget_id, unique: true
              t.index :retry_at
@@ -303,8 +303,6 @@ For example, to add support for files referenced by a `Widget` model with a
            end
          end
        end
-
-       add_text_limit :widget_registry, :last_sync_failure, 255
      end
 
      def down
@@ -940,7 +938,7 @@ For example, to add support for files referenced by a `Gizmos` model with a
          t.bigint :gizmo_id, null: false
          t.integer :state, default: 0, null: false, limit: 2
          t.integer :retry_count, default: 0, limit: 2
-         t.text :last_sync_failure
+         t.string :last_sync_failure, limit: 255
          t.boolean :force_to_redownload
          t.boolean :missing_on_primary
 
@@ -948,8 +946,6 @@ For example, to add support for files referenced by a `Gizmos` model with a
          t.index :retry_at
          t.index :state
         end
-
-        add_text_limit :gizmo_registry, :last_sync_failure, 255
       end
 
       def down

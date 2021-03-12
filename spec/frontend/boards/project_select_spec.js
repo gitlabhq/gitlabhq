@@ -1,30 +1,17 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
 
-import { mockList, mockGroupProjects } from './mock_data';
+import { mockList, mockActiveGroupProjects } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
-const actions = {
-  fetchGroupProjects: jest.fn(),
-  setSelectedProject: jest.fn(),
-};
-
-const createStore = (state = defaultState) => {
-  return new Vuex.Store({
-    state,
-    actions,
-  });
-};
-
-const mockProjectsList1 = mockGroupProjects.slice(0, 1);
+const mockProjectsList1 = mockActiveGroupProjects.slice(0, 1);
 
 describe('ProjectSelect component', () => {
   let wrapper;
+  let store;
 
   const findLabel = () => wrapper.find("[data-testid='header-label']");
   const findGlDropdown = () => wrapper.find(GlDropdown);
@@ -36,20 +23,37 @@ describe('ProjectSelect component', () => {
   const findInMenuLoadingIcon = () => wrapper.find("[data-testid='dropdown-text-loading-icon']");
   const findEmptySearchMessage = () => wrapper.find("[data-testid='empty-result-message']");
 
-  const createWrapper = (state = {}) => {
-    const store = createStore({
-      groupProjects: [],
-      groupProjectsFlags: {
-        isLoading: false,
-        pageInfo: {
-          hasNextPage: false,
+  const createStore = ({ state, activeGroupProjects }) => {
+    Vue.use(Vuex);
+
+    store = new Vuex.Store({
+      state: {
+        defaultState,
+        groupProjectsFlags: {
+          isLoading: false,
+          pageInfo: {
+            hasNextPage: false,
+          },
         },
+        ...state,
       },
-      ...state,
+      actions: {
+        fetchGroupProjects: jest.fn(),
+        setSelectedProject: jest.fn(),
+      },
+      getters: {
+        activeGroupProjects: () => activeGroupProjects,
+      },
+    });
+  };
+
+  const createWrapper = ({ state = {}, activeGroupProjects = [] } = {}) => {
+    createStore({
+      state,
+      activeGroupProjects,
     });
 
     wrapper = mount(ProjectSelect, {
-      localVue,
       propsData: {
         list: mockList,
       },
@@ -93,7 +97,7 @@ describe('ProjectSelect component', () => {
   describe('when dropdown menu is open', () => {
     describe('by default', () => {
       beforeEach(() => {
-        createWrapper({ groupProjects: mockGroupProjects });
+        createWrapper({ activeGroupProjects: mockActiveGroupProjects });
       });
 
       it('shows GlSearchBoxByType with default attributes', () => {
@@ -128,7 +132,7 @@ describe('ProjectSelect component', () => {
 
     describe('when a project is selected', () => {
       beforeEach(() => {
-        createWrapper({ groupProjects: mockProjectsList1 });
+        createWrapper({ activeGroupProjects: mockProjectsList1 });
 
         findFirstGlDropdownItem().find('button').trigger('click');
       });
@@ -142,7 +146,7 @@ describe('ProjectSelect component', () => {
 
     describe('when projects are loading', () => {
       beforeEach(() => {
-        createWrapper({ groupProjectsFlags: { isLoading: true } });
+        createWrapper({ state: { groupProjectsFlags: { isLoading: true } } });
       });
 
       it('displays and hides gl-loading-icon while and after fetching data', () => {

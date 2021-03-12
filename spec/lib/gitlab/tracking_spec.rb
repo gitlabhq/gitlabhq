@@ -61,8 +61,8 @@ RSpec.describe Gitlab::Tracking do
           expect(args[:property]).to eq('property')
           expect(args[:value]).to eq(1.5)
           expect(args[:context].length).to eq(2)
-          expect(args[:context].first).to eq(other_context)
-          expect(args[:context].last.to_json[:schema]).to eq(Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
+          expect(args[:context].first.to_json[:schema]).to eq(Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL)
+          expect(args[:context].last).to eq(other_context)
         end
 
         described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,

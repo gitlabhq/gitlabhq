@@ -159,8 +159,17 @@ class Wiki
     find_page(SIDEBAR, version)
   end
 
-  def find_file(name, version = 'HEAD')
-    wiki.file(name, version)
+  def find_file(name, version = 'HEAD', load_content: true)
+    if Feature.enabled?(:gitaly_find_file, user, default_enabled: :yaml)
+      data_limit = load_content ? -1 : 0
+      blobs = repository.blobs_at([[version, name]], blob_size_limit: data_limit)
+
+      return if blobs.empty?
+
+      Gitlab::Git::WikiFile.from_blob(blobs.first)
+    else
+      wiki.file(name, version)
+    end
   end
 
   def create_page(title, content, format = :markdown, message = nil)

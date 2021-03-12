@@ -15,7 +15,6 @@ const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, va
   });
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = draftData.project.alertManagementIntegrations.nodes.filter(
       ({ id }) => id !== integration.id,
     );
@@ -46,7 +45,6 @@ const addIntegrationToStore = (
   });
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = [
       integration,
       ...draftData.project.alertManagementIntegrations.nodes,
@@ -72,7 +70,6 @@ const addHttpIntegrationToStore = (store, query, { httpIntegrationCreate }, vari
   });
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementHttpIntegrations.nodes = [
       integration,
       ...draftData.project.alertManagementHttpIntegrations.nodes,

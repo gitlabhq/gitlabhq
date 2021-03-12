@@ -9,7 +9,6 @@ export const updateGroupPackageSettings = (fullPath) => (client, { data: updated
   const sourceData = client.readQuery(queryAndParams);
 
   const data = produce(sourceData, (draftState) => {
-    // eslint-disable-next-line no-param-reassign
     draftState.group.packageSettings = {
       ...updatedData.updateNamespacePackageSettings.packageSettings,
     };

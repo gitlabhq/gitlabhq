@@ -343,7 +343,7 @@ module InProductMarketingHelper
     end
   end
 
-  def inline_image_link(folder, image, **options)
+  def inline_image_link(folder, image, options)
     attachments.inline[image] = File.read(Rails.root.join("app/assets/images", folder, image))
     image_tag attachments[image].url, **options
   end

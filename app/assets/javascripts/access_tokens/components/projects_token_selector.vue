@@ -104,10 +104,8 @@ export default {
           const { projects: previousProjects } = previousResult;
 
           return produce(previousResult, (draftData) => {
-            /* eslint-disable no-param-reassign */
             draftData.projects.nodes = [...previousProjects.nodes, ...newProjects.nodes];
             draftData.projects.pageInfo = newProjects.pageInfo;
-            /* eslint-enable no-param-reassign */
           });
         },
       });

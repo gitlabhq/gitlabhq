@@ -27,10 +27,8 @@ const resolvers = {
       const sourceData = cache.readQuery({ query: getCurrentIntegrationQuery });
       const data = produce(sourceData, (draftData) => {
         if (id === null) {
-          // eslint-disable-next-line no-param-reassign
           draftData.currentIntegration = null;
         } else {
-          // eslint-disable-next-line no-param-reassign
           draftData.currentIntegration = {
             id,
             name,

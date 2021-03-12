@@ -7,6 +7,8 @@ import {
   mockIssuesByListId,
   issues,
   mockLists,
+  mockGroupProject1,
+  mockArchivedGroupProject,
 } from '../mock_data';
 
 describe('Boards - Getters', () => {
@@ -163,6 +165,16 @@ describe('Boards - Getters', () => {
   describe('getListByTitle', () => {
     it('returns list for a given list title', () => {
       expect(getters.getListByTitle(boardsState)('To Do')).toEqual(mockLists[1]);
+    });
+  });
+
+  describe('activeGroupProjects', () => {
+    const state = {
+      groupProjects: [mockGroupProject1, mockArchivedGroupProject],
+    };
+
+    it('returns only returns non-archived group projects', () => {
+      expect(getters.activeGroupProjects(state)).toEqual([mockGroupProject1]);
     });
   });
 });

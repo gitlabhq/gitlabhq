@@ -22,7 +22,7 @@ RSpec.describe Banzai::Filter::GollumTagsFilter do
                                   path: 'images/image.jpg',
                                   raw_data: '')
       wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
-      expect(wiki).to receive(:find_file).with('images/image.jpg').and_return(wiki_file)
+      expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).and_return(wiki_file)
 
       tag = '[[images/image.jpg]]'
       doc = filter("See #{tag}", wiki: wiki)
@@ -31,7 +31,7 @@ RSpec.describe Banzai::Filter::GollumTagsFilter do
     end
 
     it 'does not creates img tag if image does not exist' do
-      expect(wiki).to receive(:find_file).with('images/image.jpg').and_return(nil)
+      expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).and_return(nil)
 
       tag = '[[images/image.jpg]]'
       doc = filter("See #{tag}", wiki: wiki)

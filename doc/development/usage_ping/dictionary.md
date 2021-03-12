@@ -13610,11 +13610,11 @@ Whether public signup is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124918_signup_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `topology.duration_s`
 

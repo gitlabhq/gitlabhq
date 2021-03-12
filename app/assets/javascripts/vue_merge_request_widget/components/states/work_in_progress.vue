@@ -87,11 +87,8 @@ export default {
             });
 
             const data = produce(sourceData, (draftState) => {
-              // eslint-disable-next-line no-param-reassign
               draftState.project.mergeRequest.mergeableDiscussionsState = mergeableDiscussionsState;
-              // eslint-disable-next-line no-param-reassign
               draftState.project.mergeRequest.workInProgress = workInProgress;
-              // eslint-disable-next-line no-param-reassign
               draftState.project.mergeRequest.title = title;
             });
 
