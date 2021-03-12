@@ -237,7 +237,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     [
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
-      *ApplicationSetting.repository_storages_weighted_attributes,
       *ApplicationSetting.kroki_formats_attributes.keys.map { |key| "kroki_formats_#{key}".to_sym },
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
@@ -248,8 +247,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_branch_name,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
-      repository_storages: [],
-      restricted_visibility_levels: []
+      restricted_visibility_levels: [],
+      repository_storages_weighted: {}
     ]
   end
 

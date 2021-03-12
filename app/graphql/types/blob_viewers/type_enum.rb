@@ -6,9 +6,9 @@ module Types
       graphql_name 'BlobViewersType'
       description 'Types of blob viewers'
 
-      value 'rich', value: :rich
-      value 'simple', value: :simple
-      value 'auxiliary', value: :auxiliary
+      value 'rich', value: :rich, description: 'Rich blob viewers type.'
+      value 'simple', value: :simple, description: 'Simple blob viewers type.'
+      value 'auxiliary', value: :auxiliary, description: 'Auxiliary blob viewers type.'
     end
   end
 end

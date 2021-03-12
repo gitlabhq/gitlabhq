@@ -82,7 +82,10 @@ module Gitlab
       end
 
       def puma_in_clustered_mode?
-        puma? && Puma.cli_config.options[:workers].to_i > 0
+        return unless puma?
+        return unless Puma.respond_to?(:cli_config)
+
+        Puma.cli_config.options[:workers].to_i > 0
       end
 
       def max_threads

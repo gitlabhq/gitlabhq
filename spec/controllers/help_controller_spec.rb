@@ -132,6 +132,18 @@ RSpec.describe HelpController do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    context 'when two factor is required' do
+      before do
+        stub_two_factor_required
+      end
+
+      it 'does not redirect to two factor auth' do
+        get :index
+
+        expect(response).not_to redirect_to(profile_two_factor_auth_path)
+      end
+    end
   end
 
   describe 'GET #show' do
@@ -152,6 +164,16 @@ RSpec.describe HelpController do
         end
 
         it_behaves_like 'documentation pages local render'
+
+        context 'when two factor is required' do
+          before do
+            stub_two_factor_required
+          end
+
+          it 'does not redirect to two factor auth' do
+            expect(response).not_to redirect_to(profile_two_factor_auth_path)
+          end
+        end
       end
 
       context 'when a custom help_page_documentation_url is set in database' do
@@ -253,5 +275,10 @@ RSpec.describe HelpController do
 
   def stub_readme(content)
     expect_file_read(Rails.root.join('doc', 'README.md'), content: content)
+  end
+
+  def stub_two_factor_required
+    allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
+    allow(controller).to receive(:current_user_requires_two_factor?).and_return(true)
   end
 end

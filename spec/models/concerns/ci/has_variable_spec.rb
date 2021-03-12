@@ -11,6 +11,17 @@ RSpec.describe Ci::HasVariable do
   it { is_expected.not_to allow_value('foo bar').for(:key) }
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
+  describe 'scopes' do
+    describe '.by_key' do
+      let!(:matching_variable) { create(:ci_variable, key: 'example') }
+      let!(:non_matching_variable) { create(:ci_variable, key: 'other') }
+
+      subject { Ci::Variable.by_key('example') }
+
+      it { is_expected.to contain_exactly(matching_variable) }
+    end
+  end
+
   describe '#key=' do
     context 'when the new key is nil' do
       it 'strips leading and trailing whitespaces' do

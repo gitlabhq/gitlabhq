@@ -43,6 +43,9 @@
     - options[:dropdown_class] += ' dropdown-extended-height'
     - options[:footer_content] = true
     - options[:wrapper_class] = 'js-sidebar-assignee-dropdown'
+    - options[:toggle_class] += ' js-invite-members-track'
+    - data['track-event'] = show_invite_members_track_event
+    - options[:data].merge!(data)
     - invite_text = _('Invite Members')
     - track_label = 'edit_assignee'
 

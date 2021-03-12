@@ -95,6 +95,7 @@ module QA
     autoload :Visibility, 'qa/resource/visibility'
     autoload :ProjectSnippet, 'qa/resource/project_snippet'
     autoload :Design, 'qa/resource/design'
+    autoload :RegistryRepository, 'qa/resource/registry_repository'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -231,6 +232,7 @@ module QA
 
       module Settings
         autoload :General, 'qa/page/group/settings/general'
+        autoload :PackageRegistries, 'qa/page/group/settings/package_registries'
       end
     end
 
@@ -291,6 +293,10 @@ module QA
       module Packages
         autoload :Index, 'qa/page/project/packages/index'
         autoload :Show, 'qa/page/project/packages/show'
+      end
+
+      module Registry
+        autoload :Show, 'qa/page/project/registry/show'
       end
 
       module Settings
@@ -489,6 +495,7 @@ module QA
       autoload :ProjectSelector, 'qa/page/component/project_selector'
       autoload :Snippet, 'qa/page/component/snippet'
       autoload :NewSnippet, 'qa/page/component/new_snippet'
+      autoload :InviteMembersModal, 'qa/page/component/invite_members_modal'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

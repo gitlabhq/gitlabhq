@@ -82,6 +82,13 @@ RSpec.describe ExpandVariables do
           value: 'key$variable',
           result: 'keyvalue',
           variables: -> { [{ key: 'variable', value: 'value' }] }
+        },
+        "simple expansion using Collection": {
+          value: 'key$variable',
+          result: 'keyvalue',
+          variables: Gitlab::Ci::Variables::Collection.new([
+            { key: 'variable', value: 'value' }
+          ])
         }
       }
     end

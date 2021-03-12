@@ -95,7 +95,7 @@ export default {
         })
         .catch((err) => {
           this.showAlert(
-            sprintf(__('An error occured while saving changes: %{error}'), {
+            sprintf(__('An error occurred while saving changes: %{error}'), {
               error: err?.response?.data?.message,
             }),
           );

@@ -2,6 +2,7 @@
 
 module Analytics
   module InstanceStatistics
+    # This worker will be removed in 14.0
     class CounterJobWorker
       include ApplicationWorker
 
@@ -10,24 +11,9 @@ module Analytics
 
       idempotent!
 
-      def perform(measurement_identifier, min_id, max_id, recorded_at)
-        query_scope = ::Analytics::InstanceStatistics::Measurement.identifier_query_mapping[measurement_identifier].call
-
-        count = if min_id.nil? || max_id.nil? # table is empty
-                  0
-                else
-                  counter(query_scope, min_id, max_id)
-                end
-
-        return if count == Gitlab::Database::BatchCounter::FALLBACK
-
-        InstanceStatistics::Measurement.insert_all([{ recorded_at: recorded_at, count: count, identifier: measurement_identifier }])
-      end
-
-      private
-
-      def counter(query_scope, min_id, max_id)
-        Gitlab::Database::BatchCount.batch_count(query_scope, start: min_id, finish: max_id)
+      def perform(*args)
+        # Delegate to the new worker
+        Analytics::UsageTrends::CounterJobWorker.new.perform(*args)
       end
     end
   end

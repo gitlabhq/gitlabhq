@@ -66,10 +66,10 @@ class NotificationService
 
   # Notify the owner of the personal access token, when it is about to expire
   # And mark the token with about_to_expire_delivered
-  def access_token_about_to_expire(user)
+  def access_token_about_to_expire(user, token_names)
     return unless user.can?(:receive_notifications)
 
-    mailer.access_token_about_to_expire_email(user).deliver_later
+    mailer.access_token_about_to_expire_email(user, token_names).deliver_later
   end
 
   # Notify the user when at least one of their personal access tokens has expired today
@@ -95,7 +95,7 @@ class NotificationService
   #  * users with custom level checked with "new issue"
   #
   def new_issue(issue, current_user)
-    new_resource_email(issue, :new_issue_email)
+    new_resource_email(issue, current_user, :new_issue_email)
   end
 
   # When issue text is updated, we should send an email to:
@@ -176,7 +176,7 @@ class NotificationService
   #
   # In EE, approvers of the merge request are also included
   def new_merge_request(merge_request, current_user)
-    new_resource_email(merge_request, :new_merge_request_email)
+    new_resource_email(merge_request, current_user, :new_merge_request_email)
   end
 
   def push_to_merge_request(merge_request, current_user, new_commits: [], existing_commits: [])
@@ -186,6 +186,20 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(:push_to_merge_request_email, recipient.user.id, merge_request.id, current_user.id, recipient.reason, new_commits: new_commits, existing_commits: existing_commits).deliver_later
+    end
+  end
+
+  def change_in_merge_request_draft_status(merge_request, current_user)
+    recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "draft_status_change")
+
+    recipients.each do |recipient|
+      mailer.send(
+        :change_in_merge_request_draft_status_email,
+        recipient.user.id,
+        merge_request.id,
+        current_user.id,
+        recipient.reason
+      ).deliver_later
     end
   end
 
@@ -371,6 +385,11 @@ class NotificationService
 
   # Notify users when a new release is created
   def send_new_release_notifications(release)
+    unless release.author&.can_trigger_notifications?
+      warn_skipping_notifications(release.author, release)
+      return false
+    end
+
     recipients = NotificationRecipients::BuildService.build_new_release_recipients(release)
 
     recipients.each do |recipient|
@@ -665,7 +684,12 @@ class NotificationService
   end
 
   def merge_when_pipeline_succeeds(merge_request, current_user)
-    recipients = ::NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: 'merge_when_pipeline_succeeds')
+    recipients = ::NotificationRecipients::BuildService.build_recipients(
+      merge_request,
+      current_user,
+      action: 'merge_when_pipeline_succeeds',
+      custom_action: :merge_when_pipeline_succeeds
+    )
 
     recipients.each do |recipient|
       mailer.merge_when_pipeline_succeeds_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
@@ -678,7 +702,12 @@ class NotificationService
 
   protected
 
-  def new_resource_email(target, method)
+  def new_resource_email(target, current_user, method)
+    unless current_user&.can_trigger_notifications?
+      warn_skipping_notifications(current_user, target)
+      return false
+    end
+
     recipients = NotificationRecipients::BuildService.build_recipients(target, target.author, action: "new")
 
     recipients.each do |recipient|
@@ -687,6 +716,11 @@ class NotificationService
   end
 
   def new_mentions_in_resource_email(target, new_mentioned_users, current_user, method)
+    unless current_user&.can_trigger_notifications?
+      warn_skipping_notifications(current_user, target)
+      return false
+    end
+
     recipients = NotificationRecipients::BuildService.build_recipients(target, current_user, action: "new")
     recipients = recipients.select {|r| new_mentioned_users.include?(r.user) }
 
@@ -819,6 +853,10 @@ class NotificationService
     return false if recipients.present?
 
     source.respond_to?(:group) && source.group
+  end
+
+  def warn_skipping_notifications(user, object)
+    Gitlab::AppLogger.warn(message: "Skipping sending notifications", user: user.id, klass: object.class, object_id: object.id)
   end
 end
 

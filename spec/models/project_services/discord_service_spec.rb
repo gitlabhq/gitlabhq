@@ -6,7 +6,16 @@ RSpec.describe DiscordService do
   it_behaves_like "chat service", "Discord notifications" do
     let(:client) { Discordrb::Webhooks::Client }
     let(:client_arguments) { { url: webhook_url } }
-    let(:content_key) { :content }
+    let(:payload) do
+      {
+        embeds: [
+          include(
+            author: include(name: be_present),
+            description: be_present
+          )
+        ]
+      }
+    end
   end
 
   describe '#execute' do
@@ -56,6 +65,17 @@ RSpec.describe DiscordService do
 
       it 'does not allow DNS rebinding' do
         expect { subject.execute(sample_data) }.to raise_error(ArgumentError, /is blocked/)
+      end
+    end
+
+    context 'when the Discord request fails' do
+      before do
+        WebMock.stub_request(:post, webhook_url).to_return(status: 400)
+      end
+
+      it 'logs an error and returns false' do
+        expect(subject).to receive(:log_error).with('400 Bad Request')
+        expect(subject.execute(sample_data)).to be(false)
       end
     end
   end

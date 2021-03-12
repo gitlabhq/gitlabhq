@@ -56,7 +56,7 @@ You need to enable Kroki integration from Settings under Admin Area.
 To do that, log in with an administrator account and follow these steps:
 
 1. Select the Admin Area (**{admin}**) icon.
-1. Navigate to **Settings > General**.
+1. Go to **Settings > General**.
 1. Expand the **Kroki** section.
 1. Select **Enable Kroki** checkbox.
 1. Enter the **Kroki URL**.

@@ -31,9 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
-  before_action only: :new do
-    record_experiment_user(:ci_syntax_templates, namespace_id: @project.namespace_id) if params[:file_name] == @project.ci_config_path_or_default
-  end
+  before_action :record_experiment, only: :new
 
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe'
 
@@ -262,5 +260,11 @@ class Projects::BlobController < Projects::ApplicationController
   override :visitor_id
   def visitor_id
     current_user&.id
+  end
+
+  def record_experiment
+    return unless params[:file_name] == @project.ci_config_path_or_default && @project.namespace.recent?
+
+    record_experiment_user(:ci_syntax_templates_b, namespace_id: @project.namespace_id)
   end
 end

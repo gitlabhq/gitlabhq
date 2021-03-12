@@ -14,7 +14,7 @@ module Mutations
                 required: true,
                 description: 'The global ID of the board to destroy.'
 
-      authorize :admin_board
+      authorize :admin_issue_board
 
       def resolve(id:)
         board = authorized_find!(id: id)

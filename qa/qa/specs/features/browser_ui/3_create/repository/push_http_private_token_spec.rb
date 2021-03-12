@@ -2,11 +2,11 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Git push over HTTP', :ldap_no_tls, :smoke do
+    describe 'Git push over HTTP', :smoke do
       it 'user using a personal access token pushes code to the repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1278' do
         Flow::Login.sign_in
 
-        access_token = Resource::PersonalAccessToken.fabricate!.access_token
+        access_token = Resource::PersonalAccessToken.fabricate!.token
 
         user = Resource::User.new.tap do |user|
           user.username = Runtime::User.username

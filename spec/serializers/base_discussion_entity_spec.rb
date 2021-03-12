@@ -66,4 +66,13 @@ RSpec.describe BaseDiscussionEntity do
       )
     end
   end
+
+  context 'when issues are disabled in a project' do
+    let(:project) { create(:project, :issues_disabled) }
+    let(:note) { create(:discussion_note_on_merge_request, project: project) }
+
+    it 'does not show a new issues path' do
+      expect(entity.as_json[:resolve_with_issue_path]).to be_nil
+    end
+  end
 end

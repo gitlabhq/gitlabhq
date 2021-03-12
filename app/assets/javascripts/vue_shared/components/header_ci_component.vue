@@ -102,7 +102,7 @@ export default {
     data-qa-selector="pipeline_header"
     data-testid="ci-header-content"
   >
-    <section class="header-main-content">
+    <section class="header-main-content gl-mr-3">
       <ci-icon-badge :status="status" />
 
       <strong data-testid="ci-header-item-text"> {{ itemName }} #{{ itemId }} </strong>
@@ -142,12 +142,16 @@ export default {
       </template>
     </section>
 
-    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
+    <section
+      v-if="$slots.default"
+      data-testid="ci-header-action-buttons"
+      class="gl-display-flex gl-mr-3"
+    >
       <slot></slot>
     </section>
     <gl-button
       v-if="hasSidebarButton"
-      class="d-sm-none js-sidebar-build-toggle gl-ml-auto"
+      class="gl-md-display-none gl-ml-auto gl-align-self-start js-sidebar-build-toggle"
       icon="chevron-double-lg-left"
       :aria-label="__('Toggle sidebar')"
       @click="onClickSidebarButton"

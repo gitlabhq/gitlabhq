@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
+RSpec::Matchers.define :be_background_migration_with_arguments do |arguments|
+  define_method :matches? do |migration|
+    expect do
+      Gitlab::BackgroundMigration.perform(migration, arguments)
+    end.not_to raise_error
+  end
+end
+
 RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
-  match do |migration|
+  define_method :matches? do |migration|
+    expect(migration).to be_background_migration_with_arguments(expected)
+
     BackgroundMigrationWorker.jobs.any? do |job|
       job['args'] == [migration, expected] &&
         job['at'].to_i == (delay.to_i + Time.now.to_i)
@@ -16,7 +26,9 @@ RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
 end
 
 RSpec::Matchers.define :be_scheduled_migration do |*expected|
-  match do |migration|
+  define_method :matches? do |migration|
+    expect(migration).to be_background_migration_with_arguments(expected)
+
     BackgroundMigrationWorker.jobs.any? do |job|
       args = job['args'].size == 1 ? [BackgroundMigrationWorker.jobs[0]['args'][0], []] : job['args']
       args == [migration, expected]
@@ -29,7 +41,9 @@ RSpec::Matchers.define :be_scheduled_migration do |*expected|
 end
 
 RSpec::Matchers.define :be_scheduled_migration_with_multiple_args do |*expected|
-  match do |migration|
+  define_method :matches? do |migration|
+    expect(migration).to be_background_migration_with_arguments(expected)
+
     BackgroundMigrationWorker.jobs.any? do |job|
       args = job['args'].size == 1 ? [BackgroundMigrationWorker.jobs[0]['args'][0], []] : job['args']
       args[0] == migration && compare_args(args, expected)

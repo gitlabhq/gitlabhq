@@ -10,7 +10,7 @@
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Alert box "%s" must use the formatting in the style guide.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert-boxes
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#alert-boxes
 level: error
 nonword: true
 scope: raw

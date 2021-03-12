@@ -5,7 +5,7 @@ import {
   formatBoardLists,
   formatIssueInput,
 } from '~/boards/boards_util';
-import { inactiveId } from '~/boards/constants';
+import { inactiveId, ISSUABLE } from '~/boards/constants';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
@@ -112,6 +112,15 @@ describe('setActiveId', () => {
 });
 
 describe('fetchLists', () => {
+  it('should dispatch fetchIssueLists action', () => {
+    testAction({
+      action: actions.fetchLists,
+      expectedActions: [{ type: 'fetchIssueLists' }],
+    });
+  });
+});
+
+describe('fetchIssueLists', () => {
   const state = {
     fullPath: 'gitlab-org',
     boardId: '1',
@@ -138,13 +147,30 @@ describe('fetchLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchLists,
+      actions.fetchIssueLists,
       {},
       state,
       [
         {
           type: types.RECEIVE_BOARD_LISTS_SUCCESS,
           payload: formattedLists,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('should commit mutations RECEIVE_BOARD_LISTS_FAILURE on failure', (done) => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
+
+    testAction(
+      actions.fetchIssueLists,
+      {},
+      state,
+      [
+        {
+          type: types.RECEIVE_BOARD_LISTS_FAILURE,
         },
       ],
       [],
@@ -168,7 +194,7 @@ describe('fetchLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchLists,
+      actions.fetchIssueLists,
       {},
       state,
       [
@@ -184,6 +210,16 @@ describe('fetchLists', () => {
 });
 
 describe('createList', () => {
+  it('should dispatch createIssueList action', () => {
+    testAction({
+      action: actions.createList,
+      payload: { backlog: true },
+      expectedActions: [{ type: 'createIssueList', payload: { backlog: true } }],
+    });
+  });
+});
+
+describe('createIssueList', () => {
   let commit;
   let dispatch;
   let getters;
@@ -223,7 +259,7 @@ describe('createList', () => {
       }),
     );
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
     expect(dispatch).toHaveBeenCalledWith('addList', backlogList);
   });
@@ -245,7 +281,7 @@ describe('createList', () => {
       },
     });
 
-    await actions.createList({ getters, state, commit, dispatch }, { labelId: '4' });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { labelId: '4' });
 
     expect(dispatch).toHaveBeenCalledWith('addList', list);
     expect(dispatch).toHaveBeenCalledWith('highlightList', list.id);
@@ -257,15 +293,15 @@ describe('createList', () => {
         data: {
           boardListCreate: {
             list: {},
-            errors: [{ foo: 'bar' }],
+            errors: ['foo'],
           },
         },
       }),
     );
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
-    expect(commit).toHaveBeenCalledWith(types.CREATE_LIST_FAILURE);
+    expect(commit).toHaveBeenCalledWith(types.CREATE_LIST_FAILURE, 'foo');
   });
 
   it('highlights list and does not re-query if it already exists', async () => {
@@ -280,7 +316,7 @@ describe('createList', () => {
       getListByLabelId: jest.fn().mockReturnValue(existingList),
     };
 
-    await actions.createList({ getters, state, commit, dispatch }, { backlog: true });
+    await actions.createIssueList({ getters, state, commit, dispatch }, { backlog: true });
 
     expect(dispatch).toHaveBeenCalledWith('highlightList', existingList.id);
     expect(dispatch).toHaveBeenCalledTimes(1);
@@ -301,11 +337,15 @@ describe('fetchLabels', () => {
     };
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
-    await testAction({
-      action: actions.fetchLabels,
-      state: { boardType: 'group' },
-      expectedMutations: [{ type: types.RECEIVE_LABELS_SUCCESS, payload: labels }],
-    });
+    const commit = jest.fn();
+    const getters = {
+      shouldUseGraphQL: () => true,
+    };
+    const state = { boardType: 'group' };
+
+    await actions.fetchLabels({ getters, state, commit });
+
+    expect(commit).toHaveBeenCalledWith(types.RECEIVE_LABELS_SUCCESS, labels);
   });
 });
 
@@ -412,6 +452,22 @@ describe('updateList', () => {
   });
 });
 
+describe('toggleListCollapsed', () => {
+  it('should commit TOGGLE_LIST_COLLAPSED mutation', async () => {
+    const payload = { listId: 'gid://gitlab/List/1', collapsed: true };
+    await testAction({
+      action: actions.toggleListCollapsed,
+      payload,
+      expectedMutations: [
+        {
+          type: types.TOGGLE_LIST_COLLAPSED,
+          payload,
+        },
+      ],
+    });
+  });
+});
+
 describe('removeList', () => {
   let state;
   const list = mockLists[0];
@@ -490,7 +546,7 @@ describe('removeList', () => {
   });
 });
 
-describe('fetchIssuesForList', () => {
+describe('fetchItemsForList', () => {
   const listId = mockLists[0].id;
 
   const state = {
@@ -533,21 +589,21 @@ describe('fetchIssuesForList', () => {
     [listId]: pageInfo,
   };
 
-  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_SUCCESS on success', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchIssuesForList,
+      actions.fetchItemsForList,
       { listId },
       state,
       [
         {
-          type: types.REQUEST_ISSUES_FOR_LIST,
+          type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
         {
-          type: types.RECEIVE_ISSUES_FOR_LIST_SUCCESS,
-          payload: { listIssues: formattedIssues, listPageInfo, listId },
+          type: types.RECEIVE_ITEMS_FOR_LIST_SUCCESS,
+          payload: { listItems: formattedIssues, listPageInfo, listId },
         },
       ],
       [],
@@ -555,19 +611,19 @@ describe('fetchIssuesForList', () => {
     );
   });
 
-  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_FAILURE on failure', (done) => {
+  it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_FAILURE on failure', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
     testAction(
-      actions.fetchIssuesForList,
+      actions.fetchItemsForList,
       { listId },
       state,
       [
         {
-          type: types.REQUEST_ISSUES_FOR_LIST,
+          type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
-        { type: types.RECEIVE_ISSUES_FOR_LIST_FAILURE, payload: listId },
+        { type: types.RECEIVE_ITEMS_FOR_LIST_FAILURE, payload: listId },
       ],
       [],
       done,
@@ -578,6 +634,15 @@ describe('fetchIssuesForList', () => {
 describe('resetIssues', () => {
   it('commits RESET_ISSUES mutation', () => {
     return testAction(actions.resetIssues, {}, {}, [{ type: types.RESET_ISSUES }], []);
+  });
+});
+
+describe('moveItem', () => {
+  it('should dispatch moveIssue action', () => {
+    testAction({
+      action: actions.moveItem,
+      expectedActions: [{ type: 'moveIssue' }],
+    });
   });
 });
 
@@ -598,8 +663,8 @@ describe('moveIssue', () => {
     boardType: 'group',
     disabled: false,
     boardLists: mockLists,
-    issuesByListId: listIssues,
-    issues,
+    boardItemsByListId: listIssues,
+    boardItems: issues,
   };
 
   it('should commit MOVE_ISSUE mutation and MOVE_ISSUE_SUCCESS mutation when successful', (done) => {
@@ -615,9 +680,9 @@ describe('moveIssue', () => {
     testAction(
       actions.moveIssue,
       {
-        issueId: '436',
-        issueIid: mockIssue.iid,
-        issuePath: mockIssue.referencePath,
+        itemId: '436',
+        itemIid: mockIssue.iid,
+        itemPath: mockIssue.referencePath,
         fromListId: 'gid://gitlab/List/1',
         toListId: 'gid://gitlab/List/2',
       },
@@ -666,9 +731,9 @@ describe('moveIssue', () => {
     actions.moveIssue(
       { state, commit: () => {} },
       {
-        issueId: mockIssue.id,
-        issueIid: mockIssue.iid,
-        issuePath: mockIssue.referencePath,
+        itemId: mockIssue.id,
+        itemIid: mockIssue.iid,
+        itemPath: mockIssue.referencePath,
         fromListId: 'gid://gitlab/List/1',
         toListId: 'gid://gitlab/List/2',
       },
@@ -690,9 +755,9 @@ describe('moveIssue', () => {
     testAction(
       actions.moveIssue,
       {
-        issueId: '436',
-        issueIid: mockIssue.iid,
-        issuePath: mockIssue.referencePath,
+        itemId: '436',
+        itemIid: mockIssue.iid,
+        itemPath: mockIssue.referencePath,
         fromListId: 'gid://gitlab/List/1',
         toListId: 'gid://gitlab/List/2',
       },
@@ -879,7 +944,7 @@ describe('addListIssue', () => {
 });
 
 describe('setActiveIssueLabels', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testLabelIds = labels.map((label) => label.id);
   const input = {
@@ -924,7 +989,7 @@ describe('setActiveIssueLabels', () => {
 });
 
 describe('setActiveIssueDueDate', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testDueDate = '2020-02-20';
   const input = {
@@ -975,7 +1040,7 @@ describe('setActiveIssueDueDate', () => {
 });
 
 describe('setActiveIssueSubscribed', () => {
-  const state = { issues: { [mockActiveIssue.id]: mockActiveIssue } };
+  const state = { boardItems: { [mockActiveIssue.id]: mockActiveIssue } };
   const getters = { activeIssue: mockActiveIssue };
   const subscribedState = true;
   const input = {
@@ -1026,7 +1091,7 @@ describe('setActiveIssueSubscribed', () => {
 });
 
 describe('setActiveIssueMilestone', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testMilestone = {
     ...mockMilestone,
@@ -1080,7 +1145,7 @@ describe('setActiveIssueMilestone', () => {
 });
 
 describe('setActiveIssueTitle', () => {
-  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
   const getters = { activeIssue: mockIssue };
   const testTitle = 'Test Title';
   const input = {
@@ -1220,6 +1285,7 @@ describe('setSelectedProject', () => {
 
 describe('toggleBoardItemMultiSelection', () => {
   const boardItem = mockIssue;
+  const boardItem2 = mockIssue2;
 
   it('should commit mutation ADD_BOARD_ITEM_TO_SELECTION if item is not on selection state', () => {
     testAction(
@@ -1249,6 +1315,66 @@ describe('toggleBoardItemMultiSelection', () => {
       ],
       [],
     );
+  });
+
+  it('should additionally commit mutation ADD_BOARD_ITEM_TO_SELECTION for active issue and dispatch unsetActiveId', () => {
+    testAction(
+      actions.toggleBoardItemMultiSelection,
+      boardItem2,
+      { activeId: mockActiveIssue.id, activeIssue: mockActiveIssue, selectedBoardItems: [] },
+      [
+        {
+          type: types.ADD_BOARD_ITEM_TO_SELECTION,
+          payload: mockActiveIssue,
+        },
+        {
+          type: types.ADD_BOARD_ITEM_TO_SELECTION,
+          payload: boardItem2,
+        },
+      ],
+      [{ type: 'unsetActiveId' }],
+    );
+  });
+});
+
+describe('resetBoardItemMultiSelection', () => {
+  it('should commit mutation RESET_BOARD_ITEM_SELECTION', () => {
+    testAction({
+      action: actions.resetBoardItemMultiSelection,
+      state: { selectedBoardItems: [mockIssue] },
+      expectedMutations: [
+        {
+          type: types.RESET_BOARD_ITEM_SELECTION,
+        },
+      ],
+    });
+  });
+});
+
+describe('toggleBoardItem', () => {
+  it('should dispatch resetBoardItemMultiSelection and unsetActiveId when boardItem is the active item', () => {
+    testAction({
+      action: actions.toggleBoardItem,
+      payload: { boardItem: mockIssue },
+      state: {
+        activeId: mockIssue.id,
+      },
+      expectedActions: [{ type: 'resetBoardItemMultiSelection' }, { type: 'unsetActiveId' }],
+    });
+  });
+
+  it('should dispatch resetBoardItemMultiSelection and setActiveId when boardItem is not the active item', () => {
+    testAction({
+      action: actions.toggleBoardItem,
+      payload: { boardItem: mockIssue },
+      state: {
+        activeId: inactiveId,
+      },
+      expectedActions: [
+        { type: 'resetBoardItemMultiSelection' },
+        { type: 'setActiveId', payload: { id: mockIssue.id, sidebarType: ISSUABLE } },
+      ],
+    });
   });
 });
 

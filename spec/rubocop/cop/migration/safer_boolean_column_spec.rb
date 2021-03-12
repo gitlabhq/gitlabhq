@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/safer_boolean_column'
 
 RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'in migration' do
@@ -31,11 +28,10 @@ RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
         sources_and_offense.each do |source, offense|
           context "given the source \"#{source}\"" do
             it "registers the offense matching \"#{offense}\"" do
-              inspect_source(source)
-
-              aggregate_failures do
-                expect(cop.offenses.first.message).to match(offense)
-              end
+              expect_offense(<<~RUBY, node: source, msg: offense)
+                %{node}
+                ^{node} Boolean columns on the `#{table}` table %{msg}.[...]
+              RUBY
             end
           end
         end
@@ -48,11 +44,7 @@ RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
         inoffensive_sources.each do |source|
           context "given the source \"#{source}\"" do
             it "registers no offense" do
-              inspect_source(source)
-
-              aggregate_failures do
-                expect(cop.offenses).to be_empty
-              end
+              expect_no_offenses(source)
             end
           end
         end
@@ -60,25 +52,19 @@ RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
     end
 
     it 'registers no offense for tables not listed in SMALL_TABLES' do
-      inspect_source("add_column :large_table, :column, :boolean")
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("add_column :large_table, :column, :boolean")
     end
 
     it 'registers no offense for non-boolean columns' do
       table = described_class::SMALL_TABLES.sample
-      inspect_source("add_column :#{table}, :column, :string")
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("add_column :#{table}, :column, :string")
     end
   end
 
   context 'outside of migration' do
     it 'registers no offense' do
       table = described_class::SMALL_TABLES.sample
-      inspect_source("add_column :#{table}, :column, :boolean")
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("add_column :#{table}, :column, :boolean")
     end
   end
 end

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# GitLab Web Editor
+# GitLab Web Editor **(FREE)**
 
 Sometimes it's easier to make quick changes directly from the GitLab interface
 than to clone the project and use the Git command-line tool. In this feature
@@ -108,7 +108,7 @@ You can see a **Create merge request** dropdown below the issue description.
 The **Create merge request** button doesn't display if:
 
 - A branch with the same name already exists.
-- The branch already has a referenced merge request.
+- A merge request already exists for this branch.
 - Your project has an active fork relationship.
 
 To make this button appear, one possible workaround is to

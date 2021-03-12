@@ -15,7 +15,7 @@ module CycleAnalyticsHelpers
   end
 
   def toggle_dropdown(field)
-    page.within("[data-testid='#{field}']") do
+    page.within("[data-testid*='#{field}']") do
       find('.dropdown-toggle').click
 
       wait_for_requests
@@ -26,7 +26,7 @@ module CycleAnalyticsHelpers
 
   def select_dropdown_option_by_value(name, value, elem = '.dropdown-item')
     toggle_dropdown name
-    page.find("[data-testid='#{name}'] .dropdown-menu").find("#{elem}[value='#{value}']").click
+    page.find("[data-testid*='#{name}'] .dropdown-menu").find("#{elem}[value='#{value}']").click
   end
 
   def create_commit_referencing_issue(issue, branch_name: generate(:branch))

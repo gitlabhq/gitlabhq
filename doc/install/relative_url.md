@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Install GitLab under a relative URL
+# Install GitLab under a relative URL **(FREE SELF)**
 
 While it is recommended to install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also

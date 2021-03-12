@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.manage.project_imports.manifest
+description: Count of projects imported using manifst file
+product_section: dev
+product_stage: manage
+product_group: group::import
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

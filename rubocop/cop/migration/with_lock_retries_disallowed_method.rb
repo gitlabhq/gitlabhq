@@ -21,6 +21,7 @@ module RuboCop
           change_column_null
           remove_foreign_key_if_exists
           remove_foreign_key_without_error
+          rename_index
           table_exists?
           index_exists_by_name?
           foreign_key_exists?

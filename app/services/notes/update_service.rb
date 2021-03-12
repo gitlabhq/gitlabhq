@@ -7,12 +7,7 @@ module Notes
 
       old_mentioned_users = note.mentioned_users(current_user).to_a
 
-      note.assign_attributes(params.merge(updated_by: current_user))
-
-      note.with_transaction_returning_status do
-        update_confidentiality(note)
-        note.save
-      end
+      note.assign_attributes(params)
 
       track_note_edit_usage_for_issues(note) if note.for_issue?
       track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
@@ -26,6 +21,15 @@ module Notes
         only_commands = content.empty?
 
         note.note = content
+      end
+
+      if note.note_changed?
+        note.assign_attributes(last_edited_at: Time.current, updated_by: current_user)
+      end
+
+      note.with_transaction_returning_status do
+        update_confidentiality(note)
+        note.save
       end
 
       unless only_commands || note.for_personal_snippet?

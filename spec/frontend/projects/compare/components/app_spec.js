@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CompareApp from '~/projects/compare/components/app.vue';
-import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
+import RevisionCard from '~/projects/compare/components/revision_card.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -63,11 +63,11 @@ describe('CompareApp component', () => {
   });
 
   it('render Source and Target BranchDropdown components', () => {
-    const branchDropdowns = wrapper.findAll(RevisionDropdown);
+    const revisionCards = wrapper.findAll(RevisionCard);
 
-    expect(branchDropdowns.length).toBe(2);
-    expect(branchDropdowns.at(0).props('revisionText')).toBe('Source');
-    expect(branchDropdowns.at(1).props('revisionText')).toBe('Target');
+    expect(revisionCards.length).toBe(2);
+    expect(revisionCards.at(0).props('revisionText')).toBe('Source');
+    expect(revisionCards.at(1).props('revisionText')).toBe('Target');
   });
 
   describe('compare button', () => {

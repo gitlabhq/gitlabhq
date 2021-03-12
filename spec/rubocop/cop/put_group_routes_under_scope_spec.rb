@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../rubocop/cop/put_group_routes_under_scope'
 
 RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   %w[resource resources get post put patch delete].each do |route_method|
@@ -15,12 +12,12 @@ RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do
       marker = '^' * offense.size
 
       expect_offense(<<~PATTERN)
-      scope(path: 'groups/*group_id/-', module: :groups) do
-        resource :issues
-      end
+        scope(path: 'groups/*group_id/-', module: :groups) do
+          resource :issues
+        end
 
-      #{offense}
-      #{marker} Put new group routes under /-/ scope
+        #{offense}
+        #{marker} Put new group routes under /-/ scope
       PATTERN
     end
   end

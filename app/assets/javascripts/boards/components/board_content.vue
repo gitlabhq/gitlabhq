@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { sortableEnd, sortableStart } from '~/boards/mixins/sortable_default_options';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -11,7 +12,11 @@ import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
   components: {
-    BoardColumn: gon.features?.graphqlBoardLists ? BoardColumn : BoardColumnDeprecated,
+    BoardAddNewColumn,
+    BoardColumn:
+      gon.features?.graphqlBoardLists || gon.features?.epicBoards
+        ? BoardColumn
+        : BoardColumnDeprecated,
     BoardContentSidebar: () => import('ee_component/boards/components/board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
@@ -33,15 +38,18 @@ export default {
     },
   },
   computed: {
-    ...mapState(['boardLists', 'error']),
-    ...mapGetters(['isSwimlanesOn']),
+    ...mapState(['boardLists', 'error', 'addColumnForm']),
+    ...mapGetters(['isSwimlanesOn', 'isEpicBoard']),
+    addColumnFormVisible() {
+      return this.addColumnForm?.visible;
+    },
     boardListsToUse() {
-      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn
+      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn || this.isEpicBoard
         ? sortBy([...Object.values(this.boardLists)], 'position')
         : this.lists;
     },
     canDragColumns() {
-      return this.glFeatures.graphqlBoardLists && this.canAdminList;
+      return !this.isEpicBoard && this.glFeatures.graphqlBoardLists && this.canAdminList;
     },
     boardColumnWrapper() {
       return this.canDragColumns ? Draggable : 'div';
@@ -62,12 +70,17 @@ export default {
   },
   methods: {
     ...mapActions(['moveList']),
+    afterFormEnters() {
+      const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    },
     handleDragOnStart() {
       sortableStart();
     },
 
     handleDragOnEnd(params) {
       sortableEnd();
+      if (this.isEpicBoard) return;
 
       const { item, newIndex, oldIndex, to } = params;
 
@@ -100,13 +113,17 @@ export default {
       @end="handleDragOnEnd"
     >
       <board-column
-        v-for="list in boardListsToUse"
-        :key="list.id"
+        v-for="(list, index) in boardListsToUse"
+        :key="index"
         ref="board"
         :can-admin-list="canAdminList"
         :list="list"
         :disabled="disabled"
       />
+
+      <transition name="slide" @after-enter="afterFormEnters">
+        <board-add-new-column v-if="addColumnFormVisible" />
+      </transition>
     </component>
 
     <epics-swimlanes

@@ -38,4 +38,12 @@ RSpec.describe Gitlab::UsageDataQueries do
       expect(described_class.sum(Issue, :weight)).to eq('SELECT SUM("issues"."weight") FROM "issues"')
     end
   end
+
+  describe '.add' do
+    it 'returns the combined raw SQL with an inner query' do
+      expect(described_class.add('SELECT COUNT("users"."id") FROM "users"',
+                                 'SELECT COUNT("issues"."id") FROM "issues"'))
+        .to eq('SELECT (SELECT COUNT("users"."id") FROM "users") + (SELECT COUNT("issues"."id") FROM "issues")')
+    end
+  end
 end

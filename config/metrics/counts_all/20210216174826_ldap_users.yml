@@ -1,0 +1,19 @@
+---
+key_path: counts.ldap_users
+description: Number of users that are linked to LDAP
+product_section: dev
+product_stage: manage
+product_group: group::access
+product_category: authentication_and_authorization
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

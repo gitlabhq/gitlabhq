@@ -1,0 +1,16 @@
+---
+key_path: counts.pages_domains
+description: Total GitLab Pages domains
+product_section: ops
+product_stage: release
+product_group: group::release management
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

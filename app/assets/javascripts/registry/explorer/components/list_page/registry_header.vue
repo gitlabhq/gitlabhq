@@ -9,7 +9,6 @@ import {
   LIST_INTRO_TEXT,
   EXPIRATION_POLICY_WILL_RUN_IN,
   EXPIRATION_POLICY_DISABLED_TEXT,
-  EXPIRATION_POLICY_DISABLED_MESSAGE,
 } from '../../constants/index';
 
 export default {
@@ -30,11 +29,6 @@ export default {
       required: false,
     },
     helpPagePath: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    expirationPolicyHelpPagePath: {
       type: String,
       default: '',
       required: false,
@@ -79,19 +73,8 @@ export default {
         ? sprintf(EXPIRATION_POLICY_WILL_RUN_IN, { time: this.timeTillRun })
         : EXPIRATION_POLICY_DISABLED_TEXT;
     },
-    showExpirationPolicyTip() {
-      return (
-        !this.expirationPolicyEnabled && this.imagesCount > 0 && !this.hideExpirationPolicyData
-      );
-    },
     infoMessages() {
-      const base = [{ text: LIST_INTRO_TEXT, link: this.helpPagePath }];
-      return this.showExpirationPolicyTip
-        ? [
-            ...base,
-            { text: EXPIRATION_POLICY_DISABLED_MESSAGE, link: this.expirationPolicyHelpPagePath },
-          ]
-        : base;
+      return [{ text: LIST_INTRO_TEXT, link: this.helpPagePath }];
     },
   },
 };

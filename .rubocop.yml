@@ -7,8 +7,10 @@ require:
   - rubocop-rspec
 
 inherit_from:
-  - .rubocop_manual_todo.yml
-  - .rubocop_todo.yml
+  <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
+  - '.rubocop_manual_todo.yml'
+  - '.rubocop_todo.yml'
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -16,6 +18,7 @@ inherit_from:
 inherit_mode:
   merge:
     - Include
+    - Exclude
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -86,6 +89,17 @@ RSpec/FilePath:
     - 'spec/frontend/fixtures/*'
     - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
+
+# Configuration parameters: AllowSubject.
+RSpec/MultipleMemoizedHelpers:
+  Max: 28
+  AllowSubject: true
+  Exclude:
+    - 'spec/migrations/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/populate_project_snippet_statistics_spec.rb'
+    - 'spec/lib/gitlab/background_migration/populate_finding_uuid_for_vulnerability_feedback_spec.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb'
+    - 'ee/spec/lib/gitlab/background_migration/user_mentions/create_resource_user_mention_spec.rb'
 
 Naming/FileName:
   ExpectMatchingDefinition: true
@@ -240,7 +254,7 @@ Gitlab/Json:
     - 'db/**/*'
     - 'qa/**/*'
     - 'scripts/**/*'
-    - 'lib/rspec_flaky/**/*'
+    - 'tooling/rspec_flaky/**/*'
     - 'lib/quality/**/*'
     - 'tooling/danger/**/*'
 
@@ -595,3 +609,23 @@ FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
     - 'ee/spec/factories/**/*.rb'
+
+# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/321982
+Gitlab/NamespacedClass:
+  Exclude:
+    - 'config/**/*.rb'
+    - 'db/**/*.rb'
+    - 'ee/bin/**/*'
+    - 'ee/db/**/*.rb'
+    - 'ee/elastic/**/*.rb'
+    - 'scripts/**/*'
+    - 'spec/migrations/**/*.rb'
+
+Lint/HashCompareByIdentity:
+  Enabled: true
+
+Lint/RedundantSafeNavigation:
+  Enabled: true
+
+Style/ClassEqualityComparison:
+  Enabled: true

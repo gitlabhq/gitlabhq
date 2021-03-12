@@ -406,7 +406,7 @@ module SearchHelper
     # Closed is considered "danger" for MR so we need to handle separately
     if issuable.is_a?(::MergeRequest)
       if issuable.merged?
-        :primary
+        :info
       elsif issuable.closed?
         :danger
       else

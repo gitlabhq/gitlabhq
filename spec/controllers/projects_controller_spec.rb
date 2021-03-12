@@ -221,6 +221,20 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:record_experiment_user)
       end
 
+      context 'when user can push to default branch' do
+        let(:user) { empty_project.owner }
+
+        it 'creates an "view_project_show" experiment tracking event', :snowplow do
+          allow_next_instance_of(ApplicationExperiment) do |e|
+            allow(e).to receive(:should_track?).and_return(true)
+          end
+
+          get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
+
+          expect_snowplow_event(category: 'empty_repo_upload', action: 'view_project_show', context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', data: anything }], property: 'empty')
+        end
+      end
+
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
@@ -416,7 +430,8 @@ RSpec.describe ProjectsController do
         path: 'foo',
         description: 'bar',
         namespace_id: user.namespace.id,
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+        initialize_with_readme: 1
       }
     end
 
@@ -425,9 +440,11 @@ RSpec.describe ProjectsController do
     end
 
     it 'tracks a created event for the new_project_readme experiment', :experiment do
-      expect(experiment(:new_project_readme)).to track(:created, property: 'blank').on_any_instance.with_context(
-        actor: user
-      )
+      expect(experiment(:new_project_readme)).to track(
+        :created,
+        property: 'blank',
+        value: 1
+      ).on_any_instance.with_context(actor: user)
 
       post :create, params: { project: project_params }
     end
@@ -1344,6 +1361,14 @@ RSpec.describe ProjectsController do
 
             expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
             expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+
+          it 'applies correct scope when throttling' do
+            expect(Gitlab::ApplicationRateLimiter)
+              .to receive(:throttled?)
+              .with(:project_download_export, scope: [user, project])
+
+            post action, params: { namespace_id: project.namespace, id: project }
           end
         end
       end

@@ -68,6 +68,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
@@ -132,6 +133,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -141,6 +143,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -150,6 +153,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -159,6 +163,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -168,6 +173,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -177,6 +183,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
@@ -186,8 +193,19 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
+      end
+
+      it 'protects a single branch and allows force pushes' do
+        post post_endpoint, params: { name: branch_name, allow_force_push: true }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['allow_force_push']).to eq(true)
+        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
+        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
 
       it 'returns a 409 error if the same branch is protected twice' do

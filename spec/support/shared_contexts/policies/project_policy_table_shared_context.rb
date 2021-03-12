@@ -356,7 +356,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :anonymous  | 0
   end
 
-  # :snippet_level, :project_level, :feature_access_level, :membership, :expected_count
+  # :snippet_level, :project_level, :feature_access_level, :membership, :admin_mode, :expected_count
   def permission_table_for_project_snippet_access
     :public   | :public   | :enabled  | :admin      | true  | 1
     :public   | :public   | :enabled  | :admin      | false | 1

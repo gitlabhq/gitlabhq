@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Alert integrations **(FREE)**
+# Integrations **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab Ultimate 12.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.8.
@@ -79,7 +79,7 @@ to configure alerts for this integration.
 ## Customize the alert payload outside of GitLab
 
 For all integration types, you can customize the payload by sending the following
-parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Incident` will be applied.
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` will be applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |

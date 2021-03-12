@@ -92,97 +92,46 @@ RSpec.describe "Admin::Projects" do
     end
   end
 
-  context 'when `vue_project_members_list` feature flag is enabled', :js do
-    describe 'admin adds themselves to the project' do
-      before do
-        project.add_maintainer(user)
-        stub_feature_flags(invite_members_group_modal: false)
-      end
-
-      it 'adds admin to the project as developer', :js do
-        visit project_project_members_path(project)
-
-        page.within '.invite-users-form' do
-          select2(current_user.id, from: '#user_ids', multiple: true)
-          select 'Developer', from: 'access_level'
-        end
-
-        click_button 'Invite'
-
-        expect(find_member_row(current_user)).to have_content('Developer')
-      end
+  describe 'admin adds themselves to the project', :js do
+    before do
+      project.add_maintainer(user)
+      stub_feature_flags(invite_members_group_modal: false)
     end
 
-    describe 'admin removes themselves from the project' do
-      before do
-        project.add_maintainer(user)
-        project.add_developer(current_user)
+    it 'adds admin to the project as developer' do
+      visit project_project_members_path(project)
+
+      page.within '.invite-users-form' do
+        select2(current_user.id, from: '#user_ids', multiple: true)
+        select 'Developer', from: 'access_level'
       end
 
-      it 'removes admin from the project' do
-        visit project_project_members_path(project)
+      click_button 'Invite'
 
-        expect(find_member_row(current_user)).to have_content('Developer')
-
-        page.within find_member_row(current_user) do
-          click_button 'Leave'
-        end
-
-        page.within('[role="dialog"]') do
-          click_button('Leave')
-        end
-
-        expect(current_path).to match dashboard_projects_path
-      end
+      expect(find_member_row(current_user)).to have_content('Developer')
     end
   end
 
-  context 'when `vue_project_members_list` feature flag is disabled' do
+  describe 'admin removes themselves from the project', :js do
     before do
-      stub_feature_flags(vue_project_members_list: false)
+      project.add_maintainer(user)
+      project.add_developer(current_user)
     end
 
-    describe 'admin adds themselves to the project' do
-      before do
-        project.add_maintainer(user)
-        stub_feature_flags(invite_members_group_modal: false)
+    it 'removes admin from the project' do
+      visit project_project_members_path(project)
+
+      expect(find_member_row(current_user)).to have_content('Developer')
+
+      page.within find_member_row(current_user) do
+        click_button 'Leave'
       end
 
-      it 'adds admin to the project as developer', :js do
-        visit project_project_members_path(project)
-
-        page.within '.invite-users-form' do
-          select2(current_user.id, from: '#user_ids', multiple: true)
-          select 'Developer', from: 'access_level'
-        end
-
-        click_button 'Invite'
-
-        page.within '.content-list' do
-          expect(page).to have_content(current_user.name)
-          expect(page).to have_content('Developer')
-        end
-      end
-    end
-
-    describe 'admin removes themselves from the project' do
-      before do
-        project.add_maintainer(user)
-        project.add_developer(current_user)
+      page.within('[role="dialog"]') do
+        click_button('Leave')
       end
 
-      it 'removes admin from the project' do
-        visit project_project_members_path(project)
-
-        page.within '.content-list' do
-          expect(page).to have_content(current_user.name)
-          expect(page).to have_content('Developer')
-        end
-
-        find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-danger').click
-
-        expect(page).not_to have_selector(:css, '.content-list')
-      end
+      expect(current_path).to match dashboard_projects_path
     end
   end
 end

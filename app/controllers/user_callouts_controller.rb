@@ -4,10 +4,11 @@ class UserCalloutsController < ApplicationController
   feature_category :navigation
 
   def create
-    callout = ensure_callout
+    callout = Users::DismissUserCalloutService.new(
+      container: nil, current_user: current_user, params: { feature_name: feature_name }
+    ).execute
 
     if callout.persisted?
-      callout.update(dismissed_at: Time.current)
       respond_to do |format|
         format.json { head :ok }
       end
@@ -19,12 +20,6 @@ class UserCalloutsController < ApplicationController
   end
 
   private
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def ensure_callout
-    current_user.callouts.find_or_create_by(feature_name: UserCallout.feature_names[feature_name])
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def feature_name
     params.require(:feature_name)

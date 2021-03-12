@@ -62,5 +62,20 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end
+
+    # Called when an alert is resolved due to received resolving alert payload
+    #
+    # alert - AlertManagement::Alert object.
+    #
+    # Example Note text:
+    #
+    #   "changed the status to Resolved by closing issue #17"
+    #
+    # Returns the created Note object
+    def log_resolving_alert(monitoring_tool)
+      body = "logged a resolving alert from **#{monitoring_tool}**"
+
+      create_note(NoteSummary.new(noteable, project, User.alert_bot, body, action: 'new_alert_added'))
+    end
   end
 end

@@ -54,7 +54,7 @@ export default {
     class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1"
     :class="optionalClasses"
   >
-    <div class="gl-display-flex gl-align-items-center gl-py-3">
+    <div class="gl-display-flex gl-align-items-center gl-py-3 gl-px-5">
       <div
         v-if="$slots['left-action']"
         class="gl-w-7 gl-display-none gl-sm-display-flex gl-justify-content-start gl-pl-2"

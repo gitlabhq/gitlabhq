@@ -24,7 +24,6 @@
 /doc/administration/troubleshooting @axil @marcia @mjang1
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil
-/doc/ci/release/ @axil
 /doc/ci/services/ @sselhorn
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/development/ @marcia @mjang1
@@ -101,6 +100,7 @@
 /doc/api/repository_files.md @aqualls
 /doc/api/repository_submodules.md @aqualls
 /doc/api/search.md @aqualls
+/doc/api/services.md @aqualls
 /doc/api/snippets.md @aqualls
 /doc/api/suggestions.md @aqualls
 /doc/api/tags.md @aqualls
@@ -110,6 +110,7 @@
 /doc/topics/gitlab_flow.md @aqualls
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
 /doc/user/admin_area/settings/instance_template_repository.md @aqualls
+/doc/user/admin_area/settings/project_integration_management.md @aqualls
 /doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
 /doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
 /doc/user/asciidoc.md @aqualls
@@ -128,6 +129,15 @@
 /doc/user/project/push_options.md @aqualls
 /doc/user/project/settings/import_export.md @aqualls
 /doc/user/snippets.md @aqualls
+
+[Docs Growth]
+/doc/administration/instance_review.md @aqualls
+/doc/api/invitations.md @aqualls
+/doc/api/experiments.md @aqualls 
+/doc/development/experiment_guide/ @aqualls
+/doc/development/snowplow.md @aqualls
+/doc/development/usage_ping/ @aqualls
+/doc/user/admin_area/license.md @aqualls
 
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
@@ -170,6 +180,11 @@ Dangerfile @gl-quality/eng-prod
 /scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
+[Backend Static Code Analysis]
+.rubocop*.yml @dstull @splattael @gl-quality/eng-prod 
+/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+
 [End-to-end]
 /qa/ @gl-quality
 
@@ -189,15 +204,16 @@ Dangerfile @gl-quality/eng-prod
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 [Threat Insights]
+/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
-/ee/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
-/ee/spec/policies/vulnerabilities/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/spec/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
+
 [Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
@@ -244,9 +260,7 @@ Dangerfile @gl-quality/eng-prod
 [Product Intelligence]
 /ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
 /ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
-/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/product-intelligence/engineers
 /lib/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
-/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
 /lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
 
 [Growth Experiments]
@@ -266,3 +280,6 @@ Dangerfile @gl-quality/eng-prod
 
 [Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
+
+[Workhorse]
+/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao 

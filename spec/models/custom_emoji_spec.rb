@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe CustomEmoji do
   describe 'Associations' do
-    it { is_expected.to belong_to(:namespace) }
+    it { is_expected.to belong_to(:namespace).inverse_of(:custom_emoji) }
+    it { is_expected.to belong_to(:creator).inverse_of(:created_custom_emoji) }
     it { is_expected.to have_db_column(:file) }
+    it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_length_of(:name).is_at_most(36) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to have_db_column(:external) }
@@ -36,7 +38,7 @@ RSpec.describe CustomEmoji do
       new_emoji = build(:custom_emoji, name: old_emoji.name, namespace: old_emoji.namespace, group: group)
 
       expect(new_emoji).not_to be_valid
-      expect(new_emoji.errors.messages).to eq(name: ["has already been taken"])
+      expect(new_emoji.errors.messages).to include(name: ["has already been taken"])
     end
 
     it 'disallows non http and https file value' do

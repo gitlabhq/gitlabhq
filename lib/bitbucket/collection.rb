@@ -11,13 +11,5 @@ module Bitbucket
 
       lazy
     end
-
-    def method_missing(method, *args)
-      return super unless self.respond_to?(method)
-
-      self.__send__(method, *args) do |item| # rubocop:disable GitlabSecurity/PublicSend
-        block_given? ? yield(item) : item
-      end
-    end
   end
 end

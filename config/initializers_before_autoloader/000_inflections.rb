@@ -20,6 +20,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     event_log
     file_registry
     group_view
+    group_wiki_repository_registry
     job_artifact_registry
     lfs_object_registry
     package_file_registry

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'delegate'
+
 require_relative 'teammate'
 require_relative 'title_linting'
 
@@ -86,10 +88,81 @@ module Tooling
         end
       end
 
-      # @return [Hash<String,Array<String>>]
+      Change = Struct.new(:file, :change_type, :category)
+
+      class Changes < ::SimpleDelegator
+        def added
+          select_by_change_type(:added)
+        end
+
+        def modified
+          select_by_change_type(:modified)
+        end
+
+        def deleted
+          select_by_change_type(:deleted)
+        end
+
+        def renamed_before
+          select_by_change_type(:renamed_before)
+        end
+
+        def renamed_after
+          select_by_change_type(:renamed_after)
+        end
+
+        def has_category?(category)
+          any? { |change| change.category == category }
+        end
+
+        def by_category(category)
+          Changes.new(select { |change| change.category == category })
+        end
+
+        def categories
+          map(&:category).uniq
+        end
+
+        def files
+          map(&:file)
+        end
+
+        private
+
+        def select_by_change_type(change_type)
+          Changes.new(select { |change| change.change_type == change_type })
+        end
+      end
+
+      # @return [Hash<Symbol,Array<String>>]
       def changes_by_category
         all_changed_files.each_with_object(Hash.new { |h, k| h[k] = [] }) do |file, hash|
           categories_for_file(file).each { |category| hash[category] << file }
+        end
+      end
+
+      # @return [Changes]
+      def changes
+        Changes.new([]).tap do |changes|
+          git.added_files.each do |file|
+            categories_for_file(file).each { |category| changes << Change.new(file, :added, category) }
+          end
+
+          git.modified_files.each do |file|
+            categories_for_file(file).each { |category| changes << Change.new(file, :modified, category) }
+          end
+
+          git.deleted_files.each do |file|
+            categories_for_file(file).each { |category| changes << Change.new(file, :deleted, category) }
+          end
+
+          git.renamed_files.map { |x| x[:before] }.each do |file|
+            categories_for_file(file).each { |category| changes << Change.new(file, :renamed_before, category) }
+          end
+
+          git.renamed_files.map { |x| x[:after] }.each do |file|
+            categories_for_file(file).each { |category| changes << Change.new(file, :renamed_after, category) }
+          end
         end
       end
 
@@ -130,8 +203,13 @@ module Tooling
       CATEGORIES = {
         [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend],
 
+        %r{\A(ee/)?config/feature_flags/} => :feature_flag,
+
+        %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} => :changelog,
+
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
+        %r{\Adata/whats_new/} => :docs,
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,
@@ -145,7 +223,6 @@ module Tooling
           \.nvmrc |
           \.prettierignore |
           \.prettierrc |
-          \.scss-lint.yml |
           \.stylelintrc |
           \.haml-lint.yml |
           \.haml-lint_todo.yml |
@@ -160,6 +237,7 @@ module Tooling
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => %i[frontend engineering_productivity],
 
+        %r{\A(ee/)?db/(geo/)?(migrate|post_migrate)/} => [:database, :migration],
         %r{\A(ee/)?db/(?!fixtures)[^/]+} => :database,
         %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => :database,
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => :database,
@@ -215,6 +293,12 @@ module Tooling
         usernames.map { |u| Tooling::Danger::Teammate.new('username' => u) }
       end
 
+      def mr_iid
+        return '' unless gitlab_helper
+
+        gitlab_helper.mr_json['iid']
+      end
+
       def mr_title
         return '' unless gitlab_helper
 
@@ -225,6 +309,12 @@ module Tooling
         return '' unless gitlab_helper
 
         gitlab_helper.mr_json['web_url']
+      end
+
+      def mr_labels
+        return [] unless gitlab_helper
+
+        gitlab_helper.mr_labels
       end
 
       def mr_target_branch
@@ -258,10 +348,9 @@ module Tooling
       end
 
       def mr_has_labels?(*labels)
-        return false unless gitlab_helper
-
         labels = labels.flatten.uniq
-        (labels & gitlab_helper.mr_labels) == labels
+
+        (labels & mr_labels) == labels
       end
 
       def labels_list(labels, sep: ', ')

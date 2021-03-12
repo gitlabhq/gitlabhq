@@ -13,13 +13,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
   let vm;
   const props = {
     endpoint: 'endpoint.json',
-    helpPagePath: 'foo',
     emptyStateSvgPath: 'foo',
     errorStateSvgPath: 'foo',
-    autoDevopsHelpPath: 'foo',
   };
-
-  preloadFixtures(jsonFixtureName);
 
   const findRunPipelineBtn = () => vm.$el.querySelector('[data-testid="run_pipeline_button"]');
   const findRunPipelineBtnMobile = () =>

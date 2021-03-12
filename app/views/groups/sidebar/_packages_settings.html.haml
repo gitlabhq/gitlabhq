@@ -1,5 +1,5 @@
 - if group_packages_list_nav?
   = nav_link(controller: :packages_and_registries) do
-    = link_to group_settings_packages_and_registries_path(@group), title: _('Packages & Registries') do
+    = link_to group_settings_packages_and_registries_path(@group), title: _('Packages & Registries'), data: { qa_selector: 'group_package_settings_link' } do
       %span
         = _('Packages & Registries')

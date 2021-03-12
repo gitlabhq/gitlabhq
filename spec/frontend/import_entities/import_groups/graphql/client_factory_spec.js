@@ -2,6 +2,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockClient } from 'mock-apollo-client';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import {
   clientTypenames,
@@ -18,6 +19,7 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { statusEndpointFixture, availableNamespacesFixture } from './fixtures';
 
+jest.mock('~/flash');
 jest.mock('~/import_entities/import_groups/graphql/services/status_poller', () => ({
   StatusPoller: jest.fn().mockImplementation(function mock() {
     this.startPolling = jest.fn();
@@ -35,15 +37,19 @@ describe('Bulk import resolvers', () => {
   let axiosMockAdapter;
   let client;
 
-  beforeEach(() => {
-    axiosMockAdapter = new MockAdapter(axios);
-    client = createMockClient({
+  const createClient = (extraResolverArgs) => {
+    return createMockClient({
       cache: new InMemoryCache({
         fragmentMatcher: { match: () => true },
         addTypename: false,
       }),
-      resolvers: createResolvers({ endpoints: FAKE_ENDPOINTS }),
+      resolvers: createResolvers({ endpoints: FAKE_ENDPOINTS, ...extraResolverArgs }),
     });
+  };
+
+  beforeEach(() => {
+    axiosMockAdapter = new MockAdapter(axios);
+    client = createClient();
   });
 
   afterEach(() => {
@@ -80,6 +86,44 @@ describe('Bulk import resolvers', () => {
         axiosMockAdapter
           .onGet(FAKE_ENDPOINTS.availableNamespaces)
           .reply(httpStatus.OK, availableNamespacesFixture);
+      });
+
+      it('respects cached import state when provided by group manager', async () => {
+        const FAKE_STATUS = 'DEMO_STATUS';
+        const FAKE_IMPORT_TARGET = {};
+        const TARGET_INDEX = 0;
+
+        const clientWithMockedManager = createClient({
+          GroupsManager: jest.fn().mockImplementation(() => ({
+            getImportStateFromStorageByGroupId(groupId) {
+              if (groupId === statusEndpointFixture.importable_data[TARGET_INDEX].id) {
+                return {
+                  status: FAKE_STATUS,
+                  importTarget: FAKE_IMPORT_TARGET,
+                };
+              }
+
+              return null;
+            },
+          })),
+        });
+
+        const clientResponse = await clientWithMockedManager.query({
+          query: bulkImportSourceGroupsQuery,
+        });
+        const clientResults = clientResponse.data.bulkImportSourceGroups.nodes;
+
+        expect(clientResults[TARGET_INDEX].import_target).toBe(FAKE_IMPORT_TARGET);
+        expect(clientResults[TARGET_INDEX].status).toBe(FAKE_STATUS);
+      });
+
+      it('populates each result instance with empty import_target when there are no available namespaces', async () => {
+        axiosMockAdapter.onGet(FAKE_ENDPOINTS.availableNamespaces).reply(httpStatus.OK, []);
+
+        const response = await client.query({ query: bulkImportSourceGroupsQuery });
+        results = response.data.bulkImportSourceGroups.nodes;
+
+        expect(results.every((r) => r.import_target.target_namespace === '')).toBe(true);
       });
 
       describe('when called', () => {
@@ -220,14 +264,14 @@ describe('Bulk import resolvers', () => {
         expect(intermediateResults[0].status).toBe(STATUSES.SCHEDULING);
       });
 
-      it('sets group status to STARTED when request completes', async () => {
+      it('sets import status to CREATED when request completes', async () => {
         axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
         await client.mutate({
           mutation: importGroupMutation,
           variables: { sourceGroupId: GROUP_ID },
         });
 
-        expect(results[0].status).toBe(STATUSES.STARTED);
+        expect(results[0].status).toBe(STATUSES.CREATED);
       });
 
       it('resets status to NONE if request fails', async () => {
@@ -244,6 +288,40 @@ describe('Bulk import resolvers', () => {
         await waitForPromises();
 
         expect(results[0].status).toBe(STATUSES.NONE);
+      });
+
+      it('shows default error message when server error is not provided', async () => {
+        axiosMockAdapter
+          .onPost(FAKE_ENDPOINTS.createBulkImport)
+          .reply(httpStatus.INTERNAL_SERVER_ERROR);
+
+        client
+          .mutate({
+            mutation: importGroupMutation,
+            variables: { sourceGroupId: GROUP_ID },
+          })
+          .catch(() => {});
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenCalledWith({ message: 'Importing the group failed' });
+      });
+
+      it('shows provided error message when error is included in backend response', async () => {
+        const CUSTOM_MESSAGE = 'custom message';
+
+        axiosMockAdapter
+          .onPost(FAKE_ENDPOINTS.createBulkImport)
+          .reply(httpStatus.INTERNAL_SERVER_ERROR, { error: CUSTOM_MESSAGE });
+
+        client
+          .mutate({
+            mutation: importGroupMutation,
+            variables: { sourceGroupId: GROUP_ID },
+          })
+          .catch(() => {});
+        await waitForPromises();
+
+        expect(createFlash).toHaveBeenCalledWith({ message: CUSTOM_MESSAGE });
       });
     });
   });

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Bugzilla Service
+# Bugzilla Service **(FREE)**
 
 Navigate to the [Integrations page](overview.md#accessing-integrations),
 select the **Bugzilla** service and fill in the required details as described

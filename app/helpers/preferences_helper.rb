@@ -29,6 +29,7 @@ module PreferencesHelper
       stars:    _("Starred Projects"),
       project_activity: _("Your Projects' Activity"),
       starred_project_activity: _("Starred Projects' Activity"),
+      followed_user_activity: _("Followed Users' Activity"),
       groups: _("Your Groups"),
       todos: _("Your To-Do List"),
       issues: _("Assigned Issues"),

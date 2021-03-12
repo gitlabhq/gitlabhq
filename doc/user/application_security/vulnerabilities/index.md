@@ -19,8 +19,7 @@ Each security vulnerability in a project's [Vulnerability Report](../vulnerabili
 On the vulnerability's page, you can:
 
 - [Change the vulnerability's status](#change-vulnerability-status).
-- [Create a GitLab issue](#create-a-gitlab-issue-for-a-vulnerability).
-- [Create a Jira issue](#create-a-jira-issue-for-a-vulnerability).
+- [Create an issue](#create-an-issue-for-a-vulnerability).
 - [Link issues to the vulnerability](#link-gitlab-issues-to-the-vulnerability).
 - [Automatically remediate the vulnerability](#automatically-remediate-the-vulnerability), if an
   automatic solution is available.
@@ -40,7 +39,21 @@ the following values:
 A timeline shows you when the vulnerability status has changed
 and allows you to comment on a change.
 
-## Create a GitLab issue for a vulnerability
+## Create an issue for a vulnerability
+
+From a vulnerability's page you can create an issue to track all action taken to resolve or
+mitigate it.
+
+From a vulnerability you can create either:
+
+- [A GitLab issue](#create-a-gitlab-issue-for-a-vulnerability) (default).
+- [A Jira issue](#create-a-jira-issue-for-a-vulnerability).
+
+Creating a Jira issue requires that
+[Jira integration](../../project/integrations/jira_integrations.md) is enabled on the project. Note
+that when Jira integration is enabled, the GitLab issue feature is not available.
+
+### Create a GitLab issue for a vulnerability
 
 To create a GitLab issue for a vulnerability:
 
@@ -50,7 +63,7 @@ To create a GitLab issue for a vulnerability:
 An issue is created in the project, prepopulated with information from the vulnerability report.
 The issue is then opened so you can take further action.
 
-## Create a Jira issue for a vulnerability
+### Create a Jira issue for a vulnerability
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4677) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
@@ -64,16 +77,18 @@ This feature might not be available to you. Check the **version history** note a
 
 Prerequisites:
 
-- [Enable Jira integration for vulnerabilities](../../project/integrations/jira.md). Select
-  **Enable Jira issues creation from vulnerabilities** when configuring the integration.
+- [Enable Jira integration](../../project/integrations/jira.md).
+  The **Enable Jira issues creation from vulnerabilities** option must be selected as part of the configuration.
+- Each user must have a personal Jira user account with permission to create issues in the target project.
 
 To create a Jira issue for a vulnerability:
 
 1. Go to the vulnerability's page.
 1. Select **Create Jira issue**.
+1. If you're not already logged in to Jira, log in.
 
-An issue is created in the linked Jira project, with the **Summary** and **Description** fields
-pre-populated. The Jira issue is then opened in a new browser tab.
+The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
+fields are pre-populated from the vulnerability's details.
 
 ### Enable or disable Jira integration for vulnerabilities **(ULTIMATE SELF)**
 
@@ -108,4 +123,4 @@ Linked issues are shown in the Vulnerability Report and the vulnerability's page
 ## Automatically remediate the vulnerability
 
 You can fix some vulnerabilities by applying the solution that GitLab automatically
-generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#automatic-remediation-for-vulnerabilities).
+generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#apply-an-automatic-remediation-for-a-vulnerability).

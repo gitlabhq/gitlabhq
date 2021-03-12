@@ -29,7 +29,7 @@ RSpec.describe Groups::BoardsController do
           expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
           allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_issue_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do
@@ -74,7 +74,7 @@ RSpec.describe Groups::BoardsController do
           expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
           allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_issue_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do
@@ -111,7 +111,7 @@ RSpec.describe Groups::BoardsController do
           expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
           allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_issue_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do

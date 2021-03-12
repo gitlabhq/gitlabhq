@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Atlassian HipChat
+# Atlassian HipChat **(FREE)**
 
 GitLab provides a way to send HipChat notifications upon a number of events,
 such as when a user pushes code, creates a branch or tag, adds a comment, and

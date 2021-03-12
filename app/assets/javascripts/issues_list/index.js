@@ -3,10 +3,10 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IssuablesListApp from './components/issuables_list_app.vue';
-import JiraIssuesListRoot from './components/jira_issues_list_root.vue';
+import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
 
 function mountJiraIssuesListApp() {
-  const el = document.querySelector('.js-projects-issues-root');
+  const el = document.querySelector('.js-jira-issues-import-status');
 
   if (!el) {
     return false;
@@ -23,7 +23,7 @@ function mountJiraIssuesListApp() {
     el,
     apolloProvider,
     render(createComponent) {
-      return createComponent(JiraIssuesListRoot, {
+      return createComponent(JiraIssuesImportStatusRoot, {
         props: {
           canEdit: parseBoolean(el.dataset.canEdit),
           isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
@@ -36,7 +36,7 @@ function mountJiraIssuesListApp() {
 }
 
 function mountIssuablesListApp() {
-  if (!gon.features?.vueIssuablesList && !gon.features?.jiraIssuesIntegration) {
+  if (!gon.features?.vueIssuablesList) {
     return;
   }
 

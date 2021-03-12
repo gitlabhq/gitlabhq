@@ -201,7 +201,7 @@ export default {
     changedCommentText() {
       return sprintf(
         __(
-          'This comment has changed since you started editing, please review the %{startTag}updated comment%{endTag} to ensure information is not lost.',
+          'This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost.',
         ),
         {
           startTag: `<a href="${this.noteHash}" target="_blank" rel="noopener noreferrer">`,
@@ -345,7 +345,7 @@ export default {
               class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
               data-qa-selector="reply_field"
               dir="auto"
-              :aria-label="__('Description')"
+              :aria-label="__('Reply to comment')"
               :placeholder="__('Write a comment or drag your files here…')"
               @keydown.meta.enter="handleKeySubmit()"
               @keydown.ctrl.enter="handleKeySubmit()"

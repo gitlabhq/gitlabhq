@@ -83,7 +83,7 @@ RSpec.describe 'User comments on a diff', :js do
 
       wait_for_requests
 
-      click_button 'Reply...'
+      find_field('Reply…', match: :first).click
 
       find('.js-suggestion-btn').click
 

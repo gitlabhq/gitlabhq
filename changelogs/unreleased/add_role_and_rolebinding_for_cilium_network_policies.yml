@@ -1,0 +1,5 @@
+---
+title: Add Role and Rolebinding for CiliumNetworkPolicies
+merge_request: 54130
+author:
+type: changed

@@ -70,6 +70,82 @@ RSpec.describe Gitlab::Checks::BranchCheck do
         expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You are not allowed to push code to protected branches on this project.')
       end
 
+      context 'when user has push access' do
+        before do
+          allow(user_access)
+            .to receive(:can_push_to_branch?)
+            .and_return(true)
+        end
+
+        context 'if protected branches is allowed to force push' do
+          before do
+            allow(ProtectedBranch)
+              .to receive(:allow_force_push?)
+              .with(project, 'master')
+              .and_return(true)
+          end
+
+          it 'allows force push' do
+            expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+            expect { subject.validate! }.not_to raise_error
+          end
+        end
+
+        context 'if protected branches is not allowed to force push' do
+          before do
+            allow(ProtectedBranch)
+              .to receive(:allow_force_push?)
+              .with(project, 'master')
+              .and_return(false)
+          end
+
+          it 'prevents force push' do
+            expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+            expect { subject.validate! }.to raise_error
+          end
+        end
+      end
+
+      context 'when user does not have push access' do
+        before do
+          allow(user_access)
+            .to receive(:can_push_to_branch?)
+            .and_return(false)
+        end
+
+        context 'if protected branches is allowed to force push' do
+          before do
+            allow(ProtectedBranch)
+              .to receive(:allow_force_push?)
+              .with(project, 'master')
+              .and_return(true)
+          end
+
+          it 'prevents force push' do
+            expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+            expect { subject.validate! }.to raise_error
+          end
+        end
+
+        context 'if protected branches is not allowed to force push' do
+          before do
+            allow(ProtectedBranch)
+              .to receive(:allow_force_push?)
+              .with(project, 'master')
+              .and_return(false)
+          end
+
+          it 'prevents force push' do
+            expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+            expect { subject.validate! }.to raise_error
+          end
+        end
+      end
+
       context 'when project repository is empty' do
         let(:project) { create(:project) }
 

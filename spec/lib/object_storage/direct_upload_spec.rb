@@ -224,6 +224,17 @@ RSpec.describe ObjectStorage::DirectUpload do
         expect(subject[:CustomPutHeaders]).to be_truthy
         expect(subject[:PutHeaders]).to eq({})
       end
+
+      context 'with an object with UTF-8 characters' do
+        let(:object_name) { 'tmp/uploads/テスト' }
+
+        it 'returns an escaped path' do
+          expect(subject[:GetURL]).to start_with(storage_url)
+
+          uri = Addressable::URI.parse(subject[:GetURL])
+          expect(uri.path).to include("tmp/uploads/#{CGI.escape("テスト")}")
+        end
+      end
     end
 
     shared_examples 'a valid upload with multipart data' do

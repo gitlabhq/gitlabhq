@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
+import service from '~/batch_comments/services/drafts_service';
 import * as actions from '~/batch_comments/stores/modules/batch_comments/actions';
 import axios from '~/lib/utils/axios_utils';
 
@@ -201,6 +202,12 @@ describe('Batch comments store actions', () => {
 
   describe('updateDraft', () => {
     let getters;
+    service.update = jest.fn();
+    service.update.mockResolvedValue({ data: { id: 1 } });
+
+    const commit = jest.fn();
+    let context;
+    let params;
 
     beforeEach(() => {
       getters = {
@@ -208,43 +215,43 @@ describe('Batch comments store actions', () => {
           draftsPath: TEST_HOST,
         },
       };
-    });
 
-    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', (done) => {
-      const commit = jest.fn();
-      const context = {
+      context = {
         getters,
         commit,
       };
       res = { id: 1 };
       mock.onAny().reply(200, res);
-
-      actions
-        .updateDraft(context, { note: { id: 1 }, noteText: 'test', callback() {} })
-        .then(() => {
-          expect(commit).toHaveBeenCalledWith('RECEIVE_DRAFT_UPDATE_SUCCESS', { id: 1 });
-        })
-        .then(done)
-        .catch(done.fail);
+      params = { note: { id: 1 }, noteText: 'test' };
     });
 
-    it('calls passed callback', (done) => {
-      const commit = jest.fn();
-      const context = {
-        getters,
-        commit,
-      };
+    afterEach(() => jest.clearAllMocks());
+
+    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', () => {
+      return actions.updateDraft(context, { ...params, callback() {} }).then(() => {
+        expect(commit).toHaveBeenCalledWith('RECEIVE_DRAFT_UPDATE_SUCCESS', { id: 1 });
+      });
+    });
+
+    it('calls passed callback', () => {
       const callback = jest.fn();
-      res = { id: 1 };
-      mock.onAny().reply(200, res);
+      return actions.updateDraft(context, { ...params, callback }).then(() => {
+        expect(callback).toHaveBeenCalled();
+      });
+    });
 
-      actions
-        .updateDraft(context, { note: { id: 1 }, noteText: 'test', callback })
-        .then(() => {
-          expect(callback).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+    it('does not stringify empty position', () => {
+      return actions.updateDraft(context, { ...params, position: {}, callback() {} }).then(() => {
+        expect(service.update.mock.calls[0][1].position).toBeUndefined();
+      });
+    });
+
+    it('stringifies a non-empty position', () => {
+      const position = { test: true };
+      const expectation = JSON.stringify(position);
+      return actions.updateDraft(context, { ...params, position, callback() {} }).then(() => {
+        expect(service.update.mock.calls[0][1].position).toBe(expectation);
+      });
     });
   });
 

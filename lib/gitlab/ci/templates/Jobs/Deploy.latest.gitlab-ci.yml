@@ -1,5 +1,5 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v2.0.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v2.6.0"
   dependencies: []
 
 review:
@@ -23,7 +23,7 @@ review:
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -44,7 +44,7 @@ stop_review:
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -73,7 +73,7 @@ staging:
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$STAGING_ENABLED'
 
@@ -98,7 +98,7 @@ canary:
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CANARY_ENABLED'
       when: manual
@@ -135,7 +135,7 @@ production:
       when: never
     - if: '$INCREMENTAL_ROLLOUT_MODE'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 
 production_manual:
   <<: *production_template
@@ -147,12 +147,12 @@ production_manual:
       when: never
     - if: '$INCREMENTAL_ROLLOUT_MODE'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master" && $STAGING_ENABLED'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $STAGING_ENABLED'
       when: manual
-    - if: '$CI_COMMIT_BRANCH == "master" && $CANARY_ENABLED'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CANARY_ENABLED'
       when: manual
 
-# This job implements incremental rollout on for every push to `master`.
+# This job implements incremental rollout on for every push to the default branch.
 
 .rollout: &rollout_template
   extends: .auto-deploy
@@ -181,7 +181,7 @@ production_manual:
       when: never
     - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     # $INCREMENTAL_ROLLOUT_ENABLED is for compatibility with pre-GitLab 11.4 syntax
     - if: '$INCREMENTAL_ROLLOUT_MODE == "manual" || $INCREMENTAL_ROLLOUT_ENABLED'
@@ -194,7 +194,7 @@ production_manual:
       when: never
     - if: '$INCREMENTAL_ROLLOUT_MODE == "manual"'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
       when: delayed

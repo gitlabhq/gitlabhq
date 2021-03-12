@@ -1,8 +1,0 @@
----
-name: saas_add_seats_button
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49242
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/291060
-milestone: '13.7'
-type: development
-group: group::purchase
-default_enabled: false

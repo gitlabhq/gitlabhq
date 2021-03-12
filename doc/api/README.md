@@ -21,6 +21,10 @@ Contributions are welcome.
 For a list of the available resources and their endpoints, see
 [API resources](api_resources.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an introduction and basic steps, see
+[How to make GitLab API calls](https://www.youtube.com/watch?v=0LsMC3ZiXkA).
+
 ## SCIM **(PREMIUM SAAS)**
 
 GitLab provides an [SCIM API](scim.md) that both implements
@@ -200,17 +204,11 @@ With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/
 to authenticate with the API:
 
 - Packages:
-  - [Package Registry for Composer](../user/packages/composer_repository/index.md)
-  - [Package Registry for Conan](../user/packages/conan_repository/index.md)
+  - [Package Registry](../user/packages/package_registry/index.md)
   - [Container Registry](../user/packages/container_registry/index.md)
     (`$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`)
-  - [Go Proxy](../user/packages/go_proxy/index.md)
-  - [Package Registry for Maven](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
-  - [Package Registry for npm](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
-  - [Package Registry for NuGet](../user/packages/nuget_repository/index.md)
-  - [Package Registry for PyPI](../user/packages/pypi_repository/index.md#authenticate-with-a-ci-job-token)
-  - [Package Registry for generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
+- [Get job token's job](jobs.md#get-job-tokens-job)
 - [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)
 - [Terraform plan](../user/infrastructure/index.md)
@@ -750,7 +748,7 @@ specifically used by GitLab.com, see
 The GitLab API supports the `application/json` content type by default, though
 some API endpoints also support `text/plain`.
 
-In [GitLab 13.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
+In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
 API endpoints do not support `text/plain` by default, unless it's explicitly documented.
 
 This change is deployed behind the `:api_always_use_application_json` [feature flag](../user/feature_flags.md),

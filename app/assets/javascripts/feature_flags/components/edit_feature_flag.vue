@@ -86,6 +86,8 @@ export default {
           data-track-event="click_button"
           data-track-label="feature_flag_toggle"
           class="gl-mr-4"
+          :label="__('Feature flag status')"
+          label-position="hidden"
           @change="toggleActive"
         />
         <h3 class="page-title gl-m-0">{{ title }}</h3>

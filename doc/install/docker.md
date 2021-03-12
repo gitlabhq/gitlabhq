@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Install GitLab with Docker
+# Install GitLab with Docker **(FREE SELF)**
 
 [Docker](https://www.docker.com) and container technology have been revolutionizing the software world for the past few years. They combine the performance and efficiency of native execution with the abstraction, security, and immutability of virtualization.
 

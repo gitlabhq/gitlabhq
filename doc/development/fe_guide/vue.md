@@ -237,6 +237,9 @@ Each Vue component has a unique output. This output is always present in the ren
 Although each method of a Vue component can be tested individually, our goal is to test the output
 of the render function, which represents the state at all times.
 
+Visit the [Vue testing guide](https://vuejs.org/v2/guide/testing.html#Unit-Testing) for help
+testing the rendered output.
+
 Here's an example of a well structured unit test for [this Vue component](#appendix---vue-component-subject-under-test):
 
 ```javascript
@@ -330,11 +333,6 @@ describe('~/todos/app.vue', () => {
   });
 });
 ```
-
-### Test the component's output
-
-The main return value of a Vue component is the rendered output. In order to test the component we
-need to test the rendered output. Visit the [Vue testing guide](https://vuejs.org/v2/guide/testing.html#Unit-Testing).
 
 ### Child components
 

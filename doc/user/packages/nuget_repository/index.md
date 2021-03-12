@@ -219,7 +219,7 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package 
    <configuration>
     <packageSources>
         <clear />
-        <add key="gitlab" value="https://gitlab.example.com/api/v4/project/<your_project_id>/packages/nuget/index.json" />
+        <add key="gitlab" value="https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" />
     </packageSources>
     <packageSourceCredentials>
         <gitlab>

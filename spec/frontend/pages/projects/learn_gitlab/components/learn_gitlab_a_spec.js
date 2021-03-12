@@ -1,41 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import LearnGitlabA from '~/pages/projects/learn_gitlab/components/learn_gitlab_a.vue';
-
-const TEST_ACTIONS = {
-  gitWrite: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  userAdded: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  pipelineCreated: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  trialStarted: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  codeOwnersEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  requiredMrApprovalsEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  mergeRequestCreated: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  securityScanEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-};
+import { testActions } from './mock_data';
 
 describe('Learn GitLab Design A', () => {
   let wrapper;
@@ -46,13 +11,7 @@ describe('Learn GitLab Design A', () => {
   });
 
   const createWrapper = () => {
-    wrapper = extendedWrapper(
-      shallowMount(LearnGitlabA, {
-        propsData: {
-          actions: TEST_ACTIONS,
-        },
-      }),
-    );
+    wrapper = shallowMount(LearnGitlabA, { propsData: { actions: testActions } });
   };
 
   it('should render the loading state', () => {

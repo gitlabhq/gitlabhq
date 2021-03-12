@@ -31,3 +31,58 @@ You should also update npm packages that follow the current version of Rails:
 
 - `@rails/ujs`
 - `@rails/actioncable`
+
+## Upgrading dependencies because of vulnerabilities
+
+When upgrading dependencies because of a vulnerability, we
+should pin the minimal version of the gem in which the vulnerability
+was fixed in our Gemfile to avoid accidentally downgrading.
+
+For example, consider that the gem `license_finder` has `thor` as its
+dependency. `thor` was found vulnerable until its version `1.1.1`,
+which includes the vulnerability fix.
+
+In the Gemfile, make sure to pin `thor` to `1.1.1`. The direct
+dependency `license_finder` should already have the version specified.
+
+```ruby
+gem 'license_finder', '~> 6.0'
+# Dependency of license_finder with fix for vulnerability
+# _link to initial security issue that will become public in time_
+gem 'thor', '>= 1.1.1'
+```
+
+Here we're using the operator `>=` (greater than or equal to) rather
+than `~>` ([pessimistic
+operator](https://thoughtbot.com/blog/rubys-pessimistic-operator))
+making it possible to upgrade `license_finder` or any other gem to a
+version that depends on `thor 1.2`.
+
+Simlarly, if `license_finder` had a vulnerability fixed in 6.0.1, we
+should add:
+
+```ruby
+gem 'license_finder', '~> 6.0', '>= 6.0.1'
+```
+
+This way, other dependencies rather than `license_finder` can
+still depend on a newer version of `thor`, such as `6.0.2`, but would
+not be able to depend on the vulnerable version `6.0.0`.
+
+A downgrade like that could happen if we introduced a new dependency
+that also relied on thor but had its version pinned to a vulnerable
+one. These changes are easy to miss in the `Gemfile.lock`. Pinning the
+version would result in a conflict that would need to be solved.
+
+To avoid upgrading indirect dependencies, we can use [`bundle update
+--conservative`](https://bundler.io/man/bundle-update.1.html#OPTIONS).
+
+When submitting a merge request including a dependency update,
+include a link to the Gem diff between the 2 versions in the merge request
+description. You can find this link on `rubygems.org` under
+**Review Changes**. When you click it, RubyGems generates a comparison
+between the versions on `diffend.io`. For example, this is the gem
+diff for [`thor` 1.0.0 vs
+1.0.1](https://my.diffend.io/gems/thor/1.0.0/1.0.1). Use the
+links directly generated from RubyGems, since the links from GitLab or other code-hosting
+platforms might not reflect the code that's actually published.

@@ -16,7 +16,6 @@ import (
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/errortracker"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
@@ -103,7 +102,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	fset.UintVar(&cfg.APILimit, "apiLimit", 0, "Number of API requests allowed at single time")
 	fset.UintVar(&cfg.APIQueueLimit, "apiQueueLimit", 0, "Number of API requests allowed to be queued")
 	fset.DurationVar(&cfg.APIQueueTimeout, "apiQueueDuration", queueing.DefaultTimeout, "Maximum queueing duration of requests")
-	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50, "Long polling duration for job requesting for runners (default 50s - enabled)")
+	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50*time.Second, "Long polling duration for job requesting for runners (default 50s - enabled)")
 	fset.BoolVar(&cfg.PropagateCorrelationID, "propagateCorrelationID", false, "Reuse existing Correlation-ID from the incoming request header `X-Request-ID` if present")
 
 	if err := fset.Parse(args); err != nil {
@@ -156,8 +155,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		return err
 	}
 	defer closer.Close()
-
-	errortracker.Initialize(cfg.Version)
 
 	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
 	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")
@@ -226,7 +223,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 	defer accessCloser.Close()
 
-	up := upstream.NewUpstream(cfg, accessLogger)
+	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger))
 
 	go func() { finalErrors <- http.Serve(listener, up) }()
 

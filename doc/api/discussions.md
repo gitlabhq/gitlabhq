@@ -15,7 +15,7 @@ Discussions are a set of related notes on:
 - Merge requests
 - Commits
 
-This includes system notes, which are notes about changes to the object (for example, when a milestone changes, there will be a corresponding system note). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
+This includes system notes, which are notes about changes to the object (for example, when a milestone changes, a corresponding system note is added). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
 
 ## Discussions pagination
 
@@ -839,7 +839,7 @@ a note but other comments (replies) can be added to it later.
 POST /projects/:id/merge_requests/:merge_request_iid/discussions
 ```
 
-Parameters:
+Parameters for all comments:
 
 | Attribute                                | Type           | Required | Description |
 | ---------------------------------------- | -------------- | -------- | ----------- |
@@ -858,20 +858,27 @@ Parameters:
 | `position[old_path]`                     | string         | no       | File path before change |
 | `position[old_line]`                     | integer        | no       | Line number before change (for 'text' diff notes) |
 | `position[line_range]`                   | hash           | no       | Line range for a multi-line diff note |
-| `position[line_range][start]`            | hash           | no       | Multiline note starting line |
-| `position[line_range][start][line_code]` | string         | yes      | Line code for the start line |
-| `position[line_range][start][type]`      | string         | yes      | Line type for the start line |
-| `position[line_range][end]`              | hash           | no       | Multiline note ending line |
-| `position[line_range][end][line_code]`   | string         | yes      | Line code for the end line |
-| `position[line_range][end][type]`        | string         | yes      | Line type for the end line |
 | `position[width]`                        | integer        | no       | Width of the image (for 'image' diff notes) |
 | `position[height]`                       | integer        | no       | Height of the image (for 'image' diff notes) |
 | `position[x]`                            | integer        | no       | X coordinate (for 'image' diff notes) |
 | `position[y]`                            | integer        | no       | Y coordinate (for 'image' diff notes) |
 
+Parameters for multiline comments only:
+
+| Attribute                                | Type           | Required | Description |
+| ---------------------------------------- | -------------- | -------- | ----------- |
+| `position[line_range][start]`            | hash           | no       | Multiline note starting line |
+| `position[line_range][start][line_code]` | string         | no       | Line code for the start line |
+| `position[line_range][start][type]`      | string         | no       | Line type for the start line |
+| `position[line_range][end]`              | hash           | no       | Multiline note ending line |
+| `position[line_range][end][line_code]`   | string         | no       | Line code for the end line |
+| `position[line_range][end][type]`        | string         | no      | Line type for the end line |
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
 ```
+
+There is currently no functional documented method of starting merge request discussions. Read [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/228807) for reflections.
 
 ### Resolve a merge request thread
 

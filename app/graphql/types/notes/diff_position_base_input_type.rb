@@ -2,7 +2,6 @@
 
 module Types
   module Notes
-    # rubocop: disable Graphql/AuthorizeTypes
     class DiffPositionBaseInputType < BaseInputObject
       argument :head_sha, GraphQL::STRING_TYPE, required: true,
                description: copy_field_description(Types::DiffRefsType, :head_sha)
@@ -17,6 +16,5 @@ module Types
                description: 'The paths of the file that was changed. ' \
                             'Both of the properties of this input are optional, but at least one of them is required'
     end
-    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

@@ -99,10 +99,18 @@ module Gitlab
         initial_config
       end
 
+      def find_sha(project)
+        branches = project&.repository&.branches || []
+
+        unless branches.empty?
+          project.repository.root_ref_sha
+        end
+      end
+
       def build_context(project:, sha:, user:, parent_pipeline:)
         Config::External::Context.new(
           project: project,
-          sha: sha || project&.repository&.root_ref_sha,
+          sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
           variables: project&.predefined_variables&.to_runner_variables)

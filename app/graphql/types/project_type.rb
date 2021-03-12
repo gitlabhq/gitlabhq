@@ -181,7 +181,7 @@ module Types
 
     field :packages,
          description: 'Packages of the project.',
-         resolver: Resolvers::PackagesResolver
+         resolver: Resolvers::ProjectPackagesResolver
 
     field :pipelines,
           null: true,
@@ -272,6 +272,12 @@ module Types
           null: true,
           description: 'Integrations which can receive alerts for the project.',
           resolver: Resolvers::AlertManagement::IntegrationsResolver
+
+    field :alert_management_http_integrations,
+          Types::AlertManagement::HttpIntegrationType.connection_type,
+          null: true,
+          description: 'HTTP Integrations which can receive alerts for the project.',
+          resolver: Resolvers::AlertManagement::HttpIntegrationsResolver
 
     field :releases,
           Types::ReleaseType.connection_type,

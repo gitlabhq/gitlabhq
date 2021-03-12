@@ -15,7 +15,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
   end
 
   let(:override) { {} }
-  let(:package_name) { "@#{namespace.path}/my-app".freeze }
+  let(:package_name) { "@#{namespace.path}/my-app" }
 
   subject { described_class.new(project, user, params).execute }
 
@@ -42,29 +42,35 @@ RSpec.describe Packages::Npm::CreatePackageService do
 
     it { expect(subject.name).to eq(package_name) }
     it { expect(subject.version).to eq(version) }
+
+    context 'with build info' do
+      let(:job) { create(:ci_build, user: user) }
+      let(:params) { super().merge(build: job) }
+
+      it_behaves_like 'assigns build to package'
+      it_behaves_like 'assigns status to package'
+
+      it 'creates a package file build info' do
+        expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+      end
+    end
   end
 
   describe '#execute' do
     context 'scoped package' do
       it_behaves_like 'valid package'
-
-      context 'with build info' do
-        let(:job) { create(:ci_build, user: user) }
-        let(:params) { super().merge(build: job) }
-
-        it_behaves_like 'assigns build to package'
-        it_behaves_like 'assigns status to package'
-
-        it 'creates a package file build info' do
-          expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
-        end
-      end
     end
 
-    context 'invalid package name' do
-      let(:package_name) { "@#{namespace.path}/my-group/my-app".freeze }
+    context 'scoped package not following the naming convention' do
+      let(:package_name) { '@any-scope/package' }
 
-      it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
+      it_behaves_like 'valid package'
+    end
+
+    context 'unscoped package' do
+      let(:package_name) { 'unscoped-package' }
+
+      it_behaves_like 'valid package'
     end
 
     context 'package already exists' do
@@ -84,11 +90,18 @@ RSpec.describe Packages::Npm::CreatePackageService do
       it { expect(subject[:message]).to be 'File is too large.' }
     end
 
-    context 'with incorrect namespace' do
-      let(:package_name) { '@my_other_namespace/my-app' }
+    [
+      '@inv@lid_scope/package',
+      '@scope/sub/group',
+      '@scope/../../package',
+      '@scope%2e%2e%2fpackage'
+    ].each do |invalid_package_name|
+      context "with invalid name #{invalid_package_name}" do
+        let(:package_name) { invalid_package_name }
 
-      it 'raises a RecordInvalid error' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+        it 'raises a RecordInvalid error' do
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+        end
       end
     end
 

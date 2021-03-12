@@ -32,7 +32,7 @@ metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics
 
 ## Creating the self monitoring project
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
+1. Go to **Admin Area > Settings > Metrics and profiling** and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button on.
 1. Once your GitLab instance creates the project, GitLab displays a link to the project in the text above the **Create Project** toggle. You can also find it under **Projects > Your projects**.
 
@@ -42,7 +42,7 @@ WARNING:
 Deleting the self monitoring project removes any changes made to the project. If
 you create the project again, it's created in its default state.
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
+1. Go to **Admin Area > Settings > Metrics and profiling** and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button off.
 1. In the confirmation dialog that opens, click **Delete project**.
    It can take a few seconds for it to be deleted.

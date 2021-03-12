@@ -352,6 +352,20 @@ describe('Api', () => {
     });
   });
 
+  describe('projectGroups', () => {
+    it('fetches a project group', async () => {
+      const options = { unused: 'option' };
+      const projectId = 1;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/groups.json`;
+      mock.onGet(expectedUrl, { params: options }).reply(httpStatus.OK, {
+        name: 'test',
+      });
+
+      const { name } = await Api.projectGroups(projectId, options);
+      expect(name).toBe('test');
+    });
+  });
+
   describe('projectUsers', () => {
     it('fetches all users of a particular project', (done) => {
       const query = 'dummy query';
@@ -479,6 +493,30 @@ describe('Api', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('projectShareWithGroup', () => {
+    it('invites a group to share access with the authenticated project', () => {
+      const projectId = 1;
+      const sharedGroupId = 99;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/share`;
+      const options = {
+        group_id: sharedGroupId,
+        group_access: 10,
+        expires_at: undefined,
+      };
+
+      jest.spyOn(axios, 'post');
+
+      mock.onPost(expectedUrl).reply(200, {
+        status: 'success',
+      });
+
+      return Api.projectShareWithGroup(projectId, options).then(({ data }) => {
+        expect(data.status).toBe('success');
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl, options);
+      });
     });
   });
 
@@ -634,6 +672,30 @@ describe('Api', () => {
         expect(response.length).toBe(1);
         expect(response[0].name).toBe('test');
         done();
+      });
+    });
+  });
+
+  describe('groupShareWithGroup', () => {
+    it('invites a group to share access with the authenticated group', () => {
+      const groupId = 1;
+      const sharedGroupId = 99;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/share`;
+      const options = {
+        group_id: sharedGroupId,
+        group_access: 10,
+        expires_at: undefined,
+      };
+
+      jest.spyOn(axios, 'post');
+
+      mock.onPost(expectedUrl).reply(200, {
+        status: 'success',
+      });
+
+      return Api.groupShareWithGroup(groupId, options).then(({ data }) => {
+        expect(data.status).toBe('success');
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl, options);
       });
     });
   });

@@ -20,20 +20,12 @@ module Ci
         variables.concat(user_variables)
         variables.concat(dependency_variables) if dependencies
         variables.concat(secret_instance_variables)
-        variables.concat(secret_group_variables)
+        variables.concat(secret_group_variables(environment: environment))
         variables.concat(secret_project_variables(environment: environment))
         variables.concat(trigger_request.user_variables) if trigger_request
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
       end
-    end
-
-    ##
-    # Regular Ruby hash of scoped variables, without duplicates that are
-    # possible to be present in an array of hashes returned from `variables`.
-    #
-    def scoped_variables_hash
-      scoped_variables.to_hash
     end
 
     ##
@@ -93,13 +85,13 @@ module Ci
       project.ci_instance_variables_for(ref: git_ref)
     end
 
-    def secret_group_variables
+    def secret_group_variables(environment: expanded_environment_name)
       return [] unless project.group
 
-      project.group.ci_variables_for(git_ref, project)
+      project.group.ci_variables_for(git_ref, project, environment: environment)
     end
 
-    def secret_project_variables(environment: persisted_environment)
+    def secret_project_variables(environment: expanded_environment_name)
       project.ci_variables_for(ref: git_ref, environment: environment)
     end
 

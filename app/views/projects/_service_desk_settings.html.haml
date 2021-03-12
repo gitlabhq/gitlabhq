@@ -1,5 +1,5 @@
 - expanded = expanded_by_default?
-%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded) }
+%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded), data: { qa_selector: 'service_desk_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Service Desk')
     %button.btn.gl-button.js-settings-toggle

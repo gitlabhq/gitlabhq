@@ -1,12 +1,14 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { splitCamelCase } from '../../lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
@@ -17,11 +19,13 @@ export default {
     ReplyButton,
     GlButton,
     GlDropdownItem,
+    UserAccessRoleBadge,
+    EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [resolvedStatusMixin],
+  mixins: [resolvedStatusMixin, glFeatureFlagsMixin()],
   props: {
     author: {
       type: Object,
@@ -115,6 +119,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    awardPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     ...mapGetters(['getUserDataByProp', 'getNoteableData']),
@@ -183,6 +191,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['toggleAwardRequest']),
     onEdit() {
       this.$emit('handleEdit');
     },
@@ -220,30 +229,43 @@ export default {
           .catch(() => flash(__('Something went wrong while updating assignees')));
       }
     },
+    setAwardEmoji(awardName) {
+      this.toggleAwardRequest({
+        endpoint: this.awardPath,
+        noteId: this.noteId,
+        awardName,
+      });
+    },
   },
 };
 </script>
 
 <template>
   <div class="note-actions">
-    <span
+    <user-access-role-badge
       v-if="isAuthor"
-      class="note-role user-access-role has-tooltip d-none d-md-inline-block"
+      v-gl-tooltip
+      class="gl-mx-3 d-none d-md-inline-block"
       :title="displayAuthorBadgeText"
-      >{{ __('Author') }}</span
     >
-    <span
+      {{ __('Author') }}
+    </user-access-role-badge>
+    <user-access-role-badge
       v-if="accessLevel"
-      class="note-role user-access-role has-tooltip"
+      v-gl-tooltip
+      class="gl-mx-3"
       :title="displayMemberBadgeText"
-      >{{ accessLevel }}</span
     >
-    <span
+      {{ accessLevel }}
+    </user-access-role-badge>
+    <user-access-role-badge
       v-else-if="isContributor"
-      class="note-role user-access-role has-tooltip"
+      v-gl-tooltip
+      class="gl-mx-3"
       :title="displayContributorBadgeText"
-      >{{ __('Contributor') }}</span
     >
+      {{ __('Contributor') }}
+    </user-access-role-badge>
     <gl-button
       v-if="canResolve"
       ref="resolveButton"
@@ -259,19 +281,41 @@ export default {
       class="line-resolve-btn note-action-button"
       @click="onResolve"
     />
-    <a
-      v-if="canAwardEmoji"
-      v-gl-tooltip
-      :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-      class="note-action-button note-emoji-button js-add-award js-note-emoji gl-text-gray-600 gl-m-2"
-      href="#"
-      title="Add reaction"
-      data-position="right"
-    >
-      <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
-      <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
-      <gl-icon class="link-highlight award-control-icon-super-positive" name="smile" />
-    </a>
+    <template v-if="canAwardEmoji">
+      <emoji-picker
+        v-if="glFeatures.improvedEmojiPicker"
+        toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-2 gl-p-0! gl-shadow-none! gl-bg-transparent!"
+        @click="setAwardEmoji"
+      >
+        <template #button-content>
+          <gl-icon class="link-highlight award-control-icon-neutral gl-m-0!" name="slight-smile" />
+          <gl-icon class="link-highlight award-control-icon-positive gl-m-0!" name="smiley" />
+          <gl-icon class="link-highlight award-control-icon-super-positive gl-m-0!" name="smile" />
+        </template>
+      </emoji-picker>
+      <gl-button
+        v-else
+        v-gl-tooltip
+        :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
+        class="note-action-button note-emoji-button add-reaction-button js-add-award js-note-emoji"
+        category="tertiary"
+        variant="default"
+        size="small"
+        title="Add reaction"
+        data-position="right"
+        :aria-label="__('Add reaction')"
+      >
+        <span class="reaction-control-icon reaction-control-icon-neutral">
+          <gl-icon name="slight-smile" />
+        </span>
+        <span class="reaction-control-icon reaction-control-icon-positive">
+          <gl-icon name="smiley" />
+        </span>
+        <span class="reaction-control-icon reaction-control-icon-super-positive">
+          <gl-icon name="smile" />
+        </span>
+      </gl-button>
+    </template>
     <reply-button
       v-if="showReply"
       ref="replyButton"

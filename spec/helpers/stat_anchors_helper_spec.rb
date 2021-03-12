@@ -18,7 +18,7 @@ RSpec.describe StatAnchorsHelper do
 
     context 'when anchor is not a link' do
       context 'when class_modifier is set' do
-        let(:anchor) { anchor_klass.new(false, nil, nil, 'default') }
+        let(:anchor) { anchor_klass.new(false, nil, nil, 'btn-default') }
 
         it 'returns the proper attributes' do
           expect(subject[:class]).to include('gl-button btn btn-default')
@@ -47,6 +47,22 @@ RSpec.describe StatAnchorsHelper do
 
       it 'returns the itemprop attributes' do
         expect(subject[:itemprop]).to eq true
+      end
+    end
+
+    context 'when data is not set' do
+      let(:anchor) { anchor_klass.new(false, nil, nil, nil, nil, nil, nil) }
+
+      it 'returns the data attributes' do
+        expect(subject[:data]).to be_nil
+      end
+    end
+
+    context 'when itemprop is set' do
+      let(:anchor) { anchor_klass.new(false, nil, nil, nil, nil, nil, { 'toggle' => 'modal' }) }
+
+      it 'returns the data attributes' do
+        expect(subject[:data]).to eq({ 'toggle' => 'modal' })
       end
     end
   end

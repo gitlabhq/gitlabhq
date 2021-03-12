@@ -71,7 +71,7 @@ Where:
 | `enabled` | `true` or `false`. Enables the Registry in GitLab. By default this is `false`. |
 | `host`    | The host URL under which the Registry runs and users can use. |
 | `port`    | The port the external Registry domain listens on. |
-| `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. |
+| `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. Do not change this unless you are setting up an [external Docker registry](#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). |
 | `key`     | The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 | `path`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation](https://docs.docker.com/registry/configuration/#storage). This path needs to be readable by the GitLab user, the web-server user and the Registry user. Read more in [#configure-storage-for-the-container-registry](#configure-storage-for-the-container-registry). |
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
@@ -630,18 +630,18 @@ You can use GitLab as an auth endpoint with an external container registry.
 
    ```ruby
    gitlab_rails['registry_enabled'] = true
-   gitlab_rails['registry_api_url'] = "http://localhost:5000"
+   gitlab_rails['registry_api_url'] = "https://<external_registry_host>:5000"
    gitlab_rails['registry_issuer'] = "gitlab-issuer"
    ```
 
-   `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
-   Container Registry features and authentication endpoint. The GitLab bundled
-   Container Registry service does not start, even with this enabled.
-
-   `gitlab_rails['registry_api_url'] = "http://localhost:5000"` can
-   carry a different hostname and port depending on where the external registry
-   is hosted. It must also specify `https` if the external registry is
-   configured to use TLS.
+   - `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
+     Container Registry features and authentication endpoint. The GitLab bundled
+     Container Registry service does not start, even with this enabled.
+   - `gitlab_rails['registry_api_url'] = "http://<external_registry_host>:5000"`
+     must be changed to match the host where Registry is installed.
+     It must also specify `https` if the external registry is
+     configured to use TLS. Read more on the
+     [Docker registry documentation](https://docs.docker.com/registry/deploying/).
 
 1. A certificate-key pair is required for GitLab and the external container
    registry to communicate securely. You need to create a certificate-key
@@ -688,11 +688,13 @@ You can use GitLab as an auth endpoint with an external container registry.
      enabled: true
      host: "registry.gitlab.example.com"
      port: "5005"
-     api_url: "http://localhost:5000"
-     path: /var/opt/gitlab/gitlab-rails/shared/registry
-     key: /var/opt/gitlab/gitlab-rails/certificate.key
+     api_url: "https://<external_registry_host>:5000"
+     path: /var/lib/registry
+     key: /path/to/keyfile
      issuer: gitlab-issuer
    ```
+
+   [Read more](#enable-the-container-registry) about what these parameters mean.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
@@ -900,11 +902,11 @@ not directly accessible via `tag`:
 sudo gitlab-ctl registry-garbage-collect -m
 ```
 
-Without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
-
 Since this is a way more destructive operation, this behavior is disabled by default.
 You are likely expecting this way of operation, but before doing that, ensure
 that you have backed up all registry data.
+
+When the command is used without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
 
 ### Performing garbage collection without downtime
 
@@ -1063,6 +1065,70 @@ encounter this error.
 Administrators can increase the token duration in **Admin area > Settings >
 CI/CD > Container Registry > Authorization token duration (minutes)**.
 
+### Docker login attempt fails with: 'token signed by untrusted key'
+
+[Registry relies on GitLab to validate credentials](https://docs.gitlab.com/omnibus/architecture/registry/).
+If the registry fails to authenticate valid login attempts, you get the following error message:
+
+```shell
+# docker login gitlab.company.com:4567
+Username: user
+Password: 
+Error response from daemon: login attempt to https://gitlab.company.com:4567/v2/ failed with status: 401 Unauthorized
+```
+
+And more specifically, this appears in the `/var/log/gitlab/registry/current` log file:
+
+```plaintext
+level=info msg="token signed by untrusted key with ID: "TOKE:NL6Q:7PW6:EXAM:PLET:OKEN:BG27:RCIB:D2S3:EXAM:PLET:OKEN"" 
+level=warning msg="error authorizing context: invalid token" go.version=go1.12.7 http.request.host="gitlab.company.com:4567" http.request.id=74613829-2655-4f96-8991-1c9fe33869b8 http.request.method=GET http.request.remoteaddr=10.72.11.20 http.request.uri="/v2/" http.request.useragent="docker/19.03.2 go/go1.12.8 git-commit/6a30dfc kernel/3.10.0-693.2.2.el7.x86_64 os/linux arch/amd64 UpstreamClient(Docker-Client/19.03.2 \(linux\))" 
+```
+
+GitLab uses the contents of the certificate key pair's two sides to encrypt the authentication token
+for the Registry. This message means that those contents do not align.
+
+Check which files are in use:
+
+- `grep -A6 'auth:' /var/opt/gitlab/registry/config.yml`
+
+  ```yaml
+  ## Container Registry Certificate
+     auth:
+       token:
+         realm: https://gitlab.my.net/jwt/auth
+         service: container_registry
+         issuer: omnibus-gitlab-issuer
+    -->  rootcertbundle: /var/opt/gitlab/registry/gitlab-registry.crt
+         autoredirect: false
+  ```
+
+- `grep -A9 'Container Registry' /var/opt/gitlab/gitlab-rails/etc/gitlab.yml`
+
+  ```yaml
+  ## Container Registry Key
+     registry:
+       enabled: true
+       host: gitlab.company.com
+       port: 4567
+       api_url: http://127.0.0.1:5000 # internal address to the registry, will be used by GitLab to directly communicate with API
+       path: /var/opt/gitlab/gitlab-rails/shared/registry
+  -->  key: /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key
+       issuer: omnibus-gitlab-issuer
+       notification_secret:
+  ```
+
+The output of these `openssl` commands should match, proving that the cert-key pair is a match:
+
+```shell
+openssl x509 -noout -modulus -in /var/opt/gitlab/registry/gitlab-registry.crt | openssl sha256
+openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key | openssl sha256
+```
+
+If the two pieces of the certificate do not align, remove the files and run `gitlab-ctl reconfigure`
+to regenerate the pair. If you have overridden the automatically generated self-signed pair with
+your own certificates and have made sure that their contents align, you can delete the 'registry'
+section in your `/etc/gitlab/gitlab-secrets.json` and run `gitlab-ctl reconfigure`.
+
 ### AWS S3 with the GitLab registry error when pushing large images
 
 When using AWS S3 with the GitLab registry, an error may occur when pushing
@@ -1144,7 +1210,7 @@ project or branch name. Special characters can include:
 - Trailing hyphen/dash
 - Double hyphen/dash
 
-To get around this, you can [change the group path](../../user/group/index.md#changing-a-groups-path),
+To get around this, you can [change the group path](../../user/group/index.md#change-a-groups-path),
 [change the project path](../../user/project/settings/index.md#renaming-a-repository) or change the
 branch name. Another option is to create a [push rule](../../push_rules/push_rules.md) to prevent
 this at the instance level.

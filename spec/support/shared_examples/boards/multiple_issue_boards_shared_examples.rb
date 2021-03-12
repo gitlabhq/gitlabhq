@@ -9,6 +9,8 @@ RSpec.shared_examples 'multiple issue boards' do
 
       login_as(user)
 
+      stub_feature_flags(board_new_list: false)
+
       visit boards_path
       wait_for_requests
     end

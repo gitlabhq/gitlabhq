@@ -10,12 +10,26 @@ RSpec.describe Tooling::Danger::Helper do
   using RSpec::Parameterized::TableSyntax
   include DangerSpecHelper
 
-  let(:fake_git) { double('fake-git') }
-
   let(:mr_author) { nil }
   let(:fake_gitlab) { double('fake-gitlab', mr_author: mr_author) }
 
   let(:fake_danger) { new_fake_danger.include(described_class) }
+
+  let(:added_files) { %w[added1] }
+  let(:modified_files) { %w[modified1] }
+  let(:deleted_files) { %w[deleted1] }
+  let(:renamed_before_file) { 'renamed_before' }
+  let(:renamed_after_file) { 'renamed_after' }
+  let(:renamed_files) { [{ before: renamed_before_file, after: renamed_after_file }] }
+
+  let(:fake_git) { double('fake-git') }
+
+  before do
+    allow(fake_git).to receive(:added_files) { added_files }
+    allow(fake_git).to receive(:modified_files) { modified_files }
+    allow(fake_git).to receive(:deleted_files) { deleted_files }
+    allow(fake_git).to receive(:renamed_files).at_least(:twice) { renamed_files }
+  end
 
   subject(:helper) { fake_danger.new(git: fake_git, gitlab: fake_gitlab) }
 
@@ -191,19 +205,76 @@ RSpec.describe Tooling::Danger::Helper do
   end
 
   describe '#changes_by_category' do
-    it 'categorizes changed files' do
-      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/migrate/foo lib/gitlab/database/foo.rb qa/foo ee/changelogs/foo.yml] }
-      allow(fake_git).to receive(:modified_files) { [] }
-      allow(fake_git).to receive(:renamed_files) { [] }
+    let(:added_files) { %w[foo foo.md foo.rb foo.js] }
+    let(:modified_files) { %w[db/migrate/foo lib/gitlab/database/foo.rb] }
+    let(:renamed_files) { [{ before: '', after: 'qa/foo' }, { before: '', after: 'ee/changelogs/foo.yml' }] }
 
+    it 'categorizes changed files' do
       expect(helper.changes_by_category).to eq(
         backend: %w[foo.rb],
         database: %w[db/migrate/foo lib/gitlab/database/foo.rb],
         frontend: %w[foo.js],
+        migration: %w[db/migrate/foo],
         none: %w[ee/changelogs/foo.yml foo.md],
         qa: %w[qa/foo],
         unknown: %w[foo]
       )
+    end
+  end
+
+  describe 'Tooling::Danger::Helper::Changes', :aggregate_failures do
+    let(:added_files) { %w[db/migrate/foo ee/changelogs/unreleased/foo.yml] }
+
+    describe '#has_category?' do
+      it 'returns true when changes include given category, false otherwise' do
+        changes = helper.changes
+
+        expect(changes.has_category?(:migration)).to eq(true)
+        expect(changes.has_category?(:changelog)).to eq(true)
+        expect(changes.has_category?(:backend)).to eq(false)
+      end
+    end
+
+    describe '#by_category' do
+      it 'returns an array of Change objects' do
+        expect(helper.changes.by_category(:migration)).to all(be_an(described_class::Change))
+      end
+
+      it 'returns an array of Change objects with the given category' do
+        changes = helper.changes
+
+        expect(changes.by_category(:migration).files).to eq(['db/migrate/foo'])
+        expect(changes.by_category(:changelog).files).to eq(['ee/changelogs/unreleased/foo.yml'])
+        expect(changes.by_category(:backend)).to be_empty
+      end
+    end
+
+    describe '#categories' do
+      it 'returns an array of category symbols' do
+        expect(helper.changes.categories).to contain_exactly(:database, :migration, :changelog, :unknown)
+      end
+    end
+
+    describe '#files' do
+      it 'returns an array of files' do
+        expect(helper.changes.files).to include(*added_files)
+      end
+    end
+  end
+
+  describe '#changes' do
+    it 'returns an array of Change objects' do
+      expect(helper.changes).to all(be_an(described_class::Change))
+    end
+
+    it 'groups changes by change type' do
+      changes = helper.changes
+
+      expect(changes.added.files).to eq(added_files)
+      expect(changes.modified.files).to eq(modified_files)
+      expect(changes.deleted.files).to eq(deleted_files)
+      expect(changes.renamed_before.files).to eq([renamed_before_file])
+      expect(changes.renamed_after.files).to eq([renamed_after_file])
     end
   end
 
@@ -304,12 +375,10 @@ RSpec.describe Tooling::Danger::Helper do
 
       'db/schema.rb'                                              | [:database]
       'db/structure.sql'                                          | [:database]
-      'db/migrate/foo'                                            | [:database]
-      'db/post_migrate/foo'                                       | [:database]
-      'ee/db/migrate/foo'                                         | [:database]
-      'ee/db/post_migrate/foo'                                    | [:database]
-      'ee/db/geo/migrate/foo'                                     | [:database]
-      'ee/db/geo/post_migrate/foo'                                | [:database]
+      'db/migrate/foo'                                            | [:database, :migration]
+      'db/post_migrate/foo'                                       | [:database, :migration]
+      'ee/db/geo/migrate/foo'                                     | [:database, :migration]
+      'ee/db/geo/post_migrate/foo'                                | [:database, :migration]
       'app/models/project_authorization.rb'                       | [:database]
       'app/services/users/refresh_authorized_projects_service.rb' | [:database]
       'lib/gitlab/background_migration.rb'                        | [:database]
@@ -325,8 +394,6 @@ RSpec.describe Tooling::Danger::Helper do
 
       'db/fixtures/foo.rb'                                 | [:backend]
       'ee/db/fixtures/foo.rb'                              | [:backend]
-      'doc/api/graphql/reference/gitlab_schema.graphql'    | [:backend]
-      'doc/api/graphql/reference/gitlab_schema.json'       | [:backend]
 
       'qa/foo' | [:qa]
       'ee/qa/foo' | [:qa]
@@ -402,6 +469,22 @@ RSpec.describe Tooling::Danger::Helper do
     end
   end
 
+  describe '#mr_iid' do
+    it 'returns "" when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper.mr_iid).to eq('')
+    end
+
+    it 'returns the MR IID when `gitlab_helper` is available' do
+      mr_iid = '1234'
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('iid' => mr_iid)
+
+      expect(helper.mr_iid).to eq(mr_iid)
+    end
+  end
+
   describe '#mr_title' do
     it 'returns "" when `gitlab_helper` is unavailable' do
       expect(helper).to receive(:gitlab_helper).and_return(nil)
@@ -431,6 +514,22 @@ RSpec.describe Tooling::Danger::Helper do
         .and_return('web_url' => mr_web_url)
 
       expect(helper.mr_web_url).to eq(mr_web_url)
+    end
+  end
+
+  describe '#mr_labels' do
+    it 'returns "" when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper.mr_labels).to eq([])
+    end
+
+    it 'returns the MR labels when `gitlab_helper` is available' do
+      mr_labels = %w[foo bar baz]
+      expect(fake_gitlab).to receive(:mr_labels)
+        .and_return(mr_labels)
+
+      expect(helper.mr_labels).to eq(mr_labels)
     end
   end
 

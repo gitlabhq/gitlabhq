@@ -4,6 +4,8 @@ module Resolvers
   class TreeResolver < BaseResolver
     type Types::Tree::TreeType, null: true
 
+    calls_gitaly!
+
     argument :path, GraphQL::STRING_TYPE,
               required: false,
               default_value: '',

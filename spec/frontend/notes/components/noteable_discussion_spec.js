@@ -24,8 +24,6 @@ describe('noteable_discussion component', () => {
   let wrapper;
   let originalGon;
 
-  preloadFixtures(discussionWithTwoUnresolvedNotes);
-
   beforeEach(() => {
     window.mrTabs = {};
     store = createStore();
@@ -65,7 +63,7 @@ describe('noteable_discussion component', () => {
       expect(wrapper.vm.isReplying).toEqual(false);
 
       const replyPlaceholder = wrapper.find(ReplyPlaceholder);
-      replyPlaceholder.vm.$emit('onClick');
+      replyPlaceholder.vm.$emit('focus');
       await nextTick();
 
       expect(wrapper.vm.isReplying).toEqual(true);

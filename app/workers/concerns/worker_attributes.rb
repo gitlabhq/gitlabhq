@@ -133,5 +133,13 @@ module WorkerAttributes
     def get_deduplication_options
       class_attributes[:deduplication_options] || {}
     end
+
+    def big_payload!
+      class_attributes[:big_payload] = true
+    end
+
+    def big_payload?
+      class_attributes[:big_payload]
+    end
   end
 end

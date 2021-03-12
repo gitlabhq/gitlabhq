@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to install GitLab on OpenShift Origin 3
+# How to install GitLab on OpenShift Origin 3 **(FREE SELF)**
 
 WARNING:
 This article is deprecated. Use the official Kubernetes Helm charts for
@@ -38,7 +38,7 @@ already, go ahead and install the following components as they are essential to
 test OpenShift easily:
 
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-- [Vagrant](https://www.vagrantup.com/downloads.html)
+- [Vagrant](https://www.vagrantup.com/downloads)
 - [OpenShift Client](https://docs.okd.io/3.11/cli_reference/get_started_cli.html) (`oc` for short)
 
 It is also important to mention that for the purposes of this tutorial, the

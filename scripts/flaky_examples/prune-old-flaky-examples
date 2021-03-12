@@ -1,16 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# lib/rspec_flaky/flaky_examples_collection.rb is requiring
+# tooling/rspec_flaky/flaky_examples_collection.rb is requiring
 # `active_support/hash_with_indifferent_access`, and we install the `activesupport`
 # gem manually on the CI
 require 'rubygems'
-
-# In newer Ruby, alias_method is not private then we don't need __send__
-singleton_class.__send__(:alias_method, :require_dependency, :require) # rubocop:disable GitlabSecurity/PublicSend
-$:.unshift(File.expand_path('../../lib', __dir__))
-
-require 'rspec_flaky/report'
+require_relative '../../tooling/rspec_flaky/report'
 
 report_file = ARGV.shift
 unless report_file

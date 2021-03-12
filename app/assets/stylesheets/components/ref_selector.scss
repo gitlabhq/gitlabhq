@@ -1,17 +1,13 @@
 .ref-selector {
-  & &-dropdown-content {
-    // Setting a max height is necessary to allow the dropdown's content
-    // to control where and how scrollbars appear.
-    // This content is limited to the max-height of the dropdown
-    // ($dropdown-max-height-lg) minus the additional padding
-    // on the top and bottom (2 * $gl-padding-8)
-    max-height: $dropdown-max-height-lg - 2 * $gl-padding-8;
-  }
-
   .dropdown-menu.show {
     // Make the dropdown a little wider and longer than usual
     // since it contains quite a bit of content.
+    overflow: hidden;
     width: 20rem;
-    max-height: $dropdown-max-height-lg;
+
+    &,
+    .gl-new-dropdown-inner {
+      max-height: $dropdown-max-height-lg;
+    }
   }
 }

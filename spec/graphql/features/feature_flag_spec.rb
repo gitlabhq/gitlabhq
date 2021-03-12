@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Graphql Field feature flags' do
   include GraphqlHelpers
+  include Graphql::ResolverFactories
 
   let_it_be(:user) { create(:user) }
 
@@ -23,7 +24,7 @@ RSpec.describe 'Graphql Field feature flags' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, feature_flag: feature_flag, resolver: simple_resolver(test_object)
+        query.field :item, type, null: true, feature_flag: feature_flag, resolver: new_resolver(test_object)
       end
     end
 

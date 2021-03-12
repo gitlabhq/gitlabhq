@@ -20,6 +20,10 @@ describe('Linked Pipelines Column', () => {
     columnTitle: 'Downstream',
     linkedPipelines: processedPipeline.downstream,
     type: DOWNSTREAM,
+    configPaths: {
+      metricsPath: '',
+      graphqlResourceEtag: 'this/is/a/path',
+    },
   };
 
   let wrapper;

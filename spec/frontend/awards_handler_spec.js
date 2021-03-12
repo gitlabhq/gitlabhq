@@ -60,7 +60,6 @@ describe('AwardsHandler', () => {
       u: '6.0',
     },
   };
-  preloadFixtures('snippets/show.html');
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
     $(sel).eq(0).click();
@@ -189,8 +188,6 @@ describe('AwardsHandler', () => {
 
       expect($thumbsUpEmoji.hasClass('active')).toBe(true);
       expect($thumbsDownEmoji.hasClass('active')).toBe(false);
-      $thumbsUpEmoji.tooltip();
-      $thumbsDownEmoji.tooltip();
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsdown', true);
 
       expect($thumbsUpEmoji.hasClass('active')).toBe(false);
@@ -218,9 +215,8 @@ describe('AwardsHandler', () => {
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
       $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
-      $thumbsUpEmoji.tooltip();
 
-      expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
+      expect($thumbsUpEmoji.attr('title')).toBe('You, sam, jerry, max, and andy');
     });
 
     it('handles the special case where "You" is not cleanly comma separated', () => {
@@ -229,9 +225,8 @@ describe('AwardsHandler', () => {
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
       $thumbsUpEmoji.attr('data-title', 'sam');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
-      $thumbsUpEmoji.tooltip();
 
-      expect($thumbsUpEmoji.data('originalTitle')).toBe('You and sam');
+      expect($thumbsUpEmoji.attr('title')).toBe('You and sam');
     });
   });
 
@@ -243,9 +238,8 @@ describe('AwardsHandler', () => {
       $thumbsUpEmoji.attr('data-title', 'You, sam, jerry, max, and andy');
       $thumbsUpEmoji.addClass('active');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
-      $thumbsUpEmoji.tooltip();
 
-      expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
+      expect($thumbsUpEmoji.attr('title')).toBe('sam, jerry, max, and andy');
     });
 
     it('handles the special case where "You" is not cleanly comma separated', () => {
@@ -255,9 +249,8 @@ describe('AwardsHandler', () => {
       $thumbsUpEmoji.attr('data-title', 'You and sam');
       $thumbsUpEmoji.addClass('active');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
-      $thumbsUpEmoji.tooltip();
 
-      expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
+      expect($thumbsUpEmoji.attr('title')).toBe('sam');
     });
   });
 

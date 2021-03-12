@@ -1,19 +1,20 @@
 import { shallowMount } from '@vue/test-utils';
-import $ from 'jquery';
 import { trimText } from 'helpers/text_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 
-$.fn.popover = () => {};
+const projectPath = 'test/test';
 
 describe('Pipeline Url Component', () => {
   let wrapper;
 
+  const findTableCell = () => wrapper.find('[data-testid="pipeline-url-table-cell"]');
   const findPipelineUrlLink = () => wrapper.find('[data-testid="pipeline-url-link"]');
   const findScheduledTag = () => wrapper.find('[data-testid="pipeline-url-scheduled"]');
   const findLatestTag = () => wrapper.find('[data-testid="pipeline-url-latest"]');
   const findYamlTag = () => wrapper.find('[data-testid="pipeline-url-yaml"]');
   const findFailureTag = () => wrapper.find('[data-testid="pipeline-url-failure"]');
   const findAutoDevopsTag = () => wrapper.find('[data-testid="pipeline-url-autodevops"]');
+  const findAutoDevopsTagLink = () => wrapper.find('[data-testid="pipeline-url-autodevops-link"]');
   const findStuckTag = () => wrapper.find('[data-testid="pipeline-url-stuck"]');
   const findDetachedTag = () => wrapper.find('[data-testid="pipeline-url-detached"]');
   const findForkTag = () => wrapper.find('[data-testid="pipeline-url-fork"]');
@@ -23,9 +24,9 @@ describe('Pipeline Url Component', () => {
     pipeline: {
       id: 1,
       path: 'foo',
+      project: { full_path: `/${projectPath}` },
       flags: {},
     },
-    autoDevopsHelpPath: 'foo',
     pipelineScheduleUrl: 'foo',
   };
 
@@ -33,7 +34,7 @@ describe('Pipeline Url Component', () => {
     wrapper = shallowMount(PipelineUrlComponent, {
       propsData: { ...defaultProps, ...props },
       provide: {
-        targetProjectFullPath: 'test/test',
+        targetProjectFullPath: projectPath,
       },
     });
   };
@@ -43,10 +44,10 @@ describe('Pipeline Url Component', () => {
     wrapper = null;
   });
 
-  it('should render a table cell', () => {
+  it('should render pipeline url table cell', () => {
     createComponent();
 
-    expect(wrapper.attributes('class')).toContain('table-section');
+    expect(findTableCell().exists()).toBe(true);
   });
 
   it('should render a link the provided path and id', () => {
@@ -55,6 +56,19 @@ describe('Pipeline Url Component', () => {
     expect(findPipelineUrlLink().attributes('href')).toBe('foo');
 
     expect(findPipelineUrlLink().text()).toBe('#1');
+  });
+
+  it('should not render tags when flags are not set', () => {
+    createComponent();
+
+    expect(findStuckTag().exists()).toBe(false);
+    expect(findLatestTag().exists()).toBe(false);
+    expect(findYamlTag().exists()).toBe(false);
+    expect(findAutoDevopsTag().exists()).toBe(false);
+    expect(findFailureTag().exists()).toBe(false);
+    expect(findScheduledTag().exists()).toBe(false);
+    expect(findForkTag().exists()).toBe(false);
+    expect(findTrainTag().exists()).toBe(false);
   });
 
   it('should render the stuck tag when flag is provided', () => {
@@ -96,6 +110,7 @@ describe('Pipeline Url Component', () => {
   it('should render an autodevops badge when flag is provided', () => {
     createComponent({
       pipeline: {
+        ...defaultProps.pipeline,
         flags: {
           auto_devops: true,
         },
@@ -103,6 +118,11 @@ describe('Pipeline Url Component', () => {
     });
 
     expect(trimText(findAutoDevopsTag().text())).toBe('Auto DevOps');
+
+    expect(findAutoDevopsTagLink().attributes()).toMatchObject({
+      href: '/help/topics/autodevops/index.md',
+      target: '_blank',
+    });
   });
 
   it('should render a detached badge when flag is provided', () => {
@@ -147,7 +167,7 @@ describe('Pipeline Url Component', () => {
     createComponent({
       pipeline: {
         flags: {},
-        project: { fullPath: 'test/forked' },
+        project: { fullPath: '/test/forked' },
       },
     });
 

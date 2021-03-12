@@ -166,7 +166,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     let(:ports) { Project::VALID_IMPORT_PORTS }
 
     it 'allows imports from configured web host and port' do
-      import_url = "http://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git"
+      import_url = "http://#{Gitlab.host_with_port}/t.git"
       expect(described_class.blocked_url?(import_url)).to be false
     end
 
@@ -190,7 +190,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
     end
 
     it 'returns true for bad protocol on configured web/SSH host and ports' do
-      web_url = "javascript://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git%0aalert(1)"
+      web_url = "javascript://#{Gitlab.host_with_port}/t.git%0aalert(1)"
       expect(described_class.blocked_url?(web_url)).to be true
 
       ssh_url = "javascript://#{Gitlab.config.gitlab_shell.ssh_host}:#{Gitlab.config.gitlab_shell.ssh_port}/t.git%0aalert(1)"

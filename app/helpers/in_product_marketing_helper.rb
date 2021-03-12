@@ -47,7 +47,7 @@ module InProductMarketingHelper
         s_('InProductMarketing|Are your runners ready?')
       ],
       trial: [
-        s_('InProductMarketing|Start a free trial of GitLab Gold – no CC required'),
+        s_('InProductMarketing|Start a free trial of GitLab Ultimate – no CC required'),
         s_('InProductMarketing|Improve app security with a 30-day trial'),
         s_('InProductMarketing|Start with a GitLab Gold free trial')
       ],

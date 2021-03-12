@@ -71,6 +71,15 @@ module API
         header 'Job-Status', job.status
         forbidden!(reason)
       end
+
+      def set_application_context
+        return unless current_job
+
+        Gitlab::ApplicationContext.push(
+          user: -> { current_job.user },
+          project: -> { current_job.project }
+        )
+      end
     end
   end
 end

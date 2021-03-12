@@ -4,13 +4,17 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Managing PostgreSQL extensions
+# Managing PostgreSQL extensions **(FREE SELF)**
 
 This guide documents how to manage PostgreSQL extensions for installations with an external
 PostgreSQL database.
 
-GitLab requires certain extensions to be installed into the GitLab database. For example,
-GitLab relies on `pg_trgm` and the `btree_gist` extensions.
+The following extensions must be loaded into the GitLab database:
+
+| Extension    | Minimum GitLab version |
+|--------------|------------------------|
+| `pg_trgm`    | 8.6                    |
+| `btree_gist` | 13.1                   |
 
 In order to install extensions, PostgreSQL requires the user to have superuser privileges.
 Typically, the GitLab database user is not a superuser. Therefore, regular database migrations

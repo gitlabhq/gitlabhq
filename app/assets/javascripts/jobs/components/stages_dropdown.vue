@@ -43,7 +43,7 @@ export default {
 };
 </script>
 <template>
-  <div class="block-last dropdown">
+  <div class="dropdown">
     <div class="js-pipeline-info">
       <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
 

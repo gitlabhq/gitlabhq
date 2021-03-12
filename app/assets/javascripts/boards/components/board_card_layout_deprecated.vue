@@ -3,13 +3,12 @@ import { mapActions, mapGetters } from 'vuex';
 import { ISSUABLE } from '~/boards/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import boardsStore from '../stores/boards_store';
-import IssueCardInner from './issue_card_inner.vue';
 import IssueCardInnerDeprecated from './issue_card_inner_deprecated.vue';
 
 export default {
   name: 'BoardCardLayout',
   components: {
-    IssueCardInner: gon.features?.graphqlBoardLists ? IssueCardInner : IssueCardInnerDeprecated,
+    IssueCardInner: IssueCardInnerDeprecated,
   },
   mixins: [glFeatureFlagMixin()],
   props: {

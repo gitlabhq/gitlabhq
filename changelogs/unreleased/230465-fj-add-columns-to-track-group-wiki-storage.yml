@@ -1,0 +1,5 @@
+---
+title: Add wiki_size and storage_size to NamespaceStatistics
+merge_request: 54786
+author:
+type: added

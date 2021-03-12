@@ -63,10 +63,7 @@ export default (el) => {
     render(createElement) {
       return createElement('alert-settings-wrapper', {
         props: {
-          alertFields:
-            gon.features?.multipleHttpIntegrationsCustomMapping && parseBoolean(multiIntegrations)
-              ? JSON.parse(alertFields)
-              : null,
+          alertFields: parseBoolean(multiIntegrations) ? JSON.parse(alertFields) : null,
         },
       });
     },

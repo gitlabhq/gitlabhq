@@ -1,0 +1,5 @@
+---
+title: Resolve project from branch in commit resolver.
+merge_request: 55694
+author:
+type: fixed

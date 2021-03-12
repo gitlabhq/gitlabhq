@@ -22,17 +22,19 @@
     },
     "value_type": {
       "type": "string",
-      "enum": ["integer", "string", "number", "boolean"]
+      "enum": ["string", "number", "boolean"]
     },
     "status": {
       "type": ["string"],
-      "enum": ["data_available", "planned", "in_progress", "implemented"]
+      "enum": ["data_available", "planned", "in_progress", "implemented", "not_used", "deprecated"]
     },
     "milestone": {
-      "type": ["number", "null"]
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+\\.[0-9]+$"
     },
     "milestone_removed": {
-      "type": ["number", "null"]
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+\\.[0-9]+$"
     },
     "introduced_by_url": {
       "type": ["string", "null"]

@@ -843,12 +843,26 @@ RSpec.shared_examples 'Pipeline Processing Service' do
       create(:ci_build_need, build: deploy, name: 'linux:build')
     end
 
-    it 'makes deploy DAG to be waiting for optional manual to finish' do
+    it 'makes deploy DAG to be skipped' do
       expect(process_pipeline).to be_truthy
 
-      expect(stages).to eq(%w(skipped created))
+      expect(stages).to eq(%w(skipped skipped))
       expect(all_builds.manual).to contain_exactly(linux_build)
-      expect(all_builds.created).to contain_exactly(deploy)
+      expect(all_builds.skipped).to contain_exactly(deploy)
+    end
+
+    context 'when FF ci_fix_pipeline_status_for_dag_needs_manual is disabled' do
+      before do
+        stub_feature_flags(ci_fix_pipeline_status_for_dag_needs_manual: false)
+      end
+
+      it 'makes deploy DAG to be waiting for optional manual to finish' do
+        expect(process_pipeline).to be_truthy
+
+        expect(stages).to eq(%w(skipped created))
+        expect(all_builds.manual).to contain_exactly(linux_build)
+        expect(all_builds.created).to contain_exactly(deploy)
+      end
     end
   end
 

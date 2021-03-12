@@ -246,9 +246,7 @@ module Gitlab
     def self.route_to_primary
       return {} unless Gitlab::SafeRequestStore.active?
 
-      return {} unless Gitlab::SafeRequestStore[:gitlab_git_env]
-
-      return {} if Gitlab::SafeRequestStore[:gitlab_git_env].empty?
+      return {} if Gitlab::SafeRequestStore[:gitlab_git_env].blank?
 
       { 'gitaly-route-repository-accessor-policy' => 'primary-only' }
     end

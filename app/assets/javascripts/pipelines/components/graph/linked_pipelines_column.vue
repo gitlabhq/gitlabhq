@@ -3,7 +3,14 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import { LOAD_FAILURE } from '../../constants';
 import { ONE_COL_WIDTH, UPSTREAM } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
-import { unwrapPipelineData, toggleQueryPollingByVisibility, reportToSentry } from './utils';
+import {
+  getQueryHeaders,
+  reportToSentry,
+  serializeLoadErrors,
+  toggleQueryPollingByVisibility,
+  unwrapPipelineData,
+  validateConfigPaths,
+} from './utils';
 
 export default {
   components: {
@@ -14,6 +21,11 @@ export default {
     columnTitle: {
       type: String,
       required: true,
+    },
+    configPaths: {
+      type: Object,
+      required: true,
+      validator: validateConfigPaths,
     },
     linkedPipelines: {
       type: Array,
@@ -72,6 +84,9 @@ export default {
       this.$apollo.addSmartQuery('currentPipeline', {
         query: getPipelineDetails,
         pollInterval: 10000,
+        context() {
+          return getQueryHeaders(this.configPaths.graphqlResourceEtag);
+        },
         variables() {
           return {
             projectPath,
@@ -79,6 +94,17 @@ export default {
           };
         },
         update(data) {
+          /*
+            This check prevents the pipeline from being overwritten
+            when a poll times out and the data returned is empty.
+            This can be removed once the timeout behavior is updated.
+            See: https://gitlab.com/gitlab-org/gitlab/-/issues/323213.
+          */
+
+          if (!data?.project?.pipeline) {
+            return this.currentPipeline;
+          }
+
           return unwrapPipelineData(projectPath, data);
         },
         result() {
@@ -90,7 +116,9 @@ export default {
 
           reportToSentry(
             'linked_pipelines_column',
-            `error type: ${LOAD_FAILURE}, error: ${err}, apollo error type: ${type}`,
+            `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(
+              err,
+            )}, apollo error type: ${type}`,
           );
         },
       });
@@ -175,6 +203,7 @@ export default {
               v-if="isExpanded(pipeline.id)"
               :type="type"
               class="d-inline-block gl-mt-n2"
+              :config-paths="configPaths"
               :pipeline="currentPipeline"
               :is-linked-pipeline="true"
             />

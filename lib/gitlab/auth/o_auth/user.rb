@@ -239,8 +239,9 @@ module Gitlab
         end
 
         def update_profile
-          clear_user_synced_attributes_metadata
+          return unless gl_user
 
+          clear_user_synced_attributes_metadata
           return unless sync_profile_from_provider? || creating_linked_ldap_user?
 
           metadata = gl_user.build_user_synced_attributes_metadata

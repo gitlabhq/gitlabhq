@@ -4,16 +4,22 @@ require 'spec_helper'
 
 RSpec.describe GroupsController, factory_default: :keep do
   include ExternalAuthorizationServiceHelpers
+  include AdminModeHelper
 
   let_it_be_with_refind(:group) { create_default(:group, :public) }
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin_with_admin_mode) { create(:admin) }
+  let_it_be(:admin_without_admin_mode) { create(:admin) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:owner) { group.add_owner(create(:user)).user }
   let_it_be(:maintainer) { group.add_maintainer(create(:user)).user }
   let_it_be(:developer) { group.add_developer(create(:user)).user }
   let_it_be(:guest) { group.add_guest(create(:user)).user }
+
+  before do
+    enable_admin_mode!(admin_with_admin_mode)
+  end
 
   shared_examples 'member with ability to create subgroups' do
     it 'renders the new page' do
@@ -105,10 +111,10 @@ RSpec.describe GroupsController, factory_default: :keep do
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           before do
-            User.where(id: [admin, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
+            User.where(id: [admin_with_admin_mode, admin_without_admin_mode, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
           end
 
-          [:admin, :owner, :maintainer].each do |member_type|
+          [:admin_with_admin_mode, :owner, :maintainer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member with ability to create subgroups' do
                 let(:member) { send(member_type) }
@@ -116,7 +122,7 @@ RSpec.describe GroupsController, factory_default: :keep do
             end
           end
 
-          [:guest, :developer].each do |member_type|
+          [:guest, :developer, :admin_without_admin_mode].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member without ability to create subgroups' do
                 let(:member) { send(member_type) }
@@ -856,6 +862,12 @@ RSpec.describe GroupsController, factory_default: :keep do
   end
 
   describe 'POST #export' do
+    let(:admin) { create(:admin) }
+
+    before do
+      enable_admin_mode!(admin)
+    end
+
     context 'when the group export feature flag is not enabled' do
       before do
         sign_in(admin)
@@ -918,6 +930,12 @@ RSpec.describe GroupsController, factory_default: :keep do
   end
 
   describe 'GET #download_export' do
+    let(:admin) { create(:admin) }
+
+    before do
+      enable_admin_mode!(admin)
+    end
+
     context 'when there is a file available to download' do
       let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
 
@@ -934,8 +952,6 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
 
     context 'when there is no file available to download' do
-      let(:admin) { create(:admin) }
-
       before do
         sign_in(admin)
       end

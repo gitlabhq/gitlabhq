@@ -1,0 +1,5 @@
+---
+title: Reduce queries when ticking runner queue
+merge_request: 55496
+author:
+type: performance

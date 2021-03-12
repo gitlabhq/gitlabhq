@@ -5,7 +5,7 @@ module Gitlab
     # Update existent project update_at column after their repository storage was moved
     class BackfillProjectUpdatedAtAfterRepositoryStorageMove
       def perform(*project_ids)
-        updated_repository_storages = ProjectRepositoryStorageMove.select("project_id, MAX(updated_at) as updated_at").where(project_id: project_ids).group(:project_id)
+        updated_repository_storages = Projects::RepositoryStorageMove.select("project_id, MAX(updated_at) as updated_at").where(project_id: project_ids).group(:project_id)
 
         Project.connection.execute <<-SQL
           WITH repository_storage_cte as (

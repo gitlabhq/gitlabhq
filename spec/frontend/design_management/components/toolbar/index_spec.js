@@ -106,11 +106,11 @@ describe('Design management toolbar component', () => {
     });
   });
 
-  it('emits `delete` event on deleteButton `deleteSelectedDesigns` event', () => {
+  it('emits `delete` event on deleteButton `delete-selected-designs` event', () => {
     createComponent();
 
     return wrapper.vm.$nextTick().then(() => {
-      wrapper.find(DeleteButton).vm.$emit('deleteSelectedDesigns');
+      wrapper.find(DeleteButton).vm.$emit('delete-selected-designs');
       expect(wrapper.emitted().delete).toBeTruthy();
     });
   });

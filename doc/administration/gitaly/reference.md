@@ -91,7 +91,7 @@ certificate_path = '/home/git/cert.cert'
 key_path = '/home/git/key.pem'
 ```
 
-[Read more](index.md#enable-tls-support) about TLS in Gitaly.
+[Read more](configure_gitaly.md#enable-tls-support) about TLS in Gitaly.
 
 ### Storage
 

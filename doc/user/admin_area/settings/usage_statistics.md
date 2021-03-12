@@ -61,7 +61,7 @@ sequenceDiagram
 
 ## Usage Ping **(FREE SELF)**
 
-See [Usage Ping guide](../../../development/usage_ping.md).
+See [Usage Ping guide](../../../development/usage_ping/index.md).
 
 ## Instance-level analytics availability
 

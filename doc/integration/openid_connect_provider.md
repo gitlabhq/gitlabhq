@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab as OpenID Connect identity provider
+# GitLab as OpenID Connect identity provider **(FREE)**
 
 This document is about using GitLab as an OpenID Connect identity provider
 to sign in to other services.

@@ -6,8 +6,6 @@ describe('preserve_url_fragment', () => {
     return $(`.omniauth-container ${selector}`).parent('form').attr('action');
   };
 
-  preloadFixtures('sessions/new.html');
-
   beforeEach(() => {
     loadFixtures('sessions/new.html');
   });

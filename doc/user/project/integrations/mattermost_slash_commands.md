@@ -4,118 +4,121 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Mattermost slash commands
+# Mattermost slash commands **(FREE)**
 
-> Introduced in GitLab 8.14
+If your team uses [Mattermost](https://mattermost.com/) as a chat service, you can
+integrate GitLab commands into Mattermost chat. This integration enables users to
+run common operations, such as creating a GitLab issue, from the Mattermost chat
+environment.
 
-Mattermost commands give users an extra interface to perform common operations
-from the chat environment. This allows one to, for example, create an issue as
-soon as the idea was discussed in Mattermost.
-
-GitLab can also send events (e.g., `issue created`) to Mattermost as notifications.
-This is the separately configured [Mattermost Notifications Service](mattermost.md).
+GitLab can also send events (such as `issue created`) to Mattermost as part of the
+separately configured [Mattermost Notifications Service](mattermost.md).
 
 ## Prerequisites
 
-Mattermost 3.4 and up is required.
+Mattermost [3.4 or later](https://mattermost.com/blog/category/releases/) is required.
+GitLab provides different methods of configuring Mattermost slash commands, depending
+on your configuration:
 
-If you have the Omnibus GitLab package installed, Mattermost is already bundled
-in it. All you have to do is configure it. Read more in the
-[Omnibus GitLab Mattermost documentation](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
+- **Omnibus GitLab installations**: Mattermost is bundled with
+  [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab, read the
+  [Omnibus GitLab Mattermost documentation](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
+- **If Mattermost is installed on the same server as GitLab**, use the
+  [automated configuration](#automated-configuration).
+- **For all other installations**, use the [manual configuration](#manual-configuration).
 
 ## Automated configuration
 
 If Mattermost is installed on the same server as GitLab, the configuration process can be
 done for you by GitLab.
 
-Go to the Mattermost Slash Command service on your project and click the 'Add to Mattermost' button.
+Go to the Mattermost Slash Command service on your project and click **Add to Mattermost** button.
 
 ## Manual configuration
 
-The configuration consists of two parts. First you need to enable the slash
-commands in Mattermost and then enable the service in GitLab.
+To manually configure slash commands in Mattermost, you must:
 
-### Step 1. Enable custom slash commands in Mattermost
+1. [Enable custom slash commands](#enable-custom-slash-commands) in Mattermost.
+1. [Get configuration values](#get-configuration-values-from-gitlab) from GitLab.
+1. [Create a new slash command](#create-a-slash-command) in Mattermost.
+1. [Provide the Mattermost token](#provide-the-mattermost-token-to-gitlab)  to GitLab.
 
-This step is only required when using a source install. Omnibus installs are
-preconfigured with the right settings.
+### Enable custom slash commands
 
-The first thing to do in Mattermost is to enable custom slash commands from
-the administrator console.
+NOTE:
+Omnibus GitLab installations are preconfigured. This step is required only for
+installations from source.
 
-1. Log in with an account that has administrator privileges and navigate to the system
-   console.
+To enable custom slash commands from the Mattermost administrator console:
 
-   ![Mattermost go to console](img/mattermost_goto_console.png)
+1. Sign in to Mattermost as a user with administrator privileges.
+1. Next to your username, click the **{ellipsis_v}** **Settings** icon, and
+   select **System Console**.
+1. Select **Integration Management**, and set these values to `TRUE`:
+   - **Enable Custom Slash Commands**
+   - **Enable integrations to override usernames**
+   - **Enable integrations to override profile picture icons**
+1. Click **Save**, but do not close this browser tab, because you need it in
+   a later step.
 
-1. Click **Integration Management** and set **Enable Custom Slash Commands**,
-   **Enable integrations to override usernames**, and **Enable
-   integrations to override profile picture icons** to true
+### Get configuration values from GitLab
 
-   ![Mattermost console](img/mattermost_console_integrations.png)
+After you enable custom slash commands in Mattermost, you need configuration
+information from GitLab. To get this information:
 
-1. Click **Save** at the bottom to save the changes.
+1. In a different browser tab than your current Mattermost session, sign in to
+   GitLab as a user with [administrator permissions](../../permissions.md).
+1. In the top navigation bar, go to **{admin}** **Admin Area**.
+1. In the left menu, go to **Settings > Integrations** and select
+   **Mattermost slash commands**.
+1. GitLab displays potential values for Mattermost settings. Copy the **Request URL**
+   as you need it for the next step. All other values are suggestions.
+1. Do not close this browser tab, because you need it in future steps.
 
-### Step 2. Open the Mattermost slash commands service in GitLab
+Next, create a slash command in Mattermost with the values from GitLab.
 
-1. Open a new tab for GitLab, go to your project's
-   [Integrations page](overview.md#accessing-integrations)
-   and select the **Mattermost command** service to configure it.
-   A screen appears with all the values you need to copy in Mattermost as
-   described in the next step. Leave the window open.
+### Create a slash command
 
-   NOTE:
-   GitLab offers some values for the Mattermost settings. Only **Request URL** is required
-   as offered, all the others are just suggestions.
+To create a slash command, you need the values you obtained from GitLab in
+the previous step:
 
-   ![Mattermost setup instructions](img/mattermost_config_help.png)
-
-1. Proceed to the next step and create a slash command in Mattermost with the
-   above values.
-
-### Step 3. Create a new custom slash command in Mattermost
-
-Now that you have enabled custom slash commands in Mattermost and opened
-the Mattermost slash commands service in GitLab, it's time to copy these values
-in a new slash command.
-
-1. Back to Mattermost, under your team page settings, you should see the
-   **Integrations** option.
-
-   ![Mattermost team integrations](img/mattermost_team_integrations.png)
-
-1. Go to the **Slash Commands** integration and add a new one by clicking the
-   **Add Slash Command** button.
+1. In the Mattermost tab you left open when you
+   [enabled custom slash commands](#enable-custom-slash-commands), go to your
+   team page.
+1. Click the **{ellipsis_v}** **Settings** icon, and select **Integrations**.
+1. In the left menu, select **Slash commands**.
+1. Click **Add Slash Command**:
 
    ![Mattermost add command](img/mattermost_add_slash_command.png)
+1. Provide a **Display Name** and **Description** for your new command.
+1. Provide a **Command Trigger Word** according to your application's configuration:
 
-1. Fill in the options for the custom command as described in
-   [step 2](#step-2-open-the-mattermost-slash-commands-service-in-gitlab).
+   - **If you intend to only connect one project to your Mattermost team**: Use
+     `/gitlab` for your trigger word.
+   - **If you intend to connect multiple projects**: Use a trigger word that relates
+     to your project, such as `/project-name` or `/gitlab-project-name`.
+1. For **Request URL**, provide the value you copied from GitLab when you
+   [viewed configuration values](#get-configuration-values-from-gitlab).
+1. For all other values, you may use the suggestions from GitLab or use your
+   preferred values.
+1. Copy the **Token** value, as you need it in a later step, and click **Done**.
 
-   NOTE:
-   If you plan on connecting multiple projects, pick a slash command trigger
-   word that relates to your projects such as `/gitlab-project-name` or even
-   just `/project-name`. Only use `/gitlab` if you plan to only connect a single
-   project to your Mattermost team.
+### Provide the Mattermost token to GitLab
 
-   ![Mattermost add command configuration](img/mattermost_slash_command_configuration.png)
+When you create a new slash command in Mattermost, it generates a token you must
+provide to GitLab:
 
-1. After you set up all the values, copy the token (we use it below) and
-   click **Done**.
-
-   ![Mattermost slash command token](img/mattermost_slash_command_token.png)
-
-### Step 4. Copy the Mattermost token into the Mattermost slash command service
-
-1. In GitLab, paste the Mattermost token you copied in the previous step and
+1. In the GitLab browser tab from
+   [getting configuration values from GitLab](#get-configuration-values-from-gitlab),
+   select the **Active** check box to enable this configuration.
+1. In the **Token** field, paste the token you obtained from Mattermost.
    ensure that the **Active** toggle is enabled.
 
    ![Mattermost copy token to GitLab](img/mattermost_gitlab_token.png)
 
 1. Click **Save changes** for the changes to take effect.
 
-You are now set to start using slash commands in Mattermost that talk to the
-GitLab project you configured.
+Your slash command can now communicate with your GitLab project.
 
 ## Authorizing Mattermost to interact with GitLab
 
@@ -132,7 +135,7 @@ GitLab using the Mattermost commands.
 
 ## Available slash commands
 
-The available slash commands are:
+The available slash commands for Mattermost are:
 
 | Command | Description | Example |
 | ------- | ----------- | ------- |
@@ -152,7 +155,7 @@ the [permissions you have on the project](../../permissions.md#project-members-p
 
 ## Troubleshooting
 
-If an event is not being triggered, confirm that the channel you're using is a public one, as
+If an event is not being triggered, confirm that the channel you're using is a public one.
 Mattermost webhooks do not have access to private channels.
 
 If a private channel is required, you can edit the webhook's channel in Mattermost and

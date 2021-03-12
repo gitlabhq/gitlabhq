@@ -74,9 +74,14 @@ module Gitlab
         end
 
         # (SIMILARITY ...) + (SIMILARITY ...)
-        expressions.inject(first_expression) do |expression1, expression2|
+        additions = expressions.inject(first_expression) do |expression1, expression2|
           Arel::Nodes::Addition.new(expression1, expression2)
         end
+
+        score_as_numeric = Arel::Nodes::NamedFunction.new('CAST', [Arel::Nodes::Grouping.new(additions).as('numeric')])
+
+        # Rounding the score to two decimals
+        Arel::Nodes::NamedFunction.new('ROUND', [score_as_numeric, 2])
       end
 
       def self.order_by_similarity?(arel_query)

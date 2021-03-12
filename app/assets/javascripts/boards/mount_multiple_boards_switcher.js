@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapGetters } from 'vuex';
-import BoardsSelector from '~/boards/components/boards_selector.vue';
+import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import BoardsSelectorDeprecated from '~/boards/components/boards_selector_deprecated.vue';
 import store from '~/boards/stores';
 import createDefaultClient from '~/lib/graphql';
@@ -48,10 +48,10 @@ export default (params = {}) => {
       return { boardsSelectorProps };
     },
     computed: {
-      ...mapGetters(['shouldUseGraphQL']),
+      ...mapGetters(['shouldUseGraphQL', 'isEpicBoard']),
     },
     render(createElement) {
-      if (this.shouldUseGraphQL) {
+      if (this.shouldUseGraphQL || this.isEpicBoard) {
         return createElement(BoardsSelector, {
           props: this.boardsSelectorProps,
         });

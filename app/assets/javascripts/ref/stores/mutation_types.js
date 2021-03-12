@@ -1,3 +1,5 @@
+export const SET_ENABLED_REF_TYPES = 'SET_ENABLED_REF_TYPES';
+
 export const SET_PROJECT_ID = 'SET_PROJECT_ID';
 export const SET_SELECTED_REF = 'SET_SELECTED_REF';
 export const SET_QUERY = 'SET_QUERY';

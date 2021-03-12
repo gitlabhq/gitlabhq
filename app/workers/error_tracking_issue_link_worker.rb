@@ -26,7 +26,7 @@ class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorke
       logger.info("Linking Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
 
       sentry_client.create_issue_link(integration_id, sentry_issue_id, issue)
-    rescue Sentry::Client::Error => e
+    rescue ErrorTracking::SentryClient::Error => e
       logger.info("Failed to link Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id} with error: #{e.message}")
     end
   end
@@ -63,7 +63,7 @@ class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorke
     sentry_client
       .repos(organization_slug)
       .find { |repo| repo.project_id == issue.project_id && repo.status == 'active' }
-  rescue Sentry::Client::Error => e
+  rescue ErrorTracking::SentryClient::Error => e
     logger.info("Unable to retrieve Sentry repo for organization #{organization_slug}, id #{sentry_issue_id}, with error: #{e.message}")
 
     nil

@@ -39,7 +39,7 @@ recommend using certificates from a PKI that are in line with
 
 ## Obtaining an X.509 key pair
 
-If your organization has Public Key Infrastructure (PKI), that PKI will provide
+If your organization has Public Key Infrastructure (PKI), that PKI provides
 an S/MIME key.
 
 If you do not have an S/MIME key pair from a PKI, you can either create your
@@ -49,7 +49,7 @@ and some of them generate keys for free.
 
 ## Associating your X.509 certificate with Git
 
-To take advantage of X.509 signing, you will need Git 2.19.0 or later. You can
+To take advantage of X.509 signing, you need Git 2.19.0 or later. You can
 check your Git version with:
 
 ```shell

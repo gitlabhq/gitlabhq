@@ -40,11 +40,11 @@ class Packages::Package < ApplicationRecord
   validate :unique_debian_package_name, if: :debian_package?
 
   validate :valid_conan_package_recipe, if: :conan?
-  validate :valid_npm_package_name, if: :npm?
   validate :valid_composer_global_name, if: :composer?
   validate :package_already_taken, if: :npm?
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
+  validates :name, format: { with: Gitlab::Regex.npm_package_name_regex }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
   validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
@@ -91,6 +91,12 @@ class Packages::Package < ApplicationRecord
     joins(:conan_metadatum).where(packages_conan_metadata: { package_username: package_username })
   end
 
+  scope :with_debian_codename, -> (codename) do
+    debian
+      .joins(:debian_distribution)
+      .where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
+  end
+  scope :preload_debian_file_metadata, -> { preload(package_files: :debian_file_metadatum) }
   scope :with_composer_target, -> (target) do
     includes(:composer_metadatum)
       .joins(:composer_metadatum)
@@ -98,12 +104,12 @@ class Packages::Package < ApplicationRecord
   end
   scope :preload_composer, -> { preload(:composer_metadatum) }
 
-  scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+  scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
   scope :processed, -> do
     where.not(package_type: :nuget).or(
-      where.not(name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME)
+      where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME)
     )
   end
   scope :preload_files, -> { preload(:package_files) }
@@ -125,6 +131,8 @@ class Packages::Package < ApplicationRecord
   scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }
   scope :order_project_path_desc, -> { joins(:project).reorder('projects.path DESC, id DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
+
+  after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
 
   def self.for_projects(projects)
     return none unless projects.any?
@@ -218,7 +226,19 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def sync_maven_metadata(user)
+    return unless maven? && version? && user
+
+    ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project.id, name)
+  end
+
   private
+
+  def update_composer_cache
+    return unless composer?
+
+    ::Packages::Composer::CacheUpdateWorker.perform_async(project_id, name, composer_metadatum.version_cache_sha) # rubocop:disable CodeReuse/Worker
+  end
 
   def composer_tag_version?
     composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)
@@ -244,14 +264,6 @@ class Packages::Package < ApplicationRecord
     # See https://github.com/rails/rails/pull/35186
     if Packages::Package.default_scoped.composer.with_name(name).where.not(project_id: project_id).exists?
       errors.add(:name, 'is already taken by another project')
-    end
-  end
-
-  def valid_npm_package_name
-    return unless project&.root_namespace
-
-    unless name =~ %r{\A@#{project.root_namespace.path}/[^/]+\z}
-      errors.add(:name, 'is not valid')
     end
   end
 

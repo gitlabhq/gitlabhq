@@ -24,7 +24,8 @@ import {
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
-  MISSING_OR_DELETE_IMAGE_BREADCRUMB,
+  MISSING_OR_DELETED_IMAGE_BREADCRUMB,
+  ROOT_IMAGE_TEXT,
 } from '../constants/index';
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
@@ -116,7 +117,9 @@ export default {
   },
   methods: {
     updateBreadcrumb() {
-      const name = this.image?.name || MISSING_OR_DELETE_IMAGE_BREADCRUMB;
+      const name = this.image?.id
+        ? this.image?.name || ROOT_IMAGE_TEXT
+        : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
       this.breadCrumbState.updateName(name);
     },
     deleteTags(toBeDeleted) {

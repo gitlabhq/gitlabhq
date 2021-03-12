@@ -9,7 +9,6 @@ describe('Pipelines Empty State', () => {
   const createWrapper = () => {
     wrapper = shallowMount(EmptyState, {
       propsData: {
-        helpPagePath: 'foo',
         emptyStateSvgPath: 'foo',
         canSetCi: true,
       },
@@ -35,7 +34,7 @@ describe('Pipelines Empty State', () => {
     });
 
     it('should render a link with provided help path', () => {
-      expect(findGetStartedButton().attributes('href')).toBe('foo');
+      expect(findGetStartedButton().attributes('href')).toBe('/help/ci/quick_start/index.md');
     });
 
     it('should render empty state information', () => {

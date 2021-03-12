@@ -3,8 +3,6 @@
 - group_path << parent.full_path + '/' if parent
 
 = form_with url: import_gitlab_group_path, class: 'group-form gl-show-field-errors', multipart: true do |f|
-  = form_errors(@group)
-
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
@@ -45,6 +43,6 @@
         - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/group/settings/import_export') }
         = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
       .gl-mt-3
-        = render 'shared/file_picker_button', f: f, field: :file, help_text: nil, classes: 'gl-button btn-success-secondary gl-mr-2'
+        = render 'shared/file_picker_button', f: f, field: :file, help_text: nil, classes: 'gl-button btn-confirm-secondary gl-mr-2'
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit _('Import'), class: 'btn gl-button btn-success'
+    = f.submit _('Import'), class: 'btn gl-button btn-confirm'

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238186', type: :investigating } do
+      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322647', type: :flaky } do
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do
           Resource::Project.fabricate! do |project|
@@ -50,18 +50,17 @@ module QA
             push.file_content = 'new file'
           end
 
+          # Confirm that the commit is waiting to be replicated
+          expect(praefect_manager).to be_replication_pending
+
           # Start the old primary node again
           praefect_manager.start_primary_node
-          praefect_manager.wait_for_health_check_current_primary_node
+          praefect_manager.wait_for_health_check_all_nodes
 
-          # Confirm dataloss (i.e., inconsistent nodes)
-          expect(praefect_manager.replicated?(project.id)).to be false
-
-          # Reconcile nodes to recover from dataloss
-          praefect_manager.reconcile_nodes
+          # Wait for automatic replication
           praefect_manager.wait_for_replication(project.id)
 
-          # Confirm that both commits are available after reconciliation
+          # Confirm that both commits are available
           expect(project.commits.map { |commit| commit[:message].chomp })
             .to include("Initial commit").and include("pushed after failover")
         end

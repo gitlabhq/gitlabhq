@@ -18,8 +18,9 @@
             = _('Enter weights for storages for new repositories.')
             = link_to sprite_icon('question-o'), help_page_path('administration/repository_storage_paths')
         .form-check
-          - storage_weights.each do |attribute|
-            = f.text_field attribute[:name], class: 'form-text-input', value: attribute[:value]
-            = f.label attribute[:label], attribute[:label], class: 'label-bold form-check-label'
-            %br
-  = f.submit _('Save changes'), class: "gl-button btn btn-success qa-save-changes-button"
+          = f.fields_for :repository_storages_weighted, storage_weights do |storage_form|
+            - Gitlab.config.repositories.storages.keys.each do |storage|
+              = storage_form.text_field storage, class: 'form-text-input'
+              = storage_form.label storage, storage, class: 'label-bold form-check-label'
+              %br
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

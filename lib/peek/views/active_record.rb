@@ -39,16 +39,20 @@ module Peek
         super
 
         subscribe('sql.active_record') do |_, start, finish, _, data|
-          if Gitlab::PerformanceBar.enabled_for_request?
-            detail_store << {
-              duration: finish - start,
-              sql: data[:sql].strip,
-              backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller),
-              cached: data[:cached] ? 'cached' : ''
-            }
-          end
+          detail_store << generate_detail(start, finish, data) if Gitlab::PerformanceBar.enabled_for_request?
         end
+      end
+
+      def generate_detail(start, finish, data)
+        {
+          duration: finish - start,
+          sql: data[:sql].strip,
+          backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller),
+          cached: data[:cached] ? 'cached' : ''
+        }
       end
     end
   end
 end
+
+Peek::Views::ActiveRecord.prepend_if_ee('EE::Peek::Views::ActiveRecord')

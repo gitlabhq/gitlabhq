@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { pypiPackage as packageEntity } from 'jest/packages/mock_data';
+import InstallationTitle from '~/packages/details/components/installation_title.vue';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
 
 const localVue = createLocalVue();
@@ -26,6 +27,8 @@ describe('PypiInstallation', () => {
   const pipCommand = () => wrapper.find('[data-testid="pip-command"]');
   const setupInstruction = () => wrapper.find('[data-testid="pypi-setup-content"]');
 
+  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+
   function createComponent() {
     wrapper = shallowMount(PypiInstallation, {
       localVue,
@@ -39,7 +42,16 @@ describe('PypiInstallation', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
+  });
+
+  describe('install command switch', () => {
+    it('has the installation title component', () => {
+      expect(findInstallationTitle().exists()).toBe(true);
+      expect(findInstallationTitle().props()).toMatchObject({
+        packageType: 'pypi',
+        options: [{ value: 'pypi', label: 'Show PyPi commands' }],
+      });
+    });
   });
 
   it('renders all the messages', () => {

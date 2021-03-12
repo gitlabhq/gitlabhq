@@ -65,11 +65,10 @@
             = link_to admin_dev_ops_report_path, title: _('DevOps Report') do
               %span
                 = _('DevOps Report')
-          - if Feature.enabled?(:instance_statistics, default_enabled: true)
-            = nav_link(controller: :instance_statistics) do
-              = link_to admin_instance_statistics_path, title: _('Usage Trends') do
-                %span
-                  = _('Usage Trends')
+          = nav_link(controller: :usage_trends) do
+            = link_to admin_usage_trends_path, title: _('Usage Trends') do
+              %span
+                = _('Usage Trends')
 
       = nav_link(controller: admin_monitoring_nav_links) do
         = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do

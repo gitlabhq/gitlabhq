@@ -22,10 +22,10 @@ export const i18n = {
     owner_disabled: __('Notifications have been disabled by the project or group owner'),
   },
   updateNotificationLevelErrorMessage: __(
-    'An error occured while updating the notification settings. Please try again.',
+    'An error occurred while updating the notification settings. Please try again.',
   ),
   loadNotificationLevelErrorMessage: __(
-    'An error occured while loading the notification settings. Please try again.',
+    'An error occurred while loading the notification settings. Please try again.',
   ),
   customNotificationsModal: {
     title: __('Custom notification events'),
@@ -53,6 +53,7 @@ export const i18n = {
     reassign_merge_request: s__('NotificationEvent|Reassign merge request'),
     reopen_issue: s__('NotificationEvent|Reopen issue'),
     reopen_merge_request: s__('NotificationEvent|Reopen merge request'),
+    merge_when_pipeline_succeeds: s__('NotificationEvent|Merge when pipeline succeeds'),
     success_pipeline: s__('NotificationEvent|Successful pipeline'),
   },
 };

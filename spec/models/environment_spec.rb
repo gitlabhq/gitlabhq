@@ -34,6 +34,39 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
+  describe '.before_save' do
+    it 'ensures environment tier when a new object is created' do
+      environment = build(:environment, name: 'gprd', tier: nil)
+
+      expect { environment.save }.to change { environment.tier }.from(nil).to('production')
+    end
+
+    it 'ensures environment tier when an existing object is updated' do
+      environment = create(:environment, name: 'gprd')
+      environment.update_column(:tier, nil)
+
+      expect { environment.stop! }.to change { environment.reload.tier }.from(nil).to('production')
+    end
+
+    it 'does not overwrite the existing environment tier' do
+      environment = create(:environment, name: 'gprd', tier: :production)
+
+      expect { environment.update!(name: 'gstg') }.not_to change { environment.reload.tier }
+    end
+
+    context 'when environment_tier feature flag is disabled' do
+      before do
+        stub_feature_flags(environment_tier: false)
+      end
+
+      it 'does not ensure environment tier' do
+        environment = build(:environment, name: 'gprd', tier: nil)
+
+        expect { environment.save }.not_to change { environment.tier }
+      end
+    end
+  end
+
   describe '.order_by_last_deployed_at' do
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
@@ -192,6 +225,62 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'plucks names' do
       is_expected.to eq(%w[production])
+    end
+  end
+
+  describe '.for_tier' do
+    let_it_be(:environment) { create(:environment, :production) }
+
+    it 'returns the production environment when searching for production tier' do
+      expect(described_class.for_tier(:production)).to eq([environment])
+    end
+
+    it 'returns nothing when searching for staging tier' do
+      expect(described_class.for_tier(:staging)).to be_empty
+    end
+  end
+
+  describe '#guess_tier' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { environment.send(:guess_tier) }
+
+    let(:environment) { build(:environment, name: name) }
+
+    where(:name, :tier) do
+      'review/feature'     | described_class.tiers[:development]
+      'review/product'     | described_class.tiers[:development]
+      'DEV'                | described_class.tiers[:development]
+      'development'        | described_class.tiers[:development]
+      'trunk'              | described_class.tiers[:development]
+      'test'               | described_class.tiers[:testing]
+      'TEST'               | described_class.tiers[:testing]
+      'testing'            | described_class.tiers[:testing]
+      'testing-prd'        | described_class.tiers[:testing]
+      'acceptance-testing' | described_class.tiers[:testing]
+      'QC'                 | described_class.tiers[:testing]
+      'gstg'               | described_class.tiers[:staging]
+      'staging'            | described_class.tiers[:staging]
+      'stage'              | described_class.tiers[:staging]
+      'Model'              | described_class.tiers[:staging]
+      'MODL'               | described_class.tiers[:staging]
+      'Pre-production'     | described_class.tiers[:staging]
+      'pre'                | described_class.tiers[:staging]
+      'Demo'               | described_class.tiers[:staging]
+      'gprd'               | described_class.tiers[:production]
+      'gprd-cny'           | described_class.tiers[:production]
+      'production'         | described_class.tiers[:production]
+      'Production'         | described_class.tiers[:production]
+      'prod'               | described_class.tiers[:production]
+      'PROD'               | described_class.tiers[:production]
+      'Live'               | described_class.tiers[:production]
+      'canary'             | described_class.tiers[:other]
+      'other'              | described_class.tiers[:other]
+      'EXP'                | described_class.tiers[:other]
+    end
+
+    with_them do
+      it { is_expected.to eq(tier) }
     end
   end
 

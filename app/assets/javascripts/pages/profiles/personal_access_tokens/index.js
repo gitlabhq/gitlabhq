@@ -1,3 +1,4 @@
-import initExpiresAtField from '~/access_tokens';
+import { initExpiresAtField, initProjectsField } from '~/access_tokens';
 
-document.addEventListener('DOMContentLoaded', initExpiresAtField);
+initExpiresAtField();
+initProjectsField();

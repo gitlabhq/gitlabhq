@@ -17,7 +17,7 @@ to accept merge requests without creating merge commits.
 
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
-is enabled, no merge commits will be created and all merges are fast-forwarded,
+is enabled, no merge commits are created and all merges are fast-forwarded,
 which means that merging is only allowed if the branch can be fast-forwarded.
 
 When a fast-forward merge is not possible, the user is given the option to rebase.
@@ -28,19 +28,19 @@ When a fast-forward merge is not possible, the user is given the option to rebas
 1. Select the **Fast-forward merge** option
 1. Hit **Save changes** for the changes to take effect
 
-Now, when you visit the merge request page, you will be able to accept it
+Now, when you visit the merge request page, you can accept it
 **only if a fast-forward merge is possible**.
 
 ![Fast forward merge request](img/ff_merge_mr.png)
 
 If a fast-forward merge is not possible but a conflict free rebase is possible,
-a rebase button will be offered.
+a rebase button is offered.
 
 ![Fast forward merge request](img/ff_merge_rebase.png)
 
 If the target branch is ahead of the source branch and a conflict free rebase is
 not possible, you need to rebase the
-source branch locally before you will be able to do a fast-forward merge.
+source branch locally before you can do a fast-forward merge.
 
 ![Fast forward merge rebase locally](img/ff_merge_rebase_locally.png)
 

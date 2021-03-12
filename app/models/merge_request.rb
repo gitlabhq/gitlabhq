@@ -36,6 +36,10 @@ class MergeRequest < ApplicationRecord
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
+  ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
+    'Ci::CompareCodequalityReportsService' => ->(project) { ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project) }
+  }.freeze
+
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
@@ -187,9 +191,13 @@ class MergeRequest < ApplicationRecord
   end
 
   state_machine :merge_status, initial: :unchecked do
+    event :mark_as_preparing do
+      transition unchecked: :preparing
+    end
+
     event :mark_as_unchecked do
-      transition [:can_be_merged, :checking, :unchecked] => :unchecked
-      transition [:cannot_be_merged, :cannot_be_merged_rechecking, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
+      transition [:preparing, :can_be_merged, :checking] => :unchecked
+      transition [:cannot_be_merged, :cannot_be_merged_rechecking] => :cannot_be_merged_recheck
     end
 
     event :mark_as_checking do
@@ -205,6 +213,7 @@ class MergeRequest < ApplicationRecord
       transition [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking] => :cannot_be_merged
     end
 
+    state :preparing
     state :unchecked
     state :cannot_be_merged_recheck
     state :checking
@@ -233,7 +242,7 @@ class MergeRequest < ApplicationRecord
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`
   # to avoid exposing unnecessary internal state
   def public_merge_status
-    cannot_be_merged_rechecking? ? 'checking' : merge_status
+    cannot_be_merged_rechecking? || preparing? ? 'checking' : merge_status
   end
 
   validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
@@ -301,10 +310,28 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :order_merged_at, ->(direction) do
-    query = join_metrics.order(Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', direction))
+    reverse_direction = { 'ASC' => 'DESC', 'DESC' => 'ASC' }
+    reversed_direction = reverse_direction[direction] || raise("Unknown sort direction was given: #{direction}")
 
-    # Add `merge_request_metrics.merged_at` to the `SELECT` in order to make the keyset pagination work.
-    query.select(*query.arel.projections, MergeRequest::Metrics.arel_table[:merged_at].as('"merge_request_metrics.merged_at"'))
+    order = Gitlab::Pagination::Keyset::Order.build([
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'merge_request_metrics_merged_at',
+        column_expression: MergeRequest::Metrics.arel_table[:merged_at],
+        order_expression: Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', direction),
+        reversed_order_expression: Gitlab::Database.nulls_first_order('merge_request_metrics.merged_at', reversed_direction),
+        order_direction: direction,
+        nullable: :nulls_last,
+        distinct: false,
+        add_to_projections: true
+      ),
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'merge_request_metrics_id',
+        order_expression: MergeRequest::Metrics.arel_table[:id].desc,
+        add_to_projections: true
+      )
+    ])
+
+    order.apply_cursor_conditions(join_metrics).order(order)
   end
   scope :order_merged_at_asc, -> { order_merged_at('ASC') }
   scope :order_merged_at_desc, -> { order_merged_at('DESC') }
@@ -317,6 +344,8 @@ class MergeRequest < ApplicationRecord
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, -> (relation) { preload(metrics: relation) }
+  scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
+  scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: :merge_request_diff_commits) }
   scope :with_web_entity_associations, -> { preload(:author, :target_project) }
 
   scope :with_auto_merge_enabled, -> do
@@ -374,8 +403,7 @@ class MergeRequest < ApplicationRecord
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 
-  delegate :active?, :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
-  delegate :success?, :active?, to: :actual_head_pipeline, prefix: true, allow_nil: true
+  delegate :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
 
   RebaseLockTimeout = Class.new(StandardError)
 
@@ -401,8 +429,8 @@ class MergeRequest < ApplicationRecord
 
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
-    when 'merged_at', 'merged_at_asc' then order_merged_at_asc.with_order_id_desc
-    when 'merged_at_desc' then order_merged_at_desc.with_order_id_desc
+    when 'merged_at', 'merged_at_asc' then order_merged_at_asc
+    when 'merged_at_desc' then order_merged_at_desc
     else
       super
     end
@@ -433,6 +461,18 @@ class MergeRequest < ApplicationRecord
     # either the squash commit (if the MR was squashed) or the diff head commit.
     sha = merge_commit_sha || squash_commit_sha || diff_head_sha
     target_project.latest_pipeline(target_branch, sha)
+  end
+
+  def head_pipeline_active?
+    !!head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_active?
+    !!actual_head_pipeline&.active?
+  end
+
+  def actual_head_pipeline_success?
+    !!actual_head_pipeline&.success?
   end
 
   # Pattern used to extract `!123` merge request references from text
@@ -1026,6 +1066,7 @@ class MergeRequest < ApplicationRecord
   def work_in_progress?
     self.class.work_in_progress?(title)
   end
+  alias_method :draft?, :work_in_progress?
 
   def wipless_title
     self.class.wipless_title(self.title)
@@ -1264,7 +1305,14 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit message, or the MR title if none found
   def default_squash_commit_message
     strong_memoize(:default_squash_commit_message) do
-      recent_commits.without_merge_commits.reverse_each.find(&:description?)&.safe_message || title
+      first_multiline_commit&.safe_message || title
+    end
+  end
+
+  # Returns the oldest multi-line commit
+  def first_multiline_commit
+    strong_memoize(:first_multiline_commit) do
+      recent_commits.without_merge_commits.reverse_each.find(&:description?)
     end
   end
 
@@ -1550,7 +1598,7 @@ class MergeRequest < ApplicationRecord
   def compare_reports(service_class, current_user = nil, report_type = nil )
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
       unless service_class.new(project, current_user, id: id, report_type: report_type)
-        .latest?(base_pipeline, actual_head_pipeline, data)
+        .latest?(comparison_base_pipeline(service_class.name), actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
 
@@ -1586,7 +1634,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user, id: id, report_type: report_type).execute(base_pipeline, actual_head_pipeline)
+    service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(identifier), actual_head_pipeline)
   end
 
   def all_commits
@@ -1710,6 +1758,14 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def use_merge_base_pipeline_for_comparison?(service_class)
+    ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON[service_class]&.call(project)
+  end
+
+  def comparison_base_pipeline(service_class)
+    (use_merge_base_pipeline_for_comparison?(service_class) && merge_base_pipeline) || base_pipeline
+  end
+
   def base_pipeline
     @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
@@ -1828,6 +1884,12 @@ class MergeRequest < ApplicationRecord
       sast: report_type_enabled?(:sast),
       secret_detection: report_type_enabled?(:secret_detection)
     }
+  end
+
+  def includes_ci_config?
+    return false unless diff_stats
+
+    diff_stats.map(&:path).include?(project.ci_config_path_or_default)
   end
 
   private

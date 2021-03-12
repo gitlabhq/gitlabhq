@@ -18,7 +18,6 @@ const DEFAULT_PROPS = {
 
 describe('User Popover Component', () => {
   const fixtureTemplate = 'merge_requests/diff_comment.html';
-  preloadFixtures(fixtureTemplate);
 
   let wrapper;
 

@@ -1,23 +1,18 @@
+const createRefTypeState = () => ({
+  list: [],
+  totalCount: 0,
+  error: null,
+});
+
 export default () => ({
+  enabledRefTypes: [],
   projectId: null,
 
   query: '',
   matches: {
-    branches: {
-      list: [],
-      totalCount: 0,
-      error: null,
-    },
-    tags: {
-      list: [],
-      totalCount: 0,
-      error: null,
-    },
-    commits: {
-      list: [],
-      totalCount: 0,
-      error: null,
-    },
+    branches: createRefTypeState(),
+    tags: createRefTypeState(),
+    commits: createRefTypeState(),
   },
   selectedRef: null,
   requestCount: 0,

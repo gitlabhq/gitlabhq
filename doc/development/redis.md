@@ -120,14 +120,13 @@ This shows commands that have taken a long time and may be a performance
 concern.
 
 The
-[fluent-plugin-redis-slowlog](https://gitlab.com/gitlab-org/fluent-plugin-redis-slowlog)
-project is responsible for taking the slowlog entries from Redis and
-passing to fluentd (and ultimately Elasticsearch).
+[`fluent-plugin-redis-slowlog`](https://gitlab.com/gitlab-org/fluent-plugin-redis-slowlog)
+project is responsible for taking the `slowlog` entries from Redis and
+passing to Fluentd (and ultimately Elasticsearch).
 
 ## Analyzing the entire keyspace
 
-The [Redis Keyspace
-Analyzer](https://gitlab.com/gitlab-com/gl-infra/redis-keyspace-analyzer)
+The [Redis Keyspace Analyzer](https://gitlab.com/gitlab-com/gl-infra/redis-keyspace-analyzer)
 project contains tools for dumping the full key list and memory usage of a Redis
 instance, and then analyzing those lists while eliminating potentially sensitive
 data from the results. It can be used to find the most frequent key patterns, or

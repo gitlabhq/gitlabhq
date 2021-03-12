@@ -186,7 +186,7 @@ There are two ways to create policy alerts:
 
 Once added, the UI updates and displays a warning about the dangers of too many alerts.
 
-#### Enable or disable Policy Alerts **(FREE SELF)**
+#### Enable or disable Policy Alerts **(ULTIMATE)**
 
 Policy Alerts is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -222,5 +222,7 @@ By default, the list doesn't display resolved or dismissed alerts. To show these
 checkbox **Hide dismissed alerts**.
 
 ![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_9.png)
+
+Clicking an alert's name takes the user to the [alert details page](../../../operations/incident_management/alerts.md#alert-details-page).
 
 For information on work in progress for the alerts dashboard, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5041).

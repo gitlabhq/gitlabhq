@@ -119,6 +119,7 @@ RSpec.describe Projects::Alerting::NotifyService do
               end
 
               it_behaves_like 'does not an create alert management alert'
+              it_behaves_like 'creates single system note based on the source of the alert'
 
               context 'auto_close_enabled setting enabled' do
                 let(:auto_close_enabled) { true }
@@ -130,6 +131,8 @@ RSpec.describe Projects::Alerting::NotifyService do
                   expect(alert.resolved?).to eq(true)
                   expect(alert.ended_at).to eql(ended_at)
                 end
+
+                it_behaves_like 'creates status-change system note for an auto-resolved alert'
 
                 context 'related issue exists' do
                   let(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
@@ -209,10 +212,7 @@ RSpec.describe Projects::Alerting::NotifyService do
               )
             end
 
-            it 'creates a system note corresponding to alert creation' do
-              expect { subject }.to change(Note, :count).by(1)
-              expect(Note.last.note).to include(source)
-            end
+            it_behaves_like 'creates single system note based on the source of the alert'
           end
         end
 

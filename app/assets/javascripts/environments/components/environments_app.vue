@@ -85,7 +85,7 @@ export default {
       this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
       this.service
-        .getFolderContent(folder.folder_path)
+        .getFolderContent(folder.folder_path, folder.state)
         .then((response) => this.store.setfolderContent(folder, response.data.environments))
         .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
         .catch(() => {
@@ -129,7 +129,7 @@ export default {
           :href="newEnvironmentPath"
           data-testid="new-environment"
           category="primary"
-          variant="success"
+          variant="confirm"
           >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
         >
       </div>
@@ -164,7 +164,7 @@ export default {
               :href="newEnvironmentPath"
               data-testid="new-environment"
               category="primary"
-              variant="success"
+              variant="confirm"
               >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
             >
           </div>

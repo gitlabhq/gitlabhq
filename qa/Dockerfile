@@ -38,6 +38,14 @@ RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 RUN rm -f chromedriver_linux64.zip
 
 ##
+# Install root certificate
+#
+RUN mkdir -p /usr/share/ca-certificates/gitlab
+ADD ./qa/tls_certificates/authority/ca.crt /usr/share/ca-certificates/gitlab/
+RUN echo 'gitlab/ca.crt' >> /etc/ca-certificates.conf
+RUN chmod -R 644 /usr/share/ca-certificates/gitlab && update-ca-certificates
+
+##
 # Install gcloud and kubectl CLI used in Auto DevOps test to create K8s
 # clusters
 #

@@ -1,8 +1,0 @@
----
-name: pages_serve_from_deployments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46320
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2932
-milestone: '13.6'
-type: development
-group: group::release
-default_enabled: true

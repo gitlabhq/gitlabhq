@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Types
-  # rubocop: disable Graphql/AuthorizeTypes
   class CommitActionType < BaseInputObject
     argument :action, type: Types::CommitActionModeEnum, required: true,
           description: 'The action to perform, create, delete, move, update, chmod.'
@@ -18,5 +17,4 @@ module Types
     argument :encoding, type: Types::CommitEncodingEnum, required: false,
              description: 'Encoding of the file. Default is text.'
   end
-  # rubocop: enable Graphql/AuthorizeTypes
 end

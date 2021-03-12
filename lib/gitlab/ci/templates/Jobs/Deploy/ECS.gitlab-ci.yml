@@ -46,7 +46,7 @@ review_ecs:
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
@@ -62,7 +62,7 @@ stop_review_ecs:
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
       when: manual
@@ -81,7 +81,7 @@ review_fargate:
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
@@ -97,7 +97,7 @@ stop_review_fargate:
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
       when: manual
@@ -109,7 +109,7 @@ production_ecs:
       when: never
     - if: '$CI_KUBERNETES_ACTIVE'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
@@ -120,6 +120,6 @@ production_fargate:
       when: never
     - if: '$CI_KUBERNETES_ACTIVE'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

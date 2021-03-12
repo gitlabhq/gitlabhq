@@ -39,7 +39,12 @@ class BulkImportService
 
     BulkImportWorker.perform_async(bulk_import.id)
 
-    bulk_import
+    ServiceResponse.success(payload: bulk_import)
+  rescue ActiveRecord::RecordInvalid => e
+    ServiceResponse.error(
+      message: e.message,
+      http_status: :unprocessable_entity
+    )
   end
 
   private

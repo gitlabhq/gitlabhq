@@ -26,6 +26,10 @@ module QA
           element :merge_immediately_option
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do
+          element :merge_request_status_content
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
           element :merged_status_content
         end
@@ -179,7 +183,11 @@ module QA
         end
 
         def fast_forward_possible?
-          has_no_text?('Fast-forward merge is not possible')
+          has_text?('Fast-forward merge without a merge commit')
+        end
+
+        def fast_forward_not_possible?
+          has_text?('Fast-forward merge is not possible')
         end
 
         def has_file?(file_name)
@@ -224,8 +232,7 @@ module QA
         end
 
         def merge!
-          wait_until_ready_to_merge
-          click_element(:merge_button)
+          try_to_merge!
           finished_loading?
 
           raise "Merge did not appear to be successful" unless merged?
@@ -236,8 +243,18 @@ module QA
           click_element(:merge_immediately_option)
         end
 
+        def merge_when_pipeline_succeeds!
+          wait_until_ready_to_merge
+
+          click_element(:merge_button, text: 'Merge when pipeline succeeds')
+        end
+
         def merged?
-          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 60)
+          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
+          # To remove page refresh logic if possible
+          retry_until(max_attempts: 3, reload: true) do
+            has_element?(:merged_status_content, text: 'The changes were merged into', wait: 20)
+          end
         end
 
         # Check if the MR is able to be merged
@@ -247,6 +264,10 @@ module QA
           # `wait_for_requests`, which should ensure the disabled/enabled
           # state of the element is reliable
           has_element?(:merge_button, disabled: false)
+        end
+
+        def merge_request_status
+          find_element(:merge_request_status_content).text
         end
 
         # Waits up 60 seconds and raises an error if unable to merge
@@ -280,7 +301,10 @@ module QA
         end
 
         def try_to_merge!
+          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
+          # To remove page refresh logic if possible
           wait_until_ready_to_merge
+          wait_until { !find_element(:merge_button).has_text?("when pipeline succeeds") }
 
           click_element(:merge_button)
         end

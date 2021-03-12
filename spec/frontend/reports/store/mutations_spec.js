@@ -1,7 +1,7 @@
 import * as types from '~/reports/store/mutation_types';
 import mutations from '~/reports/store/mutations';
 import state from '~/reports/store/state';
-import { issue } from '../mock_data/mock_data';
+import { failedIssue } from '../mock_data/mock_data';
 
 describe('Reports Store Mutations', () => {
   let stateCopy;
@@ -115,17 +115,17 @@ describe('Reports Store Mutations', () => {
   describe('SET_ISSUE_MODAL_DATA', () => {
     beforeEach(() => {
       mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, {
-        issue,
+        issue: failedIssue,
       });
     });
 
     it('should set modal title', () => {
-      expect(stateCopy.modal.title).toEqual(issue.name);
+      expect(stateCopy.modal.title).toEqual(failedIssue.name);
     });
 
     it('should set modal data', () => {
-      expect(stateCopy.modal.data.execution_time.value).toEqual(issue.execution_time);
-      expect(stateCopy.modal.data.system_output.value).toEqual(issue.system_output);
+      expect(stateCopy.modal.data.execution_time.value).toEqual(failedIssue.execution_time);
+      expect(stateCopy.modal.data.system_output.value).toEqual(failedIssue.system_output);
     });
 
     it('should open modal', () => {
@@ -136,7 +136,7 @@ describe('Reports Store Mutations', () => {
   describe('RESET_ISSUE_MODAL_DATA', () => {
     beforeEach(() => {
       mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, {
-        issue,
+        issue: failedIssue,
       });
 
       mutations[types.RESET_ISSUE_MODAL_DATA](stateCopy);

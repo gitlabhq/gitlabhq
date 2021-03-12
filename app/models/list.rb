@@ -14,16 +14,9 @@ class List < ApplicationRecord
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?
 
   scope :preload_associated_models, -> { preload(:board, label: :priorities) }
+  scope :without_types, ->(list_types) { where.not(list_type: list_types) }
 
   alias_method :preferences, :list_user_preferences
-
-  class << self
-    def preload_preferences_for_user(lists, user)
-      return unless user
-
-      lists.each { |list| list.preferences_for(user) }
-    end
-  end
 
   def preferences_for(user)
     return preferences.build unless user
@@ -36,18 +29,6 @@ class List < ApplicationRecord
         loader.call({ list_id: preference.list_id, user_id: preference.user_id }, preference)
       end
     end
-  end
-
-  def update_preferences_for(user, preferences = {})
-    return unless user
-
-    preferences_for(user).update(preferences)
-  end
-
-  def collapsed?(user)
-    preferences = preferences_for(user)
-
-    preferences.collapsed?
   end
 
   def as_json(options = {})

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# ServiceNow integration
+# ServiceNow integration **(FREE)**
 
 ServiceNow offers several integrations to help centralize and automate your
 management of GitLab workflows.

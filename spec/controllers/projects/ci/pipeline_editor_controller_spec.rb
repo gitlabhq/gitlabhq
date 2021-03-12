@@ -36,18 +36,5 @@ RSpec.describe Projects::Ci::PipelineEditorController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    context 'when ci_pipeline_editor_page feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_editor_page: false)
-        project.add_developer(user)
-
-        get :show, params: { namespace_id: project.namespace, project_id: project }
-      end
-
-      it 'responds with 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 end

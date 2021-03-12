@@ -60,11 +60,9 @@ describe('packages_list_row', () => {
   });
 
   describe('when is is group', () => {
-    beforeEach(() => {
-      mountComponent({ isGroup: true });
-    });
-
     it('has a package path component', () => {
+      mountComponent({ isGroup: true });
+
       expect(findPackagePath().exists()).toBe(true);
       expect(findPackagePath().props()).toMatchObject({ path: 'foo/bar/baz' });
     });
@@ -92,10 +90,22 @@ describe('packages_list_row', () => {
     });
   });
 
-  describe('delete event', () => {
-    beforeEach(() => mountComponent({ packageEntity: packageWithoutTags }));
+  describe('delete button', () => {
+    it('exists and has the correct props', () => {
+      mountComponent({ packageEntity: packageWithoutTags });
+
+      expect(findDeleteButton().exists()).toBe(true);
+      expect(findDeleteButton().attributes()).toMatchObject({
+        icon: 'remove',
+        category: 'secondary',
+        variant: 'danger',
+        title: 'Remove package',
+      });
+    });
 
     it('emits the packageToDelete event when the delete button is clicked', async () => {
+      mountComponent({ packageEntity: packageWithoutTags });
+
       findDeleteButton().vm.$emit('click');
 
       await wrapper.vm.$nextTick();

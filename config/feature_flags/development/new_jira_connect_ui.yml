@@ -1,8 +1,0 @@
----
-name: new_jira_connect_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50692
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/295647
-milestone: '13.8'
-type: development
-group: group::ecosystem
-default_enabled: true

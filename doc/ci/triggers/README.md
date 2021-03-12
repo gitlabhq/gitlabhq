@@ -188,10 +188,10 @@ source repository. Be sure to URL-encode `ref` if it contains slashes.
 ### Using webhook payload in the triggered pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-trigger_payload-variable). **(FREE SELF)**
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-trigger_payload-variable). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -203,21 +203,21 @@ so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 #### Enable or disable the `TRIGGER_PAYLOAD` variable
 
-The `TRIGGER_PAYLOAD` CI/CD variable is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+The `TRIGGER_PAYLOAD` CI/CD variable is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_trigger_payload_into_pipeline)
-```
+can opt to disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:ci_trigger_payload_into_pipeline)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_trigger_payload_into_pipeline)
 ```
 
 ## Making use of trigger variables

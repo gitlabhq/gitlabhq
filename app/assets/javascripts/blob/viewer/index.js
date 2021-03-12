@@ -62,6 +62,7 @@ export default class BlobViewer {
     this.switcher = document.querySelector('.js-blob-viewer-switcher');
     this.switcherBtns = document.querySelectorAll('.js-blob-viewer-switch-btn');
     this.copySourceBtn = document.querySelector('.js-copy-blob-source-btn');
+    this.copySourceBtnTooltip = document.querySelector('.js-copy-blob-source-btn-tooltip');
 
     this.simpleViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="simple"]');
     this.richViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="rich"]');
@@ -109,23 +110,23 @@ export default class BlobViewer {
   toggleCopyButtonState() {
     if (!this.copySourceBtn) return;
     if (this.simpleViewer.getAttribute('data-loaded')) {
-      this.copySourceBtn.setAttribute('title', __('Copy file contents'));
+      this.copySourceBtnTooltip.setAttribute('title', __('Copy file contents'));
       this.copySourceBtn.classList.remove('disabled');
     } else if (this.activeViewer === this.simpleViewer) {
-      this.copySourceBtn.setAttribute(
+      this.copySourceBtnTooltip.setAttribute(
         'title',
         __('Wait for the file to load to copy its contents'),
       );
       this.copySourceBtn.classList.add('disabled');
     } else {
-      this.copySourceBtn.setAttribute(
+      this.copySourceBtnTooltip.setAttribute(
         'title',
         __('Switch to the source to copy the file contents'),
       );
       this.copySourceBtn.classList.add('disabled');
     }
 
-    fixTitle($(this.copySourceBtn));
+    fixTitle($(this.copySourceBtnTooltip));
   }
 
   switchToViewer(name) {

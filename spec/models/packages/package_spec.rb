@@ -22,6 +22,14 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
   end
 
+  describe '.with_debian_codename' do
+    let_it_be(:publication) { create(:debian_publication) }
+
+    subject { described_class.with_debian_codename(publication.distribution.codename).to_a }
+
+    it { is_expected.to contain_exactly(publication.package) }
+  end
+
   describe '.with_composer_target' do
     let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
     let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }
@@ -161,6 +169,18 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('My/package').for(:name) }
         it { is_expected.not_to allow_value('../../../my_package').for(:name) }
         it { is_expected.not_to allow_value('%2e%2e%2fmy_package').for(:name) }
+      end
+
+      context 'npm package' do
+        subject { build_stubbed(:npm_package) }
+
+        it { is_expected.to allow_value("@group-1/package").for(:name) }
+        it { is_expected.to allow_value("@any-scope/package").for(:name) }
+        it { is_expected.to allow_value("unscoped-package").for(:name) }
+        it { is_expected.not_to allow_value("@inv@lid-scope/package").for(:name) }
+        it { is_expected.not_to allow_value("@scope/../../package").for(:name) }
+        it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
+        it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
       end
     end
 
@@ -342,16 +362,6 @@ RSpec.describe Packages::Package, type: :model do
     end
 
     describe '#package_already_taken' do
-      context 'npm package' do
-        let!(:package) { create(:npm_package) }
-
-        it 'will not allow a package of the same name' do
-          new_package = build(:npm_package, project: create(:project), name: package.name)
-
-          expect(new_package).not_to be_valid
-        end
-      end
-
       context 'maven package' do
         let!(:package) { create(:maven_package) }
 
@@ -511,7 +521,7 @@ RSpec.describe Packages::Package, type: :model do
 
   describe '.without_nuget_temporary_name' do
     let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:nuget_package, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+    let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
     subject { described_class.without_nuget_temporary_name }
 
@@ -530,7 +540,7 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to match_array([package1, package2, package3]) }
 
     context 'with temporary packages' do
-      let!(:package1) { create(:nuget_package, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+      let!(:package1) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
       it { is_expected.to match_array([package2, package3]) }
     end
@@ -801,6 +811,65 @@ RSpec.describe Packages::Package, type: :model do
 
     it 'returns the namespace package_settings' do
       expect(package.package_settings).to eq(group.package_settings)
+    end
+  end
+
+  describe '#sync_maven_metadata' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:package) { create(:maven_package) }
+
+    subject { package.sync_maven_metadata(user) }
+
+    shared_examples 'not enqueuing a sync worker job' do
+      it 'does not enqueue a sync worker job' do
+        expect(::Packages::Maven::Metadata::SyncWorker)
+          .not_to receive(:perform_async)
+
+        subject
+      end
+    end
+
+    it 'enqueues a sync worker job' do
+      expect(::Packages::Maven::Metadata::SyncWorker)
+        .to receive(:perform_async).with(user.id, package.project.id, package.name)
+
+      subject
+    end
+
+    context 'with no user' do
+      let(:user) { nil }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+
+    context 'with a versionless maven package' do
+      let_it_be(:package) { create(:maven_package, version: nil) }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+
+    context 'with a non maven package' do
+      let_it_be(:package) { create(:npm_package) }
+
+      it_behaves_like 'not enqueuing a sync worker job'
+    end
+  end
+
+  context 'destroying a composer package' do
+    let_it_be(:package_name) { 'composer-package-name' }
+    let_it_be(:json) { { 'name' => package_name } }
+    let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json } ) }
+    let!(:package) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
+
+    before do
+      Gitlab::Composer::Cache.new(project: project, name: package_name).execute
+      package.composer_metadatum.reload
+    end
+
+    it 'schedule the update job' do
+      expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, package.composer_metadatum.version_cache_sha)
+
+      package.destroy!
     end
   end
 end

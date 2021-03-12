@@ -13,7 +13,7 @@
           .filtered-search-box.m-0
             .filtered-search-box-input-container.pl-2
               = render 'shared/projects/search_form', admin_view: false, search_form_placeholder: _("Search projects...")
-        %button.btn.btn-secondary{ type: 'submit', form: 'project-filter-form' }
+        %button.btn.gl-button.btn-icon.btn-secondary{ type: 'submit', form: 'project-filter-form' }
           = sprite_icon('search', css_class: 'search-icon ')
     .filtered-search-dropdown.flex-row.align-items-center.mb-2.m-sm-0#filtered-search-visibility-dropdown{ class: flex_grow_and_shrink_xs }
       .filtered-search-dropdown-label.p-0.pl-sm-3.font-weight-bold

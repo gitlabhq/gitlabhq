@@ -4,7 +4,7 @@
   - if current_user && current_user.snippets.any? || @snippets.any?
     .page-title-controls
       - if can?(current_user, :create_snippet)
-        = link_to _("New snippet"), new_snippet_path, class: "gl-button btn btn-success", title: _("New snippet")
+        = link_to _("New snippet"), new_snippet_path, class: "gl-button btn btn-confirm", title: _("New snippet")
 
 .top-area
   %ul.nav-links.nav.nav-tabs

@@ -210,6 +210,7 @@ Settings.gitlab['domain_allowlist'] ||= []
 Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['content_security_policy'] ||= Gitlab::ContentSecurityPolicy::ConfigLoader.default_settings_hash
+Settings.gitlab['allowed_hosts'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
@@ -533,7 +534,7 @@ Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
 Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
 Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['cron'] ||= '45 1 * * 6'
+Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['cron'] ||= '45 1 1,15 * *'
 Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job_class'] = 'AuthorizedProjectUpdate::PeriodicRecalculateWorker'
 Settings.cron_jobs['update_container_registry_info_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['update_container_registry_info_worker']['cron'] ||= '0 0 * * *'
@@ -544,9 +545,9 @@ Settings.cron_jobs['postgres_dynamic_partitions_creator']['job_class'] ||= 'Part
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['cron'] ||= '47 9 * * *'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['job_class'] = 'CiPlatformMetricsUpdateCronWorker'
-Settings.cron_jobs['analytics_instance_statistics_count_job_trigger_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['analytics_instance_statistics_count_job_trigger_worker']['cron'] ||= '50 23 */1 * *'
-Settings.cron_jobs['analytics_instance_statistics_count_job_trigger_worker']['job_class'] ||= 'Analytics::InstanceStatistics::CountJobTriggerWorker'
+Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker']['cron'] ||= '50 23 */1 * *'
+Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker']['job_class'] ||= 'Analytics::UsageTrends::CountJobTriggerWorker'
 Settings.cron_jobs['member_invitation_reminder_emails_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['member_invitation_reminder_emails_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['member_invitation_reminder_emails_worker']['job_class'] = 'MemberInvitationReminderEmailsWorker'
@@ -585,6 +586,9 @@ Gitlab.ee do
   Settings.cron_jobs['geo_verification_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
+  Settings.cron_jobs['geo_secondary_usage_data_cron_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['cron'] ||= '0 0 * * 0'
+  Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['job_class'] ||= 'Geo::SecondaryUsageDataCronWorker'
   Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
@@ -710,7 +714,10 @@ Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret'
 # GitLab KAS
 #
 Settings['gitlab_kas'] ||= Settingslogic.new({})
+Settings.gitlab_kas['enabled'] ||= false
 Settings.gitlab_kas['secret_file'] ||= Rails.root.join('.gitlab_kas_secret')
+Settings.gitlab_kas['external_url'] ||= 'wss://kas.example.com'
+Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 
 #
 # Repositories

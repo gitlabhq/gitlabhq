@@ -96,7 +96,7 @@ export default {
       v-gl-tooltip.hover
       :title="s__('Badges|Reload badge image')"
       category="tertiary"
-      variant="success"
+      variant="confirm"
       type="button"
       icon="retry"
       size="small"

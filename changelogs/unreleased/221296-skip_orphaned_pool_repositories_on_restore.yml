@@ -1,0 +1,5 @@
+---
+title: Skip orphaned pool repositories on restore
+merge_request: 54112
+author:
+type: fixed

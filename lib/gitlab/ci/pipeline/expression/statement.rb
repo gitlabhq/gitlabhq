@@ -7,9 +7,9 @@ module Gitlab
         class Statement
           StatementError = Class.new(Expression::ExpressionError)
 
-          def initialize(statement, variables = {})
+          def initialize(statement, variables = nil)
             @lexer = Expression::Lexer.new(statement)
-            @variables = variables.with_indifferent_access
+            @variables = variables&.to_hash
           end
 
           def parse_tree

@@ -14,7 +14,7 @@ RSpec.describe ::Packages::PackageFinder do
     it { is_expected.to eq(maven_package) }
 
     context 'processing packages' do
-      let_it_be(:nuget_package) { create(:nuget_package, project: project, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+      let_it_be(:nuget_package) { create(:nuget_package, project: project, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
       let(:package_id) { nuget_package.id }
 
       it 'are not returned' do

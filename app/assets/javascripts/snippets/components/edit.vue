@@ -221,7 +221,10 @@ export default {
       this.captchaResponse = captchaResponse;
 
       if (this.captchaResponse) {
-        // If the user solved the captcha resubmit the form.
+        // If the user solved the captcha, resubmit the form.
+        // NOTE: we do not need to clear out the captchaResponse and spamLogId
+        // data values after submit, because this component always does a full page reload.
+        // Otherwise, we would need to.
         this.handleFormSubmit();
       } else {
         // If the user didn't solve the captcha (e.g. they just closed the modal),

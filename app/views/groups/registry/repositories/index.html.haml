@@ -12,7 +12,6 @@
     "registry_host_url_with_port" => escape_once(registry_config.host_port),
     "garbage_collection_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'container-registry-garbage-collection'),
     "run_cleanup_policies_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'run-the-cleanup-policy-now'),
-    "cleanup_policies_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'how-the-cleanup-policy-works'),
     "is_admin": current_user&.admin.to_s,
     is_group_page: "true",
     "group_path": @group.full_path,

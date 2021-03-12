@@ -305,4 +305,37 @@ RSpec.describe Gitlab::Ci::Config::Entry::Environment do
       it { expect(entry).to be_valid }
     end
   end
+
+  describe 'deployment_tier' do
+    let(:config) do
+      { name: 'customer-portal', deployment_tier: deployment_tier }
+    end
+
+    context 'is a string' do
+      let(:deployment_tier) { 'production' }
+
+      it { expect(entry).to be_valid }
+    end
+
+    context 'is a hash' do
+      let(:deployment_tier) { Hash(tier: 'production') }
+
+      it { expect(entry).not_to be_valid }
+    end
+
+    context 'is nil' do
+      let(:deployment_tier) { nil }
+
+      it { expect(entry).to be_valid }
+    end
+
+    context 'is unknown value' do
+      let(:deployment_tier) { 'unknown' }
+
+      it 'is invalid and adds an error' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include("environment deployment tier must be one of #{::Environment.tiers.keys.join(', ')}")
+      end
+    end
+  end
 end

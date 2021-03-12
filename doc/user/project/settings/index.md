@@ -44,6 +44,7 @@ Compliance framework labels do not affect your project settings.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It can be enabled or disabled for a single group
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM)**
@@ -103,8 +104,7 @@ Some features depend on others:
   When the **Issues** option is disabled, you can still access **Milestones**
   from merge requests.
 
-- Additionally, if you disable both **Issues** and **Merge Requests**, you will no
-  longer have access to:
+- Additionally, if you disable both **Issues** and **Merge Requests**, you cannot access:
   - **Labels**
   - **Milestones**
 
@@ -220,7 +220,7 @@ To rename a repository:
 1. Click **Change path**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL won't be able to push or pull. Read more about what happens with the
+old URL can't push or pull. Read more about what happens with the
 [redirects when renaming repositories](../repository/index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
@@ -243,7 +243,7 @@ To transfer a project:
    project to.
 1. Confirm the transfer by typing the project's path as instructed.
 
-Once done, you will be taken to the new project's namespace. At this point,
+Once done, you are redirected to the new project's namespace. At this point,
 read what happens with the
 [redirects from the old project to the new one](../repository/index.md#redirects-when-changing-repository-paths).
 
@@ -266,7 +266,7 @@ This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-group owners can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
+group owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days
 specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
@@ -293,7 +293,7 @@ If you want to use the fork for yourself and don't need to send
 you can safely remove the fork relationship.
 
 WARNING:
-Once removed, the fork relationship cannot be restored. You will no longer be able to send merge requests to the source, and if anyone has forked your project, their fork will also lose the relationship.
+Once removed, the fork relationship cannot be restored. You can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
 
 To do so:
 
@@ -330,11 +330,11 @@ can enable it.
 To enable it:
 
 ```ruby
-Feature.enable(:ff_custom_compliance_frameworks)
+Feature.enable(:ff_custom_compliance_frameworks, Group.find(<group id>))
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:ff_custom_compliance_frameworks)
+Feature.disable(:ff_custom_compliance_frameworks, Group.find(<group id>))
 ```

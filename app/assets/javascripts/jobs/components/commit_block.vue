@@ -18,20 +18,11 @@ export default {
       required: false,
       default: null,
     },
-    isLastBlock: {
-      type: Boolean,
-      required: true,
-    },
   },
 };
 </script>
 <template>
-  <div
-    :class="{
-      'block-last': isLastBlock,
-      block: !isLastBlock,
-    }"
-  >
+  <div>
     <span class="font-weight-bold">{{ __('Commit') }}</span>
 
     <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">

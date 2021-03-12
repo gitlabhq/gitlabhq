@@ -1,0 +1,5 @@
+---
+title: Improve performance of validations when a group has a lot of runners
+merge_request: 54774
+author:
+type: performance

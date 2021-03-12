@@ -53,11 +53,13 @@ export default {
       }),
     },
   },
-  data: () => ({
-    modSecurityLogo,
-    initialValue: null,
-    initialMode: null,
-  }),
+  data() {
+    return {
+      modSecurityLogo,
+      initialValue: null,
+      initialMode: null,
+    };
+  },
   computed: {
     modSecurityEnabled: {
       get() {

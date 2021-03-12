@@ -26,14 +26,14 @@ full list of reference architectures, see
 | Redis - Queues / Shared State              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
 | Redis Sentinel - Cache                     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
 | Redis Sentinel - Queues / Shared State     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small    | B1MS     |
-| Gitaly Cluster                             | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | m5.4xlarge  | D16s v3  |
+| Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | m5.4xlarge  | D16s v3  |
 | Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
 | Praefect PostgreSQL                        | 1+*         | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large    | F2s v2   |
 | Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge   | D4s v3   |
 | GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge  | F32s v2  |
 | Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
 | Object storage                             | n/a         | n/a                     | n/a             | n/a         | n/a      |
-| NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
+| NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
 
 ```plantuml
 @startuml 10k
@@ -206,7 +206,7 @@ The following list includes descriptions of each server and its assigned IP:
 - `10.6.0.111`: GitLab application 1
 - `10.6.0.112`: GitLab application 2
 - `10.6.0.113`: GitLab application 3
-- `10.6.0.121`: Prometheus
+- `10.6.0.151`: Prometheus
 
 ## Configure the external load balancer
 
@@ -1508,7 +1508,7 @@ Praefect requires several secret tokens to secure communications across the Clus
 
 Gitaly Cluster nodes are configured in Praefect via a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
-and this name is used in several areas of the config. In this guide, the name of the storage will be
+and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you may need to use a different name.
 Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more info.
@@ -1756,7 +1756,7 @@ Note the following:
   necessary.
 
 - The Internal Load Balancer will also access to the certificates and need to be configured
-  to allow for TLS passthrough.
+  to allow for TLS pass-through.
   Refer to the load balancers documentation on how to configure this.
 
 To configure Praefect with TLS:
@@ -1927,7 +1927,7 @@ To configure the Sidekiq nodes, on each one:
    node_exporter['listen_address'] = '0.0.0.0:9100'
 
    # Rails Status for prometheus
-   gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
+   gitlab_rails['monitoring_whitelist'] = ['10.6.0.151/32', '127.0.0.0/8']
 
    #############################
    ###     Object storage    ###
@@ -1940,13 +1940,13 @@ To configure the Sidekiq nodes, on each one:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from your Consul server, and replace
@@ -2055,8 +2055,8 @@ On each node perform the following:
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
    # scrape the NGINX metrics
-   gitlab_rails['monitoring_whitelist'] = ['10.6.0.121/32', '127.0.0.0/8']
-   nginx['status']['options']['allow'] = ['10.6.0.121/32', '127.0.0.0/8']
+   gitlab_rails['monitoring_whitelist'] = ['10.6.0.151/32', '127.0.0.0/8']
+   nginx['status']['options']['allow'] = ['10.6.0.151/32', '127.0.0.0/8']
 
    #############################
    ###     Object storage    ###
@@ -2069,13 +2069,13 @@ On each node perform the following:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -2192,7 +2192,7 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 
 The following IP will be used as an example:
 
-- `10.6.0.121`: Prometheus
+- `10.6.0.151`: Prometheus
 
 To configure the Monitoring node:
 
@@ -2303,20 +2303,9 @@ on what features you intend to use:
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
 Using separate buckets for each data type is the recommended approach for GitLab.
-
-A limitation of our configuration is that each use of object storage is separately configured.
-[We have an issue for improving this](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-and easily using one bucket with separate folders is one improvement that this might bring.
-
-There is at least one specific issue with using the same bucket:
-when GitLab is deployed with the Helm chart restore from backup
-[will not properly function](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
-unless separate buckets are used.
-
-One risk of using a single bucket would be if your organization decided to
-migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
-backups might not be realized until the organization had a critical requirement for the backups to
-work.
+This ensures there are no collisions across the various types of data GitLab stores.
+There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
+in the future.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2324,7 +2313,7 @@ work.
   </a>
 </div>
 
-## Configure Advanced Search **(PREMIUM SELF)**
+## Configure Advanced Search
 
 You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
@@ -2353,16 +2342,6 @@ From GitLab 13.0, using NFS for Git repositories is deprecated.
 From GitLab 14.0, technical support for NFS for Git repositories
 will no longer be provided. Upgrade to [Gitaly Cluster](../gitaly/praefect.md)
 as soon as possible.
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Troubleshooting
-
-See the [troubleshooting documentation](troubleshooting.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2422,3 +2401,9 @@ Webservice pods. Expand available resources using the ratio of 1 vCPU to 1.25 GB
 _per each worker process_ for each additional Webservice pod.
 
 For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>

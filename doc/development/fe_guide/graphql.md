@@ -63,6 +63,7 @@ see [Immutability and cache updates](#immutability-and-cache-updates) for more i
 If you use VS Code, the Apollo GraphQL extension supports autocompletion in `.graphql` files. To set up
 the GraphQL extension, follow these steps:
 
+1. Generate the schema: `bundle exec rake gitlab:graphql:schema:dump`
 1. Add an `apollo.config.js` file to the root of your `gitlab` local directory.
 1. Populate the file with the following content:
 
@@ -72,7 +73,7 @@ the GraphQL extension, follow these steps:
         includes: ['./app/assets/javascripts/**/*.graphql', './ee/app/assets/javascripts/**/*.graphql'],
         service: {
           name: 'GitLab',
-          localSchemaFile: './doc/api/graphql/reference/gitlab_schema.graphql',
+          localSchemaFile: './tmp/tests/graphql/gitlab_schema.graphql',
         },
       },
     };
@@ -422,7 +423,7 @@ query getAuthorData($authorNameEnabled: Boolean = false) {
 ```
 
 Then in the Vue (or JavaScript) call to the query we can pass in our feature flag. This feature
-flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/development.md)
+flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/index.md)
 for the correct way to do this.
 
 ```javascript
@@ -768,6 +769,23 @@ export default {
 
 ### Testing
 
+#### Generating the GraphQL schema
+
+Some of our tests load the schema JSON files. To generate these files, run:
+
+```shell
+bundle exec rake gitlab:graphql:schema:dump
+```
+
+You should run this task after pulling from upstream, or when rebasing your
+branch. This is run automatically as part of `gdk update`.
+
+NOTE:
+If you use the RubyMine IDE, and have marked the `tmp` directory as
+"Excluded", you should "Mark Directory As -> Not Excluded" for
+`gitlab/tmp/tests/graphql`. This will allow the **JS GraphQL** plugin to
+automatically find and index the schema.
+
 #### Mocking response as component data
 
 <!-- vale gitlab.Spelling = NO -->
@@ -1090,6 +1108,45 @@ it('calls a mutation with correct parameters and reorders designs', async () => 
       .at(0)
       .props('id'),
   ).toBe('2');
+});
+```
+
+To mock multiple query response states, success and failure, Apollo Client's native retry behavior can combine with Jest's mock functions to create a series of responses. These do not need to be advanced manually, but they do need to be awaited in specific fashion.
+
+```javascript
+describe('when query times out', () => {
+  const advanceApolloTimers = async () => {
+    jest.runOnlyPendingTimers();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+  };
+
+  beforeEach(async () => {
+    const failSucceedFail = jest
+      .fn()
+      .mockResolvedValueOnce({ errors: [{ message: 'timeout' }] })
+      .mockResolvedValueOnce(mockPipelineResponse)
+      .mockResolvedValueOnce({ errors: [{ message: 'timeout' }] });
+
+    createComponentWithApollo(failSucceedFail);
+    await wrapper.vm.$nextTick();
+  });
+
+  it('shows correct errors and does not overwrite populated data when data is empty', async () => {
+    /* fails at first, shows error, no data yet */
+    expect(getAlert().exists()).toBe(true);
+    expect(getGraph().exists()).toBe(false);
+
+    /* succeeds, clears error, shows graph */
+    await advanceApolloTimers();
+    expect(getAlert().exists()).toBe(false);
+    expect(getGraph().exists()).toBe(true);
+
+    /* fails again, alert retuns but data persists */
+    await advanceApolloTimers();
+    expect(getAlert().exists()).toBe(true);
+    expect(getGraph().exists()).toBe(true);
+  });
 });
 ```
 

@@ -66,14 +66,11 @@ To create a new release through the GitLab UI:
 
 1. Navigate to **Project overview > Releases** and click the **New release**
    button.
-1. In the [**Tag name**](#tag-name) box, enter a name.
-
-   Creating a release based on an existing tag using the user
-   interface is not yet supported. However, this is possible using the
-   [Releases API](../../../api/releases/index.md#create-a-release).
-
-1. In the **Create from** list, select a branch, tag, or commit SHA to use when
-   creating the new tag.
+1. Open the [**Tag name**](#tag-name) dropdown. Select an existing tag or type
+   in a new tag name. Selecting an existing tag that is already associated with
+   a release will result in a validation error.
+1. If creating a new tag, open the **Create from** dropdown. Select a
+   branch, tag, or commit SHA to use when creating the new tag.
 1. Optionally, fill out any additional information about the release, such as its
    [title](#title), [milestones](#associate-milestones-with-a-release),
    [release notes](#release-notes-description), or [assets links](#links).
@@ -214,7 +211,7 @@ To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with project Maintainer [permissions](../../permissions.md).
 1. Navigate to **Project overview**.
-1. In the left navigation menu, navigate to **Settings > CI / CD**.
+1. In the left navigation menu, navigate to **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Click **Expand** to see the deploy freeze table.
 1. Click **Add deploy freeze** to open the deploy freeze modal.
@@ -475,7 +472,7 @@ terminal.
 Read the [Release CLI documentation](https://gitlab.com/gitlab-org/release-cli/-/blob/master/docs/index.md)
 for details.
 
-## Release Metrics **(PREMIUM)**
+## Release Metrics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 

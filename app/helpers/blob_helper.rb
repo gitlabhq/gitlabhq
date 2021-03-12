@@ -235,7 +235,9 @@ module BlobHelper
   def copy_blob_source_button(blob)
     return unless blob.rendered_as_text?(ignore_errors: false)
 
-    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn gl-button btn-default btn-icon js-copy-blob-source-btn", title: _("Copy file contents"))
+    content_tag(:span, class: 'btn-group has-tooltip js-copy-blob-source-btn-tooltip') do
+      clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn gl-button btn-default btn-icon js-copy-blob-source-btn", hide_tooltip: true)
+    end
   end
 
   def open_raw_blob_button(blob)

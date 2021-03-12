@@ -1,5 +1,6 @@
 - page_title _("Merge Conflicts"), "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge Requests")
 - add_page_specific_style 'page_bundles/merge_conflicts'
+
 = render "projects/merge_requests/mr_title"
 
 .merge-request-details.issuable-details
@@ -7,30 +8,7 @@
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, source_branch: @merge_request.source_branch
 
-#conflicts{ "v-cloak" => "true", data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
-    resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request) } }
-  .loading{ "v-if" => "isLoading" }
-    .spinner.spinner-md
-
-  .nothing-here-block{ "v-if" => "hasError" }
-    {{conflictsData.errorMessage}}
-
-  = render partial: "projects/merge_requests/conflicts/commit_stats"
-
-  .files-wrapper{ "v-if" => "!isLoading && !hasError" }
-    .files
-      .diff-file.file-holder.conflict{ "v-for" => "file in conflictsData.files" }
-        .js-file-title.file-title.file-title-flex-parent.cursor-default
-          .file-header-content
-            %file-icon{ ':file-name': 'file.filePath', ':size': '18', 'css-classes': 'gl-mr-2' }
-            %strong.file-title-name {{file.filePath}}
-          = render partial: 'projects/merge_requests/conflicts/file_actions'
-        .diff-content.diff-wrap-lines
-          .file-content{ "v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
-            = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
-          .file-content{ "v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
-            %parallel-conflict-lines{ ":file" => "file" }
-          %div{ "v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'" }
-            = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"
-
-    = render partial: "projects/merge_requests/conflicts/submit_form"
+#conflicts{ data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
+    resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request),
+    source_branch_path: project_tree_path(@merge_request.project, @merge_request.source_branch),
+    merge_request_path: project_merge_request_path(@merge_request.project, @merge_request) } }

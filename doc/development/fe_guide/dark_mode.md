@@ -17,7 +17,7 @@ Note the following:
 - The dark mode palette is defined in `app/assets/stylesheets/themes/_dark.scss`.
   This is loaded _before_ application.scss to generate `application_dark.css`
   - We define two types of variables in `_dark.scss`:
-    - SCSS variables are used in framework, components, and utitlity classes.
+    - SCSS variables are used in framework, components, and utility classes.
     - CSS variables are used for any colors within the `app/assets/stylesheets/page_bundles` directory.
 - `app/views/layouts/_head.html.haml` then loads application or application_dark based on the user's theme preference.
 
@@ -68,7 +68,7 @@ We [plan to add](https://gitlab.com/gitlab-org/gitlab/-/issues/301147) the CSS v
 ## When to use SCSS variables
 
 There are a few things we do in SCSS that we cannot (easily) do with CSS, such as the following
-functions: 
+functions:
 
 - `lighten`
 - `darken`

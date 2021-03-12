@@ -30,8 +30,8 @@ RSpec.describe 'admin/application_settings/_package_registry' do
       expect(rendered).to have_field('Maximum Maven package file size in bytes', type: 'number')
       expect(page.find_field('Maximum Maven package file size in bytes').value).to eq(default_plan_limits.maven_max_file_size.to_s)
 
-      expect(rendered).to have_field('Maximum NPM package file size in bytes', type: 'number')
-      expect(page.find_field('Maximum NPM package file size in bytes').value).to eq(default_plan_limits.npm_max_file_size.to_s)
+      expect(rendered).to have_field('Maximum npm package file size in bytes', type: 'number')
+      expect(page.find_field('Maximum npm package file size in bytes').value).to eq(default_plan_limits.npm_max_file_size.to_s)
 
       expect(rendered).to have_field('Maximum NuGet package file size in bytes', type: 'number')
       expect(page.find_field('Maximum NuGet package file size in bytes').value).to eq(default_plan_limits.nuget_max_file_size.to_s)
@@ -48,18 +48,18 @@ RSpec.describe 'admin/application_settings/_package_registry' do
   end
 
   context 'with multiple plans' do
-    let_it_be(:plan) { create(:plan, name: 'Gold') }
-    let_it_be(:gold_plan_limits) { create(:plan_limits, :with_package_file_sizes, plan: plan) }
+    let_it_be(:plan) { create(:plan, name: 'Ultimate') }
+    let_it_be(:ultimate_plan_limits) { create(:plan_limits, :with_package_file_sizes, plan: plan) }
 
     before do
-      assign(:plans, [default_plan_limits.plan, gold_plan_limits.plan])
+      assign(:plans, [default_plan_limits.plan, ultimate_plan_limits.plan])
     end
 
     it 'displays the plan name when there is more than one plan' do
       subject
 
       expect(page).to have_content('Default')
-      expect(page).to have_content('Gold')
+      expect(page).to have_content('Ultimate')
     end
   end
 end

@@ -47,7 +47,7 @@ module Gitlab
       # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @option threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
       # @option interval [Integer] Optional interval value to override default one registered in `.rate_limits`
-      # @option users_allowlist [Array<String>] Optional list of usernames to excepted from the limit. This param will only be functional if Scope includes a current user.
+      # @option users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(key, **options)

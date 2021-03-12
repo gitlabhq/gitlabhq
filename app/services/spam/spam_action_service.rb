@@ -9,7 +9,9 @@ module Spam
     # after the spammable is created/updated based on the remaining parameters.
     #
     # Takes a hash of parameters from an incoming request to modify a model (via a controller,
-    # service, or GraphQL mutation).
+    # service, or GraphQL mutation). The parameters will either be camelCase (if they are
+    # received directly via controller params) or underscore_case (if they have come from
+    # a GraphQL mutation which has converted them to underscore)
     #
     # Deletes the parameters which are related to spam and captcha processing, and returns
     # them in a SpamParams parameters object. See:
@@ -18,12 +20,12 @@ module Spam
       # NOTE: The 'captcha_response' field can be expanded to multiple fields when we move to future
       # alternative captcha implementations such as FriendlyCaptcha. See
       # https://gitlab.com/gitlab-org/gitlab/-/issues/273480
-      captcha_response = params.delete(:captcha_response)
+      captcha_response = params.delete(:captcha_response) || params.delete(:captchaResponse)
 
       SpamParams.new(
         api: params.delete(:api),
         captcha_response: captcha_response,
-        spam_log_id: params.delete(:spam_log_id)
+        spam_log_id: params.delete(:spam_log_id) || params.delete(:spamLogId)
       )
     end
 

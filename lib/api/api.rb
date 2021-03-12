@@ -58,6 +58,7 @@ module API
         user: -> { @current_user },
         project: -> { @project },
         namespace: -> { @group },
+        runner: -> { @current_runner || @runner },
         caller_id: route.origin,
         remote_ip: request.ip,
         feature_category: feature_category
@@ -147,7 +148,7 @@ module API
 
       # Only overwrite `text/plain+deprecated`
       if content_types[api_format] == 'text/plain+deprecated'
-        if Feature.enabled?(:api_always_use_application_json)
+        if Feature.enabled?(:api_always_use_application_json, default_enabled: :yaml)
           content_type 'application/json'
         else
           content_type 'text/plain'
@@ -169,6 +170,7 @@ module API
       mount ::API::AccessRequests
       mount ::API::Admin::Ci::Variables
       mount ::API::Admin::InstanceClusters
+      mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications

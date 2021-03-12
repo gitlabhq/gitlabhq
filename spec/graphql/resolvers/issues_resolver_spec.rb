@@ -264,7 +264,7 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       it 'finds a specific issue with iid', :request_store do
-        result = batch_sync(max_queries: 4) { resolve_issues(iid: issue1.iid) }
+        result = batch_sync(max_queries: 4) { resolve_issues(iid: issue1.iid).to_a }
 
         expect(result).to contain_exactly(issue1)
       end
@@ -281,7 +281,7 @@ RSpec.describe Resolvers::IssuesResolver do
 
       it 'finds a specific issue with iids', :request_store do
         result = batch_sync(max_queries: 4) do
-          resolve_issues(iids: [issue1.iid])
+          resolve_issues(iids: [issue1.iid]).to_a
         end
 
         expect(result).to contain_exactly(issue1)
@@ -290,7 +290,7 @@ RSpec.describe Resolvers::IssuesResolver do
       it 'finds multiple issues with iids' do
         create(:issue, project: project, author: current_user)
 
-        expect(batch_sync { resolve_issues(iids: [issue1.iid, issue2.iid]) })
+        expect(batch_sync { resolve_issues(iids: [issue1.iid, issue2.iid]).to_a })
           .to contain_exactly(issue1, issue2)
       end
 
@@ -302,7 +302,7 @@ RSpec.describe Resolvers::IssuesResolver do
           create(:issue, project: another_project, iid: iid)
         end
 
-        expect(batch_sync { resolve_issues(iids: iids) }).to contain_exactly(issue1, issue2)
+        expect(batch_sync { resolve_issues(iids: iids).to_a }).to contain_exactly(issue1, issue2)
       end
     end
   end

@@ -270,10 +270,15 @@ the following parameters:
 }
 ```
 
-Also you must use HTTP Basic authentication using the `client_id` and`client_secret`
-values to authenticate the client that performs a request.
-
 Example cURL request:
+
+```shell
+echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
+curl --data "@auth.txt" --request POST "https://gitlab.example.com/oauth/token"
+```
+
+You can also use this grant flow with registered OAuth applications, by using
+HTTP Basic Authentication with the application's `client_id` and `client_secret`:
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
@@ -354,3 +359,13 @@ These are aliases for `scope` and `expires_in` respectively, and have been inclu
 prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
 
 Don't rely on these fields as they will be removed in a later release.
+
+## OAuth2 tokens and GitLab registries
+
+Standard OAuth2 tokens support different degrees of access to GitLab registries, as they:
+
+- Do not allow users to authenticate to:
+  - The GitLab [Container registry](../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
+  - Packages listed in the GitLab [Package registry](../user/packages/package_registry/index.md).
+- Allow users to get, list, and delete registries through
+  the [Container registry API](container_registry.md).

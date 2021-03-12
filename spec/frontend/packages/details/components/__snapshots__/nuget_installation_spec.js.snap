@@ -2,11 +2,10 @@
 
 exports[`NugetInstallation renders all the messages 1`] = `
 <div>
-  <h3
-    class="gl-font-lg"
-  >
-    Installation
-  </h3>
+  <installation-title-stub
+    options="[object Object]"
+    packagetype="nuget"
+  />
    
   <code-instruction-stub
     copytext="Copy NuGet Command"

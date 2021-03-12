@@ -37,13 +37,8 @@ module ApplicationSettingsHelper
   end
 
   def storage_weights
-    ApplicationSetting.repository_storages_weighted_attributes.map do |attribute|
-      storage = attribute.to_s.delete_prefix('repository_storages_weighted_')
-      {
-        name: attribute,
-        label: storage,
-        value: @application_setting.repository_storages_weighted[storage] || 0
-      }
+    Gitlab.config.repositories.storages.keys.each_with_object(OpenStruct.new) do |storage, weights|
+      weights[storage.to_sym] = @application_setting.repository_storages_weighted[storage] || 0
     end
   end
 
@@ -252,6 +247,7 @@ module ApplicationSettingsHelper
       :housekeeping_incremental_repack_period,
       :html_emails_enabled,
       :import_sources,
+      :in_product_marketing_emails_enabled,
       :invisible_captcha_enabled,
       :max_artifacts_size,
       :max_attachment_size,

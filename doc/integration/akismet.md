@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Akismet
+# Akismet **(FREE)**
 
 GitLab leverages [Akismet](https://akismet.com/) to protect against spam.
 GitLab uses Akismet to prevent the creation of spam issues on public projects. Issues

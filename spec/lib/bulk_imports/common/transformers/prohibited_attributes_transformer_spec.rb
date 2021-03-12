@@ -68,5 +68,11 @@ RSpec.describe BulkImports::Common::Transformers::ProhibitedAttributesTransforme
 
       expect(transformed_hash).to eq(expected_hash)
     end
+
+    context 'when there is no data to transform' do
+      it 'returns' do
+        expect(subject.transform(nil, nil)).to be_nil
+      end
+    end
   end
 end

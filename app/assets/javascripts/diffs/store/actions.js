@@ -741,12 +741,7 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 export const setFileByFile = ({ commit }, { fileByFile }) => {
   const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
   commit(types.SET_FILE_BY_FILE, fileByFile);
-
   Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
-
-  historyPushState(
-    mergeUrlParams({ [DIFF_FILE_BY_FILE_COOKIE_NAME]: fileViewMode }, window.location.href),
-  );
 };
 
 export function reviewFile({ commit, state }, { file, reviewed = true }) {

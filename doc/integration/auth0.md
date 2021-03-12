@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Auth0 OmniAuth Provider
+# Auth0 OmniAuth Provider **(FREE SELF)**
 
 To enable the Auth0 OmniAuth provider, you must create an Auth0 account, and an
 application.

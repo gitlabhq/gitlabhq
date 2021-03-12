@@ -9,7 +9,12 @@ export function isFileReviewed(reviews, file) {
 }
 
 export function reviewStatuses(files, reviews) {
-  return files.map((file) => isFileReviewed(reviews, file));
+  return files.reduce((flat, file) => {
+    return {
+      ...flat,
+      [file.id]: isFileReviewed(reviews, file),
+    };
+  }, {});
 }
 
 export function getReviewsForMergeRequest(mrPath) {

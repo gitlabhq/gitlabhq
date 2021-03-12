@@ -2,6 +2,7 @@
 import IssuableSidebar from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
 
 import IssuableBody from './issuable_body.vue';
+import IssuableDiscussion from './issuable_discussion.vue';
 import IssuableHeader from './issuable_header.vue';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     IssuableSidebar,
     IssuableHeader,
     IssuableBody,
+    IssuableDiscussion,
   },
   props: {
     issuable: {
@@ -89,6 +91,7 @@ export default {
         <slot name="header-actions"></slot>
       </template>
     </issuable-header>
+
     <issuable-body
       :issuable="issuable"
       :status-badge-class="statusBadgeClass"
@@ -111,6 +114,13 @@ export default {
         <slot name="edit-form-actions" v-bind="actionsProps"></slot>
       </template>
     </issuable-body>
+
+    <issuable-discussion>
+      <template #discussion>
+        <slot name="discussion"></slot>
+      </template>
+    </issuable-discussion>
+
     <issuable-sidebar @sidebar-toggle="$emit('sidebar-toggle', $event)">
       <template #right-sidebar-items="sidebarProps">
         <slot name="right-sidebar-items" v-bind="sidebarProps"></slot>

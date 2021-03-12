@@ -40,7 +40,7 @@ used to trigger the build.
 
 In scenarios where a configuration change is to be introduced and Omnibus GitLab
 repository already has the necessary changes in a specific branch, you can build
-a package against that branch through an environment variable named
-`OMNIBUS_BRANCH`. To do this, specify that environment variable with the name of
+a package against that branch through a CI/CD variable named
+`OMNIBUS_BRANCH`. To do this, specify that variable with the name of
 the branch as value in `.gitlab-ci.yml` and push a commit. This will create a
 manual job that can be used to trigger the build.

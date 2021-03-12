@@ -48,6 +48,6 @@ RSpec.shared_examples 'a mutation that returns errors in the response' do |error
   it do
     post_graphql_mutation(mutation, current_user: current_user)
 
-    expect(mutation_response['errors']).to eq(errors)
+    expect(mutation_response['errors']).to match_array(errors)
   end
 end

@@ -2,7 +2,7 @@
 - group = local_assigns.fetch(:group, false)
 -# TODO: Move group_id and can_admin_list to the board store
   See: https://gitlab.com/gitlab-org/gitlab/-/issues/213082
-- can_admin_list = can?(current_user, :admin_list, current_board_parent) == true
+- can_admin_list = can?(current_user, :admin_issue_board_list, current_board_parent) == true
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content js-focus-mode-board"

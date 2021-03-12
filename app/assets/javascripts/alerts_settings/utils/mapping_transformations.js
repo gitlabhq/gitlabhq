@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 /**
  * Given data for GitLab alert fields, parsed payload fields data and previously stored mapping (if any)
  * creates an object in a form convenient to build UI && interact with it
@@ -10,16 +11,19 @@
 export const getMappingData = (gitlabFields, payloadFields, savedMapping) => {
   return gitlabFields.map((gitlabField) => {
     // find fields from payload that match gitlab alert field by type
-    const mappingFields = payloadFields.filter(({ type }) => gitlabField.types.includes(type));
+    const mappingFields = payloadFields.filter(({ type }) =>
+      gitlabField.types.includes(type.toLowerCase()),
+    );
 
     // find the mapping that was previously stored
-    const foundMapping = savedMapping.find(({ fieldName }) => fieldName === gitlabField.name);
-
-    const { fallbackAlertPaths, payloadAlertPaths } = foundMapping || {};
+    const foundMapping = savedMapping.find(
+      ({ fieldName }) => fieldName.toLowerCase() === gitlabField.name,
+    );
+    const { path: mapping, fallbackPath: fallback } = foundMapping || {};
 
     return {
-      mapping: payloadAlertPaths,
-      fallback: fallbackAlertPaths,
+      mapping,
+      fallback,
       searchTerm: '',
       fallbackSearchTerm: '',
       mappingFields,
@@ -36,7 +40,7 @@ export const getMappingData = (gitlabFields, payloadFields, savedMapping) => {
  */
 export const transformForSave = (mappingData) => {
   return mappingData.reduce((acc, field) => {
-    const mapped = field.mappingFields.find(({ name }) => name === field.mapping);
+    const mapped = field.mappingFields.find(({ path }) => isEqual(path, field.mapping));
     if (mapped) {
       const { path, type, label } = mapped;
       acc.push({
@@ -48,14 +52,4 @@ export const transformForSave = (mappingData) => {
     }
     return acc;
   }, []);
-};
-
-/**
- * Adds `name` prop to each provided by BE parsed payload field
- * @param {Object} payload  - parsed sample payload
- *
- * @return {Object} same as input with an extra `name` property which basically serves as a key to make a match
- */
-export const getPayloadFields = (payload) => {
-  return payload.map((field) => ({ ...field, name: field.path.join('_') }));
 };

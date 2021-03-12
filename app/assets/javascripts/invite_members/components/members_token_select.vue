@@ -3,7 +3,7 @@ import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlSprintf } from '@gitlab/u
 import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
-import { USER_SEARCH_DELAY } from '../constants';
+import { SEARCH_DELAY } from '../constants';
 
 export default {
   components: {
@@ -67,7 +67,7 @@ export default {
         .catch(() => {
           this.loading = false;
         });
-    }, USER_SEARCH_DELAY),
+    }, SEARCH_DELAY),
     handleInput() {
       this.$emit('input', this.selectedTokens);
     },

@@ -1,8 +1,14 @@
-.selected-item {
-  /* stylelint-disable-next-line function-url-quotes */
-  background: url(asset_path('checkmark.png')) no-repeat 0 2px;
-}
+.milestone-combobox {
+  .selected-item {
+    /* stylelint-disable-next-line function-url-quotes */
+    background: url(asset_path('checkmark.png')) no-repeat 0 2px;
+  }
 
-.dropdown-item-space {
-  padding: 8px 12px;
+  .dropdown-item-space {
+    padding: 8px 12px;
+  }
+
+  .dropdown-menu.show {
+    overflow: hidden;
+  }
 }

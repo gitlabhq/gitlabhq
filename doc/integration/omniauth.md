@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# OmniAuth
+# OmniAuth **(FREE)**
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and
 other popular services. [OmniAuth](https://rubygems.org/gems/omniauth/) is
@@ -239,7 +239,6 @@ from the OmniAuth provider's documentation.
 If you have successfully set up a provider that is not shipped with GitLab itself,
 please let us know.
 
-Share your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 You can help others by reporting successful configurations and probably share a
 few insights or provide warnings for common errors or pitfalls.
 

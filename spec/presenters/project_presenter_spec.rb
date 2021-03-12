@@ -183,6 +183,14 @@ RSpec.describe ProjectPresenter do
     context 'not empty repo' do
       let(:project) { create(:project, :repository) }
 
+      context 'if no current user' do
+        let(:user) { nil }
+
+        it 'returns false' do
+          expect(presenter.can_current_user_push_code?).to be(false)
+        end
+      end
+
       it 'returns true if user can push to default branch' do
         project.add_developer(user)
 
@@ -350,7 +358,7 @@ RSpec.describe ProjectPresenter do
           is_link: false,
           label: a_string_including("New file"),
           link: presenter.project_new_blob_path(project, 'master'),
-          class_modifier: 'dashed'
+          class_modifier: 'btn-dashed'
         )
       end
 
@@ -594,13 +602,47 @@ RSpec.describe ProjectPresenter do
         end
       end
 
+      describe 'experiment(:repo_integrations_link)' do
+        context 'when enabled' do
+          before do
+            stub_experiments(repo_integrations_link: :candidate)
+          end
+
+          it 'includes a button to configure integrations for maintainers' do
+            project.add_maintainer(user)
+
+            expect(empty_repo_statistics_buttons.map(&:label)).to include(
+              a_string_including('Configure Integration')
+            )
+          end
+
+          it 'does not include a button if not a maintainer' do
+            expect(empty_repo_statistics_buttons.map(&:label)).not_to include(
+              a_string_including('Configure Integration')
+            )
+          end
+        end
+
+        context 'when disabled' do
+          it 'does not include a button' do
+            project.add_maintainer(user)
+
+            expect(empty_repo_statistics_buttons.map(&:label)).not_to include(
+              a_string_including('Configure Integration')
+            )
+          end
+        end
+      end
+
       context 'for a developer' do
         before do
           project.add_developer(user)
+          stub_experiments(empty_repo_upload: :candidate)
         end
 
         it 'orders the items correctly' do
           expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
+            a_string_including('Upload'),
             a_string_including('New'),
             a_string_including('README'),
             a_string_including('LICENSE'),
@@ -608,6 +650,16 @@ RSpec.describe ProjectPresenter do
             a_string_including('CONTRIBUTING'),
             a_string_including('CI/CD')
           )
+        end
+
+        context 'when not in the upload experiment' do
+          before do
+            stub_experiments(empty_repo_upload: :control)
+          end
+
+          it 'does not include upload button' do
+            expect(empty_repo_statistics_buttons.map(&:label)).not_to start_with(a_string_including('Upload'))
+          end
         end
       end
     end
@@ -692,6 +744,22 @@ RSpec.describe ProjectPresenter do
 
         it { is_expected.to be_falsey }
       end
+    end
+  end
+
+  describe 'empty_repo_upload_experiment?' do
+    subject { presenter.empty_repo_upload_experiment? }
+
+    it 'returns false when upload_anchor_data is nil' do
+      allow(presenter).to receive(:upload_anchor_data).and_return(nil)
+
+      expect(subject).to be false
+    end
+
+    it 'returns true when upload_anchor_data exists' do
+      allow(presenter).to receive(:upload_anchor_data).and_return(true)
+
+      expect(subject).to be true
     end
   end
 end

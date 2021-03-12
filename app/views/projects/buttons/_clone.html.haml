@@ -2,7 +2,7 @@
 - dropdown_class = local_assigns.fetch(:dropdown_class, '')
 
 .git-clone-holder.js-git-clone-holder
-  %a#clone-dropdown.gl-button.btn.btn-info.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
+  %a#clone-dropdown.gl-button.btn.btn-confirm.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
     %span.gl-mr-2.js-clone-dropdown-label
       = _('Clone')
     = sprite_icon("chevron-down", css_class: "icon")
@@ -11,19 +11,19 @@
       %li{ class: 'gl-px-4!' }
         %label.label-bold
           = _('Clone with SSH')
-        .input-group
+        .input-group.btn-group
           = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control qa-ssh-clone-url", readonly: true, aria: { label: _('Repository clone URL') }
           .input-group-append
-            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
+            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
             = render_if_exists 'projects/buttons/geo'
     - if http_enabled?
       %li.pt-2{ class: 'gl-px-4!' }
         %label.label-bold
           = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
-        .input-group
+        .input-group.btn-group
           = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control qa-http-clone-url", readonly: true, aria: { label: _('Repository clone URL') }
           .input-group-append
-            = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
+            = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
             = render_if_exists 'projects/buttons/geo'
       %li.divider.mt-2
       %li.pt-2.gl-new-dropdown-item

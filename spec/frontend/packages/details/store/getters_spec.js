@@ -17,6 +17,8 @@ import {
   composerRegistryInclude,
   composerPackageInclude,
   groupExists,
+  gradleGroovyInstalCommand,
+  gradleGroovyAddSourceCommand,
 } from '~/packages/details/store/getters';
 import {
   conanPackage,
@@ -99,7 +101,7 @@ describe('Getters PackageDetails Store', () => {
       packageEntity              | expectedResult
       ${conanPackage}            | ${'Conan'}
       ${packageWithoutBuildInfo} | ${'Maven'}
-      ${npmPackage}              | ${'NPM'}
+      ${npmPackage}              | ${'npm'}
       ${nugetPackage}            | ${'NuGet'}
       ${pypiPackage}             | ${'PyPI'}
     `(`package type`, ({ packageEntity, expectedResult }) => {
@@ -168,13 +170,13 @@ describe('Getters PackageDetails Store', () => {
   });
 
   describe('npm string getters', () => {
-    it('gets the correct npmInstallationCommand for NPM', () => {
+    it('gets the correct npmInstallationCommand for npm', () => {
       setupState({ packageEntity: npmPackage });
 
       expect(npmInstallationCommand(state)(NpmManager.NPM)).toBe(npmInstallStr);
     });
 
-    it('gets the correct npmSetupCommand for NPM', () => {
+    it('gets the correct npmSetupCommand for npm', () => {
       setupState({ packageEntity: npmPackage });
 
       expect(npmSetupCommand(state)(NpmManager.NPM)).toBe(npmSetupStr);
@@ -232,6 +234,26 @@ describe('Getters PackageDetails Store', () => {
       setupState();
 
       expect(composerPackageInclude(state)).toBe(composerPackageIncludeStr);
+    });
+  });
+
+  describe('gradle groovy string getters', () => {
+    it('gets the correct gradleGroovyInstalCommand', () => {
+      setupState();
+
+      expect(gradleGroovyInstalCommand(state)).toMatchInlineSnapshot(
+        `"implementation 'com.test.app:test-app:1.0-SNAPSHOT'"`,
+      );
+    });
+
+    it('gets the correct gradleGroovyAddSourceCommand', () => {
+      setupState();
+
+      expect(gradleGroovyAddSourceCommand(state)).toMatchInlineSnapshot(`
+        "gitlab {
+          url \\"foo/registry\\"
+        }"
+      `);
     });
   });
 

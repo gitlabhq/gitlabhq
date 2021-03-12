@@ -166,40 +166,6 @@ describe('Issuable output', () => {
     });
   });
 
-  it('opens reCAPTCHA modal if update rejected as spam', () => {
-    let modal;
-
-    jest.spyOn(wrapper.vm.service, 'updateIssuable').mockResolvedValue({
-      data: {
-        recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
-      },
-    });
-
-    wrapper.vm.canUpdate = true;
-    wrapper.vm.showForm = true;
-
-    return wrapper.vm
-      .$nextTick()
-      .then(() => {
-        wrapper.vm.$refs.recaptchaModal.scriptSrc = '//scriptsrc';
-        return wrapper.vm.updateIssuable();
-      })
-      .then(() => {
-        modal = wrapper.find('.js-recaptcha-modal');
-        expect(modal.isVisible()).toBe(true);
-        expect(modal.find('.g-recaptcha').text()).toEqual('recaptcha_html');
-        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
-      })
-      .then(() => {
-        modal.find('.close').trigger('click');
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(modal.isVisible()).toBe(false);
-        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
-      });
-  });
-
   describe('Pinned links propagated', () => {
     it.each`
       prop                      | value
@@ -422,7 +388,18 @@ describe('Issuable output', () => {
       formSpy = jest.spyOn(wrapper.vm, 'updateAndShowForm');
     });
 
-    it('shows the form if template names request is successful', () => {
+    it('shows the form if template names as hash request is successful', () => {
+      const mockData = {
+        test: [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }],
+      };
+      mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
+
+      return wrapper.vm.requestTemplatesAndShowForm().then(() => {
+        expect(formSpy).toHaveBeenCalledWith(mockData);
+      });
+    });
+
+    it('shows the form if template names as array request is successful', () => {
       const mockData = [{ name: 'test', id: 'test', project_path: '/', namespace_path: '/' }];
       mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
 

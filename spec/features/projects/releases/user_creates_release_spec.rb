@@ -33,11 +33,11 @@ RSpec.describe 'User creates release', :js do
   end
 
   it 'defaults the "Create from" dropdown to the project\'s default branch' do
-    expect(page.find('.ref-selector button')).to have_content(project.default_branch)
+    expect(page.find('[data-testid="create-from-field"] .ref-selector button')).to have_content(project.default_branch)
   end
 
-  context 'when the "Save release" button is clicked', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297507' do
-    let(:tag_name) { 'v1.0' }
+  context 'when the "Save release" button is clicked' do
+    let(:tag_name) { 'v2.0.31' }
     let(:release_title) { 'A most magnificent release' }
     let(:release_notes) { 'Best. Release. **Ever.** :rocket:' }
     let(:link_1) { { url: 'https://gitlab.example.com/runbook', title: 'An example runbook', type: 'runbook' } }
@@ -47,7 +47,7 @@ RSpec.describe 'User creates release', :js do
       fill_out_form_and_submit
     end
 
-    it 'creates a new release when "Create release" is clicked', :aggregate_failures do
+    it 'creates a new release when "Create release" is clicked and redirects to the release\'s dedicated page', :aggregate_failures do
       release = project.releases.last
 
       expect(release.tag).to eq(tag_name)
@@ -65,10 +65,6 @@ RSpec.describe 'User creates release', :js do
       link = release.links.find { |l| l.link_type == link_2[:type] }
       expect(link.url).to eq(link_2[:url])
       expect(link.name).to eq(link_2[:title])
-    end
-
-    it 'redirects to the dedicated page for the newly created release' do
-      release = project.releases.last
 
       expect(page).to have_current_path(project_release_path(project, release))
     end
@@ -116,30 +112,27 @@ RSpec.describe 'User creates release', :js do
   end
 
   def fill_out_form_and_submit
-    fill_tag_name(tag_name)
+    select_new_tag_name(tag_name)
 
     select_create_from(branch.name)
 
     fill_release_title(release_title)
 
-    select_milestone(milestone_1.title, and_tab: false)
+    select_milestone(milestone_1.title)
     select_milestone(milestone_2.title)
 
-    # Focus the "Release notes" field by clicking instead of tabbing
-    # because tabbing to the field requires too many tabs
-    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/238619)
-    find_field('Release notes').click
     fill_release_notes(release_notes)
-
-    # Tab past the "assets" documentation link
-    focused_element.send_keys(:tab)
 
     fill_asset_link(link_1)
     add_another_asset_link
     fill_asset_link(link_2)
 
-    # Submit using the Control+Enter shortcut
-    focused_element.send_keys([:control, :enter])
+    # Click on the body in order to trigger a `blur` event on the current field.
+    # This triggers the form's validation to run so that the
+    # "Create release" button is enabled and clickable.
+    page.find('body').click
+
+    click_button('Create release')
 
     wait_for_all_requests
   end

@@ -11,13 +11,18 @@
 # This option will take precedence over the global setting.
 module Gitlab
   class HTTPConnectionAdapter < HTTParty::ConnectionAdapter
+    extend ::Gitlab::Utils::Override
+
+    override :connection
     def connection
-      begin
-        @uri, hostname = Gitlab::UrlBlocker.validate!(uri, allow_local_network: allow_local_requests?,
-                                                           allow_localhost: allow_local_requests?,
-                                                           dns_rebind_protection: dns_rebind_protection?)
-      rescue Gitlab::UrlBlocker::BlockedUrlError => e
-        raise Gitlab::HTTP::BlockedUrlError, "URL '#{uri}' is blocked: #{e.message}"
+      @uri, hostname = validate_url!(uri)
+
+      if options.key?(:http_proxyaddr)
+        proxy_uri_with_port = uri_with_port(options[:http_proxyaddr], options[:http_proxyport])
+        proxy_uri_validated = validate_url!(proxy_uri_with_port).first
+
+        @options[:http_proxyaddr] = proxy_uri_validated.omit(:port).to_s
+        @options[:http_proxyport] = proxy_uri_validated.port
       end
 
       super.tap do |http|
@@ -26,6 +31,14 @@ module Gitlab
     end
 
     private
+
+    def validate_url!(url)
+      Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?,
+                                        allow_localhost: allow_local_requests?,
+                                        dns_rebind_protection: dns_rebind_protection?)
+    rescue Gitlab::UrlBlocker::BlockedUrlError => e
+      raise Gitlab::HTTP::BlockedUrlError, "URL '#{url}' is blocked: #{e.message}"
+    end
 
     def allow_local_requests?
       options.fetch(:allow_local_requests, allow_settings_local_requests?)
@@ -39,6 +52,12 @@ module Gitlab
 
     def allow_settings_local_requests?
       Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+    end
+
+    def uri_with_port(address, port)
+      uri = Addressable::URI.parse(address)
+      uri.port = port if port.present?
+      uri
     end
   end
 end

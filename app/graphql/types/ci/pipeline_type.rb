@@ -95,6 +95,9 @@ module Types
       field :path, GraphQL::STRING_TYPE, null: true,
             description: "Relative path to the pipeline's page."
 
+      field :commit_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Path to the commit that triggered the pipeline.'
+
       field :project, Types::ProjectType, null: true,
             description: 'Project the pipeline belongs to.'
 
@@ -107,6 +110,10 @@ module Types
 
       def user
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
+      end
+
+      def commit_path
+        ::Gitlab::Routing.url_helpers.project_commit_path(object.project, object.sha)
       end
 
       def path

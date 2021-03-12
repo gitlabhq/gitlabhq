@@ -49,7 +49,9 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex align-items-center ide-file-templates qa-file-templates-bar">
+  <div
+    class="d-flex align-items-center ide-file-templates qa-file-templates-bar gl-relative gl-z-index-1"
+  >
     <strong class="gl-mr-3"> {{ __('File templates') }} </strong>
     <dropdown
       :data="templateTypes"

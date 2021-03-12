@@ -38,22 +38,9 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
 
   describe '#perform' do
     let(:migration_class) { described_class.name }
-    let!(:job1) do
-      table(:background_migration_jobs).create!(
-        class_name: migration_class,
-        arguments: [1, 10, table_name, 'id', 'id', 'id_convert_to_bigint', sub_batch_size]
-      )
-    end
-
-    let!(:job2) do
-      table(:background_migration_jobs).create!(
-        class_name: migration_class,
-        arguments: [11, 20, table_name, 'id', 'id', 'id_convert_to_bigint', sub_batch_size]
-      )
-    end
 
     it 'copies all primary keys in range' do
-      subject.perform(12, 15, table_name, 'id', 'id', 'id_convert_to_bigint', sub_batch_size)
+      subject.perform(12, 15, table_name, 'id', sub_batch_size, 'id', 'id_convert_to_bigint')
 
       expect(test_table.where('id = id_convert_to_bigint').pluck(:id)).to contain_exactly(12, 15)
       expect(test_table.where(id_convert_to_bigint: 0).pluck(:id)).to contain_exactly(11, 19)
@@ -61,7 +48,7 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
     end
 
     it 'copies all foreign keys in range' do
-      subject.perform(10, 14, table_name, 'id', 'fk', 'fk_convert_to_bigint', sub_batch_size)
+      subject.perform(10, 14, table_name, 'id', sub_batch_size, 'fk', 'fk_convert_to_bigint')
 
       expect(test_table.where('fk = fk_convert_to_bigint').pluck(:id)).to contain_exactly(11, 12)
       expect(test_table.where(fk_convert_to_bigint: 0).pluck(:id)).to contain_exactly(15, 19)
@@ -71,21 +58,11 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
     it 'copies columns with NULLs' do
       expect(test_table.where("name_convert_to_text = 'no name'").count).to eq(4)
 
-      subject.perform(10, 20, table_name, 'id', 'name', 'name_convert_to_text', sub_batch_size)
+      subject.perform(10, 20, table_name, 'id', sub_batch_size, 'name', 'name_convert_to_text')
 
       expect(test_table.where('name = name_convert_to_text').pluck(:id)).to contain_exactly(11, 12, 19)
       expect(test_table.where('name is NULL and name_convert_to_text is NULL').pluck(:id)).to contain_exactly(15)
       expect(test_table.where("name_convert_to_text = 'no name'").count).to eq(0)
-    end
-
-    it 'tracks completion with BackgroundMigrationJob' do
-      expect do
-        subject.perform(11, 20, table_name, 'id', 'id', 'id_convert_to_bigint', sub_batch_size)
-      end.to change { Gitlab::Database::BackgroundMigrationJob.succeeded.count }.from(0).to(1)
-
-      expect(job1.reload.status).to eq(0)
-      expect(job2.reload.status).to eq(1)
-      expect(test_table.where('id = id_convert_to_bigint').count).to eq(4)
     end
   end
 end

@@ -126,47 +126,103 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             expect(root.jobs_value.keys).to eq([:rspec, :spinach, :release])
             expect(root.jobs_value[:rspec]).to eq(
               { name: :rspec,
-                       script: %w[rspec ls],
-                       before_script: %w(ls pwd),
-                       image: { name: 'ruby:2.7' },
-                       services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
-                       stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                       variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
-                       ignore: false,
-                       after_script: ['make clean'],
-                       only: { refs: %w[branches tags] },
-                       scheduling_type: :stage }
+                      script: %w[rspec ls],
+                      before_script: %w(ls pwd),
+                      image: { name: 'ruby:2.7' },
+                      services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                      stage: 'test',
+                      cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' }],
+                      variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
+                      ignore: false,
+                      after_script: ['make clean'],
+                      only: { refs: %w[branches tags] },
+                      scheduling_type: :stage }
             )
             expect(root.jobs_value[:spinach]).to eq(
               { name: :spinach,
-                         before_script: [],
-                         script: %w[spinach],
-                         image: { name: 'ruby:2.7' },
-                         services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
-                         stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                         variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
-                         ignore: false,
-                         after_script: ['make clean'],
-                         only: { refs: %w[branches tags] },
-                         scheduling_type: :stage }
+                        before_script: [],
+                        script: %w[spinach],
+                        image: { name: 'ruby:2.7' },
+                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                        stage: 'test',
+                        cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' }],
+                        variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
+                        ignore: false,
+                        after_script: ['make clean'],
+                        only: { refs: %w[branches tags] },
+                        scheduling_type: :stage }
             )
             expect(root.jobs_value[:release]).to eq(
               { name: :release,
-                         stage: 'release',
-                         before_script: [],
-                         script: ["make changelog | tee release_changelog.txt"],
-                         release: { name: "Release $CI_TAG_NAME", tag_name: 'v0.06', description: "./release_changelog.txt" },
-                         image: { name: "ruby:2.7" },
-                         services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
-                         cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success' },
-                         only: { refs: %w(branches tags) },
-                         variables: { 'VAR' => 'job', 'VAR2' => 'val 2' },
-                         after_script: [],
-                         ignore: false,
-                         scheduling_type: :stage }
+                        stage: 'release',
+                        before_script: [],
+                        script: ["make changelog | tee release_changelog.txt"],
+                        release: { name: "Release $CI_TAG_NAME", tag_name: 'v0.06', description: "./release_changelog.txt" },
+                        image: { name: "ruby:2.7" },
+                        services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
+                        cache: [{ key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success' }],
+                        only: { refs: %w(branches tags) },
+                        variables: { 'VAR' => 'job', 'VAR2' => 'val 2' },
+                        after_script: [],
+                        ignore: false,
+                        scheduling_type: :stage }
             )
+          end
+        end
+
+        context 'with multuple_cache_per_job FF disabled' do
+          before do
+            stub_feature_flags(multiple_cache_per_job: false)
+            root.compose!
+          end
+
+          describe '#jobs_value' do
+            it 'returns jobs configuration' do
+              expect(root.jobs_value.keys).to eq([:rspec, :spinach, :release])
+              expect(root.jobs_value[:rspec]).to eq(
+                { name: :rspec,
+                        script: %w[rspec ls],
+                        before_script: %w(ls pwd),
+                        image: { name: 'ruby:2.7' },
+                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                        stage: 'test',
+                        cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
+                        variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
+                        ignore: false,
+                        after_script: ['make clean'],
+                        only: { refs: %w[branches tags] },
+                        scheduling_type: :stage }
+              )
+              expect(root.jobs_value[:spinach]).to eq(
+                { name: :spinach,
+                          before_script: [],
+                          script: %w[spinach],
+                          image: { name: 'ruby:2.7' },
+                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                          stage: 'test',
+                          cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
+                          variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
+                          ignore: false,
+                          after_script: ['make clean'],
+                          only: { refs: %w[branches tags] },
+                          scheduling_type: :stage }
+              )
+              expect(root.jobs_value[:release]).to eq(
+                { name: :release,
+                          stage: 'release',
+                          before_script: [],
+                          script: ["make changelog | tee release_changelog.txt"],
+                          release: { name: "Release $CI_TAG_NAME", tag_name: 'v0.06', description: "./release_changelog.txt" },
+                          image: { name: "ruby:2.7" },
+                          services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
+                          cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success' },
+                          only: { refs: %w(branches tags) },
+                          variables: { 'VAR' => 'job', 'VAR2' => 'val 2' },
+                          after_script: [],
+                          ignore: false,
+                          scheduling_type: :stage }
+              )
+            end
           end
         end
       end
@@ -187,6 +243,52 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           spinach: { before_script: [], variables: { VAR: 'job' }, script: 'spinach' } }
       end
 
+      context 'with multiple_cache_per_job FF disabled' do
+        context 'when composed' do
+          before do
+            stub_feature_flags(multiple_cache_per_job: false)
+            root.compose!
+          end
+
+          describe '#errors' do
+            it 'has no errors' do
+              expect(root.errors).to be_empty
+            end
+          end
+
+          describe '#jobs_value' do
+            it 'returns jobs configuration' do
+              expect(root.jobs_value).to eq(
+                rspec: { name: :rspec,
+                        script: %w[rspec ls],
+                        before_script: %w(ls pwd),
+                        image: { name: 'ruby:2.7' },
+                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                        stage: 'test',
+                        cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
+                        variables: { 'VAR' => 'root' },
+                        ignore: false,
+                        after_script: ['make clean'],
+                        only: { refs: %w[branches tags] },
+                        scheduling_type: :stage },
+                spinach: { name: :spinach,
+                          before_script: [],
+                          script: %w[spinach],
+                          image: { name: 'ruby:2.7' },
+                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                          stage: 'test',
+                          cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
+                          variables: { 'VAR' => 'job' },
+                          ignore: false,
+                          after_script: ['make clean'],
+                          only: { refs: %w[branches tags] },
+                          scheduling_type: :stage }
+              )
+            end
+          end
+        end
+      end
+
       context 'when composed' do
         before do
           root.compose!
@@ -202,29 +304,29 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           it 'returns jobs configuration' do
             expect(root.jobs_value).to eq(
               rspec: { name: :rspec,
-                       script: %w[rspec ls],
-                       before_script: %w(ls pwd),
-                       image: { name: 'ruby:2.7' },
-                       services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
-                       stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                       variables: { 'VAR' => 'root' },
-                       ignore: false,
-                       after_script: ['make clean'],
-                       only: { refs: %w[branches tags] },
-                       scheduling_type: :stage },
+                      script: %w[rspec ls],
+                      before_script: %w(ls pwd),
+                      image: { name: 'ruby:2.7' },
+                      services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                      stage: 'test',
+                      cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' }],
+                      variables: { 'VAR' => 'root' },
+                      ignore: false,
+                      after_script: ['make clean'],
+                      only: { refs: %w[branches tags] },
+                      scheduling_type: :stage },
               spinach: { name: :spinach,
-                         before_script: [],
-                         script: %w[spinach],
-                         image: { name: 'ruby:2.7' },
-                         services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
-                         stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                         variables: { 'VAR' => 'job' },
-                         ignore: false,
-                         after_script: ['make clean'],
-                         only: { refs: %w[branches tags] },
-                         scheduling_type: :stage }
+                        before_script: [],
+                        script: %w[spinach],
+                        image: { name: 'ruby:2.7' },
+                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
+                        stage: 'test',
+                        cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' }],
+                        variables: { 'VAR' => 'job' },
+                        ignore: false,
+                        after_script: ['make clean'],
+                        only: { refs: %w[branches tags] },
+                        scheduling_type: :stage }
             )
           end
         end
@@ -265,7 +367,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
       describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(root.cache_value).to eq(key: 'a', policy: 'pull-push', when: 'on_success')
+          expect(root.cache_value).to eq([key: 'a', policy: 'pull-push', when: 'on_success'])
+        end
+      end
+
+      context 'with multiple_cache_per_job FF disabled' do
+        before do
+          stub_feature_flags(multiple_cache_per_job: false)
+          root.compose!
+        end
+
+        describe '#cache_value' do
+          it 'returns correct cache definition' do
+            expect(root.cache_value).to eq(key: 'a', policy: 'pull-push', when: 'on_success')
+          end
         end
       end
     end

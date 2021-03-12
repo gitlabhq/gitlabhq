@@ -3,7 +3,6 @@
 require 'fast_spec_helper'
 
 require 'rspec-parameterized'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/have_gitlab_http_status'
 
 RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do

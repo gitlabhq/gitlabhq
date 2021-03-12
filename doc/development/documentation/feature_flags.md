@@ -14,9 +14,13 @@ feature flag depends on its state (enabled or disabled). When the state
 changes, the developer who made the change **must update the documentation**
 accordingly.
 
+Every feature introduced to the codebase, even if it's behind a feature flag,
+must be documented. For context, see the
+[latest merge request that updated this guideline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428).
+
 ## Criteria
 
-According to the process of [deploying GitLab features behind feature flags](../feature_flags/process.md):
+According to the process of [deploying GitLab features behind feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle):
 
 > - _By default, feature flags should be off._
 > - _Feature flags should remain in the codebase for a short period as possible to reduce the need for feature flag accounting._

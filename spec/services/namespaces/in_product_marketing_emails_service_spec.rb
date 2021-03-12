@@ -3,12 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
-  subject(:execute_service) { described_class.new(track, interval).execute }
+  subject(:execute_service) do
+    travel_to(frozen_time) { described_class.new(track, interval).execute }
+  end
 
   let(:track) { :create }
   let(:interval) { 1 }
 
-  let(:previous_action_completed_at) { 2.days.ago.middle_of_day }
+  let(:frozen_time) { Time.current }
+  let(:previous_action_completed_at) { frozen_time - 2.days }
   let(:current_action_completed_at) { nil }
   let(:experiment_enabled) { true }
   let(:user_can_perform_current_track_action) { true }
@@ -39,18 +42,18 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     using RSpec::Parameterized::TableSyntax
 
     where(:track, :interval, :actions_completed) do
-      :create | 1  | { created_at: 2.days.ago.middle_of_day }
-      :create | 5  | { created_at: 6.days.ago.middle_of_day }
-      :create | 10 | { created_at: 11.days.ago.middle_of_day }
-      :verify | 1  | { created_at: 2.days.ago.middle_of_day, git_write_at: 2.days.ago.middle_of_day }
-      :verify | 5  | { created_at: 6.days.ago.middle_of_day, git_write_at: 6.days.ago.middle_of_day }
-      :verify | 10 | { created_at: 11.days.ago.middle_of_day, git_write_at: 11.days.ago.middle_of_day }
-      :trial  | 1  | { created_at: 2.days.ago.middle_of_day, git_write_at: 2.days.ago.middle_of_day, pipeline_created_at: 2.days.ago.middle_of_day }
-      :trial  | 5  | { created_at: 6.days.ago.middle_of_day, git_write_at: 6.days.ago.middle_of_day, pipeline_created_at: 6.days.ago.middle_of_day }
-      :trial  | 10 | { created_at: 11.days.ago.middle_of_day, git_write_at: 11.days.ago.middle_of_day, pipeline_created_at: 11.days.ago.middle_of_day }
-      :team   | 1  | { created_at: 2.days.ago.middle_of_day, git_write_at: 2.days.ago.middle_of_day, pipeline_created_at: 2.days.ago.middle_of_day, trial_started_at: 2.days.ago.middle_of_day }
-      :team   | 5  | { created_at: 6.days.ago.middle_of_day, git_write_at: 6.days.ago.middle_of_day, pipeline_created_at: 6.days.ago.middle_of_day, trial_started_at: 6.days.ago.middle_of_day }
-      :team   | 10 | { created_at: 11.days.ago.middle_of_day, git_write_at: 11.days.ago.middle_of_day, pipeline_created_at: 11.days.ago.middle_of_day, trial_started_at: 11.days.ago.middle_of_day }
+      :create | 1  | { created_at: frozen_time - 2.days }
+      :create | 5  | { created_at: frozen_time - 6.days }
+      :create | 10 | { created_at: frozen_time - 11.days }
+      :verify | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
+      :verify | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days }
+      :verify | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days }
+      :trial  | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
+      :trial  | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
+      :trial  | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
+      :team   | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
+      :team   | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
+      :team   | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
     end
 
     with_them do
@@ -64,7 +67,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     it { is_expected.not_to send_in_product_marketing_email }
 
     context 'when the previous track actions have been completed' do
-      let(:current_action_completed_at) { 2.days.ago.middle_of_day }
+      let(:current_action_completed_at) { frozen_time - 2.days }
 
       it { is_expected.to send_in_product_marketing_email(user.id, group.id, :verify, 0) }
     end
@@ -76,7 +79,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     it { is_expected.not_to send_in_product_marketing_email }
 
     context 'when the previous track action was completed within the intervals range' do
-      let(:previous_action_completed_at) { 6.days.ago.middle_of_day }
+      let(:previous_action_completed_at) { frozen_time - 6.days }
 
       it { is_expected.to send_in_product_marketing_email(user.id, group.id, :create, 1) }
     end
@@ -113,13 +116,13 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   end
 
   context 'when the previous track action is completed outside the intervals range' do
-    let(:previous_action_completed_at) { 3.days.ago }
+    let(:previous_action_completed_at) { frozen_time - 3.days }
 
     it { is_expected.not_to send_in_product_marketing_email }
   end
 
   context 'when the current track action is completed' do
-    let(:current_action_completed_at) { Time.current }
+    let(:current_action_completed_at) { frozen_time }
 
     it { is_expected.not_to send_in_product_marketing_email }
   end

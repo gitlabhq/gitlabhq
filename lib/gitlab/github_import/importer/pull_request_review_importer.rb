@@ -77,12 +77,22 @@ module Gitlab
         def add_approval!(user_id)
           return unless review.review_type == 'APPROVED'
 
-          add_approval_system_note!(user_id)
-
-          merge_request.approvals.create!(
+          approval_attribues = {
+            merge_request_id: merge_request.id,
             user_id: user_id,
-            created_at: review.submitted_at
+            created_at: review.submitted_at,
+            updated_at: review.submitted_at
+          }
+
+          result = ::Approval.insert(
+            approval_attribues,
+            returning: [:id],
+            unique_by: [:user_id, :merge_request_id]
           )
+
+          if result.rows.present?
+            add_approval_system_note!(user_id)
+          end
         end
 
         def add_approval_system_note!(user_id)

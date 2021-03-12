@@ -1,8 +1,14 @@
-import sidebarDetailsQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
+import sidebarDetailsIssueQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
+import sidebarDetailsMRQuery from '../queries/sidebarDetailsMR.query.graphql';
+
+const queries = {
+  merge_request: sidebarDetailsMRQuery,
+  issue: sidebarDetailsIssueQuery,
+};
 
 export const gqClient = createGqClient(
   {},
@@ -20,6 +26,7 @@ export default class SidebarService {
       this.projectsAutocompleteEndpoint = endpointMap.projectsAutocompleteEndpoint;
       this.fullPath = endpointMap.fullPath;
       this.iid = endpointMap.iid;
+      this.issuableType = endpointMap.issuableType;
 
       SidebarService.singleton = this;
     }
@@ -31,13 +38,17 @@ export default class SidebarService {
     return Promise.all([
       axios.get(this.endpoint),
       gqClient.query({
-        query: sidebarDetailsQuery,
+        query: this.sidebarDetailsQuery(),
         variables: {
           fullPath: this.fullPath,
           iid: this.iid.toString(),
         },
       }),
     ]);
+  }
+
+  sidebarDetailsQuery() {
+    return queries[this.issuableType];
   }
 
   update(key, data) {

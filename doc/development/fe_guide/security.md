@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Resources
 
-[Mozilla’s HTTP Observatory CLI](https://github.com/mozilla/http-observatory-cli) and 
+[Mozilla’s HTTP Observatory CLI](https://github.com/mozilla/http-observatory-cli) and
 [Qualys SSL Labs Server Test](https://www.ssllabs.com/ssltest/analyze.html) are good resources for finding
 potential problems and ensuring compliance with security best practices.
 

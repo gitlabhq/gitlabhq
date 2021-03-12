@@ -3,7 +3,7 @@
 
   - if current_user.can_create_group?
     .page-title-controls
-      = link_to _("New group"), new_group_path, class: "gl-button btn btn-success"
+      = link_to _("New group"), new_group_path, class: "gl-button btn btn-confirm", data: { testid: "new-group-button" }
 
 .top-area
   %ul.nav-links.mobile-separator.nav.nav-tabs

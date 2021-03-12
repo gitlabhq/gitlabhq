@@ -19,24 +19,21 @@ init:
     pipeline: pending
     stages:
       test: pending
-      deploy: created
+      deploy: skipped
     jobs:
       test1: pending
       test2: manual
-      deploy: created
+      deploy: skipped
 
 transitions:
   - event: success
     jobs: [test1]
     expect:
-      pipeline: running
+      pipeline: success
       stages:
         test: success
-        deploy: created
+        deploy: skipped
       jobs:
         test1: success
         test2: manual
-        deploy: created
-
-# TODO: should deploy run?
-# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080
+        deploy: skipped

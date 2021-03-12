@@ -119,7 +119,7 @@ export default class MilestoneSelect {
                   title: __('Any milestone'),
                 });
               }
-              if (showNo) {
+              if (showNo && term.trim() === '') {
                 extraOptions.push({
                   id: -1,
                   name: __('No milestone'),

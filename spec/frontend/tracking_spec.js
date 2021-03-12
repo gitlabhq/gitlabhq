@@ -1,5 +1,9 @@
 import { setHTMLFixture } from 'helpers/fixtures';
-import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
+import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
+import { getExperimentData } from '~/experimentation/utils';
+import Tracking, { initUserTracking, initDefaultTrackers, STANDARD_CONTEXT } from '~/tracking';
+
+jest.mock('~/experimentation/utils', () => ({ getExperimentData: jest.fn() }));
 
 describe('Tracking', () => {
   let snowplowSpy;
@@ -7,6 +11,8 @@ describe('Tracking', () => {
   let trackLoadEventsSpy;
 
   beforeEach(() => {
+    getExperimentData.mockReturnValue(undefined);
+
     window.snowplow = window.snowplow || (() => {});
     window.snowplowOptions = {
       namespace: '_namespace_',
@@ -45,7 +51,7 @@ describe('Tracking', () => {
     it('should activate features based on what has been enabled', () => {
       initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [STANDARD_CONTEXT]);
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
@@ -78,6 +84,34 @@ describe('Tracking', () => {
       navigator.msDoNotTrack = undefined;
     });
 
+    describe('builds the standard context', () => {
+      let standardContext;
+
+      beforeAll(async () => {
+        window.gl = window.gl || {};
+        window.gl.snowplowStandardContext = {
+          schema: 'iglu:com.gitlab/gitlab_standard',
+          data: {
+            environment: 'testing',
+            source: 'unknown',
+          },
+        };
+
+        jest.resetModules();
+
+        ({ STANDARD_CONTEXT: standardContext } = await import('~/tracking'));
+      });
+
+      it('uses server data', () => {
+        expect(standardContext.schema).toBe('iglu:com.gitlab/gitlab_standard');
+        expect(standardContext.data.environment).toBe('testing');
+      });
+
+      it('overrides schema source', () => {
+        expect(standardContext.data.source).toBe('gitlab-javascript');
+      });
+    });
+
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event('_category_', '_eventName_', { label: '_label_' });
 
@@ -88,7 +122,7 @@ describe('Tracking', () => {
         '_label_',
         undefined,
         undefined,
-        undefined,
+        [STANDARD_CONTEXT],
       );
     });
 
@@ -121,6 +155,27 @@ describe('Tracking', () => {
     });
   });
 
+  describe('.flushPendingEvents', () => {
+    it('flushes any pending events', () => {
+      Tracking.initialized = false;
+      Tracking.event('_category_', '_eventName_', { label: '_label_' });
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+
+      Tracking.flushPendingEvents();
+
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'trackStructEvent',
+        '_category_',
+        '_eventName_',
+        '_label_',
+        undefined,
+        undefined,
+        [STANDARD_CONTEXT],
+      );
+    });
+  });
+
   describe('tracking interface events', () => {
     let eventSpy;
 
@@ -134,6 +189,7 @@ describe('Tracking', () => {
         <input class="dropdown" data-track-event="toggle_dropdown"/>
         <div data-track-event="nested_event"><span class="nested"></span></div>
         <input data-track-eventbogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
+        <input data-track-event="click_input3" data-track-experiment="example" value="_value_"/>
       `);
     });
 
@@ -193,6 +249,22 @@ describe('Tracking', () => {
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
     });
+
+    it('brings in experiment data if linked to an experiment', () => {
+      const mockExperimentData = {
+        variant: 'candidate',
+        experiment: 'repo_integrations_link',
+        key: '2bff73f6bb8cc11156c50a8ba66b9b8b',
+      };
+      getExperimentData.mockReturnValue(mockExperimentData);
+
+      document.querySelector('[data-track-event="click_input3"]').click();
+
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input3', {
+        value: '_value_',
+        context: { schema: TRACKING_CONTEXT_SCHEMA, data: mockExperimentData },
+      });
+    });
   });
 
   describe('tracking page loaded events', () => {
@@ -235,21 +307,21 @@ describe('Tracking', () => {
 
   describe('tracking mixin', () => {
     describe('trackingOptions', () => {
-      it('return the options defined on initialisation', () => {
+      it('returns the options defined on initialisation', () => {
         const mixin = Tracking.mixin({ foo: 'bar' });
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'bar' });
       });
 
-      it('local tracking value override and extend options', () => {
+      it('lets local tracking value override and extend options', () => {
         const mixin = Tracking.mixin({ foo: 'bar' });
-        //  the value of this in the  vue lifecyle is different, but this serve the tests purposes
+        // The value of this in the Vue lifecyle is different, but this serves the test's purposes
         mixin.computed.tracking = { foo: 'baz', baz: 'bar' };
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'baz', baz: 'bar' });
       });
     });
 
     describe('trackingCategory', () => {
-      it('return the category set in the component properties first', () => {
+      it('returns the category set in the component properties first', () => {
         const mixin = Tracking.mixin({ category: 'foo' });
         mixin.computed.tracking = {
           category: 'bar',
@@ -257,12 +329,12 @@ describe('Tracking', () => {
         expect(mixin.computed.trackingCategory()).toBe('bar');
       });
 
-      it('return the category set in the options', () => {
+      it('returns the category set in the options', () => {
         const mixin = Tracking.mixin({ category: 'foo' });
         expect(mixin.computed.trackingCategory()).toBe('foo');
       });
 
-      it('if no category is selected returns undefined', () => {
+      it('returns undefined if no category is selected', () => {
         const mixin = Tracking.mixin();
         expect(mixin.computed.trackingCategory()).toBe(undefined);
       });
@@ -297,7 +369,7 @@ describe('Tracking', () => {
         expect(eventSpy).toHaveBeenCalledWith(undefined, 'foo', {});
       });
 
-      it('give precedence to data for category and options', () => {
+      it('gives precedence to data for category and options', () => {
         mixin.trackingCategory = mixin.trackingCategory();
         mixin.trackingOptions = mixin.trackingOptions();
         const data = { category: 'foo', label: 'baz' };

@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
@@ -9,6 +9,9 @@ localVue.use(Vuex);
 describe('Ci environments dropdown', () => {
   let wrapper;
   let store;
+
+  const enterSearchTerm = (value) =>
+    wrapper.find('[data-testid="ci-environment-search"]').setValue(value);
 
   const createComponent = (term) => {
     store = new Vuex.Store({
@@ -24,11 +27,12 @@ describe('Ci environments dropdown', () => {
         value: term,
       },
     });
+    enterSearchTerm(term);
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = (index) => wrapper.findAll(GlDropdownItem).at(index);
-  const findActiveIconByIndex = (index) => findDropdownItemByIndex(index).find(GlIcon);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
+  const findActiveIconByIndex = (index) => findDropdownItemByIndex(index).findComponent(GlIcon);
 
   afterEach(() => {
     wrapper.destroy();
@@ -68,8 +72,9 @@ describe('Ci environments dropdown', () => {
   });
 
   describe('Environments found', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent('prod');
+      await wrapper.vm.$nextTick();
     });
 
     it('renders only the environment searched for', () => {
@@ -84,11 +89,17 @@ describe('Ci environments dropdown', () => {
     });
 
     it('should not display empty results message', () => {
-      expect(wrapper.find({ ref: 'noMatchingResults' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'noMatchingResults' }).exists()).toBe(false);
     });
 
     it('should display active checkmark if active', () => {
       expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(false);
+    });
+
+    it('should clear the search term when showing the dropdown', () => {
+      wrapper.findComponent(GlDropdown).trigger('click');
+
+      expect(wrapper.find('[data-testid="ci-environment-search"]').text()).toBe('');
     });
 
     describe('Custom events', () => {
@@ -97,8 +108,10 @@ describe('Ci environments dropdown', () => {
         expect(wrapper.emitted('selectEnvironment')).toEqual([['prod']]);
       });
 
-      it('should emit createClicked if an environment is clicked', () => {
+      it('should emit createClicked if an environment is clicked', async () => {
         createComponent('newscope');
+
+        await wrapper.vm.$nextTick();
         findDropdownItemByIndex(1).vm.$emit('click');
         expect(wrapper.emitted('createClicked')).toEqual([['newscope']]);
       });

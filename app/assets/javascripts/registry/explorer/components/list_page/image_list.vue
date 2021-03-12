@@ -37,7 +37,6 @@ export default {
       v-for="(listItem, index) in images"
       :key="index"
       :item="listItem"
-      :first="index === 0"
       :metadata-loading="metadataLoading"
       @delete="$emit('delete', $event)"
     />

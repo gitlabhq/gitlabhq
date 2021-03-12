@@ -34,7 +34,7 @@ export default {
   <span v-if="discoverProjectSecurityPath">
     <gl-button
       ref="discoverProjectSecurity"
-      icon="information-o"
+      icon="question-o"
       category="tertiary"
       :aria-label="$options.i18n.upgradeToManageVulnerabilities"
     />

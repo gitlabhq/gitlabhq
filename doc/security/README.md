@@ -24,6 +24,7 @@ type: index
 - [Security of running jobs](https://docs.gitlab.com/runner/security/)
 - [Proxying images](asset_proxy.md)
 - [CI/CD variables](cicd_variables.md)
+- [Token overview](token_overview.md)
 
 ## Securing your GitLab installation
 

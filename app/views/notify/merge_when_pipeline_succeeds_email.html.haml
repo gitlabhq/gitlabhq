@@ -42,13 +42,13 @@
           }
       }
 
-      ul.assignees-list {
+      ul.users-list {
           list-style: none;
           padding: 0px;
           display: block;
           margin-top: 0px;
       }
-      ul.assignees-list li {
+      ul.users-list li {
           display: inline-block;
           padding-right: 12px;
           padding-top: 8px;
@@ -137,16 +137,10 @@
                                               = @merge_request.author.name
 
                                 - if @merge_request.assignees.any?
-                                  %tr
-                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }
-                                      = assignees_label(@merge_request, include_value: false)
-                                    %td{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; margin: 0; padding: 14px 0 0px 5px; font-size: 15px; line-height: 1.4; color: #333333; font-weight: 400; width: 75%; border-top-style: solid; border-top-color: #ededed; border-top-width: 1px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
-                                      %ul.assignees-list{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 15px; line-height: 1.4; padding-right: 5px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
-                                        - @merge_request.assignees.each do |assignee|
-                                          %li
-                                            %img.avatar{ alt: "Avatar", height: "24", src: avatar_icon_for_user(assignee, 24, only_path: false), style: "border-radius: 12px; max-width: 100%; height: auto; -ms-interpolation-mode: bicubic; margin: -2px 0;", width: "24" }
-                                            %a.muted{ href: user_url(assignee), style: "color: #333333; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; vertical-align: top;" }
-                                              = assignee.name
+                                  = render 'users_list', users: @merge_request.assignees, user_label: assignees_label(@merge_request, include_value: false)
+
+                                - if @merge_request.reviewers.any?
+                                  = render 'users_list', users: @merge_request.reviewers, user_label: reviewers_label(@merge_request, include_value: false)
 
         = render_if_exists 'layouts/mailer/additional_text'
 

@@ -78,7 +78,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
    "created_at" : "2021-01-21T19:35:37.921Z",
    "user_id" : 166,
    "id" : 58,
-   "expires_at" : "2021-01-31"
+   "expires_at" : "2021-01-31",
+   "token" : "D4y...Wzr"
 }
 ```
 

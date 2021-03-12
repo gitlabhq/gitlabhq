@@ -16,6 +16,7 @@ module Ci
         format: { with: /\A[a-zA-Z0-9_]+\z/,
                   message: "can contain only letters, digits and '_'." }
 
+      scope :by_key, -> (key) { where(key: key) }
       scope :order_key_asc, -> { reorder(key: :asc) }
 
       attr_encrypted :value,

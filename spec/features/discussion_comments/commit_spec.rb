@@ -18,7 +18,7 @@ RSpec.describe 'Thread Comments Commit', :js do
     visit project_commit_path(project, sample_commit.id)
   end
 
-  it_behaves_like 'thread comments', 'commit'
+  it_behaves_like 'thread comments for commit and snippet', 'commit'
 
   it 'has class .js-note-emoji' do
     expect(page).to have_css('.js-note-emoji')

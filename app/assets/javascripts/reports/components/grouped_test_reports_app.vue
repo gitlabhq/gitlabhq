@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { once } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf, s__ } from '~/locale';
@@ -11,8 +11,8 @@ import {
   statusIcon,
   recentFailuresTextBuilder,
 } from '../store/utils';
+import GroupedIssuesList from './grouped_issues_list.vue';
 import { componentNames } from './issue_body';
-import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
 import ReportSection from './report_section.vue';
 import SummaryRow from './summary_row.vue';
@@ -23,9 +23,10 @@ export default {
   components: {
     ReportSection,
     SummaryRow,
-    IssuesList,
+    GroupedIssuesList,
     Modal,
     GlButton,
+    GlIcon,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -86,7 +87,7 @@ export default {
       }
 
       if (!report.name) {
-        return s__('Reports|An error occured while loading report');
+        return s__('Reports|An error occurred while loading report');
       }
 
       return reportTextBuilder(name, summary);
@@ -111,10 +112,12 @@ export default {
       );
     },
     unresolvedIssues(report) {
-      return report.existing_failures.concat(report.existing_errors);
-    },
-    newIssues(report) {
-      return report.new_failures.concat(report.new_errors);
+      return [
+        ...report.new_failures,
+        ...report.new_errors,
+        ...report.existing_failures,
+        ...report.existing_errors,
+      ];
     },
     resolvedIssues(report) {
       return report.resolved_failures.concat(report.resolved_errors);
@@ -151,24 +154,39 @@ export default {
     <template #body>
       <div class="mr-widget-grouped-section report-block">
         <template v-for="(report, i) in reports">
-          <summary-row :key="`summary-row-${i}`" :status-icon="getReportIcon(report)">
+          <summary-row
+            :key="`summary-row-${i}`"
+            :status-icon="getReportIcon(report)"
+            nested-summary
+          >
             <template #summary>
               <div class="gl-display-inline-flex gl-flex-direction-column">
                 <div>{{ reportText(report) }}</div>
+                <div v-if="report.suite_errors">
+                  <div v-if="report.suite_errors.head">
+                    <gl-icon name="warning" class="gl-mx-2 gl-text-orange-500" />
+                    {{ s__('Reports|Head report parsing error:') }}
+                    {{ report.suite_errors.head }}
+                  </div>
+                  <div v-if="report.suite_errors.base">
+                    <gl-icon name="warning" class="gl-mx-2 gl-text-orange-500" />
+                    {{ s__('Reports|Base report parsing error:') }}
+                    {{ report.suite_errors.base }}
+                  </div>
+                </div>
                 <div v-if="hasRecentFailures(report.summary)">
                   {{ recentFailuresText(report.summary) }}
                 </div>
               </div>
             </template>
           </summary-row>
-          <issues-list
+          <grouped-issues-list
             v-if="shouldRenderIssuesList(report)"
             :key="`issues-list-${i}`"
             :unresolved-issues="unresolvedIssues(report)"
-            :new-issues="newIssues(report)"
             :resolved-issues="resolvedIssues(report)"
             :component="$options.componentNames.TestIssueBody"
-            class="report-block-group-list"
+            :nested-level="2"
           />
         </template>
         <modal

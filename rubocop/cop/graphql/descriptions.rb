@@ -1,26 +1,31 @@
 # frozen_string_literal: true
 
-# This cop checks for missing GraphQL field descriptions.
+# This cop checks for missing GraphQL descriptions and enforces the description style guide:
+# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
 #
-# @example
+# @examples
 #
 #   # bad
-#   class AwfulClass
+#   class AwfulType
 #     field :some_field, GraphQL::STRING_TYPE
 #   end
 #
-#   class TerribleClass
+#   class TerribleType
 #     argument :some_argument, GraphQL::STRING_TYPE
 #   end
 #
-#   class UngoodClass
+#   class UngoodType
 #     field :some_argument,
 #       GraphQL::STRING_TYPE,
 #       description: "A description that does not end in a period"
 #   end
 #
+#   class BadEnum
+#     value "some_value"
+#   end
+#
 #   # good
-#   class GreatClass
+#   class GreatType
 #     argument :some_field,
 #       GraphQL::STRING_TYPE,
 #       description: "Well described - a superb description."
@@ -28,6 +33,10 @@
 #     field :some_field,
 #       GraphQL::STRING_TYPE,
 #       description: "A thorough and compelling description."
+#   end
+#
+#   class GoodEnum
+#     value "some_value", "Good description."
 #   end
 
 module RuboCop
@@ -37,19 +46,26 @@ module RuboCop
         MSG_NO_DESCRIPTION = 'Please add a `description` property.'
         MSG_NO_PERIOD = '`description` strings must end with a `.`.'
 
-        # ability_field and permission_field set a default description.
-        def_node_matcher :field_or_argument?, <<~PATTERN
-          (send nil? {:field :argument} ...)
+        def_node_matcher :graphql_describable?, <<~PATTERN
+          (send nil? {:field :argument :value} ...)
         PATTERN
 
-        def_node_matcher :description, <<~PATTERN
+        def_node_matcher :enum?, <<~PATTERN
+          (send nil? :value ...)
+        PATTERN
+
+        def_node_matcher :description_kwarg, <<~PATTERN
           (... (hash <(pair (sym :description) $_) ...>))
         PATTERN
 
-        def on_send(node)
-          return unless field_or_argument?(node)
+        def_node_matcher :enum_style_description, <<~PATTERN
+          (send nil? :value _ $str ...)
+        PATTERN
 
-          description = description(node)
+        def on_send(node)
+          return unless graphql_describable?(node)
+
+          description = locate_description(node)
 
           return add_offense(node, location: :expression, message: MSG_NO_DESCRIPTION) unless description
 
@@ -59,7 +75,7 @@ module RuboCop
         # Autocorrect missing periods at end of description.
         def autocorrect(node)
           lambda do |corrector|
-            description = description(node)
+            description = locate_description(node)
             next unless description
 
             corrector.insert_after(before_end_quote(description), '.')
@@ -67,6 +83,16 @@ module RuboCop
         end
 
         private
+
+        # Fields and arguments define descriptions using a `description` keyword argument.
+        # Enums may define descriptions this way, or as a second `String` param.
+        def locate_description(node)
+          description = description_kwarg(node)
+
+          return description unless description.nil? && enum?(node)
+
+          enum_style_description(node)
+        end
 
         def no_period?(description)
           # Test that the description node is a `:str` (as opposed to

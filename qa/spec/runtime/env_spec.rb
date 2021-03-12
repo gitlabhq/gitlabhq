@@ -232,6 +232,7 @@ RSpec.describe QA::Runtime::Env do
 
   describe '.require_admin_access_token!' do
     it 'raises ArgumentError if GITLAB_QA_ADMIN_ACCESS_TOKEN is not specified' do
+      described_class.instance_variable_set(:@admin_personal_access_token, nil)
       stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', nil)
 
       expect { described_class.require_admin_access_token! }.to raise_error(ArgumentError)

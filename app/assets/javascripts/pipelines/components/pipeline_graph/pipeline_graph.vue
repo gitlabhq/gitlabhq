@@ -64,13 +64,6 @@ export default {
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
     },
-    alert() {
-      if (this.hasError) {
-        return this.failure;
-      }
-
-      return this.warning;
-    },
     failure() {
       switch (this.failureType) {
         case DRAW_FAILURE:
@@ -210,11 +203,11 @@ export default {
   <div>
     <gl-alert
       v-if="hasError"
-      :variant="alert.variant"
-      :dismissible="alert.dismissible"
-      @dismiss="alert.dismissible ? resetFailure : null"
+      :variant="failure.variant"
+      :dismissible="failure.dismissible"
+      @dismiss="resetFailure"
     >
-      {{ alert.text }}
+      {{ failure.text }}
     </gl-alert>
     <div
       v-if="!hideGraph"

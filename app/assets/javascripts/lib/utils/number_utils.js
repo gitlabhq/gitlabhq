@@ -150,3 +150,24 @@ export const formattedChangeInPercent = (firstY, lastY, { nonFiniteResult = '-' 
 
   return `${change >= 0 ? '+' : ''}${change}%`;
 };
+
+/**
+ * Checks whether a value is numerical in nature by converting it using parseInt
+ *
+ * Example outcomes:
+ *   - isNumeric(100) = true
+ *   - isNumeric('100') = true
+ *   - isNumeric(1.0) = true
+ *   - isNumeric('1.0') = true
+ *   - isNumeric('abc100') = false
+ *   - isNumeric('abc') = false
+ *   - isNumeric(true) = false
+ *   - isNumeric(undefined) = false
+ *   - isNumeric(null) = false
+ *
+ * @param value
+ * @returns {boolean}
+ */
+export const isNumeric = (value) => {
+  return !Number.isNaN(parseInt(value, 10));
+};

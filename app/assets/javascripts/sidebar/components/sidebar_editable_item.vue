@@ -3,7 +3,12 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: { GlButton, GlLoadingIcon },
-  inject: ['canUpdate'],
+  inject: {
+    canUpdate: {},
+    isClassicSidebar: {
+      default: false,
+    },
+  },
   props: {
     title: {
       type: String,
@@ -14,6 +19,15 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    tracking: {
+      type: Object,
+      required: false,
+      default: () => ({
+        event: null,
+        label: null,
+        property: null,
+      }),
     },
   },
   data() {
@@ -71,24 +85,33 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center gl-mb-3" @click.self="collapse">
-      <span data-testid="title">{{ title }}</span>
-      <gl-loading-icon v-if="loading" inline class="gl-ml-2" />
+    <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
+      <span class="hide-collapsed" data-testid="title">{{ title }}</span>
+      <gl-loading-icon v-if="loading" inline class="gl-ml-2 hide-collapsed" />
+      <gl-loading-icon
+        v-if="loading && isClassicSidebar"
+        inline
+        class="gl-mx-auto gl-my-0 hide-expanded"
+      />
       <gl-button
         v-if="canUpdate"
         variant="link"
-        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto js-sidebar-dropdown-toggle"
+        class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto hide-collapsed"
         data-testid="edit-button"
+        :data-track-event="tracking.event"
+        :data-track-label="tracking.label"
+        :data-track-property="tracking.property"
+        data-qa-selector="edit_link"
         @keyup.esc="toggle"
         @click="toggle"
       >
         {{ __('Edit') }}
       </gl-button>
     </div>
-    <div v-show="!edit" class="gl-text-gray-500" data-testid="collapsed-content">
+    <div v-show="!edit" data-testid="collapsed-content">
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>
-    <div v-show="edit" data-testid="expanded-content">
+    <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">
       <slot :edit="edit"></slot>
     </div>
   </div>

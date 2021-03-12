@@ -86,6 +86,7 @@ module Issuable
     before_validation :truncate_description_on_import!
 
     scope :authored, ->(user) { where(author_id: user) }
+    scope :not_authored, ->(user) { where.not(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :opened, -> { with_state(:opened) }

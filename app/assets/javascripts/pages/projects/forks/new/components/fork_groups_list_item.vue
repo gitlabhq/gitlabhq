@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/groups/constants';
 import csrf from '~/lib/utils/csrf';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 
 export default {
   components: {
@@ -20,6 +21,7 @@ export default {
     GlButton,
     GlTooltip,
     GlLink,
+    UserAccessRoleBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -72,7 +74,9 @@ export default {
 <template>
   <li :class="rowClass" class="group-row">
     <div class="group-row-contents gl-display-flex gl-align-items-center gl-py-3 gl-pr-5">
-      <div class="folder-toggle-wrap gl-mr-2 gl-display-flex gl-align-items-center">
+      <div
+        class="folder-toggle-wrap gl-mr-3 gl-display-flex gl-align-items-center gl-text-gray-500"
+      >
         <gl-icon name="folder-o" />
       </div>
       <gl-link
@@ -84,12 +88,12 @@ export default {
       <div class="gl-min-w-0 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1 gl-align-items-center">
         <div class="gl-min-w-0 gl-flex-grow-1 flex-shrink-1">
           <div class="title gl-display-flex gl-align-items-center gl-flex-wrap gl-mr-3">
-            <gl-link :href="group.relative_path" class="gl-mt-3 gl-mr-3 gl-text-gray-900!">{{
-              group.full_name
-            }}</gl-link>
+            <gl-link :href="group.relative_path" class="gl-mt-3 gl-mr-3 gl-text-gray-900!">
+              {{ group.full_name }}
+            </gl-link>
             <gl-icon
               v-gl-tooltip.hover.bottom
-              class="gl-mr-0 gl-inline-flex gl-mt-3 text-secondary"
+              class="gl-display-inline-flex gl-mt-3 gl-mr-3 gl-text-gray-500"
               :name="visibilityIcon"
               :title="visibilityTooltip"
             />
@@ -99,11 +103,11 @@ export default {
               class="gl-display-none gl-sm-display-flex gl-mt-3 gl-mr-1"
               >{{ __('pending removal') }}</gl-badge
             >
-            <span v-if="group.permission" class="user-access-role gl-mt-3">
+            <user-access-role-badge v-if="group.permission" class="gl-mt-3">
               {{ group.permission }}
-            </span>
+            </user-access-role-badge>
           </div>
-          <div v-if="group.description" class="description">
+          <div v-if="group.description" class="description gl-line-height-20">
             <span v-safe-html="group.markdown_description"> </span>
           </div>
         </div>

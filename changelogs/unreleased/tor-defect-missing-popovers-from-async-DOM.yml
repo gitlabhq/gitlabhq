@@ -1,0 +1,6 @@
+---
+title: React to new DOM nodes being added to the page to bind the user information
+  popover to them
+merge_request: 54411
+author:
+type: fixed

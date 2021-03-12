@@ -37,8 +37,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       context 'when valid token is provided' do
         let(:runner) { create(:ci_runner) }
 
+        subject { delete api('/runners'), params: { token: runner.token } }
+
         it 'deletes Runner' do
-          delete api('/runners'), params: { token: runner.token }
+          subject
 
           expect(response).to have_gitlab_http_status(:no_content)
           expect(::Ci::Runner.count).to eq(0)
@@ -47,6 +49,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         it_behaves_like '412 response' do
           let(:request) { api('/runners') }
           let(:params) { { token: runner.token } }
+        end
+
+        it_behaves_like 'storing arguments in the application context' do
+          let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
       end
     end

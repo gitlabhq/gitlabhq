@@ -84,7 +84,7 @@ export default {
 </script>
 
 <template>
-  <div class="ci-variable-table">
+  <div class="ci-variable-table" data-testid="ci-variable-table">
     <gl-table
       :fields="fields"
       :items="variables"

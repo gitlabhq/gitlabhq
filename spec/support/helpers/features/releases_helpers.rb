@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-# These helpers fill fields on the "New Release" and
-# "Edit Release" pages. They use the keyboard to navigate
-# from one field to the next and assume that when
-# they are called, the field to be filled out is already focused.
+# These helpers fill fields on the "New Release" and "Edit Release" pages.
 #
 # Usage:
 #   describe "..." do
@@ -18,97 +15,65 @@ module Spec
     module Helpers
       module Features
         module ReleasesHelpers
-          # Returns the element that currently has keyboard focus.
-          # Reminder that this returns a Selenium::WebDriver::Element
-          # _not_ a Capybara::Node::Element
-          def focused_element
-            page.driver.browser.switch_to.active_element
+          def select_new_tag_name(tag_name)
+            page.within '[data-testid="tag-name-field"]' do
+              find('button').click
+
+              wait_for_all_requests
+
+              find('input[aria-label="Search or create tag"]').set(tag_name)
+
+              wait_for_all_requests
+
+              click_button("Create tag #{tag_name}")
+            end
           end
 
-          def fill_tag_name(tag_name, and_tab: true)
-            expect(focused_element).to eq(find_field('Tag name').native)
+          def select_create_from(branch_name)
+            page.within '[data-testid="create-from-field"]' do
+              find('button').click
 
-            focused_element.send_keys(tag_name)
+              wait_for_all_requests
 
-            focused_element.send_keys(:tab) if and_tab
+              find('input[aria-label="Search branches, tags, and commits"]').set(branch_name)
+
+              wait_for_all_requests
+
+              click_button("#{branch_name}")
+            end
           end
 
-          def select_create_from(branch_name, and_tab: true)
-            expect(focused_element).to eq(find('[data-testid="create-from-field"] button').native)
-
-            focused_element.send_keys(:enter)
-
-            # Wait for the dropdown to be rendered
-            page.find('.ref-selector .dropdown-menu')
-
-            # Pressing Enter in the search box shouldn't submit the form
-            focused_element.send_keys(branch_name, :enter)
-
-            # Wait for the search to return
-            page.find('.ref-selector .dropdown-item', text: branch_name, match: :first)
-
-            focused_element.send_keys(:arrow_down, :enter)
-
-            focused_element.send_keys(:tab) if and_tab
+          def fill_release_title(release_title)
+            fill_in('Release title', with: release_title)
           end
 
-          def fill_release_title(release_title, and_tab: true)
-            expect(focused_element).to eq(find_field('Release title').native)
+          def select_milestone(milestone_title)
+            page.within '[data-testid="milestones-field"]' do
+              find('button').click
 
-            focused_element.send_keys(release_title)
+              wait_for_all_requests
 
-            focused_element.send_keys(:tab) if and_tab
+              find('input[aria-label="Search Milestones"]').set(milestone_title)
+
+              wait_for_all_requests
+
+              find('button', text: milestone_title, match: :first).click
+            end
           end
 
-          def select_milestone(milestone_title, and_tab: true)
-            expect(focused_element).to eq(find('[data-testid="milestones-field"] button').native)
-
-            focused_element.send_keys(:enter)
-
-            # Wait for the dropdown to be rendered
-            page.find('.milestone-combobox .dropdown-menu')
-
-            # Clear any existing input
-            focused_element.attribute('value').length.times { focused_element.send_keys(:backspace) }
-
-            # Pressing Enter in the search box shouldn't submit the form
-            focused_element.send_keys(milestone_title, :enter)
-
-            # Wait for the search to return
-            page.find('.milestone-combobox .dropdown-item', text: milestone_title, match: :first)
-
-            focused_element.send_keys(:arrow_down, :arrow_down, :enter)
-
-            focused_element.send_keys(:tab) if and_tab
+          def fill_release_notes(release_notes)
+            fill_in('Release notes', with: release_notes)
           end
 
-          def fill_release_notes(release_notes, and_tab: true)
-            expect(focused_element).to eq(find_field('Release notes').native)
-
-            focused_element.send_keys(release_notes)
-
-            # Tab past the links at the bottom of the editor
-            focused_element.send_keys(:tab, :tab, :tab) if and_tab
-          end
-
-          def fill_asset_link(link, and_tab: true)
-            expect(focused_element['id']).to start_with('asset-url-')
-
-            focused_element.send_keys(link[:url], :tab, link[:title], :tab, link[:type])
-
-            # Tab past the "Remove asset link" button
-            focused_element.send_keys(:tab, :tab) if and_tab
+          def fill_asset_link(link)
+            all('input[name="asset-url"]').last.set(link[:url])
+            all('input[name="asset-link-name"]').last.set(link[:title])
+            all('select[name="asset-type"]').last.find("option[value=\"#{link[:type]}\"").select_option
           end
 
           # Click "Add another link" and tab back to the beginning of the new row
           def add_another_asset_link
-            expect(focused_element).to eq(find_button('Add another link').native)
-
-            focused_element.send_keys(:enter,
-                                      [:shift, :tab],
-                                      [:shift, :tab],
-                                      [:shift, :tab],
-                                      [:shift, :tab])
+            click_button('Add another link')
           end
         end
       end

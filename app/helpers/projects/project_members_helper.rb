@@ -40,7 +40,7 @@ module Projects::ProjectMembersHelper
       members: project_members_data_json(project, members),
       member_path: project_project_member_path(project, ':id'),
       source_id: project.id,
-      can_manage_members: can_manage_project_members?(project)
+      can_manage_members: can_manage_project_members?(project).to_s
     }
   end
 
@@ -49,7 +49,7 @@ module Projects::ProjectMembersHelper
       members: project_group_links_data_json(group_links),
       member_path: project_group_link_path(project, ':id'),
       source_id: project.id,
-      can_manage_members: can_manage_project_members?(project)
+      can_manage_members: can_manage_project_members?(project).to_s
     }
   end
 end

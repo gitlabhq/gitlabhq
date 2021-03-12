@@ -40,8 +40,8 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       end
 
       it 'validates boolean value of "self-managed" and "gitlab-com"' do
-        allow(entry).to receive(:value_for).with('self-managed').and_return('nope')
-        allow(entry).to receive(:value_for).with('gitlab-com').and_return('yerp')
+        allow(entry).to receive(:value_for).with(:'self-managed').and_return('nope')
+        allow(entry).to receive(:value_for).with(:'gitlab-com').and_return('yerp')
 
         subject.valid?
 
@@ -50,17 +50,18 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       end
 
       it 'validates URI of "url" and "image_url"' do
-        allow(entry).to receive(:value_for).with('image_url').and_return('imgur/gitlab_feature.gif')
-        allow(entry).to receive(:value_for).with('url').and_return('gitlab/newest_release.html')
+        stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+        allow(entry).to receive(:value_for).with(:image_url).and_return('https://foobar.x/images/ci/gitlab-ci-cd-logo_2x.png')
+        allow(entry).to receive(:value_for).with(:url).and_return('')
 
         subject.valid?
 
-        expect(subject.errors[:url]).to include(/must be a URL/)
-        expect(subject.errors[:image_url]).to include(/must be a URL/)
+        expect(subject.errors[:url]).to include(/must be a valid URL/)
+        expect(subject.errors[:image_url]).to include(/is blocked: Host cannot be resolved or invalid/)
       end
 
       it 'validates release is numerical' do
-        allow(entry).to receive(:value_for).with('release').and_return('one')
+        allow(entry).to receive(:value_for).with(:release).and_return('one')
 
         subject.valid?
 
@@ -68,7 +69,7 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       end
 
       it 'validates published_at is a date' do
-        allow(entry).to receive(:value_for).with('published_at').and_return('christmas day')
+        allow(entry).to receive(:value_for).with(:published_at).and_return('christmas day')
 
         subject.valid?
 
@@ -76,7 +77,7 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       end
 
       it 'validates packages are included in list' do
-        allow(entry).to receive(:value_for).with('packages').and_return(['ALL'])
+        allow(entry).to receive(:value_for).with(:packages).and_return(['ALL'])
 
         subject.valid?
 

@@ -7,9 +7,9 @@ import ValidationSegment, {
   i18n,
 } from '~/pipeline_editor/components/header/validation_segment.vue';
 import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
-import { mockYmlHelpPagePath, mergeUnwrappedCiConfig } from '../../mock_data';
+import { mockYmlHelpPagePath, mergeUnwrappedCiConfig, mockCiYml } from '../../mock_data';
 
-describe('~/pipeline_editor/components/info/validation_segment.vue', () => {
+describe('Validation segment component', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
@@ -20,6 +20,7 @@ describe('~/pipeline_editor/components/info/validation_segment.vue', () => {
         },
         propsData: {
           ciConfig: mergeUnwrappedCiConfig(),
+          ciFileContent: mockCiYml,
           loading: false,
           ...props,
         },
@@ -42,6 +43,20 @@ describe('~/pipeline_editor/components/info/validation_segment.vue', () => {
     expect(wrapper.text()).toBe(i18n.loading);
   });
 
+  describe('when config is empty', () => {
+    beforeEach(() => {
+      createComponent({ ciFileContent: '' });
+    });
+
+    it('has check icon', () => {
+      expect(findIcon().props('name')).toBe('check');
+    });
+
+    it('shows a message for empty state', () => {
+      expect(findValidationMsg().text()).toBe(i18n.empty);
+    });
+  });
+
   describe('when config is valid', () => {
     beforeEach(() => {
       createComponent({});
@@ -61,7 +76,7 @@ describe('~/pipeline_editor/components/info/validation_segment.vue', () => {
     });
   });
 
-  describe('when config is not valid', () => {
+  describe('when config is invalid', () => {
     beforeEach(() => {
       createComponent({
         ciConfig: mergeUnwrappedCiConfig({

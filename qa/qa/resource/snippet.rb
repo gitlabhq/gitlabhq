@@ -3,7 +3,10 @@
 module QA
   module Resource
     class Snippet < Base
-      attr_accessor :title, :description, :file_content, :visibility, :file_name, :snippet_id
+      attr_accessor :title, :description, :file_content, :visibility, :file_name
+
+      attribute :id
+      attribute :http_url_to_repo
 
       def initialize
         @title = 'New snippet title'
@@ -44,11 +47,15 @@ module QA
       end
 
       def api_get_path
-        "/snippets/#{snippet_id}"
+        "/snippets/#{id}"
       end
 
       def api_post_path
         '/snippets'
+      end
+
+      def api_put_path
+        "/snippets/#{id}"
       end
 
       def api_post_body
@@ -60,11 +67,37 @@ module QA
         }
       end
 
+      def api_delete_path
+        "/snippets/#{id}"
+      end
+
       def all_file_contents
         @files.insert(0, { name: @file_name, content: @file_content })
         @files.each do |file|
           file[:file_path] = file.delete(:name)
         end
+      end
+
+      def has_file?(file_path)
+        response = get Runtime::API::Request.new(api_client, api_get_path).url
+
+        raise ResourceNotFoundError, "Request returned (#{response.code}): `#{response}`." if response.code == HTTP_STATUS_NOT_FOUND
+
+        file_output = parse_body(response)[:files]
+        file_output.any? { |file| file[:path] == file_path }
+      end
+
+      def change_repository_storage(new_storage)
+        post_body = { destination_storage_name: new_storage }
+        response = post Runtime::API::Request.new(api_client, "/snippets/#{id}/repository_storage_moves").url, post_body
+
+        unless response.code.between?(200, 300)
+          raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+        end
+
+        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
+      rescue Support::Repeater::RepeaterConditionExceededError
+        raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the snippet repository storage move to finish'
       end
     end
   end

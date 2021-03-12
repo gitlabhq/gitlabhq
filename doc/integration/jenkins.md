@@ -31,7 +31,8 @@ the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools
 
 NOTE:
 This documentation focuses only on how to **configure** a Jenkins *integration* with
-GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
+GitLab. Learn how to set up Jenkins [on your local machine](../development/integrations/jenkins.md)
+in our developer documentation, and how to **migrate** from Jenkins to GitLab CI/CD in our
 [Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
 ## Configure GitLab integration with Jenkins
@@ -138,9 +139,11 @@ Set up the Jenkins project you intend to run your build on.
 
 ## Configure the GitLab project
 
-Configure the GitLab integration with Jenkins.
+Configure the GitLab integration with Jenkins in one of the following ways.
 
-### Option 1: Jenkins integration (recommended)
+### Recommended Jenkins integration
+
+GitLab recommends this approach for Jenkins integrations.
 
 1. Create a new GitLab project or choose an existing one.
 1. Go to **Settings > Integrations**, then select **Jenkins CI**.
@@ -159,7 +162,7 @@ Configure the GitLab integration with Jenkins.
    authentication.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
 
-### Option 2: Webhook
+### Webhook integration
 
 If you are unable to provide GitLab with your Jenkins server login, you can use this option
 to integrate GitLab and Jenkins.
@@ -167,7 +170,8 @@ to integrate GitLab and Jenkins.
 1. In the configuration of your Jenkins job, in the GitLab configuration section, click **Advanced**.
 1. Click the **Generate** button under the **Secret Token** field.
 1. Copy the resulting token, and save the job configuration.
-1. In GitLab, create a webhook for your project, enter the trigger URL (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
+1. In GitLab, create a webhook for your project, enter the trigger URL
+   (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
 1. After you add the webhook, click the **Test** button, and it should succeed.
 
 ## Troubleshooting

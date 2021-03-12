@@ -153,7 +153,7 @@ Job grouping is evaluated with an improved regular expression to group jobs by n
 The new implementation removes one or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences
 from the **end** of job names only.
 
-Matching substrings occuring at the beginning or in the middle of build names are
+Matching substrings occurring at the beginning or in the middle of build names are
 no longer removed.
 
 ## Specifying variables when running manual jobs
@@ -187,7 +187,7 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](../environments/index.md#retrying-and-rolling-back) back to the last stable version.
+  and [rolling](../environments/index.md#retry-or-roll-back-a-deployment) back to the last stable version.
 
 ![Pipelines example](img/pipeline_incremental_rollout.png)
 

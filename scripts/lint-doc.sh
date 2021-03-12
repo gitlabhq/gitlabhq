@@ -78,7 +78,7 @@ then
   echo
   echo '  ✖ ERROR: The number of README.md file(s) has changed. Use index.md instead of README.md.' >&2
   echo '  ✖        If removing a README.md file, update NUMBER_READMES in lint-doc.sh.' >&2
-  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#work-with-directories-and-files'
+  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#work-with-directories-and-files'
   echo
   ((ERRORCODE++))
 fi

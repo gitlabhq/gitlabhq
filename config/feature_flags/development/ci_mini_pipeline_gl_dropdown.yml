@@ -1,8 +1,0 @@
----
-name: ci_mini_pipeline_gl_dropdown
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52821
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300400
-milestone: '13.9'
-type: development
-group: group::continuous integration
-default_enabled: true

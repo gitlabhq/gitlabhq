@@ -9,17 +9,11 @@ GitLab](doc/architecture/gitlab_features.md) that would not work efficiently wit
 
 ## Canonical source
 
-The canonical source for Workhorse is currently
-[gitlab-org/gitlab-workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
-As explained in https://gitlab.com/groups/gitlab-org/-/epics/4826, we
-are in the process of moving the canonical source to
+The canonical source for Workhorse is
 [gitlab-org/gitlab/workhorse](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse).
-
-Until that transition is complete, changes (Merge Requests) for
-Workhorse should be submitted at
-[gitlab-org/gitlab-workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
-Once merged, they will propagate to gitlab-org/gitlab/workhorse via
-the usual Workhorse release process.
+Prior to https://gitlab.com/groups/gitlab-org/-/epics/4826, it was
+[gitlab-org/gitlab-workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse/tree/master),
+but that repository is no longer used for development.
 
 ## Documentation
 

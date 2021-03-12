@@ -1,5 +1,10 @@
 import { __ } from '~/locale';
 
+export const issuableTypes = {
+  issue: 'issue',
+  epic: 'epic',
+};
+
 export const BoardType = {
   project: 'project',
   group: 'group',

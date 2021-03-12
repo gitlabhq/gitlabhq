@@ -110,6 +110,12 @@ tests = [
     explanation: 'Migration should map to its timestamped spec',
     source: 'db/post_migrate/20190924152703_migrate_issue_trackers_data.rb',
     expected: ['spec/migrations/20190924152703_migrate_issue_trackers_data_spec.rb']
+  },
+
+  {
+    explanation: 'Whats New should map to its respective spec',
+    source: 'data/whats_new/202101140001_13_08.yml',
+    expected: ['spec/lib/release_highlights/validator_spec.rb']
   }
 ]
 

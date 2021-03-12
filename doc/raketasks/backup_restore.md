@@ -1,6 +1,6 @@
 ---
 stage: Enablement
-group: Distribution
+group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -629,7 +629,7 @@ directory that you want to copy the tarballs to is the root of your mounted
 directory, use `.` instead.
 
 Because file system performance may affect overall GitLab performance,
-[GitLab doesn't recommend using EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
+[GitLab doesn't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 For Omnibus GitLab packages:
 
@@ -1017,7 +1017,7 @@ issue.
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
-### Restoring only one or a few project(s) or group(s) from a backup
+### Restoring only one or a few projects or groups from a backup
 
 Although the Rake task used to restore a GitLab instance doesn't support
 restoring a single project or group, you can use a workaround by restoring

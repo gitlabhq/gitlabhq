@@ -18,9 +18,9 @@
         - if @merge_request.present?
           .control.d-none.d-md-block
             = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn gl-button'
-        - elsif create_mr_button?(@repository.root_ref, @ref)
+        - elsif create_mr_button?(from: @repository.root_ref, to: @ref, source_project: @project, target_project: @project)
           .control.d-none.d-md-block
-            = link_to _("Create merge request"), create_mr_path(@repository.root_ref, @ref), class: 'btn gl-button btn-success'
+            = link_to _("Create merge request"), create_mr_path(from: @repository.root_ref, to: @ref, source_project: @project, target_project: @project), class: 'btn gl-button btn-success'
 
         .control
           = form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path }) do

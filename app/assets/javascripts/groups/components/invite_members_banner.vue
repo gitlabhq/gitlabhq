@@ -35,7 +35,9 @@ export default {
       this.track(this.$options.dismissEvent);
     },
     trackOnShow() {
-      if (!this.isDismissed) this.track(this.$options.displayEvent);
+      this.$nextTick(() => {
+        if (!this.isDismissed) this.track(this.$options.displayEvent);
+      });
     },
     addTrackingAttributesToButton() {
       if (this.$refs.banner === undefined) return;

@@ -1258,4 +1258,12 @@ RSpec.describe Issue do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#email_participants_downcase' do
+    it 'returns a list of emails with all uppercase letters replaced with their lowercase counterparts' do
+      participant = create(:issue_email_participant, email: 'SomEoNe@ExamPLe.com')
+
+      expect(participant.issue.email_participants_downcase).to match([participant.email.downcase])
+    end
+  end
 end

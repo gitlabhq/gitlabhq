@@ -170,12 +170,6 @@ table {
   display: none;
 }
 
-h3.popover-header {
-  // Default bootstrap popovers use <h3>
-  // which we default to having a top margin
-  margin-top: 0;
-}
-
 // Add to .label so that old system notes that are saved to the db
 // will still receive the correct styling
 .badge:not(.gl-badge),
@@ -198,7 +192,15 @@ h3.popover-header {
 }
 
 .divider {
-  @extend .dropdown-divider;
+  // copied rules from node_modules/bootstrap/scss/_dropdown.scss:116
+  // this might be safe to just remove instead
+  // most places that use divider add overrides to undo these things
+  // there is also a probably-unintentional use in deprecated_dropdown_divider.scss
+  // so we would end up with .gl-dropdown .dropdown-divider
+  height: 0;
+  margin: 4px 0;
+  overflow: hidden;
+  border-top: 1px solid $border-color;
 }
 
 .info-well {
@@ -231,12 +233,9 @@ h3.popover-header {
 }
 
 .card {
-  &.card-without-border {
-    @extend .border-0;
-  }
-
+  &.card-without-border,
   &.bg-light {
-    @extend .border-0;
+    border: 0 !important;
   }
 }
 

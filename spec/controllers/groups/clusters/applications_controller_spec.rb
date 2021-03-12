@@ -10,7 +10,8 @@ RSpec.describe Groups::Clusters::ApplicationsController do
   end
 
   shared_examples 'a secure endpoint' do
-    it { expect { subject }.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { subject }.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { expect { subject }.to be_denied_for(:admin) }
     it { expect { subject }.to be_allowed_for(:owner).of(group) }
     it { expect { subject }.to be_allowed_for(:maintainer).of(group) }
     it { expect { subject }.to be_denied_for(:developer).of(group) }

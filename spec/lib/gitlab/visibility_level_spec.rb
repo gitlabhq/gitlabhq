@@ -131,4 +131,29 @@ RSpec.describe Gitlab::VisibilityLevel do
       end
     end
   end
+
+  describe '.options' do
+    context 'keys' do
+      it 'returns the allowed visibility levels' do
+        expect(described_class.options.keys).to contain_exactly('Private', 'Internal', 'Public')
+      end
+    end
+  end
+
+  describe '.level_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:level_value, :level_name) do
+      described_class::PRIVATE | 'Private'
+      described_class::INTERNAL | 'Internal'
+      described_class::PUBLIC | 'Public'
+      non_existing_record_access_level | 'Unknown'
+    end
+
+    with_them do
+      it 'returns the name of the visibility level' do
+        expect(described_class.level_name(level_value)).to eq(level_name)
+      end
+    end
+  end
 end

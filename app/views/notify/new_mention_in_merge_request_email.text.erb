@@ -4,6 +4,7 @@ You have been mentioned in Merge Request <%= @merge_request.to_reference %>
 
 <%= merge_path_description(@merge_request, 'to') %>
 Author:    <%= sanitize_name(@merge_request.author_name) %>
-= assignees_label(@merge_request)
+<%= assignees_label(@merge_request) %>
+<%= reviewers_label(@merge_request) %>
 
 <%= @merge_request.description %>

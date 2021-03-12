@@ -1,20 +1,10 @@
-workhorse:
-  extends: .workhorse:rules:workhorse
-  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.14
-  stage: test
-  needs: []
-  script:
-    - rm .git/hooks/post-checkout
-    - git checkout .
-    - scripts/update-workhorse check
-    - make -C workhorse
-
 workhorse:verify:
   extends: .workhorse:rules:workhorse
   image: ${GITLAB_DEPENDENCY_PROXY}golang:1.15
   stage: test
   needs: []
   script:
+    - make -C workhorse # test build
     - make -C workhorse verify
 
 .workhorse:test:

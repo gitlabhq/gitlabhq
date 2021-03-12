@@ -75,6 +75,9 @@ A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
 
+WARNING:
+If you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
+
 ## Close an epic
 
 Whenever you decide that there is no longer need for that epic,
@@ -243,7 +246,7 @@ To move an issue to another epic:
 
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
 epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
-[quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
+[quick action](../../project/quick_actions.md#issues-merge-requests-and-epics).
 Only issues from projects that are in groups can be promoted. When you attempt to promote a confidential
 issue, a warning is displayed. Promoting a confidential issue to an epic makes all information
 related to the issue public as epics are public to group members.

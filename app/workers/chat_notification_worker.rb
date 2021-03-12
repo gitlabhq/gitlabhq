@@ -7,7 +7,6 @@ class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: false
   feature_category :chatops
-  tags :requires_disk_io
   urgency :low # Can't be high as it has external dependencies
   weight 2
   worker_has_external_dependencies!

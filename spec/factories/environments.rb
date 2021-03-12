@@ -15,6 +15,22 @@ FactoryBot.define do
       state { :stopped }
     end
 
+    trait :production do
+      tier { :production }
+    end
+
+    trait :staging do
+      tier { :staging }
+    end
+
+    trait :testing do
+      tier { :testing }
+    end
+
+    trait :development do
+      tier { :development }
+    end
+
     trait :with_review_app do |environment|
       transient do
         ref { 'master' }

@@ -33,6 +33,7 @@ module Projects
       @status = create_status
       @status.enqueue!
       @status.run!
+      @status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, project, default_enabled: :yaml)
 
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
       raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?

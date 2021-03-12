@@ -13,7 +13,7 @@ RSpec.describe 'container repository details' do
     graphql_query_for(
       'containerRepository',
       { id: container_repository_global_id },
-      all_graphql_fields_for('ContainerRepositoryDetails')
+      all_graphql_fields_for('ContainerRepositoryDetails', excluded: ['pipeline'])
     )
   end
 

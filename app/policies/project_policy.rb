@@ -156,6 +156,7 @@ class ProjectPolicy < BasePolicy
     metrics_dashboard
     analytics
     operations
+    security_and_compliance
   ]
 
   features.each do |f|
@@ -203,8 +204,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:guest_access) }.policy do
     enable :read_project
     enable :create_merge_request_in
-    enable :read_board
-    enable :read_list
+    enable :read_issue_board
+    enable :read_issue_board_list
     enable :read_wiki
     enable :read_issue
     enable :read_label
@@ -230,7 +231,7 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
   rule { can?(:reporter_access) }.policy do
-    enable :admin_board
+    enable :admin_issue_board
     enable :download_code
     enable :read_statistics
     enable :download_wiki_code
@@ -239,7 +240,7 @@ class ProjectPolicy < BasePolicy
     enable :reopen_issue
     enable :admin_issue
     enable :admin_label
-    enable :admin_list
+    enable :admin_issue_board_list
     enable :admin_issue_link
     enable :read_commit_status
     enable :read_build
@@ -318,7 +319,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:developer_access) }.policy do
     enable :create_package
-    enable :admin_board
+    enable :admin_issue_board
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request
@@ -368,7 +369,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:maintainer_access) }.policy do
     enable :destroy_package
-    enable :admin_board
+    enable :admin_issue_board
     enable :push_to_delete_protected_branch
     enable :update_snippet
     enable :admin_snippet
@@ -428,8 +429,8 @@ class ProjectPolicy < BasePolicy
 
   rule { issues_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
-    prevent(*create_read_update_admin_destroy(:board))
-    prevent(*create_read_update_admin_destroy(:list))
+    prevent(*create_read_update_admin_destroy(:issue_board))
+    prevent(*create_read_update_admin_destroy(:issue_board_list))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
@@ -506,8 +507,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:public_access) }.policy do
     enable :read_package
     enable :read_project
-    enable :read_board
-    enable :read_list
+    enable :read_issue_board
+    enable :read_issue_board_list
     enable :read_wiki
     enable :read_label
     enable :read_milestone
@@ -638,6 +639,10 @@ class ProjectPolicy < BasePolicy
 
   rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do
     enable :set_pipeline_variables
+  end
+
+  rule { ~security_and_compliance_disabled & can?(:developer_access) }.policy do
+    enable :access_security_and_compliance
   end
 
   private

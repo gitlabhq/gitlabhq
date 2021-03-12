@@ -1,0 +1,5 @@
+---
+title: Improve performance of builds queuing by introducing a limit on the queue depth
+merge_request: 54579
+author:
+type: performance

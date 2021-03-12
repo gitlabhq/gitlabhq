@@ -1,11 +1,11 @@
 <script>
+import { GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { isFunction } from 'lodash';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
-import tooltip from '../directives/tooltip';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip,
   },
   props: {
     title: {
@@ -59,9 +59,8 @@ export default {
 <template>
   <span
     v-if="showTooltip"
-    v-tooltip
+    v-gl-tooltip="{ placement }"
     :title="title"
-    :data-placement="placement"
     class="js-show-tooltip gl-min-w-0"
   >
     <slot></slot>

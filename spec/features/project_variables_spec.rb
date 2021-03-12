@@ -24,7 +24,6 @@ RSpec.describe 'Project variables', :js do
       find('[data-qa-selector="ci_variable_key_field"] input').set('akey')
       find('#ci-variable-value').set('akey_value')
       find('[data-testid="environment-scope"]').click
-      find_button('clear').click
       find('[data-testid="ci-environment-search"]').set('review/*')
       find('[data-testid="create-wildcard-button"]').click
 
@@ -33,7 +32,7 @@ RSpec.describe 'Project variables', :js do
 
     wait_for_requests
 
-    page.within('.ci-variable-table') do
+    page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
     end
   end

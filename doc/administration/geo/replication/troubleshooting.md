@@ -428,7 +428,7 @@ To solve this:
 
 1. Log into the secondary Geo node.
 
-1. Back up [the `.git` folder](../../repository_storage_types.md#translating-hashed-storage-paths).
+1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
 
 1. Optional: [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem))
    a few of those IDs whether they indeed correspond

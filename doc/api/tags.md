@@ -160,11 +160,10 @@ Example response:
 }
 ```
 
-The message will be `null` when creating a lightweight tag otherwise
-it will contain the annotation.
+The message is `null` when creating a lightweight tag. Otherwise, it contains the annotation.
 
-The target will contain the tag objects ID when creating annotated tags,
-otherwise it will contain the commit ID when creating lightweight tags.
+The target contains the tag objects ID when creating annotated tags,
+otherwise it contains the commit ID when creating lightweight tags.
 
 In case of an error,
 status code `405` with an explaining error message is returned.

@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { registryUrl as nugetPath } from 'jest/packages/details/mock_data';
 import { nugetPackage as packageEntity } from 'jest/packages/mock_data';
+import InstallationTitle from '~/packages/details/components/installation_title.vue';
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
 import { TrackingActions } from '~/packages/details/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
@@ -27,6 +28,7 @@ describe('NugetInstallation', () => {
   });
 
   const findCodeInstructions = () => wrapper.findAll(CodeInstructions);
+  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
 
   function createComponent() {
     wrapper = shallowMount(NugetInstallation, {
@@ -40,11 +42,21 @@ describe('NugetInstallation', () => {
   });
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    wrapper.destroy();
   });
 
   it('renders all the messages', () => {
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  describe('install command switch', () => {
+    it('has the installation title component', () => {
+      expect(findInstallationTitle().exists()).toBe(true);
+      expect(findInstallationTitle().props()).toMatchObject({
+        packageType: 'nuget',
+        options: [{ value: 'nuget', label: 'Show Nuget commands' }],
+      });
+    });
   });
 
   describe('installation commands', () => {

@@ -7,9 +7,9 @@ if (process.env.RAILS_ENV !== 'production') {
   process.exit(0);
 }
 
-const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
+const path = require('path');
 const pjs = require('postcss');
 
 const paths = glob.sync('public/assets/page_bundles/_mixins_and_variables_and_functions*.css', {

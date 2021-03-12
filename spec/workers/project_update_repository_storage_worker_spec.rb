@@ -10,6 +10,6 @@ RSpec.describe ProjectUpdateRepositoryStorageWorker do
     let_it_be(:repository_storage_move) { create(:project_repository_storage_move) }
 
     let(:service_klass) { Projects::UpdateRepositoryStorageService }
-    let(:repository_storage_move_klass) { ProjectRepositoryStorageMove }
+    let(:repository_storage_move_klass) { Projects::RepositoryStorageMove }
   end
 end

@@ -10,8 +10,9 @@ module Resolvers
       return unless branch
 
       commit = branch.dereferenced_target
+      project = Project.find_by_full_path(commit.repository.gl_project_path)
 
-      ::Commit.new(commit, context[:branch_project]) if commit
+      ::Commit.new(commit, project) if commit
     end
   end
 end

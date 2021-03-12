@@ -1,32 +1,39 @@
 <script>
-import { GlBadge, GlSprintf } from '@gitlab/ui';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import { sprintf, n__ } from '~/locale';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
+import { STATUS_NEUTRAL } from '../constants';
 
 export default {
   name: 'TestIssueBody',
   components: {
     GlBadge,
-    GlSprintf,
+    GlButton,
+    IssueStatusIcon,
   },
   props: {
     issue: {
       type: Object,
       required: true,
     },
-    // failed || success
-    status: {
-      type: String,
-      required: true,
-    },
-    isNew: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
+    recentFailureMessage() {
+      return sprintf(
+        n__(
+          'Reports|Failed %{count} time in %{base_branch} in the last 14 days',
+          'Reports|Failed %{count} times in %{base_branch} in the last 14 days',
+          this.issue.recent_failures.count,
+        ),
+        this.issue.recent_failures,
+      );
+    },
     showRecentFailures() {
       return this.issue.recent_failures?.count && this.issue.recent_failures?.base_branch;
+    },
+    status() {
+      return this.issue.status || STATUS_NEUTRAL;
     },
   },
   methods: {
@@ -35,30 +42,23 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue-description gl-mt-2 gl-mb-2">
-    <div class="report-block-list-issue-description-text" data-testid="test-issue-body-description">
-      <button
-        type="button"
-        class="btn-link btn-blank text-left break-link vulnerability-name-button"
-        @click="openModal({ issue })"
-      >
-        <gl-badge v-if="isNew" variant="danger" class="gl-mr-2">{{ s__('New') }}</gl-badge>
-        <gl-badge v-if="showRecentFailures" variant="warning" class="gl-mr-2">
-          <gl-sprintf
-            :message="
-              n__(
-                'Reports|Failed %{count} time in %{base_branch} in the last 14 days',
-                'Reports|Failed %{count} times in %{base_branch} in the last 14 days',
-                issue.recent_failures.count,
-              )
-            "
-          >
-            <template #count>{{ issue.recent_failures.count }}</template>
-            <template #base_branch>{{ issue.recent_failures.base_branch }}</template>
-          </gl-sprintf>
-        </gl-badge>
-        {{ issue.name }}
-      </button>
-    </div>
+  <div class="gl-display-flex gl-mt-2 gl-mb-2">
+    <issue-status-icon :status="status" :status-icon-size="24" class="gl-mr-3" />
+    <gl-badge
+      v-if="showRecentFailures"
+      variant="warning"
+      class="gl-mr-2"
+      data-testid="test-issue-body-recent-failures"
+    >
+      {{ recentFailureMessage }}
+    </gl-badge>
+    <gl-button
+      button-text-classes="gl-white-space-normal! gl-word-break-all gl-text-left"
+      variant="link"
+      data-testid="test-issue-body-description"
+      @click="openModal({ issue })"
+    >
+      {{ issue.name }}
+    </gl-button>
   </div>
 </template>

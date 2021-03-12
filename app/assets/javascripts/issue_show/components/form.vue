@@ -26,9 +26,9 @@ export default {
       required: true,
     },
     issuableTemplates: {
-      type: Array,
+      type: [Object, Array],
       required: false,
-      default: () => [],
+      default: () => {},
     },
     issuableType: {
       type: String,
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     hasIssuableTemplates() {
-      return this.issuableTemplates.length;
+      return Object.values(Object(this.issuableTemplates)).length;
     },
     showLockedWarning() {
       return this.formState.lockedWarningVisible && !this.formState.updateLoading;

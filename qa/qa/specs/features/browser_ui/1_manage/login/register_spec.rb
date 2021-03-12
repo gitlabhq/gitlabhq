@@ -23,6 +23,7 @@ module QA
 
         @personal_access_token = Runtime::Env.personal_access_token
         Runtime::Env.personal_access_token = nil
+
         ldap_username = Runtime::Env.ldap_username
         Runtime::Env.ldap_username = nil
 

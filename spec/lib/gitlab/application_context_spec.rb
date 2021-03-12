@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ApplicationContext do
   describe '.push' do
     it 'passes the expected context on to labkit' do
       fake_proc = duck_type(:call)
-      expected_context = { user: fake_proc }
+      expected_context = { user: fake_proc, client_id: fake_proc }
 
       expect(Labkit::Context).to receive(:push).with(expected_context)
 
@@ -91,6 +91,34 @@ RSpec.describe Gitlab::ApplicationContext do
 
       expect(result(context))
         .to include(project: project.full_path, root_namespace: project.full_path_components.first)
+    end
+
+    describe 'setting the client' do
+      let_it_be(:remote_ip) { '127.0.0.1' }
+      let_it_be(:runner) { create(:ci_runner) }
+      let_it_be(:options) { { remote_ip: remote_ip, runner: runner, user: user } }
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:provided_options, :client) do
+        [:remote_ip]                 | :remote_ip
+        [:remote_ip, :runner]        | :runner
+        [:remote_ip, :runner, :user] | :user
+      end
+
+      with_them do
+        it 'sets the client_id to the expected value' do
+          context = described_class.new(**options.slice(*provided_options))
+
+          client_id = case client
+                      when :remote_ip then "ip/#{remote_ip}"
+                      when :runner then "runner/#{runner.id}"
+                      when :user then "user/#{user.id}"
+                      end
+
+          expect(result(context)[:client_id]).to eq(client_id)
+        end
+      end
     end
   end
 

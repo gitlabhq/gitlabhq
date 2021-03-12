@@ -89,6 +89,8 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
           before do
             page.within '.mr-widget-body' do
               page.click_link 'Resolve all threads in new issue', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+
+              wait_for_all_requests
             end
           end
 

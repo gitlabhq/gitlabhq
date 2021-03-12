@@ -1,0 +1,5 @@
+---
+title: Handle GlobalIDs with invalid resource names
+merge_request: 54290
+author:
+type: fixed

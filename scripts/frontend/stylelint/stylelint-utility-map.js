@@ -1,10 +1,11 @@
-const sass = require('node-sass');
-const postcss = require('postcss');
 const fs = require('fs');
+const sass = require('node-sass');
 const path = require('path');
+const postcss = require('postcss');
 const prettier = require('prettier');
 
 const utils = require('./stylelint-utils');
+
 const ROOT_PATH = path.resolve(__dirname, '../../..');
 const hashMapPath = path.resolve(__dirname, './utility-classes-map.js');
 
@@ -22,19 +23,28 @@ sass.render(
     includePaths: [path.resolve(ROOT_PATH, 'node_modules/bootstrap/scss')],
   },
   (err, result) => {
-    if (err) console.error('Error ', err);
+    if (err) {
+      return console.error('Error ', err);
+    }
 
     const cssResult = result.css.toString();
 
     // We just use postcss to create a CSS tree
-    postcss([])
+    return postcss([])
       .process(cssResult, {
         // This suppresses a postcss warning
         from: undefined,
       })
-      .then((result) => {
+      .then((processedResult) => {
         const selectorGroups = {};
-        utils.createPropertiesHashmap(result.root, result, null, null, selectorGroups, true);
+        utils.createPropertiesHashmap(
+          processedResult.root,
+          processedResult,
+          null,
+          null,
+          selectorGroups,
+          true,
+        );
 
         const prettierOptions = prettier.resolveConfig.sync(hashMapPath);
         const prettyHashmap = prettier.format(
@@ -42,12 +52,12 @@ sass.render(
           prettierOptions,
         );
 
-        fs.writeFile(hashMapPath, prettyHashmap, function (err) {
-          if (err) {
-            return console.log(err);
+        fs.writeFile(hashMapPath, prettyHashmap, (e) => {
+          if (e) {
+            return console.log(e);
           }
 
-          console.log('The file was saved!');
+          return console.log('The file was saved!');
         });
       });
   },

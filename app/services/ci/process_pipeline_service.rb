@@ -30,6 +30,8 @@ module Ci
     # this updates only when there are data that needs to be updated, there are two groups with no retried flag
     # rubocop: disable CodeReuse/ActiveRecord
     def update_retried
+      return if Feature.enabled?(:ci_remove_update_retried_from_process_pipeline, pipeline.project, default_enabled: :yaml)
+
       # find the latest builds for each name
       latest_statuses = pipeline.latest_statuses
         .group(:name)

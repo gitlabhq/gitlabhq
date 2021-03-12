@@ -31,39 +31,5 @@ module Gitlab
         other.is_a?(RelativePositioning::Range) && lhs == other.lhs && rhs == other.rhs
       end
     end
-
-    class ClosedRange < RelativePositioning::Range
-      def initialize(lhs, rhs)
-        @lhs, @rhs = lhs, rhs
-        raise IllegalRange, 'Either lhs or rhs is missing' unless lhs && rhs
-        raise IllegalRange, 'lhs and rhs cannot be the same object' if lhs == rhs
-      end
-    end
-
-    class StartingFrom < RelativePositioning::Range
-      include Gitlab::Utils::StrongMemoize
-
-      def initialize(lhs)
-        @lhs = lhs
-        raise IllegalRange, 'lhs is required' unless lhs
-      end
-
-      def rhs
-        strong_memoize(:rhs) { lhs.rhs_neighbour }
-      end
-    end
-
-    class EndingAt < RelativePositioning::Range
-      include Gitlab::Utils::StrongMemoize
-
-      def initialize(rhs)
-        @rhs = rhs
-        raise IllegalRange, 'rhs is required' unless rhs
-      end
-
-      def lhs
-        strong_memoize(:lhs) { rhs.lhs_neighbour }
-      end
-    end
   end
 end

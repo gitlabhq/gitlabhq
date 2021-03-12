@@ -12,8 +12,8 @@ import BoardNewIssue from './board_new_issue.vue';
 export default {
   name: 'BoardList',
   i18n: {
-    loadingIssues: __('Loading issues'),
-    loadingMoreissues: __('Loading more issues'),
+    loading: __('Loading'),
+    loadingMoreboardItems: __('Loading more'),
     showingAllIssues: __('Showing all issues'),
   },
   components: {
@@ -30,7 +30,7 @@ export default {
       type: Object,
       required: true,
     },
-    issues: {
+    boardItems: {
       type: Array,
       required: true,
     },
@@ -51,11 +51,11 @@ export default {
     ...mapState(['pageInfoByListId', 'listsFlags']),
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} issues'), {
-        pageSize: this.issues.length,
+        pageSize: this.boardItems.length,
         total: this.list.issuesCount,
       });
     },
-    issuesSizeExceedsMax() {
+    boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.list.issuesCount > this.list.maxIssueCount;
     },
     hasNextPage() {
@@ -72,7 +72,7 @@ export default {
       return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
     },
     showingAllIssues() {
-      return this.issues.length === this.list.issuesCount;
+      return this.boardItems.length === this.list.issuesCount;
     },
     treeRootWrapper() {
       return this.canAdminList ? Draggable : 'ul';
@@ -85,14 +85,14 @@ export default {
         tag: 'ul',
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
-        value: this.issues,
+        value: this.boardItems,
       };
 
       return this.canAdminList ? options : {};
     },
   },
   watch: {
-    issues() {
+    boardItems() {
       this.$nextTick(() => {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
@@ -112,7 +112,7 @@ export default {
     this.listRef.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    ...mapActions(['fetchIssuesForList', 'moveIssue']),
+    ...mapActions(['fetchItemsForList', 'moveItem']),
     listHeight() {
       return this.listRef.getBoundingClientRect().height;
     },
@@ -126,7 +126,7 @@ export default {
       this.listRef.scrollTop = 0;
     },
     loadNextPage() {
-      this.fetchIssuesForList({ listId: this.list.id, fetchNext: true });
+      this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
     },
     toggleForm() {
       this.showIssueForm = !this.showIssueForm;
@@ -148,40 +148,40 @@ export default {
     handleDragOnEnd(params) {
       sortableEnd();
       const { newIndex, oldIndex, from, to, item } = params;
-      const { issueId, issueIid, issuePath } = item.dataset;
+      const { itemId, itemIid, itemPath } = item.dataset;
       const { children } = to;
       let moveBeforeId;
       let moveAfterId;
 
-      const getIssueId = (el) => Number(el.dataset.issueId);
+      const getItemId = (el) => Number(el.dataset.itemId);
 
-      // If issue is being moved within the same list
+      // If item is being moved within the same list
       if (from === to) {
         if (newIndex > oldIndex && children.length > 1) {
-          // If issue is being moved down we look for the issue that ends up before
-          moveBeforeId = getIssueId(children[newIndex]);
+          // If item is being moved down we look for the item that ends up before
+          moveBeforeId = getItemId(children[newIndex]);
         } else if (newIndex < oldIndex && children.length > 1) {
-          // If issue is being moved up we look for the issue that ends up after
-          moveAfterId = getIssueId(children[newIndex]);
+          // If item is being moved up we look for the item that ends up after
+          moveAfterId = getItemId(children[newIndex]);
         } else {
-          // If issue remains in the same list at the same position we do nothing
+          // If item remains in the same list at the same position we do nothing
           return;
         }
       } else {
-        // We look for the issue that ends up before the moved issue if it exists
+        // We look for the item that ends up before the moved item if it exists
         if (children[newIndex - 1]) {
-          moveBeforeId = getIssueId(children[newIndex - 1]);
+          moveBeforeId = getItemId(children[newIndex - 1]);
         }
-        // We look for the issue that ends up after the moved issue if it exists
+        // We look for the item that ends up after the moved item if it exists
         if (children[newIndex]) {
-          moveAfterId = getIssueId(children[newIndex]);
+          moveAfterId = getItemId(children[newIndex]);
         }
       }
 
-      this.moveIssue({
-        issueId,
-        issueIid,
-        issuePath,
+      this.moveItem({
+        itemId,
+        itemIid,
+        itemPath,
         fromListId: from.dataset.listId,
         toListId: to.dataset.listId,
         moveBeforeId,
@@ -201,7 +201,7 @@ export default {
     <div
       v-if="loading"
       class="gl-mt-4 gl-text-center"
-      :aria-label="$options.i18n.loadingIssues"
+      :aria-label="$options.i18n.loading"
       data-testid="board_list_loading"
     >
       <gl-loading-icon />
@@ -214,23 +214,27 @@ export default {
       v-bind="treeRootOptions"
       :data-board="list.id"
       :data-board-type="list.listType"
-      :class="{ 'bg-danger-100': issuesSizeExceedsMax }"
+      :class="{ 'bg-danger-100': boardItemsSizeExceedsMax }"
       class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
     >
       <board-card
-        v-for="(issue, index) in issues"
+        v-for="(item, index) in boardItems"
         ref="issue"
-        :key="issue.id"
+        :key="item.id"
         :index="index"
         :list="list"
-        :issue="issue"
+        :item="item"
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
-        <gl-loading-icon v-if="loadingMore" :label="$options.i18n.loadingMoreissues" />
+        <gl-loading-icon
+          v-if="loadingMore"
+          :label="$options.i18n.loadingMoreboardItems"
+          data-testid="count-loading-icon"
+        />
         <span v-if="showingAllIssues">{{ $options.i18n.showingAllIssues }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>

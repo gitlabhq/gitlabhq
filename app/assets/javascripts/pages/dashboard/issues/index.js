@@ -4,13 +4,11 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import projectSelect from '~/project_select';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initFilteredSearch({
-    page: FILTERED_SEARCH.ISSUES,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-    useDefaultState: true,
-  });
-
-  projectSelect();
-  initManualOrdering();
+initFilteredSearch({
+  page: FILTERED_SEARCH.ISSUES,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+  useDefaultState: true,
 });
+
+projectSelect();
+initManualOrdering();

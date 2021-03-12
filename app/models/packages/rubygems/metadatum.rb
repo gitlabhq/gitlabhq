@@ -3,7 +3,6 @@
 module Packages
   module Rubygems
     class Metadatum < ApplicationRecord
-      self.table_name = 'packages_rubygems_metadata'
       self.primary_key = :package_id
 
       belongs_to :package, -> { where(package_type: :rubygems) }, inverse_of: :rubygems_metadatum

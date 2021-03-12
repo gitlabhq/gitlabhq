@@ -33,6 +33,22 @@ RSpec.describe VisibilityLevelHelper do
     end
   end
 
+  describe 'visibility_level_label' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:level_value, :level_name) do
+      Gitlab::VisibilityLevel::PRIVATE | 'Private'
+      Gitlab::VisibilityLevel::INTERNAL | 'Internal'
+      Gitlab::VisibilityLevel::PUBLIC | 'Public'
+    end
+
+    with_them do
+      it 'returns the name of the visibility level' do
+        expect(visibility_level_label(level_value)).to eq(level_name)
+      end
+    end
+  end
+
   describe 'visibility_level_description' do
     context 'used with a Project' do
       let(:descriptions) do

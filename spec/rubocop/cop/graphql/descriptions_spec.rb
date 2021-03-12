@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do
@@ -85,6 +84,50 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               GraphQL::STRING_TYPE,
               null: false,
               description: 'Behold! A description.'
+          end
+        end
+      TYPE
+    end
+  end
+
+  context 'enum values' do
+    it 'adds an offense when there is no description' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Please add a `description` property.
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description does not end in a period' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'bar'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when description is correct (defined using `description:`)' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'bar.'
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when description is correct (defined as a second argument)' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', 'bar.', value: 'foo'
           end
         end
       TYPE

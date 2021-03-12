@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.release.deployments
+description: Unique users triggering deployments
+product_section: ops
+product_stage:
+product_group: group::release
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

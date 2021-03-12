@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage_monthly.package.projects_with_packages
+description: Incident confidential status changed event
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

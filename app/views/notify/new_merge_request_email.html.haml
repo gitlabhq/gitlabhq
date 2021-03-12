@@ -1,5 +1,8 @@
 %p.details
-  #{link_to @merge_request.author_name, user_url(@merge_request.author)} created a merge request:
+  = html_escape(_('%{userLinkStart}%{user}%{linkEnd} created a %{mrLinkStart}merge request%{linkEnd}:')) % {userLinkStart: "<a href=\"#{user_url(@merge_request.author)}\">".html_safe,
+                                                                                                            user: @merge_request.author_name,
+                                                                                                            mrLinkStart: "<a href=\"#{@target_url}\">".html_safe,
+                                                                                                            linkEnd: '</a>'.html_safe}
 
 %p
   .branch
@@ -8,6 +11,8 @@
     Author: #{@merge_request.author_name}
   .assignee
     = assignees_label(@merge_request)
+  .reviewer
+    = reviewers_label(@merge_request)
   .approvers
     = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 

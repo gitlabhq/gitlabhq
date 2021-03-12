@@ -92,6 +92,7 @@
 
             .notification-dot {
               will-change: border-color, background-color;
+              // stylelint-disable-next-line
               border-color: $nav-svg-color + 33;
             }
 
@@ -202,6 +203,10 @@
         font-weight: $gl-font-weight-bold;
       }
     }
+  }
+
+  .emoji-picker-category-active {
+    border-bottom-color: $active-tab-border;
   }
 
   .branch-header-title {

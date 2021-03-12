@@ -1,19 +1,15 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import httpStatusCodes from '~/lib/utils/http_status';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
-import {
-  COMMIT_FAILURE,
-  COMMIT_SUCCESS,
-  DEFAULT_FAILURE,
-  LOAD_FAILURE_NO_FILE,
-  LOAD_FAILURE_UNKNOWN,
-} from './constants';
+import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
+import { COMMIT_FAILURE, COMMIT_SUCCESS, DEFAULT_FAILURE, LOAD_FAILURE_UNKNOWN } from './constants';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
+import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
 export default {
@@ -21,14 +17,12 @@ export default {
     ConfirmUnsavedChangesDialog,
     GlAlert,
     GlLoadingIcon,
+    PipelineEditorEmptyState,
     PipelineEditorHome,
   },
   inject: {
     ciConfigPath: {
       default: '',
-    },
-    defaultBranch: {
-      default: null,
     },
     projectFullPath: {
       default: '',
@@ -40,6 +34,8 @@ export default {
       // Success and failure state
       failureType: null,
       failureReasons: [],
+      showStartScreen: false,
+      isNewConfigFile: false,
       initialCiFileContent: '',
       lastCommittedContent: '',
       currentCiFileContent: '',
@@ -51,11 +47,16 @@ export default {
   apollo: {
     initialCiFileContent: {
       query: getBlobContent,
+      // If we are working off a new file, we don't want to fetch
+      // the base data as there is nothing to fetch.
+      skip({ isNewConfigFile }) {
+        return isNewConfigFile;
+      },
       variables() {
         return {
           projectPath: this.projectFullPath,
           path: this.ciConfigPath,
-          ref: this.defaultBranch,
+          ref: this.currentBranch,
         };
       },
       update(data) {
@@ -94,6 +95,9 @@ export default {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
     },
+    currentBranch: {
+      query: getCurrentBranch,
+    },
   },
   computed: {
     hasUnsavedChanges() {
@@ -102,21 +106,11 @@ export default {
     isBlobContentLoading() {
       return this.$apollo.queries.initialCiFileContent.loading;
     },
-    isBlobContentError() {
-      return this.failureType === LOAD_FAILURE_NO_FILE;
-    },
     isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
     },
     failure() {
       switch (this.failureType) {
-        case LOAD_FAILURE_NO_FILE:
-          return {
-            text: sprintf(this.$options.errorTexts[LOAD_FAILURE_NO_FILE], {
-              filePath: this.ciConfigPath,
-            }),
-            variant: 'danger',
-          };
         case LOAD_FAILURE_UNKNOWN:
           return {
             text: this.$options.errorTexts[LOAD_FAILURE_UNKNOWN],
@@ -154,9 +148,6 @@ export default {
   errorTexts: {
     [COMMIT_FAILURE]: s__('Pipelines|The GitLab CI configuration could not be updated.'),
     [DEFAULT_FAILURE]: __('Something went wrong on our end.'),
-    [LOAD_FAILURE_NO_FILE]: s__(
-      'Pipelines|There is no %{filePath} file in this repository, please add one and visit the Pipeline Editor again.',
-    ),
     [LOAD_FAILURE_UNKNOWN]: s__('Pipelines|The CI configuration was not loaded, please try again.'),
   },
   successTexts: {
@@ -173,7 +164,7 @@ export default {
         response?.status === httpStatusCodes.NOT_FOUND ||
         response?.status === httpStatusCodes.BAD_REQUEST
       ) {
-        this.reportFailure(LOAD_FAILURE_NO_FILE);
+        this.showStartScreen = true;
       } else {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       }
@@ -186,16 +177,22 @@ export default {
       this.showSuccessAlert = false;
     },
     reportFailure(type, reasons = []) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showFailureAlert = true;
       this.failureType = type;
       this.failureReasons = reasons;
     },
     reportSuccess(type) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showSuccessAlert = true;
       this.successType = type;
     },
     resetContent() {
       this.currentCiFileContent = this.lastCommittedContent;
+    },
+    setNewEmptyCiConfigFile() {
+      this.showStartScreen = false;
+      this.isNewConfigFile = true;
     },
     showErrorAlert({ type, reasons = [] }) {
       this.reportFailure(type, reasons);
@@ -214,18 +211,22 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4">
-    <gl-alert v-if="showSuccessAlert" :variant="success.variant" @dismiss="dismissSuccess">
-      {{ success.text }}
-    </gl-alert>
-    <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="dismissFailure">
-      {{ failure.text }}
-      <ul v-if="failureReasons.length" class="gl-mb-0">
-        <li v-for="reason in failureReasons" :key="reason">{{ reason }}</li>
-      </ul>
-    </gl-alert>
+  <div class="gl-mt-4 gl-relative">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
-    <div v-else-if="!isBlobContentError" class="gl-mt-4">
+    <pipeline-editor-empty-state
+      v-else-if="showStartScreen"
+      @createEmptyConfigFile="setNewEmptyCiConfigFile"
+    />
+    <div v-else>
+      <gl-alert v-if="showSuccessAlert" :variant="success.variant" @dismiss="dismissSuccess">
+        {{ success.text }}
+      </gl-alert>
+      <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="dismissFailure">
+        {{ failure.text }}
+        <ul v-if="failureReasons.length" class="gl-mb-0">
+          <li v-for="reason in failureReasons" :key="reason">{{ reason }}</li>
+        </ul>
+      </gl-alert>
       <pipeline-editor-home
         :is-ci-config-data-loading="isCiConfigDataLoading"
         :ci-config-data="ciConfigData"
@@ -235,7 +236,7 @@ export default {
         @showError="showErrorAlert"
         @updateCiConfig="updateCiConfig"
       />
+      <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>
-    <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
   </div>
 </template>

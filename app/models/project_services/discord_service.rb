@@ -59,6 +59,9 @@ class DiscordService < ChatNotificationService
         embed.description = (message.pretext + "\n" + Array.wrap(message.attachments).join("\n")).gsub(ATTACHMENT_REGEX, " \\k<entry> - \\k<name>\n")
       end
     end
+  rescue RestClient::Exception => error
+    log_error(error.message)
+    false
   end
 
   def custom_data(data)

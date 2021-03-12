@@ -1,0 +1,17 @@
+---
+key_path: usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents
+description: 'Count of unique projects with an incident from an alert created in the
+  last month'
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

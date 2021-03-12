@@ -12,7 +12,7 @@
           = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
         .mt-2<
           - if button_path
-            = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn gl-button btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link', data: { qa_selector: 'create_first_snippet_link' }
+            = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn gl-button btn-confirm', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link', data: { qa_selector: 'create_first_snippet_link' }
           = link_to s_('SnippetsEmptyState|Documentation'), help_page_path('user/snippets.md'), class: 'btn gl-button btn-default', title: s_('SnippetsEmptyState|Documentation')
       - else
         %h4.text-center= s_('SnippetsEmptyState|There are no snippets to show.')

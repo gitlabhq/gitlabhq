@@ -11,7 +11,23 @@ module Boards
       ordered_items
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def metadata
+      issuables = item_model.arel_table
+      keys = metadata_fields.keys
+      # TODO: eliminate need for SQL literal fragment
+      columns = Arel.sql(metadata_fields.values_at(*keys).join(', '))
+      results = item_model.where(id: items.select(issuables[:id])).pluck(columns)
+
+      Hash[keys.zip(results.flatten)]
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     private
+
+    def metadata_fields
+      { size: 'COUNT(*)' }
+    end
 
     def ordered_items
       raise NotImplementedError

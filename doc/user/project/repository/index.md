@@ -19,8 +19,8 @@ To create a new repository, all you need to do is
 
 Once you create a new project, you can add new files via UI
 (read the section below) or via command line.
-To add files from the command line, follow the instructions that will
-be presented on the screen when you create a new project, or read
+To add files from the command line, follow the instructions
+presented on the screen when you create a new project, or read
 through them in the [command line basics](../../../gitlab-basics/start-using-git.md)
 documentation.
 
@@ -31,8 +31,7 @@ that you [connect with GitLab via SSH](../../../ssh/README.md).
 ## Files
 
 Use a repository to store your files in GitLab. In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33806),
-you'll see on the repository's file tree an icon next to the filename
-according to its extension:
+an icon identifying the extension is shown next to the filename:
 
 ![Repository file icons](img/file_ext_icons_repo_v12_10.png)
 
@@ -76,7 +75,7 @@ markup languages](https://en.wikipedia.org/wiki/Lightweight_markup_language))
 that you can use for the content of your files in a repository. They are mostly
 used for documentation purposes.
 
-Just pick the right extension for your files and GitLab will render them
+Just pick the right extension for your files and GitLab renders them
 according to the markup language.
 
 | Markup language | Extensions |
@@ -93,7 +92,7 @@ according to the markup language.
 
 ### Repository README and index files
 
-When a `README` or `index` file is present in a repository, its contents will be
+When a `README` or `index` file is present in a repository, its contents are
 automatically pre-rendered by GitLab without opening it.
 
 They can either be plain text or have an extension of a
@@ -101,12 +100,12 @@ They can either be plain text or have an extension of a
 
 Some things to note about precedence:
 
-1. When both a `README` and an `index` file are present, the `README` will always
-   take precedence.
+1. When both a `README` and an `index` file are present, the `README` always
+   takes precedence.
 1. When more than one file is present with different extensions, they are
-   ordered alphabetically, with the exception of a file without an extension
-   which will always be last in precedence. For example, `README.adoc` will take
-   precedence over `README.md`, and `README.rst` will take precedence over
+   ordered alphabetically, with the exception of a file without an extension,
+   which is always last in precedence. For example, `README.adoc` takes
+   precedence over `README.md`, and `README.rst` takes precedence over
    `README`.
 
 ### Jupyter Notebook files
@@ -159,18 +158,18 @@ Via command line, you can commit multiple times before pushing.
 - **Commit message:**
   A commit message is important to identity what is being changed and,
   more importantly, why. In GitLab, you can add keywords to the commit
-  message that will perform one of the actions below:
+  message that performs one of the actions below:
   - **Trigger a GitLab CI/CD pipeline:**
   If you have your project configured with [GitLab CI/CD](../../../ci/README.md),
-  you will trigger a pipeline per push, not per commit.
+  you trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
-  You can add to you commit message the keyword
-  [`[ci skip]`](../../../ci/yaml/README.md#skip-pipeline)
-  and GitLab CI/CD will skip that pipeline.
+  You can add to your commit message the keyword
+  [`[ci skip]`](../../../ci/yaml/README.md#skip-pipeline),
+  and GitLab CI/CD skips that pipeline.
   - **Cross-link issues and merge requests:**
   [Cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
   is great to keep track of what's is somehow related in your workflow.
-  If you mention an issue or a merge request in a commit message, they will be shown
+  If you mention an issue or a merge request in a commit message, they are shown
   on their respective thread.
 - **Cherry-pick a commit:**
   In GitLab, you can
@@ -211,9 +210,9 @@ Find it under your project's **Repository > Graph**.
 
 ## Repository Languages
 
-For the default branch of each repository, GitLab will determine what programming languages
-were used and display this on the projects pages. If this information is missing, it will
-be added after updating the default branch on the project. This process can take up to 5
+For the default branch of each repository, GitLab determines what programming languages
+were used and displays this on the project's pages. If this information is missing, it's
+added after updating the default branch for the project. This process can take up to five
 minutes.
 
 ![Repository Languages bar](img/repository_languages_v12_2.gif)
@@ -253,8 +252,8 @@ into Xcode on macOS. To do that:
 1. Click **Clone**.
 1. Select **Xcode**.
 
-The project will be cloned onto your computer in a folder of your choice and you'll
-be prompted to open in XCode.
+The project is cloned onto your computer in a folder of your choice and you are
+prompted to open XCode.
 
 ### Clone and open in Visual Studio Code
 
@@ -264,10 +263,10 @@ All projects can be cloned into Visual Studio Code. To do that:
 
 1. From the GitLab UI, go to the project's overview page.
 1. Click **Clone**.
-1. Select **VS Code**
+1. Select **VS Code**.
+1. Select a folder to clone the project into.
 
-You'll be prompted to select a folder to clone the project into. When VS Code has
-successfully cloned your project, it will open the folder.
+When VS Code has successfully cloned your project, it opens the folder.
 
 ## Download Source Code
 
@@ -275,7 +274,7 @@ successfully cloned your project, it will open the folder.
 > - Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
 
 The source code stored in a repository can be downloaded from the UI.
-By clicking the download icon, a dropdown will open with links to download the following:
+By clicking the download icon, a dropdown opens with links to download the following:
 
 ![Download source code](img/download_source_code.png)
 
@@ -298,7 +297,7 @@ and Git push/pull redirects.
 Depending on the situation, different things apply.
 
 When [renaming a user](../../profile/index.md#changing-your-username),
-[changing a group path](../../group/index.md#changing-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
+[changing a group path](../../group/index.md#change-a-groups-path) or [renaming a repository](../settings/index.md#renaming-a-repository):
 
 - Existing web URLs for the namespace and anything under it (such as projects) will
   redirect to the new URLs.

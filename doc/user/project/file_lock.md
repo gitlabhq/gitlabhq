@@ -36,9 +36,9 @@ GitLab supports two different modes of file locking:
 Locks can be created by any person who has at least
 [Developer permissions](../permissions.md) to the repository.
 
-Only the user who locked the file or directory can edit locked files. Others
-users will be prevented from modifying locked files by pushing, merging,
-or any other means, and will be shown an error like: `The path '.gitignore' is
+Only the user who locked the file or directory can edit locked files. Other
+users are prevented from modifying locked files by pushing, merging,
+or any other means, and are shown an error like: `The path '.gitignore' is
 locked by Administrator`.
 
 ## Exclusive file locks **(FREE)**
@@ -60,7 +60,7 @@ Before getting started, make sure you have [Git LFS installed](../../topics/git/
 git-lfs --version
 ```
 
-If it doesn't recognize this command, you'll have to install it. There are
+If it doesn't recognize this command, you must install it. There are
 several [installation methods](https://git-lfs.github.com/) that you can
 choose according to your OS. To install it with Homebrew:
 
@@ -70,7 +70,7 @@ brew install git-lfs
 
 Once installed, **open your local repository in a terminal window** and
 install Git LFS in your repository. If you're sure that LFS is already installed,
-you can skip this step. If you're unsure, re-installing it won't do any harm:
+you can skip this step. If you're unsure, re-installing it does no harm:
 
 ```shell
 git lfs install
@@ -84,14 +84,14 @@ You need [Maintainer permissions](../permissions.md) to configure
 Exclusive File Locks for your project through the command line.
 
 The first thing to do before using File Locking is to tell Git LFS which
-kind of files are lockable. The following command will store PNG files
+kind of files are lockable. The following command stores PNG files
 in LFS and flag them as lockable:
 
 ```shell
 git lfs track "*.png" --lockable
 ```
 
-After executing the above command a file named `.gitattributes` will be
+After executing the above command a file named `.gitattributes` is
 created or updated with the following content:
 
 ```shell
@@ -110,9 +110,9 @@ implements the LFS File Locking API). To do that you can edit the
 The `.gitattributes` file is key to the process and **must**
 be pushed to the remote repository for the changes to take effect.
 
-After a file type has been registered as lockable, Git LFS will make
-them read-only on the file system automatically. This means you will
-need to **lock the file** before [editing it](#edit-lockable-files).
+After a file type has been registered as lockable, Git LFS makes
+them read-only on the file system automatically. This means you
+must **lock the file** before [editing it](#edit-lockable-files).
 
 ### Lock files
 
@@ -168,7 +168,7 @@ git lfs locks
 The output lists the locked files followed by the user who locked each of them
 and the files' IDs.
 
-On the repository file tree, GitLab will display an LFS badge for files
+On the repository file tree, GitLab displays an LFS badge for files
 tracked by Git LFS plus a padlock icon on exclusively-locked files:
 
 ![LFS-Locked files](img/lfs_locked_files_v13_2.png)
@@ -176,7 +176,7 @@ tracked by Git LFS plus a padlock icon on exclusively-locked files:
 You can also [view and remove existing locks](#view-and-remove-existing-locks) from the GitLab UI.
 
 NOTE:
-When you rename an exclusively-locked file, the lock is lost. You'll have to
+When you rename an exclusively-locked file, the lock is lost. You must
 lock it again to keep it locked.
 
 ### Edit lockable files
@@ -204,7 +204,7 @@ or higher tiers.
 Default branch file and directory locks only apply to the default branch set in
 the project's settings (usually `master`).
 
-Changes to locked files on the default branch will be blocked, including merge
+Changes to locked files on the default branch are blocked, including merge
 requests that modify locked files. Unlock the file to allow changes.
 
 ### Lock a file or a directory
@@ -216,10 +216,10 @@ To lock a file:
 
    ![Locking file](img/file_lock.png)
 
-An **Unlock** button will be displayed if the file is already locked, and
-will be disabled if you do not have permission to unlock the file.
+An **Unlock** button is displayed if the file is already locked, and
+is disabled if you do not have permission to unlock the file.
 
-If you did not lock the file, hovering your cursor over the button will show
+If you did not lock the file, hovering your cursor over the button shows
 who locked the file.
 
 ### View and remove existing locks

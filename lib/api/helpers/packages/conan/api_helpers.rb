@@ -221,7 +221,7 @@ module API
           def find_user_from_job_token
             return unless route_authentication_setting[:job_token_allowed]
 
-            job = find_job_from_token || raise(::Gitlab::Auth::UnauthorizedError)
+            job = find_job_from_token || return
             @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
             job.user

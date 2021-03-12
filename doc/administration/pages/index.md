@@ -178,12 +178,15 @@ outside world.
    pages_external_url 'https://example.io'
 
    pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. If you haven’t named your certificate and key `example.io.crt` and `example.io.key`
+then you'll need to also add the full paths as shown below:
+
+   ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
    ```
-
-   where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
-   respectively.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
@@ -214,56 +217,63 @@ and take effect after you [reconfigure GitLab](../restart_gitlab.md#omnibus-gitl
 Most of these settings don't need to be configured manually unless you need more granular
 control over how the Pages daemon runs and serves content in your environment.
 
-| Setting | Description |
-| ------- | ----------- |
-| `pages_external_url` | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. See [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support) for details.
-| `gitlab_pages[]` | |
-| `access_control` |  Whether to enable [access control](index.md#access-control).
-| `api_secret_key`  | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset.
-| `artifacts_server` |  Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.
-| `artifacts_server_timeout` |  Timeout (in seconds) for a proxied request to the artifacts server.
-| `artifacts_server_url` |  API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API.
-| `auth_redirect_uri` |  Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`.
-| `auth_secret` |  Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.
-| `dir` |  Working directory for configuration and secrets files.
-| `enable` |  Enable or disable GitLab Pages on the current system.
-| `external_http` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`.
-| `external_https` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`.
-| `gitlab_client_http_timeout`  | GitLab API HTTP client connection timeout in seconds (default: 10s).
-| `gitlab_client_jwt_expiry`  | JWT Token expiry time in seconds (default: 30s).
-| `domain_config_source` | Domain configuration source (default: `auto`)
-| `gitlab_id` |  The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab.
-| `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
-| `auth_scope` |  The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default.
-| `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
-| `headers` |  Specify any additional http headers that should be sent to the client with each response.
-| `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
-| `insecure_ciphers` |  Use default list of cipher suites, may contain insecure ones like 3DES and RC4.
-| `internal_gitlab_server` | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`.
-| `listen_proxy` |  The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`.
-| `log_directory` |  Absolute path to a log directory.
-| `log_format` |  The log output format: `text` or `json`.
-| `log_verbose` |  Verbose logging, true/false.
-| `max_connections` |  Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners.
-| `metrics_address` |  The address to listen on for metrics requests.
-| `redirect_http` |  Redirect pages from HTTP to HTTPS, true/false.
-| `sentry_dsn` |  The address for sending Sentry crash reporting to.
-| `sentry_enabled` |  Enable reporting and logging with Sentry, true/false.
-| `sentry_environment` |  The environment for Sentry crash reporting.
-| `status_uri` |  The URL path for a status page, for example, `/@status`.
-| `tls_max_version` |  Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
-| `tls_min_version` |  Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
-| `use_http2` |  Enable HTTP2 support.
-| `gitlab_pages['env'][]` | |
-| `http_proxy` |  Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon.
-| `gitlab_rails[]` | |
-| `pages_domain_verification_cron_worker` | Schedule for verifying custom GitLab Pages domains.
-| `pages_domain_ssl_renewal_cron_worker` | Schedule for obtaining and renewing SSL certificates through Let's Encrypt for GitLab Pages domains.
-| `pages_domain_removal_cron_worker` | Schedule for removing unverified custom GitLab Pages domains.
-| `pages_path` | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`.
-| `pages_nginx[]` | |
-| `enable` | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains).
-| `FF_ENABLE_REDIRECTS` | Feature flag to disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#disable-redirects) for more information. |
+| Setting                                 | Description |
+|-----------------------------------------|-------------|
+| `pages_external_url`                    | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. See [Wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [Custom domains with TLS support](#custom-domains-with-tls-support) for details. |
+| **`gitlab_pages[]`**                    |  |
+| `access_control`                        | Whether to enable [access control](index.md#access-control). |
+| `api_secret_key`                        | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset. |
+| `artifacts_server`                      | Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages. |
+| `artifacts_server_timeout`              | Timeout (in seconds) for a proxied request to the artifacts server. |
+| `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API. |
+| `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`. |
+| `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration. |
+| `dir`                                   | Working directory for configuration and secrets files. |
+| `enable`                                | Enable or disable GitLab Pages on the current system. |
+| `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
+| `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
+| `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10s). |
+| `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30s). |
+| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600s). |
+| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: 60s). |
+| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: 60s). |
+| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30s). |
+| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1s). |
+| `gitlab_retrieval_retries`              | The maximum number of times to retry to resolve a domain's configuration via the API (default: 3). |
+| `domain_config_source`                  | Domain configuration source (default: `auto`) |
+| `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
+| `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
+| `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
+| `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
+| `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
+| `inplace_chroot`                        | On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
+| `insecure_ciphers`                      | Use default list of cipher suites, may contain insecure ones like 3DES and RC4. |
+| `internal_gitlab_server`                | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`. |
+| `listen_proxy`                          | The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`. |
+| `log_directory`                         | Absolute path to a log directory. |
+| `log_format`                            | The log output format: `text` or `json`. |
+| `log_verbose`                           | Verbose logging, true/false. |
+| `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value will be propagated in the request chain. |
+| `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners. |
+| `metrics_address`                       | The address to listen on for metrics requests. |
+| `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
+| `sentry_dsn`                            | The address for sending Sentry crash reporting to. |
+| `sentry_enabled`                        | Enable reporting and logging with Sentry, true/false. |
+| `sentry_environment`                    | The environment for Sentry crash reporting. |
+| `status_uri`                            | The URL path for a status page, for example, `/@status`. |
+| `tls_max_version`                       | Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2"). |
+| `tls_min_version`                       | Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2"). |
+| `use_http2`                             | Enable HTTP2 support. |
+| **`gitlab_pages['env'][]`**             |  |
+| `http_proxy`                            | Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon. |
+| **`gitlab_rails[]`**                    |  |
+| `pages_domain_verification_cron_worker` | Schedule for verifying custom GitLab Pages domains. |
+| `pages_domain_ssl_renewal_cron_worker`  | Schedule for obtaining and renewing SSL certificates through Let's Encrypt for GitLab Pages domains. |
+| `pages_domain_removal_cron_worker`      | Schedule for removing unverified custom GitLab Pages domains. |
+| `pages_path`                            | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`. |
+| **`pages_nginx[]`**                     |  |
+| `enable`                                | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains). |
+| `FF_ENABLE_REDIRECTS`                   | Feature flag to disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#disable-redirects) for more information. |
 
 ---
 
@@ -347,7 +357,7 @@ When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
 If your user base is private or otherwise trusted, you can disable the
-verification requirement. Navigate to **Admin Area > Settings > Preferences** and
+verification requirement. Go to **Admin Area > Settings > Preferences** and
 uncheck **Require users to prove ownership of custom domains** in the **Pages** section.
 This setting is enabled by default.
 
@@ -362,7 +372,7 @@ sites served under a custom domain.
 To enable it, you must:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
+1. Go to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
 1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service as shown below.
 1. Click **Save changes**.
 
@@ -403,6 +413,8 @@ all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/423) in GitLab 13.10.
+
 By default, the Pages daemon uses the `api` scope to authenticate. You can configure this. For
 example, this reduces the scope to `read_api` in `/etc/gitlab/gitlab.rb`:
 
@@ -414,7 +426,7 @@ The scope to use for authentication must match the GitLab Pages OAuth applicatio
 pre-existing applications must modify the GitLab Pages OAuth application. Follow these steps to do
 this:
 
-1. Navigate to your instance's **Admin Area > Settings > Applications** and expand **GitLab Pages**
+1. Go to your instance's **Admin Area > Settings > Applications** and expand **GitLab Pages**
    settings.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
    `read_api`).
@@ -432,7 +444,7 @@ This can be useful to preserve information published with Pages websites to the 
 of your instance only.
 To do that:
 
-1. Navigate to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
+1. Go to your instance's **Admin Area > Settings > Preferences** and expand **Pages** settings.
 1. Check the **Disable public access to Pages sites** checkbox.
 1. Click **Save changes**.
 
@@ -521,6 +533,25 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
+## Propagating the correlation ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
+
+Setting the `propagate_correlation_id` to true will allow installations behind a reverse proxy generate
+and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
+the value will be propagated in the request chain.
+Users [can find the correlation ID in the logs](../troubleshooting/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
+
+To enable the propagation of the correlation ID:
+
+1. Set the parameter to true in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['propagate_correlation_id'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ## Change storage path
 
 Follow the steps below to change the default path where GitLab Pages' contents
@@ -599,13 +630,13 @@ The default is 100MB.
 
 To override the global maximum pages size for a specific project:
 
-1. Navigate to your project's **Settings > Pages** page.
+1. Go to your project's **Settings > Pages** page.
 1. Edit the **Maximum size of pages**.
 1. Click **Save changes**.
 
 To override the global maximum pages size for a specific group:
 
-1. Navigate to your group's **Settings > General** page and expand **Pages**.
+1. Go to your group's **Settings > General** page and expand **Pages**.
 1. Edit the **Maximum size of pages**.
 1. Click **Save changes**.
 
@@ -720,7 +751,7 @@ preferred source is `gitlab`, which uses [API-based configuration](#gitlab-api-b
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
-### Deprecated domain_config_source
+### Deprecated `domain_config_source`
 
 WARNING:
 The flag `gitlab_pages['domain_config_source']` is deprecated for use in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/217913),
@@ -766,6 +797,44 @@ gitlab_pages['domain_config_source'] = "disk"
 
 For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
 or report an issue.
+
+### GitLab API cache configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/520) in GitLab 13.10.
+
+API-based configuration uses a caching mechanism to improve performance and reliability of serving Pages.
+The cache behavior can be modified by changing the cache settings, however, the recommended values are set for you and should only be modified if needed.
+Incorrect configuration of these values may result in intermittent
+or persistent errors, or the Pages Daemon serving old content.
+
+NOTE:
+Expiry, interval and timeout flags use [Golang's duration formatting](https://golang.org/pkg/time/#ParseDuration).
+A duration string is a possibly signed sequence of decimal numbers,
+each with optional fraction and a unit suffix, such as "300ms", "1.5h" or "2h45m". 
+Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+Examples:
+
+- Increasing `gitlab_cache_expiry` will allow items to exist in the cache longer.
+This setting might be useful if the communication between GitLab Pages and GitLab Rails
+is not stable.
+
+- Increasing `gitlab_cache_refresh` will reduce the frequency at which GitLab Pages
+requests a domain's configuration from GitLab Rails. This setting might be useful
+GitLab Pages generates too many requests to GitLab API and content does not change frequently.
+
+- Decreasing `gitlab_cache_cleanup` will remove expired items from the cache more frequently,
+reducing the memory usage of your Pages node.
+
+- Decreasing `gitlab_retrieval_timeout` allows you to stop the request to GitLab Rails
+more quickly. Increasing it will allow more time to receive a response from the API,
+useful in slow networking environments.
+
+- Decreasing `gitlab_retrieval_interval` will make requests to the API more frequently,
+only when there is an error response from the API, for example a connection timeout.
+
+- Decreasing `gitlab_retrieval_retries` will reduce the number of times a domain's
+configuration is tried to be resolved automatically before reporting an error.
 
 ## Using object storage
 
@@ -837,7 +906,7 @@ In installations from source:
        remote_directory: "pages" # The bucket name
        connection:
          provider: AWS # Only AWS supported at the moment
-         aws_access_key_id: AWS_ACESS_KEY_ID
+         aws_access_key_id: AWS_ACCESS_KEY_ID
          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
          region: eu-central-1
    ```
@@ -944,14 +1013,15 @@ to define the explicit address that the GitLab Pages daemon should listen on:
 gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ```
 
-### 404 error after transferring project to a different group or user
+### 404 error after transferring the project to a different group or user, or changing project path
 
 If you encounter a `404 Not Found` error a Pages site after transferring a project to
-another group or user, you must trigger a domain configuration update for Pages. To do
-so, write something in the `.update` file. The Pages daemon monitors for changes to this
-file, and reloads the configuration when changes occur.
+another group or user, or changing project path, you must trigger a domain configuration
+update for Pages. To do so, write something in the `.update` file. The Pages daemon
+monitors for changes to this file, and reloads the configuration when changes occur.
 
-Use this example to fix a `404 Not Found` error after transferring a project with Pages:
+Use this example to fix a `404 Not Found` error after transferring a project or changing
+a project path with Pages:
 
 ```shell
 date > /var/opt/gitlab/gitlab-rails/shared/pages/.update

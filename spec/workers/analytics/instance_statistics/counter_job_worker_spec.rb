@@ -6,7 +6,7 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
   let_it_be(:user_1) { create(:user) }
   let_it_be(:user_2) { create(:user) }
 
-  let(:users_measurement_identifier) { ::Analytics::InstanceStatistics::Measurement.identifiers.fetch(:users) }
+  let(:users_measurement_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:users) }
   let(:recorded_at) { Time.zone.now }
   let(:job_args) { [users_measurement_identifier, user_1.id, user_2.id, recorded_at] }
 
@@ -18,7 +18,7 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
     it 'counts a scope and stores the result' do
       subject
 
-      measurement = Analytics::InstanceStatistics::Measurement.users.first
+      measurement = Analytics::UsageTrends::Measurement.users.first
       expect(measurement.recorded_at).to be_like_time(recorded_at)
       expect(measurement.identifier).to eq('users')
       expect(measurement.count).to eq(2)
@@ -26,14 +26,14 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
   end
 
   context 'when no records are in the database' do
-    let(:users_measurement_identifier) { ::Analytics::InstanceStatistics::Measurement.identifiers.fetch(:groups) }
+    let(:users_measurement_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:groups) }
 
     subject { described_class.new.perform(users_measurement_identifier, nil, nil, recorded_at) }
 
     it 'sets 0 as the count' do
       subject
 
-      measurement = Analytics::InstanceStatistics::Measurement.groups.first
+      measurement = Analytics::UsageTrends::Measurement.groups.first
       expect(measurement.recorded_at).to be_like_time(recorded_at)
       expect(measurement.identifier).to eq('groups')
       expect(measurement.count).to eq(0)
@@ -49,19 +49,19 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
   it 'does not insert anything when BatchCount returns error' do
     allow(Gitlab::Database::BatchCount).to receive(:batch_count).and_return(Gitlab::Database::BatchCounter::FALLBACK)
 
-    expect { subject }.not_to change { Analytics::InstanceStatistics::Measurement.count }
+    expect { subject }.not_to change { Analytics::UsageTrends::Measurement.count }
   end
 
   context 'when pipelines_succeeded identifier is passed' do
     let_it_be(:pipeline) { create(:ci_pipeline, :success) }
 
-    let(:successful_pipelines_measurement_identifier) { ::Analytics::InstanceStatistics::Measurement.identifiers.fetch(:pipelines_succeeded) }
+    let(:successful_pipelines_measurement_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:pipelines_succeeded) }
     let(:job_args) { [successful_pipelines_measurement_identifier, pipeline.id, pipeline.id, recorded_at] }
 
     it 'counts successful pipelines' do
       subject
 
-      measurement = Analytics::InstanceStatistics::Measurement.pipelines_succeeded.first
+      measurement = Analytics::UsageTrends::Measurement.pipelines_succeeded.first
       expect(measurement.recorded_at).to be_like_time(recorded_at)
       expect(measurement.identifier).to eq('pipelines_succeeded')
       expect(measurement.count).to eq(1)

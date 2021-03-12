@@ -5,7 +5,7 @@ FactoryBot.define do
     initialize_with { new(attributes[:project], attributes[:name], attributes[:path]) }
     skip_create
 
-    project { create :project, :repository }
+    project { association(:project, :repository) }
 
     path { '' }
     name { "#{Settings.build_gitlab_go_url}/#{project.full_path}#{path.empty? ? '' : '/'}#{path}" }

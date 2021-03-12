@@ -25,7 +25,11 @@
               &bull;
           - if total_count > recent_releases.count
             &bull;
-            = link_to n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }, project_releases_path(milestone.project)
+            - more_text = n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }
+            - if milestone.project_milestone?
+              = link_to more_text, project_releases_path(milestone.project)
+            - else
+              = more_text
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?

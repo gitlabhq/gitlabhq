@@ -14,6 +14,7 @@ swap:
   active user: '"billable user"'
   active users: '"billable users"'
   docs: '"documentation"'
+  GFM: '"GitLab Flavored Markdown"'
   once that: '"after that"'
   once the: '"after the"'
   once you: '"after you"'

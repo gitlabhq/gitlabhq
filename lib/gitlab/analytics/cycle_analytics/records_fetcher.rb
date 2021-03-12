@@ -29,6 +29,8 @@ module Gitlab
           @stage = stage
           @query = query
           @params = params
+          @sort = params[:sort] || :end_event
+          @direction = params[:direction] || :desc
         end
 
         def serialized_records
@@ -52,7 +54,7 @@ module Gitlab
 
         private
 
-        attr_reader :stage, :query, :params
+        attr_reader :stage, :query, :params, :sort, :direction
 
         def columns
           MAPPINGS.fetch(subject_class).fetch(:columns_for_select).map do |column_name|
@@ -90,7 +92,7 @@ module Gitlab
         end
 
         def ordered_and_limited_query
-          order_by_end_event(query, columns).limit(MAX_RECORDS)
+          order_by(query, sort, direction, columns).limit(MAX_RECORDS)
         end
 
         def records

@@ -30,7 +30,7 @@ $(() => {
   }
 
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {
-    e.currentTarget.classList.toggle(e.currentTarget.dataset.toggleOpenClass || 'open');
+    e.currentTarget.classList.toggle(e.currentTarget.dataset.toggleOpenClass || 'selected');
     toggleContainer($(this).closest('.js-toggle-container'));
 
     const targetTag = e.currentTarget.tagName.toLowerCase();

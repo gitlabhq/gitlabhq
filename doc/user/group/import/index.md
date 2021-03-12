@@ -20,11 +20,23 @@ Using GitLab Group Migration, you can migrate existing top-level groups from Git
 
 The following resources are migrated to the target instance:
 
-- Groups
+- Groups ([Introduced in 13.7](https://gitlab.com/groups/gitlab-org/-/epics/4374))
   - description
   - attributes
   - subgroups
-- Epics
+- Group Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
+  - title
+  - description
+  - color
+  - created_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
+  - updated_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
+- Members ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415))
+  Group members are associated with the imported group if:
+  - The user already exists in the target GitLab instance and
+  - The user has a public email in the source GitLab instance that matches a
+    confirmed email in the target GitLab instance
+    confirmed email in the target GitLab instance
+- Epics ([Introduced in 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281))
   - title
   - description
   - state (open / closed)
@@ -32,6 +44,28 @@ The following resources are migrated to the target instance:
   - due date
   - epic order on boards
   - confidentiality
+  - labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297460))
+  - author ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/298745))
+  - parent epic ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297459))
+  - emoji award ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297466))
+  - events ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/297465))
+- Milestones ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427))
+  - title
+  - description
+  - state (active / closed)
+  - start date
+  - due date
+  - created at
+  - updated at
+- Iterations ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428))
+  - iid
+  - title
+  - description
+  - state (upcoming / started / closed)
+  - start date
+  - due date
+  - created at
+  - updated at
 
 Any other items are **not** migrated.
 

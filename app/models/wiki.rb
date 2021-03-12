@@ -159,7 +159,7 @@ class Wiki
     find_page(SIDEBAR, version)
   end
 
-  def find_file(name, version = nil)
+  def find_file(name, version = 'HEAD')
     wiki.file(name, version)
   end
 

@@ -20,7 +20,7 @@ The steps below cover:
 
 ## Configuring Google LDAP client
 
-1. Navigate to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.
+1. Go to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.
 
 1. Go to **Apps > LDAP > Add Client**.
 

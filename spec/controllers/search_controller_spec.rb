@@ -252,6 +252,14 @@ RSpec.describe SearchController do
           get :count, params: { search: 'hello' }
         end.to raise_error(ActionController::ParameterMissing)
       end
+
+      it 'sets private cache control headers' do
+        get :count, params: { search: 'hello', scope: 'projects' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(response.headers['Cache-Control']).to include('max-age=60, private')
+      end
     end
 
     describe 'GET #autocomplete' do
@@ -261,23 +269,29 @@ RSpec.describe SearchController do
 
     describe '#append_info_to_payload' do
       it 'appends search metadata for logging' do
-        last_payload = nil
-        original_append_info_to_payload = controller.method(:append_info_to_payload)
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
 
-        expect(controller).to receive(:append_info_to_payload) do |payload|
-          original_append_info_to_payload.call(payload)
-          last_payload = payload
+          expect(payload[:metadata]['meta.search.group_id']).to eq('123')
+          expect(payload[:metadata]['meta.search.project_id']).to eq('456')
+          expect(payload[:metadata]).not_to have_key('meta.search.search')
+          expect(payload[:metadata]['meta.search.scope']).to eq('issues')
+          expect(payload[:metadata]['meta.search.force_search_results']).to eq('true')
+          expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
+          expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
         end
 
         get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', confidential: true, state: true, force_search_results: true }
+      end
 
-        expect(last_payload[:metadata]['meta.search.group_id']).to eq('123')
-        expect(last_payload[:metadata]['meta.search.project_id']).to eq('456')
-        expect(last_payload[:metadata]).not_to have_key('meta.search.search')
-        expect(last_payload[:metadata]['meta.search.scope']).to eq('issues')
-        expect(last_payload[:metadata]['meta.search.force_search_results']).to eq('true')
-        expect(last_payload[:metadata]['meta.search.filters.confidential']).to eq('true')
-        expect(last_payload[:metadata]['meta.search.filters.state']).to eq('true')
+      it 'appends the default scope in meta.search.scope' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.search.scope']).to eq('projects')
+        end
+
+        get :show, params: { search: 'hello world', group_id: '123', project_id: '456' }
       end
     end
   end

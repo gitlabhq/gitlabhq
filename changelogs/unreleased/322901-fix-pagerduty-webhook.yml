@@ -1,0 +1,5 @@
+---
+title: 'Fixes: No such file or directory lib/pager_duty/validator/schemas/message.json'
+merge_request: 55725
+author:
+type: fixed

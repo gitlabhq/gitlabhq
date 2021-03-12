@@ -1,0 +1,5 @@
+---
+title: Change terraform_states.locked_by_user_id foreign key to SET NULL
+merge_request: 55813
+author:
+type: fixed

@@ -6,6 +6,7 @@ require 'graphql/rake_task'
 
 namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
+  TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
   TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
 
   # Make all feature flags enabled so that all feature flag
@@ -27,7 +28,7 @@ namespace :gitlab do
   GraphQL::RakeTask.new(
     schema_name: 'GitlabSchema',
     dependencies: [:environment, :enable_feature_flags],
-    directory: OUTPUT_DIR,
+    directory: TEMP_SCHEMA_DIR,
     idl_outfile: "gitlab_schema.graphql",
     json_outfile: "gitlab_schema.json"
   )
@@ -130,18 +131,8 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | GraphQL | Check if GraphQL schemas are up to date'
-    task check_schema: [:environment, :enable_feature_flags] do
-      idl_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.graphql'))
-      json_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.json'))
-
-      if idl_doc == GitlabSchema.to_definition && json_doc == GitlabSchema.to_json
-        puts "GraphQL schema is up to date"
-      else
-        format_output('GraphQL schema is outdated! Please update it by running `bundle exec rake gitlab:graphql:schema:dump`.')
-        abort
-      end
-    end
+    desc 'GitLab | GraphQL | Update GraphQL docs and schema'
+    task update_all: [:compile_docs, 'schema:dump']
   end
 end
 

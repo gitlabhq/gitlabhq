@@ -6,11 +6,15 @@ require Rails.root.join('db', 'post_migrate', '20200714075739_schedule_populate_
 
 RSpec.describe SchedulePopulatePersonalSnippetStatistics do
   let(:users) { table(:users) }
+  let(:namespaces) { table(:namespaces) }
   let(:snippets) { table(:snippets) }
   let(:projects) { table(:projects) }
-  let(:user1) { users.create!(id: 1, email: 'user1@example.com', projects_limit: 10, username: 'test1', name: 'Test1', state: 'active') }
-  let(:user2) { users.create!(id: 2, email: 'user2@example.com', projects_limit: 10, username: 'test2', name: 'Test2', state: 'active') }
-  let(:user3) { users.create!(id: 3, email: 'user3@example.com', projects_limit: 10, username: 'test3', name: 'Test3', state: 'active') }
+  let!(:user1) { users.create!(id: 1, email: 'user1@example.com', projects_limit: 10, username: 'test1', name: 'Test1', state: 'active') }
+  let!(:user2) { users.create!(id: 2, email: 'user2@example.com', projects_limit: 10, username: 'test2', name: 'Test2', state: 'active') }
+  let!(:user3) { users.create!(id: 3, email: 'user3@example.com', projects_limit: 10, username: 'test3', name: 'Test3', state: 'active') }
+  let!(:namespace1) { namespaces.create!(id: 1, owner_id: user1.id, name: 'test1', path: 'test1') }
+  let!(:namespace2) { namespaces.create!(id: 2, owner_id: user2.id, name: 'test2', path: 'test2') }
+  let!(:namespace3) { namespaces.create!(id: 3, owner_id: user3.id, name: 'test3', path: 'test3') }
 
   def create_snippet(id, user_id, type = 'PersonalSnippet')
     params = {

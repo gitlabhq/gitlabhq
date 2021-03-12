@@ -9,4 +9,4 @@
       = f.label :notes_create_limit_allowlist, _('List of users to be excluded from the limit'), class: 'label-bold'
       = f.text_area :notes_create_limit_allowlist_raw, placeholder: 'username1, username2', class: 'form-control gl-form-input', rows: 5
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

@@ -2,6 +2,7 @@
 import { GlButton, GlDropdown, GlDropdownItem, GlIcon, GlLink, GlModal } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
+import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { IssuableType } from '~/issuable_show/constants';
 import { IssuableStatus, IssueStateEvent } from '~/issue_show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -148,7 +149,7 @@ export default {
           };
 
           // Dispatch event which updates open/close state, shared among the issue show page
-          document.dispatchEvent(new CustomEvent('issuable_vue_app:change', payload));
+          document.dispatchEvent(new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, payload));
         })
         .catch(() => createFlash({ message: __('Error occurred while updating the issue status') }))
         .finally(() => {

@@ -8,7 +8,7 @@
   .project-edit-errors
     = render 'projects/errors'
 
-  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any?, new_project_guidelines: brand_new_project_guidelines } }
+  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any?, new_project_guidelines: brand_new_project_guidelines, push_to_create_project_command: push_to_create_project_command, working_with_projects_help_path: help_page_path("user/project/working_with_projects") } }
 
   .row{ 'v-cloak': true }
     .col-lg-3.profile-settings-sidebar
@@ -28,9 +28,6 @@
       %p
         %strong= _("Tip:")
         = _("You can also create a project from the command line.")
-        %a.push-new-project-tip{ data: { title: _("Push to create a project") }, href: help_page_path('user/project/working_with_projects', anchor: 'push-to-create-a-new-project'), target: "_blank", rel: "noopener noreferrer" }
-          = _("Show command")
-        %template.push-new-project-tip-template= render partial: "new_project_push_tip"
 
     .col-lg-9.js-toggle-container
       %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }

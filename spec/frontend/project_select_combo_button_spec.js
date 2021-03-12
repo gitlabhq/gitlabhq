@@ -10,8 +10,6 @@ describe('Project Select Combo Button', () => {
     testContext = {};
   });
 
-  preloadFixtures(fixturePath);
-
   beforeEach(() => {
     testContext.defaults = {
       label: 'Select project to create issue',

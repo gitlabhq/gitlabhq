@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Service templates
+# Service templates **(FREE)**
 
 WARNING:
 Service templates are [deprecated and scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032)

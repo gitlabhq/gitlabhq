@@ -3,8 +3,8 @@
   .settings-header
     %h4
       = _('Amazon EKS')
-    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
-      = expanded ? 'Collapse' : 'Expand'
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
 
@@ -33,4 +33,4 @@
           .form-text.text-muted
             = _('AWS Secret Access Key. Only required if not using role instance credentials')
 
-      = f.submit 'Save changes', class: "gl-button btn btn-success"
+      = f.submit 'Save changes', class: "gl-button btn btn-confirm"

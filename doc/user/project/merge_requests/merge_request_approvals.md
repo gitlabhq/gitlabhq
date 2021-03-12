@@ -79,7 +79,8 @@ An individual user can be added as an approver for a project if they are a membe
 - The project's immediate parent group.
 - A group that has access to the project via a [share](../members/share_project_with_groups.md).
 
-A group of users can also be added as approvers. In the future, group approvers may be
+A group of users can also be added as approvers, though they only count as approvers if
+they have direct membership to the group. In the future, group approvers may be
 [restricted to only groups with share access to the project](https://gitlab.com/gitlab-org/gitlab/-/issues/2048).
 
 If a user is added as an individual approver and is also part of a group approver,
@@ -138,17 +139,17 @@ to push or merge code to any branches.
 
 To enable this access:
 
-1. [Create a new group](../../group/index.md#create-a-new-group), and then
+1. [Create a new group](../../group/index.md#create-a-group), and then
    [add the user to the group](../../group/index.md#add-users-to-a-group),
    ensuring you select the Reporter role for the user.
 1. [Share the project with your group](../members/share_project_with_groups.md#sharing-a-project-with-a-group-of-users),
    based on the Reporter role.
 1. Navigate to your project's **Settings > General**, and in the
    **Merge request approvals** section, click **Expand**.
-1. [Add the group](../../group/index.md#create-a-new-group) to the permission list
-   for the protected branch.
+1. Select **Add approval rule** or **Update approval rule**.
+1. [Add the group](../../group/index.md#create-a-group) to the permission list.
 
-![Update approval rule](img/update_approval_rule_v13_4.png)
+![Update approval rule](img/update_approval_rule_v13_10.png)
 
 #### Adding / editing a default approval rule
 
@@ -239,7 +240,7 @@ the **Target branch** dropdown.
 
 Alternatively, you can select a very specific protected branch from the **Target branch** dropdown:
 
-![Scoped to protected branch](img/scoped_to_protected_branch_v12_8.png)
+![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 
 To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
 

@@ -1,0 +1,7 @@
+#import "./integration_item.fragment.graphql"
+#import "ee_else_ce/alerts_settings/graphql/fragments/http_integration_payload_data.fragment.graphql"
+
+fragment HttpIntegrationItem on AlertManagementHttpIntegration {
+  ...IntegrationItem
+  ...HttpIntegrationPayloadData
+}

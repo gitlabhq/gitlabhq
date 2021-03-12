@@ -6,7 +6,7 @@ exports[`packages_list_row renders 1`] = `
   data-qa-selector="package_row"
 >
   <div
-    class="gl-display-flex gl-align-items-center gl-py-3"
+    class="gl-display-flex gl-align-items-center gl-py-3 gl-px-5"
   >
     <!---->
      
@@ -102,7 +102,7 @@ exports[`packages_list_row renders 1`] = `
       <gl-button-stub
         aria-label="Remove package"
         buttontextclasses=""
-        category="primary"
+        category="secondary"
         data-testid="action-delete"
         icon="remove"
         size="medium"

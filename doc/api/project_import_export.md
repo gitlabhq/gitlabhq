@@ -50,7 +50,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 ```
 
 NOTE:
-The upload request will be sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
+The upload request is sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
 
 ## Export status
 
@@ -138,14 +138,14 @@ POST /projects/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `namespace` | integer/string | no | The ID or path of the namespace that the project will be imported to. Defaults to the current user's namespace |
+| `namespace` | integer/string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace |
 | `name` | string | no | The name of the project to be imported. Defaults to the path of the project if not provided |
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |
-| `overwrite` | boolean | no | If there is a project with the same path the import will overwrite it. Default to false |
+| `overwrite` | boolean | no | If there is a project with the same path the import overwrites it. Default to false |
 | `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md) |
 
-The override parameters passed will take precedence over all values defined inside the export file.
+The override parameters passed take precedence over all values defined inside the export file.
 
 To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`.
@@ -220,7 +220,7 @@ Status can be one of:
 - `started`
 - `finished`
 
-If the status is `failed`, it will include the import error message under `import_error`.
+If the status is `failed`, it includes the import error message under `import_error`.
 If the status is `failed`, `started` or `finished`, the `failed_relations` array might
 be populated with any occurrences of relations that failed to import either due to
 unrecoverable errors or because retries were exhausted (a typical example are query timeouts.)

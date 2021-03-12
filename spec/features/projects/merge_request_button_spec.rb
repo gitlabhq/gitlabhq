@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge Request button' do
-  shared_examples 'Merge request button only shown when allowed' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public, :repository) }
-    let(:forked_project) { create(:project, :public, :repository, forked_from_project: project) }
+  include ProjectForksHelper
 
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let(:forked_project) { fork_project(project, user, repository: true) }
+
+  shared_examples 'Merge request button only shown when allowed' do
     context 'not logged in' do
       it 'does not show Create merge request button' do
         visit url
@@ -22,10 +24,16 @@ RSpec.describe 'Merge Request button' do
         project.add_developer(user)
       end
 
-      it 'shows Create merge request button' do
-        href = project_new_merge_request_path(project,
-                                              merge_request: { source_branch: 'feature',
-                                                               target_branch: 'master' })
+      it 'shows Create merge request button', :js do
+        href = project_new_merge_request_path(
+          project,
+          merge_request: {
+            source_project_id: project.id,
+            source_branch: 'feature',
+            target_project_id: project.id,
+            target_branch: 'master'
+          }
+        )
 
         visit url
 
@@ -75,12 +83,16 @@ RSpec.describe 'Merge Request button' do
       end
 
       context 'on own fork of project' do
-        let(:user) { forked_project.owner }
-
-        it 'shows Create merge request button' do
-          href = project_new_merge_request_path(forked_project,
-                                                merge_request: { source_branch: 'feature',
-                                                                 target_branch: 'master' })
+        it 'shows Create merge request button', :js do
+          href = project_new_merge_request_path(
+            forked_project,
+            merge_request: {
+              source_project_id: forked_project.id,
+              source_branch: 'feature',
+              target_project_id: forked_project.id,
+              target_branch: 'master'
+            }
+          )
 
           visit fork_url
 
@@ -101,10 +113,32 @@ RSpec.describe 'Merge Request button' do
   end
 
   context 'on compare page' do
+    let(:label) { 'Create merge request' }
+
     it_behaves_like 'Merge request button only shown when allowed' do
-      let(:label) { 'Create merge request' }
       let(:url) { project_compare_path(project, from: 'master', to: 'feature') }
       let(:fork_url) { project_compare_path(forked_project, from: 'master', to: 'feature') }
+    end
+
+    it 'shows the correct merge request button when viewing across forks', :js do
+      sign_in(user)
+      project.add_developer(user)
+
+      href = project_new_merge_request_path(
+        project,
+        merge_request: {
+          source_project_id: forked_project.id,
+          source_branch: 'feature',
+          target_project_id: project.id,
+          target_branch: 'master'
+        }
+      )
+
+      visit project_compare_path(forked_project, from: 'master', to: 'feature', from_project_id: project.id)
+
+      within("#content-body") do
+        expect(page).to have_link(label, href: href)
+      end
     end
   end
 

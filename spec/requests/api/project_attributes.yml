@@ -12,7 +12,6 @@ itself: # project
     - import_source
     - import_type
     - import_url
-    - issues_template
     - jobs_cache_index
     - last_repository_check_at
     - last_repository_check_failed
@@ -24,7 +23,6 @@ itself: # project
     - merge_requests_author_approval
     - merge_requests_disable_committers_approval
     - merge_requests_rebase_enabled
-    - merge_requests_template
     - mirror_last_successful_update_at
     - mirror_last_update_at
     - mirror_overwrites_diverged_branches
@@ -56,6 +54,7 @@ itself: # project
     - can_create_merge_request_in
     - compliance_frameworks
     - container_expiration_policy
+    - container_registry_image_prefix
     - default_branch
     - empty_repo
     - forks_count
@@ -117,6 +116,7 @@ project_feature:
     - project_id
     - requirements_access_level
     - security_and_compliance_access_level
+    - container_registry_access_level
     - updated_at
   computed_attributes:
     - issues_enabled
@@ -139,6 +139,7 @@ project_setting:
     - show_default_award_emojis
     - squash_option
     - updated_at
+    - cve_id_request_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

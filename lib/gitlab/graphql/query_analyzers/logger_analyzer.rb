@@ -9,10 +9,6 @@ module Gitlab
         FIELD_USAGE_ANALYZER = GraphQL::Analysis::FieldUsage.new { |query, used_fields, used_deprecated_fields| [used_fields, used_deprecated_fields] }
         ALL_ANALYZERS = [COMPLEXITY_ANALYZER, DEPTH_ANALYZER, FIELD_USAGE_ANALYZER].freeze
 
-        def analyze?(query)
-          Feature.enabled?(:graphql_logging, default_enabled: true)
-        end
-
         def initial_value(query)
           variables = process_variables(query.provided_variables)
           default_initial_values(query).merge({

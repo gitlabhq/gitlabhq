@@ -668,13 +668,13 @@ On each node perform the following:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-bucket-name>"
-   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-bucket-name>"
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
 
    ## Uncomment and edit the following options if you have set up NFS
    ##
@@ -920,18 +920,9 @@ on what features you intend to use:
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
 Using separate buckets for each data type is the recommended approach for GitLab.
-
-A limitation of our configuration is that each use of object storage is
-separately configured. We have an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-for improving this, which would allow for one bucket with separate folders.
-
-Using a single bucket when GitLab is deployed with the Helm chart causes
-restoring from a backup to
-[not function properly](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
-Although you may not be using a Helm deployment right now, if you migrate
-GitLab to a Helm deployment later, GitLab would still work, but you may not
-realize backups aren't working correctly until a critical requirement for
-functioning backups is encountered.
+This ensures there are no collisions across the various types of data GitLab stores.
+There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
+in the future.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -969,16 +960,6 @@ From GitLab 13.0, using NFS for Git repositories is deprecated.
 From GitLab 14.0, technical support for NFS for Git repositories
 will no longer be provided. Upgrade to [Gitaly Cluster](../gitaly/praefect.md)
 as soon as possible.
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Troubleshooting
-
-See the [troubleshooting documentation](troubleshooting.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

@@ -87,9 +87,9 @@ To delete the currently active issue board:
 You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
 
-For examples of using issue boards along with [epics](../group/epics/index.md) **(PREMIUM)**,
-[issue health status](issues/index.md#health-status) **(ULTIMATE)**, and
-[scoped labels](labels.md#scoped-labels) **(PREMIUM)** for various Agile frameworks, check:
+For examples of using issue boards along with [epics](../group/epics/index.md),
+[issue health status](issues/index.md#health-status), and
+[scoped labels](labels.md#scoped-labels) for various Agile frameworks, check:
 
 - The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -154,7 +154,7 @@ for them.
 
 NOTE:
 For a broader use case, please see the blog post
-[GitLab Workflow, an Overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+[GitLab Workflow, an Overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/#gitlab-workflow-a-use-case-scenario).
 For a real use case example, you can read why
 [Codepen decided to adopt issue boards](https://about.gitlab.com/blog/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
 to improve their workflow with multiple boards.
@@ -277,6 +277,32 @@ group and its descendant subgroups. Similarly, you can only filter by group labe
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
+#### GraphQL-based sidebar for group issue boards **(PREMIUM)**
+
+<!-- When the feature flag is removed, integrate this section into the above ("Group issue boards"). -->
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-graphql-based-sidebar-for-group-issue-boards). **(PREMIUM SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+The work-in-progress GraphQL-based sidebar for group issue boards brings better performance and the
+ability to edit issue titles in the issue sidebar.
+
+To **edit an issue's title** in the issue sidebar:
+
+1. In a group issue board, select the issue card. The issue sidebar opens on the right.
+1. Next to the issue's title, select **Edit**.
+
+This is work in progress as of GitLab 13.9. Learn more about the known issues in
+[MR 51480](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51480).
+
+<!-- Add this at the end of the file -->
+
 ### Assignee lists **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5784) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
@@ -317,6 +343,7 @@ As in other list types, click the trash icon to remove a list.
 
 > - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
 > - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
+> - Editing iteration in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290232) in GitLab 13.9.
 
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
@@ -456,31 +483,16 @@ the list by filtering by the following:
 - Release
 - Weight
 
-#### Enable or disable adding issues to the list **(FREE SELF)**
-
-Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:add_issues_button)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:add_issues_button)
-```
-
 ### Remove an issue from a list
 
-Removing an issue from a list can be done by clicking the issue card and then
-clicking the **Remove from board** button in the sidebar. The
-respective label is removed.
+> The **Remove from board** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229507) in GitLab 13.10.
 
-![Remove issue from list](img/issue_boards_remove_issue_v13_6.png)
+When an issue should no longer belong to a list, you can remove it.
+The steps depend on the scope of the list:
+
+1. To open the right sidebar, select the issue card.
+1. Remove what's keeping the issue in the list.
+   If it's a label list, remove the label. If it's an [assignee list](#assignee-lists), unassign the user.
 
 ### Filter issues
 
@@ -593,3 +605,40 @@ A few things to remember:
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
+
+## Enable or disable GraphQL-based sidebar for group issue boards **(PREMIUM SELF)**
+
+GraphQL-based sidebar for group issue boards is under development and not ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:graphql_board_lists)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:graphql_board_lists)
+```
+
+## Enable or disable adding issues to the list **(FREE SELF)**
+
+Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:add_issues_button)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:add_issues_button)
+```

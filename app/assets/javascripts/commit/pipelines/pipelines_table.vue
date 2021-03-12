@@ -25,14 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
-    autoDevopsHelpPath: {
-      type: String,
-      required: true,
-    },
     errorStateSvgPath: {
       type: String,
       required: true,
@@ -200,7 +192,7 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mt-3 gl-mb-0 gl-md-display-none"
+        class="gl-mt-3 gl-mb-3 gl-md-display-none"
         variant="success"
         data-testid="run_pipeline_button_mobile"
         :loading="state.isRunningMergeRequestPipeline"
@@ -212,7 +204,6 @@ export default {
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
-        :auto-devops-help-path="autoDevopsHelpPath"
         :view-type="viewType"
       >
         <template #table-header-actions>

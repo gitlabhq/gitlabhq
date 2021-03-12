@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   RSpec.describe 'Package', :orchestrated, :packages do
     describe 'NuGet Repository' do
       include Runtime::Fixtures
 
-      let(:package_name) { 'dotnetcore' }
+      let(:package_name) { "dotnetcore-#{SecureRandom.hex(8)}" }
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'nuget-package-project'
@@ -54,7 +56,7 @@ module QA
                 {
                     file_path: '.gitlab-ci.yml',
                     content: <<~YAML
-                      image: mcr.microsoft.com/dotnet/core/sdk:3.1
+                      image: mcr.microsoft.com/dotnet/sdk:5.0
 
                       stages:
                         - deploy
@@ -64,7 +66,7 @@ module QA
                         script:
                           - dotnet restore -p:Configuration=Release
                           - dotnet build -c Release
-                          - dotnet pack -c Release
+                          - dotnet pack -c Release -p:PackageID=#{package_name}
                           - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
                           - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
                         only:
@@ -102,7 +104,7 @@ module QA
 
                           <PropertyGroup>
                             <OutputType>Exe</OutputType>
-                            <TargetFramework>netcoreapp3.1</TargetFramework>
+                            <TargetFramework>net5.0</TargetFramework>
                           </PropertyGroup>
 
                         </Project>
@@ -115,7 +117,7 @@ module QA
                 {
                     file_path: '.gitlab-ci.yml',
                     content: <<~YAML
-                        image: mcr.microsoft.com/dotnet/core/sdk:3.1
+                        image: mcr.microsoft.com/dotnet/sdk:5.0
 
                         stages:
                           - install

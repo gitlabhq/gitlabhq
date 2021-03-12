@@ -2,8 +2,8 @@
 
 %section.qa-deploy-tokens-settings.settings.no-animate#js-deploy-tokens{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_tokens_settings_content' } }
   .settings-header
-    %h4= s_('DeployTokens|Deploy tokens')
-    %button.gl-button.btn.js-settings-toggle.qa-expand-deploy-keys{ type: 'button' }
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= s_('DeployTokens|Deploy tokens')
+    %button.btn.gl-button.btn-default.js-settings-toggle.qa-expand-deploy-keys{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = description

@@ -1,4 +1,4 @@
-import { GlFilteredSearch, GlButton, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import { GlButton, GlFilteredSearch, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
@@ -18,7 +18,7 @@ import Store from '~/pipelines/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 
-import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
+import { stageReply, users, mockSearch, branches } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -27,6 +27,9 @@ const mockProjectId = '21';
 const mockPipelinesEndpoint = `/${mockProjectPath}/pipelines.json`;
 const mockPipelinesResponse = getJSONFixture('pipelines/pipelines.json');
 const mockPipelinesIds = mockPipelinesResponse.pipelines.map(({ id }) => id);
+const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
+  (p) => p.details.stages && p.details.stages.length,
+);
 
 describe('Pipelines', () => {
   let wrapper;
@@ -34,8 +37,6 @@ describe('Pipelines', () => {
   let origWindowLocation;
 
   const paths = {
-    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
-    helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
@@ -45,8 +46,6 @@ describe('Pipelines', () => {
   };
 
   const noPermissions = {
-    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
-    helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
@@ -70,7 +69,8 @@ describe('Pipelines', () => {
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
-  const findStagesDropdown = () => wrapper.findByTestId('mini-pipeline-graph-dropdown-toggle');
+  const findStagesDropdownToggle = () =>
+    wrapper.find('[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = (props = defaultProps) => {
@@ -546,7 +546,9 @@ describe('Pipelines', () => {
           'GitLab CI/CD can automatically build, test, and deploy your code.',
         );
         expect(findEmptyState().find(GlButton).text()).toBe('Get started with CI/CD');
-        expect(findEmptyState().find(GlButton).attributes('href')).toBe(paths.helpPagePath);
+        expect(findEmptyState().find(GlButton).attributes('href')).toBe(
+          '/help/ci/quick_start/index.md',
+        );
       });
 
       it('does not render tabs nor buttons', () => {
@@ -613,14 +615,15 @@ describe('Pipelines', () => {
         mock.onGet(mockPipelinesEndpoint, { scope: 'all', page: '1' }).reply(
           200,
           {
-            pipelines: [pipelineWithStages],
+            pipelines: [mockPipelineWithStages],
             count: { all: '1' },
           },
           {
             'POLL-INTERVAL': 100,
           },
         );
-        mock.onGet(pipelineWithStages.details.stages[0].dropdown_path).reply(200, stageReply);
+
+        mock.onGet(mockPipelineWithStages.details.stages[0].dropdown_path).reply(200, stageReply);
 
         createComponent();
 
@@ -640,7 +643,7 @@ describe('Pipelines', () => {
           // Mock init a polling cycle
           wrapper.vm.poll.options.notificationCallback(true);
 
-          findStagesDropdown().trigger('click');
+          findStagesDropdownToggle().trigger('click');
 
           await waitForPromises();
 
@@ -650,7 +653,9 @@ describe('Pipelines', () => {
         });
 
         it('stops polling & restarts polling', async () => {
-          findStagesDropdown().trigger('click');
+          findStagesDropdownToggle().trigger('click');
+
+          await waitForPromises();
 
           expect(cancelMock).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();

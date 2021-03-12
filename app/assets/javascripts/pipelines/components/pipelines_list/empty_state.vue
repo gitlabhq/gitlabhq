@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
@@ -14,10 +15,6 @@ export default {
     GlButton,
   },
   props: {
-    helpPagePath: {
-      type: String,
-      required: true,
-    },
     emptyStateSvgPath: {
       type: String,
       required: true,
@@ -25,6 +22,11 @@ export default {
     canSetCi: {
       type: Boolean,
       required: true,
+    },
+  },
+  computed: {
+    ciHelpPagePath() {
+      return helpPagePath('ci/quick_start/index.md');
     },
   },
 };
@@ -47,7 +49,7 @@ export default {
 
           <div class="gl-text-center">
             <gl-button
-              :href="helpPagePath"
+              :href="ciHelpPagePath"
               variant="info"
               category="primary"
               data-testid="get-started-pipelines"

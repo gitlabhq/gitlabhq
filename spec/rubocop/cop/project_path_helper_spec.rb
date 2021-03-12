@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../rubocop/cop/project_path_helper'
 
 RSpec.describe RuboCop::Cop::ProjectPathHelper do

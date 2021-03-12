@@ -45,7 +45,7 @@ class Snippet < ApplicationRecord
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :user_mentions, class_name: "SnippetUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :snippet_repository, inverse_of: :snippet
-  has_many :repository_storage_moves, class_name: 'SnippetRepositoryStorageMove', inverse_of: :container
+  has_many :repository_storage_moves, class_name: 'Snippets::RepositoryStorageMove', inverse_of: :container
 
   # We need to add the `dependent` in order to call the after_destroy callback
   has_one :statistics, class_name: 'SnippetStatistics', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -216,8 +216,10 @@ class Snippet < ApplicationRecord
   def blobs
     return [] unless repository_exists?
 
-    branch = default_branch
-    list_files(branch).map { |file| Blob.lazy(repository, branch, file) }
+    files = list_files(default_branch)
+    items = files.map { |file| [default_branch, file] }
+
+    repository.blobs_at(items).compact
   end
 
   def hook_attrs

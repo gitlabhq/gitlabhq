@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -31,8 +32,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isGroupBoard']),
     disabled() {
-      if (this.groupId) {
+      if (this.isGroupBoard) {
         return this.title === '' || !this.selectedProject.name;
       }
       return this.title === '';
@@ -110,7 +112,7 @@ export default {
           name="issue_title"
           autocomplete="off"
         />
-        <project-select v-if="groupId" :group-id="groupId" :list="list" />
+        <project-select v-if="isGroupBoard" :group-id="groupId" :list="list" />
         <div class="clearfix gl-mt-3">
           <gl-button
             ref="submitButton"

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD variables
+# GitLab CI/CD variables **(FREE)**
 
 CI/CD variables are part of the environment in which [pipelines](../pipelines/index.md)
 and jobs run. For example, you could:
@@ -161,7 +161,7 @@ You can use tools like [the AWS CLI](https://docs.aws.amazon.com/cli/latest/user
 and [`kubectl`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)
 to customize your configuration by using **File** type variables.
 
-Previously, a common pattern was to read the value of a CI variable, save it in a file, and then
+Previously, a common pattern was to read the value of a CI/CD variable, save it in a file, and then
 use that file in your script:
 
 ```shell

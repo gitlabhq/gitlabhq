@@ -13,7 +13,7 @@ export default {
       return {
         text: __('Save'),
         attributes: [
-          { variant: 'success' },
+          { variant: 'confirm' },
           { category: 'primary' },
           { disabled: this.isDisabled },
         ],

@@ -31,25 +31,25 @@ Forking a project is, in most cases, a two-step process.
 
    ![Choose namespace](img/forking_workflow_choose_namespace_v13_2.png)
 
-The fork is created. The permissions you have in the namespace are the permissions you will have in the fork.
+The fork is created. The permissions you have in the namespace are your permissions in the fork.
 
 WARNING:
-When a public project with the repository feature set to "Members
-only" is forked, the repository will be public in the fork. The owner
-of the fork will need to manually change the visibility. This is being
+When a public project with the repository feature set to **Members Only**
+is forked, the repository is public in the fork. The owner
+of the fork must manually change the visibility. This is being
 fixed in [#36662](https://gitlab.com/gitlab-org/gitlab/-/issues/36662).
 
 ## Repository mirroring
 
 You can use [repository mirroring](repository_mirroring.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.
 
-The main difference is that with repository mirroring your remote fork will be automatically kept up-to-date.
+The main difference is that with repository mirroring, your remote fork is automatically kept up-to-date.
 
-Without mirroring, to work locally you'll have to use `git pull` to update your local repository
+Without mirroring, to work locally you must use `git pull` to update your local repository
 with the upstream project, then push the changes back to your fork to update it.
 
 WARNING:
-With mirroring, before approving a merge request, you'll likely be asked to sync; hence automating it is recommended.
+With mirroring, before approving a merge request, you are asked to sync. Because of this, automating it is recommended.
 
 Read more about [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 
@@ -60,7 +60,7 @@ When you are ready to send your code back to the upstream project,
 choose your forked project's branch. For **Target branch**, choose the original project's branch.
 
 NOTE:
-When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch will default to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
+When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch defaults to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
 
 ![Selecting branches](img/forking_workflow_branch_select.png)
 

@@ -1,0 +1,5 @@
+---
+title: Fix assignees search to show only project members
+merge_request: 55396
+author:
+type: fixed

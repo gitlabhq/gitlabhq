@@ -83,8 +83,9 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Objective-C (iOS)                                                                                                                                | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                          |
 | PHP                                                                                                                                              | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit)                        | 10.8                                          |
 | Python ([pip](https://pip.pypa.io/en/stable/))                                                                                                   | [bandit](https://github.com/PyCQA/bandit)                                                                     | 10.3                                          |
-| Python                                                                                                                                           | [semgrep](https://semgrep.dev)                                                                                | 13.9                                          |
+| Python                                                                                                                                           | [Semgrep](https://semgrep.dev)                                                                                | 13.9                                          |
 | React                                                                                                                                            | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                       | 12.5                                          |
+| Ruby                                                                                                                                             | [brakeman](https://brakemanscanner.org)                                                                       | 13.9                                          |
 | Ruby on Rails                                                                                                                                    | [brakeman](https://brakemanscanner.org)                                                                       | 10.3                                          |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/))  | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven)        |
 | Swift (iOS)                                                                                                                                      | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                      | 13.5                                          |
@@ -130,16 +131,16 @@ All open source (OSS) analyzers have been moved to the GitLab Free tier as of Gi
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                         | In Free             | In Ultimate        |
-|:-----------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                           | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                          | **{dotted-circle}** | **{check-circle}** |
-| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)                     | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST Rulesets](#customize-rulesets)                            | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                                                                   | In Free             | In Ultimate        |
+|:-------------------------------------------------------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure SAST Scanners](#configuration)                                                                    | **{check-circle}**  | **{check-circle}** |
+| [Customize SAST Settings](#customizing-the-sast-settings)                                                    | **{check-circle}**  | **{check-circle}** |
+| View [JSON Report](#reports-json-format)                                                                     | **{check-circle}**  | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                                                                 | **{dotted-circle}** | **{check-circle}** |
+| [Address vulnerabilities](../../application_security/index.md#addressing-vulnerabilities)                    | **{dotted-circle}** | **{check-circle}** |
+| [Access to Security Dashboard](../../application_security/security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)                                                        | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST Rulesets](#customize-rulesets)                                                               | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -149,7 +150,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To configure SAST for a project you can:
 
-- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast) provided by
+- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 - [Configure SAST manually](#configure-sast-manually).
 - [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).
@@ -609,31 +610,6 @@ Here's an example SAST report:
   "remediations": []
 }
 ```
-
-## Secret detection
-
-Learn more about [Secret Detection](../secret_detection).
-
-## Security Dashboard **(ULTIMATE)**
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Interacting with the vulnerabilities **(ULTIMATE)**
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
-
-## Vulnerabilities database
-
-Vulnerabilities contained in the vulnerability database can be searched
-and viewed at the [GitLab vulnerability advisory database](https://advisories.gitlab.com).
-
-### Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
 ## Running SAST in an offline environment
 

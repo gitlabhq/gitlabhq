@@ -26,13 +26,6 @@
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn gl-button btn-default btn-icon',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = sprite_icon('error')
-      - if current_user && current_user.id != @user.id
-        - if current_user.following?(@user)
-          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Unfollow')
-        - else
-          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Follow')
       - if can?(current_user, :read_user_profile, @user)
         = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
           title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
@@ -41,6 +34,13 @@
         = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default btn-icon', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
           = sprite_icon('user')
+      - if current_user && current_user.id != @user.id
+        - if current_user.following?(@user)
+          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
+            = _('Unfollow')
+        - else
+          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post do
+            = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder

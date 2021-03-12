@@ -6,7 +6,6 @@ import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
-import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import {
   setWeightFetchingState,
   setEpicFetchingState,
@@ -24,6 +23,7 @@ import '~/boards/models/milestone';
 import '~/boards/models/project';
 import '~/boards/filters/due_date_filters';
 import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
+import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import modalMixin from '~/boards/mixins/modal_mixins';
@@ -40,6 +40,7 @@ import {
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
+import boardConfigToggle from './config_toggle';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
 Vue.use(VueApollo);
@@ -52,7 +53,6 @@ let issueBoardsApp;
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
-
   // check for browser back and trigger a hard reload to circumvent browser caching.
   window.addEventListener('pageshow', (event) => {
     const isNavTypeBackForward =
@@ -70,6 +70,14 @@ export default () => {
   if (!gon?.features?.graphqlBoardLists) {
     boardsStore.create();
     boardsStore.setTimeTrackingLimitToHours($boardApp.dataset.timeTrackingLimitToHours);
+  }
+
+  if (gon?.features?.boardsFilteredSearch) {
+    import('~/boards/filtered_search')
+      .then(({ default: initFilteredSearch }) => {
+        initFilteredSearch(apolloProvider);
+      })
+      .catch(() => {});
   }
 
   // eslint-disable-next-line @gitlab/no-runtime-template-compiler
@@ -124,6 +132,7 @@ export default () => {
         fullPath: $boardApp.dataset.fullPath,
         boardType: this.parent,
         disabled: this.disabled,
+        issuableType: issuableTypes.issue,
         boardConfig: {
           milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
           milestoneTitle: $boardApp.dataset.boardMilestoneTitle || '',
@@ -162,8 +171,15 @@ export default () => {
       eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
-      this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
-      this.filterManager.setup();
+      if (!gon.features?.boardsFilteredSearch) {
+        this.filterManager = new FilteredSearchBoards(
+          boardsStore.filter,
+          true,
+          boardsStore.cantEdit,
+        );
+
+        this.filterManager.setup();
+      }
 
       this.performSearch();
 
@@ -349,7 +365,7 @@ export default () => {
   toggleFocusMode(ModalStore, boardsStore);
   toggleLabels();
 
-  if (gon.features?.swimlanes) {
+  if (gon.licensed_features?.swimlanes) {
     toggleEpicsSwimlanes();
   }
 

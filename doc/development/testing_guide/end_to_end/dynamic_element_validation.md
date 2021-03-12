@@ -39,7 +39,7 @@ appear on the webpage, or the test to navigate away from the page entirely.
 Dynamic element validation is instituted when using
 
 ```ruby
-click_element :my_element, Some::Page
+click_element(:my_element, Some::Page)
 ```
 
 ### Required Elements
@@ -79,7 +79,7 @@ class MyPage < Page::Base
   end
 
   def open_layer
-    click_element :my_element, Layer::MyLayer
+    click_element(:my_element, Layer::MyLayer)
   end
 end
 
@@ -109,7 +109,7 @@ Given the [source](#examples) ...
 
 ```ruby
 def open_layer
-  click_element :my_element, Layer::MyLayer
+  click_element(:my_element, Layer::MyLayer)
 end
 ```
 

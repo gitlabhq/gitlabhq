@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop: disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
   context "with worker attribution" do
     subject { described_class.new }
@@ -110,6 +111,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           it 'yields block' do
             expect { |b| subject.call(worker, job, :test, &b) }.to yield_control.once
+          end
+
+          it 'calls BackgroundTransaction' do
+            expect_next_instance_of(Gitlab::Metrics::BackgroundTransaction) do |instance|
+              expect(instance).to receive(:run)
+            end
+
+            subject.call(worker, job, :test) {}
           end
 
           it 'sets queue specific metrics' do
@@ -287,3 +296,4 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
     end
   end
 end
+# rubocop: enable RSpec/MultipleMemoizedHelpers

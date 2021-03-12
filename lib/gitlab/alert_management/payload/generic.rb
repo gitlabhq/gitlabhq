@@ -5,7 +5,7 @@ module Gitlab
   module AlertManagement
     module Payload
       class Generic < Base
-        DEFAULT_TITLE = 'New: Incident'
+        DEFAULT_TITLE = 'New: Alert'
 
         attribute :description, paths: 'description'
         attribute :ends_at, paths: 'end_time', type: :time

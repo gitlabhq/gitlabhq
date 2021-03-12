@@ -34,7 +34,14 @@
     overflow-y: auto;
 
     &.dropdown-extended-height {
-      max-height: 400px;
+      $extended-max-height: 400px;
+
+      max-height: $extended-max-height;
+
+      // See comment below for explanation
+      .gl-new-dropdown-inner {
+        max-height: $extended-max-height - 2px;
+      }
     }
 
     @include media-breakpoint-down(xs) {
@@ -45,6 +52,15 @@
       padding: 0;
       overflow-y: initial;
       max-height: initial;
+    }
+
+    // `GlDropdown` specifies the `max-height` of `.gl-new-dropdown-inner`
+    // as `$dropdown-max-height`, but the `max-height` rule above forces
+    // the parent `.dropdown-menu` to be _slightly_ too small because of
+    // the 1px borders. The workaround below overrides the @gitlab/ui style
+    // to avoid a double scroll bar.
+    .gl-new-dropdown-inner {
+      max-height: $dropdown-max-height - 2px;
     }
   }
 
@@ -1091,5 +1107,13 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 .gl-new-dropdown {
   .gl-dropdown-menu-wide {
     width: $gl-dropdown-width-wide;
+  }
+}
+
+// This class won't be needed once we can add a prop for this in the GitLab UI component
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
+.gl-new-dropdown.gl-dropdown-menu-full-width {
+  .dropdown-menu {
+    width: 100%;
   }
 }

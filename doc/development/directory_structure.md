@@ -34,3 +34,61 @@ module MyDomain
   end
 end
 ```
+
+### About namespace naming
+
+A good guideline for naming a top-level namespace (bounded context) is to use the related
+feature category. For example, `Continuous Integration` feature category maps to `Ci::` namespace.
+
+Alternatively a new class could be added to `Projects::` or `Groups::` if it's either:
+
+- Strictly related to one of these domains. For example `Projects::Alias`.
+- A new component that does not have yet a more specific domain. In this case, when
+  a more explicit domain does emerge we would need to move the class to a more specific
+  namespace.
+
+Do not use the [stage or group name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+since a feature category could be reassigned to a different group in the future.
+
+```ruby
+# bad
+module Create
+  class Commit
+  end
+end
+
+# good
+module Repositories
+  class Commit
+  end
+end
+```
+
+On the other hand, a feature category may sometimes be too granular. Features tend to be
+treated differently according to Product and Marketing, while they may share a lot of
+domain models and behavior under the hood. In this case, having too many bounded contexts
+could make them shallow and more coupled with other contexts.
+
+Bounded contexts (or top-level namespaces) can be seen as macro-components in the overall app.
+Good bounded contexts should be [deep](https://medium.com/@nakabonne/depth-of-module-f62dac3c2fdb)
+so consider having nested namespaces to further break down complex parts of the domain.
+E.g. `Ci::Config::`.
+
+For example, instead of having separate and granular bounded contexts like: `ContainerScanning::`,
+`ContainerHostSecurity::`, `ContainerNetworkSecurity::`, we could have:
+
+```ruby
+module ContainerSecurity
+  module HostSecurity
+  end
+
+  module NetworkSecurity
+  end
+
+  module Scanning
+  end
+end
+```
+
+If classes that are defined into a namespace have a lot in common with classes in other namespaces,
+chances are that these two namespaces are part of the same bounded context.

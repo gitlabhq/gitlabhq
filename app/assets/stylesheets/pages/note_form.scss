@@ -302,8 +302,21 @@ table {
       width: 100%;
     }
   }
+}
 
-  .btn-text-field {
+.discussion-reply-holder {
+  .reply-placeholder-text-field {
+    font-family: $monospace-font;
+    font-size: $gl-font-size-monospace;
+    border-radius: $gl-border-radius-base;
+    width: 100%;
+    resize: none;
+    padding: $gl-padding-8 $gl-padding-12;
+    line-height: 1;
+    border: 1px solid $border-color;
+    background-color: $white;
+    overflow: hidden;
+
     @include media-breakpoint-down(xs) {
       margin-bottom: $gl-padding-8;
     }
@@ -381,32 +394,6 @@ table {
 }
 
 .comment-type-dropdown {
-  .btn-success {
-    width: auto;
-  }
-
-  .dropdown-toggle {
-    float: right;
-
-    i {
-      color: $white;
-      padding-right: 2px;
-      margin-top: 2px;
-    }
-
-    &[disabled] {
-      i {
-        color: $gl-text-color-disabled;
-      }
-    }
-  }
-
-  .dropdown-menu {
-    top: initial;
-    bottom: 100%;
-    width: 298px;
-  }
-
   @include media-breakpoint-down(xs) {
     display: flex;
     width: 100%;

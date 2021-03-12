@@ -39,10 +39,10 @@ module Repositories
       project,
       user,
       version:,
-      to:,
-      from: nil,
-      date: DateTime.now,
       branch: project.default_branch_or_master,
+      from: nil,
+      to: branch,
+      date: DateTime.now,
       trailer: DEFAULT_TRAILER,
       file: DEFAULT_FILE,
       message: "Add changelog for version #{version}"
@@ -73,7 +73,7 @@ module Repositories
         .new(version: @version, date: @date, config: config)
 
       commits =
-        CommitsWithTrailerFinder.new(project: @project, from: from, to: @to)
+        ChangelogCommitsFinder.new(project: @project, from: from, to: @to)
 
       commits.each_page(@trailer) do |page|
         mrs = mrs_finder.execute(page)

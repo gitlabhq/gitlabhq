@@ -7,7 +7,7 @@
     milestone_path: milestones_filter_path(milestone_filter_opts),
     board_base_url: board_base_url,
     has_missing_boards: (!multiple_boards_available? && current_board_parent.boards.size > 1).to_s,
-    can_admin_board: can?(current_user, :admin_board, parent).to_s,
+    can_admin_board: can?(current_user, :admin_issue_board, parent).to_s,
     multiple_issue_boards_available: parent.multiple_issue_boards_available?.to_s,
     labels_path: labels_filter_path_with_defaults(only_group_labels: true, include_descendant_groups: true),
     labels_web_url: parent.is_a?(Project) ? project_labels_path(@project) : group_labels_path(@group),

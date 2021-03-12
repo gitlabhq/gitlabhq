@@ -9,7 +9,7 @@ module Resolvers
     type Types::BoardListType, null: true
     extras [:lookahead]
 
-    authorize :read_list
+    authorize :read_issue_board_list
 
     argument :id, Types::GlobalIDType[List],
              required: false,

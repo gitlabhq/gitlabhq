@@ -1,5 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName } from '~/lib/utils/common_utils';
@@ -106,6 +107,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isEpicBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },
@@ -161,41 +163,48 @@ export default {
     currentMutation() {
       return this.board.id ? updateBoardMutation : createBoardMutation;
     },
-    mutationVariables() {
+    baseMutationVariables() {
       const { board } = this;
-      /* eslint-disable @gitlab/require-i18n-strings */
-      let baseMutationVariables = {
+      const variables = {
         name: board.name,
         hideBacklogList: board.hide_backlog_list,
         hideClosedList: board.hide_closed_list,
       };
 
-      if (this.scopedIssueBoardFeatureEnabled) {
-        baseMutationVariables = {
-          ...baseMutationVariables,
-          weight: board.weight,
-          assigneeId: board.assignee?.id ? convertToGraphQLId('User', board.assignee.id) : null,
-          milestoneId:
-            board.milestone?.id || board.milestone?.id === 0
-              ? convertToGraphQLId('Milestone', board.milestone.id)
-              : null,
-          labelIds: board.labels.map(fullLabelId),
-          iterationId: board.iteration_id
-            ? convertToGraphQLId('Iteration', board.iteration_id)
-            : null,
-        };
-      }
-      /* eslint-enable @gitlab/require-i18n-strings */
       return board.id
         ? {
-            ...baseMutationVariables,
+            ...variables,
             id: fullBoardId(board.id),
           }
         : {
-            ...baseMutationVariables,
-            projectPath: this.projectId ? this.fullPath : null,
-            groupPath: this.groupId ? this.fullPath : null,
+            ...variables,
+            projectPath: this.isProjectBoard ? this.fullPath : undefined,
+            groupPath: this.isGroupBoard ? this.fullPath : undefined,
           };
+    },
+    boardScopeMutationVariables() {
+      /* eslint-disable @gitlab/require-i18n-strings */
+      return {
+        weight: this.board.weight,
+        assigneeId: this.board.assignee?.id
+          ? convertToGraphQLId('User', this.board.assignee.id)
+          : null,
+        milestoneId:
+          this.board.milestone?.id || this.board.milestone?.id === 0
+            ? convertToGraphQLId('Milestone', this.board.milestone.id)
+            : null,
+        labelIds: this.board.labels.map(fullLabelId),
+        iterationId: this.board.iteration_id
+          ? convertToGraphQLId('Iteration', this.board.iteration_id)
+          : null,
+      };
+      /* eslint-enable @gitlab/require-i18n-strings */
+    },
+    mutationVariables() {
+      return {
+        ...this.baseMutationVariables,
+        ...(this.scopedIssueBoardFeatureEnabled ? this.boardScopeMutationVariables : {}),
+      };
     },
   },
   mounted() {
@@ -208,6 +217,16 @@ export default {
     setIteration(iterationId) {
       this.board.iteration_id = iterationId;
     },
+    boardCreateResponse(data) {
+      return data.createBoard.board.webPath;
+    },
+    boardUpdateResponse(data) {
+      const path = data.updateBoard.board.webPath;
+      const param = getParameterByName('group_by')
+        ? `?group_by=${getParameterByName('group_by')}`
+        : '';
+      return `${path}${param}`;
+    },
     async createOrUpdateBoard() {
       const response = await this.$apollo.mutate({
         mutation: this.currentMutation,
@@ -215,14 +234,10 @@ export default {
       });
 
       if (!this.board.id) {
-        return response.data.createBoard.board.webPath;
+        return this.boardCreateResponse(response.data);
       }
 
-      const path = response.data.updateBoard.board.webPath;
-      const param = getParameterByName('group_by')
-        ? `?group_by=${getParameterByName('group_by')}`
-        : '';
-      return `${path}${param}`;
+      return this.boardUpdateResponse(response.data);
     },
     async submit() {
       if (this.board.name.length === 0) return;
@@ -309,7 +324,7 @@ export default {
       />
 
       <board-scope
-        v-if="scopedIssueBoardFeatureEnabled"
+        v-if="scopedIssueBoardFeatureEnabled && !isEpicBoard"
         :collapse-scope="isNewForm"
         :board="board"
         :can-admin-board="canAdminBoard"

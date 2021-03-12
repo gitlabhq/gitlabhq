@@ -4,7 +4,7 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
 <ul>
   <li>
     <span>
-      Create a repository
+      Create or import a repository
     </span>
   </li>
   <li>
@@ -14,7 +14,11 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
   </li>
   <li>
     <span>
-      Set-up CI/CD
+      <gl-link-stub
+        href="http://example.com/"
+      >
+        Set up CI/CD
+      </gl-link-stub>
     </span>
   </li>
   <li>
@@ -22,7 +26,7 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
       <gl-link-stub
         href="http://example.com/"
       >
-        Start a free trial of GitLab Gold
+        Start a free Ultimate trial
       </gl-link-stub>
     </span>
   </li>
@@ -40,7 +44,7 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
       <gl-link-stub
         href="http://example.com/"
       >
-        Enable require merge approvals
+        Add merge request approval
       </gl-link-stub>
     </span>
   </li>
@@ -49,7 +53,7 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
       <gl-link-stub
         href="http://example.com/"
       >
-        Submit a merge request (MR)
+        Submit a merge request
       </gl-link-stub>
     </span>
   </li>
@@ -58,7 +62,7 @@ exports[`Learn GitLab Design A should render the loading state 1`] = `
       <gl-link-stub
         href="http://example.com/"
       >
-        Run a Security scan using CI/CD
+        Run a security scan
       </gl-link-stub>
     </span>
   </li>

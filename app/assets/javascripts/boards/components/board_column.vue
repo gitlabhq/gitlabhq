@@ -32,12 +32,12 @@ export default {
   },
   computed: {
     ...mapState(['filterParams', 'highlightedLists']),
-    ...mapGetters(['getIssuesByList']),
+    ...mapGetters(['getBoardItemsByList']),
     highlighted() {
       return this.highlightedLists.includes(this.list.id);
     },
-    listIssues() {
-      return this.getIssuesByList(this.list.id);
+    listItems() {
+      return this.getBoardItemsByList(this.list.id);
     },
     isListDraggable() {
       return isListDraggable(this.list);
@@ -46,10 +46,19 @@ export default {
   watch: {
     filterParams: {
       handler() {
-        this.fetchIssuesForList({ listId: this.list.id });
+        if (this.list.id) {
+          this.fetchItemsForList({ listId: this.list.id });
+        }
       },
       deep: true,
       immediate: true,
+    },
+    'list.id': {
+      handler(id) {
+        if (id) {
+          this.fetchItemsForList({ listId: this.list.id });
+        }
+      },
     },
     highlighted: {
       handler(highlighted) {
@@ -63,7 +72,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchIssuesForList']),
+    ...mapActions(['fetchItemsForList']),
   },
 };
 </script>
@@ -87,7 +96,7 @@ export default {
       <board-list
         ref="board-list"
         :disabled="disabled"
-        :issues="listIssues"
+        :board-items="listItems"
         :list="list"
         :can-admin-list="canAdminList"
       />

@@ -3,7 +3,6 @@
 module Types
   module CiConfiguration
     module Sast
-      # rubocop: disable Graphql/AuthorizeTypes
       class AnalyzersEntityInputType < BaseInputObject
         graphql_name 'SastCiConfigurationAnalyzersEntityInput'
         description 'Represents the analyzers entity in SAST CI configuration'

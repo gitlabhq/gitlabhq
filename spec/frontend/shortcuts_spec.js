@@ -20,8 +20,6 @@ describe('Shortcuts', () => {
       target,
     });
 
-  preloadFixtures(fixtureName);
-
   beforeEach(() => {
     loadFixtures(fixtureName);
 

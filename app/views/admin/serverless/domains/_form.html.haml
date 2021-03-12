@@ -65,7 +65,7 @@
         %span.form-text.text-muted
           = _("Upload a private key for your certificate")
 
-  = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "gl-button btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?
+  = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "gl-button btn btn-confirm js-serverless-domain-submit", disabled: @domain.persisted?
   - if @domain.persisted?
     %button.gl-button.btn.btn-danger{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
       = _('Delete domain')

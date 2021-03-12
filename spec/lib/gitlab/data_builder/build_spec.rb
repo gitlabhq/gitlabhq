@@ -38,6 +38,7 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it { expect(data[:runner][:id]).to eq(build.runner.id) }
     it { expect(data[:runner][:tags]).to match_array(tag_names) }
     it { expect(data[:runner][:description]).to eq(build.runner.description) }
+    it { expect(data[:environment]).to be_nil }
 
     context 'commit author_url' do
       context 'when no commit present' do
@@ -62,6 +63,13 @@ RSpec.describe Gitlab::DataBuilder::Build do
         it 'sets to GitLab user url' do
           expect(data[:commit][:author_url]).to eq(Gitlab::Routing.url_helpers.user_url(username: build.commit.author.username))
         end
+      end
+
+      context 'with environment' do
+        let(:build) { create(:ci_build, :teardown_environment) }
+
+        it { expect(data[:environment][:name]).to eq(build.expanded_environment_name) }
+        it { expect(data[:environment][:action]).to eq(build.environment_action) }
       end
     end
   end

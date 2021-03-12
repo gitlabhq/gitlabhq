@@ -14,7 +14,7 @@ module Mutations
             null: true,
             description: 'The board after mutation.'
 
-      authorize :admin_board
+      authorize :admin_issue_board
 
       def resolve(args)
         board_parent = authorized_resource_parent_find!(args)
@@ -22,7 +22,7 @@ module Mutations
         response = ::Boards::CreateService.new(board_parent, current_user, args).execute
 
         {
-          board: response.payload,
+          board: response.success? ? response.payload : nil,
           errors: response.errors
         }
       end

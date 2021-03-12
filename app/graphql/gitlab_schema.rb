@@ -13,8 +13,6 @@ class GitlabSchema < GraphQL::Schema
   use GraphQL::Pagination::Connections
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
-  use Gitlab::Graphql::Present
-  use Gitlab::Graphql::CallsGitaly
   use Gitlab::Graphql::Pagination::Connections
   use Gitlab::Graphql::GenericTracing
   use Gitlab::Graphql::Timeout, max_seconds: Gitlab.config.gitlab.graphql_timeout

@@ -31,6 +31,12 @@ module Gitlab
 
           if line_inline_diffs = inline_diffs[i]
             begin
+              # MarkerRange objects are converted to Ranges to keep the previous behavior
+              # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/324068
+              if Feature.disabled?(:introduce_marker_ranges, project, default_enabled: :yaml)
+                line_inline_diffs = line_inline_diffs.map { |marker_range| marker_range.to_range }
+              end
+
               rich_line = InlineDiffMarker.new(diff_line.text, rich_line).mark(line_inline_diffs)
             # This should only happen when the encoding of the diff doesn't
             # match the blob, which is a bug. But we shouldn't fail to render
@@ -67,7 +73,7 @@ module Gitlab
       end
 
       def inline_diffs
-        @inline_diffs ||= InlineDiff.for_lines(@raw_lines, project: project)
+        @inline_diffs ||= InlineDiff.for_lines(@raw_lines)
       end
 
       def old_lines

@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query getMrParticipants($fullPath: ID!, $iid: String!) {
-  project(fullPath: $fullPath) {
+  workspace: project(fullPath: $fullPath) {
     issuable: mergeRequest(iid: $iid) {
       id
       participants {

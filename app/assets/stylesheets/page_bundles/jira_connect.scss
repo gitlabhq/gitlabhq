@@ -20,36 +20,23 @@
 @import '@gitlab/ui/src/components/base/tooltip/tooltip';
 
 $atlaskit-border-color: #dfe1e6;
+$header-height: 40px;
 
-.ac-content {
-  margin: 20px;
+.subscription-form {
+  .field-group-input {
+    display: flex;
+    padding-top: $gl-padding-4;
 
-  .subscription-form {
-    margin-bottom: 20px;
-
-    .field-group-input {
-      display: flex;
-      padding-top: $gl-padding-4;
-
-      .ak-button {
-        align-items: center;
-        height: auto;
-        margin-left: $btn-margin-5;
-      }
+    .ak-button {
+      align-items: center;
+      height: auto;
+      margin-left: $btn-margin-5;
     }
   }
 }
 
-$header-height: 40px;
-
 .jira-connect-header {
-  border-bottom: 1px solid $gray-100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: $header-height;
-  padding-left: 16px;
-  padding-right: 16px;
   position: fixed;
   top: 0;
   left: 0;
@@ -57,7 +44,6 @@ $header-height: 40px;
 }
 
 .jira-connect-user {
-  font-size: $gl-font-size;
   position: fixed;
   top: 10px;
   right: 20px;
@@ -65,20 +51,17 @@ $header-height: 40px;
 
 .jira-connect-app {
   margin-top: $header-height;
+  height: calc(100% - #{$header-height});
+  max-width: 1000px;
+}
+
+.jira-connect-app-body {
   max-width: 600px;
-  min-height: 95vh;
-  padding-top: 48px;
-  padding-left: 16px;
-  padding-right: 16px;
   margin-left: auto;
   margin-right: auto;
-  text-align: center;
 }
 
-.gl-mt-5 {
-  margin-top: 16px;
-}
-
+// for external_link buttons
 svg {
   fill: currentColor;
 
@@ -114,13 +97,4 @@ svg {
       padding: $gl-padding-8;
     }
   }
-}
-
-.empty-subscriptions {
-  color: $gray-900;
-}
-
-.browser-limitations-notice {
-  font-size: $gl-font-size;
-  margin-top: 32px;
 }

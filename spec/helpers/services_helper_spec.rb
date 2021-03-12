@@ -4,27 +4,35 @@ require 'spec_helper'
 
 RSpec.describe ServicesHelper do
   describe '#integration_form_data' do
+    let(:fields) do
+      [
+        :id,
+        :show_active,
+        :activated,
+        :type,
+        :merge_request_events,
+        :commit_events,
+        :enable_comments,
+        :comment_detail,
+        :learn_more_path,
+        :trigger_events,
+        :fields,
+        :inherit_from_id,
+        :integration_level,
+        :editable,
+        :cancel_path,
+        :can_test,
+        :test_path,
+        :reset_path
+      ]
+    end
+
     subject { helper.integration_form_data(integration) }
 
-    context 'Jira service' do
-      let(:integration) { build(:jira_service) }
+    context 'Slack service' do
+      let(:integration) { build(:slack_service) }
 
-      it 'includes Jira specific fields' do
-        is_expected.to include(
-          :id,
-          :show_active,
-          :activated,
-          :type,
-          :merge_request_events,
-          :commit_events,
-          :enable_comments,
-          :comment_detail,
-          :trigger_events,
-          :fields,
-          :inherit_from_id,
-          :integration_level
-        )
-      end
+      it { is_expected.to include(*fields) }
 
       specify do
         expect(subject[:reset_path]).to eq(helper.scoped_reset_integration_path(integration))

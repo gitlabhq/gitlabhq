@@ -11,6 +11,8 @@ module Projects
     end
 
     def execute
+      return success unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+
       # If the pages were never deployed, we can't write out the config, as the
       # directory would not exist.
       # https://gitlab.com/gitlab-org/gitlab/-/issues/235139

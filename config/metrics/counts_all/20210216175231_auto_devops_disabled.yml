@@ -1,0 +1,16 @@
+---
+key_path: counts.auto_devops_disabled
+description: Projects with Auto DevOps template disabled
+product_section: ops
+product_stage:
+product_group: group::configure
+product_category: auto_devops
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

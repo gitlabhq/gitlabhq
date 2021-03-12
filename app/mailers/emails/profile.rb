@@ -50,15 +50,16 @@ module Emails
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def access_token_about_to_expire_email(user)
+    def access_token_about_to_expire_email(user, token_names)
       return unless user
 
       @user = user
+      @token_names = token_names
       @target_url = profile_personal_access_tokens_url
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email, subject: subject(_("Your Personal Access Tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
+        mail(to: @user.notification_email, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
       end
     end
 

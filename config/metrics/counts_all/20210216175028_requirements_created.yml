@@ -1,0 +1,16 @@
+---
+key_path: counts.requirements_created
+description: Count of requirements created
+product_section: dev
+product_stage: plan
+product_group: group::certify
+product_category: requirements_management
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

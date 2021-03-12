@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kubernetes Agent user stories **(PREMIUM SELF)**
 
-The [personas in action](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#user-personas)
+The [personas in action](https://about.gitlab.com/handbook/marketing/strategic-marketing/roles-personas/#user-personas)
 for the Kubernetes Agent are:
 
 - [Sasha, the Software Developer](https://about.gitlab.com/handbook/marketing/strategic-marketing/roles-personas/#sasha-software-developer).

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SystemHooksService
-  BUILDER_DRIVEN_EVENT_DATA_AVAILABLE_FOR_CLASSES = [GroupMember, Group].freeze
+  BUILDER_DRIVEN_EVENT_DATA_AVAILABLE_FOR_CLASSES = [GroupMember, Group, ProjectMember].freeze
 
   def execute_hooks_for(model, event)
     data = build_event_data(model, event)
@@ -56,22 +56,13 @@ class SystemHooksService
       when :failed_login
         data[:state] = model.state
       end
-    when ProjectMember
-      data.merge!(project_member_data(model))
     end
 
     data
   end
 
   def build_event_name(model, event)
-    case model
-    when ProjectMember
-      return "user_add_to_team"      if event == :create
-      return "user_remove_from_team" if event == :destroy
-      return "user_update_for_team"  if event == :update
-    else
-      "#{model.class.name.downcase}_#{event}"
-    end
+    "#{model.class.name.downcase}_#{event}"
   end
 
   def project_data(model)
@@ -85,23 +76,6 @@ class SystemHooksService
       owner_name: owner.name,
       owner_email: owner.respond_to?(:email) ? owner.email : "",
       project_visibility: model.visibility.downcase
-    }
-  end
-
-  def project_member_data(model)
-    project = model.project || Project.unscoped.find(model.source_id)
-
-    {
-      project_name:                 project.name,
-      project_path:                 project.path,
-      project_path_with_namespace:  project.full_path,
-      project_id:                   project.id,
-      user_username:                model.user.username,
-      user_name:                    model.user.name,
-      user_email:                   model.user.email,
-      user_id:                      model.user.id,
-      access_level:                 model.human_access,
-      project_visibility:           Project.visibility_levels.key(project.visibility_level_value).downcase
     }
   end
 
@@ -124,6 +98,8 @@ class SystemHooksService
                       Gitlab::HookData::GroupMemberBuilder
                     when Group
                       Gitlab::HookData::GroupBuilder
+                    when ProjectMember
+                      Gitlab::HookData::ProjectMemberBuilder
                     end
 
     builder_class.new(model).build(event)

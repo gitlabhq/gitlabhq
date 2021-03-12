@@ -9,7 +9,7 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
     let(:container) { project }
     let(:repository_storage_factory_key) { :project_repository_storage_move }
     let(:error_key) { :project }
-    let(:repository_storage_worker) { ProjectUpdateRepositoryStorageWorker }
+    let(:repository_storage_worker) { Projects::UpdateRepositoryStorageWorker }
   end
 
   describe 'state transitions' do

@@ -17,23 +17,23 @@ module Resolvers
             default_value: nil,
             description: 'Sort projects by this criteria.'
 
+    argument :ids, [GraphQL::ID_TYPE],
+             required: false,
+             default_value: nil,
+             description: 'Filter projects by IDs.'
+
     type Types::ProjectType, null: true
 
-    def resolve(include_subgroups:, sort:, search:)
+    def resolve(args)
       # The namespace could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` or the `full_path` of the namespace
       # to query for projects, so make sure it's loaded and not `nil` before continuing.
-      return Project.none if namespace.nil?
 
-      query = include_subgroups ? namespace.all_projects.with_route : namespace.projects.with_route
-
-      return query unless search.present?
-
-      if sort == :similarity
-        query.sorted_by_similarity_desc(search, include_in_select: true).merge(Project.search(search))
-      else
-        query.merge(Project.search(search))
-      end
+      ::Namespaces::ProjectsFinder.new(
+        namespace: namespace,
+        current_user: current_user,
+        params: finder_params(args)
+      ).execute
     end
 
     def self.resolver_complexity(args, child_complexity:)
@@ -47,6 +47,19 @@ module Resolvers
       strong_memoize(:namespace) do
         object.respond_to?(:sync) ? object.sync : object
       end
+    end
+
+    def finder_params(args)
+      {
+        include_subgroups: args.dig(:include_subgroups),
+        sort: args.dig(:sort),
+        search: args.dig(:search),
+        ids: parse_gids(args.dig(:ids))
+      }
+    end
+
+    def parse_gids(gids)
+      gids&.map { |gid| GitlabSchema.parse_gid(gid, expected_type: ::Project).model_id }
     end
   end
 end

@@ -20,8 +20,8 @@ RSpec.describe Projects::BlobController do
         project.add_maintainer(user)
         sign_in(user)
 
-        stub_experiment(ci_syntax_templates: experiment_active)
-        stub_experiment_for_subject(ci_syntax_templates: in_experiment_group)
+        stub_experiment(ci_syntax_templates_b: experiment_active)
+        stub_experiment_for_subject(ci_syntax_templates_b: in_experiment_group)
       end
 
       context 'when the experiment is not active' do
@@ -35,48 +35,62 @@ RSpec.describe Projects::BlobController do
         end
       end
 
-      context 'when the experiment is active and the user is in the control group' do
+      context 'when the experiment is active' do
         let(:experiment_active) { true }
-        let(:in_experiment_group) { false }
 
-        it 'records the experiment user in the control group' do
-          expect(Experiment).to receive(:add_user)
-            .with(:ci_syntax_templates, :control, user, namespace_id: project.namespace_id)
+        context 'when the user is in the control group' do
+          let(:in_experiment_group) { false }
 
-          request
-        end
-      end
-
-      context 'when the experiment is active and the user is in the experimental group' do
-        let(:experiment_active) { true }
-        let(:in_experiment_group) { true }
-
-        it 'records the experiment user in the experimental group' do
-          expect(Experiment).to receive(:add_user)
-            .with(:ci_syntax_templates, :experimental, user, namespace_id: project.namespace_id)
-
-          request
-        end
-
-        context 'when requesting a non default config file type' do
-          let(:file_name) { '.non_default_ci_config' }
-          let(:project) { create(:project, :public, :repository, ci_config_path: file_name) }
-
-          it 'records the experiment user in the experimental group' do
+          it 'records the experiment user in the control group' do
             expect(Experiment).to receive(:add_user)
-            .with(:ci_syntax_templates, :experimental, user, namespace_id: project.namespace_id)
+              .with(:ci_syntax_templates_b, :control, user, namespace_id: project.namespace_id)
 
             request
           end
         end
 
-        context 'when requesting a different file type' do
-          let(:file_name) { '.gitignore' }
+        context 'when the user is in the experimental group' do
+          let(:in_experiment_group) { true }
 
-          it 'does not record the experiment user' do
-            expect(Experiment).not_to receive(:add_user)
+          it 'records the experiment user in the experimental group' do
+            expect(Experiment).to receive(:add_user)
+              .with(:ci_syntax_templates_b, :experimental, user, namespace_id: project.namespace_id)
 
             request
+          end
+
+          context 'when requesting a non default config file type' do
+            let(:file_name) { '.non_default_ci_config' }
+            let(:project) { create(:project, :public, :repository, ci_config_path: file_name) }
+
+            it 'records the experiment user in the experimental group' do
+              expect(Experiment).to receive(:add_user)
+              .with(:ci_syntax_templates_b, :experimental, user, namespace_id: project.namespace_id)
+
+              request
+            end
+          end
+
+          context 'when requesting a different file type' do
+            let(:file_name) { '.gitignore' }
+
+            it 'does not record the experiment user' do
+              expect(Experiment).not_to receive(:add_user)
+
+              request
+            end
+          end
+
+          context 'when the group is created longer than 90 days ago' do
+            before do
+              project.namespace.update_attribute(:created_at, 91.days.ago)
+            end
+
+            it 'does not record the experiment user' do
+              expect(Experiment).not_to receive(:add_user)
+
+              request
+            end
           end
         end
       end

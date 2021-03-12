@@ -25,7 +25,3 @@
           = render "shared/boards/components/sidebar/labels"
           = render_if_exists "shared/boards/components/sidebar/weight"
           = render "shared/boards/components/sidebar/notifications"
-          %remove-btn{ ":issue" => "issue",
-            ":issue-update" => "issue.sidebarInfoEndpoint",
-            ":list" => "list",
-            "v-if" => "canRemove" }

@@ -100,7 +100,12 @@ module API
           attributes_for_keys(%w[target_url description coverage])
 
         status.update(optional_attributes) if optional_attributes.any?
-        render_validation_error!(status) if status.invalid?
+
+        if status.valid?
+          status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, user_project, default_enabled: :yaml)
+        else
+          render_validation_error!(status)
+        end
 
         begin
           case params[:state]

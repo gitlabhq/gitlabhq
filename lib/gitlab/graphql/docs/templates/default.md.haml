@@ -14,11 +14,27 @@
 
   WARNING:
   Fields that are deprecated are marked with **{warning-solid}**.
-  Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-process) can be found
+  Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-and-removal-process) can be found
   in [Removed Items](../removed_items.md).
 
   <!-- vale gitlab.Spelling = NO -->
 \
+
+:plain
+  ## `Query` type
+
+  The `Query` type contains the API's top-level entry points for all executable queries.
+\
+
+- sorted_by_name(queries).each do |query|
+  = render_name_and_description(query)
+  - unless query[:arguments].empty?
+    ~ "#### Arguments\n"
+    ~ "| Name | Type | Description |"
+    ~ "| ---- | ---- | ----------- |"
+    - sorted_by_name(query[:arguments]).each do |argument|
+      = render_field(argument)
+    \
 
 :plain
   ## Object types

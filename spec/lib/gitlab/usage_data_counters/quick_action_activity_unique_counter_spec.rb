@@ -160,4 +160,24 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
       end
     end
   end
+
+  context 'tracking invite_email' do
+    let(:quickaction_name) { 'invite_email' }
+
+    context 'single email' do
+      let(:args) { 'someone@gitlab.com' }
+
+      it_behaves_like 'a tracked quick action unique event' do
+        let(:action) { 'i_quickactions_invite_email_single' }
+      end
+    end
+
+    context 'multiple emails' do
+      let(:args) { 'someone@gitlab.com another@gitlab.com' }
+
+      it_behaves_like 'a tracked quick action unique event' do
+        let(:action) { 'i_quickactions_invite_email_multiple' }
+      end
+    end
+  end
 end

@@ -7,7 +7,6 @@ import LineHighlighter from '~/line_highlighter';
 describe('LineHighlighter', () => {
   const testContext = {};
 
-  preloadFixtures('static/line_highlighter.html');
   const clickLine = (number, eventData = {}) => {
     if ($.isEmptyObject(eventData)) {
       return $(`#L${number}`).click();

@@ -2,6 +2,7 @@ import { escape, minBy } from 'lodash';
 import emojiAliases from 'emojis/aliases.json';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
+import { CATEGORY_ICON_MAP } from './constants';
 
 let emojiMap = null;
 let validEmojiNames = null;
@@ -155,19 +156,14 @@ export function sortEmoji(items) {
   return [...items].sort((a, b) => a.score - b.score || a.fieldValue.localeCompare(b.fieldValue));
 }
 
+export const CATEGORY_NAMES = Object.keys(CATEGORY_ICON_MAP);
+
 let emojiCategoryMap;
 export function getEmojiCategoryMap() {
   if (!emojiCategoryMap) {
-    emojiCategoryMap = {
-      activity: [],
-      people: [],
-      nature: [],
-      food: [],
-      travel: [],
-      objects: [],
-      symbols: [],
-      flags: [],
-    };
+    emojiCategoryMap = CATEGORY_NAMES.reduce((acc, category) => {
+      return { ...acc, [category]: [] };
+    }, {});
     Object.keys(emojiMap).forEach((name) => {
       const emoji = emojiMap[name];
       if (emojiCategoryMap[emoji.c]) {

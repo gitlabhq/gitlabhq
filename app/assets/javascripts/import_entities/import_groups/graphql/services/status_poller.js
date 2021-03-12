@@ -3,12 +3,9 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';
-import { SourceGroupsManager } from './source_groups_manager';
 
 export class StatusPoller {
-  constructor({ client, pollPath }) {
-    this.client = client;
-
+  constructor({ groupManager, pollPath }) {
     this.eTagPoll = new Poll({
       resource: {
         fetchJobs: () => axios.get(pollPath),
@@ -29,7 +26,7 @@ export class StatusPoller {
       }
     });
 
-    this.groupManager = new SourceGroupsManager({ client });
+    this.groupManager = groupManager;
   }
 
   startPolling() {
@@ -38,10 +35,7 @@ export class StatusPoller {
 
   async updateImportsStatuses(importStatuses) {
     importStatuses.forEach(({ id, status_name: statusName }) => {
-      const group = this.groupManager.findByImportId(id);
-      if (group.id) {
-        this.groupManager.setImportStatus(group, statusName);
-      }
+      this.groupManager.setImportStatusByImportId(id, statusName);
     });
   }
 }

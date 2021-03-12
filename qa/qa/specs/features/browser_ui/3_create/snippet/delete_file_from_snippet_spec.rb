@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Multiple file snippet', quarantine: { only: { pipeline: :master }, issue: 'https://gitlab.com/gitlab-org/gitaly/-/issues/3143', type: :bug } do
+    describe 'Multiple file snippet' do
       let(:personal_snippet) do
         Resource::Snippet.fabricate_via_api! do |snippet|
           snippet.title = 'Personal snippet to delete file from'
@@ -29,6 +29,11 @@ module QA
 
       before do
         Flow::Login.sign_in
+      end
+
+      after do
+        personal_snippet&.remove_via_api!
+        project_snippet&.remove_via_api!
       end
 
       shared_examples 'deleting file from snippet' do |snippet_type|

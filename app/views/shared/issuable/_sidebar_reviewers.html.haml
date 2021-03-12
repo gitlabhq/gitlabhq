@@ -39,17 +39,4 @@
   - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
   - options[:data].merge!(data)
 
-  - if experiment_enabled?(:invite_members_version_a) && can_import_members?
-    - options[:dropdown_class] += ' dropdown-extended-height'
-    - options[:footer_content] = true
-    - options[:wrapper_class] = 'js-sidebar-reviewer-dropdown'
-
-    = dropdown_tag(title, options: options) do
-      %ul.dropdown-footer-list
-        %li
-          = link_to _('Invite Members'),
-            project_project_members_path(@project),
-            title: _('Invite Members'),
-            data: { 'is-link': true, 'track-event': 'click_invite_members', 'track-label': 'edit_reviewer' }
-  - else
-    = dropdown_tag(title, options: options)
+  = dropdown_tag(title, options: options)

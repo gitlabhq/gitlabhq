@@ -90,7 +90,7 @@ module API
         build = find_build!(params[:job_id])
         authorize_read_job_artifacts!(build)
 
-        not_found! unless build.artifacts?
+        not_found! unless build.available_artifacts?
 
         path = Gitlab::Ci::Build::Artifacts::Path
           .new(params[:artifact_path])

@@ -9,98 +9,82 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4348) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-Running [static checks](../sast/index.md) on your code is the first step to detect
-vulnerabilities that can put the security of your code at risk. Yet, once
-deployed, your application is exposed to a new category of possible attacks,
-such as cross-site scripting or broken authentication flaws. This is where
-Dynamic Application Security Testing (DAST) comes into place.
+Your application may be exposed to a new category of attacks once deployed into a new environment. For
+example, application server misconfigurations or incorrect assumptions about security controls may
+not be visible from source code alone. Dynamic Application Security Testing (DAST) checks an
+application for these types of vulnerabilities in a deployed environment. GitLab DAST uses the
+popular open source tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) to analyze your running
+web application.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
 
-## Overview
-
-If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your running web applications
-for known vulnerabilities using Dynamic Application Security Testing (DAST).
-You can take advantage of DAST by either [including the CI job](#configuration) in
-your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto DAST](../../../topics/autodevops/stages.md#auto-dast),
-provided by [Auto DevOps](../../../topics/autodevops/index.md).
-
-GitLab checks the DAST report, compares the found vulnerabilities between the source and target
-branches, and shows the information on the merge request.
+In GitLab, DAST is commonly initiated by a merge request and runs as a job in the CI/CD pipeline.
+You can also run a DAST scan on demand, outside the CI/CD pipeline. Your running web application is
+analyzed for known vulnerabilities. GitLab checks the DAST report, compares the vulnerabilities
+found between the source and target branches, and shows any relevant findings on the merge request.
 
 Note that this comparison logic uses only the latest pipeline executed for the target branch's base
 commit. Running the pipeline on any other commit has no effect on the merge request.
 
-![DAST Widget](img/dast_v13_4.png)
+![DAST widget, showing the vulnerability statistics and a list of vulnerabilities](img/dast_v13_4.png)
 
-By clicking on one of the detected linked vulnerabilities, you can
-see the details and the URL(s) affected.
+## Enable DAST
 
-![DAST Widget Clicked](img/dast_single_v13_0.png)
+### Prerequisites
 
-[Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_Application_Security_Testing)
-uses the popular open source tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/)
-to perform an analysis on your running web application.
+- GitLab Runner with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
-By default, DAST executes [ZAP Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/)
-and performs passive scanning only. It doesn't actively attack your application.
-However, DAST can be [configured](#full-scan)
-to also perform an *active scan*: attack your application and produce a more extensive security report.
-It can be very useful combined with [Review Apps](../../../ci/review_apps/index.md).
+To enable DAST, either:
 
-Note that a pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
-fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
-example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
-results. On failure, the analyzer outputs an
-[exit code](../../../development/integrations/secure.md#exit-code).
+- Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast), provided by
+  [Auto DevOps](../../../topics/autodevops/index.md).
+- [Include the DAST template](#dast-cicd-template) in your existing `.gitlab-ci.yml` file.
 
-## Use cases
+### DAST CI/CD template
 
-It helps you automatically find security vulnerabilities in your running web
-applications while you're developing and testing your applications.
+The DAST job is defined in a CI/CD template file you reference in your CI/CD configuration file. The
+template is included with GitLab. Updates to the template are provided with GitLab upgrades. You
+benefit from any improvements and additions.
 
-## Requirements
+The following templates are available:
 
-To run a DAST job, you need GitLab Runner with the
-[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
+- [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
+  Stable version of the DAST CI/CD template.
+- [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
+  Latest version of the DAST template. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325)
+  in GitLab 13.8). Please note that the latest version may include breaking changes. Check the
+  [DAST troubleshooting guide](#troubleshooting) if you experience problems.
 
-## Configuration
+Use the stable template unless you need a feature provided only in the latest template.
 
-For GitLab 11.9 and later, to enable DAST, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
-[`DAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
-that's provided as a part of your GitLab installation. For GitLab versions earlier
-than 11.9, you can copy and use the job as defined in that template.
-
-Add the following to your `.gitlab-ci.yml` file:
-
-```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
-variables:
-  DAST_WEBSITE: https://example.com
-```
-
-### Latest template
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325) in GitLab 13.8
-
-To use the latest version of the DAST template, include
-`DAST.latest.gitlab-ci.yml` instead of `DAST.gitlab-ci.yml`.
 See the CI/CD [documentation](../../../development/cicd/templates.md#latest-version)
 on template versioning for more information.
 
-Please note that the latest version may include breaking changes. Check the
-[DAST troubleshooting guide](#troubleshooting) if you experience problems.
+#### Include the DAST template
 
-### Template options
+The method of including the DAST template depends on the GitLab version:
 
-There are two ways to define the URL to be scanned by DAST:
+- In GitLab 11.9 and later, [include](../../../ci/yaml/README.md#includetemplate) the
+  `DAST.gitlab-ci.yml` template.
+
+  Add the following to your `.gitlab-ci.yml` file:
+
+  ```yaml
+  include:
+    - template: DAST.gitlab-ci.yml
+
+  variables:
+    DAST_WEBSITE: https://example.com
+  ```
+
+- In GitLab 11.8 and earlier, copy the template's content into your `.gitlab_ci.yml` file.
+
+#### Template options
+
+Running a DAST scan requires a URL. There are two ways to define the URL to be scanned by DAST:
 
 1. Set the `DAST_WEBSITE` [CI/CD variable](../../../ci/yaml/README.md#variables).
 
@@ -125,7 +109,7 @@ There are two ways to define the URL to be scanned by DAST:
 If both values are set, the `DAST_WEBSITE` value takes precedence.
 
 The included template creates a `dast` job in your CI/CD pipeline and scans
-your project's source code for possible vulnerabilities.
+your project's running application for possible vulnerabilities.
 
 The results are saved as a
 [DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast)
@@ -143,9 +127,93 @@ image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
 
 Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases) page.
 
-### When DAST scans run
+## Deployment options
 
-When using `DAST.gitlab-ci.yml` template, the `dast` job is run last as shown in
+Depending on the complexity of the target application, there are a few options as to how to deploy and configure
+the DAST template. A set of example applications with their configurations have been made available in our
+[DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
+
+### Review Apps
+
+Review Apps are the most involved method of deploying your DAST target application. To assist in the process,
+we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
+[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project along with detailed
+instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
+on how to configure Review Apps for DAST.
+
+### Docker Services
+
+If your application utilizes Docker containers you have another option for deploying and scanning with DAST.
+After your Docker build job completes and your image is added to your container registry, you can utilize the image as a
+[service](../../../ci/docker/using_docker_images.md#what-is-a-service).
+
+By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
+
+```yaml
+stages:
+  - build
+  - dast
+
+include: 
+  - template: DAST.gitlab-ci.yml
+
+# Deploys the container to the GitLab container registry
+deploy:
+  services:
+  - name: docker:dind
+    alias: dind
+  image: docker:19.03.5
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+services: # use services to link your app container to the dast job
+  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    alias: yourapp
+
+variables:
+  DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+  DAST_ZAP_USE_AJAX_SPIDER: "true" # use the ajax spider
+```
+
+Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+
+```yaml
+variables:
+  FF_NETWORK_PER_BUILD: "true" # enable network per build so all services can communicate on the same network
+
+services: # use services to link the container to the dast job
+  - name: mongo:latest
+    alias: mongo
+  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    alias: yourapp
+```
+
+### DAST application analysis
+
+DAST can analyze applications in two ways:
+
+- Passive scan only (DAST default). DAST executes
+  [ZAP's Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) and doesn't
+  actively attack your application.
+- Passive and active scan. DAST can be [configured](#full-scan) to also perform an active scan
+  to attack your application and produce a more extensive security report. It can be very
+  useful when combined with [Review Apps](../../../ci/review_apps/index.md).
+
+Note that a pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
+fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
+example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
+results. On failure, the analyzer outputs an
+[exit code](../../../development/integrations/secure.md#exit-code).
+
+#### DAST job order
+
+When using the `DAST.gitlab-ci.yml` template, the `dast` job is run last as shown in
 the example below. To ensure DAST is scanning the latest code, your CI pipeline
 should deploy changes to the web server in one of the jobs preceding the `dast` job.
 
@@ -246,6 +314,9 @@ If your DAST job exceeds the job timeout and you need to reduce the scan duratio
 tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/2020/08/31/how-to-configure-dast-full-scans-for-complex-web-applications/).
 
 #### Domain validation
+
+WARNING:
+In GitLab 13.8, domain validation, outside of the new on-demand scan site profile validation, was deprecated. In GitLab 14.0, domain validation in CI/CD jobs will be permanently removed.
 
 The DAST job can be run anywhere, which means you can accidentally hit live web servers
 and potentially damage them. You could even take down your production environment.
@@ -472,7 +543,7 @@ URLs to scan can be specified by either of the following methods:
 
 To define the URLs to scan in a file, create a plain text file with one path per line.
 
-```txt
+```plaintext
 page1.html
 /page2.html
 category/shoes/page1.html
@@ -676,7 +747,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use DAST in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisites).
 - Docker Container Registry with a locally available copy of the DAST
   [container image](https://gitlab.com/gitlab-org/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/gitlab-org/security-products/dast/container_registry).
@@ -831,7 +902,7 @@ To delete an on-demand scan:
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
-## Site profile
+### Site profile
 
 A site profile describes the attributes of a web site to scan on demand with DAST. A site profile is
 required for an on-demand DAST scan.
@@ -841,7 +912,7 @@ A site profile contains the following:
 - **Profile name**: A name you assign to the site to be scanned.
 - **Target URL**: The URL that DAST runs against.
 
-### Site profile validation
+#### Site profile validation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
 
@@ -858,7 +929,7 @@ follows:
   
 Both methods are equivalent in functionality. Use whichever is feasible.
 
-### Create a site profile
+#### Create a site profile
 
 To create a site profile:
 
@@ -869,7 +940,7 @@ To create a site profile:
 
 The site profile is created.
 
-### Edit a site profile
+#### Edit a site profile
 
 To edit an existing site profile:
 
@@ -881,7 +952,7 @@ To edit an existing site profile:
 
 The site profile is updated with the edited details.
 
-### Delete a site profile
+#### Delete a site profile
 
 To delete an existing site profile:
 
@@ -893,7 +964,7 @@ To delete an existing site profile:
 
 The site profile is deleted.
 
-### Validate a site profile
+#### Validate a site profile
 
 Prerequisites:
 
@@ -921,7 +992,7 @@ The site is validated and an active scan can run against it.
 
 If a validated site profile's target URL is edited, the site's validation status is revoked.
 
-### Revoke a site profile's validation status
+#### Revoke a site profile's validation status
 
 Note that all site profiles with the same URL have their validation status revoked.
 
@@ -977,7 +1048,7 @@ app.get('/dast-website-target', function(req, res) {
 })
 ```
 
-## Scanner profile
+### Scanner profile
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/225804) in GitLab 13.5: scan mode, AJAX spider, debug messages.
@@ -992,7 +1063,7 @@ A scanner profile defines the scanner settings used to run an on-demand scan:
 - **AJAX spider:**  Run the AJAX spider, in addition to the traditional spider, to crawl the target site.
 - **Debug messages:** Include debug messages in the DAST console output.
 
-### Create a scanner profile
+#### Create a scanner profile
 
 To create a scanner profile:
 
@@ -1002,7 +1073,7 @@ To create a scanner profile:
 1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
 1. Click **Save profile**.
 
-### Edit a scanner profile
+#### Edit a scanner profile
 
 To edit a scanner profile:
 
@@ -1015,7 +1086,7 @@ To edit a scanner profile:
 
 The scanner profile is updated with the edited details.
 
-### Delete a scanner profile
+#### Delete a scanner profile
 
 To delete a scanner profile:
 
@@ -1099,7 +1170,7 @@ variables:
 ## Interacting with the vulnerabilities
 
 Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+[address the vulnerabilities](../index.md#addressing-vulnerabilities).
 
 ## Vulnerabilities database update
 

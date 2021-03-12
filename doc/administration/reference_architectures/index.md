@@ -5,7 +5,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Reference architectures
+# Reference architectures **(FREE SELF)**
 
 You can set up GitLab on a single server or scale it up to serve many users.
 This page details the recommended Reference Architectures that were built and
@@ -92,7 +92,7 @@ Also, not implementing extra servers for GitLab doesn't necessarily mean that yo
 more downtime. Depending on your needs and experience level, single servers can
 have more actual perceived uptime for your users.
 
-### Automated backups **(FREE SELF)**
+### Automated backups
 
 > - Level of complexity: **Low**
 > - Required domain knowledge: PostgreSQL, GitLab configurations, Git

@@ -54,14 +54,17 @@ RSpec.describe Repositories::GitHttpController do
           }.from(0).to(1)
         end
 
-        it_behaves_like 'records an onboarding progress action', :git_read do
-          let(:namespace) { project.namespace }
-
-          subject { send_request }
+        describe 'recording the onboarding progress', :sidekiq_inline do
+          let_it_be(:namespace) { project.namespace }
 
           before do
-            stub_feature_flags(disable_git_http_fetch_writes: false)
+            OnboardingProgress.onboard(namespace)
+            send_request
           end
+
+          subject { OnboardingProgress.completed?(namespace, :git_pull) }
+
+          it { is_expected.to be(true) }
         end
 
         context 'when disable_git_http_fetch_writes is enabled' do
@@ -72,12 +75,6 @@ RSpec.describe Repositories::GitHttpController do
           it 'does not increment statistics' do
             expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
             expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
-
-            send_request
-          end
-
-          it 'does not record onboarding progress' do
-            expect(OnboardingProgressService).not_to receive(:new)
 
             send_request
           end

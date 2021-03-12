@@ -49,7 +49,8 @@ class NotificationSetting < ApplicationRecord
     :failed_pipeline,
     :fixed_pipeline,
     :success_pipeline,
-    :moved_project
+    :moved_project,
+    :merge_when_pipeline_succeeds
   ].freeze
 
   def self.email_events(source = nil)

@@ -49,11 +49,11 @@ describe('File Review(s) utilities', () => {
 
     it.each`
       mrReviews                         | files             | fileReviews
-      ${{}}                             | ${[file1, file2]} | ${[false, false]}
-      ${{ abc: ['123'] }}               | ${[file1, file2]} | ${[true, false]}
-      ${{ abc: ['098'] }}               | ${[file1, file2]} | ${[false, true]}
-      ${{ def: ['123'] }}               | ${[file1, file2]} | ${[false, false]}
-      ${{ abc: ['123'], def: ['098'] }} | ${[]}             | ${[]}
+      ${{}}                             | ${[file1, file2]} | ${{ 123: false, '098': false }}
+      ${{ abc: ['123'] }}               | ${[file1, file2]} | ${{ 123: true, '098': false }}
+      ${{ abc: ['098'] }}               | ${[file1, file2]} | ${{ 123: false, '098': true }}
+      ${{ def: ['123'] }}               | ${[file1, file2]} | ${{ 123: false, '098': false }}
+      ${{ abc: ['123'], def: ['098'] }} | ${[]}             | ${{}}
     `(
       'returns $fileReviews based on the diff files in state and the existing reviews $reviews',
       ({ mrReviews, files, fileReviews }) => {

@@ -5,6 +5,9 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { CI_CONFIG_STATUS_VALID } from '../../constants';
 
 export const i18n = {
+  empty: __(
+    "We'll continuously validate your pipeline configuration. The validation results will appear here.",
+  ),
   learnMore: __('Learn more'),
   loading: s__('Pipelines|Validating GitLab CI configuration…'),
   invalid: s__('Pipelines|This GitLab CI configuration is invalid.'),
@@ -26,6 +29,10 @@ export default {
     },
   },
   props: {
+    ciFileContent: {
+      type: String,
+      required: true,
+    },
     ciConfig: {
       type: Object,
       required: false,
@@ -38,17 +45,22 @@ export default {
     },
   },
   computed: {
+    isEmpty() {
+      return !this.ciFileContent;
+    },
     isValid() {
       return this.ciConfig?.status === CI_CONFIG_STATUS_VALID;
     },
     icon() {
-      if (this.isValid) {
+      if (this.isValid || this.isEmpty) {
         return 'check';
       }
       return 'warning-solid';
     },
     message() {
-      if (this.isValid) {
+      if (this.isEmpty) {
+        return this.$options.i18n.empty;
+      } else if (this.isValid) {
         return this.$options.i18n.valid;
       }
 
@@ -74,7 +86,7 @@ export default {
       <tooltip-on-truncate :title="message" class="gl-text-truncate">
         <gl-icon :name="icon" /> <span data-testid="validationMsg">{{ message }}</span>
       </tooltip-on-truncate>
-      <span class="gl-flex-shrink-0 gl-pl-2">
+      <span v-if="!isEmpty" class="gl-flex-shrink-0 gl-pl-2">
         <gl-link data-testid="learnMoreLink" :href="ymlHelpPagePath">
           {{ $options.i18n.learnMore }}
         </gl-link>

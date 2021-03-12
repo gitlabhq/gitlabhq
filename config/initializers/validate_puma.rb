@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-def max_puma_workers
-  Puma.cli_config.options[:workers].to_i
-end
-
 if Gitlab::Runtime.puma? && !Gitlab::Runtime.puma_in_clustered_mode?
   raise 'Puma is only supported in Clustered mode (workers > 0)' if Gitlab.com?
 

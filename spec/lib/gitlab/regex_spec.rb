@@ -367,6 +367,35 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.npm_package_name_regex' do
+    subject { described_class.npm_package_name_regex }
+
+    it { is_expected.to match('@scope/package') }
+    it { is_expected.to match('unscoped-package') }
+    it { is_expected.not_to match('@first-scope@second-scope/package') }
+    it { is_expected.not_to match('scope-without-at-symbol/package') }
+    it { is_expected.not_to match('@not-a-scoped-package') }
+    it { is_expected.not_to match('@scope/sub/package') }
+    it { is_expected.not_to match('@scope/../../package') }
+    it { is_expected.not_to match('@scope%2e%2e%2fpackage') }
+    it { is_expected.not_to match('@%2e%2e%2f/package') }
+
+    context 'capturing group' do
+      [
+        ['@scope/package', 'scope'],
+        ['unscoped-package', nil],
+        ['@not-a-scoped-package', nil],
+        ['@scope/sub/package', nil],
+        ['@inv@lid-scope/package', nil]
+      ].each do |package_name, extracted_scope_name|
+        it "extracts the scope name for #{package_name}" do
+          match = package_name.match(described_class.npm_package_name_regex)
+          expect(match&.captures&.first).to eq(extracted_scope_name)
+        end
+      end
+    end
+  end
+
   describe '.nuget_version_regex' do
     subject { described_class.nuget_version_regex }
 

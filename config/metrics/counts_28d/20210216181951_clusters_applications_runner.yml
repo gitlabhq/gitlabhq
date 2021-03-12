@@ -1,0 +1,19 @@
+---
+key_path: usage_activity_by_stage_monthly.verify.clusters_applications_runner
+description: Total GitLab Managed clusters with Runner enabled
+product_section: ops
+product_stage: verify
+product_group: group::runner
+product_category: runner
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

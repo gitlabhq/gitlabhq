@@ -102,7 +102,7 @@ To edit a file:
    in the bottom-right corner.
 1. When you're done, click **Submit changes...**.
 1. (Optional) Adjust the default title and description of the merge request, to submit
-   with your changes. Alternatively, select a [merge request template](../../../user/project/description_templates.md#creating-merge-request-templates)
+   with your changes. Alternatively, select a [merge request template](../../../user/project/description_templates.md#create-a-merge-request-template)
    from the dropdown menu and edit it accordingly.
 1. Click **Submit changes**.
 1. A new merge request is automatically created and you can assign a colleague for review.

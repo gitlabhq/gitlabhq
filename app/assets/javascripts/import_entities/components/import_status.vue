@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex gl-h-7 gl-align-items-center">
     <gl-loading-icon
       v-if="mappedStatus.loadingIcon"
       :inline="true"

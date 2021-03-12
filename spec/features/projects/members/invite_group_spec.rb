@@ -41,46 +41,20 @@ RSpec.describe 'Project > Members > Invite group', :js do
       context 'when the group has "Share with group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
-        context 'when `vue_project_members_list` feature flag is enabled' do
-          it 'the project can be shared with another group' do
-            visit project_project_members_path(project)
+        it 'the project can be shared with another group' do
+          visit project_project_members_path(project)
 
-            expect(page).not_to have_link 'Groups'
+          expect(page).not_to have_link 'Groups'
 
-            click_on 'invite-group-tab'
+          click_on 'invite-group-tab'
 
-            select2 group_to_share_with.id, from: '#link_group_id'
-            page.find('body').click
-            find('.btn-success').click
+          select2 group_to_share_with.id, from: '#link_group_id'
+          page.find('body').click
+          find('.btn-confirm').click
 
-            click_link 'Groups'
+          click_link 'Groups'
 
-            expect(members_table).to have_content(group_to_share_with.name)
-          end
-        end
-
-        context 'when `vue_project_members_list` feature flag is disabled' do
-          before do
-            stub_feature_flags(vue_project_members_list: false)
-          end
-
-          it 'the project can be shared with another group' do
-            visit project_project_members_path(project)
-
-            expect(page).not_to have_link 'Groups'
-
-            click_on 'invite-group-tab'
-
-            select2 group_to_share_with.id, from: '#link_group_id'
-            page.find('body').click
-            find('.btn-success').click
-
-            click_link 'Groups'
-
-            page.within('[data-testid="project-member-groups"]') do
-              expect(page).to have_content(group_to_share_with.name)
-            end
-          end
+          expect(members_table).to have_content(group_to_share_with.name)
         end
       end
 
@@ -159,36 +133,15 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
       fill_in 'expires_at_groups', with: 5.days.from_now.strftime('%Y-%m-%d')
       click_on 'invite-group-tab'
-      find('.btn-success').click
+      find('.btn-confirm').click
     end
 
-    context 'when `vue_project_members_list` feature flag is enabled' do
-      it 'the group link shows the expiration time with a warning class' do
-        setup
-        click_link 'Groups'
+    it 'the group link shows the expiration time with a warning class' do
+      setup
+      click_link 'Groups'
 
-        expect(find_group_row(group)).to have_content(/in \d days/)
-        expect(find_group_row(group)).to have_selector('.gl-text-orange-500')
-      end
-    end
-
-    context 'when `vue_project_members_list` feature flag is disabled' do
-      before do
-        stub_feature_flags(vue_project_members_list: false)
-      end
-
-      it 'the group link shows the expiration time with a warning class' do
-        setup
-        click_link 'Groups'
-
-        page.within('[data-testid="project-member-groups"]') do
-          # Using distance_of_time_in_words_to_now because it is not the same as
-          # subtraction, and this way avoids time zone issues as well
-          expires_in_text = distance_of_time_in_words_to_now(project.project_group_links.first.expires_at)
-          expect(page).to have_content(expires_in_text)
-          expect(page).to have_selector('.text-warning')
-        end
-      end
+      expect(find_group_row(group)).to have_content(/in \d days/)
+      expect(find_group_row(group)).to have_selector('.gl-text-orange-500')
     end
   end
 

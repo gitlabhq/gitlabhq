@@ -213,7 +213,7 @@ export default {
         <gl-button
           v-if="newUserListPath"
           :href="newUserListPath"
-          variant="success"
+          variant="confirm"
           category="secondary"
           class="gl-mb-3"
           data-testid="ff-new-list-button"
@@ -224,7 +224,7 @@ export default {
         <gl-button
           v-if="hasNewPath"
           :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
-          variant="success"
+          variant="confirm"
           data-testid="ff-new-button"
           @click="onNewFeatureFlagCLick"
         >
@@ -301,7 +301,7 @@ export default {
             <gl-button
               v-if="newUserListPath"
               :href="newUserListPath"
-              variant="success"
+              variant="confirm"
               category="secondary"
               class="gl-mb-0 gl-mr-4"
               data-testid="ff-new-list-button"
@@ -312,7 +312,7 @@ export default {
             <gl-button
               v-if="hasNewPath"
               :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
-              variant="success"
+              variant="confirm"
               data-testid="ff-new-button"
               @click="onNewFeatureFlagCLick"
             >

@@ -50,9 +50,21 @@ RSpec.describe Gitlab::Diff::Highlight do
       end
 
       it 'highlights and marks added lines' do
-        code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left">RuntimeError</span></span><span class="p"><span class="idiff">,</span></span><span class="idiff right"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+        code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left addition">RuntimeError</span></span><span class="p"><span class="idiff addition">,</span></span><span class="idiff right addition"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
 
         expect(subject[5].rich_text).to eq(code)
+      end
+
+      context 'when introduce_marker_ranges is false' do
+        before do
+          stub_feature_flags(introduce_marker_ranges: false)
+        end
+
+        it 'keeps the old bevavior (without mode classes)' do
+          code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left">RuntimeError</span></span><span class="p"><span class="idiff">,</span></span><span class="idiff right"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+
+          expect(subject[5].rich_text).to eq(code)
+        end
       end
 
       context 'when no diff_refs' do
@@ -93,7 +105,7 @@ RSpec.describe Gitlab::Diff::Highlight do
       end
 
       it 'marks added lines' do
-        code = %q{+      raise <span class="idiff left right">RuntimeError, </span>&quot;System commands must be given as an array of strings&quot;}
+        code = %q{+      raise <span class="idiff left right addition">RuntimeError, </span>&quot;System commands must be given as an array of strings&quot;}
 
         expect(subject[5].rich_text).to eq(code)
         expect(subject[5].rich_text).to be_html_safe

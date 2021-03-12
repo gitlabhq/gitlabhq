@@ -52,17 +52,6 @@ RSpec.describe Gitlab::Diff::InlineDiff do
         expect(subject[0]).to eq([3..6])
         expect(subject[1]).to eq([3..3, 17..22])
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(improved_merge_diff_highlighting: false)
-        end
-
-        it 'finds all inline diffs' do
-          expect(subject[0]).to eq([3..19])
-          expect(subject[1]).to eq([3..22])
-        end
-      end
     end
   end
 

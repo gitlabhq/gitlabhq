@@ -24,7 +24,8 @@
 #     alt_usage_data(fallback: nil) { Gitlab.config.registry.enabled }
 #
 #   * redis_usage_data method
-#     handles ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+#     handles ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent,
+#     Gitlab::UsageDataCounters::HLLRedisCounter::EventError
 #     returns -1 when a block is sent or hash with all values -1 when a counter is sent
 #     different behaviour due to 2 different implementations of redis counter
 #
@@ -39,9 +40,9 @@ module Gitlab
 
       FALLBACK = -1
       DISTRIBUTED_HLL_FALLBACK = -2
-      ALL_TIME_PERIOD_HUMAN_NAME = "all_time"
-      WEEKLY_PERIOD_HUMAN_NAME = "weekly"
-      MONTHLY_PERIOD_HUMAN_NAME = "monthly"
+      ALL_TIME_TIME_FRAME_NAME = "all"
+      SEVEN_DAYS_TIME_FRAME_NAME = "7d"
+      TWENTY_EIGHT_DAYS_TIME_FRAME_NAME = "28d"
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch
@@ -86,6 +87,14 @@ module Gitlab
         FALLBACK
       end
 
+      def add(*args)
+        return -1 if args.any?(&:negative?)
+
+        args.sum
+      rescue StandardError
+        FALLBACK
+      end
+
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         if block_given?
           yield
@@ -126,8 +135,6 @@ module Gitlab
       # @param event_name [String] the event name
       # @param values [Array|String] the values counted
       def track_usage_event(event_name, values)
-        return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
-
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
       end
 
@@ -160,7 +167,7 @@ module Gitlab
 
       def redis_usage_counter
         yield
-      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent, Gitlab::UsageDataCounters::HLLRedisCounter::EventError
         FALLBACK
       end
 

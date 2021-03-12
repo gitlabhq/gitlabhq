@@ -16,3 +16,26 @@ gl-emoji {
     vertical-align: baseline;
   }
 }
+
+.emoji-picker-category-header {
+  @include gl-sticky;
+  background-color: $white-transparent;
+}
+
+.emoji-picker-emoji {
+  height: 30px;
+  // Create a width that fits 9 emojis per row
+  width: 100 / 9 * 1%;
+}
+
+.emoji-picker .gl-new-dropdown .dropdown-menu {
+  width: 350px;
+}
+
+.emoji-picker-category-tab {
+  border-bottom-color: transparent;
+}
+
+.emoji-picker .gl-new-dropdown-inner > :last-child {
+  padding-bottom: 0;
+}

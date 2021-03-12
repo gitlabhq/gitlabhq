@@ -50,8 +50,8 @@ export default {
   <div class="discussion-with-resolve-btn clearfix">
     <reply-placeholder
       data-qa-selector="discussion_reply_tab"
-      :button-text="s__('MergeRequests|Reply...')"
-      @onClick="$emit('showReplyForm')"
+      :placeholder-text="__('Reply…')"
+      @focus="$emit('showReplyForm')"
     />
 
     <div v-if="userCanResolveDiscussion" class="btn-group discussion-actions" role="group">

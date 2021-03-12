@@ -4,6 +4,7 @@ module Gitlab
   module Usage
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
+      BASE_REPO_PATH = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
 
       attr_reader :path
       attr_reader :attributes
@@ -19,6 +20,10 @@ module Gitlab
 
       def to_h
         attributes
+      end
+
+      def yaml_path
+        "#{BASE_REPO_PATH}#{path.delete_prefix(Rails.root.to_s)}"
       end
 
       def validate!

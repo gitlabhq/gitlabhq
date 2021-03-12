@@ -14,6 +14,7 @@ require 'spec_helper'
 
 RSpec.describe API::Wikis do
   include WorkhorseHelpers
+  include AfterNextHelpers
 
   let(:user) { create(:user) }
   let(:group) { create(:group).tap { |g| g.add_owner(user) } }
@@ -576,6 +577,20 @@ RSpec.describe API::Wikis do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
           include_examples 'wiki API 404 Wiki Page Not Found'
+        end
+      end
+
+      context 'when there is an error deleting the page' do
+        it 'returns 422' do
+          project.add_maintainer(user)
+
+          allow_next(WikiPages::DestroyService, current_user: user, container: project)
+            .to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+
+          delete(api(url, user))
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq 'foo'
         end
       end
     end

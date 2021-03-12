@@ -54,3 +54,24 @@ export const MR_DIFFS_MARK_DIFF_FILES_END = 'mr-diffs-mark-diff-files-end';
 // Measures
 export const MR_DIFFS_MEASURE_FILE_TREE_DONE = 'mr-diffs-measure-file-tree-done';
 export const MR_DIFFS_MEASURE_DIFF_FILES_DONE = 'mr-diffs-measure-diff-files-done';
+
+//
+// Pipelines Detail namespace
+//
+
+// Marks
+export const PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START =
+  'pipelines-detail-links-mark-calculate-start';
+export const PIPELINES_DETAIL_LINKS_MARK_CALCULATE_END =
+  'pipelines-detail-links-mark-calculate-end';
+
+// Measures
+export const PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION =
+  'Pipelines Detail Graph: Links Calculation';
+
+// Metrics
+// Note: These strings must match the backend
+// (defined in: app/services/ci/prometheus_metrics/observe_histograms_service.rb)
+export const PIPELINES_DETAIL_LINK_DURATION = 'pipeline_graph_link_calculation_duration_seconds';
+export const PIPELINES_DETAIL_LINKS_TOTAL = 'pipeline_graph_links_total';
+export const PIPELINES_DETAIL_LINKS_JOB_RATIO = 'pipeline_graph_link_per_job_ratio';

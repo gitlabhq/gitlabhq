@@ -63,7 +63,7 @@ export default {
 
       <span class="text-truncate w-100">{{ job.name ? job.name : job.id }}</span>
 
-      <gl-icon v-if="job.retried" name="retry" class="js-retry-icon" />
+      <gl-icon v-if="job.retried" name="retry" />
     </gl-link>
   </div>
 </template>

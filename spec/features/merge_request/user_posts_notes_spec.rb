@@ -44,7 +44,10 @@ RSpec.describe 'Merge request > User posts notes', :js do
 
       it 'has enable submit button, preview button and saves content to local storage' do
         page.within('.js-main-target-form') do
-          expect(page).not_to have_css('.js-comment-button[disabled]')
+          page.within('[data-testid="comment-button"]') do
+            expect(page).to have_css('.split-content-button')
+            expect(page).not_to have_css('.split-content-button[disabled]')
+          end
           expect(page).to have_css('.js-md-preview-button', visible: true)
         end
 

@@ -37,10 +37,10 @@ To learn how to create templates for various file types in groups, visit
   images guidelines, link to the related issue, reviewer name, and so on.
 - You can also create issues and merge request templates for different
   stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
-- You can use an [issue description template](#creating-issue-templates) as a
+- You can use an [issue description template](#create-an-issue-template) as a
   [Service Desk email template](service_desk.md#new-service-desk-issues).
 
-## Creating issue templates
+## Create an issue template
 
 Create a new Markdown (`.md`) file inside the `.gitlab/issue_templates/`
 directory in your repository. Commit and push to your default branch.
@@ -65,13 +65,13 @@ To create the `.gitlab/issue_templates` directory:
 To check if this has worked correctly, [create a new issue](issues/managing_issues.md#create-a-new-issue)
 and see if you can choose a description template.
 
-## Creating merge request templates
+## Create a merge request template
 
 Similarly to issue templates, create a new Markdown (`.md`) file inside the
 `.gitlab/merge_request_templates/` directory in your repository. Commit and
 push to your default branch.
 
-## Using the templates
+## Use the templates
 
 Let's take for example that you've created the file `.gitlab/issue_templates/Bug.md`.
 This enables the `Bug` dropdown option when creating or editing issues. When
@@ -85,9 +85,45 @@ For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_templat
 
 ![Description templates](img/description_templates.png)
 
-## Setting a default template for merge requests and issues **(PREMIUM)**
+### Set an issue and merge request description template at group level **(PREMIUM)**
 
-> - Moved to GitLab Premium in 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled by default on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to
+    [enable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level).
+
+Templates can be useful because you can create a template once and use it multiple times.
+To re-use templates [you've created](../project/description_templates.md#create-an-issue-template):
+
+1. Go to the group's **Settings > General > Templates**.
+1. From the dropdown, select your template project as the template repository at group level.
+
+![Group template settings](../group/img/group_file_template_settings.png)
+
+### Set an issue and merge request description template at instance level **(PREMIUM ONLY)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled by default on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to
+    [enable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level).
+
+Similar to group templates, issue and merge request templates can also be set up at the instance level.
+This results in those templates being available in all projects within the instance.
+Only instance administrators can set instance-level templates.
+
+To set the instance-level description template repository:
+
+1. Select the **Admin Area** icon (**{admin}**).
+1. Go to **Settings > Templates**.
+1. From the dropdown, select your template project as the template repository at instance level.
+
+Learn more about [instance template repository](../admin_area/settings/instance_template_repository.md).
+
+![Setting templates in the Admin Area](../admin_area/settings/img/file_template_admin_area.png)
+
+### Set a default template for merge requests and issues **(PREMIUM)**
 
 The visibility of issues or merge requests should be set to either "Everyone
 with access" or "Only Project Members" in your project's **Settings / Visibility, project features, permissions** section, otherwise the
@@ -109,6 +145,10 @@ you should be fine.
 After you add the description, hit **Save changes** for the settings to take
 effect. Now, every time a new merge request or issue is created, it is
 pre-filled with the text you entered in the template(s).
+
+[GitLab versions 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/885)
+provide `issues_template` and `merge_requests_template` attributes in the
+[Projects API](../../api/projects.md) to help you keep your templates up to date.
 
 ## Description template example
 
@@ -159,3 +199,28 @@ it's very hard to read otherwise.)
 /cc @project-manager
 /assign @qa-tester
 ```
+
+## Enable or disable issue and merge request description templates at group and instance level
+
+Setting issue and merge request description templates at group and instance levels
+is under development and not ready for production use. It is deployed behind a
+feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:inherited_issuable_templates)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:inherited_issuable_templates)
+```
+
+The feature flag affects these features:
+
+- Setting a templates project as issue and merge request description templates source at group level.
+- Setting a templates project as issue and merge request description templates source at instance level.

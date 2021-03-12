@@ -1,39 +1,30 @@
+import { formatNumber } from '~/locale';
+
 /**
- * Formats a number as string using `toLocaleString`.
+ * Formats a number as a string using `toLocaleString`.
  *
  * @param {Number} number to be converted
- * @param {params} Parameters
- * @param {params.fractionDigits} Number of decimal digits
- * to display, defaults to using `toLocaleString` defaults.
- * @param {params.maxLength} Max output char lenght at the
+ *
+ * @param {options.maxCharLength} Max output char length at the
  * expense of precision, if the output is longer than this,
  * the formatter switches to using exponential notation.
- * @param {params.factor} Value is multiplied by this factor,
- * useful for value normalization.
- * @returns Formatted value
+ *
+ * @param {options.valueFactor} Value is multiplied by this factor,
+ * useful for value normalization or to alter orders of magnitude.
+ *
+ * @param {options} Other options to be passed to
+ * `formatNumber` such as `valueFactor`, `unit` and `style`.
+ *
  */
-function formatNumber(
-  value,
-  { fractionDigits = undefined, valueFactor = 1, style = undefined, maxLength = undefined },
-) {
-  if (value === null) {
-    return '';
-  }
+const formatNumberNormalized = (value, { maxCharLength, valueFactor = 1, ...options }) => {
+  const formatted = formatNumber(value * valueFactor, options);
 
-  const locale = document.documentElement.lang || undefined;
-  const num = value * valueFactor;
-  const formatted = num.toLocaleString(locale, {
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-    style,
-  });
-
-  if (maxLength !== undefined && formatted.length > maxLength) {
+  if (maxCharLength !== undefined && formatted.length > maxCharLength) {
     // 123456 becomes 1.23e+8
-    return num.toExponential(2);
+    return value.toExponential(2);
   }
   return formatted;
-}
+};
 
 /**
  * Formats a number as a string scaling it up according to units.
@@ -76,7 +67,10 @@ const scaledFormatter = (units, unitFactor = 1000) => {
 
     const unit = units[scale];
 
-    return `${formatNumber(num, { fractionDigits })}${unit}`;
+    return `${formatNumberNormalized(num, {
+      maximumFractionDigits: fractionDigits,
+      minimumFractionDigits: fractionDigits,
+    })}${unit}`;
   };
 };
 
@@ -84,8 +78,14 @@ const scaledFormatter = (units, unitFactor = 1000) => {
  * Returns a function that formats a number as a string.
  */
 export const numberFormatter = (style = 'decimal', valueFactor = 1) => {
-  return (value, fractionDigits, maxLength) => {
-    return `${formatNumber(value, { fractionDigits, maxLength, valueFactor, style })}`;
+  return (value, fractionDigits, maxCharLength) => {
+    return `${formatNumberNormalized(value, {
+      maxCharLength,
+      valueFactor,
+      style,
+      maximumFractionDigits: fractionDigits,
+      minimumFractionDigits: fractionDigits,
+    })}`;
   };
 };
 
@@ -93,9 +93,15 @@ export const numberFormatter = (style = 'decimal', valueFactor = 1) => {
  * Returns a function that formats a number as a string with a suffix.
  */
 export const suffixFormatter = (unit = '', valueFactor = 1) => {
-  return (value, fractionDigits, maxLength) => {
-    const length = maxLength !== undefined ? maxLength - unit.length : undefined;
-    return `${formatNumber(value, { fractionDigits, maxLength: length, valueFactor })}${unit}`;
+  return (value, fractionDigits, maxCharLength) => {
+    const length = maxCharLength !== undefined ? maxCharLength - unit.length : undefined;
+
+    return `${formatNumberNormalized(value, {
+      maxCharLength: length,
+      valueFactor,
+      maximumFractionDigits: fractionDigits,
+      minimumFractionDigits: fractionDigits,
+    })}${unit}`;
   };
 };
 

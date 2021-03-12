@@ -79,6 +79,24 @@ describe('links layer component', () => {
       });
     });
 
+    describe('with width or height measurement at 0', () => {
+      beforeEach(() => {
+        createComponent({ props: { containerMeasurements: { width: 0, height: 100 } } });
+      });
+
+      it('renders the default slot', () => {
+        expect(wrapper.html()).toContain(slotContent);
+      });
+
+      it('does not render the alert component', () => {
+        expect(findAlert().exists()).toBe(false);
+      });
+
+      it('does not render the inner links component', () => {
+        expect(findLinksInner().exists()).toBe(false);
+      });
+    });
+
     describe('interactions', () => {
       beforeEach(() => {
         createComponent({ mountFn: mount, props: { pipelineData: tooManyStages } });

@@ -122,6 +122,11 @@ export default {
       required: false,
       default: true,
     },
+    labelFilterParam: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -180,7 +185,7 @@ export default {
       handler(params) {
         if (Object.keys(params).length) {
           updateHistory({
-            url: setUrlParams(params, window.location.href, true),
+            url: setUrlParams(params, window.location.href, true, false, true),
             title: document.title,
             replace: true,
           });
@@ -258,6 +263,7 @@ export default {
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
           :enable-label-permalinks="enableLabelPermalinks"
+          :label-filter-param="labelFilterParam"
           :show-checkbox="showBulkEditSidebar"
           :checked="issuableChecked(issuable)"
           @checked-input="handleIssuableCheckedInput(issuable, $event)"

@@ -261,7 +261,7 @@ See [database guidelines](database/index.md).
 ## Product Intelligence guides
 
 - [Product Intelligence guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Usage Ping guide](usage_ping.md)
+- [Usage Ping guide](usage_ping/index.md)
 - [Snowplow guide](snowplow.md)
 
 ## Experiment guide
@@ -287,6 +287,7 @@ See [database guidelines](database/index.md).
 ## Domain-specific guides
 
 - [CI/CD development documentation](cicd/index.md)
+- [AppSec development documentation](appsec/index.md)
 
 ## Other Development guides
 

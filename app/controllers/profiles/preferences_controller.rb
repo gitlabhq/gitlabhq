@@ -49,7 +49,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :tab_width,
       :sourcegraph_enabled,
       :gitpod_enabled,
-      :render_whitespace_in_code
+      :render_whitespace_in_code,
+      :markdown_surround_selection
     ]
   end
 end

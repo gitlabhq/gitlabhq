@@ -78,7 +78,9 @@
   code {
     font-family: $monospace-font;
     white-space: pre-wrap;
-    word-wrap: normal;
+    // Safari
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     word-break: keep-all;
   }
 
@@ -344,6 +346,9 @@
     // Multi-line code blocks should scroll horizontally
     code {
       white-space: pre;
+      // Safari
+      word-wrap: normal;
+      overflow-wrap: normal;
     }
 
     &.plain-readme {
@@ -430,8 +435,7 @@
     }
   }
 
-  a[href*='/uploads/'],
-  a[href*='storage.googleapis.com/google-code-attachments/'] {
+  a.with-attachment-icon {
     &::before {
       margin-right: 4px;
 
@@ -441,6 +445,11 @@
       -webkit-font-smoothing: antialiased;
       content: '📎';
     }
+  }
+
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
+    @extend .with-attachment-icon;
 
     &.no-attachment-icon {
       &::before {
@@ -604,7 +613,7 @@ pre {
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  font-size: 13px;
+  font-size: $gl-font-size-monospace;
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
@@ -646,7 +655,7 @@ code {
  */
 textarea.js-gfm-input {
   font-family: $monospace-font;
-  font-size: 13px;
+  font-size: $gl-font-size-monospace;
 }
 
 .strikethrough {
@@ -699,13 +708,11 @@ textarea {
     opacity: 1; // FF defaults to 0.54
   }
 
-  // scss-lint:disable PseudoElement
   // support Edge vendor prefix
   &::-ms-input-placeholder {
     color: $gl-text-color-tertiary;
   }
 
-  // scss-lint:disable PseudoElement
   // support IE vendor prefix
   &:-ms-input-placeholder {
     color: $gl-text-color-tertiary;

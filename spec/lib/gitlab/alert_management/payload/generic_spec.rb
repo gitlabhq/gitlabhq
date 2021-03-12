@@ -13,7 +13,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
   describe '#title' do
     subject { parsed_payload.title }
 
-    it_behaves_like 'parsable alert payload field with fallback', 'New: Incident', 'title'
+    it_behaves_like 'parsable alert payload field with fallback', 'New: Alert', 'title'
   end
 
   describe '#severity' do

@@ -10,6 +10,6 @@ RSpec.describe SnippetUpdateRepositoryStorageWorker do
     let_it_be(:repository_storage_move) { create(:snippet_repository_storage_move) }
 
     let(:service_klass) { Snippets::UpdateRepositoryStorageService }
-    let(:repository_storage_move_klass) { SnippetRepositoryStorageMove }
+    let(:repository_storage_move_klass) { Snippets::RepositoryStorageMove }
   end
 end

@@ -16,11 +16,11 @@ gitlab:
   gitaly:
     resources:
       requests:
-        cpu: 1200m
-        memory: 245M
+        cpu: 2400m
+        memory: 1000M
       limits:
-        cpu: 1800m
-        memory: 367M
+        cpu: 3600m
+        memory: 1500M
     persistence:
       size: 10G
   gitlab-exporter:
@@ -38,10 +38,10 @@ gitlab:
     resources:
       requests:
         cpu: 500m
-        memory: 25M
+        memory: 100M
       limits:
         cpu: 750m
-        memory: 37.5M
+        memory: 150M
     maxReplicas: 3
     hpa:
       targetAverageValue: 500m
@@ -52,10 +52,10 @@ gitlab:
     resources:
       requests:
         cpu: 855m
-        memory: 1285M
+        memory: 1927M
       limits:
         cpu: 1282m
-        memory: 1927M
+        memory: 2890M
     hpa:
       targetAverageValue: 650m
   task-runner:
@@ -138,10 +138,10 @@ postgresql:
   resources:
     requests:
       cpu: 550m
-      memory: 250M
+      memory: 1000M
     limits:
       cpu: 825m
-      memory: 375M
+      memory: 1500M
 prometheus:
   install: false
 redis:

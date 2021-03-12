@@ -28,8 +28,16 @@ module Gitlab
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules), default_when: 'on_success')
-            @cache = Seed::Build::Cache
-              .new(pipeline, attributes.delete(:cache))
+
+            if multiple_cache_per_job?
+              cache = Array.wrap(attributes.delete(:cache))
+              @cache = cache.map do |cache|
+                Seed::Build::Cache.new(pipeline, cache)
+              end
+            else
+              @cache = Seed::Build::Cache
+                .new(pipeline, attributes.delete(:cache))
+            end
           end
 
           def name
@@ -52,7 +60,7 @@ module Gitlab
             return unless included?
 
             strong_memoize(:errors) do
-              needs_errors
+              [needs_errors, variable_expansion_errors].compact.flatten
             end
           end
 
@@ -153,6 +161,12 @@ module Gitlab
             @pipeline.project.actual_limits.ci_needs_size_limit
           end
 
+          def variable_expansion_errors
+            sorted_collection = evaluate_context.variables.sorted_collection(@pipeline.project)
+            errors = sorted_collection.errors
+            ["#{name}: #{errors}"] if errors
+          end
+
           def pipeline_attributes
             {
               pipeline: @pipeline,
@@ -169,15 +183,11 @@ module Gitlab
             strong_memoize(:rules_attributes) do
               next {} unless @using_rules
 
-              if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
-                rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                  @seed_attributes[:yaml_variables], rules_result.variables
-                )
+              rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @seed_attributes[:yaml_variables], rules_result.variables
+              )
 
-                rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
-              else
-                rules_result.build_attributes
-              end
+              rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
             end
           end
 
@@ -195,7 +205,21 @@ module Gitlab
 
           def cache_attributes
             strong_memoize(:cache_attributes) do
-              @cache.build_attributes
+              if multiple_cache_per_job?
+                if @cache.empty?
+                  {}
+                else
+                  { options: { cache: @cache.map(&:attributes) } }
+                end
+              else
+                @cache.build_attributes
+              end
+            end
+          end
+
+          def multiple_cache_per_job?
+            strong_memoize(:multiple_cache_per_job) do
+              ::Gitlab::Ci::Features.multiple_cache_per_job?
             end
           end
 

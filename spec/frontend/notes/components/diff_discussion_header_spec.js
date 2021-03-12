@@ -6,13 +6,9 @@ import createStore from '~/notes/stores';
 import mockDiffFile from '../../diffs/mock_data/diff_discussions';
 import { discussionMock } from '../mock_data';
 
-const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
-
 describe('diff_discussion_header component', () => {
   let store;
   let wrapper;
-
-  preloadFixtures(discussionWithTwoUnresolvedNotes);
 
   beforeEach(() => {
     window.mrTabs = {};

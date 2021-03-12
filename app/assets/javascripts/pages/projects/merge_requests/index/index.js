@@ -1,6 +1,7 @@
 import addExtraTokensForMergeRequests from 'ee_else_ce/filtered_search/add_extra_tokens_for_merge_requests';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+import initCsvImportExportButtons from '~/issuable/init_csv_import_export_buttons';
 import initIssuableByEmail from '~/issuable/init_issuable_by_email';
 import IssuableIndex from '~/issuable_index';
 import { FILTERED_SEARCH } from '~/pages/constants';
@@ -22,3 +23,4 @@ new UsersSelect(); // eslint-disable-line no-new
 new ShortcutsNavigation(); // eslint-disable-line no-new
 
 initIssuableByEmail();
+initCsvImportExportButtons();

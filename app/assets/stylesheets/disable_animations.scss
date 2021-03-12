@@ -12,9 +12,3 @@
   animation: none !important;
   /* stylelint-enable property-no-vendor-prefix */
 }
-
-// Disable sticky changes bar for tests
-.diff-files-changed {
-  position: relative !important;
-  top: 0 !important;
-}

@@ -77,7 +77,7 @@ module ErrorTracking
 
     def sentry_client
       strong_memoize(:sentry_client) do
-        Sentry::Client.new(api_url, token)
+        ErrorTracking::SentryClient.new(api_url, token)
       end
     end
 
@@ -168,13 +168,13 @@ module ErrorTracking
 
     def handle_exceptions
       yield
-    rescue Sentry::Client::Error => e
+    rescue ErrorTracking::SentryClient::Error => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE }
-    rescue Sentry::Client::MissingKeysError => e
+    rescue ErrorTracking::SentryClient::MissingKeysError => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_MISSING_KEYS }
-    rescue Sentry::Client::ResponseInvalidSizeError => e
+    rescue ErrorTracking::SentryClient::ResponseInvalidSizeError => e
       { error: e.message, error_type: SENTRY_API_ERROR_INVALID_SIZE }
-    rescue Sentry::Client::BadRequestError => e
+    rescue ErrorTracking::SentryClient::BadRequestError => e
       { error: e.message, error_type: SENTRY_API_ERROR_TYPE_BAD_REQUEST }
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)

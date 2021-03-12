@@ -336,6 +336,25 @@ RSpec.describe Note do
     end
   end
 
+  describe "last_edited_at" do
+    let(:timestamp) { Time.current }
+    let(:note) { build(:note, last_edited_at: nil, created_at: timestamp, updated_at: timestamp + 5.hours) }
+
+    context "with last_edited_at" do
+      it "returns last_edited_at" do
+        note.last_edited_at = timestamp
+
+        expect(note.last_edited_at).to eq(timestamp)
+      end
+    end
+
+    context "without last_edited_at" do
+      it "returns updated_at" do
+        expect(note.last_edited_at).to eq(timestamp + 5.hours)
+      end
+    end
+  end
+
   describe "edited?" do
     let(:note) { build(:note, updated_by_id: nil, created_at: Time.current, updated_at: Time.current + 5.hours) }
 

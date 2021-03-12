@@ -6,7 +6,7 @@ module DeclarativePolicy
   # Policy class (context_class here). See Base.rule
   #
   # Note that the #policy method just performs an #instance_eval,
-  # which is useful for multiple #enable or #prevent callse.
+  # which is useful for multiple #enable or #prevent calls.
   #
   # Also provides a #method_missing proxy to the context
   # class's class methods, so that helper methods can be

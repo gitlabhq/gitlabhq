@@ -40,7 +40,8 @@ Below is an example of how you can use those new quick actions inside a comment.
 
 ![Time tracking example in a comment](img/time_tracking_example_v12_2.png)
 
-Adding time entries (time spent or estimates) is limited to project members.
+Adding time entries (time spent or estimates) is limited to project members
+with [Reporter and higher permission levels](../permissions.md).
 
 ### Estimates
 

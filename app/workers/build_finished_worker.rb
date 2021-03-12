@@ -7,7 +7,6 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_processing
   urgency :high
   worker_resource_boundary :cpu
-  tags :requires_disk_io
 
   ARCHIVE_TRACES_IN = 2.minutes.freeze
 
@@ -35,7 +34,7 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
 
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)
-    ExpirePipelineCacheWorker.perform_async(build.pipeline_id) if build.pipeline.cacheable?
+    ExpirePipelineCacheWorker.perform_async(build.pipeline_id)
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
 
     ##

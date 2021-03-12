@@ -1,6 +1,4 @@
 = form_with url: configure_import_bulk_imports_path, class: 'group-form gl-show-field-errors' do |f|
-  = form_errors(@group)
-
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4.gl-display-flex
       = s_('GroupsNew|Import groups from another instance of GitLab')
@@ -31,4 +29,4 @@
         title: s_('GroupsNew|Please fill in your personal access token.'),
         id: 'import_gitlab_token'
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit s_('GroupsNew|Connect instance'), class: 'btn gl-button btn-success'
+    = f.submit s_('GroupsNew|Connect instance'), class: 'btn gl-button btn-confirm'

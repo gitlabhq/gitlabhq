@@ -23,44 +23,20 @@ FactoryBot.define do
     end
 
     trait :with_aggregation_schedule do
-      association :aggregation_schedule, factory: :namespace_aggregation_schedules
+      after(:create) do |namespace|
+        create(:namespace_aggregation_schedules, namespace: namespace)
+      end
     end
 
     trait :with_root_storage_statistics do
-      association :root_storage_statistics, factory: :namespace_root_storage_statistics
+      after(:create) do |namespace|
+        create(:namespace_root_storage_statistics, namespace: namespace)
+      end
     end
 
     trait :with_namespace_settings do
-      association :namespace_settings, factory: :namespace_settings
-    end
-
-    # Construct a hierarchy underneath the namespace.
-    # Each namespace will have `children` amount of children,
-    # and `depth` levels of descendants.
-    trait :with_hierarchy do
-      transient do
-        children { 4 }
-        depth    { 4 }
-      end
-
-      after(:create) do |namespace, evaluator|
-        def create_graph(parent: nil, children: 4, depth: 4)
-          return unless depth > 1
-
-          children.times do
-            factory_name = parent.model_name.singular
-            child = FactoryBot.create(factory_name, parent: parent)
-            create_graph(parent: child, children: children, depth: depth - 1)
-          end
-
-          parent
-        end
-
-        create_graph(
-          parent:   namespace,
-          children: evaluator.children,
-          depth:    evaluator.depth
-        )
+      after(:create) do |namespace|
+        create(:namespace_settings, namespace: namespace)
       end
     end
 

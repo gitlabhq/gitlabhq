@@ -1,0 +1,16 @@
+---
+key_path: counts.projects_with_expiration_policy_enabled_with_cadence_set_to_3month
+description:
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

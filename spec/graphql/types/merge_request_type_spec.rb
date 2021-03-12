@@ -23,7 +23,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
       rebase_in_progress default_merge_commit_message
       merge_ongoing mergeable_discussions_state web_url
-      source_branch_exists target_branch_exists
+      source_branch_exists target_branch_exists diverged_from_target_branch
       upvotes downvotes head_pipeline pipelines task_completion_status
       milestone assignees reviewers participants subscribed labels discussion_locked time_estimate
       total_time_spent reference author merged_at commit_count current_user_todos
@@ -75,6 +75,35 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       it 'pulls out data from metrics object' do
         expect(response).to match('additions' => 5, 'deletions' => 8)
       end
+    end
+  end
+
+  describe '#diverged_from_target_branch' do
+    subject(:execute_query) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let!(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+    let(:project) { create(:project, :public) }
+    let(:current_user) { create :admin }
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests {
+              nodes {
+                divergedFromTargetBranch
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'delegates the diverged_from_target_branch? call to the merge request entity' do
+      expect_next_found_instance_of(MergeRequest) do |instance|
+        expect(instance).to receive(:diverged_from_target_branch?)
+      end
+
+      execute_query
     end
   end
 end

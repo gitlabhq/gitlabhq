@@ -27,19 +27,6 @@ class IssuableFinder
       params.present?
     end
 
-    def author_id?
-      params[:author_id].present? && params[:author_id] != NONE
-    end
-
-    def author_username?
-      params[:author_username].present? && params[:author_username] != NONE
-    end
-
-    def no_author?
-      # author_id takes precedence over author_username
-      params[:author_id] == NONE || params[:author_username] == NONE
-    end
-
     def filter_by_no_assignee?
       params[:assignee_id].to_s.downcase == FILTER_NONE
     end
@@ -168,20 +155,6 @@ class IssuableFinder
         projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def author
-      strong_memoize(:author) do
-        if author_id?
-          User.find_by(id: params[:author_id])
-        elsif author_username?
-          User.find_by_username(params[:author_username])
-        else
-          nil
-        end
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def assignees

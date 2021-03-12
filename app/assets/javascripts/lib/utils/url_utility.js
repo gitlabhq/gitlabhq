@@ -473,6 +473,7 @@ export const setUrlParams = (
   url = window.location.href,
   clearParams = false,
   railsArraySyntax = false,
+  decodeParams = false,
 ) => {
   const urlObj = new URL(url);
   const queryString = urlObj.search;
@@ -495,7 +496,9 @@ export const setUrlParams = (
     }
   });
 
-  urlObj.search = searchParams.toString();
+  urlObj.search = decodeParams
+    ? decodeURIComponent(searchParams.toString())
+    : searchParams.toString();
 
   return urlObj.toString();
 };

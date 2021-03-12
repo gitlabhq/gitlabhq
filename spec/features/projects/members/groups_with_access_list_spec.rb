@@ -17,172 +17,80 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
 
     project.add_maintainer(user)
     sign_in(user)
+
+    visit project_project_members_path(project)
+    click_groups_tab
   end
 
-  context 'when `vue_project_members_list` feature flag is enabled' do
-    before do
-      visit project_project_members_path(project)
-      click_groups_tab
-    end
+  it 'updates group access level' do
+    click_button group_link.human_access
+    click_button 'Guest'
 
-    it 'updates group access level' do
-      click_button group_link.human_access
-      click_button 'Guest'
+    wait_for_requests
+
+    visit project_project_members_path(project)
+
+    click_groups_tab
+
+    expect(find_group_row(group)).to have_content('Guest')
+  end
+
+  it 'updates expiry date' do
+    page.within find_group_row(group) do
+      fill_in 'Expiration date', with: 5.days.from_now.to_date
+      find_field('Expiration date').native.send_keys :enter
 
       wait_for_requests
 
-      visit project_project_members_path(project)
-
-      click_groups_tab
-
-      expect(find_group_row(group)).to have_content('Guest')
+      expect(page).to have_content(/in \d days/)
     end
+  end
 
-    it 'updates expiry date' do
+  context 'when link has expiry date set' do
+    let(:additional_link_attrs) { { expires_at: 5.days.from_now.to_date } }
+
+    it 'clears expiry date' do
       page.within find_group_row(group) do
-        fill_in 'Expiration date', with: 5.days.from_now.to_date
-        find_field('Expiration date').native.send_keys :enter
+        expect(page).to have_content(/in \d days/)
+
+        find('[data-testid="clear-button"]').click
 
         wait_for_requests
 
-        expect(page).to have_content(/in \d days/)
+        expect(page).to have_content('No expiration set')
       end
     end
+  end
 
-    context 'when link has expiry date set' do
-      let(:additional_link_attrs) { { expires_at: 5.days.from_now.to_date } }
+  it 'deletes group link' do
+    expect(page).to have_content(group.full_name)
 
-      it 'clears expiry date' do
-        page.within find_group_row(group) do
-          expect(page).to have_content(/in \d days/)
-
-          find('[data-testid="clear-button"]').click
-
-          wait_for_requests
-
-          expect(page).to have_content('No expiration set')
-        end
-      end
+    page.within find_group_row(group) do
+      click_button 'Remove group'
     end
 
-    it 'deletes group link' do
-      expect(page).to have_content(group.full_name)
+    page.within('[role="dialog"]') do
+      click_button('Remove group')
+    end
 
-      page.within find_group_row(group) do
-        click_button 'Remove group'
-      end
+    expect(page).not_to have_content(group.full_name)
+  end
 
-      page.within('[role="dialog"]') do
-        click_button('Remove group')
-      end
+  context 'search in existing members' do
+    it 'finds no results' do
+      fill_in_filtered_search 'Search groups', with: 'testing 123'
+
+      click_groups_tab
 
       expect(page).not_to have_content(group.full_name)
     end
 
-    context 'search in existing members' do
-      it 'finds no results' do
-        fill_in_filtered_search 'Search groups', with: 'testing 123'
-
-        click_groups_tab
-
-        expect(page).not_to have_content(group.full_name)
-      end
-
-      it 'finds results' do
-        fill_in_filtered_search 'Search groups', with: group.full_name
-
-        click_groups_tab
-
-        expect(members_table).to have_content(group.full_name)
-      end
-    end
-  end
-
-  context 'when `vue_project_members_list` feature flag is disabled' do
-    before do
-      stub_feature_flags(vue_project_members_list: false)
-
-      visit project_project_members_path(project)
-      click_groups_tab
-    end
-
-    it 'updates group access level' do
-      click_button group_link.human_access
-
-      page.within '.dropdown-menu' do
-        click_link 'Guest'
-      end
-
-      wait_for_requests
-
-      visit project_project_members_path(project)
+    it 'finds results' do
+      fill_in_filtered_search 'Search groups', with: group.full_name
 
       click_groups_tab
 
-      expect(first('.group_member')).to have_content('Guest')
-    end
-
-    it 'updates expiry date' do
-      expires_at_field = "member_expires_at_#{group.id}"
-      fill_in expires_at_field, with: 3.days.from_now.to_date
-
-      find_field(expires_at_field).native.send_keys :enter
-      wait_for_requests
-
-      page.within(find('li.group_member')) do
-        expect(page).to have_content('Expires in 3 days')
-      end
-    end
-
-    context 'when link has expiry date set' do
-      let(:additional_link_attrs) { { expires_at: 3.days.from_now.to_date } }
-
-      it 'clears expiry date' do
-        page.within(find('li.group_member')) do
-          expect(page).to have_content('Expires in 3 days')
-
-          page.within(find('.js-edit-member-form')) do
-            find('.js-clear-input').click
-          end
-
-          wait_for_requests
-
-          expect(page).not_to have_content('Expires in')
-        end
-      end
-    end
-
-    it 'deletes group link' do
-      page.within(first('.group_member')) do
-        accept_confirm { find('.btn-danger').click }
-      end
-      wait_for_requests
-
-      expect(page).not_to have_selector('.group_member')
-    end
-
-    context 'search in existing members' do
-      it 'finds no results' do
-        page.within '.user-search-form' do
-          fill_in 'search_groups', with: 'testing 123'
-          find('.user-search-btn').click
-        end
-
-        click_groups_tab
-
-        expect(page).not_to have_selector('.group_member')
-      end
-
-      it 'finds results' do
-        page.within '.user-search-form' do
-          fill_in 'search_groups', with: group.name
-          find('.user-search-btn').click
-        end
-
-        click_groups_tab
-
-        expect(page).to have_selector('.group_member', count: 1)
-      end
+      expect(members_table).to have_content(group.full_name)
     end
   end
 

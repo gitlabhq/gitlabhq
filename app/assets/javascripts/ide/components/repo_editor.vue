@@ -1,6 +1,15 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import {
+  EDITOR_TYPE_DIFF,
+  EDITOR_CODE_INSTANCE_FN,
+  EDITOR_DIFF_INSTANCE_FN,
+} from '~/editor/constants';
+import EditorLite from '~/editor/editor_lite';
+import { EditorWebIdeExtension } from '~/editor/extensions/editor_lite_webide_ext';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import ModelManager from '~/ide/lib/common/model_manager';
+import { defaultDiffEditorOptions, defaultEditorOptions } from '~/ide/lib/editor_options';
 import { __ } from '~/locale';
 import {
   WEBIDE_MARK_FILE_CLICKED,
@@ -20,7 +29,6 @@ import {
   FILE_VIEW_MODE_PREVIEW,
 } from '../constants';
 import eventHub from '../eventhub';
-import Editor from '../lib/editor';
 import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
@@ -46,6 +54,9 @@ export default {
       content: '',
       images: {},
       rules: {},
+      globalEditor: null,
+      modelManager: new ModelManager(),
+      isEditorLoading: true,
     };
   },
   computed: {
@@ -132,6 +143,7 @@ export default {
 
       // Compare key to allow for files opened in review mode to be cached differently
       if (oldVal.key !== this.file.key) {
+        this.isEditorLoading = true;
         this.initEditor();
 
         if (this.currentActivityView !== leftSidebarViews.edit.name) {
@@ -149,6 +161,7 @@ export default {
       }
     },
     viewer() {
+      this.isEditorLoading = false;
       if (!this.file.pending) {
         this.createEditorInstance();
       }
@@ -181,11 +194,11 @@ export default {
     },
   },
   beforeDestroy() {
-    this.editor.dispose();
+    this.globalEditor.dispose();
   },
   mounted() {
-    if (!this.editor) {
-      this.editor = Editor.create(this.$store, this.editorOptions);
+    if (!this.globalEditor) {
+      this.globalEditor = new EditorLite();
     }
     this.initEditor();
 
@@ -210,8 +223,6 @@ export default {
       if (this.shouldHideEditor && (this.file.content || this.file.raw)) {
         return;
       }
-
-      this.editor.clearEditor();
 
       this.registerSchemaForFile();
 
@@ -251,20 +262,45 @@ export default {
         return;
       }
 
-      this.editor.dispose();
+      const isDiff = this.viewer !== viewerTypes.edit;
+      const shouldDisposeEditor = isDiff !== (this.editor?.getEditorType() === EDITOR_TYPE_DIFF);
 
-      this.$nextTick(() => {
-        if (this.viewer === viewerTypes.edit) {
-          this.editor.createInstance(this.$refs.editor);
-        } else {
-          this.editor.createDiffInstance(this.$refs.editor);
-        }
-
+      if (this.editor && !shouldDisposeEditor) {
         this.setupEditor();
-      });
+      } else {
+        if (this.editor && shouldDisposeEditor) {
+          this.editor.dispose();
+        }
+        const instanceOptions = isDiff ? defaultDiffEditorOptions : defaultEditorOptions;
+        const method = isDiff ? EDITOR_DIFF_INSTANCE_FN : EDITOR_CODE_INSTANCE_FN;
+
+        this.editor = this.globalEditor[method]({
+          el: this.$refs.editor,
+          blobPath: this.file.path,
+          blobGlobalId: this.file.key,
+          blobContent: this.content || this.file.content,
+          ...instanceOptions,
+          ...this.editorOptions,
+        });
+
+        this.editor.use(
+          new EditorWebIdeExtension({
+            instance: this.editor,
+            modelManager: this.modelManager,
+            store: this.$store,
+            file: this.file,
+            options: this.editorOptions,
+          }),
+        );
+
+        this.$nextTick(() => {
+          this.setupEditor();
+        });
+      }
     },
+
     setupEditor() {
-      if (!this.file || !this.editor.instance || this.file.loading) return;
+      if (!this.file || !this.editor || this.file.loading) return;
 
       const head = this.getStagedFile(this.file.path);
 
@@ -278,6 +314,8 @@ export default {
       } else {
         this.editor.attachModel(this.model);
       }
+
+      this.isEditorLoading = false;
 
       this.model.updateOptions(this.rules);
 
@@ -298,7 +336,7 @@ export default {
         });
       });
 
-      this.editor.setPosition({
+      this.editor.setPos({
         lineNumber: this.fileEditor.editorRow,
         column: this.fileEditor.editorColumn,
       });
@@ -306,6 +344,10 @@ export default {
       // Handle File Language
       this.updateEditor({
         fileLanguage: this.model.language,
+      });
+
+      this.$nextTick(() => {
+        this.editor.updateDimensions();
       });
 
       this.$emit('editorSetup');
@@ -344,7 +386,7 @@ export default {
       });
     },
     onPaste(event) {
-      const editor = this.editor.instance;
+      const { editor } = this;
       const reImage = /^image\/(png|jpg|jpeg|gif)$/;
       const file = event.clipboardData.files[0];
 
@@ -395,6 +437,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
+            data-testid="edit-tab"
             @click.prevent="updateEditor({ viewMode: $options.FILE_VIEW_MODE_EDITOR })"
           >
             {{ __('Edit') }}
@@ -404,6 +447,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
+            data-testid="preview-tab"
             @click.prevent="updateEditor({ viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
             >{{ previewMode.previewTitle }}</a
           >
@@ -414,6 +458,7 @@ export default {
     <div
       v-show="showEditor"
       ref="editor"
+      :key="`content-editor`"
       :class="{
         'is-readonly': isCommitModeActive,
         'is-deleted': file.deleted,
@@ -421,6 +466,8 @@ export default {
       }"
       class="multi-file-editor-holder"
       data-qa-selector="editor_container"
+      data-testid="editor-container"
+      :data-editor-loading="isEditorLoading"
       @focusout="triggerFilesChange"
     ></div>
     <content-viewer

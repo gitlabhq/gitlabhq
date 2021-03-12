@@ -9,7 +9,8 @@ value_type: number
 status: data_available
 time_frame: none
 data_source: database
-distribution: []
+distribution:
+- ce
 tier:
 - premium
 - ultimate

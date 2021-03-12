@@ -4,7 +4,6 @@ export const IDE_DATASET = {
   committedStateSvgPath: '/test/committed_state.svg',
   pipelinesEmptyStateSvgPath: '/test/pipelines_empty_state.svg',
   promotionSvgPath: '/test/promotion.svg',
-  ciHelpPagePath: '/test/ci_help_page',
   webIDEHelpPagePath: '/test/web_ide_help_page',
   clientsidePreviewEnabled: 'true',
   renderWhitespaceInCode: 'false',

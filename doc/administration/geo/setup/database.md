@@ -496,7 +496,7 @@ A production-ready and secure setup requires at least three Consul nodes, three
 Patroni nodes, one internal load-balancing node on the primary site, and a similar
 configuration for the secondary site. The internal load balancer provides a single
 endpoint for connecting to the Patroni cluster's leader whenever a new leader is
-elected. Be sure to use [password credentials](../..//postgresql/replication_and_failover.md#database-authorization-for-patroni) and other database best practices.
+elected. Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) and other database best practices.
 
 Similar to `repmgr`, using Patroni on a secondary node is optional.
 

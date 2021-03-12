@@ -1,0 +1,5 @@
+---
+title: Fixed error handling GraphQL API when issue board creation fails
+merge_request: 55982
+author:
+type: fixed

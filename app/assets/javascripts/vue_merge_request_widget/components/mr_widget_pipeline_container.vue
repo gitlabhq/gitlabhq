@@ -1,8 +1,11 @@
 <script>
 import { isNumber } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
+import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import MergeRequestStore from '../stores/mr_widget_store';
 import ArtifactsApp from './artifacts_list_app.vue';
+import DeploymentList from './deployment/deployment_list.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
 
@@ -18,7 +21,7 @@ export default {
   name: 'MrWidgetPipelineContainer',
   components: {
     ArtifactsApp,
-    Deployment: () => import('./deployment/deployment.vue'),
+    DeploymentList,
     MrWidgetContainer,
     MrWidgetPipeline,
     MergeTrainPositionIndicator: () =>
@@ -64,10 +67,31 @@ export default {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },
     showVisualReviewAppLink() {
-      return this.mr.visualReviewAppAvailable && this.glFeatures.anonymousVisualReviewFeedback;
+      return Boolean(
+        this.mr.visualReviewAppAvailable && this.glFeatures.anonymousVisualReviewFeedback,
+      );
     },
     showMergeTrainPositionIndicator() {
       return isNumber(this.mr.mergeTrainIndex);
+    },
+    showCollapsedDeployments() {
+      return this.deployments.length > 3;
+    },
+    multipleDeploymentsTitle() {
+      return n__(
+        'Deployments|%{deployments} environment impacted.',
+        'Deployments|%{deployments} environments impacted.',
+        this.deployments.length,
+      );
+    },
+    preferredAutoMergeStrategy() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return MergeRequestStore.getPreferredAutoMergeStrategy(
+          this.mr.availableAutoMergeStrategies,
+        );
+      }
+
+      return this.mr.preferredAutoMergeStrategy;
     },
   },
 };
@@ -85,22 +109,20 @@ export default {
       :source-branch-link="branchLink"
       :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
       :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
+      :merge-strategy="preferredAutoMergeStrategy"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
         <artifacts-app :endpoint="mr.exposedArtifactsPath" />
       </div>
-      <div v-if="deployments.length" class="mr-widget-extension">
-        <deployment
-          v-for="deployment in deployments"
-          :key="deployment.id"
-          :class="deploymentClass"
-          :deployment="deployment"
-          :show-metrics="hasDeploymentMetrics"
-          :show-visual-review-app="showVisualReviewAppLink"
-          :visual-review-app-meta="visualReviewAppMeta"
-        />
-      </div>
+      <deployment-list
+        v-if="deployments.length"
+        :deployments="deployments"
+        :deployment-class="deploymentClass"
+        :has-deployment-metrics="hasDeploymentMetrics"
+        :visual-review-app-meta="visualReviewAppMeta"
+        :show-visual-review-app-link="showVisualReviewAppLink"
+      />
       <merge-train-position-indicator
         v-if="showMergeTrainPositionIndicator"
         class="mr-widget-extension"

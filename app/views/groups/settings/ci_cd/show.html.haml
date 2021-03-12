@@ -1,8 +1,10 @@
-- breadcrumb_title _("CI / CD Settings")
-- page_title _("CI / CD")
+- breadcrumb_title _("CI/CD Settings")
+- page_title _("CI/CD")
 
 - expanded = expanded_by_default?
 - general_expanded = @group.errors.empty? ? expanded : true
+
+- enable_search_settings locals: { container_class: 'gl-my-5' }
 
 -# Given we only have one field in this form which is also admin-only,
 -# we don't want to show an empty section to non-admin users,

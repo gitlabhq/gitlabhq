@@ -85,6 +85,7 @@ RSpec.describe 'Member autocomplete', :js do
     let(:note) { create(:note_on_commit, project: project, commit_id: project.commit.id) }
 
     before do
+      allow(User).to receive(:find_by_any_email).and_call_original
       allow(User).to receive(:find_by_any_email)
         .with(noteable.author_email.downcase, confirmed: true).and_return(author)
 

@@ -42,7 +42,7 @@ module API
 
             # Personal access token will be extracted from Bearer or Basic authorization
             # in the overridden find_personal_access_token or find_user_from_job_token helpers
-            authenticate!
+            authenticate_non_get!
           end
 
           desc 'Ping the Conan API' do
@@ -71,6 +71,10 @@ module API
           end
 
           namespace 'users' do
+            before do
+              authenticate!
+            end
+
             format :txt
             content_type :txt, 'text/plain'
 

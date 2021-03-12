@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
 RSpec.describe RuboCop::Cop::Migration::DropTable do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   context 'when in deployment migration' do
+    let(:msg) do
+      '`drop_table` in deployment migrations requires downtime. Drop tables in post-deployment migrations instead.'
+    end
+
     before do
       allow(cop).to receive(:in_deployment_migration?).and_return(true)
     end
@@ -30,7 +31,7 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
           expect_offense(<<~PATTERN)
             def up
               drop_table :table
-              ^^^^^^^^^^ #{described_class::MSG}
+              ^^^^^^^^^^  #{msg}
             end
           PATTERN
         end
@@ -41,7 +42,7 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
           expect_offense(<<~PATTERN)
             def change
               drop_table :table
-              ^^^^^^^^^^ #{described_class::MSG}
+              ^^^^^^^^^^  #{msg}
             end
           PATTERN
         end
@@ -63,7 +64,7 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
         expect_offense(<<~PATTERN)
           def up
             execute "DROP TABLE table"
-            ^^^^^^^ #{described_class::MSG}
+            ^^^^^^^  #{msg}
           end
         PATTERN
       end
@@ -74,7 +75,7 @@ RSpec.describe RuboCop::Cop::Migration::DropTable do
         expect_offense(<<~PATTERN)
           def change
             execute "DROP TABLE table"
-            ^^^^^^^ #{described_class::MSG}
+            ^^^^^^^  #{msg}
           end
         PATTERN
       end

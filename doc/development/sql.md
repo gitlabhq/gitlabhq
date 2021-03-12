@@ -12,13 +12,13 @@ either using ActiveRecord/Arel or raw SQL queries.
 ## Using LIKE Statements
 
 The most common way to search for data is using the `LIKE` statement. For
-example, to get all issues with a title starting with "WIP:" you'd write the
+example, to get all issues with a title starting with "Draft:" you'd write the
 following query:
 
 ```sql
 SELECT *
 FROM issues
-WHERE title LIKE 'WIP:%';
+WHERE title LIKE 'Draft:%';
 ```
 
 On PostgreSQL the `LIKE` statement is case-sensitive. To perform a case-insensitive
@@ -28,13 +28,13 @@ To handle this automatically you should use `LIKE` queries using Arel instead
 of raw SQL fragments, as Arel automatically uses `ILIKE` on PostgreSQL.
 
 ```ruby
-Issue.where('title LIKE ?', 'WIP:%')
+Issue.where('title LIKE ?', 'Draft:%')
 ```
 
 You'd write this instead:
 
 ```ruby
-Issue.where(Issue.arel_table[:title].matches('WIP:%'))
+Issue.where(Issue.arel_table[:title].matches('Draft:%'))
 ```
 
 Here `matches` generates the correct `LIKE` / `ILIKE` statement depending on the
@@ -45,7 +45,7 @@ If you need to chain multiple `OR` conditions you can also do this using Arel:
 ```ruby
 table = Issue.arel_table
 
-Issue.where(table[:title].matches('WIP:%').or(table[:foo].matches('WIP:%')))
+Issue.where(table[:title].matches('Draft:%').or(table[:foo].matches('Draft:%')))
 ```
 
 On PostgreSQL, this produces:
@@ -53,7 +53,7 @@ On PostgreSQL, this produces:
 ```sql
 SELECT *
 FROM issues
-WHERE (title ILIKE 'WIP:%' OR foo ILIKE 'WIP:%')
+WHERE (title ILIKE 'Draft:%' OR foo ILIKE 'Draft:%')
 ```
 
 ## LIKE & Indexes
@@ -64,7 +64,7 @@ the start. For example, this will not use any indexes:
 ```sql
 SELECT *
 FROM issues
-WHERE title ILIKE '%WIP:%';
+WHERE title ILIKE '%Draft:%';
 ```
 
 Because the value for `ILIKE` starts with a wildcard the database is not able to

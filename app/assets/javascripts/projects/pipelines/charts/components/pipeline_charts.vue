@@ -252,10 +252,10 @@ export default {
   },
   errorTexts: {
     [LOAD_ANALYTICS_FAILURE]: s__(
-      'PipelineCharts|An error has ocurred when retrieving the analytics data',
+      'PipelineCharts|An error has occurred when retrieving the analytics data',
     ),
     [LOAD_PIPELINES_FAILURE]: s__(
-      'PipelineCharts|An error has ocurred when retrieving the pipelines data',
+      'PipelineCharts|An error has occurred when retrieving the pipelines data',
     ),
     [PARSE_FAILURE]: s__('PipelineCharts|There was an error parsing the data for the charts.'),
     [DEFAULT]: s__('PipelineCharts|An unknown error occurred while processing CI/CD analytics.'),
@@ -292,7 +292,7 @@ export default {
       failure.text
     }}</gl-alert>
     <div class="gl-mb-3">
-      <h3>{{ s__('PipelineCharts|CI / CD Analytics') }}</h3>
+      <h3>{{ s__('PipelineCharts|CI/CD Analytics') }}</h3>
     </div>
     <h4 class="gl-my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
     <div class="row">

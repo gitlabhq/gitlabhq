@@ -31,6 +31,7 @@ module Mutations
         group = authorized_find!(group_path: group_path)
         # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911#note_444682238
         args[:external] = true
+        args[:creator] = current_user
 
         custom_emoji = group.custom_emoji.create(args)
 

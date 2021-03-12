@@ -26,8 +26,6 @@ const createDiscussionNeighborParams = (discussionId, diffOrder, step) => ({
 describe('Getters Notes Store', () => {
   let state;
 
-  preloadFixtures(discussionWithTwoUnresolvedNotes);
-
   beforeEach(() => {
     state = {
       discussions: [individualNote],

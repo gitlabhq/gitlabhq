@@ -6,7 +6,6 @@ module Types
 
     def initialize(*args, **kwargs, &block)
       kwargs = gitlab_deprecation(kwargs)
-      kwargs.delete(:deprecation_reason)
 
       super(*args, **kwargs, &block)
     end

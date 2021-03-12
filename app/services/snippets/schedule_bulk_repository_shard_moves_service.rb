@@ -25,7 +25,7 @@ module Snippets
 
     override :schedule_bulk_worker_klass
     def self.schedule_bulk_worker_klass
-      ::SnippetScheduleBulkRepositoryShardMovesWorker
+      ::Snippets::ScheduleBulkRepositoryShardMovesWorker
     end
   end
 end

@@ -33,4 +33,24 @@ RSpec.describe 'Projects > Show > User uploads files' do
 
     include_examples 'it uploads and commit a new file to a forked project'
   end
+
+  context 'when in the empty_repo_upload experiment' do
+    before do
+      stub_experiments(empty_repo_upload: :candidate)
+
+      visit(project_path(project))
+    end
+
+    context 'with an empty repo' do
+      let(:project) { create(:project, :empty_repo, creator: user) }
+
+      include_examples 'uploads and commits a new text file via "upload file" button'
+    end
+
+    context 'with a nonempty repo' do
+      let(:project) { create(:project, :repository, creator: user) }
+
+      include_examples 'uploads and commits a new text file via "upload file" button'
+    end
+  end
 end

@@ -58,6 +58,7 @@ module API
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
+          optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
           all_or_none_of :extern_uid, :provider
 
           use :optional_params_ee
@@ -82,6 +83,7 @@ module API
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
+        optional :exclude_external, as: :non_external, type: Boolean, default: false, desc: 'Filters only non external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
         optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
@@ -97,7 +99,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :users do
-        authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
+        authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
         unless current_user&.admin?
           params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
@@ -1071,10 +1073,7 @@ module API
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)
 
-        update_params = declared_params
-        update_params.delete(:clear_status_after) if Feature.disabled?(:clear_status_with_quick_options, current_user, default_enabled: :yaml)
-
-        if ::Users::SetStatusService.new(current_user, update_params).execute
+        if ::Users::SetStatusService.new(current_user, declared_params).execute
           present current_user.status, with: Entities::UserStatus
         else
           render_validation_error!(current_user.status)

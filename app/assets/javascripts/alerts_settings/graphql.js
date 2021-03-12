@@ -10,7 +10,18 @@ const resolvers = {
   Mutation: {
     updateCurrentIntegration: (
       _,
-      { id = null, name, active, token, type, url, apiUrl },
+      {
+        id = null,
+        name,
+        active,
+        token,
+        type,
+        url,
+        apiUrl,
+        payloadExample,
+        payloadAttributeMappings,
+        payloadAlertFields,
+      },
       { cache },
     ) => {
       const sourceData = cache.readQuery({ query: getCurrentIntegrationQuery });
@@ -28,6 +39,9 @@ const resolvers = {
             type,
             url,
             apiUrl,
+            payloadExample,
+            payloadAttributeMappings,
+            payloadAlertFields,
           };
         }
       });

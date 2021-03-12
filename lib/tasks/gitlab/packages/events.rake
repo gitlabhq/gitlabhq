@@ -51,8 +51,7 @@ namespace :gitlab do
                 "name" => event_name,
                 "category" => "#{originator_type}_packages",
                 "aggregation" => "weekly",
-                "redis_slot" => "package",
-                "feature_flag" => "collect_package_events_redis"
+                "redis_slot" => "package"
               }
             end
 

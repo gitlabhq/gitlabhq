@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues csv' do
+RSpec.describe 'Issues csv', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
@@ -17,7 +17,7 @@ RSpec.describe 'Issues csv' do
   def request_csv(params = {})
     visit project_issues_path(project, params)
     page.within('.nav-controls') do
-      click_on 'Export as CSV'
+      find('[data-testid="export-csv-button"]').click
     end
     click_on 'Export issues'
   end

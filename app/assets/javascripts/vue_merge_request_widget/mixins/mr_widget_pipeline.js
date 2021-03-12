@@ -7,9 +7,4 @@ export default {
       return [];
     },
   },
-  methods: {
-    hasDownstream() {
-      return false;
-    },
-  },
 };

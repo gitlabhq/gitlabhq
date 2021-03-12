@@ -1,12 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MavenInstallation renders all the messages 1`] = `
+exports[`MavenInstallation gradle renders all the messages 1`] = `
 <div>
-  <h3
-    class="gl-font-lg"
-  >
-    Installation
-  </h3>
+  <installation-title-stub
+    options="[object Object],[object Object]"
+    packagetype="maven"
+  />
+   
+  <code-instruction-stub
+    class="gl-mb-5"
+    copytext="Copy Gradle Groovy DSL install command"
+    instruction="foo/gradle/install"
+    label="Gradle Groovy DSL install command"
+    trackingaction="copy_gradle_install_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy add Gradle Groovy DSL repository command"
+    instruction="foo/gradle/add/source"
+    label="Add Gradle Groovy DSL repository command"
+    multiline="true"
+    trackingaction="copy_gradle_add_to_source_command"
+    trackinglabel="code_instruction"
+  />
+</div>
+`;
+
+exports[`MavenInstallation maven renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object],[object Object]"
+    packagetype="maven"
+  />
    
   <p>
     <gl-sprintf-stub
@@ -17,7 +43,7 @@ exports[`MavenInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Maven XML"
     instruction="foo/xml"
-    label="Maven XML"
+    label=""
     multiline="true"
     trackingaction="copy_maven_xml"
     trackinglabel="code_instruction"

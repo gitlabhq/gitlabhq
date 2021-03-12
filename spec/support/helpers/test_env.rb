@@ -77,7 +77,8 @@ module TestEnv
     'sha-starting-with-large-number'     => '8426165',
     'invalid-utf8-diff-paths'            => '99e4853',
     'compare-with-merge-head-source'     => 'f20a03d',
-    'compare-with-merge-head-target'     => '2f1e176'
+    'compare-with-merge-head-target'     => '2f1e176',
+    'trailers'                           => 'f0a5ed6'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -172,8 +173,13 @@ module TestEnv
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,
-          { 'default' => repos_path }, force: true,
-          options: { gitaly_socket: "gitaly2.socket", config_filename: "gitaly2.config.toml" }
+          { 'default' => repos_path },
+          force: true,
+          options: {
+            internal_socket_dir: File.join(gitaly_dir, "internal_gitaly2"),
+            gitaly_socket: "gitaly2.socket",
+            config_filename: "gitaly2.config.toml"
+          }
         )
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
       end
@@ -186,7 +192,17 @@ module TestEnv
   end
 
   def gitaly_dir
-    File.dirname(gitaly_socket_path)
+    socket_path = gitaly_socket_path
+    socket_path = File.expand_path(gitaly_socket_path) if expand_path?
+
+    File.dirname(socket_path)
+  end
+
+  # Linux fails with "bind: invalid argument" if a UNIX socket path exceeds 108 characters:
+  # https://github.com/golang/go/issues/6895. We use absolute paths in CI to ensure
+  # that changes in the current working directory don't affect GRPC reconnections.
+  def expand_path?
+    !!ENV['CI']
   end
 
   def start_gitaly(gitaly_dir)

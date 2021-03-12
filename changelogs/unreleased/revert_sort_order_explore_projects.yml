@@ -1,0 +1,5 @@
+---
+title: Reverts default sort order for Explore Projects to Last updated
+merge_request: 54879
+author:
+type: changed

@@ -1,8 +1,19 @@
 <script>
 import { isEmpty } from 'lodash';
+import {
+  PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START,
+  PIPELINES_DETAIL_LINKS_MARK_CALCULATE_END,
+  PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
+  PIPELINES_DETAIL_LINK_DURATION,
+  PIPELINES_DETAIL_LINKS_TOTAL,
+  PIPELINES_DETAIL_LINKS_JOB_RATIO,
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { DRAW_FAILURE } from '../../constants';
 import { createJobsHash, generateJobNeedsDict } from '../../utils';
+import { reportToSentry } from '../graph/utils';
 import { parseData } from '../parsing_utils';
+import { reportPerformance } from './api';
 import { generateLinksData } from './drawing_utils';
 
 export default {
@@ -25,6 +36,15 @@ export default {
       type: Array,
       required: true,
     },
+    totalGroups: {
+      type: Number,
+      required: true,
+    },
+    metricsConfig: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     defaultLinkColor: {
       type: String,
       required: false,
@@ -43,6 +63,9 @@ export default {
     };
   },
   computed: {
+    shouldCollectMetrics() {
+      return this.metricsConfig.collectMetrics && this.metricsConfig.path;
+    },
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
     },
@@ -87,23 +110,70 @@ export default {
       this.$emit('highlightedJobsChange', jobs);
     },
   },
+  errorCaptured(err, _vm, info) {
+    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
+  },
   mounted() {
     if (!isEmpty(this.pipelineData)) {
       this.prepareLinkData();
     }
   },
   methods: {
+    beginPerfMeasure() {
+      if (this.shouldCollectMetrics) {
+        performanceMarkAndMeasure({ mark: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START });
+      }
+    },
+    finishPerfMeasureAndSend() {
+      if (this.shouldCollectMetrics) {
+        performanceMarkAndMeasure({
+          mark: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_END,
+          measures: [
+            {
+              name: PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
+              start: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START,
+            },
+          ],
+        });
+      }
+
+      window.requestAnimationFrame(() => {
+        const duration = window.performance.getEntriesByName(
+          PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
+        )[0]?.duration;
+
+        if (!duration) {
+          return;
+        }
+
+        const data = {
+          histograms: [
+            { name: PIPELINES_DETAIL_LINK_DURATION, value: duration },
+            { name: PIPELINES_DETAIL_LINKS_TOTAL, value: this.links.length },
+            {
+              name: PIPELINES_DETAIL_LINKS_JOB_RATIO,
+              value: this.links.length / this.totalGroups,
+            },
+          ],
+        };
+
+        reportPerformance(this.metricsConfig.path, data);
+      });
+    },
     isLinkHighlighted(linkRef) {
       return this.highlightedLinks.includes(linkRef);
     },
     prepareLinkData() {
+      this.beginPerfMeasure();
       try {
         const arrayOfJobs = this.pipelineData.flatMap(({ groups }) => groups);
         const parsedData = parseData(arrayOfJobs);
         this.links = generateLinksData(parsedData, this.containerId, `-${this.pipelineId}`);
-      } catch {
+      } catch (err) {
         this.$emit('error', DRAW_FAILURE);
+        reportToSentry(this.$options.name, err);
       }
+      this.finishPerfMeasureAndSend();
     },
     getLinkClasses(link) {
       return [

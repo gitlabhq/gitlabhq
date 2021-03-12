@@ -5,6 +5,7 @@ import Autosave from './autosave';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { loadCSSFile } from './lib/utils/css_utils';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
+import { select2AxiosTransport } from './lib/utils/select2_utils';
 import { queryToObject, objectToQuery } from './lib/utils/url_utility';
 import UsersSelect from './users_select';
 import ZenMode from './zen_mode';
@@ -199,15 +200,16 @@ export default class IssuableForm {
                     search,
                   };
                 },
-                results(data) {
+                results({ results }) {
                   return {
                     // `data` keys are translated so we can't just access them with a string based key
-                    results: data[Object.keys(data)[0]].map((name) => ({
+                    results: results[Object.keys(results)[0]].map((name) => ({
                       id: name,
                       text: name,
                     })),
                   };
                 },
+                transport: select2AxiosTransport,
               },
               initSelection(el, callback) {
                 const val = el.val();

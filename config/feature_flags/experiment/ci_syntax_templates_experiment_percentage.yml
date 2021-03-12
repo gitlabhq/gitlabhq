@@ -1,8 +1,0 @@
----
-name: ci_syntax_templates_experiment_percentage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48141
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/281057
-milestone: '13.8'
-type: experiment
-group: group::activation
-default_enabled: false

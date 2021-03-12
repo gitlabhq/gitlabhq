@@ -1,0 +1,5 @@
+---
+title: Improve pull mirroring performance
+merge_request: 54353
+author:
+type: performance

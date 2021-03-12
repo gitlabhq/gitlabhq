@@ -6,7 +6,7 @@ description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure
 type: howto
 ---
 
-# Install GitLab on Microsoft Azure
+# Install GitLab on Microsoft Azure **(FREE SELF)**
 
 WARNING:
 This guide is deprecated and pending an update. For the time being, use the GitLab
@@ -351,7 +351,7 @@ Remember to sign in with the username and password you specified when you
 [created your Azure VM](#basics).
 
 If you need to reset your VM password, read
-[how to reset SSH credentials for a user on an Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-ssh-connection).
+[how to reset SSH credentials for a user on an Azure VM](https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection).
 
 #### SSH from the command-line
 
@@ -433,7 +433,7 @@ Check out our other [Technical Articles](../../topics/index.md) or browse the [G
   - [Azure - Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/)
   - [Azure Portal](https://portal.azure.com)
   - [Azure - Pricing Calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
-  - [Azure - Troubleshoot SSH Connections to an Azure Linux VM](https://docs.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-ssh-connection)
+  - [Azure - Troubleshoot SSH Connections to an Azure Linux VM](https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)
   - [Azure - Properly Shutdown an Azure VM](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/)
 - [SSH](https://en.wikipedia.org/wiki/Secure_Shell), [PuTTY](https://www.putty.org) and [Using SSH in PuTTY](https://mediatemple.net/community/products/dv/204404604/using-ssh-in-putty-)
 

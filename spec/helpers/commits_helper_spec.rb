@@ -238,15 +238,5 @@ RSpec.describe CommitsHelper do
         expect(subject).to be_a(Gitlab::Git::DiffCollection)
       end
     end
-
-    context "feature flag is disabled" do
-      let(:paginate) { true }
-
-      it "returns a standard DiffCollection" do
-        stub_feature_flags(paginate_commit_view: false)
-
-        expect(subject).to be_a(Gitlab::Git::DiffCollection)
-      end
-    end
   end
 end

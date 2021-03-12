@@ -1,0 +1,5 @@
+---
+title: Reduce DB load when resetting CI minute notifications.
+merge_request: 55765
+author:
+type: performance

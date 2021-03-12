@@ -1368,6 +1368,155 @@ module Gitlab
         end
       end
 
+      context 'with multiple_cache_per_job FF disabled' do
+        before do
+          stub_feature_flags(multiple_cache_per_job: false)
+        end
+        describe 'cache' do
+          context 'when cache definition has unknown keys' do
+            let(:config) do
+              YAML.dump(
+                { cache: { untracked: true, invalid: 'key' },
+                  rspec: { script: 'rspec' } })
+            end
+
+            it_behaves_like 'returns errors', 'cache config contains unknown keys: invalid'
+          end
+
+          it "returns cache when defined globally" do
+            config = YAML.dump({
+                                cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
+                                rspec: {
+                                  script: "rspec"
+                                }
+                              })
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+              paths: ["logs/", "binaries/"],
+              untracked: true,
+              key: 'key',
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+
+          it "returns cache when defined in default context" do
+            config = YAML.dump(
+              {
+                default: {
+                  cache: { paths: ["logs/", "binaries/"], untracked: true, key: { files: ['file'] } }
+                },
+                rspec: {
+                  script: "rspec"
+                }
+              })
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+              paths: ["logs/", "binaries/"],
+              untracked: true,
+              key: { files: ['file'] },
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+
+          it 'returns cache key when defined in a job' do
+            config = YAML.dump({
+                                rspec: {
+                                  cache: { paths: ['logs/', 'binaries/'], untracked: true, key: 'key' },
+                                  script: 'rspec'
+                                }
+                              })
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes('test').size).to eq(1)
+            expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+              paths: ['logs/', 'binaries/'],
+              untracked: true,
+              key: 'key',
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+
+          it 'returns cache files' do
+            config = YAML.dump(
+              rspec: {
+                cache: {
+                  paths: ['logs/', 'binaries/'],
+                  untracked: true,
+                  key: { files: ['file'] }
+                },
+                script: 'rspec'
+              }
+            )
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes('test').size).to eq(1)
+            expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+              paths: ['logs/', 'binaries/'],
+              untracked: true,
+              key: { files: ['file'] },
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+
+          it 'returns cache files with prefix' do
+            config = YAML.dump(
+              rspec: {
+                cache: {
+                  paths: ['logs/', 'binaries/'],
+                  untracked: true,
+                  key: { files: ['file'], prefix: 'prefix' }
+                },
+                script: 'rspec'
+              }
+            )
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes('test').size).to eq(1)
+            expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+              paths: ['logs/', 'binaries/'],
+              untracked: true,
+              key: { files: ['file'], prefix: 'prefix' },
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+
+          it "overwrite cache when defined for a job and globally" do
+            config = YAML.dump({
+                                cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
+                                rspec: {
+                                  script: "rspec",
+                                  cache: { paths: ["test/"], untracked: false, key: 'local' }
+                                }
+                              })
+
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+
+            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+            expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+              paths: ["test/"],
+              untracked: false,
+              key: 'local',
+              policy: 'pull-push',
+              when: 'on_success'
+            )
+          end
+        end
+      end
+
       describe 'cache' do
         context 'when cache definition has unknown keys' do
           let(:config) do
@@ -1381,22 +1530,22 @@ module Gitlab
 
         it "returns cache when defined globally" do
           config = YAML.dump({
-                               cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
-                               rspec: {
-                                 script: "rspec"
-                               }
-                             })
+                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
+                              rspec: {
+                                script: "rspec"
+                              }
+                            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
             policy: 'pull-push',
             when: 'on_success'
-          )
+          ])
         end
 
         it "returns cache when defined in default context" do
@@ -1413,32 +1562,46 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: { files: ['file'] },
             policy: 'pull-push',
             when: 'on_success'
-          )
+          ])
         end
 
-        it 'returns cache key when defined in a job' do
+        it 'returns cache key/s when defined in a job' do
           config = YAML.dump({
-                               rspec: {
-                                 cache: { paths: ['logs/', 'binaries/'], untracked: true, key: 'key' },
-                                 script: 'rspec'
-                               }
-                             })
+                              rspec: {
+                                cache: [
+                                  { paths: ['binaries/'], untracked: true, key: 'keya' },
+                                  { paths: ['logs/', 'binaries/'], untracked: true, key: 'key' }
+                                  ],
+                                script: 'rspec'
+                              }
+                            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
           expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
-            paths: ['logs/', 'binaries/'],
-            untracked: true,
-            key: 'key',
-            policy: 'pull-push',
-            when: 'on_success'
+            [
+              {
+                paths: ['binaries/'],
+                untracked: true,
+                key: 'keya',
+                policy: 'pull-push',
+                when: 'on_success'
+              },
+              {
+                paths: ['logs/', 'binaries/'],
+                untracked: true,
+                key: 'key',
+                policy: 'pull-push',
+                when: 'on_success'
+              }
+            ]
           )
         end
 
@@ -1446,10 +1609,10 @@ module Gitlab
           config = YAML.dump(
             rspec: {
               cache: {
-                paths: ['logs/', 'binaries/'],
-                untracked: true,
-                key: { files: ['file'] }
-              },
+                  paths: ['binaries/'],
+                  untracked: true,
+                  key: { files: ['file'] }
+                },
               script: 'rspec'
             }
           )
@@ -1457,13 +1620,13 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
-            paths: ['logs/', 'binaries/'],
+          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq([
+            paths: ['binaries/'],
             untracked: true,
             key: { files: ['file'] },
             policy: 'pull-push',
             when: 'on_success'
-          )
+          ])
         end
 
         it 'returns cache files with prefix' do
@@ -1481,34 +1644,34 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq([
             paths: ['logs/', 'binaries/'],
             untracked: true,
             key: { files: ['file'], prefix: 'prefix' },
             policy: 'pull-push',
             when: 'on_success'
-          )
+          ])
         end
 
         it "overwrite cache when defined for a job and globally" do
           config = YAML.dump({
-                               cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
-                               rspec: {
-                                 script: "rspec",
-                                 cache: { paths: ["test/"], untracked: false, key: 'local' }
-                               }
-                             })
+                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
+                              rspec: {
+                                script: "rspec",
+                                cache: { paths: ["test/"], untracked: false, key: 'local' }
+                              }
+                            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
             paths: ["test/"],
             untracked: false,
             key: 'local',
             policy: 'pull-push',
             when: 'on_success'
-          )
+          ])
         end
       end
 

@@ -47,11 +47,11 @@ module Boards
       end
 
       def can_read?(list)
-        Ability.allowed?(current_user, :read_list, parent)
+        Ability.allowed?(current_user, :read_issue_board_list, parent)
       end
 
       def can_admin?(list)
-        Ability.allowed?(current_user, :admin_list, parent)
+        Ability.allowed?(current_user, :admin_issue_board_list, parent)
       end
     end
   end

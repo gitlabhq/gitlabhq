@@ -37,8 +37,13 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
-    result = BulkImportService.new(current_user, create_params, credentials).execute
-    render json: result.to_json(only: [:id])
+    response = BulkImportService.new(current_user, create_params, credentials).execute
+
+    if response.success?
+      render json: response.payload.to_json(only: [:id])
+    else
+      render json: { error: response.message }, status: response.http_status
+    end
   end
 
   def realtime_changes
@@ -128,7 +133,7 @@ class Import::BulkImportsController < ApplicationController
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     clear_session_data
 
-    redirect_to new_group_path, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
+    redirect_to new_group_path(anchor: 'import-group-pane'), alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
   end
 
   def allow_local_requests?
@@ -151,7 +156,7 @@ class Import::BulkImportsController < ApplicationController
         }, status: :unprocessable_entity
       end
       format.html do
-        redirect_to new_group_path
+        redirect_to new_group_path(anchor: 'import-group-pane')
       end
     end
   end

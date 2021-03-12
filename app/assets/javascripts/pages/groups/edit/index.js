@@ -6,6 +6,7 @@ import TransferDropdown from '~/groups/transfer_dropdown';
 import groupsSelect from '~/groups_select';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import projectSelect from '~/project_select';
+import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import setupTransferEdit from '~/transfer_edit';
 
@@ -23,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
   groupsSelect();
 
   projectSelect();
+
+  initSearchSettings();
 
   return new TransferDropdown();
 });

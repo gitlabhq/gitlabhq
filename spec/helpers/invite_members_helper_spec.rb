@@ -11,6 +11,21 @@ RSpec.describe InviteMembersHelper do
     helper.extend(Gitlab::Experimentation::ControllerConcern)
   end
 
+  describe '#show_invite_members_track_event' do
+    it 'shows values when can directly invite members' do
+      allow(helper).to receive(:directly_invite_members?).and_return(true)
+
+      expect(helper.show_invite_members_track_event).to eq 'show_invite_members'
+    end
+
+    it 'shows values when can indirectly invite members' do
+      allow(helper).to receive(:directly_invite_members?).and_return(false)
+      allow(helper).to receive(:indirectly_invite_members?).and_return(true)
+
+      expect(helper.show_invite_members_track_event).to eq 'show_invite_members_version_b'
+    end
+  end
+
   context 'with project' do
     before do
       assign(:project, project)
@@ -56,15 +71,7 @@ RSpec.describe InviteMembersHelper do
           allow(helper).to receive(:current_user) { owner }
         end
 
-        it 'returns false' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { false }
-
-          expect(helper.directly_invite_members?).to eq false
-        end
-
         it 'returns true' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { true }
-
           expect(helper.directly_invite_members?).to eq true
         end
       end
@@ -75,8 +82,6 @@ RSpec.describe InviteMembersHelper do
         end
 
         it 'returns false' do
-          allow(helper).to receive(:experiment_enabled?).with(:invite_members_version_a) { true }
-
           expect(helper.directly_invite_members?).to eq false
         end
       end

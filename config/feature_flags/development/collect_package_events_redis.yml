@@ -1,7 +1,0 @@
----
-name: collect_package_events_redis
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46846
-rollout_issue_url:
-group: group::package
-type: development
-default_enabled: true

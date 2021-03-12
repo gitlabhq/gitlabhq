@@ -1258,7 +1258,7 @@ Read more in the [Group Import/Export](group_import_export.md) documentation.
 
 ## Share Groups with Groups
 
-These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/index.md#sharing-a-group-with-another-group) page.
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/index.md#share-a-group-with-another-group) page.
 
 ### Create a link to share a group with another group
 

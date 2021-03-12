@@ -440,12 +440,11 @@ components, we need to include the store and provide the correct state:
 //component_spec.js
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { createStore } from './store';
 import Component from './component.vue'
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('component', () => {
   let store;
@@ -455,7 +454,6 @@ describe('component', () => {
     store = createStore();
 
     wrapper = mount(Component, {
-      localVue,
       store,
     });
   };
@@ -482,6 +480,11 @@ describe('component', () => {
   });
 });
 ```
+
+Some test files may still use the
+[deprecated `createLocalVue` function](https://gitlab.com/gitlab-org/gitlab/-/issues/220482)
+from `@vue/test-utils` and `localVue.use(Vuex)`. This is unnecessary, and should be
+avoided or removed when possible.
 
 ### Two way data binding
 

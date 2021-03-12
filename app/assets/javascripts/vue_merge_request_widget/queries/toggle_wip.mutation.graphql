@@ -1,6 +1,7 @@
 mutation toggleWIPStatus($projectPath: ID!, $iid: String!, $wip: Boolean!) {
   mergeRequestSetWip(input: { projectPath: $projectPath, iid: $iid, wip: $wip }) {
     mergeRequest {
+      mergeableDiscussionsState
       title
       workInProgress
     }

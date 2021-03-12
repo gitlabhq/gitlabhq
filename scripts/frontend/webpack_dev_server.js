@@ -2,8 +2,8 @@ const nodemon = require('nodemon');
 
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = process.env.DEV_SERVER_PORT || '3808';
-const STATIC_MODE = process.env.DEV_SERVER_STATIC && process.env.DEV_SERVER_STATIC != 'false';
-const DLL_MODE = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL != 'false';
+const STATIC_MODE = process.env.DEV_SERVER_STATIC && process.env.DEV_SERVER_STATIC !== 'false';
+const DLL_MODE = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
 
 const baseConfig = {
   ignoreRoot: ['.git', 'node_modules/*/'],
@@ -30,7 +30,7 @@ if (STATIC_MODE) {
 
 // run webpack through webpack-dev-server, optionally compiling a DLL to reduce memory
 else {
-  let watch = ['config/webpack.config.js'];
+  const watch = ['config/webpack.config.js'];
 
   // if utilizing the vendor DLL, we need to restart the process when dependency changes occur
   if (DLL_MODE) {
@@ -51,7 +51,7 @@ else {
 
 // print useful messages for nodemon events
 nodemon
-  .on('start', function () {
+  .on('start', () => {
     console.log(`Starting webpack webserver on http://${DEV_SERVER_HOST}:${DEV_SERVER_PORT}`);
     if (STATIC_MODE) {
       console.log('You are starting webpack in compile-once mode');
@@ -59,10 +59,10 @@ nodemon
       console.log('If you change them often, you might want to unset DEV_SERVER_STATIC');
     }
   })
-  .on('quit', function () {
+  .on('quit', () => {
     console.log('Shutting down webpack process');
     process.exit();
   })
-  .on('restart', function (files) {
+  .on('restart', (files) => {
     console.log('Restarting webpack process due to: ', files);
   });

@@ -61,7 +61,7 @@ module Ci
             link_to_merge_request: link_to_merge_request,
             link_to_merge_request_source_branch: link_to_merge_request_source_branch
           }
-      elsif pipeline.merge_request_pipeline?
+      elsif pipeline.merged_result_pipeline?
         _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
           .html_safe % {
             link_to_merge_request: link_to_merge_request,

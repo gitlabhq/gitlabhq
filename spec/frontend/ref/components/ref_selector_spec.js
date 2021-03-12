@@ -1,13 +1,20 @@
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlDropdown, GlIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { merge, last } from 'lodash';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import { X_TOTAL_HEADER, DEFAULT_I18N } from '~/ref/constants';
+import {
+  X_TOTAL_HEADER,
+  DEFAULT_I18N,
+  REF_TYPE_BRANCHES,
+  REF_TYPE_TAGS,
+  REF_TYPE_COMMITS,
+} from '~/ref/constants';
 import createStore from '~/ref/stores/';
 
 const localVue = createLocalVue();
@@ -26,27 +33,32 @@ describe('Ref selector component', () => {
   let branchesApiCallSpy;
   let tagsApiCallSpy;
   let commitApiCallSpy;
+  let requestSpies;
 
-  const createComponent = (props = {}, attrs = {}) => {
-    wrapper = mount(RefSelector, {
-      propsData: {
-        projectId,
-        value: '',
-        ...props,
-      },
-      attrs,
-      listeners: {
-        // simulate a parent component v-model binding
-        input: (selectedRef) => {
-          wrapper.setProps({ value: selectedRef });
+  const createComponent = (mountOverrides = {}) => {
+    wrapper = mount(
+      RefSelector,
+      merge(
+        {
+          propsData: {
+            projectId,
+            value: '',
+          },
+          listeners: {
+            // simulate a parent component v-model binding
+            input: (selectedRef) => {
+              wrapper.setProps({ value: selectedRef });
+            },
+          },
+          stubs: {
+            GlSearchBoxByType: true,
+          },
+          localVue,
+          store: createStore(),
         },
-      },
-      stubs: {
-        GlSearchBoxByType: true,
-      },
-      localVue,
-      store: createStore(),
-    });
+        mountOverrides,
+      ),
+    );
   };
 
   beforeEach(() => {
@@ -58,6 +70,7 @@ describe('Ref selector component', () => {
       .mockReturnValue([200, fixtures.branches, { [X_TOTAL_HEADER]: '123' }]);
     tagsApiCallSpy = jest.fn().mockReturnValue([200, fixtures.tags, { [X_TOTAL_HEADER]: '456' }]);
     commitApiCallSpy = jest.fn().mockReturnValue([200, fixtures.commit]);
+    requestSpies = { branchesApiCallSpy, tagsApiCallSpy, commitApiCallSpy };
 
     mock
       .onGet(`/api/v4/projects/${projectId}/repository/branches`)
@@ -78,7 +91,7 @@ describe('Ref selector component', () => {
   //
   // Finders
   //
-  const findButtonContent = () => wrapper.find('[data-testid="button-content"]');
+  const findButtonContent = () => wrapper.find('button');
 
   const findNoResults = () => wrapper.find('[data-testid="no-results"]');
 
@@ -175,7 +188,7 @@ describe('Ref selector component', () => {
       const id = 'git-ref';
 
       beforeEach(() => {
-        createComponent({}, { id });
+        createComponent({ attrs: { id } });
 
         return waitForRequests();
       });
@@ -189,7 +202,7 @@ describe('Ref selector component', () => {
       const preselectedRef = fixtures.branches[0].name;
 
       beforeEach(() => {
-        createComponent({ value: preselectedRef });
+        createComponent({ propsData: { value: preselectedRef } });
 
         return waitForRequests();
       });
@@ -590,6 +603,154 @@ describe('Ref selector component', () => {
           expect(wrapper.vm.value).toEqual(fixtures.commit.id);
         });
       });
+    });
+  });
+
+  describe('with non-default ref types', () => {
+    it.each`
+      enabledRefTypes                      | reqsCalled                | reqsNotCalled
+      ${[REF_TYPE_BRANCHES]}               | ${['branchesApiCallSpy']} | ${['tagsApiCallSpy', 'commitApiCallSpy']}
+      ${[REF_TYPE_TAGS]}                   | ${['tagsApiCallSpy']}     | ${['branchesApiCallSpy', 'commitApiCallSpy']}
+      ${[REF_TYPE_COMMITS]}                | ${[]}                     | ${['branchesApiCallSpy', 'tagsApiCallSpy', 'commitApiCallSpy']}
+      ${[REF_TYPE_TAGS, REF_TYPE_COMMITS]} | ${['tagsApiCallSpy']}     | ${['branchesApiCallSpy', 'commitApiCallSpy']}
+    `(
+      'only calls $reqsCalled requests when $enabledRefTypes are enabled',
+      async ({ enabledRefTypes, reqsCalled, reqsNotCalled }) => {
+        createComponent({ propsData: { enabledRefTypes } });
+
+        await waitForRequests();
+
+        reqsCalled.forEach((req) => expect(requestSpies[req]).toHaveBeenCalledTimes(1));
+        reqsNotCalled.forEach((req) => expect(requestSpies[req]).not.toHaveBeenCalled());
+      },
+    );
+
+    it('only calls commitApiCallSpy when REF_TYPE_COMMITS is enabled', async () => {
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_COMMITS] } });
+      updateQuery('abcd1234');
+
+      await waitForRequests();
+
+      expect(commitApiCallSpy).toHaveBeenCalledTimes(1);
+      expect(branchesApiCallSpy).not.toHaveBeenCalled();
+      expect(tagsApiCallSpy).not.toHaveBeenCalled();
+    });
+
+    it('triggers another search if enabled ref types change', async () => {
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_BRANCHES] } });
+      await waitForRequests();
+
+      expect(branchesApiCallSpy).toHaveBeenCalledTimes(1);
+      expect(tagsApiCallSpy).not.toHaveBeenCalled();
+
+      wrapper.setProps({
+        enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
+      });
+      await waitForRequests();
+
+      expect(branchesApiCallSpy).toHaveBeenCalledTimes(2);
+      expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('if a ref type becomes disabled, its section is hidden, even if it had some results in store', async () => {
+      createComponent({ propsData: { enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_COMMITS] } });
+      updateQuery('abcd1234');
+      await waitForRequests();
+
+      expect(findBranchesSection().exists()).toBe(true);
+      expect(findCommitsSection().exists()).toBe(true);
+
+      wrapper.setProps({ enabledRefTypes: [REF_TYPE_COMMITS] });
+      await waitForRequests();
+
+      expect(findBranchesSection().exists()).toBe(false);
+      expect(findCommitsSection().exists()).toBe(true);
+    });
+
+    it.each`
+      enabledRefType       | findVisibleSection     | findHiddenSections
+      ${REF_TYPE_BRANCHES} | ${findBranchesSection} | ${[findTagsSection, findCommitsSection]}
+      ${REF_TYPE_TAGS}     | ${findTagsSection}     | ${[findBranchesSection, findCommitsSection]}
+      ${REF_TYPE_COMMITS}  | ${findCommitsSection}  | ${[findBranchesSection, findTagsSection]}
+    `(
+      'hides section headers if a single ref type is enabled',
+      async ({ enabledRefType, findVisibleSection, findHiddenSections }) => {
+        createComponent({ propsData: { enabledRefTypes: [enabledRefType] } });
+        updateQuery('abcd1234');
+        await waitForRequests();
+
+        expect(findVisibleSection().exists()).toBe(true);
+        expect(findVisibleSection().find('[data-testid="section-header"]').exists()).toBe(false);
+        findHiddenSections.forEach((findHiddenSection) =>
+          expect(findHiddenSection().exists()).toBe(false),
+        );
+      },
+    );
+  });
+
+  describe('validation state', () => {
+    const invalidClass = 'gl-inset-border-1-red-500!';
+    const isInvalidClassApplied = () => wrapper.find(GlDropdown).props('toggleClass')[invalidClass];
+
+    describe('valid state', () => {
+      describe('when the state prop is not provided', () => {
+        it('does not render a red border', () => {
+          createComponent();
+
+          expect(isInvalidClassApplied()).toBe(false);
+        });
+      });
+
+      describe('when the state prop is true', () => {
+        it('does not render a red border', () => {
+          createComponent({ propsData: { state: true } });
+
+          expect(isInvalidClassApplied()).toBe(false);
+        });
+      });
+    });
+
+    describe('invalid state', () => {
+      it('renders the dropdown with a red border if the state prop is false', () => {
+        createComponent({ propsData: { state: false } });
+
+        expect(isInvalidClassApplied()).toBe(true);
+      });
+    });
+  });
+
+  describe('footer slot', () => {
+    const footerContent = 'This is the footer content';
+    const createFooter = jest.fn().mockImplementation(function createMockFooter() {
+      return this.$createElement('div', { attrs: { 'data-testid': 'footer-content' } }, [
+        footerContent,
+      ]);
+    });
+
+    beforeEach(() => {
+      createComponent({
+        scopedSlots: { footer: createFooter },
+      });
+
+      updateQuery('abcd1234');
+
+      return waitForRequests();
+    });
+
+    afterEach(() => {
+      createFooter.mockClear();
+    });
+
+    it('allows custom content to be shown at the bottom of the dropdown using the footer slot', () => {
+      expect(wrapper.find(`[data-testid="footer-content"]`).text()).toBe(footerContent);
+    });
+
+    it('passes the expected slot props', () => {
+      // The createFooter function gets called every time one of the scoped properties
+      // is updated. For the sake of this test, we'll just test the last call, which
+      // represents the final state of the slot props.
+      const lastCallProps = last(createFooter.mock.calls)[0];
+      expect(lastCallProps).toMatchSnapshot();
     });
   });
 });

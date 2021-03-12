@@ -2,7 +2,6 @@ import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createFlash from '~/flash';
-import createDefaultClient from '~/lib/graphql';
 import {
   isInIssuePage,
   isInDesignPage,
@@ -10,9 +9,10 @@ import {
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
+import { apolloProvider } from '~/sidebar/graphql';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
-import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
 import SidebarLabels from './components/labels/sidebar_labels.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
@@ -54,9 +54,6 @@ function getSidebarAssigneeAvailabilityData() {
 
 function mountAssigneesComponent(mediator) {
   const el = document.getElementById('js-vue-sidebar-assignees');
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
 
   if (!el) return;
 
@@ -87,9 +84,6 @@ function mountAssigneesComponent(mediator) {
 
 function mountReviewersComponent(mediator) {
   const el = document.getElementById('js-vue-sidebar-reviewers');
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
 
   if (!el) return;
 
@@ -121,10 +115,6 @@ export function mountSidebarLabels() {
     return false;
   }
 
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
-
   return new Vue({
     el,
     apolloProvider,
@@ -139,39 +129,37 @@ export function mountSidebarLabels() {
   });
 }
 
-function mountConfidentialComponent(mediator) {
+function mountConfidentialComponent() {
   const el = document.getElementById('js-confidential-entry-point');
+  if (!el) {
+    return;
+  }
 
   const { fullPath, iid } = getSidebarOptions();
-
-  if (!el) return;
-
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  import(/* webpackChunkName: 'notesStore' */ '~/notes/stores')
-    .then(
-      ({ store }) =>
-        new Vue({
-          el,
-          store,
-          components: {
-            ConfidentialIssueSidebar,
-          },
-          render: (createElement) =>
-            createElement('confidential-issue-sidebar', {
-              props: {
-                iid: String(iid),
-                fullPath,
-                isEditable: initialData.is_editable,
-                service: mediator.service,
-              },
-            }),
-        }),
-    )
-    .catch(() => {
-      createFlash({ message: __('Failed to load sidebar confidential toggle') });
-    });
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    apolloProvider,
+    components: {
+      SidebarConfidentialityWidget,
+    },
+    provide: {
+      iid: String(iid),
+      fullPath,
+      canUpdate: initialData.is_editable,
+    },
+
+    render: (createElement) =>
+      createElement('sidebar-confidentiality-widget', {
+        props: {
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage() ? 'issue' : 'merge_request',
+        },
+      }),
+  });
 }
 
 function mountLockComponent() {
@@ -280,9 +268,6 @@ function mountSeverityComponent() {
   if (!severityContainerEl) {
     return false;
   }
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
 
   const { fullPath, iid, severity } = getSidebarOptions();
 

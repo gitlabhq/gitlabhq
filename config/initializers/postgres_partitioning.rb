@@ -4,6 +4,7 @@
 # (even with eager loading disabled).
 
 Gitlab::Database::Partitioning::PartitionCreator.register(AuditEvent)
+Gitlab::Database::Partitioning::PartitionCreator.register(WebHookLogPartitioned)
 
 begin
   Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions unless ENV['DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP']

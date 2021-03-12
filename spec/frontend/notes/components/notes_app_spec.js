@@ -33,6 +33,8 @@ describe('note_app', () => {
   let wrapper;
   let store;
 
+  const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
+
   const getComponentOrder = () => {
     return wrapper
       .findAll('#notes-list,.js-comment-form')
@@ -144,7 +146,7 @@ describe('note_app', () => {
     });
 
     it('should render form comment button as disabled', () => {
-      expect(wrapper.find('.js-note-new-discussion').attributes('disabled')).toEqual('disabled');
+      expect(findCommentButton().props('disabled')).toEqual(true);
     });
 
     it('updates discussions badge', () => {

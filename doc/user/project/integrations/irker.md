@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Irker IRC Gateway
+# Irker IRC Gateway **(FREE)**
 
 GitLab provides a way to push update messages to an Irker server. When
 configured, pushes to a project trigger the service to send data directly

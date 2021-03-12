@@ -225,7 +225,7 @@ export default {
       <gl-button
         :loading="isSaving"
         type="submit"
-        variant="success"
+        variant="confirm"
         category="primary"
         data-testid="saveEditing"
       >
@@ -233,7 +233,7 @@ export default {
       </gl-button>
     </div>
     <div v-else class="form-group">
-      <gl-button :loading="isSaving" type="submit" variant="success" category="primary">
+      <gl-button :loading="isSaving" type="submit" variant="confirm" category="primary">
         {{ s__('Badges|Add badge') }}
       </gl-button>
     </div>

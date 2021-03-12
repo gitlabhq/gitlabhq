@@ -184,7 +184,7 @@ export default {
           <slot name="sub-heading"></slot>
         </div>
 
-        <slot name="action-buttons"></slot>
+        <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
         <button
           v-if="isCollapsible"

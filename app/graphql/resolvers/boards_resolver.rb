@@ -16,7 +16,7 @@ module Resolvers
 
       return Board.none unless parent
 
-      ::Boards::ListService.new(parent, context[:current_user], board_id: extract_board_id(id)).execute
+      ::Boards::BoardsFinder.new(parent, context[:current_user], board_id: extract_board_id(id)).execute
     rescue ActiveRecord::RecordNotFound
       Board.none
     end

@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class SlackService < ChatNotificationService
+  include SlackMattermost::Notifier
+  extend ::Gitlab::Utils::Override
+
+  SUPPORTED_EVENTS_FOR_USAGE_LOG = %w[
+    push issue confidential_issue merge_request note confidential_note
+    tag_push wiki_page deployment
+  ].freeze
+
   prop_accessor EVENT_CHANNEL['alert']
 
   def title
@@ -36,26 +44,14 @@ class SlackService < ChatNotificationService
     super
   end
 
-  module Notifier
-    private
+  override :log_usage
+  def log_usage(event, user_id)
+    return unless user_id
 
-    def notify(message, opts)
-      # See https://gitlab.com/gitlab-org/slack-notifier/#custom-http-client
-      notifier = Slack::Messenger.new(webhook, opts.merge(http_client: HTTPClient))
-      notifier.ping(
-        message.pretext,
-        attachments: message.attachments,
-        fallback: message.fallback
-      )
-    end
+    return unless SUPPORTED_EVENTS_FOR_USAGE_LOG.include?(event)
 
-    class HTTPClient
-      def self.post(uri, params = {})
-        params.delete(:http_options) # these are internal to the client and we do not want them
-        Gitlab::HTTP.post(uri, body: params)
-      end
-    end
+    key = "i_ecosystem_slack_service_#{event}_notification"
+
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user_id)
   end
-
-  include Notifier
 end

@@ -117,14 +117,6 @@ RSpec.describe Pages::LookupPath do
         end
       end
 
-      context 'when pages_serve_from_deployments feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_serve_from_deployments: false)
-        end
-
-        include_examples 'uses disk storage'
-      end
-
       context 'when deployment were created during migration' do
         before do
           allow(deployment).to receive(:migrated?).and_return(true)

@@ -66,7 +66,7 @@ In this file, you define:
 - The decisions the runner should make when specific conditions are encountered.
 
 For example, you might want to run a suite of tests when you commit to
-any branch except `master`. When you commit to `master`, you want
+any branch except the default branch. When you commit to the default branch, you want
 to run the same suite, but also publish your application.
 
 All of this is defined in the `.gitlab-ci.yml` file.
@@ -117,15 +117,22 @@ The pipeline starts when the commit is committed.
 
 #### `.gitlab-ci.yml` tips
 
-- If you want the runner to use a Docker image to run the jobs, edit the `.gitlab-ci.yml` file
-  to include your image name:
+- If you want the runner to [use a Docker container to run the jobs](../docker/using_docker_images.md),
+  edit the `.gitlab-ci.yml` file
+  to include an image name:
 
   ```yaml
   default:
     image: ruby:2.7.2
   ```
 
-  This command tells the runner to use a Ruby image from Docker Hub.
+  This command tells the runner to use a Ruby image from Docker Hub
+  and to run the jobs in a container that's generated from the image.
+
+  This process is different than
+  [building an application as a Docker container](../docker/using_docker_build.md).
+  Your application does not need to be built as a Docker container to
+  run CI/CD jobs in Docker containers.
 
 - To validate your `.gitlab-ci.yml` file, use the
   [CI Lint tool](../lint.md), which is available in every project.

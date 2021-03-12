@@ -96,16 +96,6 @@ describe('WebIDE', () => {
     let statusBar;
     let editor;
 
-    const waitForEditor = async () => {
-      editor = await ideHelper.waitForMonacoEditor();
-    };
-
-    const changeEditorPosition = async (lineNumber, column) => {
-      editor.setPosition({ lineNumber, column });
-
-      await vm.$nextTick();
-    };
-
     beforeEach(async () => {
       vm = startWebIDE(container);
 
@@ -134,16 +124,17 @@ describe('WebIDE', () => {
 
       // Need to wait for monaco editor to load so it doesn't through errors on dispose
       await ideHelper.openFile('.gitignore');
-      await ideHelper.waitForMonacoEditor();
+      await ideHelper.waitForEditorModelChange(editor);
       await ideHelper.openFile('README.md');
-      await ideHelper.waitForMonacoEditor();
+      await ideHelper.waitForEditorModelChange(editor);
 
       expect(el).toHaveText(markdownPreview);
     });
 
     describe('when editor position changes', () => {
       beforeEach(async () => {
-        await changeEditorPosition(4, 10);
+        editor.setPosition({ lineNumber: 4, column: 10 });
+        await vm.$nextTick();
       });
 
       it('shows new line position', () => {
@@ -153,7 +144,8 @@ describe('WebIDE', () => {
 
       it('updates after rename', async () => {
         await ideHelper.renameFile('README.md', 'READMEZ.txt');
-        await waitForEditor();
+        await ideHelper.waitForEditorModelChange(editor);
+        await vm.$nextTick();
 
         expect(statusBar).toHaveText('1:1');
         expect(statusBar).toHaveText('plaintext');
@@ -161,10 +153,10 @@ describe('WebIDE', () => {
 
       it('persists position after opening then rename', async () => {
         await ideHelper.openFile('files/js/application.js');
-        await waitForEditor();
+        await ideHelper.waitForEditorModelChange(editor);
         await ideHelper.renameFile('README.md', 'READING_RAINBOW.md');
         await ideHelper.openFile('READING_RAINBOW.md');
-        await waitForEditor();
+        await ideHelper.waitForEditorModelChange(editor);
 
         expect(statusBar).toHaveText('4:10');
         expect(statusBar).toHaveText('markdown');
@@ -173,7 +165,8 @@ describe('WebIDE', () => {
       it('persists position after closing', async () => {
         await ideHelper.closeFile('README.md');
         await ideHelper.openFile('README.md');
-        await waitForEditor();
+        await ideHelper.waitForMonacoEditor();
+        await vm.$nextTick();
 
         expect(statusBar).toHaveText('4:10');
         expect(statusBar).toHaveText('markdown');

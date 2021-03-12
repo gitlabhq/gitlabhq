@@ -19,7 +19,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   end
 
   describe '#resolve' do
-    context 'insufficient user permission' do
+    context 'with insufficient user permission' do
       let(:user) { create(:user) }
 
       it 'returns nil' do
@@ -29,7 +29,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
       end
     end
 
-    context 'user with permission' do
+    context 'with sufficient permission' do
       before do
         project.add_developer(current_user)
 
@@ -93,7 +93,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
         end
 
         it 'returns an externally paginated array' do
-          expect(resolve_errors).to be_a Gitlab::Graphql::ExternallyPaginatedArray
+          expect(resolve_errors).to be_a Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection
         end
       end
     end

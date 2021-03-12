@@ -1,8 +1,22 @@
 # frozen_string_literal: true
 
 module AuthHelper
-  PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq salesforce atlassian_oauth2 openid_connect).freeze
+  PROVIDERS_WITH_ICONS = %w(
+    atlassian_oauth2
+    authentiq
+    azure_activedirectory_v2
+    azure_oauth2
+    bitbucket
+    facebook
+    github
+    gitlab
+    google_oauth2
+    openid_connect
+    salesforce
+    twitter
+  ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze
+  TRIAL_REGISTRATION_PROVIDERS = %w(google_oauth2 github).freeze
 
   def ldap_enabled?
     Gitlab::Auth::Ldap::Config.enabled?
@@ -113,8 +127,8 @@ module AuthHelper
     end
   end
 
-  def experiment_enabled_button_based_providers
-    enabled_button_based_providers & %w(google_oauth2 github).freeze
+  def trial_enabled_button_based_providers
+    enabled_button_based_providers & TRIAL_REGISTRATION_PROVIDERS
   end
 
   def button_based_providers_enabled?
@@ -125,11 +139,11 @@ module AuthHelper
     label = label_for_provider(provider)
 
     if provider_has_custom_icon?(provider)
-      image_tag(icon_for_provider(provider), alt: label, title: "Sign in with #{label}")
+      image_tag(icon_for_provider(provider), alt: label, title: "Sign in with #{label}", class: "gl-button-icon")
     elsif provider_has_builtin_icon?(provider)
       file_name = "#{provider.to_s.split('_').first}_#{size}.png"
 
-      image_tag("auth_buttons/#{file_name}", alt: label, title: "Sign in with #{label}")
+      image_tag("auth_buttons/#{file_name}", alt: label, title: "Sign in with #{label}", class: "gl-button-icon")
     else
       label
     end

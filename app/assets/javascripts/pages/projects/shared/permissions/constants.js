@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const visibilityOptions = {
   PRIVATE: 0,
@@ -42,3 +42,7 @@ export const featureAccessLevelEveryone = [
   featureAccessLevel.EVERYONE,
   featureAccessLevelDescriptions[featureAccessLevel.EVERYONE],
 ];
+
+export const CVE_ID_REQUEST_BUTTON_I18N = {
+  cve_request_toggle_label: s__('CVE|Enable CVE ID requests in the issue sidebar'),
+};

@@ -19,6 +19,10 @@ module Gitlab
             raise NotImplementedError
           end
 
+          def markdown_description
+            self.class.name
+          end
+
           def self.identifier
             raise NotImplementedError
           end

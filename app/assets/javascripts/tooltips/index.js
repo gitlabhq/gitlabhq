@@ -92,6 +92,7 @@ export const hide = createTooltipApiInvoker((element) =>
 export const show = createTooltipApiInvoker((element) =>
   tooltipsApp().triggerEvent(element, 'open'),
 );
+export const once = (event, cb) => tooltipsApp().$once(event, cb);
 export const destroy = () => {
   tooltipsApp().$destroy();
   app = null;

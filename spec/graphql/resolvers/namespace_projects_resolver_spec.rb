@@ -6,6 +6,18 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
+  let(:include_subgroups) { true }
+  let(:sort) { nil }
+  let(:search) { nil }
+  let(:ids) { nil }
+  let(:args) do
+    {
+      include_subgroups: include_subgroups,
+      sort: sort,
+      search: search,
+      ids: ids
+    }
+  end
 
   context "with a group" do
     let(:group) { create(:group) }
@@ -27,7 +39,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       end
 
       it 'finds all projects including the subgroups' do
-        expect(resolve_projects(include_subgroups: true, sort: nil, search: nil)).to contain_exactly(project1, project2, nested_project)
+        expect(resolve_projects(args)).to contain_exactly(project1, project2, nested_project)
       end
 
       context 'with an user namespace' do
@@ -38,7 +50,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
         end
 
         it 'finds all projects including the subgroups' do
-          expect(resolve_projects(include_subgroups: true, sort: nil, search: nil)).to contain_exactly(project1, project2)
+          expect(resolve_projects(args)).to contain_exactly(project1, project2)
         end
       end
     end
@@ -48,6 +60,9 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       let(:project_2) { create(:project, name: 'Test Project', path: 'test-project', namespace: namespace) }
       let(:project_3) { create(:project, name: 'Test', path: 'test', namespace: namespace) }
 
+      let(:sort) { :similarity }
+      let(:search) { 'test' }
+
       before do
         project_1.add_developer(current_user)
         project_2.add_developer(current_user)
@@ -55,7 +70,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       end
 
       it 'returns projects ordered by similarity to the search input' do
-        projects = resolve_projects(include_subgroups: true, sort: :similarity, search: 'test')
+        projects = resolve_projects(args)
 
         project_names = projects.map { |proj| proj['name'] }
         expect(project_names.first).to eq('Test')
@@ -63,15 +78,17 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       end
 
       it 'filters out result that do not match the search input' do
-        projects = resolve_projects(include_subgroups: true, sort: :similarity, search: 'test')
+        projects = resolve_projects(args)
 
         project_names = projects.map { |proj| proj['name'] }
         expect(project_names).not_to include('Project')
       end
 
       context 'when `search` parameter is not given' do
+        let(:search) { nil }
+
         it 'returns projects not ordered by similarity' do
-          projects = resolve_projects(include_subgroups: true, sort: :similarity, search: nil)
+          projects = resolve_projects(args)
 
           project_names = projects.map { |proj| proj['name'] }
           expect(project_names.first).not_to eq('Test')
@@ -79,11 +96,37 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       end
 
       context 'when only search term is given' do
+        let(:sort) { nil }
+        let(:search) { 'test' }
+
         it 'filters out result that do not match the search input, but does not sort them' do
-          projects = resolve_projects(include_subgroups: true, sort: :nil, search: 'test')
+          projects = resolve_projects(args)
 
           project_names = projects.map { |proj| proj['name'] }
           expect(project_names).to contain_exactly('Test', 'Test Project')
+        end
+      end
+    end
+
+    context 'ids filtering' do
+      subject(:projects) { resolve_projects(args) }
+
+      let(:include_subgroups) { false }
+      let(:project_3) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
+
+      context 'when ids is provided' do
+        let(:ids) { [project_3.to_global_id.to_s] }
+
+        it 'returns matching project' do
+          expect(projects).to contain_exactly(project_3)
+        end
+      end
+
+      context 'when ids is nil' do
+        let(:ids) { nil }
+
+        it 'returns all projects' do
+          expect(projects).to contain_exactly(project1, project2, project_3)
         end
       end
     end
@@ -108,7 +151,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
     expect(field.to_graphql.complexity.call({}, { include_subgroups: true }, 1)).to eq 24
   end
 
-  def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil }, context = { current_user: current_user })
+  def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil, ids: nil }, context = { current_user: current_user })
     resolve(described_class, obj: namespace, args: args, ctx: context)
   end
 end

@@ -43,6 +43,7 @@ module Quality
         serializers
         services
         sidekiq
+        spam
         support_specs
         tasks
         uploaders

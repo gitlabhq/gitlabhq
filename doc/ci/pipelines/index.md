@@ -96,7 +96,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#automatically-stopping-an-environment),
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
 and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
 that might run pipelines after branch deletion.
 
@@ -137,10 +137,10 @@ To execute a pipeline manually:
 1. Navigate to your project's **CI/CD > Pipelines**.
 1. Select the **Run Pipeline** button.
 1. On the **Run Pipeline** page:
-    1. Select the branch to run the pipeline for in the **Create for** field.
+    1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
        You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
-    1. Click the **Create pipeline** button.
+    1. Click the **Run pipeline** button.
 
 The pipeline now executes the jobs as configured.
 
@@ -208,7 +208,7 @@ You can do this straight from the pipeline graph. Just click the play button
 to execute that particular job.
 
 For example, your pipeline might start automatically, but it requires manual action to
-[deploy to production](../environments/index.md#configuring-manual-deployments). In the example below, the `production`
+[deploy to production](../environments/index.md#configure-manual-deployments). In the example below, the `production`
 stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)

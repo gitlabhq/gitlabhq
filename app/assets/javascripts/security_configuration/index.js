@@ -14,13 +14,14 @@ export const initStaticSecurityConfiguration = (el) => {
     defaultClient: createDefaultClient(),
   });
 
-  const { projectPath } = el.dataset;
+  const { projectPath, upgradePath } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
     provide: {
       projectPath,
+      upgradePath,
     },
     render(createElement) {
       return createElement(SecurityConfigurationApp);

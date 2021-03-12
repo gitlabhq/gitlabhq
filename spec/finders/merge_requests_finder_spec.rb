@@ -41,30 +41,51 @@ RSpec.describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request1)
       end
 
-      it 'filters by nonexistent author ID and MR term using CTE for search' do
-        params = {
-          author_id: 'does-not-exist',
-          search: 'git',
-          attempt_group_search_optimizations: true
-        }
+      context 'filtering by author' do
+        subject(:merge_requests) { described_class.new(user, params).execute }
 
-        merge_requests = described_class.new(user, params).execute
+        context 'using OR' do
+          let(:params) { { or: { author_username: [merge_request1.author.username, merge_request2.author.username] } } }
 
-        expect(merge_requests).to be_empty
-      end
+          before do
+            merge_request1.update!(author: create(:user))
+            merge_request2.update!(author: create(:user))
+          end
 
-      context 'filtering by not author ID' do
-        let(:params) { { not: { author_id: user2.id } } }
+          it 'returns merge requests created by any of the given users' do
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+          end
 
-        before do
-          merge_request2.update!(author: user2)
-          merge_request3.update!(author: user2)
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(or_issuable_queries: false)
+            end
+
+            it 'does not add any filter' do
+              expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5)
+            end
+          end
         end
 
-        it 'returns merge requests not created by that user' do
-          merge_requests = described_class.new(user, params).execute
+        context 'with nonexistent author ID and MR term using CTE for search' do
+          let(:params) { { author_id: 'does-not-exist', search: 'git', attempt_group_search_optimizations: true } }
 
-          expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
+          it 'returns no results' do
+            expect(merge_requests).to be_empty
+          end
+        end
+
+        context 'filtering by not author ID' do
+          let(:params) { { not: { author_id: user2.id } } }
+
+          before do
+            merge_request2.update!(author: user2)
+            merge_request3.update!(author: user2)
+          end
+
+          it 'returns merge requests not created by that user' do
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
+          end
         end
       end
 

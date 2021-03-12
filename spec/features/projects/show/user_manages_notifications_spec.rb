@@ -6,38 +6,36 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    stub_feature_flags(vue_notification_dropdown: false)
     sign_in(project.owner)
   end
 
   def click_notifications_button
-    first('.notifications-btn').click
+    first('[data-testid="notification-dropdown"]').click
   end
 
   it 'changes the notification setting' do
     visit project_path(project)
     click_notifications_button
-    click_link 'On mention'
+    click_button 'On mention'
 
-    page.within('.notification-dropdown') do
-      expect(page).not_to have_css('.gl-spinner')
-    end
+    wait_for_requests
 
     click_notifications_button
-    expect(find('.update-notification.is-active')).to have_content('On mention')
-    expect(page).to have_css('.notifications-icon[data-testid="notifications-icon"]')
+
+    page.within first('[data-testid="notification-dropdown"]') do
+      expect(page.find('.gl-new-dropdown-item.is-active')).to have_content('On mention')
+      expect(page).to have_css('[data-testid="notifications-icon"]')
+    end
   end
 
   it 'changes the notification setting to disabled' do
     visit project_path(project)
     click_notifications_button
-    click_link 'Disabled'
+    click_button 'Disabled'
 
-    page.within('.notification-dropdown') do
-      expect(page).not_to have_css('.gl-spinner')
+    page.within first('[data-testid="notification-dropdown"]') do
+      expect(page).to have_css('[data-testid="notifications-off-icon"]')
     end
-
-    expect(page).to have_css('.notifications-icon[data-testid="notifications-off-icon"]')
   end
 
   context 'custom notification settings' do
@@ -65,11 +63,13 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     it 'shows notification settings checkbox' do
       visit project_path(project)
       click_notifications_button
-      page.find('a[data-notification-level="custom"]').click
+      click_button 'Custom'
 
-      page.within('.custom-notifications-form') do
+      wait_for_requests
+
+      page.within('#custom-notifications-modal') do
         email_events.each do |event_name|
-          expect(page).to have_selector("input[name='notification_setting[#{event_name}]']")
+          expect(page).to have_selector("[data-testid='notification-setting-#{event_name}']")
         end
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
 
     it 'is disabled' do
       visit project_path(project)
-      expect(page).to have_selector('.notifications-btn.disabled', visible: true)
+      expect(page).to have_selector('[data-testid="notification-dropdown"] .disabled', visible: true)
     end
   end
 end

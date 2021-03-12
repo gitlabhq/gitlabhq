@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrate your GitLab server with Bitbucket Cloud
+# Integrate your GitLab server with Bitbucket Cloud **(FREE)**
 
 NOTE:
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
@@ -26,6 +26,11 @@ To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket generates an application ID and secret key for
 you to use.
 
+WARNING:
+To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
+vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
+to the end of the Bitbucket authorization callback URL.
+
 1. Sign in to [Bitbucket.org](https://bitbucket.org).
 1. Navigate to your individual user settings (**Bitbucket settings**) or a team's
    settings (**Manage team**), depending on how you want the application registered.
@@ -40,9 +45,7 @@ you to use.
    - **Application description:** *(Optional)* Fill this in if you wish.
    - **Callback URL:** (Required in GitLab versions 8.15 and greater)
      The URL to your GitLab installation, such as
-     `https://gitlab.example.com/users/auth`. Be sure to append `/users/auth` to
-     the end of the callback URL to prevent an
-     [OAuth2 convert redirect](http://tetraph.com/covert_redirect/) vulnerability.
+     `https://gitlab.example.com/users/auth`.
      Leaving this field empty
      [results in an `Invalid redirect_uri` message](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
    - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.

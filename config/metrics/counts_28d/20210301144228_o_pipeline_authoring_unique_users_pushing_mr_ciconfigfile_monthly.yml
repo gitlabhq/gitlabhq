@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_monthly
+description: Monthly unique user count having merge requests which contains the CI config file
+product_section: ops
+product_stage: verify
+product_group: group::pipeline authoring
+product_category: pipeline_authoring
+value_type: number
+status: implemented
+milestone: "13.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54707
+time_frame: 28d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

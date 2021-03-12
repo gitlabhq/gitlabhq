@@ -6,5 +6,5 @@
   = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
-      = f.submit _('Save changes'), class: 'btn gl-button btn-success'
-      = link_to _('Cancel'), admin_deploy_keys_path, class: 'btn gl-button btn-cancel'
+      = f.submit _('Save changes'), class: 'btn gl-button btn-confirm'
+      = link_to _('Cancel'), admin_deploy_keys_path, class: 'btn gl-button btn-default btn-cancel'

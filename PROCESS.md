@@ -77,9 +77,9 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature flags
 
-Overview and details of feature flag processes in development of GitLab itself is described in [feature flags process documentation](https://docs.gitlab.com/ee/development/feature_flags/process.html).
+Overview and details of feature flag processes in development of GitLab itself is described in [feature flags process documentation](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
-Guides on how to include feature flags in your backend/frontend code while developing GitLab are described in [developing with feature flags documentation](https://docs.gitlab.com/ee/development/feature_flags/development.html).
+Guides on how to include feature flags in your backend/frontend code while developing GitLab are described in [developing with feature flags documentation](https://docs.gitlab.com/ee/development/feature_flags).
 
 Getting access and how to expose the feature to users is detailed in [controlling feature flags documentation](https://docs.gitlab.com/ee/development/feature_flags/controls.html).
 

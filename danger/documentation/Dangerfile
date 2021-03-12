@@ -41,6 +41,7 @@ markdown(<<~MARKDOWN)
 
   The review does not need to block merging this merge request. See the:
 
-  - [Technical Writers assignments](https://about.gitlab.com/handbook/engineering/technical-writing/#designated-technical-writers) for the appropriate technical writer for this review.
+  - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
+  - The [Technical Writer assigned](https://about.gitlab.com/handbook/engineering/technical-writing/#designated-technical-writers) for that stage and group.
   - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
 MARKDOWN

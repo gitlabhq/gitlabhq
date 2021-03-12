@@ -10,15 +10,10 @@ Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/deve
 
 MSG
 
-UPDATE_METRICS_DEFINITIONS_MESSAGE = <<~MSG
-  When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary).
-
-MSG
-
 ENGINEERS_GROUP = '@gitlab-org/growth/product-intelligence/engineers'
 
 UPDATE_DICTIONARY_MESSAGE = <<~MSG
-  When updating metrics definitions, please update [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
+  When adding, changing, or updating metrics, please update the [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
 
   ```shell
   bundle exec rake gitlab:usage_data:generate_metrics_dictionary
@@ -42,14 +37,47 @@ tracking_files = [
 
 tracking_changed_files   = all_changed_files & tracking_files
 usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
-metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
+metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
 
-snowplow_changed_files = all_changed_files.select do |file|
-  helper.changed_lines(file).grep(%r{Gitlab::Tracking\.event}).any?
+def matching_files?(file, extension:, pattern:)
+  return unless file.end_with?(extension)
+
+  helper.changed_lines(file).grep(pattern).any?
 end
 
-matching_changed_files = usage_data_changed_files + tracking_changed_files + metrics_changed_files + dictionary_changed_file + snowplow_changed_files
+js_patterns = Regexp.union(
+  'Tracking.event',
+  /\btrack\(/,
+  'data-track-event'
+)
+
+dictionary_pattern = Regexp.union(
+  'key_path:',
+  'description:',
+  'product_section:',
+  'product_stage:',
+  'product_group:',
+  'status:',
+  'tier:'
+)
+
+snowplow_changed_files = all_changed_files.select do |file|
+  matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.event}) ||
+    matching_files?(file, extension: '.js', pattern: js_patterns) ||
+    matching_files?(file, extension: '.vue', pattern: js_patterns) ||
+    matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})
+end
+
+required_dictionary_update_changed_files = metrics_changed_files.select do |file|
+  matching_files?(file, extension: '.yml', pattern: dictionary_pattern)
+end
+
+matching_changed_files = usage_data_changed_files +
+                         tracking_changed_files +
+                         metrics_changed_files +
+                         dictionary_changed_file +
+                         snowplow_changed_files
 
 if matching_changed_files.any?
 
@@ -60,9 +88,8 @@ if matching_changed_files.any?
             end
 
   warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
-  warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) if usage_data_changed_files.any?
 
-  fail format(UPDATE_DICTIONARY_MESSAGE) if metrics_changed_files.any? && dictionary_changed_file.empty?
+  fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
 
   labels = ['product intelligence']
   labels << 'product intelligence::review pending' unless helper.mr_has_labels?('product intelligence::approved')

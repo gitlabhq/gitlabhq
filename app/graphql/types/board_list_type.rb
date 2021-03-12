@@ -8,6 +8,8 @@ module Types
     graphql_name 'BoardList'
     description 'Represents a list for an issue board'
 
+    alias_method :list, :object
+
     field :id, GraphQL::ID_TYPE, null: false,
           description: 'ID (global ID) of the list.'
     field :title, GraphQL::STRING_TYPE, null: false,
@@ -19,7 +21,7 @@ module Types
     field :label, Types::LabelType, null: true,
           description: 'Label of the list.'
     field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if list is collapsed for this user.'
+          description: 'Indicates if the list is collapsed for this user.'
     field :issues_count, GraphQL::INT_TYPE, null: true,
           description: 'Count of issues in the list.'
 
@@ -37,12 +39,10 @@ module Types
 
     def metadata
       strong_memoize(:metadata) do
-        list = self.object
-        user = context[:current_user]
         params = (context[:issue_filters] || {}).merge(board_id: list.board_id, id: list.id)
 
         ::Boards::Issues::ListService
-          .new(list.board.resource_parent, user, params)
+          .new(list.board.resource_parent, current_user, params)
           .metadata
       end
     end

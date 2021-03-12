@@ -6,7 +6,7 @@
 #   Note: You have access to `email_value` which is the email address value
 #         being currently tested).
 
-RSpec.shared_examples 'an object with email-formated attributes' do |*attributes|
+RSpec.shared_examples 'an object with email-formatted attributes' do |*attributes|
   attributes.each do |attribute|
     describe "specifically its :#{attribute} attribute" do
       %w[
@@ -45,7 +45,7 @@ RSpec.shared_examples 'an object with email-formated attributes' do |*attributes
   end
 end
 
-RSpec.shared_examples 'an object with RFC3696 compliant email-formated attributes' do |*attributes|
+RSpec.shared_examples 'an object with RFC3696 compliant email-formatted attributes' do |*attributes|
   attributes.each do |attribute|
     describe "specifically its :#{attribute} attribute" do
       %w[

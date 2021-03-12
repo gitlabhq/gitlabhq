@@ -18,9 +18,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
-  before_action only: [:pipelines] do
-    push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, @project, type: :development, default_enabled: :yaml)
-  end
 
   BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 75
@@ -53,6 +50,8 @@ class Projects::CommitController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
+    set_pipeline_feature_flag
+
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]).page(params[:page]).per(30) if params[:ref]
 
@@ -126,6 +125,10 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   private
+
+  def set_pipeline_feature_flag
+    push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
+  end
 
   def create_new_branch?
     params[:create_merge_request].present? || !can?(current_user, :push_code, @project)

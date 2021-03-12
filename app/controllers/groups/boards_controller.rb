@@ -9,6 +9,7 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:graphql_board_lists, group, default_enabled: false)
+    push_frontend_feature_flag(:boards_filtered_search, group)
   end
 
   feature_category :boards
@@ -21,13 +22,13 @@ class Groups::BoardsController < Groups::ApplicationController
 
   def boards_finder
     strong_memoize :boards_finder do
-      Boards::ListService.new(parent, current_user)
+      Boards::BoardsFinder.new(parent, current_user)
     end
   end
 
   def board_finder
     strong_memoize :board_finder do
-      Boards::ListService.new(parent, current_user, board_id: params[:id])
+      Boards::BoardsFinder.new(parent, current_user, board_id: params[:id])
     end
   end
 
@@ -44,6 +45,6 @@ class Groups::BoardsController < Groups::ApplicationController
   end
 
   def authorize_read_board!
-    access_denied! unless can?(current_user, :read_board, group)
+    access_denied! unless can?(current_user, :read_issue_board, group)
   end
 end
