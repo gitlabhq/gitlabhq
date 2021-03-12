@@ -18,8 +18,14 @@ RSpec.describe GroupsHelper do
 
     it 'gives default avatar_icon when no avatar is present' do
       group = create(:group)
-      group.save!
       expect(group_icon_url(group.path)).to match_asset_path('group_avatar.png')
+    end
+  end
+
+  describe 'group_dependency_proxy_url' do
+    it 'converts uppercase letters to lowercase' do
+      group = create(:group, path: 'GroupWithUPPERcaseLetters')
+      expect(group_dependency_proxy_url(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
     end
   end
 

@@ -246,6 +246,13 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#with_prometheus_client' do
+    it 'returns fallback with for an exception in yield block' do
+      allow(described_class).to receive(:prometheus_client).and_return(Gitlab::PrometheusClient.new('http://localhost:9090'))
+      result = described_class.with_prometheus_client(fallback: -42) { |client| raise StandardError }
+
+      expect(result).to be(-42)
+    end
+
     shared_examples 'query data from Prometheus' do
       it 'yields a client instance and returns the block result' do
         result = described_class.with_prometheus_client { |client| client }
@@ -255,10 +262,10 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     shared_examples 'does not query data from Prometheus' do
-      it 'returns nil by default' do
+      it 'returns {} by default' do
         result = described_class.with_prometheus_client { |client| client }
 
-        expect(result).to be_nil
+        expect(result).to eq({})
       end
 
       it 'returns fallback if provided' do

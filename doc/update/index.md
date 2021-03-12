@@ -169,7 +169,8 @@ migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 ## Upgrade paths
 
-Although you can generally upgrade through multiple GitLab versions in one go,
+You can generally upgrade through multiple GitLab versions in one go,
+although this is discouraged for [zero downtime upgrades](#upgrading-without-downtime) and
 sometimes this can cause issues.
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
@@ -228,7 +229,8 @@ patch version of GitLab without having to take your GitLab instance offline.
 However, for this to work there are the following requirements:
 
 - You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
-   9.3.
+   9.3. If you skip releases, database modifications may be run in the wrong
+   sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment
    migrations](../development/post_deployment_migrations.md) (included in
    [zero downtime update steps below](#steps)).

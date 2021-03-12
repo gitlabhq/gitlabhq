@@ -101,7 +101,8 @@ export default {
 
 <template>
   <tr
-    class="qa-project-import-row gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11"
+    class="gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11"
+    data-qa-selector="project_import_row"
   >
     <td class="gl-p-4">
       <gl-link :href="repo.importSource.providerLink" target="_blank" data-testid="providerLink"
@@ -112,6 +113,7 @@ export default {
     <td
       class="gl-display-flex gl-flex-sm-wrap gl-p-4 gl-pt-5 gl-vertical-align-top"
       data-testid="fullPath"
+      data-qa-selector="project_path_content"
     >
       <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
       <template v-else-if="isImportNotStarted">
@@ -124,7 +126,8 @@ export default {
           </div>
           <gl-form-input
             v-model="newNameInput"
-            class="gl-rounded-top-left-none gl-rounded-bottom-left-none qa-project-path-field"
+            class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+            data-qa-selector="project_path_field"
           />
         </div>
       </template>
@@ -140,12 +143,13 @@ export default {
         :href="repo.importedProject.fullPath"
         rel="noreferrer noopener"
         target="_blank"
+        data-qa-selector="go_to_project_button"
         >{{ __('Go to project') }}
       </gl-button>
       <gl-button
         v-if="isImportNotStarted"
         type="button"
-        class="qa-import-button"
+        data-qa-selector="import_button"
         @click="fetchImport(repo.importSource.id)"
       >
         {{ importButtonText }}

@@ -2041,7 +2041,9 @@ class Project < ApplicationRecord
       variables.append(key: 'CI_DEPENDENCY_PROXY_SERVER', value: Gitlab.host_with_port)
       variables.append(
         key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
-        value: "#{Gitlab.host_with_port}/#{namespace.root_ancestor.path}#{DependencyProxy::URL_SUFFIX}"
+        # The namespace path can include uppercase letters, which
+        # Docker doesn't allow. The proxy expects it to be downcased.
+        value: "#{Gitlab.host_with_port}/#{namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}"
       )
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'title_linting'
+require 'gitlab/dangerfiles/title_linting'
 
 module Tooling
   module Danger
@@ -44,8 +44,8 @@ module Tooling
 
       def required_reasons
         [].tap do |reasons|
-          reasons << :db_changes if helper.changes.added.has_category?(:migration)
-          reasons << :feature_flag_removed if helper.changes.deleted.has_category?(:feature_flag)
+          reasons << :db_changes if project_helper.changes.added.has_category?(:migration)
+          reasons << :feature_flag_removed if project_helper.changes.deleted.has_category?(:feature_flag)
         end
       end
 
@@ -58,7 +58,7 @@ module Tooling
       end
 
       def found
-        @found ||= helper.changes.added.by_category(:changelog).files.first
+        @found ||= project_helper.changes.added.by_category(:changelog).files.first
       end
 
       def ee_changelog?
@@ -86,11 +86,11 @@ module Tooling
       private
 
       def sanitized_mr_title
-        TitleLinting.sanitize_mr_title(helper.mr_title)
+        Gitlab::Dangerfiles::TitleLinting.sanitize_mr_title(helper.mr_title)
       end
 
       def categories_need_changelog?
-        (helper.changes.categories - NO_CHANGELOG_CATEGORIES).any?
+        (project_helper.changes.categories - NO_CHANGELOG_CATEGORIES).any?
       end
 
       def without_no_changelog_label?

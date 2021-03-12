@@ -4488,6 +4488,34 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#dependency_proxy_variables' do
+    let_it_be(:namespace) { create(:namespace, path: 'NameWithUPPERcaseLetters') }
+    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
+
+    subject { project.dependency_proxy_variables.to_runner_variables }
+
+    context 'when dependency_proxy is enabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+      end
+
+      it 'contains the downcased name' do
+        expect(subject).to include({ key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
+                                     value: "#{Gitlab.host_with_port}/namewithuppercaseletters#{DependencyProxy::URL_SUFFIX}",
+                                     public: true,
+                                     masked: false })
+      end
+    end
+
+    context 'when dependency_proxy is disabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: false })
+      end
+
+      it { expect(subject).to be_empty }
+    end
+  end
+
   describe '#auto_devops_enabled?' do
     before do
       Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 0)

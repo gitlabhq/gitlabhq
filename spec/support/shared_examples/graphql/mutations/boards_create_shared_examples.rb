@@ -66,9 +66,7 @@ RSpec.shared_examples 'boards create mutation' do
 
       context 'when the Boards::CreateService returns an error response' do
         before do
-          allow_next_instance_of(Boards::CreateService) do |service|
-            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'There was an error.'))
-          end
+          params[:name] = ''
         end
 
         it 'does not create a board' do
@@ -80,7 +78,7 @@ RSpec.shared_examples 'boards create mutation' do
 
           expect(mutation_response).to have_key('board')
           expect(mutation_response['board']).to be_nil
-          expect(mutation_response['errors'].first).to eq('There was an error.')
+          expect(mutation_response['errors'].first).to eq('There was an error when creating a board.')
         end
       end
     end

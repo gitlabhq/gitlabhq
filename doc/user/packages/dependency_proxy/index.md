@@ -89,6 +89,7 @@ You can authenticate using:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
 > - Automatic runner authentication [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
+> - The prefix for group names containing uppercase letters was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54559) in GitLab 13.10.
 
 Runners log in to the Dependency Proxy automatically. To pull through
 the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`

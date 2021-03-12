@@ -225,12 +225,22 @@ parallel-spec-reports:
 danger-review:
   extends:
     - .default-retry
-    - .yarn-cache
+    - .danger-review-cache
     - .review:rules:danger
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   needs: []
-  script:
+  before_script:
     - source ./scripts/utils.sh
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --with danger"
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - danger --fail-on-errors=true --verbose
+  script:
+    - run_timed_command "bundle exec danger --fail-on-errors=true --verbose"
+
+update-danger-review-cache:
+  extends:
+    - danger-review
+    - .shared:rules:update-cache
+  stage: prepare
+  script: echo 'Cache is fresh!'
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.

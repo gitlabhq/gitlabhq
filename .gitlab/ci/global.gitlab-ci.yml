@@ -49,6 +49,14 @@
       - vendor/ruby/
     policy: pull
 
+.danger-review-cache:
+  cache:
+    key: "danger-review-v1"
+    paths:
+      - vendor/ruby/
+      - node_modules/
+    policy: pull
+
 .qa-cache:
   cache:
     key: "qa-v2"

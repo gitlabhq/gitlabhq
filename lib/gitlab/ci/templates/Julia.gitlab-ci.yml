@@ -10,11 +10,11 @@
 
 # Below is the template to run your tests in Julia
 .test_template: &test_definition
-  # Uncomment below if you would like to run the tests on specific references
-  # only, such as the branches `master`, `development`, etc.
-  # only:
-  #   - master
-  #   - development
+  # Uncomment below (and adjust as needed) to run the tests for specific references
+  # only, such as the default branch, a `development` branch, and so on:
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  #   - if: $CI_COMMIT_BRANCH == "development"
   script:
     # Let's run the tests. Substitute `coverage = false` below, if you do not
     # want coverage results.
@@ -63,8 +63,8 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 # WARNING: This template is using the `julia` images from [Docker
 # Hub][3]. One can use custom Julia images and/or the official ones found

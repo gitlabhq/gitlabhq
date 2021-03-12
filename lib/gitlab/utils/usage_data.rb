@@ -113,11 +113,13 @@ module Gitlab
         end
       end
 
-      def with_prometheus_client(fallback: nil, verify: true)
+      def with_prometheus_client(fallback: {}, verify: true)
         client = prometheus_client(verify: verify)
         return fallback unless client
 
         yield client
+      rescue
+        fallback
       end
 
       def measure_duration

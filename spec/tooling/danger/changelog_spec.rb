@@ -1,25 +1,22 @@
 # frozen_string_literal: true
 
-require_relative 'danger_spec_helper'
+require 'gitlab-dangerfiles'
+require 'gitlab/dangerfiles/spec_helper'
 
-require_relative '../../../tooling/danger/helper'
 require_relative '../../../tooling/danger/changelog'
+require_relative '../../../tooling/danger/project_helper'
 
 RSpec.describe Tooling::Danger::Changelog do
-  include DangerSpecHelper
+  include_context "with dangerfile"
 
-  let(:change_class) { Tooling::Danger::Helper::Change }
-  let(:changes_class) { Tooling::Danger::Helper::Changes }
-  let(:changes) { changes_class.new([]) }
-
-  let(:mr_labels) { [] }
-  let(:sanitize_mr_title) { 'Fake Title' }
-
-  let(:fake_helper) { double('fake-helper', changes: changes, mr_iid: 1234, mr_title: sanitize_mr_title, mr_labels: mr_labels) }
-
-  let(:fake_danger) { new_fake_danger.include(described_class) }
+  let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
+  let(:fake_project_helper) { double('fake-project-helper', helper: fake_helper).tap { |h| h.class.include(Tooling::Danger::ProjectHelper) } }
 
   subject(:changelog) { fake_danger.new(helper: fake_helper) }
+
+  before do
+    allow(changelog).to receive(:project_helper).and_return(fake_project_helper)
+  end
 
   describe '#required_reasons' do
     subject { changelog.required_reasons }
@@ -165,7 +162,7 @@ RSpec.describe Tooling::Danger::Changelog do
     subject { changelog.modified_text }
 
     context "when title is not changed from sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'Fake Title' }
+      let(:mr_title) { 'Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG.md was edited')
@@ -175,7 +172,7 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context "when title needs sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+      let(:mr_title) { 'DRAFT: Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG.md was edited')
@@ -186,7 +183,7 @@ RSpec.describe Tooling::Danger::Changelog do
   end
 
   describe '#required_texts' do
-    let(:sanitize_mr_title) { 'Fake Title' }
+    let(:mr_title) { 'Fake Title' }
 
     subject { changelog.required_texts }
 
@@ -207,7 +204,7 @@ RSpec.describe Tooling::Danger::Changelog do
       end
 
       context "when title needs sanitization", :aggregate_failures do
-        let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+        let(:mr_title) { 'DRAFT: Fake Title' }
 
         it_behaves_like 'changelog required text', :db_changes
       end
@@ -224,7 +221,7 @@ RSpec.describe Tooling::Danger::Changelog do
     subject { changelog.optional_text }
 
     context "when title is not changed from sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'Fake Title' }
+      let(:mr_title) { 'Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG missing')
@@ -234,7 +231,7 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context "when title needs sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+      let(:mr_title) { 'DRAFT: Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG missing')

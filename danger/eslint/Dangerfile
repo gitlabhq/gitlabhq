@@ -13,7 +13,7 @@ return if eslint_candidates.empty?
 
 warn 'This merge request changed files with disabled eslint rules. Please consider fixing them.'
 
-if GitlabDanger.new(helper.gitlab_helper).ci?
+if helper.ci?
   markdown(<<~MARKDOWN)
     ## Disabled eslint rules
 

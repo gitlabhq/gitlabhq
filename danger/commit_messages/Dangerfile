@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative File.expand_path('../../tooling/danger/commit_linter', __dir__)
-require_relative File.expand_path('../../tooling/danger/merge_request_linter', __dir__)
+require 'gitlab/dangerfiles/commit_linter'
+require 'gitlab/dangerfiles/merge_request_linter'
 
 COMMIT_MESSAGE_GUIDELINES = "https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
 MORE_INFO = "For more information, take a look at our [Commit message guidelines](#{COMMIT_MESSAGE_GUIDELINES})."
@@ -17,10 +17,6 @@ This merge request includes more than %<max_commits_count>d commits. Each commit
 
 If this merge request contains commits that do not meet this criteria and/or contains intermediate work, please rebase these commits into a smaller number of commits or split this merge request into multiple smaller merge requests.
 MSG
-
-def gitlab_danger
-  @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
-end
 
 def fail_commit(commit, message, more_info: true)
   self.fail(build_message(commit, message, more_info: more_info))
@@ -39,22 +35,22 @@ end
 
 def squash_mr?
   # Locally, we assume the MR is set to be squashed so that the user only sees warnings instead of errors.
-  gitlab_danger.ci? ? gitlab.mr_json['squash'] : true
+  helper.ci? ? gitlab.mr_json['squash'] : true
 end
 
 def wip_mr?
-  gitlab_danger.ci? ? gitlab.mr_json['work_in_progress'] : false
+  helper.ci? ? gitlab.mr_json['work_in_progress'] : false
 end
 
 def danger_job_link
-  gitlab_danger.ci? ? "[#{THE_DANGER_JOB_TEXT}](#{ENV['CI_JOB_URL']})" : THE_DANGER_JOB_TEXT
+  helper.ci? ? "[#{THE_DANGER_JOB_TEXT}](#{ENV['CI_JOB_URL']})" : THE_DANGER_JOB_TEXT
 end
 
 # Perform various checks against commits. We're not using
 # https://github.com/jonallured/danger-commit_lint because its output is not
 # very helpful, and it doesn't offer the means of ignoring merge commits.
 def lint_commit(commit)
-  linter = Tooling::Danger::CommitLinter.new(commit)
+  linter = Gitlab::Dangerfiles::CommitLinter.new(commit)
 
   # For now we'll ignore merge commits, as getting rid of those is a problem
   # separate from enforcing good commit messages.
@@ -93,7 +89,7 @@ end
 def lint_mr_title(mr_title)
   commit = Struct.new(:message, :sha).new(mr_title)
 
-  Tooling::Danger::MergeRequestLinter.new(commit).lint
+  Gitlab::Dangerfiles::MergeRequestLinter.new(commit).lint
 end
 
 def count_non_fixup_commits(commit_linters)
@@ -109,7 +105,7 @@ def lint_commits(commits)
     if multi_line_commit_linter && multi_line_commit_linter.failed?
       warn_or_fail_commits(multi_line_commit_linter)
       commit_linters.delete(multi_line_commit_linter) # Don't show an error (here) and a warning (below)
-    elsif gitlab_danger.ci? # We don't have access to the MR title locally
+    elsif helper.ci? # We don't have access to the MR title locally
       title_linter = lint_mr_title(gitlab.mr_json['title'])
       if title_linter.failed?
         warn_or_fail_commits(title_linter)

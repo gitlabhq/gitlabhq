@@ -1,14 +1,14 @@
+import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import getUserPermissions from '../queries/getUserPermissions.query.graphql';
 import { query } from './gql';
 
 const fetchApiProjectData = (projectPath) => Api.project(projectPath).then(({ data }) => data);
 
 const fetchGqlProjectData = (projectPath) =>
   query({
-    query: getUserPermissions,
+    query: getIdeProject,
     variables: { projectPath },
   }).then(({ data }) => data.project);
 

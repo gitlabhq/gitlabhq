@@ -99,6 +99,12 @@ module GroupsHelper
       .count
   end
 
+  def group_dependency_proxy_url(group)
+    # The namespace path can include uppercase letters, which
+    # Docker doesn't allow. The proxy expects it to be downcased.
+    "#{group_url(group).downcase}#{DependencyProxy::URL_SUFFIX}"
+  end
+
   def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)

@@ -1,20 +1,21 @@
 # frozen_string_literal: true
 
 require 'rspec-parameterized'
-require_relative 'danger_spec_helper'
+require 'gitlab-dangerfiles'
+require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/sidekiq_queues'
 
 RSpec.describe Tooling::Danger::SidekiqQueues do
-  using RSpec::Parameterized::TableSyntax
-  include DangerSpecHelper
+  include_context "with dangerfile"
 
-  let(:fake_git) { double('fake-git') }
-  let(:fake_danger) { new_fake_danger.include(described_class) }
+  let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
 
   subject(:sidekiq_queues) { fake_danger.new(git: fake_git) }
 
   describe '#changed_queue_files' do
+    using RSpec::Parameterized::TableSyntax
+
     where(:modified_files, :changed_queue_files) do
       %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml foo) | %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml)
       %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml) | %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml)

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
-
 TEMPLATE_MESSAGE = <<~MSG
 This merge request requires a CI/CD Template review. To make sure these
 changes are reviewed, take the following steps:
@@ -17,9 +15,9 @@ TEMPLATE_FILES_MESSAGE = <<~MSG
 The following files require a review from the CI/CD Templates maintainers:
 MSG
 
-return unless gitlab_danger.ci?
+return unless helper.ci?
 
-template_paths_to_review = helper.changes_by_category[:ci_template]
+template_paths_to_review = project_helper.changes_by_category[:ci_template]
 
 if gitlab.mr_labels.include?('ci::templates') || template_paths_to_review.any?
   message 'This merge request adds or changes files that require a ' \

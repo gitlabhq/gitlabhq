@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-def gitlab_danger
-  @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
-end
-
 def feature_mr?
-  return false unless helper.gitlab_helper&.mr_labels
-
-  (helper.gitlab_helper.mr_labels & %w[feature::addition feature::enhancement]).any?
+  (helper.mr_labels & %w[feature::addition feature::enhancement]).any?
 end
 
 DOCUMENTATION_UPDATE_MISSING = <<~MSG
@@ -19,7 +13,7 @@ For more information, see:
 - The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
 MSG
 
-docs_paths_to_review = helper.changes_by_category[:docs]
+docs_paths_to_review = project_helper.changes_by_category[:docs]
 
 # Documentation should be updated for feature::addition and feature::enhancement
 if docs_paths_to_review.empty?
@@ -30,7 +24,7 @@ end
 
 message 'This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.'
 
-return unless gitlab_danger.ci?
+return unless helper.ci?
 
 markdown(<<~MARKDOWN)
   ## Documentation review

@@ -11,7 +11,7 @@ return if duplicate.empty?
 
 warn 'This merge request has introduced duplicated yarn dependencies.'
 
-if GitlabDanger.new(helper.gitlab_helper).ci?
+if helper.ci?
   markdown(<<~MARKDOWN)
     ## Duplicate yarn dependencies
 

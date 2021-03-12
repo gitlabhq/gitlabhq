@@ -159,4 +159,20 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
 
     it { expect { subject }.to raise_error(NotImplementedError, 'No ability defined for track foo') }
   end
+
+  context 'when group is a sub-group' do
+    let(:root_group) { create(:group) }
+    let(:group) { create(:group) }
+
+    before do
+      group.parent = root_group
+      group.save!
+
+      allow(Ability).to receive(:allowed?).and_call_original
+    end
+
+    it 'does not raise an exception' do
+      expect { execute_service }.not_to raise_error
+    end
+  end
 end

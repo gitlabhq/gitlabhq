@@ -344,7 +344,6 @@ end
 
 group :development do
   gem 'brakeman', '~> 4.2', require: false
-  gem 'danger', '~> 8.0.6', require: false
   gem 'lefthook', '~> 0.7', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
@@ -397,6 +396,11 @@ group :development, :test do
   gem 'parallel', '~> 1.19', require: false
 
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
+end
+
+group :development, :test, :danger do
+  gem 'danger-gitlab', '~> 8.0', require: false
+  gem 'gitlab-dangerfiles', '~> 0.8.0', require: false
 end
 
 group :development, :test, :coverage do

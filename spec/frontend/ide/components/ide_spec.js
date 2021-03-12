@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import ErrorMessage from '~/ide/components/error_message.vue';
 import Ide from '~/ide/components/ide.vue';
+import { MSG_CANNOT_PUSH_CODE } from '~/ide/messages';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
@@ -158,7 +159,7 @@ describe('WebIDE', () => {
     expect(findAlert().props()).toMatchObject({
       dismissible: false,
     });
-    expect(findAlert().text()).toBe(Ide.MSG_CANNOT_PUSH_CODE);
+    expect(findAlert().text()).toBe(MSG_CANNOT_PUSH_CODE);
   });
 
   it.each`

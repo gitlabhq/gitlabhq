@@ -1,0 +1,7 @@
+fragment IdeProject on Project {
+  userPermissions {
+    createMergeRequestIn
+    readMergeRequest
+    pushCode
+  }
+}

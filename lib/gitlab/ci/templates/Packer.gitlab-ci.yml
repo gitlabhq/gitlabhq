@@ -23,6 +23,6 @@ build:
   environment: production
   script:
     - find . -maxdepth 1 -name '*.json' -print0 | xargs -t0n1 packer build
-  when: manual
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual

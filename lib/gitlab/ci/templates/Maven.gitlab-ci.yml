@@ -33,7 +33,8 @@ cache:
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
   except:
-    - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 # Verify merge requests using JDK8
 verify:jdk8:
@@ -51,4 +52,5 @@ deploy:jdk8:
       fi
     - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
   only:
-    - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

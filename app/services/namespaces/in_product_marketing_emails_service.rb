@@ -63,7 +63,10 @@ module Namespaces
         .completed_actions_with_latest_in_range(completed_actions, range)
         .incomplete_actions(incomplete_action)
 
-      Group.joins(:onboarding_progress).merge(onboarding_progress_scope)
+      # Filtering out sub-groups is a temporary fix to prevent calling
+      # `.root_ancestor` on groups that are not root groups.
+      # See https://gitlab.com/groups/gitlab-org/-/epics/5594 for more information.
+      Group.where(parent_id: nil).joins(:onboarding_progress).merge(onboarding_progress_scope)
     end
 
     def users_for_group(group)
