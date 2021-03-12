@@ -43,6 +43,8 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  before_create :set_container_registry_access_level
+
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
@@ -86,6 +88,15 @@ class ProjectFeature < ApplicationRecord
   end
 
   private
+
+  def set_container_registry_access_level
+    self.container_registry_access_level =
+      if project&.container_registry_enabled
+        ENABLED
+      else
+        DISABLED
+      end
+  end
 
   # Validates builds and merge requests access level
   # which cannot be higher than repository access level

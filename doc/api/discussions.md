@@ -852,33 +852,42 @@ Parameters for all comments:
 | `position[base_sha]`                     | string         | yes      | Base commit SHA in the source branch |
 | `position[start_sha]`                    | string         | yes      | SHA referencing commit in target branch |
 | `position[head_sha]`                     | string         | yes      | SHA referencing HEAD of this merge request |
-| `position[position_type]`                | string         | yes      | Type of the position reference', allowed values: 'text' or 'image' |
+| `position[position_type]`                | string         | yes      | Type of the position reference', allowed values: `text` or `image` |
 | `position[new_path]`                     | string         | no       | File path after change |
-| `position[new_line]`                     | integer        | no       | Line number after change (for 'text' diff notes) |
+| `position[new_line]`                     | integer        | no       | Line number after change (for `text` diff notes) |
 | `position[old_path]`                     | string         | no       | File path before change |
-| `position[old_line]`                     | integer        | no       | Line number before change (for 'text' diff notes) |
+| `position[old_line]`                     | integer        | no       | Line number before change (for `text` diff notes) |
 | `position[line_range]`                   | hash           | no       | Line range for a multi-line diff note |
-| `position[width]`                        | integer        | no       | Width of the image (for 'image' diff notes) |
-| `position[height]`                       | integer        | no       | Height of the image (for 'image' diff notes) |
-| `position[x]`                            | integer        | no       | X coordinate (for 'image' diff notes) |
-| `position[y]`                            | integer        | no       | Y coordinate (for 'image' diff notes) |
+| `position[width]`                        | integer        | no       | Width of the image (for `image` diff notes) |
+| `position[height]`                       | integer        | no       | Height of the image (for `image` diff notes) |
+| `position[x]`                            | integer        | no       | X coordinate (for `image` diff notes) |
+| `position[y]`                            | integer        | no       | Y coordinate (for `image` diff notes) |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
+```
 
 Parameters for multiline comments only:
 
 | Attribute                                | Type           | Required | Description |
 | ---------------------------------------- | -------------- | -------- | ----------- |
 | `position[line_range][start]`            | hash           | no       | Multiline note starting line |
-| `position[line_range][start][line_code]` | string         | no       | Line code for the start line |
-| `position[line_range][start][type]`      | string         | no       | Line type for the start line |
+| `position[line_range][start][line_code]` | string         | yes      | [Line code](#line-code) for the start line |
+| `position[line_range][start][type]`      | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
 | `position[line_range][end]`              | hash           | no       | Multiline note ending line |
-| `position[line_range][end][line_code]`   | string         | no       | Line code for the end line |
-| `position[line_range][end][type]`        | string         | no      | Line type for the end line |
+| `position[line_range][end][line_code]`   | string         | yes      | [Line code](#line-code) for the end line |
+| `position[line_range][end][type]`        | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
 
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
-```
+#### Line code
 
-There is currently no functional documented method of starting merge request discussions. Read [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/228807) for reflections.
+A line code is of the form `<SHA>_<old>_<new>`:
+
+- `<SHA>` is the SHA1 hash of the filename.
+- `<old>` is the line number before the change.
+- `<new>` is the line number after the change.
+
+For example, when commenting on an added line number 5, the line code
+looks like `adc83b19e793491b1c6ea0fd8b46cd9f32e292fc_5_5`.
 
 ### Resolve a merge request thread
 
@@ -1159,15 +1168,15 @@ Parameters:
 | `position[base_sha]`      | string         | yes      | Base commit SHA in the source branch |
 | `position[start_sha]`     | string         | yes      | SHA referencing commit in target branch |
 | `position[head_sha]`      | string         | yes      | SHA referencing HEAD of this commit |
-| `position[position_type]` | string         | yes      | Type of the position reference', allowed values: 'text' or 'image' |
+| `position[position_type]` | string         | yes      | Type of the position reference', allowed values: `text` or `image` |
 | `position[new_path]`      | string         | no       | File path after change |
 | `position[new_line]`      | integer        | no       | Line number after change |
 | `position[old_path]`      | string         | no       | File path before change |
 | `position[old_line]`      | integer        | no       | Line number before change |
-| `position[width]`         | integer        | no       | Width of the image (for 'image' diff notes) |
-| `position[height]`        | integer        | no       | Height of the image (for 'image' diff notes) |
-| `position[x]`             | integer        | no       | X coordinate (for 'image' diff notes) |
-| `position[y]`             | integer        | no       | Y coordinate (for 'image' diff notes) |
+| `position[width]`         | integer        | no       | Width of the image (for `image` diff notes) |
+| `position[height]`        | integer        | no       | Height of the image (for `image` diff notes) |
+| `position[x]`             | integer        | no       | X coordinate (for `image` diff notes) |
+| `position[y]`             | integer        | no       | Y coordinate (for `image` diff notes) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment"

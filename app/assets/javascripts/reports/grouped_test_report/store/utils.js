@@ -5,7 +5,7 @@ import {
   ICON_WARNING,
   ICON_SUCCESS,
   ICON_NOTFOUND,
-} from '../constants';
+} from '../../constants';
 
 const textBuilder = (results) => {
   const { failed, errored, resolved, total } = results;

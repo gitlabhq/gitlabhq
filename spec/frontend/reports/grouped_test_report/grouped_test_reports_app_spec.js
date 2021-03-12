@@ -1,8 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
-import GroupedTestReportsApp from '~/reports/components/grouped_test_reports_app.vue';
-import { getStoreConfig } from '~/reports/store';
+import GroupedTestReportsApp from '~/reports/grouped_test_report/grouped_test_reports_app.vue';
+import { getStoreConfig } from '~/reports/grouped_test_report/store';
 
 import { failedReport } from '../mock_data/mock_data';
 import mixedResultsTestReports from '../mock_data/new_and_fixed_failures_report.json';

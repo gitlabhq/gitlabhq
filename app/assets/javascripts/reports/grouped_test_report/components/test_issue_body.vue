@@ -3,7 +3,7 @@ import { GlBadge, GlButton } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import { sprintf, n__ } from '~/locale';
 import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
-import { STATUS_NEUTRAL } from '../constants';
+import { STATUS_NEUTRAL } from '../../constants';
 
 export default {
   name: 'TestIssueBody',

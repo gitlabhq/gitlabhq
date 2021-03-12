@@ -6,7 +6,7 @@ type: reference, index
 description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
 ---
 
-# User Docs
+# User Docs **(FREE)**
 
 Welcome to GitLab! We're glad to have you here!
 
@@ -56,8 +56,8 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Improve collaboration with:
-  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md). **(STARTER)**
-  - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md). **(STARTER)**
+  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md).
+  - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [Related Issues](project/issues/related_issues.md).
 - Use [Burndown Charts](project/milestones/burndown_and_burnup_charts.md) to track progress during a sprint or while working on a new version of their software.
@@ -85,7 +85,7 @@ There are several types of users in GitLab:
 
 ## User activity
 
-You can follow or unfollow other users from their [user profiles](profile/index.md#user-profile).
+You can follow or unfollow other users from their [user profiles](profile/index.md#access-your-user-profile).
 To see their activity in the top-level Activity view, select Follow or Unfollow, and select
 the Followed Users tab:
 
@@ -198,7 +198,7 @@ Learn what is [Git](../topics/git/index.md) and its best practices.
 
 See [various statistics](admin_area/analytics/index.md) of your GitLab instance.
 
-## Operations Dashboard **(PREMIUM)**
+## Operations Dashboard
 
 See [Operations Dashboard](operations_dashboard/index.md) for a summary of each
 project's operational health.

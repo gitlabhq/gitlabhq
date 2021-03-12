@@ -1,4 +1,4 @@
-import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '../constants';
+import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '../../constants';
 
 export const summaryStatus = (state) => {
   if (state.isLoading) {

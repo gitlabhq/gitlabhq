@@ -36,6 +36,7 @@ const populateUserInfo = (user) => {
       if (userData) {
         Object.assign(user, {
           avatarUrl: userData.avatar_url,
+          bot: userData.bot,
           username: userData.username,
           name: userData.name,
           location: userData.location,

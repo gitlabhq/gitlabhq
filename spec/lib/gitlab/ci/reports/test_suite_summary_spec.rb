@@ -87,12 +87,44 @@ RSpec.describe Gitlab::Ci::Reports::TestSuiteSummary do
     end
   end
 
+  describe '#suite_error' do
+    subject(:suite_error) { test_suite_summary.suite_error }
+
+    context 'when there are no build report results with suite errors' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there are build report results with suite errors' do
+      let(:build_report_result_1) do
+        build(
+          :ci_build_report_result,
+          :with_junit_suite_error,
+          test_suite_name: 'karma',
+          test_suite_error: 'karma parsing error'
+        )
+      end
+
+      let(:build_report_result_2) do
+        build(
+          :ci_build_report_result,
+          :with_junit_suite_error,
+          test_suite_name: 'karma',
+          test_suite_error: 'another karma parsing error'
+        )
+      end
+
+      it 'includes the first suite error from the collection of build report results' do
+        expect(suite_error).to eq('karma parsing error')
+      end
+    end
+  end
+
   describe '#to_h' do
     subject { test_suite_summary.to_h }
 
     context 'when test suite summary has several build report results' do
       it 'returns the total as a hash' do
-        expect(subject).to include(:time, :count, :success, :failed, :skipped, :error)
+        expect(subject).to include(:time, :count, :success, :failed, :skipped, :error, :suite_error)
       end
     end
   end

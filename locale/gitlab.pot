@@ -11521,6 +11521,9 @@ msgstr ""
 msgid "Enabled Git access protocols"
 msgstr ""
 
+msgid "Enabled OAuth sign-in sources"
+msgstr ""
+
 msgid "Enabled sources for code import during project creation. OmniAuth must be configured for GitHub"
 msgstr ""
 

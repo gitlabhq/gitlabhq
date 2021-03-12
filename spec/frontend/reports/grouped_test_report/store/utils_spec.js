@@ -5,7 +5,7 @@ import {
   ICON_SUCCESS,
   ICON_NOTFOUND,
 } from '~/reports/constants';
-import * as utils from '~/reports/store/utils';
+import * as utils from '~/reports/grouped_test_report/store/utils';
 
 describe('Reports store utils', () => {
   describe('summaryTextbuilder', () => {

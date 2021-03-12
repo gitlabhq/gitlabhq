@@ -12,9 +12,9 @@ import {
   receiveReportsError,
   openModal,
   closeModal,
-} from '~/reports/store/actions';
-import * as types from '~/reports/store/mutation_types';
-import state from '~/reports/store/state';
+} from '~/reports/grouped_test_report/store/actions';
+import * as types from '~/reports/grouped_test_report/store/mutation_types';
+import state from '~/reports/grouped_test_report/store/state';
 
 describe('Reports Store Actions', () => {
   let mockedState;

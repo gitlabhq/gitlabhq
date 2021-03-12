@@ -77,14 +77,6 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
           it 'does not remove the files' do
             expect { subject }.not_to change { artifact.file.exists? }
           end
-
-          it 'reports metrics for destroyed artifacts' do
-            counter = service.send(:destroyed_artifacts_counter)
-
-            expect(counter).to receive(:increment).with({}, 1).and_call_original
-
-            subject
-          end
         end
       end
 
@@ -242,6 +234,18 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
       it 'destroys only unlocked artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+      end
+    end
+
+    context 'when all artifacts are locked' do
+      before do
+        pipeline = create(:ci_pipeline, locked: :artifacts_locked)
+        job = create(:ci_build, pipeline: pipeline)
+        artifact.update!(job: job)
+      end
+
+      it 'destroys no artifacts' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(0)
       end
     end
   end

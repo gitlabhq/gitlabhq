@@ -187,4 +187,30 @@ RSpec.describe ProjectFeature do
       expect(described_class.required_minimum_access_level_for_private_project(:issues)).to eq(Gitlab::Access::GUEST)
     end
   end
+
+  describe 'container_registry_access_level' do
+    context 'when the project is created with container_registry_enabled false' do
+      it 'creates project with DISABLED container_registry_access_level' do
+        project = create(:project, container_registry_enabled: false)
+
+        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+      end
+    end
+
+    context 'when the project is created with container_registry_enabled true' do
+      it 'creates project with ENABLED container_registry_access_level' do
+        project = create(:project, container_registry_enabled: true)
+
+        expect(project.project_feature.container_registry_access_level).to eq(described_class::ENABLED)
+      end
+    end
+
+    context 'when the project is created with container_registry_enabled nil' do
+      it 'creates project with DISABLED container_registry_access_level' do
+        project = create(:project, container_registry_enabled: nil)
+
+        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+      end
+    end
+  end
 end

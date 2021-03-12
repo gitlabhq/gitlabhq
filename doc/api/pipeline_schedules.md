@@ -115,7 +115,7 @@ POST /projects/:id/pipeline_schedules
 | `description`   | string         | yes      | The description of the pipeline schedule.                                                                               |
 | `ref`           | string         | yes      | The branch or tag name that is triggered.                                                                               |
 | `cron`          | string         | yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                      |
-| `cron_timezone` | string         | no       | The timezone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `'UTC'`).      |
+| `cron_timezone` | string         | no       | The timezone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`).        |
 | `active`        | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 
 ```shell

@@ -292,7 +292,7 @@ Parameters:
 | `description`         | string          | no       | Description of a snippet                                                            |
 | `visibility`          | string          | no       | Snippet's [visibility](#snippet-visibility-level)                                   |
 | `files`               | array of hashes | sometimes | An array of snippet files. Required when updating snippets with multiple files. |
-| `files:action`        | string          | yes      | Type of action to perform on the file, one of: 'create', 'update', 'delete', 'move' |
+| `files:action`        | string          | yes      | Type of action to perform on the file, one of: `create`, `update`, `delete`, `move` |
 | `files:file_path`     | string          | no       | File path of the snippet file                                                       |
 | `files:previous_path` | string          | no       | Previous path of the snippet file                                                   |
 | `files:content`       | string          | no       | Content of the snippet file                                                         |

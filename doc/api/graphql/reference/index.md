@@ -2970,7 +2970,7 @@ Represents an external issue.
 | `containerRepositoriesMaxCapacity` | [`Int`](#int) | The maximum concurrency of container repository sync for this secondary node. |
 | `enabled` | [`Boolean`](#boolean) | Indicates whether this Geo node is enabled. |
 | `filesMaxCapacity` | [`Int`](#int) | The maximum concurrency of LFS/attachment backfill for this secondary node. |
-| `groupWikiRepositoryRegistries` | [`GroupWikiRepositoryRegistryConnection`](#groupwikirepositoryregistryconnection) | Find group wiki repository registries on this Geo node. Available only when feature flag `geo_group_wiki_repository_replication` is enabled. |
+| `groupWikiRepositoryRegistries` | [`GroupWikiRepositoryRegistryConnection`](#groupwikirepositoryregistryconnection) | Find group wiki repository registries on this Geo node. |
 | `id` | [`ID!`](#id) | ID of this GeoNode. |
 | `internalUrl` | [`String`](#string) | The URL defined on the primary node that secondary nodes should use to contact it. |
 | `mergeRequestDiffRegistries` | [`MergeRequestDiffRegistryConnection`](#mergerequestdiffregistryconnection) | Find merge request diff registries on this Geo node. |

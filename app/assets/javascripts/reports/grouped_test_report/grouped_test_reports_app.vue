@@ -4,18 +4,18 @@ import { once } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import createStore from '../store';
+import GroupedIssuesList from '../components/grouped_issues_list.vue';
+import { componentNames } from '../components/issue_body';
+import ReportSection from '../components/report_section.vue';
+import SummaryRow from '../components/summary_row.vue';
+import Modal from './components/modal.vue';
+import createStore from './store';
 import {
   summaryTextBuilder,
   reportTextBuilder,
   statusIcon,
   recentFailuresTextBuilder,
-} from '../store/utils';
-import GroupedIssuesList from './grouped_issues_list.vue';
-import { componentNames } from './issue_body';
-import Modal from './modal.vue';
-import ReportSection from './report_section.vue';
-import SummaryRow from './summary_row.vue';
+} from './store/utils';
 
 export default {
   name: 'GroupedTestReportsApp',

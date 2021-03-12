@@ -27,15 +27,19 @@ GitLab provides two types of snippets:
 You can create snippets in multiple ways, depending on whether you want to create a personal or project snippet:
 
 1. Select the kind of snippet you want to create:
-   - **To create a personal snippet**:
+   - **To create a personal snippet**: On the
+     [Snippets dashboard](https://gitlab.com/dashboard/snippets), click
+     **New snippet**, or:
      - *If you're on a project's page,* select the plus icon (**{plus-square-o}**)
-       in the top navigation bar, then select **New snippet** from the **GitLab** (for GitLab.com)
-       or **Your Instance** (self-managed) section of the same dropdown menu.
+       in the top navigation bar, and then select **New snippet** from the
+       **GitLab** (GitLab SaaS) or **Your Instance** (self-managed) section
+       of the same dropdown menu.
      - *For all other pages,* select the plus icon (**{plus-square-o}**)
-       in the top navigation bar, then select **New snippet** from the dropdown menu.
-   - **To create a project snippet**: Go to your project's page. Select the plus icon
-     (**{plus-square-o}**), then select **New snippet** from the **This project** section
-     of the dropdown menu.
+       in the top navigation bar, then select **New snippet** from the dropdown
+       menu.
+   - **To create a project snippet**: Go to your project's page. Select the
+     plus icon (**{plus-square-o}**), and then select **New snippet** from the
+     **This project** section of the dropdown menu.
 1. Add a **Title** and **Description**.
 1. Name your **File** with an appropriate extension, such as `example.rb` or `index.html`.
    Filenames with appropriate extensions display [syntax highlighting](#filenames).

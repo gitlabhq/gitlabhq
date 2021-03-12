@@ -166,7 +166,7 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `issue_link_id` | integer/string | yes      | The ID of an issue relationship |
-| `link_type` | string  | no | The type of the relation ('relates_to', 'blocks', 'is_blocked_by'), defaults to 'relates_to' |
+| `link_type` | string  | no | The type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to` |
 
 ```json
 {

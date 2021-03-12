@@ -2,8 +2,8 @@ import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
-import ReportsModal from '~/reports/components/modal.vue';
-import state from '~/reports/store/state';
+import ReportsModal from '~/reports/grouped_test_report/components/modal.vue';
+import state from '~/reports/grouped_test_report/store/state';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
 const StubbedGlModal = { template: '<div><slot></slot></div>', name: 'GlModal', props: ['title'] };

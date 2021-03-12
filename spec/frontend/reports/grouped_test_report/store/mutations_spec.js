@@ -1,7 +1,7 @@
-import * as types from '~/reports/store/mutation_types';
-import mutations from '~/reports/store/mutations';
-import state from '~/reports/store/state';
-import { failedIssue } from '../mock_data/mock_data';
+import * as types from '~/reports/grouped_test_report/store/mutation_types';
+import mutations from '~/reports/grouped_test_report/store/mutations';
+import state from '~/reports/grouped_test_report/store/state';
+import { failedIssue } from '../../mock_data/mock_data';
 
 describe('Reports Store Mutations', () => {
   let stateCopy;

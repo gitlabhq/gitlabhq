@@ -3,8 +3,8 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
-import TestIssueBody from '~/reports/components/test_issue_body.vue';
-import { failedIssue, successIssue } from '../mock_data/mock_data';
+import TestIssueBody from '~/reports/grouped_test_report/components/test_issue_body.vue';
+import { failedIssue, successIssue } from '../../mock_data/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

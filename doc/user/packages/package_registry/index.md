@@ -21,6 +21,8 @@ You can view packages for your project or group.
 
 You can search, sort, and filter packages on this page.
 
+You can also find helpful code snippets for configuring your package manager or installing a given package.
+
 When you view packages in a group:
 
 - All projects published to the group and its projects are displayed.

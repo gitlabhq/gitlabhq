@@ -20,12 +20,11 @@
               or LDAP password
             must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
-      .form-group
-        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'label-bold'
+      %fieldset.form-group
+        %legend.gl-font-base.gl-mb-3.gl-border-none.gl-font-weight-bold= _('Enabled OAuth sign-in sources')
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'
-        .btn-group{ data: { toggle: 'buttons' } }
-          - oauth_providers_checkboxes.each do |source|
-            = source
+        - oauth_providers_checkboxes.each do |source|
+          = source
     .form-group
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'label-bold'
       .form-check

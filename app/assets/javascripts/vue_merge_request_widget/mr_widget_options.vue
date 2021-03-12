@@ -14,7 +14,7 @@ import { deprecatedCreateFlash as createFlash } from '../flash';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
-import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
+import GroupedTestReportsApp from '../reports/grouped_test_report/grouped_test_reports_app.vue';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import WidgetHeader from './components/mr_widget_header.vue';

@@ -54,8 +54,11 @@ RSpec.describe JiraImport::UsersImporter do
         end
 
         context 'when jira client raises an error' do
+          let(:error) { Timeout::Error.new }
+
           it 'returns an error response' do
-            expect(client).to receive(:get).and_raise(Timeout::Error)
+            expect(client).to receive(:get).and_raise(error)
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, project_id: project.id)
 
             expect(subject.error?).to be_truthy
             expect(subject.message).to include('There was an error when communicating to Jira')

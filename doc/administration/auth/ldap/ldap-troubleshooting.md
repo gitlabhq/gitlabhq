@@ -191,7 +191,7 @@ have to be taken here:
   will associate this profile to the LDAP identity.
 
 The user can do either of these steps [in their
-profile](../../../user/profile/index.md#user-profile) or an administrator can do it.
+profile](../../../user/profile/index.md#access-your-user-profile) or an administrator can do it.
 
 #### Debug LDAP user filter
 

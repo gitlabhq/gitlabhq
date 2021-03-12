@@ -120,7 +120,7 @@
         - private_profile_label = capture do
           = s_("Profiles|Don't display activity-related personal information on your profiles")
         = f.check_box :private_profile, label: private_profile_label, inline: true, wrapper_class: 'mr-0'
-        = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'private-profile')
+        = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
       %h5= s_("Profiles|Private contributions")
       = f.check_box :include_private_contributions, label: s_('Profiles|Include private contributions on my profile'), wrapper_class: 'mb-2', inline: true
       .help-block

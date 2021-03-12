@@ -7,12 +7,16 @@ module Resolvers
     alias_method :branch, :object
 
     def resolve(**args)
-      return unless branch
+      commit = branch&.dereferenced_target
+      return unless commit
 
-      commit = branch.dereferenced_target
-      project = Project.find_by_full_path(commit.repository.gl_project_path)
+      lazy_project = BatchLoader::GraphQL.for(commit.repository.gl_project_path).batch do |paths, loader|
+        paths.each { |path| loader.call(path, Project.find_by_full_path(path)) }
+      end
 
-      ::Commit.new(commit, project) if commit
+      ::Gitlab::Graphql::Lazy.with_value(lazy_project) do |project|
+        ::Commit.new(commit, project) if project
+      end
     end
   end
 end

@@ -95,7 +95,7 @@ The **Seat usage** page lists all users occupying seats. Details for each user i
 
 - Full name
 - Username
-- Public email address (if they have provided one in their [user settings](../../user/profile/index.md#user-settings))
+- Public email address (if they have provided one in their [user settings](../../user/profile/index.md#access-your-user-settings))
 
 The Seat usage listing is updated live, but the usage statistics on the billing page are updated
 only once per day. For this reason there can be a minor difference between the seat usage listing

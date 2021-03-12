@@ -10,6 +10,7 @@ import { COMMIT_FAILURE, COMMIT_SUCCESS, DEFAULT_FAILURE, LOAD_FAILURE_UNKNOWN }
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
+import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
 export default {
@@ -35,7 +36,7 @@ export default {
       failureType: null,
       failureReasons: [],
       showStartScreen: false,
-      isNewConfigFile: false,
+      isNewCiConfigFile: false,
       initialCiFileContent: '',
       lastCommittedContent: '',
       currentCiFileContent: '',
@@ -47,10 +48,12 @@ export default {
   apollo: {
     initialCiFileContent: {
       query: getBlobContent,
-      // If we are working off a new file, we don't want to fetch
-      // the base data as there is nothing to fetch.
-      skip({ isNewConfigFile }) {
-        return isNewConfigFile;
+      // If it's a brand new file, we don't want to fetch the content.
+      // Then when the user commits the first time, the query would run
+      // to get the initial file content, but we already have it in `lastCommitedContent`
+      // so we skip the loading altogether.
+      skip({ isNewCiConfigFile, lastCommittedContent }) {
+        return isNewCiConfigFile || lastCommittedContent;
       },
       variables() {
         return {
@@ -97,6 +100,9 @@ export default {
     },
     currentBranch: {
       query: getCurrentBranch,
+    },
+    isNewCiConfigFile: {
+      query: getIsNewCiConfigFile,
     },
   },
   computed: {
@@ -191,8 +197,10 @@ export default {
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setNewEmptyCiConfigFile() {
+      this.$apollo
+        .getClient()
+        .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: true } });
       this.showStartScreen = false;
-      this.isNewConfigFile = true;
     },
     showErrorAlert({ type, reasons = [] }) {
       this.reportFailure(type, reasons);
@@ -202,6 +210,12 @@ export default {
     },
     updateOnCommit({ type }) {
       this.reportSuccess(type);
+
+      if (this.isNewCiConfigFile) {
+        this.$apollo
+          .getClient()
+          .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: false } });
+      }
       // Keep track of the latest commited content to know
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;

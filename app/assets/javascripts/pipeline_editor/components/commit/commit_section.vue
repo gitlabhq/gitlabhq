@@ -1,10 +1,16 @@
 <script>
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import { COMMIT_FAILURE, COMMIT_SUCCESS } from '../../constants';
+import {
+  COMMIT_ACTION_CREATE,
+  COMMIT_ACTION_UPDATE,
+  COMMIT_FAILURE,
+  COMMIT_SUCCESS,
+} from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
+import getIsNewCiConfigFile from '../../graphql/queries/client/is_new_ci_config_file.graphql';
 
 import CommitForm from './commit_form.vue';
 
@@ -32,10 +38,14 @@ export default {
   data() {
     return {
       commit: {},
+      isNewCiConfigFile: false,
       isSaving: false,
     };
   },
   apollo: {
+    isNewCiConfigFile: {
+      query: getIsNewCiConfigFile,
+    },
     commitSha: {
       query: getCommitSha,
     },
@@ -44,6 +54,9 @@ export default {
     },
   },
   computed: {
+    action() {
+      return this.isNewCiConfigFile ? COMMIT_ACTION_CREATE : COMMIT_ACTION_UPDATE;
+    },
     defaultCommitMessage() {
       return sprintf(this.$options.i18n.defaultCommitMessage, { sourcePath: this.ciConfigPath });
     },
@@ -70,6 +83,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: commitCIFile,
           variables: {
+            action: this.action,
             projectPath: this.projectFullPath,
             branch: targetBranch,
             startBranch: this.currentBranch,

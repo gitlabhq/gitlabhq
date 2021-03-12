@@ -2,7 +2,7 @@
 import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 
 import CodeBlock from '~/vue_shared/components/code_block.vue';
-import { fieldTypes } from '../constants';
+import { fieldTypes } from '../../constants';
 
 export default {
   components: {

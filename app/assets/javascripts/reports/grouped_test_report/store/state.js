@@ -1,5 +1,5 @@
 import { s__ } from '~/locale';
-import { fieldTypes } from '../constants';
+import { fieldTypes } from '../../constants';
 
 export default () => ({
   endpoint: null,

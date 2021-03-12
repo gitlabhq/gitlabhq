@@ -80,7 +80,7 @@ Learn more about GitLab account management:
 |:-----------------------------------------------------------|:------------|
 | [User account](user/profile/index.md)                      | Manage your account. |
 | [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
-| [User settings](user/profile/index.md#user-settings) | Manage your user settings, two factor authentication, and more. |
+| [User settings](user/profile/index.md#access-your-user-settings) | Manage your user settings, two factor authentication, and more. |
 | [User permissions](user/permissions.md)                    | Learn what each role in a project can do. |
 
 ### Git and GitLab

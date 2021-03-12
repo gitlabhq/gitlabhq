@@ -70,16 +70,16 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#current-status):
+1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
     - contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'
     - emoji is `:palm_tree:`, `:beach:`, `:beach_umbrella:`, `:beach_with_umbrella:`, `:ferris_wheel:`, `:thermometer:`, `:face_with_thermometer:`, `:red_circle:`, `:bulb:`, `:sun_with_face:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
-1. Team members whose Slack or [GitLab status](../user/profile/index.md#current-status) emoji
+1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
    - Reviewers with `:large_blue_circle:` are two times as likely to be picked as other reviewers.
    - Trainee maintainers with `:large_blue_circle:` are four times as likely to be picked as other reviewers.
-1. People whose [GitLab status](../user/profile/index.md#current-status) emoji
+1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔶 `:large_orange_diamond:` are half as likely to be picked. This applies to both reviewers and trainee maintainers.
 1. It always picks the same reviewers and maintainers for the same
    branch name (unless their OOO status changes, as in point 1). It

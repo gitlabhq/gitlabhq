@@ -316,12 +316,20 @@ If JUnit report format XML files are generated and uploaded as part of a pipelin
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
 display a list of test suites and cases reported from the XML file.
 
-![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
+![Test Reports Widget](img/pipelines_junit_test_report_v13_10.png)
 
 You can view all the known test suites and click on each of these to see further
 details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
+
+### Unit test reports parsing errors
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263457) in GitLab 13.10.
+
+If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](jobs/index.md#group-jobs-in-a-pipeline), GitLab shows only the first error from the group.
+
+![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
 
 ## Viewing JUnit screenshots on GitLab
 
