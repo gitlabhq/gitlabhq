@@ -33,14 +33,14 @@ Example response:
 [
   {
     "id": 1,
-    "name:": "group issue board",
+    "name": "group issue board",
     "group": {
       "id": 5,
       "name": "Documentcloud",
       "web_url": "http://example.com/groups/documentcloud"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [
@@ -85,14 +85,14 @@ Example response:
 [
   {
     "id": 1,
-    "name:": "group issue board",
+    "name": "group issue board",
     "group": {
       "id": 5,
       "name": "Documentcloud",
       "web_url": "http://example.com/groups/documentcloud"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [
@@ -150,14 +150,14 @@ Example response:
 ```json
   {
     "id": 1,
-    "name:": "group issue board",
+    "name": "group issue board",
     "group": {
       "id": 5,
       "name": "Documentcloud",
       "web_url": "http://example.com/groups/documentcloud"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [
@@ -200,14 +200,14 @@ Example response:
 ```json
   {
     "id": 1,
-    "name:": "group issue board",
+    "name": "group issue board",
     "group": {
       "id": 5,
       "name": "Documentcloud",
       "web_url": "http://example.com/groups/documentcloud"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [

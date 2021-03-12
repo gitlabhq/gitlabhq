@@ -35,8 +35,7 @@ module Packages
       end
 
       def packages_for_namespace
-        projects = ::Project.in_namespace(@namespace.self_and_descendants.select(:id))
-        ::Packages::Package.for_projects(projects.select(:id))
+        ::Packages::Package.for_projects(@namespace.all_projects)
       end
     end
   end
