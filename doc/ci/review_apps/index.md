@@ -286,8 +286,8 @@ The visual review tools retrieve the merge request ID from the `data-merge-reque
 data attribute included in the `script` HTML tag used to add the visual review tools
 to your review app.
 
-​After determining the ID for the merge request to link to a visual review app, you
-can supply the ID by either:​​
+After determining the ID for the merge request to link to a visual review app, you
+can supply the ID by either:
 
 - Hard-coding it in the script tag via the data attribute `data-merge-request-id` of the app.
 - Dynamically adding the `data-merge-request-id` value during the build of the app.

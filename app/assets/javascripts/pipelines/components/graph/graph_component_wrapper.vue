@@ -73,7 +73,11 @@ export default {
         return unwrapPipelineData(this.pipelineProjectPath, data);
       },
       error(err) {
-        this.reportFailure(LOAD_FAILURE, serializeLoadErrors(err));
+        this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
+        reportToSentry(
+          this.$options.name,
+          `type: ${LOAD_FAILURE}, info: ${serializeLoadErrors(err)}`,
+        );
       },
       result({ error }) {
         /*
@@ -134,11 +138,15 @@ export default {
     refreshPipelineGraph() {
       this.$apollo.queries.pipeline.refetch();
     },
-    reportFailure(type, err = '') {
+    /* eslint-disable @gitlab/require-i18n-strings */
+    reportFailure({ type, err = 'No error string passed.', skipSentry = false }) {
       this.showAlert = true;
       this.alertType = type;
-      reportToSentry(this.$options.name, `type: ${this.alertType}, info: ${err}`);
+      if (!skipSentry) {
+        reportToSentry(this.$options.name, `type: ${type}, info: ${err}`);
+      }
     },
+    /* eslint-enable @gitlab/require-i18n-strings */
   },
 };
 </script>

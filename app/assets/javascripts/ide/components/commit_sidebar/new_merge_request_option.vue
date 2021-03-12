@@ -41,7 +41,6 @@ export default {
         :disabled="shouldDisableNewMrOption"
         :checked="shouldCreateMR"
         type="checkbox"
-        data-qa-selector="start_new_mr_checkbox"
         @change="toggleShouldCreateMR"
       />
       <span class="gl-ml-3 ide-option-label">

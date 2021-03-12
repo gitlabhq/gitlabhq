@@ -170,7 +170,7 @@ export default {
         const parsedData = parseData(arrayOfJobs);
         this.links = generateLinksData(parsedData, this.containerId, `-${this.pipelineId}`);
       } catch (err) {
-        this.$emit('error', DRAW_FAILURE);
+        this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);
       }
       this.finishPerfMeasureAndSend();

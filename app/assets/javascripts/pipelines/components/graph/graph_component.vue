@@ -106,8 +106,8 @@ export default {
         height: this.$refs[this.containerId].scrollHeight,
       };
     },
-    onError(errorType) {
-      this.$emit('error', errorType);
+    onError(payload) {
+      this.$emit('error', payload);
     },
     setJob(jobName) {
       this.hoveredJobName = jobName;

@@ -8,6 +8,7 @@ import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
 import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -19,7 +20,7 @@ export default {
     TablePagination,
     SvgBlankState,
   },
-  mixins: [PipelinesMixin],
+  mixins: [PipelinesMixin, glFeatureFlagMixin()],
   props: {
     endpoint: {
       type: String,
@@ -89,6 +90,9 @@ export default {
      */
     canRenderPipelineButton() {
       return this.latestPipelineDetachedFlag;
+    },
+    pipelineButtonClass() {
+      return !this.glFeatures.newPipelinesTable ? 'gl-md-display-none' : 'gl-lg-display-none';
     },
     isForkMergeRequest() {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
@@ -192,7 +196,8 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mt-3 gl-mb-3 gl-md-display-none"
+        class="gl-mt-3 gl-mb-3"
+        :class="pipelineButtonClass"
         variant="success"
         data-testid="run_pipeline_button_mobile"
         :loading="state.isRunningMergeRequestPipeline"

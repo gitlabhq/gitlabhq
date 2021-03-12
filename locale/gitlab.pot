@@ -9637,6 +9637,15 @@ msgstr ""
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr ""
 
+msgid "DastProfiles|This profile is currently being used in a policy."
+msgstr ""
+
+msgid "DastProfiles|This scanner profile is currently being used by a policy. To make edits you must remove it from the active policy."
+msgstr ""
+
+msgid "DastProfiles|This site profile is currently being used by a policy. To make edits you must remove it from the active policy."
+msgstr ""
+
 msgid "DastProfiles|Turn on AJAX spider"
 msgstr ""
 
@@ -22499,6 +22508,9 @@ msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
 msgid "Pipeline|Failed"
+msgstr ""
+
+msgid "Pipeline|In progress"
 msgstr ""
 
 msgid "Pipeline|Key"

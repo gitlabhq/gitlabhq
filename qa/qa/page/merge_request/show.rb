@@ -228,6 +228,7 @@ module QA
             !find_element(:squash_checkbox).disabled?
           end
 
+          # TODO: Fix workaround for data-qa-selector failure
           click_element(:squash_checkbox)
         end
 

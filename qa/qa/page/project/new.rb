@@ -68,7 +68,7 @@ module QA
         end
 
         def enable_initialize_with_readme
-          check_element :initialize_with_readme_checkbox
+          check_element(:initialize_with_readme_checkbox)
         end
       end
     end

@@ -8,7 +8,7 @@
     = render 'shared/milestones/search_form'
     = render 'shared/milestones_sort_dropdown'
     - if can?(current_user, :admin_milestone, @project)
-      = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-success', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
+      = link_to new_project_milestone_path(@project), class: 'gl-button btn btn-confirm', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone') do
         = _('New milestone')
 
 - if @milestones.blank?

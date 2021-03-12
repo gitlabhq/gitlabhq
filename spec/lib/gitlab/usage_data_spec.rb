@@ -382,14 +382,15 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe 'usage_activity_by_stage_monitor' do
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
-        user    = create(:user, dashboard: 'operations')
+        user = create(:user, dashboard: 'operations')
         cluster = create(:cluster, user: user)
-        create(:project, creator: user)
+        project = create(:project, creator: user)
         create(:clusters_applications_prometheus, :installed, cluster: cluster)
         create(:project_tracing_setting)
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
+        create(:alert_management_http_integration, :active, project: project)
       end
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
@@ -399,10 +400,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
-        projects_with_alert_incidents: 2
+        projects_with_alert_incidents: 2,
+        projects_with_enabled_alert_integrations_histogram: { '1' => 2 }
       )
 
-      expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
+      data_28_days = described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)
+      expect(data_28_days).to include(
         clusters: 1,
         clusters_applications_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
@@ -411,6 +414,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_incidents: 2,
         projects_with_alert_incidents: 1
       )
+
+      expect(data_28_days).not_to include(:projects_with_enabled_alert_integrations_histogram)
     end
   end
 
@@ -528,14 +533,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(subject.keys).to include(*UsageDataHelpers::USAGE_DATA_KEYS)
     end
 
-    it 'gathers usage counts' do
+    it 'gathers usage counts', :aggregate_failures do
       count_data = subject[:counts]
 
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
-      expect(count_data.values_at(*UsageDataHelpers::SMAU_KEYS)).to all(be_an(Integer))
       expect(count_data.keys).to include(*UsageDataHelpers::COUNTS_KEYS)
       expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty
+      expect(count_data.values).to all(be_a_kind_of(Integer))
     end
 
     it 'gathers usage counts correctly' do

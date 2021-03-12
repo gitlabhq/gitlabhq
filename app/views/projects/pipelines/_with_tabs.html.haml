@@ -56,7 +56,7 @@
             %tr.build-state.responsive-table-border-start
               %td.responsive-table-cell.ci-status-icon-failed{ data: { column: _('Status')} }
                 .d-none.d-md-block.build-icon
-                  = custom_icon("icon_status_#{build.status}")
+                  = sprite_icon("status_#{build.status}")
                 .d-md-none.build-badge
                   = render "ci/status/badge", link: false, status: job.detailed_status(current_user)
               %td.responsive-table-cell.build-name{ data: { column: _('Name')} }

@@ -34,6 +34,7 @@ UsageData/LargeTable:
   CountMethods:
     - :count
     - :distinct_count
+    - :histogram
   AllowedMethods:
     - :arel_table
     - :minimum

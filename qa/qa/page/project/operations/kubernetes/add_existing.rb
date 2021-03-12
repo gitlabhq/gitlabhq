@@ -36,7 +36,7 @@ module QA
             end
 
             def uncheck_rbac!
-              uncheck_element :rbac_checkbox
+              uncheck_element(:rbac_checkbox)
             end
           end
         end

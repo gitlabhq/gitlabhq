@@ -22,7 +22,7 @@
     },
     "value_type": {
       "type": "string",
-      "enum": ["string", "number", "boolean"]
+      "enum": ["string", "number", "boolean", "object"]
     },
     "status": {
       "type": ["string"],

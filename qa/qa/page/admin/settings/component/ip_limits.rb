@@ -14,9 +14,9 @@ module QA
             end
 
             def enable_throttles
-              check_element :throttle_unauthenticated_checkbox
-              check_element :throttle_authenticated_api_checkbox
-              check_element :throttle_authenticated_web_checkbox
+              check_element(:throttle_unauthenticated_checkbox)
+              check_element(:throttle_authenticated_api_checkbox)
+              check_element(:throttle_authenticated_web_checkbox)
             end
 
             def save_settings

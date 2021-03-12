@@ -116,7 +116,7 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([[LOAD_FAILURE]]);
+          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
         });
 
         it('does not show the pipeline', async () => {
@@ -167,7 +167,7 @@ describe('Linked Pipelines Column', () => {
 
         it('emits the error', async () => {
           await clickExpandButton();
-          expect(wrapper.emitted().error).toEqual([[LOAD_FAILURE]]);
+          expect(wrapper.emitted().error).toEqual([[{ type: LOAD_FAILURE, skipSentry: true }]]);
         });
 
         it('does not show the pipeline', async () => {

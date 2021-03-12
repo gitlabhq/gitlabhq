@@ -250,8 +250,8 @@ describe('Getters PackageDetails Store', () => {
       setupState();
 
       expect(gradleGroovyAddSourceCommand(state)).toMatchInlineSnapshot(`
-        "gitlab {
-          url \\"foo/registry\\"
+        "maven {
+          url 'foo/registry'
         }"
       `);
     });

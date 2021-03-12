@@ -13,7 +13,7 @@ module QA
           end
 
           def enable_issues_for_incidents
-            check_element :create_issue_checkbox
+            check_element(:create_issue_checkbox)
           end
 
           def select_issue_template(template)

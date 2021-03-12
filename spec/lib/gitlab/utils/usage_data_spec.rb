@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Utils::UsageData do
+  include Database::DatabaseHelpers
+
   describe '#count' do
     let(:relation) { double(:relation) }
 
@@ -180,6 +182,102 @@ RSpec.describe Gitlab::Utils::UsageData do
         .and_raise(ActiveRecord::StatementInvalid.new(''))
 
       expect(described_class.sum(relation, :column)).to eq(15)
+    end
+  end
+
+  describe '#histogram' do
+    let_it_be(:projects) { create_list(:project, 3) }
+    let(:project1) { projects.first }
+    let(:project2) { projects.second }
+    let(:project3) { projects.third }
+
+    let(:fallback) { described_class::HISTOGRAM_FALLBACK }
+    let(:relation) { AlertManagement::HttpIntegration.active }
+    let(:column) { :project_id }
+
+    def expect_error(exception, message, &block)
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_and_raise_for_dev_exception)
+        .with(instance_of(exception))
+        .and_call_original
+
+      expect(&block).to raise_error(
+        an_instance_of(exception).and(
+          having_attributes(message: message, backtrace: be_kind_of(Array)))
+      )
+    end
+
+    it 'checks bucket bounds to be not equal' do
+      expect_error(ArgumentError, 'Lower bucket bound cannot equal to upper bucket bound') do
+        described_class.histogram(relation, column, buckets: 1..1)
+      end
+    end
+
+    it 'checks bucket_size being non-zero' do
+      expect_error(ArgumentError, 'Bucket size cannot be zero') do
+        described_class.histogram(relation, column, buckets: 1..2, bucket_size: 0)
+      end
+    end
+
+    it 'limits the amount of buckets without providing bucket_size argument' do
+      expect_error(ArgumentError, 'Bucket size 101 exceeds the limit of 100') do
+        described_class.histogram(relation, column, buckets: 1..101)
+      end
+    end
+
+    it 'limits the amount of buckets when providing bucket_size argument' do
+      expect_error(ArgumentError, 'Bucket size 101 exceeds the limit of 100') do
+        described_class.histogram(relation, column, buckets: 1..2, bucket_size: 101)
+      end
+    end
+
+    it 'without data' do
+      histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+      expect(histogram).to eq({})
+    end
+
+    it 'aggregates properly within bounds' do
+      create(:alert_management_http_integration, :active, project: project1)
+      create(:alert_management_http_integration, :inactive, project: project1)
+
+      create(:alert_management_http_integration, :active, project: project2)
+      create(:alert_management_http_integration, :active, project: project2)
+      create(:alert_management_http_integration, :inactive, project: project2)
+
+      create(:alert_management_http_integration, :active, project: project3)
+      create(:alert_management_http_integration, :inactive, project: project3)
+
+      histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+      expect(histogram).to eq('1' => 2, '2' => 1)
+    end
+
+    it 'aggregates properly out of bounds' do
+      create_list(:alert_management_http_integration, 3, :active, project: project1)
+      histogram = described_class.histogram(relation, column, buckets: 1..2)
+
+      expect(histogram).to eq('2' => 1)
+    end
+
+    it 'returns fallback and logs canceled queries' do
+      create(:alert_management_http_integration, :active, project: project1)
+
+      expect(Gitlab::AppJsonLogger).to receive(:error).with(
+        event: 'histogram',
+        relation: relation.table_name,
+        operation: 'histogram',
+        operation_args: [column, 1, 100, 99],
+        query: kind_of(String),
+        message: /PG::QueryCanceled/
+      )
+
+      with_statement_timeout(0.001) do
+        relation = AlertManagement::HttpIntegration.select('pg_sleep(0.002)')
+        histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+        expect(histogram).to eq(fallback)
+      end
     end
   end
 

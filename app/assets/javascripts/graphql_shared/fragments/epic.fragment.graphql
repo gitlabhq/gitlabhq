@@ -4,6 +4,7 @@ fragment EpicNode on Epic {
   title
   state
   reference
+  webPath
   webUrl
   createdAt
   closedAt

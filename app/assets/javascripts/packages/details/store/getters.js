@@ -122,8 +122,8 @@ export const gradleGroovyInstalCommand = ({ packageEntity }) => {
 
 export const gradleGroovyAddSourceCommand = ({ mavenPath }) =>
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  `gitlab {
-  url "${mavenPath}"
+  `maven {
+  url '${mavenPath}'
 }`;
 
 export const groupExists = ({ groupListUrl }) => groupListUrl.length > 0;

@@ -48,6 +48,9 @@ export default {
     legacyTableMobileClass() {
       return !this.glFeatures.newPipelinesTable ? 'table-mobile-content' : '';
     },
+    showInProgress() {
+      return !this.duration && !this.finishedTime;
+    },
   },
 };
 </script>
@@ -57,6 +60,11 @@ export default {
       {{ s__('Pipeline|Duration') }}
     </div>
     <div :class="legacyTableMobileClass">
+      <span v-if="showInProgress" data-testid="pipeline-in-progress">
+        <gl-icon name="hourglass" class="gl-vertical-align-baseline! gl-mr-2" :size="12" />
+        {{ s__('Pipeline|In progress') }}
+      </span>
+
       <p v-if="duration" class="duration">
         <gl-icon name="timer" class="gl-vertical-align-baseline!" :size="12" />
         {{ durationFormatted }}

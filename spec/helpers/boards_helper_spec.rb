@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe BoardsHelper do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
   let_it_be(:base_group) { create(:group, path: 'base') }
+  let_it_be(:project) { create(:project, group: base_group) }
   let_it_be(:project_board) { create(:board, project: project) }
   let_it_be(:group_board) { create(:board, group: base_group) }
 
@@ -82,6 +82,10 @@ RSpec.describe BoardsHelper do
         expect(helper.board_data[:labels_fetch_path]).to eq("/#{project.full_path}/-/labels.json?include_ancestor_groups=true")
         expect(helper.board_data[:labels_manage_path]).to eq("/#{project.full_path}/-/labels")
       end
+
+      it 'returns the group id of a project' do
+        expect(helper.board_data[:group_id]).to eq(project.group.id)
+      end
     end
 
     context 'group board' do
@@ -101,6 +105,10 @@ RSpec.describe BoardsHelper do
       it 'returns required label endpoints' do
         expect(helper.board_data[:labels_fetch_path]).to eq("/groups/#{base_group.full_path}/-/labels.json?include_ancestor_groups=true&only_group_labels=true")
         expect(helper.board_data[:labels_manage_path]).to eq("/groups/#{base_group.full_path}/-/labels")
+      end
+
+      it 'returns the group id' do
+        expect(helper.board_data[:group_id]).to eq(base_group.id)
       end
     end
   end

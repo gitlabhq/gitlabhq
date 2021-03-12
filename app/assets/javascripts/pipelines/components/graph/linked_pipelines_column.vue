@@ -111,14 +111,12 @@ export default {
           this.loadingPipelineId = null;
           this.$emit('scrollContainer');
         },
-        error(err, _vm, _key, type) {
-          this.$emit('error', LOAD_FAILURE);
+        error(err) {
+          this.$emit('error', { type: LOAD_FAILURE, skipSentry: true });
 
           reportToSentry(
             'linked_pipelines_column',
-            `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(
-              err,
-            )}, apollo error type: ${type}`,
+            `error type: ${LOAD_FAILURE}, error: ${serializeLoadErrors(err)}`,
           );
         },
       });
