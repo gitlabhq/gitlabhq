@@ -27,16 +27,18 @@ module Gitlab
           MD
         end
 
-        def render_name_and_description(object)
-          content = "### `#{object[:name]}`\n"
+        def render_name_and_description(object, level = 3)
+          content = []
+
+          content << "#{'#' * level} `#{object[:name]}`"
 
           if object[:description].present?
-            content += "\n#{object[:description]}"
-            content += '.' unless object[:description].ends_with?('.')
-            content += "\n"
+            desc = object[:description].strip
+            desc += '.' unless desc.ends_with?('.')
+            content << desc
           end
 
-          content
+          content.join("\n\n")
         end
 
         def sorted_by_name(objects)
@@ -46,18 +48,15 @@ module Gitlab
         end
 
         def render_field(field)
-          '| %s | %s | %s |' % [
-            render_name(field),
-            render_field_type(field[:type][:info]),
-            render_description(field)
-            ]
+          row(render_name(field), render_field_type(field[:type]), render_description(field))
         end
 
         def render_enum_value(value)
-          '| %s | %s |' % [
-            render_name(value),
-            render_description(value)
-            ]
+          row(render_name(value), render_description(value))
+        end
+
+        def row(*values)
+          "| #{values.join(' | ')} |"
         end
 
         def render_name(object)
@@ -74,27 +73,19 @@ module Gitlab
           "**Deprecated:** #{object[:deprecation_reason]}"
         end
 
-        # Some fields types are arrays of other types and are displayed
-        # on docs wrapped in square brackets, for example: [String!].
-        # This makes GitLab docs renderer thinks they are links so here
-        # we change them to be rendered as: String! => Array.
         def render_field_type(type)
-          array_type = type[/\[(.+)\]/, 1]
+          "[`#{type[:info]}`](##{type[:name].downcase})"
+        end
 
-          if array_type
-            "#{array_type} => Array"
-          else
-            type
-          end
+        def render_return_type(query)
+          "Returns #{render_field_type(query[:type])}.\n"
         end
 
         # We are ignoring connections and built in types for now,
         # they should be added when queries are generated.
         def objects
           object_types = graphql_object_types.select do |object_type|
-            !object_type[:name]["Connection"] &&
-              !object_type[:name]["Edge"] &&
-              !object_type[:name]["__"]
+            !object_type[:name]["__"]
           end
 
           object_types.each do |type|
@@ -109,7 +100,7 @@ module Gitlab
         # We ignore the built-in enum types.
         def enums
           graphql_enum_types.select do |enum_type|
-            !enum_type[:name].in?(%w(__DirectiveLocation __TypeKind))
+            !enum_type[:name].in?(%w[__DirectiveLocation __TypeKind])
           end
         end
       end

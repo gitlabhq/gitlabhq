@@ -13,7 +13,7 @@
    ],
    "rules":{
       "max-nesting-depth": [
-         6,
+         5,
          {
             "ignoreAtRules":[
                "each",

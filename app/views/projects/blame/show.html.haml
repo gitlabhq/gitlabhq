@@ -47,7 +47,7 @@
 
             %td.line-numbers
               - (current_line...(current_line + line_count)).each do |i|
-                %a.diff-line-num{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
+                %a.diff-line-num.gl-justify-content-end{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i, class: "gl-display-flex!" }
                   = link_icon
                   = i
                 \

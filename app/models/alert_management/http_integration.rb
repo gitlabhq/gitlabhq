@@ -27,6 +27,7 @@ module AlertManagement
     before_validation :prevent_token_assignment
     before_validation :prevent_endpoint_identifier_assignment
     before_validation :ensure_token
+    before_validation :ensure_payload_example_not_nil
 
     scope :for_endpoint_identifier, -> (endpoint_identifier) { where(endpoint_identifier: endpoint_identifier) }
     scope :active, -> { where(active: true) }
@@ -73,6 +74,10 @@ module AlertManagement
       if endpoint_identifier_changed? && endpoint_identifier_was.present?
         self.endpoint_identifier = endpoint_identifier_was
       end
+    end
+
+    def ensure_payload_example_not_nil
+      self.payload_example ||= {}
     end
   end
 end

@@ -22,7 +22,7 @@ module Mutations
         response = ::Boards::CreateService.new(board_parent, current_user, args).execute
 
         {
-          board: response.success? ? response.payload : nil,
+          board: response.payload,
           errors: response.errors
         }
       end

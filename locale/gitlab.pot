@@ -10870,6 +10870,9 @@ msgstr ""
 msgid "Dismiss Value Stream Analytics introduction box"
 msgstr ""
 
+msgid "Dismiss merge request promotion"
+msgstr ""
+
 msgid "Dismiss selected"
 msgstr ""
 
@@ -15670,10 +15673,10 @@ msgid_plural "Importing %d repositories"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Improve Merge Requests and customer support with GitLab Enterprise Edition."
+msgid "Improve customer support with Service Desk"
 msgstr ""
 
-msgid "Improve customer support with Service Desk"
+msgid "Improve merge requests and customer support with GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
@@ -18958,9 +18961,6 @@ msgstr ""
 msgid "Merge Request Analytics"
 msgstr ""
 
-msgid "Merge Request Approvals"
-msgstr ""
-
 msgid "Merge Request Commits"
 msgstr ""
 
@@ -19016,9 +19016,6 @@ msgid "Merge request approval settings have been updated."
 msgstr ""
 
 msgid "Merge request approvals"
-msgstr ""
-
-msgid "Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project."
 msgstr ""
 
 msgid "Merge request dependencies"
@@ -23734,7 +23731,10 @@ msgstr ""
 msgid "ProjectService|To set up this service:"
 msgstr ""
 
-msgid "ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed"
+msgid "ProjectSettings|%{link_start}What are description templates?%{link_end}"
+msgstr ""
+
+msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
 msgid "ProjectSettings|All discussions must be resolved"
@@ -23788,25 +23788,28 @@ msgstr ""
 msgid "ProjectSettings|Customize this project's badges."
 msgstr ""
 
+msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
+msgstr ""
+
 msgid "ProjectSettings|Disable email notifications"
 msgstr ""
 
 msgid "ProjectSettings|Do not allow"
 msgstr ""
 
-msgid "ProjectSettings|Enable 'Delete source branch' option by default"
+msgid "ProjectSettings|Enable \"Delete source branch\" option by default"
 msgstr ""
 
 msgid "ProjectSettings|Enable merge trains."
 msgstr ""
 
-msgid "ProjectSettings|Enable merged results pipelines."
+msgid "ProjectSettings|Enable merged results pipelines"
 msgstr ""
 
 msgid "ProjectSettings|Encourage"
 msgstr ""
 
-msgid "ProjectSettings|Every merge creates a merge commit"
+msgid "ProjectSettings|Every merge creates a merge commit."
 msgstr ""
 
 msgid "ProjectSettings|Every project can have its own space to store its Docker images"
@@ -23818,7 +23821,7 @@ msgstr ""
 msgid "ProjectSettings|Everyone"
 msgstr ""
 
-msgid "ProjectSettings|Existing merge requests and protected branches are not affected"
+msgid "ProjectSettings|Existing merge requests and protected branches are not affected."
 msgstr ""
 
 msgid "ProjectSettings|Failed to protect the tag"
@@ -23830,7 +23833,7 @@ msgstr ""
 msgid "ProjectSettings|Fast-forward merge"
 msgstr ""
 
-msgid "ProjectSettings|Fast-forward merges only"
+msgid "ProjectSettings|Fast-forward merges only."
 msgstr ""
 
 msgid "ProjectSettings|Forks"
@@ -23842,10 +23845,10 @@ msgstr ""
 msgid "ProjectSettings|Global"
 msgstr ""
 
-msgid "ProjectSettings|If pipelines for merge requests are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches."
+msgid "ProjectSettings|Internal"
 msgstr ""
 
-msgid "ProjectSettings|Internal"
+msgid "ProjectSettings|Introduces the risk of merging changes that do not pass the pipeline."
 msgstr ""
 
 msgid "ProjectSettings|Issues"
@@ -23878,10 +23881,13 @@ msgstr ""
 msgid "ProjectSettings|Merge requests"
 msgstr ""
 
+msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
+msgstr ""
+
 msgid "ProjectSettings|Merge suggestions"
 msgstr ""
 
-msgid "ProjectSettings|No merge commits are created"
+msgid "ProjectSettings|No merge commits are created."
 msgstr ""
 
 msgid "ProjectSettings|Note: the container registry is always visible when a project is public"
@@ -23909,9 +23915,6 @@ msgid "ProjectSettings|Pipelines"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines must succeed"
-msgstr ""
-
-msgid "ProjectSettings|Pipelines need to be configured to enable this feature."
 msgstr ""
 
 msgid "ProjectSettings|Private"
@@ -23944,7 +23947,7 @@ msgstr ""
 msgid "ProjectSettings|Security & Compliance for this project"
 msgstr ""
 
-msgid "ProjectSettings|Set the default behavior and availability of this option in merge requests. Changes made are also applied to existing merge requests."
+msgid "ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests."
 msgstr ""
 
 msgid "ProjectSettings|Share code with others outside the project."
@@ -23953,7 +23956,7 @@ msgstr ""
 msgid "ProjectSettings|Show default award emojis"
 msgstr ""
 
-msgid "ProjectSettings|Show link to create/view merge request when pushing from the command line"
+msgid "ProjectSettings|Show link to create or view a merge request when pushing from the command line"
 msgstr ""
 
 msgid "ProjectSettings|Skipped pipelines are considered successful"
@@ -23974,16 +23977,13 @@ msgstr ""
 msgid "ProjectSettings|Submit changes to be merged upstream."
 msgstr ""
 
-msgid "ProjectSettings|The commit message used to apply merge request suggestions"
+msgid "ProjectSettings|Supported variables:"
 msgstr ""
 
-msgid "ProjectSettings|The variables GitLab supports:"
+msgid "ProjectSettings|The commit message used when applying merge request suggestions. %{link_start}Learn more about suggestions.%{link_end}"
 msgstr ""
 
-msgid "ProjectSettings|These checks must pass before merge requests can be merged"
-msgstr ""
-
-msgid "ProjectSettings|This introduces the risk of merging changes that will not pass the pipeline."
+msgid "ProjectSettings|These checks must pass before merge requests can be merged."
 msgstr ""
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
@@ -23995,10 +23995,13 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
-msgid "ProjectSettings|This will dictate the commit history when you merge a merge request"
+msgid "ProjectSettings|To enable this feature, configure pipelines. %{link_start}How to configure pipelines for merge requests?%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|Transfer project"
+msgstr ""
+
+msgid "ProjectSettings|Used for every new merge request."
 msgstr ""
 
 msgid "ProjectSettings|Users can copy the repository to a new project."
@@ -24028,10 +24031,10 @@ msgstr ""
 msgid "ProjectSettings|What are badges?"
 msgstr ""
 
-msgid "ProjectSettings|When approved for merge, merge requests are queued and pipelines validate the combined results of the source and target branches before merge."
+msgid "ProjectSettings|When pipelines for merge requests are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches. %{link_start}How to configure pipelines for merge requests?%{link_end}"
 msgstr ""
 
-msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
+msgid "ProjectSettings|When there is a merge conflict, the user is given the option to rebase."
 msgstr ""
 
 msgid "ProjectSettings|Wiki"
@@ -27521,6 +27524,9 @@ msgid "Set the maximum number of pipeline minutes that a group can use on shared
 msgstr ""
 
 msgid "Set the milestone to %{milestone_reference}."
+msgstr ""
+
+msgid "Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
 msgstr ""
 
 msgid "Set the timeout in seconds to send a secondary node status to the primary and IPs allowed for the secondary nodes."
@@ -32379,7 +32385,7 @@ msgstr ""
 msgid "Upgrade your plan to enable this feature of the Jira Integration."
 msgstr ""
 
-msgid "Upgrade your plan to improve Merge Requests."
+msgid "Upgrade your plan to improve merge requests."
 msgstr ""
 
 msgid "Upload"

@@ -3,7 +3,13 @@
 module Types
   class TimeType < BaseScalar
     graphql_name 'Time'
-    description 'Time represented in ISO 8601'
+    description <<~DESC
+      Time represented in ISO 8601.
+
+      For example: "2021-03-09T14:58:50+00:00".
+
+      See `https://www.iso.org/iso-8601-date-and-time-format.html`.
+    DESC
 
     def self.coerce_input(value, ctx)
       Time.parse(value)

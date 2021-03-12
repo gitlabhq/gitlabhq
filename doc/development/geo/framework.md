@@ -319,10 +319,7 @@ For example, to add support for files referenced by a `Widget` model with a
    # frozen_string_literal: true
 
    class Geo::WidgetRegistry < Geo::BaseRegistry
-     include Geo::ReplicableRegistry
-     # TODO: Include VerificationState in VerifiableRegistry
-     # https://gitlab.com/gitlab-org/gitlab/-/issues/298811
-     include ::Gitlab::Geo::VerificationState
+     include ::Geo::ReplicableRegistry
      include ::Geo::VerifiableRegistry
 
      MODEL_CLASS = ::Widget

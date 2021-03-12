@@ -28,6 +28,8 @@
 
 - sorted_by_name(queries).each do |query|
   = render_name_and_description(query)
+  \
+  = render_return_type(query)
   - unless query[:arguments].empty?
     ~ "#### Arguments\n"
     ~ "| Name | Type | Description |"
@@ -52,6 +54,7 @@
 - objects.each do |type|
   - unless type[:fields].empty?
     = render_name_and_description(type)
+    \
     ~ "| Field | Type | Description |"
     ~ "| ----- | ---- | ----------- |"
     - sorted_by_name(type[:fields]).each do |field|
@@ -72,8 +75,74 @@
 - enums.each do |enum|
   - unless enum[:values].empty?
     = render_name_and_description(enum)
+    \
     ~ "| Value | Description |"
     ~ "| ----- | ----------- |"
     - sorted_by_name(enum[:values]).each do |value|
       = render_enum_value(value)
     \
+
+:plain
+  ## Scalar types
+
+  Scalar values are atomic values, and do not have fields of their own.
+  Basic scalars include strings, boolean values, and numbers. This schema also
+  defines various custom scalar values, such as types for times and dates.
+
+  This schema includes custom scalar types for identifiers, with a specific type for
+  each kind of object.
+
+  For more information, read about [Scalar Types](https://graphql.org/learn/schema/#scalar-types) on `graphql.org`.
+\
+
+- graphql_scalar_types.each do |type|
+  = render_name_and_description(type)
+  \
+
+:plain
+  ## Abstract types
+
+  Abstract types (unions and interfaces) are ways the schema can represent
+  values that may be one of several concrete types.
+
+  - A [`Union`](https://graphql.org/learn/schema/#union-types) is a set of possible types.
+    The types might not have any fields in common.
+  - An [`Interface`](https://graphql.org/learn/schema/#interfaces) is a defined set of fields.
+    Types may `implement` an interface, which
+    guarantees that they have all the fields in the set. A type may implement more than
+    one interface.
+
+  See the [GraphQL documentation](https://graphql.org/learn/) for more information on using
+  abstract types.
+\
+
+:plain
+  ### Unions
+\
+
+- graphql_union_types.each do |type|
+  = render_name_and_description(type, 4)
+  \
+  One of:
+  \
+  - type[:possible_types].each do |type_name|
+    ~ "- [`#{type_name}`](##{type_name.downcase})"
+  \
+
+:plain
+  ### Interfaces
+\
+
+- graphql_interface_types.each do |type|
+  = render_name_and_description(type, 4)
+  \
+  Implementations:
+  \
+  - type[:implemented_by].each do |type_name|
+    ~ "- [`#{type_name}`](##{type_name.downcase})"
+  \
+  ~ "| Field | Type | Description |"
+  ~ "| ----- | ---- | ----------- |"
+  - sorted_by_name(type[:fields] + type[:connections]).each do |field|
+    = render_field(field)
+  \

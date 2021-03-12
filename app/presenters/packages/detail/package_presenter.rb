@@ -42,7 +42,11 @@ module Packages
           created_at: package_file.created_at,
           download_path: package_file.download_path,
           file_name: package_file.file_name,
-          size: package_file.size
+          size: package_file.size,
+          file_md5: package_file.file_md5,
+          file_sha1: package_file.file_sha1,
+          file_sha256: package_file.file_sha256
+
         }
 
         file_view[:pipelines] = build_pipeline_infos(package_file.pipelines) if package_file.pipelines.present?
