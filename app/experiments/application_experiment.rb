@@ -35,40 +35,13 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     @excluded = true
   end
 
-  def rollout_strategy
-    # no-op override in inherited class as desired
-  end
-
-  def variants
-    # override as desired in inherited class with all variants + control
-    # %i[variant1 variant2 control]
-    #
-    # this will make sure we supply variants as these go together - rollout_strategy of :round_robin must have variants
-    raise NotImplementedError, "Inheriting class must supply variants as an array if :round_robin strategy is used" if rollout_strategy == :round_robin
-  end
-
   private
 
   def feature_flag_name
     name.tr('/', '_')
   end
 
-  def resolve_variant_name
-    case rollout_strategy
-    when :round_robin
-      round_robin_rollout
-    else
-      percentage_rollout
-    end
-  end
-
-  def round_robin_rollout
-    Strategy::RoundRobin.new(feature_flag_name, variants).execute
-  end
-
-  def percentage_rollout
-    return variant_names.first if Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
-
-    nil # Returning nil vs. :control is important for not caching and rollouts.
+  def experiment_group?
+    Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
   end
 end

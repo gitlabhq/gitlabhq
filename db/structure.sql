@@ -13270,7 +13270,11 @@ CREATE TABLE group_merge_request_approval_settings (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     group_id bigint NOT NULL,
-    allow_author_approval boolean DEFAULT false NOT NULL
+    allow_author_approval boolean DEFAULT false NOT NULL,
+    allow_committer_approval boolean DEFAULT false NOT NULL,
+    allow_overrides_to_approver_list_per_merge_request boolean DEFAULT false NOT NULL,
+    retain_approvals_on_push boolean DEFAULT false NOT NULL,
+    require_password_to_approve boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE group_repository_storage_moves (

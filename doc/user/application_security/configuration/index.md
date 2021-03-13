@@ -10,12 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6. **(ULTIMATE)**
 > - SAST configuration was [enabled](https://gitlab.com/groups/gitlab-org/-/epics/3659) in 13.3 and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in 13.4. **(ULTIMATE)**
 > - DAST Profiles feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40474) in 13.4. **(ULTIMATE)**
-> - A simplified version was made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/294076) in GitLab 13.9. **(FREE)**
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-security-configuration). **(FREE SELF)**
-> - It can be enabled or disabled for a single project.
+> - A simplified version was made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/294076) in GitLab 13.9.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -54,25 +49,3 @@ You can configure the following security controls:
   - Click either **Enable** or **Configure** to use SAST for the current project. For more details, see [Configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
 - DAST Profiles
   - Click **Manage** to manage the available DAST profiles used for on-demand scans. For more details, see [DAST on-demand scans](../dast/index.md#on-demand-scans).
-
-### Enable or disable Security Configuration **(FREE SELF)**
-
-Security Configuration is under development but ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to enable it.
-
-NOTE:
-This does not apply to GitLab Ultimate.
-
-To enable it:
-
-```ruby
-Feature.enable(:secure_security_and_compliance_configuration_page_on_ce)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:secure_security_and_compliance_configuration_page_on_ce)
-```

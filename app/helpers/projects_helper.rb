@@ -379,13 +379,8 @@ module ProjectsHelper
   private
 
   def can_read_security_configuration?(project, current_user)
-    show_security_and_compliance_config? &&
-      can?(current_user, :access_security_and_compliance, project) &&
-      can?(current_user, :read_security_configuration, project)
-  end
-
-  def show_security_and_compliance_config?
-    ::Feature.enabled?(:secure_security_and_compliance_configuration_page_on_ce, @subject, default_enabled: :yaml)
+    can?(current_user, :access_security_and_compliance, project) &&
+    can?(current_user, :read_security_configuration, project)
   end
 
   def get_project_security_nav_tabs(project, current_user)
@@ -674,12 +669,9 @@ module ProjectsHelper
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
-      securityAndComplianceAvailable: show_security_and_compliance_toggle?
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control')
     }
   end
-
-  alias_method :show_security_and_compliance_toggle?, :show_security_and_compliance_config?
 
   def project_permissions_panel_data_json(project)
     project_permissions_panel_data(project).to_json.html_safe

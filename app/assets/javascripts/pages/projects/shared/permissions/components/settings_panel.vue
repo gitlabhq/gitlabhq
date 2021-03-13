@@ -84,11 +84,6 @@ export default {
       required: false,
       default: false,
     },
-    securityAndComplianceAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     visibilityHelpPath: {
       type: String,
       required: false,
@@ -595,7 +590,6 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="securityAndComplianceAvailable"
         :label="s__('ProjectSettings|Security & Compliance')"
         :help-text="s__('ProjectSettings|Security & Compliance for this project')"
       >

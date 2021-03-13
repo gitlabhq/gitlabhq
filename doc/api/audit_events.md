@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Audit Events API
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
+
 ## Instance Audit Events **(PREMIUM SELF)**
 
 The Audit Events API allows you to retrieve [instance audit events](../administration/audit_events.md#instance-events).
