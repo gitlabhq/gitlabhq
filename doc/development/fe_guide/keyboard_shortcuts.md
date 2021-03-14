@@ -33,9 +33,10 @@ Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), togglePerformanceBar);
 ## Shortcut customization
 
 `keybindings.js` stores keyboard shortcut customizations as a JSON string in
-`localStorage`. When `keybindings.js` is first imported, it fetches any
-customizations from `localStorage` and merges these customizations into the
-default set of keybindings. There is no UI to edit these customizations.
+`localStorage`. When `keysFor` is called, it uses the provided command object's
+`id` to lookup any customizations found in `localStorage` and returns the custom
+keybindings, or the default keybindings if the command has not been customized.
+There is no UI to edit these customizations.
 
 ## Adding new shortcuts
 
@@ -44,27 +45,33 @@ developers are encouraged to build _lots_ of keyboard shortcuts into GitLab.
 Shortcuts that are less likely to be used should be
 [disabled](#disabling-shortcuts) by default.
 
-To add a new shortcut, define and export a new command string in
+To add a new shortcut, define and export a new command object in
 `keybindings.js`:
 
 ```javascript
-export const MAKE_COFFEE = 'foodAndBeverage.makeCoffee';
+export const MAKE_COFFEE = {
+  id: 'foodAndBeverage.makeCoffee',
+  description: s__('KeyboardShortcuts|Make coffee'),
+  defaultKeys: ['mod+shift+c'],
+};
 ```
 
-Next, add a new command definition under the appropriate group in the
-`keybindingGroups` array:
+Next, add a new command to the appropriate keybinding group object:
 
 ```javascript
-{
-  description: s__('KeyboardShortcuts|Make coffee'),
-  command: MAKE_COFFEE,
-  defaultKeys: ['mod+shift+c'],
-  customKeys: customizations[MAKE_COFFEE],
+const COFFEE_GROUP = {
+  id: 'foodAndBeverage',
+  name: s__('KeyboardShortcuts|Food and Beverage'),
+  keybindings: [
+    MAKE_ESPRESSO,
+    MAKE_LATTE,
+    MAKE_COFFEE
+  ];
 }
 ```
 
 Finally, in the application code, import the `keysFor` function and the new
-command and bind the shortcut to the handler using Mousetrap:
+command object and bind the shortcut to the handler using Mousetrap:
 
 ```javascript
 import { keysFor, MAKE_COFFEE } from '~/behaviors/shortcuts/keybindings'
@@ -81,15 +88,33 @@ shortcut to an empty array `[]`. For example, to introduce a new shortcut that
 is disabled by default, a command can be defined like this:
 
 ```javascript
-export const MAKE_MOCHA = 'foodAndBeverage.makeMocha';
-
-{
+export const MAKE_MOCHA = {
+  id: 'foodAndBeverage.makeMocha',
   description: s__('KeyboardShortcuts|Make a mocha'),
-  command: MAKE_MOCHA,
   defaultKeys: [],
-  customKeys: customizations[MAKE_MOCHA],
-}
+};
 ```
+
+## Making shortcuts non-customizable
+
+Occasionally, it's important that a keyboard shortcut _not_ be customizable
+(although this should be a rare occurrence).
+
+In this case, a shortcut can be defined with `customizable: false`, which
+disables customization of the keybinding:
+
+```javascript
+export const MAKE_AMERICANO = {
+  id: 'foodAndBeverage.makeAmericano',
+  description: s__('KeyboardShortcuts|Make an Americano'),
+  defaultKeys: ['mod+shift+a'],
+
+  // this disables customization of this shortcut
+  customizable: false
+};
+```
+
+This shortcut will always be bound to its `defaultKeys`.
 
 ## Make cross-platform shortcuts
 
