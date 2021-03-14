@@ -359,7 +359,7 @@ Git user has default SSH configuration? ... no
   sudo mv /var/lib/git/.ssh/id_rsa ~/gitlab-check-backup-1504540051
   sudo mv /var/lib/git/.ssh/id_rsa.pub ~/gitlab-check-backup-1504540051
   For more information see:
-  doc/ssh/README.md in section "SSH on the GitLab server"
+  [Overriding SSH settings on the GitLab server](#overriding-ssh-settings-on-the-gitlab-server)
   Please fix the error above and rerun the checks.
 ```
 

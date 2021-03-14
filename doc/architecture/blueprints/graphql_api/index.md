@@ -178,6 +178,10 @@ DRIs:
 |------------------------------|------------------------|
 | Leadership                   | Darva Satcher          |
 | Product                      | Patrick Deuley         |
-| Engineering                  |                        |
+| Engineering                  | Paul Slaughter         |
+| Domain Expert / GraphQL      | Charlie Ablett         |
+| Domain Expert / GraphQL      | Alex Kalderimis        |
+| Domain Expert / GraphQL      | Natalia Tepluhina      |
+| Domain Expert / Scalability  | Bob Van Landuyt        |
 
 <!-- vale gitlab.Spelling = YES -->
