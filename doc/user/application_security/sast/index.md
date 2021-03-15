@@ -375,8 +375,6 @@ If all dependencies are present, the `COMPILE=false` CI/CD variable can be provi
 analyzer and compilation is skipped:
 
 ```yaml
-image: maven:3.6-jdk-8-alpine
-
 stages:
   - build
   - test
@@ -385,6 +383,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 build:
+  image: maven:3.6-jdk-8-slim
   stage: build
   script:
     - mvn package -Dmaven.repo.local=./.m2/repository

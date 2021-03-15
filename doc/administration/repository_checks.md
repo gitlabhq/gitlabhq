@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Editor
+group: Gitaly
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
@@ -44,3 +44,23 @@ in the [`repocheck.log` file](logs.md#repochecklog) on disk:
 If the periodic repository check causes false alarms, you can clear all repository check states by
 going to **Admin Area > Settings > Repository**
 (`/admin/application_settings/repository`) and clicking **Clear all repository checks**.
+
+## Run a check manually
+
+[`git fsck`](https://git-scm.com/docs/git-fsck) is a read-only check that you can run
+manually against the repository on the [Gitaly server](gitaly/index.md).
+
+- For Omnibus GitLab installations, repositories are stored by default in
+  `/var/opt/gitlab/git-data/repositories`.
+- [Identify the subdirectory that contains the repository](repository_storage_types.md#from-project-name-to-hashed-path)
+   that you need to check.
+
+To run a check (for example):
+
+```shell
+sudo /opt/gitlab/embedded/bin/git -C /var/opt/gitlab/git-data/repositories/@hashed/0b/91/0b91...f9.git fsck
+```
+
+You can also run [Rake tasks](raketasks/check.md#repository-integrity) for checking Git
+repositories, which can be used to run `git fsck` against all repositories and generate
+repository checksums, as a way to compare repositories on different servers.

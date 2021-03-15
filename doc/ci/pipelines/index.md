@@ -6,9 +6,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/ci/pipelines.html'
 type: reference
 ---
 
-# CI/CD pipelines
-
-> Introduced in GitLab 8.8.
+# CI/CD pipelines **(FREE)**
 
 NOTE:
 Watch the
@@ -199,8 +197,6 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7931) in GitLab 8.15.
-
 Manual actions, configured using the [`when:manual`](../yaml/README.md#whenmanual) keyword,
 allow you to require manual interaction before moving forward in the pipeline.
 
@@ -323,8 +319,6 @@ accessed. In order to ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
 
 ## Visualize pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5742) in GitLab 8.11.
 
 Pipelines can be complex structures with many sequential and parallel jobs.
 

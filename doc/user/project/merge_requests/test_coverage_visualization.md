@@ -146,7 +146,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.4
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml'
@@ -186,7 +186,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.4
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
