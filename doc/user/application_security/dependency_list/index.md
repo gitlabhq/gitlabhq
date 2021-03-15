@@ -5,54 +5,56 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Dependency List **(ULTIMATE)**
+# Dependency list **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab Ultimate 12.0.
 
-The dependency list allows you to see your project's dependencies, and key
-details about them, including their known vulnerabilities. To see it,
-navigate to **Security & Compliance > Dependency List** in your project's
-sidebar. This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
+Use the dependency list to review your project's dependencies and key
+details about those dependencies, including their known vulnerabilities. To see the dependency list,
+in your project, go to **Security & Compliance > Dependency List**.
+This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
 
-## Requirements
+## Prerequisites
 
-1. The [Dependency Scanning](../dependency_scanning/index.md) CI job must be
-   configured for your project.
-1. Your project uses at least one of the
-   [languages and package managers](../dependency_scanning/index.md#supported-languages-and-package-managers)
-   supported by Gemnasium.
+To view your project's dependencies, ensure you meet the following requirements:
 
-## Viewing dependencies
+- The [Dependency Scanning](../dependency_scanning/index.md) CI job must be
+  configured for your project.
+- Your project uses at least one of the
+  [languages and package managers](../dependency_scanning/index.md#supported-languages-and-package-managers)
+  supported by Gemnasium.
 
-![Dependency List](img/dependency_list_v12_10.png)
+## View a project's dependencies
 
-Dependencies are displayed with the following information:
+![Dependency list](img/dependency_list_v12_10.png)
+
+GitLab displays dependencies with the following information:
 
 | Field     | Description |
-| --------- | ----------- |
-| Component | The dependency's name and version |
-| Packager  | The packager used to install the dependency |
+|-----------|-------------|
+| Component | The dependency's name and version. |
+| Packager  | The packager used to install the dependency. |
 | Location  | A link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
-| License   | Links to dependency's software licenses |
+| License   | Links to dependency's software licenses. |
 
-Dependencies shown are initially sorted by the severity of their known vulnerabilities, if any. They
+Displayed dependencies are initially sorted by the severity of their known vulnerabilities, if any. They
 can also be sorted by name or by the packager that installed them.
 
 ### Vulnerabilities
 
-If a dependency has known vulnerabilities, you can view them by clicking the arrow next to the
+If a dependency has known vulnerabilities, view them by clicking the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
-vulnerability, its severity and description then appears below it.
+vulnerability, its severity and description appears below it.
 
-### Dependency Paths
+### Dependency paths
 
 The dependency list shows the path between a dependency and a top-level dependency it's connected
 to, if any. There are many possible paths connecting a transient dependency to top-level
-dependencies, but the UI only shows one of the shortest paths.
+dependencies, but the user interface shows only one of the shortest paths.
 
-![Dependency Path](img/yarn_dependency_path_v13_6.png)
+![Dependency path](img/yarn_dependency_path_v13_6.png)
 
-Dependency Paths are supported for the following package managers:
+Dependency paths are supported for the following package managers:
 
 - [NuGet](https://www.nuget.org/)
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
@@ -62,9 +64,9 @@ Dependency Paths are supported for the following package managers:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab Ultimate 12.3.
 
 If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
-the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.
+[discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.
 
-## Downloading the Dependency List
+## Downloading the dependency list
 
-Your project's full list of dependencies and their details can be downloaded in
-`JSON` format by clicking on the download button.
+You can download your project's full list of dependencies and their details in
+`JSON` format by selecting the download button.

@@ -3,18 +3,22 @@ import { GlModal, GlForm, GlFormCheckbox, GlSprintf, GlFormGroup } from '@gitlab
 import { mapActions, mapState } from 'vuex';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import csrf from '~/lib/utils/csrf';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import BranchesDropdown from './branches_dropdown.vue';
+import ProjectsDropdown from './projects_dropdown.vue';
 
 export default {
   components: {
     BranchesDropdown,
+    ProjectsDropdown,
     GlModal,
     GlForm,
     GlFormCheckbox,
     GlSprintf,
     GlFormGroup,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     prependedText: {
       default: '',
@@ -60,13 +64,17 @@ export default {
       'modalTitle',
       'existingBranch',
       'prependedText',
+      'targetProjectId',
+      'targetProjectName',
+      'branchesEndpoint',
     ]),
   },
   mounted() {
+    this.setSelectedProject(this.targetProjectId);
     eventHub.$on(this.openModal, this.show);
   },
   methods: {
-    ...mapActions(['clearModal', 'setBranch', 'setSelectedBranch']),
+    ...mapActions(['clearModal', 'setBranch', 'setSelectedBranch', 'setSelectedProject']),
     show() {
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
@@ -100,6 +108,26 @@ export default {
 
     <gl-form ref="form" :action="endpoint" method="post">
       <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+
+      <gl-form-group
+        v-if="glFeatures.pickIntoProject"
+        :label="i18n.projectLabel"
+        label-for="start_project"
+        data-testid="dropdown-group"
+      >
+        <input
+          id="target_project_id"
+          type="hidden"
+          name="target_project_id"
+          :value="targetProjectId"
+        />
+
+        <projects-dropdown
+          class="gl-w-half"
+          :value="targetProjectName"
+          @selectProject="setSelectedProject"
+        />
+      </gl-form-group>
 
       <gl-form-group
         :label="i18n.branchLabel"

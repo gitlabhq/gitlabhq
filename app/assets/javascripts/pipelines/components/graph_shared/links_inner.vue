@@ -148,7 +148,7 @@ export default {
 
         const data = {
           histograms: [
-            { name: PIPELINES_DETAIL_LINK_DURATION, value: duration },
+            { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
             { name: PIPELINES_DETAIL_LINKS_TOTAL, value: this.links.length },
             {
               name: PIPELINES_DETAIL_LINKS_JOB_RATIO,

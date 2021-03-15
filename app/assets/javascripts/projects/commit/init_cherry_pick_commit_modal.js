@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import CommitFormModal from './components/form_modal.vue';
 import {
   I18N_MODAL,
@@ -19,21 +19,27 @@ export default function initInviteMembersModal() {
     title,
     endpoint,
     branch,
+    targetProjectId,
+    targetProjectName,
     pushCode,
     branchCollaboration,
     existingBranch,
     branchesEndpoint,
+    projects,
   } = el.dataset;
 
   const store = createStore({
     endpoint,
     branchesEndpoint,
     branch,
+    targetProjectId,
+    targetProjectName,
     pushCode: parseBoolean(pushCode),
     branchCollaboration: parseBoolean(branchCollaboration),
     defaultBranch: branch,
     modalTitle: title,
     existingBranch,
+    projects: convertObjectPropsToCamelCase(JSON.parse(projects), { deep: true }),
   });
 
   return new Vue({

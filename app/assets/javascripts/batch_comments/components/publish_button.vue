@@ -40,7 +40,8 @@ export default {
 <template>
   <gl-button
     :loading="isPublishing"
-    class="js-publish-draft-button qa-submit-review"
+    class="js-publish-draft-button"
+    data-qa-selector="submit_review_button"
     :category="category"
     :variant="variant"
     @click="onClick"

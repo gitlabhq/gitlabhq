@@ -24,6 +24,10 @@ class Projects::CommitController < Projects::ApplicationController
     push_frontend_feature_flag(:ci_commit_pipeline_mini_graph_vue, @project, default_enabled: :yaml)
   end
 
+  before_action do
+    push_frontend_feature_flag(:pick_into_project)
+  end
+
   BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 75
 

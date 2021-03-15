@@ -60,12 +60,27 @@ module Gitlab
     # ancestor to most nested object respectively. This uses a `depth` column
     # where `1` is defined as the depth for the base and increment as we go up
     # each parent.
+    #
+    # Note: By default the order is breadth-first
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors(upto: nil, hierarchy_order: nil)
-      recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all)
-      recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
+      if use_distinct?
+        expose_depth = hierarchy_order.present?
+        hierarchy_order ||= :asc
 
-      read_only(recursive_query)
+        recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all).distinct
+
+        # if hierarchy_order is given, the calculated `depth` should be present in SELECT
+        if expose_depth
+          read_only(model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: hierarchy_order))
+        else
+          read_only(remove_depth_and_maintain_order(recursive_query, hierarchy_order: hierarchy_order))
+        end
+      else
+        recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all)
+        recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
+        read_only(recursive_query)
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -74,9 +89,22 @@ module Gitlab
     #
     # When `with_depth` is `true`, a `depth` column is included where it starts with `1` for the base objects
     # and incremented as we go down the descendant tree
+    # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendants(with_depth: false)
-      read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
+      if use_distinct?
+        # Always calculate `depth`, remove it later if with_depth is false
+        base_cte = base_and_descendants_cte(with_depth: true).apply_to(model.all).distinct
+
+        if with_depth
+          read_only(model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: :asc))
+        else
+          read_only(remove_depth_and_maintain_order(base_cte, hierarchy_order: :asc))
+        end
+      else
+        read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
+      end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the base objects, their ancestors,
     # and the descendants of the base objects.
@@ -108,13 +136,21 @@ module Gitlab
       ancestors_table = ancestors.alias_to(objects_table)
       descendants_table = descendants.alias_to(objects_table)
 
+      ancestors_scope = model.unscoped.from(ancestors_table)
+      descendants_scope = model.unscoped.from(descendants_table)
+
+      if use_distinct?
+        ancestors_scope = ancestors_scope.distinct
+        descendants_scope = descendants_scope.distinct
+      end
+
       relation = model
         .unscoped
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
         .from_union([
-          model.unscoped.from(ancestors_table),
-          model.unscoped.from(descendants_table)
+          ancestors_scope,
+          descendants_scope
         ])
 
       read_only(relation)
@@ -123,12 +159,28 @@ module Gitlab
 
     private
 
+    # Use distinct on the Namespace queries to avoid bad planner behavior in PG11.
+    def use_distinct?
+      (model <= Namespace) && options[:use_distinct]
+    end
+
+    # Remove the extra `depth` field using an INNER JOIN to avoid breaking UNION queries
+    # and ordering the rows based on the `depth` column to maintain the row order.
+    #
+    # rubocop: disable CodeReuse/ActiveRecord
+    def remove_depth_and_maintain_order(relation, hierarchy_order: :asc)
+      joined_relation = model.joins("INNER JOIN (#{relation.select(:id, :depth).to_sql}) namespaces_join_table on namespaces_join_table.id = #{model.table_name}.id").order("namespaces_join_table.depth" => hierarchy_order)
+
+      model.from(Arel::Nodes::As.new(joined_relation.arel, objects_table))
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors_cte(stop_id = nil, hierarchy_order = nil)
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
       base_query = ancestors_base.except(:order)
-      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if hierarchy_order
+      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if hierarchy_order
 
       cte << base_query
 
@@ -161,7 +213,7 @@ module Gitlab
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
       base_query = descendants_base.except(:order)
-      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if with_depth
+      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[#{objects_table.name}.id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if with_depth
 
       cte << base_query
 

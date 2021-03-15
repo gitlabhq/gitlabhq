@@ -284,7 +284,7 @@ describe('Links Inner component', () => {
       const numLinks = 1;
       const metricsData = {
         histograms: [
-          { name: PIPELINES_DETAIL_LINK_DURATION, value: duration },
+          { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
           { name: PIPELINES_DETAIL_LINKS_TOTAL, value: numLinks },
           {
             name: PIPELINES_DETAIL_LINKS_JOB_RATIO,

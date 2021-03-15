@@ -88,7 +88,7 @@ describe('RelatedIssuableItem', () => {
       const stateTitle = tokenState().attributes('title');
       const formattedCreateDate = formatDate(props.createdAt);
 
-      expect(stateTitle).toContain('<span class="bold">Opened</span>');
+      expect(stateTitle).toContain('<span class="bold">Created</span>');
       expect(stateTitle).toContain(`<span class="text-tertiary">${formattedCreateDate}</span>`);
     });
 

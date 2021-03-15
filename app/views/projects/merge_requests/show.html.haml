@@ -35,7 +35,7 @@
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
                 %span.badge.badge-pill.js-pipelines-mr-count= number_of_pipelines
-          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab qa-diffs-tab", id: "diffs-tab" do
+          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               %span.badge.badge-pill= @merge_request.diff_size

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe CommitsHelper do
+  include ProjectForksHelper
+
   describe '#revert_commit_link' do
     context 'when current_user exists' do
       before do
@@ -237,6 +239,23 @@ RSpec.describe CommitsHelper do
       it "returns a standard DiffCollection" do
         expect(subject).to be_a(Gitlab::Git::DiffCollection)
       end
+    end
+  end
+
+  describe '#cherry_pick_projects_data' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user, maintainer_projects: [project]) }
+    let!(:forked_project) { fork_project(project, user, { namespace: user.namespace, repository: true }) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'returns data for cherry picking into a project' do
+      expect(helper.cherry_pick_projects_data(project)).to match_array([
+        { id: project.id.to_s, name: project.full_path, refsUrl: refs_project_path(project) },
+        { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
+      ])
     end
   end
 end

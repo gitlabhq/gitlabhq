@@ -9,8 +9,8 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
           element :download_dropdown
-          element :download_email_patches
-          element :download_plain_diff
+          element :download_email_patches_menu_item
+          element :download_plain_diff_menu_item
           element :open_in_web_ide_button
         end
 
@@ -21,9 +21,9 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
-          element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
+          element :fast_forward_message_content
           element :merge_moment_dropdown
-          element :merge_immediately_option
+          element :merge_immediately_menu_item
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do
@@ -40,7 +40,7 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
           element :mr_rebase_button
-          element :no_fast_forward_message, 'Fast-forward merge is not possible' # rubocop:disable QA/ElementWithPattern
+          element :no_fast_forward_message_content
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/squash_before_merge.vue' do
@@ -68,7 +68,8 @@ module QA
         end
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
-          element :new_diff_line
+          element :diff_comment_button
+          element :new_diff_line_link
         end
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
@@ -76,11 +77,11 @@ module QA
         end
 
         view 'app/assets/javascripts/batch_comments/components/publish_button.vue' do
-          element :submit_review
+          element :submit_review_button
         end
 
         view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
-          element :review_bar
+          element :review_bar_content
         end
 
         view 'app/assets/javascripts/notes/components/note_form.vue' do
@@ -128,18 +129,18 @@ module QA
         end
 
         def submit_pending_reviews
-          within_element(:review_bar) do
+          within_element(:review_bar_content) do
             click_element(:review_preview_toggle)
-            click_element(:submit_review)
+            click_element(:submit_review_button)
 
             # After clicking the button, wait for it to disappear
             # before moving on to the next part of the test
-            has_no_element?(:submit_review)
+            has_no_element?(:submit_review_button)
           end
         end
 
         def discard_pending_reviews
-          within_element(:review_bar) do
+          within_element(:review_bar_content) do
             click_element(:discard_review)
           end
           click_element(:modal_delete_pending_comments)
@@ -158,8 +159,8 @@ module QA
           wait_until(sleep_interval: 5) do
             has_css?('a[data-linenumber="1"]')
           end
-          all_elements(:new_diff_line, minimum: 1).first.hover
-          click_element(:diff_comment)
+          all_elements(:new_diff_line_link, minimum: 1).first.hover
+          click_element(:diff_comment_button)
           fill_element(:reply_field, text)
         end
 
@@ -183,11 +184,11 @@ module QA
         end
 
         def fast_forward_possible?
-          has_text?('Fast-forward merge without a merge commit')
+          has_element?(:fast_forward_message_content)
         end
 
         def fast_forward_not_possible?
-          has_text?('Fast-forward merge is not possible')
+          has_element?(:no_fast_forward_message_content)
         end
 
         def has_file?(file_name)
@@ -241,7 +242,7 @@ module QA
 
         def merge_immediately!
           click_element(:merge_moment_dropdown)
-          click_element(:merge_immediately_option)
+          click_element(:merge_immediately_menu_item)
         end
 
         def merge_when_pipeline_succeeds!
@@ -295,7 +296,7 @@ module QA
           click_element(:mr_rebase_button)
 
           success = wait_until do
-            has_text?('Fast-forward merge without a merge commit')
+            fast_forward_possible?
           end
 
           raise "Rebase did not appear to be successful" unless success
@@ -312,12 +313,12 @@ module QA
 
         def view_email_patches
           click_element(:download_dropdown)
-          visit_link_in_element(:download_email_patches)
+          visit_link_in_element(:download_email_patches_menu_item)
         end
 
         def view_plain_diff
           click_element(:download_dropdown)
-          visit_link_in_element(:download_plain_diff)
+          visit_link_in_element(:download_plain_diff_menu_item)
         end
 
         def wait_for_merge_request_error_message
@@ -340,7 +341,7 @@ module QA
 
         def add_suggestion_to_diff(suggestion, line)
           find("a[data-linenumber='#{line}']").hover
-          click_element(:diff_comment)
+          click_element(:diff_comment_button)
           click_element(:suggestion_button)
           initial_content = find_element(:reply_field).value
           fill_element(:reply_field, '')

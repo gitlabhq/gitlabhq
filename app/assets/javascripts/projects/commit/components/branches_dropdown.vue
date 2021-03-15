@@ -7,7 +7,11 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { I18N_DROPDOWN } from '../constants';
+import {
+  I18N_NO_RESULTS_MESSAGE,
+  I18N_BRANCH_HEADER,
+  I18N_BRANCH_SEARCH_PLACEHOLDER,
+} from '../constants';
 
 export default {
   name: 'BranchesDropdown',
@@ -25,7 +29,11 @@ export default {
       default: '',
     },
   },
-  i18n: I18N_DROPDOWN,
+  i18n: {
+    noResultsMessage: I18N_NO_RESULTS_MESSAGE,
+    branchHeaderTitle: I18N_BRANCH_HEADER,
+    branchSearchPlaceholder: I18N_BRANCH_SEARCH_PLACEHOLDER,
+  },
   data() {
     return {
       searchTerm: this.value,
@@ -39,6 +47,13 @@ export default {
       return this.joinedBranches.filter((resultString) =>
         resultString.toLowerCase().includes(lowerCasedSearchTerm),
       );
+    },
+  },
+  watch: {
+    // Parent component can set the branch value (e.g. when the user selects a different project)
+    // and we need to keep the search term in sync with the selected value
+    value(val) {
+      this.searchTermChanged(val);
     },
   },
   mounted() {
@@ -61,13 +76,13 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="value" :header-text="$options.i18n.headerTitle">
+  <gl-dropdown :text="value" :header-text="$options.i18n.branchHeaderTitle">
     <gl-search-box-by-type
       :value="searchTerm"
       trim
       autocomplete="off"
       :debounce="250"
-      :placeholder="$options.i18n.searchPlaceholder"
+      :placeholder="$options.i18n.branchSearchPlaceholder"
       data-testid="dropdown-search-box"
       @input="searchTermChanged"
     />
