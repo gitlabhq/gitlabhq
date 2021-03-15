@@ -22,14 +22,7 @@ module QA
           view 'app/assets/javascripts/issuable/components/csv_import_export_buttons.vue' do
             element :export_as_csv_button
             element :import_from_jira_link
-          end
-
-          view 'app/views/projects/issues/import_csv/_button.html.haml' do
-            element :import_issues_button
-          end
-
-          view 'app/views/shared/issuable/csv_export/_modal.html.haml' do
-            element :export_issues_button
+            element :import_issues_dropdown
           end
 
           view 'app/views/shared/issuable/_nav.html.haml' do
@@ -63,7 +56,7 @@ module QA
           def click_import_issues_dropdown
             # When there are no issues, the image that loads causes the buttons to jump
             has_loaded_all_images?
-            click_element(:import_issues_button)
+            click_element(:import_issues_dropdown)
           end
 
           def export_issues_modal

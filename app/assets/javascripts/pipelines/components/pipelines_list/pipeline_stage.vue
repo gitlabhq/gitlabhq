@@ -80,7 +80,7 @@ export default {
           this.isLoading = false;
         })
         .catch(() => {
-          this.$refs.stageGlDropdown.hide();
+          this.$refs.dropdown.hide();
           this.isLoading = false;
 
           Flash(__('Something went wrong on our end.'));
@@ -91,7 +91,7 @@ export default {
     },
     pipelineActionRequestComplete() {
       // close the dropdown in MR widget
-      this.$refs.stageGlDropdown.hide();
+      this.$refs.dropdown.hide();
 
       // warn the pipelines table to update
       this.$emit('pipelineActionRequestComplete');
@@ -102,7 +102,7 @@ export default {
 
 <template>
   <gl-dropdown
-    ref="stageGlDropdown"
+    ref="dropdown"
     v-gl-tooltip.hover
     data-testid="mini-pipeline-graph-dropdown"
     :title="stage.title"

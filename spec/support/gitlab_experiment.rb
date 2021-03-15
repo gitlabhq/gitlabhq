@@ -6,6 +6,7 @@ require_relative 'stub_snowplow'
 
 # This is a temporary fix until we have a larger discussion around the
 # challenges raised in https://gitlab.com/gitlab-org/gitlab/-/issues/300104
+require Rails.root.join('app', 'experiments', 'application_experiment')
 class ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
   def initialize(...)
     super(...)

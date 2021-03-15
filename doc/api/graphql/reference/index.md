@@ -5425,6 +5425,34 @@ An edge in a connection.
 | `cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | `node` | [`SastCiConfigurationOptionsEntity`](#sastciconfigurationoptionsentity) | The item at the end of the edge. |
 
+### `Scan`
+
+Represents the security scan information.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `errors` | [`[String!]!`](#string) | List of errors. |
+| `name` | [`String!`](#string) | Name of the scan. |
+
+### `ScanConnection`
+
+The connection type for Scan.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `edges` | [`[ScanEdge]`](#scanedge) | A list of edges. |
+| `nodes` | [`[Scan]`](#scan) | A list of nodes. |
+| `pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+### `ScanEdge`
+
+An edge in a connection.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| `node` | [`Scan`](#scan) | The item at the end of the edge. |
+
 ### `ScannedResource`
 
 Represents a resource scanned by a security scan.
@@ -5476,6 +5504,7 @@ Represents a section of a summary of a security report.
 | `scannedResources` | [`ScannedResourceConnection`](#scannedresourceconnection) | A list of the first 20 scanned resources. |
 | `scannedResourcesCount` | [`Int`](#int) | Total number of scanned resources. |
 | `scannedResourcesCsvPath` | [`String`](#string) | Path to download all the scanned resources in CSV format. |
+| `scans` | [`ScanConnection!`](#scanconnection) | List of security scans ran for the type. |
 | `vulnerabilitiesCount` | [`Int`](#int) | Total number of vulnerabilities. |
 
 ### `SecurityScanners`

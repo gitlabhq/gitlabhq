@@ -54,6 +54,7 @@ describe('IssuableShowRoot', () => {
       editFormVisible,
       descriptionPreviewPath,
       descriptionHelpPath,
+      taskCompletionStatus,
     } = mockIssuableShowProps;
     const { blocked, confidential, createdAt, author } = mockIssuable;
 
@@ -72,6 +73,7 @@ describe('IssuableShowRoot', () => {
         confidential,
         createdAt,
         author,
+        taskCompletionStatus,
       });
       expect(issuableHeader.find('.issuable-status-box').text()).toContain('Open');
       expect(issuableHeader.find('.detail-page-header-actions button.js-close').exists()).toBe(
@@ -109,6 +111,26 @@ describe('IssuableShowRoot', () => {
         issuableBody.vm.$emit('edit-issuable');
 
         expect(wrapper.emitted('edit-issuable')).toBeTruthy();
+      });
+
+      it('component emits `task-list-update-success` event bubbled via issuable-body', () => {
+        const issuableBody = wrapper.find(IssuableBody);
+        const eventParam = {
+          foo: 'bar',
+        };
+
+        issuableBody.vm.$emit('task-list-update-success', eventParam);
+
+        expect(wrapper.emitted('task-list-update-success')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-success')[0]).toEqual([eventParam]);
+      });
+
+      it('component emits `task-list-update-failure` event bubbled via issuable-body', () => {
+        const issuableBody = wrapper.find(IssuableBody);
+
+        issuableBody.vm.$emit('task-list-update-failure');
+
+        expect(wrapper.emitted('task-list-update-failure')).toBeTruthy();
       });
 
       it('component emits `sidebar-toggle` event bubbled via issuable-sidebar', () => {

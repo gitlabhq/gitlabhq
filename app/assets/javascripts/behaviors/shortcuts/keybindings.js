@@ -2,6 +2,9 @@ import { memoize } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { s__ } from '~/locale';
 
+const isCustomizable = (command) =>
+  'customizable' in command ? Boolean(command.customizable) : true;
+
 export const LOCAL_STORAGE_KEY = 'gl-keyboard-shortcuts-customizations';
 
 /**
@@ -81,7 +84,7 @@ export const keybindingGroups = [GLOBAL_SHORTCUTS_GROUP, WEB_IDE_GROUP];
  * Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), handler);
  */
 export const keysFor = (command) => {
-  if (command.customizable === false) {
+  if (!isCustomizable(command)) {
     // if the command is defined with `customizable: false`,
     // don't allow this command to be customized.
     return command.defaultKeys;

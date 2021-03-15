@@ -13,7 +13,7 @@
    ],
    "rules":{
       "max-nesting-depth": [
-         5,
+         3,
          {
             "ignoreAtRules":[
                "each",
@@ -24,7 +24,7 @@
             "severity":"warning"
          }
       ],
-      "selector-max-compound-selectors":[6, { "severity": "warning" }],
+      "selector-max-compound-selectors":[3, { "severity": "warning" }],
       "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],
       "declaration-block-no-duplicate-properties": [
         true,

@@ -126,7 +126,7 @@ export default {
           v-bind="field"
         />
         <jira-issues-fields
-          v-if="isJira"
+          v-if="isJira && !isInstanceOrGroupLevel"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
         />

@@ -12,6 +12,18 @@ export default {
       type: Object,
       required: true,
     },
+    enableTaskList: {
+      type: Boolean,
+      required: true,
+    },
+    canEdit: {
+      type: Boolean,
+      required: true,
+    },
+    taskListUpdatePath: {
+      type: String,
+      required: true,
+    },
   },
   mounted() {
     this.renderGFM();
@@ -25,7 +37,16 @@ export default {
 </script>
 
 <template>
-  <div class="description">
+  <div class="description" :class="{ 'js-task-list-container': canEdit && enableTaskList }">
     <div ref="gfmContainer" v-safe-html="issuable.descriptionHtml" class="md"></div>
+    <textarea
+      v-if="issuable.description && enableTaskList"
+      ref="textarea"
+      :value="issuable.description"
+      :data-update-url="taskListUpdatePath"
+      class="gl-display-none js-task-list-field"
+      dir="auto"
+    >
+    </textarea>
   </div>
 </template>

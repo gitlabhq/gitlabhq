@@ -14200,7 +14200,7 @@ Distinct count of users that triggered an import using the Group Migration tool
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14284,7 +14284,7 @@ Distinct count of users that imported groups using Group Import
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14344,7 +14344,7 @@ Distinct count of users that imported issues into projects using CSV upload
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14356,7 +14356,7 @@ Distinct count of users that imported issues into projects using FogBugz
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14368,7 +14368,7 @@ Distinct count of users that imported issues into projects using Jira
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14380,7 +14380,7 @@ Distinct count of users that imported issues into projects using Phabricator
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14572,7 +14572,7 @@ Distinct count of users that imported projects from Bitbucket Cloud
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14584,7 +14584,7 @@ Distinct count of users that imported projects from Bitbucket Server
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14596,7 +14596,7 @@ Distinct count of users that imported projects using Import by URL
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14608,7 +14608,7 @@ Distinct count of users that imported projects from Gitea
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14620,7 +14620,7 @@ Distinct count of users that imported projects from GitHub
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14632,7 +14632,7 @@ Distinct count of users that imported projects from GitLab.com
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14644,7 +14644,7 @@ Distinct count of users that imported projects using Project Import/Export
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14656,7 +14656,7 @@ Distinct count of users that imported projects using Manifest file
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -14668,7 +14668,7 @@ Total count of all projects imported with import_source NOT NULL
 
 Group: `group::import`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16132,7 +16132,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16216,7 +16216,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16276,7 +16276,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16288,7 +16288,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16300,7 +16300,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16312,7 +16312,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16504,7 +16504,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16516,7 +16516,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16528,7 +16528,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16540,7 +16540,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16552,7 +16552,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16564,7 +16564,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16576,7 +16576,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16588,7 +16588,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -16600,7 +16600,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 

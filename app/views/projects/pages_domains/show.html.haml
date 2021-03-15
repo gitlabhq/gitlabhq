@@ -17,5 +17,5 @@
   = form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .form-actions.d-flex.justify-content-between
-      = f.submit _('Save Changes'), class: "btn btn-success"
-      = link_to _('Cancel'), project_pages_path(@project), class: 'btn btn-default btn-inverse'
+      = f.submit _('Save Changes'), class: "gl-button btn btn-confirm"
+      = link_to _('Cancel'), project_pages_path(@project), class: 'gl-button btn btn-default btn-inverse'

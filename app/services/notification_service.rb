@@ -369,18 +369,19 @@ class NotificationService
   end
 
   def send_service_desk_notification(note)
-    return unless Gitlab::ServiceDesk.supported?
     return unless note.noteable_type == 'Issue'
 
     issue = note.noteable
+    recipients = issue.email_participants_emails
+
+    return unless recipients.any?
+
     support_bot = User.support_bot
+    recipients.delete(issue.external_author) if note.author == support_bot
 
-    return unless issue.external_author.present?
-    return unless issue.project.service_desk_enabled?
-    return if note.author == support_bot
-    return unless issue.subscribed?(support_bot, issue.project)
-
-    mailer.service_desk_new_note_email(issue.id, note.id).deliver_later
+    recipients.each do |recipient|
+      mailer.service_desk_new_note_email(issue.id, note.id, recipient).deliver_later
+    end
   end
 
   # Notify users when a new release is created

@@ -42,6 +42,11 @@ export default {
       required: false,
       default: true,
     },
+    enableTaskList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     editFormVisible: {
       type: Boolean,
       required: false,
@@ -61,6 +66,21 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    taskCompletionStatus: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    taskListUpdatePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    taskListLockVersion: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   methods: {
@@ -83,6 +103,7 @@ export default {
       :confidential="issuable.confidential"
       :created-at="issuable.createdAt"
       :author="issuable.author"
+      :task-completion-status="taskCompletionStatus"
     >
       <template #status-badge>
         <slot name="status-badge"></slot>
@@ -99,11 +120,16 @@ export default {
       :enable-edit="enableEdit"
       :enable-autocomplete="enableAutocomplete"
       :enable-autosave="enableAutosave"
+      :enable-task-list="enableTaskList"
       :edit-form-visible="editFormVisible"
       :show-field-title="showFieldTitle"
       :description-preview-path="descriptionPreviewPath"
       :description-help-path="descriptionHelpPath"
+      :task-list-update-path="taskListUpdatePath"
+      :task-list-lock-version="taskListLockVersion"
       @edit-issuable="$emit('edit-issuable', $event)"
+      @task-list-update-success="$emit('task-list-update-success', $event)"
+      @task-list-update-failure="$emit('task-list-update-failure')"
       @keydown-title="handleKeydownTitle"
       @keydown-description="handleKeydownDescription"
     >

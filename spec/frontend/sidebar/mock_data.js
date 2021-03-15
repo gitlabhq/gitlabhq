@@ -233,4 +233,16 @@ export const issueConfidentialityResponse = (confidential = false) => ({
   },
 });
 
+export const issueReferenceResponse = (reference) => ({
+  data: {
+    workspace: {
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/4',
+        reference,
+      },
+    },
+  },
+});
 export default mockData;

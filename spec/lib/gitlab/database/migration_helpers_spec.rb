@@ -180,6 +180,32 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
       end
 
+      context 'when with_lock_retries re-runs the block' do
+        it 'only creates constraint for unique definitions' do
+          expected_sql = <<~SQL
+            ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
+          SQL
+
+          expect(model).to receive(:create_table).twice.and_call_original
+
+          expect(model).to receive(:execute).with(expected_sql).and_raise(ActiveRecord::LockWaitTimeout)
+          expect(model).to receive(:execute).with(expected_sql).and_call_original
+
+          model.create_table_with_constraints table_name do |t|
+            t.timestamps_with_timezone
+            t.integer :some_id, null: false
+            t.boolean :active, null: false, default: true
+            t.text :name
+
+            t.text_limit :name, 255
+          end
+
+          expect_table_columns_to_match(column_attributes, table_name)
+
+          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
+        end
+      end
+
       context 'when constraints are given invalid names' do
         let(:expected_max_length) { described_class::MAX_IDENTIFIER_NAME_LENGTH }
         let(:expected_error_message) { "The maximum allowed constraint name is #{expected_max_length} characters" }

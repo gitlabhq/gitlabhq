@@ -19,6 +19,7 @@ export default () => {
     canEdit,
     projectImportJiraPath,
     maxAttachmentSize,
+    showLabel,
   } = el.dataset;
 
   return new Vue({
@@ -35,6 +36,7 @@ export default () => {
       canEdit: parseBoolean(canEdit),
       projectImportJiraPath,
       maxAttachmentSize,
+      showLabel,
     },
     render(h) {
       return h(ImportExportButtons);

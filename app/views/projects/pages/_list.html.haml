@@ -21,7 +21,7 @@
                   %span.badge.badge-danger
                     = s_('GitLabPages|Expired')
           %div
-            = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-success btn-inverted"
+            = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-confirm btn-inverted"
             = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-danger btn-sm btn-grouped"
         - if domain.needs_verification?
           %li.list-group-item.bs-callout-warning

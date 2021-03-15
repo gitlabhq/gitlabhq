@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
 import {
   isInIssuePage,
   isInDesignPage,
@@ -10,6 +11,7 @@ import {
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
+import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
@@ -75,7 +77,9 @@ function mountAssigneesComponent(mediator) {
           field: el.dataset.field,
           signedIn: el.hasAttribute('data-signed-in'),
           issuableType:
-            isInIssuePage() || isInIncidentPage() || isInDesignPage() ? 'issue' : 'merge_request',
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
           assigneeAvailabilityStatus,
         },
       }),
@@ -156,7 +160,41 @@ function mountConfidentialComponent() {
       createElement('sidebar-confidentiality-widget', {
         props: {
           issuableType:
-            isInIssuePage() || isInIncidentPage() || isInDesignPage() ? 'issue' : 'merge_request',
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
+        },
+      }),
+  });
+}
+
+function mountReferenceComponent() {
+  const el = document.getElementById('js-reference-entry-point');
+  if (!el) {
+    return;
+  }
+
+  const { fullPath, iid } = getSidebarOptions();
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    apolloProvider,
+    components: {
+      SidebarReferenceWidget,
+    },
+    provide: {
+      iid: String(iid),
+      fullPath,
+    },
+
+    render: (createElement) =>
+      createElement('sidebar-reference-widget', {
+        props: {
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
         },
       }),
   });
@@ -307,6 +345,7 @@ export function mountSidebar(mediator) {
   mountAssigneesComponent(mediator);
   mountReviewersComponent(mediator);
   mountConfidentialComponent(mediator);
+  mountReferenceComponent(mediator);
   mountLockComponent();
   mountParticipantsComponent(mediator);
   mountSubscriptionsComponent(mediator);

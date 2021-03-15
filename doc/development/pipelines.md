@@ -673,10 +673,10 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 | `.qa-cache` | Allows a job to use a default `cache` definition suitable for QA tasks. |
 | `.yarn-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that do a `yarn install`. |
 | `.assets-compile-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that compile assets. |
-| `.use-pg11` | Allows a job to use the `postgres:11.6` and `redis:4.0-alpine` services. |
-| `.use-pg11-ee` | Same as `.use-pg11` but also use the `docker.elastic.co/elasticsearch/elasticsearch:7.9.2` services. |
-| `.use-pg12` | Allows a job to use the `postgres:12` and `redis:4.0-alpine` services. |
-| `.use-pg12-ee` | Same as `.use-pg12` but also use the `docker.elastic.co/elasticsearch/elasticsearch:7.9.2` services. |
+| `.use-pg11` | Allows a job to run the `postgres` 11 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
+| `.use-pg11-ee` | Same as `.use-pg11` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
+| `.use-pg12` | Allows a job to use the `postgres` 12 and `redis` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
+| `.use-pg12-ee` | Same as `.use-pg12` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
 | `.use-docker-in-docker` | Allows a job to use Docker in Docker. |

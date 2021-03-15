@@ -89,6 +89,7 @@ body {
 
     .navbar-gitlab {
       background-color: var(--gray-50);
+      box-shadow: 0 1px 0 0 var(--gray-100);
 
       .navbar-sub-nav,
       .navbar-nav {

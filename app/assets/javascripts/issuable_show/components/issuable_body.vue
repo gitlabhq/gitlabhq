@@ -1,6 +1,8 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 
+import TaskList from '~/task_list';
+
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import IssuableDescription from './issuable_description.vue';
@@ -40,6 +42,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableTaskList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     editFormVisible: {
       type: Boolean,
       required: true,
@@ -56,6 +63,16 @@ export default {
       type: String,
       required: true,
     },
+    taskListUpdatePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    taskListLockVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   computed: {
     isUpdated() {
@@ -65,7 +82,50 @@ export default {
       return this.issuable.updatedBy;
     },
   },
+  watch: {
+    /**
+     * When user switches between view and edit modes,
+     * taskList instance becomes invalid so whenever
+     * view mode is rendered, we need to re-initialize
+     * taskList to ensure the behaviour functional.
+     */
+    editFormVisible(value) {
+      if (!value) {
+        this.$nextTick(() => {
+          this.initTaskList();
+        });
+      }
+    },
+  },
+  mounted() {
+    if (this.enableEdit && this.enableTaskList) {
+      this.initTaskList();
+    }
+  },
   methods: {
+    initTaskList() {
+      this.taskList = new TaskList({
+        /**
+         * We have hard-coded dataType to `issue`
+         * as currently only `issue` types can handle
+         * task-lists, however, we can still use
+         * task lists in Issue, Test Cases and Incidents
+         * as all of those are derived from `issue`.
+         */
+        dataType: 'issue',
+        fieldName: 'description',
+        lockVersion: this.taskListLockVersion,
+        selector: '.js-detail-page-description',
+        onSuccess: this.handleTaskListUpdateSuccess.bind(this),
+        onError: this.handleTaskListUpdateFailure.bind(this),
+      });
+    },
+    handleTaskListUpdateSuccess(updatedIssuable) {
+      this.$emit('task-list-update-success', updatedIssuable);
+    },
+    handleTaskListUpdateFailure() {
+      this.$emit('task-list-update-failure');
+    },
     handleKeydownTitle(e, issuableMeta) {
       this.$emit('keydown-title', e, issuableMeta);
     },
@@ -78,7 +138,7 @@ export default {
 
 <template>
   <div class="issue-details issuable-details">
-    <div class="detail-page-description content-block">
+    <div class="detail-page-description js-detail-page-description content-block">
       <issuable-edit-form
         v-if="editFormVisible"
         :issuable="issuable"
@@ -106,7 +166,13 @@ export default {
             <slot name="status-badge"></slot>
           </template>
         </issuable-title>
-        <issuable-description v-if="issuable.descriptionHtml" :issuable="issuable" />
+        <issuable-description
+          v-if="issuable.descriptionHtml"
+          :issuable="issuable"
+          :enable-task-list="enableTaskList"
+          :can-edit="enableEdit"
+          :task-list-update-path="taskListUpdatePath"
+        />
         <small v-if="isUpdated" class="edited-text gl-font-sm!">
           {{ __('Edited') }}
           <time-ago-tooltip :time="issuable.updatedAt" tooltip-placement="bottom" />

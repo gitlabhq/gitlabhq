@@ -6,7 +6,7 @@ product_stage: ''
 product_group: ''
 product_category: ''
 value_type: number
-status: data_available
+status: deprecated
 time_frame: 28d
 data_source:
 distribution:

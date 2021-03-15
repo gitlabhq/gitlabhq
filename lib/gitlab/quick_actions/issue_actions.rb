@@ -246,7 +246,7 @@ module Gitlab
         command :invite_email do |emails = ""|
           MAX_NUMBER_OF_EMAILS = 6
 
-          existing_emails = quick_action_target.email_participants_downcase
+          existing_emails = quick_action_target.email_participants_emails_downcase
           emails_to_add = emails.split(' ').index_by { |email| [email.downcase, email] }.except(*existing_emails).each_value.first(MAX_NUMBER_OF_EMAILS)
           added_emails = []
 

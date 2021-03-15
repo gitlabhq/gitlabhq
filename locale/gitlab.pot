@@ -440,18 +440,8 @@ msgstr ""
 msgid "%{count} files touched"
 msgstr ""
 
-msgid "%{count} issue selected"
-msgid_plural "%{count} issues selected"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{count} items per page"
 msgstr ""
-
-msgid "%{count} merge request selected"
-msgid_plural "%{count} merge requests selected"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{count} more"
 msgstr ""
@@ -1373,9 +1363,6 @@ msgstr ""
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr ""
 
-msgid "A maximum of %{count} participants can be added"
-msgstr ""
-
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
@@ -1449,9 +1436,6 @@ msgid "A string appended to the project path to form the Service Desk email addr
 msgstr ""
 
 msgid "A title is required"
-msgstr ""
-
-msgid "A user can only participate in a rotation once"
 msgstr ""
 
 msgid "A user with write access to the source branch selected this option"
@@ -3396,6 +3380,9 @@ msgstr ""
 msgid "An error occurred while fetching projects autocomplete."
 msgstr ""
 
+msgid "An error occurred while fetching reference"
+msgstr ""
+
 msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
@@ -3640,6 +3627,9 @@ msgid "An issue can be a bug, a todo or a feature request that needs to be discu
 msgstr ""
 
 msgid "An issue title is required"
+msgstr ""
+
+msgid "An iteration list displays issues in the selected iteration."
 msgstr ""
 
 msgid "An unauthenticated user"
@@ -12536,12 +12526,6 @@ msgstr ""
 msgid "Export group"
 msgstr ""
 
-msgid "Export issues"
-msgstr ""
-
-msgid "Export merge requests"
-msgstr ""
-
 msgid "Export project"
 msgstr ""
 
@@ -12726,6 +12710,9 @@ msgid "Failed to load group activity metrics. Please try again."
 msgstr ""
 
 msgid "Failed to load groups, users and deploy keys."
+msgstr ""
+
+msgid "Failed to load iterations."
 msgstr ""
 
 msgid "Failed to load labels. Please try again."
@@ -21222,7 +21209,7 @@ msgstr ""
 msgid "OnCallSchedules|For this rotation, on-call will be:"
 msgstr ""
 
-msgid "OnCallSchedules|On-call schedule"
+msgid "OnCallSchedules|On-call schedules"
 msgstr ""
 
 msgid "OnCallSchedules|Please note, rotations with shifts that are less than four hours are currently not supported in the weekly view."
@@ -25031,6 +25018,9 @@ msgstr ""
 msgid "Reduce this project’s visibility?"
 msgstr ""
 
+msgid "Reference"
+msgstr ""
+
 msgid "Reference:"
 msgstr ""
 
@@ -26552,6 +26542,9 @@ msgid "Search for this text"
 msgstr ""
 
 msgid "Search forks"
+msgstr ""
+
+msgid "Search iterations"
 msgstr ""
 
 msgid "Search labels"
@@ -28132,6 +28125,9 @@ msgid "Someone edited this %{issueType} at the same time you did. The descriptio
 msgstr ""
 
 msgid "Someone edited this merge request at the same time you did. Please refresh the page to see changes."
+msgstr ""
+
+msgid "Someone edited this test case at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 
 msgid "Something went wrong"
@@ -29802,9 +29798,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr ""
-
-msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
 msgstr ""
 
 msgid "The Compliance Dashboard gives you the ability to see a group's merge request activity by providing a high-level view for all projects in the group."
@@ -34613,9 +34606,6 @@ msgid "You have insufficient permissions to create a Todo for this alert"
 msgstr ""
 
 msgid "You have insufficient permissions to create an HTTP integration for this project"
-msgstr ""
-
-msgid "You have insufficient permissions to create an on-call rotation for this project"
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"

@@ -32,7 +32,7 @@
     "lint:prettier:fix": "yarn run prettier --write '**/*.{graphql,js,vue}'",
     "lint:prettier:staged": "scripts/frontend/execute-on-staged-files.sh prettier '(graphql|js|vue)' --check",
     "lint:prettier:staged:fix": "scripts/frontend/execute-on-staged-files.sh prettier '(graphql|js|vue)' --write",
-    "lint:stylelint": "stylelint --cache -q '{ee/,}app/assets/stylesheets/**/*.{css,scss}'",
+    "lint:stylelint": "stylelint -q '{ee/,}app/assets/stylesheets/**/*.{css,scss}'",
     "lint:stylelint:fix": "yarn run lint:stylelint --fix",
     "lint:stylelint:staged": "scripts/frontend/execute-on-staged-files.sh stylelint '(css|scss)' -q",
     "lint:stylelint:staged:fix": "yarn run lint:stylelint:staged --fix",

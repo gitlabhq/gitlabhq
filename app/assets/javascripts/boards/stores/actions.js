@@ -134,7 +134,7 @@ export default {
 
   createIssueList: (
     { state, commit, dispatch, getters },
-    { backlog, labelId, milestoneId, assigneeId },
+    { backlog, labelId, milestoneId, assigneeId, iterationId },
   ) => {
     const { boardId } = state;
 
@@ -154,6 +154,7 @@ export default {
           labelId,
           milestoneId,
           assigneeId,
+          iterationId,
         },
       })
       .then(({ data }) => {

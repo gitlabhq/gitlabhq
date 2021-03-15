@@ -234,8 +234,7 @@ export default class BranchGraph {
 
   appendAnchor(x, y, commit) {
     const { r, top, options } = this;
-    const anchor = r
-      .circle(x, y, 10)
+    r.circle(x, y, 10)
       .attr({
         fill: '#000',
         opacity: 0,
@@ -245,13 +244,14 @@ export default class BranchGraph {
       .hover(
         function () {
           this.tooltip = r.commitTooltip(x + 5, y, commit);
-          return top.push(this.tooltip.insertBefore(this));
+          top.push(this.tooltip.insertBefore(this));
+          return this.tooltip.toFront();
         },
         function () {
+          top.remove(this.tooltip);
           return this.tooltip && this.tooltip.remove() && delete this.tooltip;
         },
       );
-    return top.push(anchor);
   }
 
   drawDot(x, y, commit) {

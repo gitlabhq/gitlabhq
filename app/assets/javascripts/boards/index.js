@@ -104,6 +104,9 @@ export default () => {
         ? parseInt($boardApp.dataset.boardWeight, 10)
         : null,
       scopedLabelsAvailable: parseBoolean($boardApp.dataset.scopedLabels),
+      milestoneListsAvailable: parseBoolean($boardApp.dataset.milestoneListsAvailable),
+      assigneeListsAvailable: parseBoolean($boardApp.dataset.assigneeListsAvailable),
+      iterationListsAvailable: parseBoolean($boardApp.dataset.iterationListsAvailable),
     },
     store,
     apolloProvider,

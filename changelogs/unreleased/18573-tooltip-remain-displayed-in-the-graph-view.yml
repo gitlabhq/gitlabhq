@@ -1,0 +1,5 @@
+---
+title: Fix tooltips failing to hide in commit graph on Firefox
+merge_request: 56631
+author: Jonathan Duncan
+type: fixed

@@ -7,6 +7,8 @@ import {
   GlTooltipDirective,
   GlModalDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
+import { ISSUABLE_TYPE } from '../constants';
 import CsvExportModal from './csv_export_modal.vue';
 import CsvImportModal from './csv_import_modal.vue';
 
@@ -25,6 +27,9 @@ export default {
     GlModal: GlModalDirective,
   },
   inject: {
+    issuableType: {
+      default: ISSUABLE_TYPE.issues,
+    },
     showExportButton: {
       default: false,
     },
@@ -40,6 +45,9 @@ export default {
     projectImportJiraPath: {
       default: null,
     },
+    showLabel: {
+      default: false,
+    },
   },
   computed: {
     exportModalId() {
@@ -48,7 +56,17 @@ export default {
     importModalId() {
       return `${this.issuableType}-import-modal`;
     },
+    importButtonText() {
+      return this.showLabel ? this.$options.importIssuesText : null;
+    },
+    importButtonTooltipText() {
+      return this.showLabel ? null : this.$options.importIssuesText;
+    },
+    importButtonIcon() {
+      return this.showLabel ? null : 'import';
+    },
   },
+  importIssuesText: __('Import issues'),
 };
 </script>
 
@@ -65,9 +83,11 @@ export default {
       />
       <gl-dropdown
         v-if="showImportButton"
-        v-gl-tooltip.hover="__('Import issues')"
+        v-gl-tooltip.hover="importButtonTooltipText"
+        data-qa-selector="import_issues_dropdown"
         data-testid="import-csv-dropdown"
-        icon="import"
+        :text="importButtonText"
+        :icon="importButtonIcon"
       >
         <gl-dropdown-item v-gl-modal="importModalId" data-testid="import-csv-link">{{
           __('Import CSV')

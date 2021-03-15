@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Ci::Config::Entry::Processable
 
           ALLOWED_WHEN = %w[on_success on_failure always manual].freeze
-          ALLOWED_KEYS = %i[trigger].freeze
+          ALLOWED_KEYS = %i[trigger parallel].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
@@ -48,7 +48,12 @@ module Gitlab
             inherit: false,
             metadata: { allowed_needs: %i[job bridge] }
 
-          attributes :when, :allow_failure
+          entry :parallel, Entry::Product::Parallel,
+            description: 'Parallel configuration for this job.',
+            inherit: false,
+            metadata: { allowed_strategies: %i(matrix) }
+
+          attributes :when, :allow_failure, :parallel
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -66,7 +71,8 @@ module Gitlab
               needs: (needs_value if needs_defined?),
               ignore: ignored?,
               when: self.when,
-              scheduling_type: needs_defined? && !bridge_needs ? :dag : :stage
+              scheduling_type: needs_defined? && !bridge_needs ? :dag : :stage,
+              parallel: has_parallel? ? parallel_value : nil
             ).compact
           end
 

@@ -130,17 +130,8 @@
       - if signed_in
         .js-sidebar-subscriptions-entry-point
 
-      - project_ref = issuable_sidebar[:reference]
       .block.with-sub-blocks
-        .project-reference.sub-block
-          .sidebar-collapsed-icon.dont-change-state
-            = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
-          .cross-project-reference.hide-collapsed
-            %span
-              = _('Reference:')
-              %cite{ title: project_ref }
-                = project_ref
-            = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
+        #js-reference-entry-point
         - if issuable_type == 'merge_request'
           .sidebar-source-branch.sub-block
             .sidebar-collapsed-icon.dont-change-state

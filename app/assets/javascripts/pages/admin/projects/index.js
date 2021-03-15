@@ -17,12 +17,10 @@ function mountRemoveMemberModal() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  mountRemoveMemberModal();
+mountRemoveMemberModal();
 
-  new ProjectsList(); // eslint-disable-line no-new
+new ProjectsList(); // eslint-disable-line no-new
 
-  document
-    .querySelectorAll('.js-namespace-select')
-    .forEach((dropdown) => new NamespaceSelect({ dropdown }));
-});
+document
+  .querySelectorAll('.js-namespace-select')
+  .forEach((dropdown) => new NamespaceSelect({ dropdown }));

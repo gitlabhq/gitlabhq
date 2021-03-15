@@ -4,21 +4,23 @@ require 'fast_spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
-  subject(:parallel) { described_class.new(config) }
+  let(:metadata) { {} }
 
-  context 'with invalid config' do
-    shared_examples 'invalid config' do |error_message|
-      describe '#valid?' do
-        it { is_expected.not_to be_valid }
-      end
+  subject(:parallel) { described_class.new(config, **metadata) }
 
-      describe '#errors' do
-        it 'returns error about invalid type' do
-          expect(parallel.errors).to match(a_collection_including(error_message))
-        end
-      end
+  shared_examples 'invalid config' do |error_message|
+    describe '#valid?' do
+      it { is_expected.not_to be_valid }
     end
 
+    describe '#errors' do
+      it 'returns error about invalid type' do
+        expect(parallel.errors).to match(a_collection_including(error_message))
+      end
+    end
+  end
+
+  context 'with invalid config' do
     context 'when it is not a numeric value' do
       let(:config) { true }
 
@@ -63,6 +65,12 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
           expect(parallel.value).to match(number: config)
         end
       end
+
+      context 'when :numeric is not allowed' do
+        let(:metadata) { { allowed_strategies: [:matrix] } }
+
+        it_behaves_like 'invalid config', /cannot use "parallel: <number>"/
+      end
     end
   end
 
@@ -88,6 +96,12 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
             { PROVIDER: 'gcp', STACK: %w[data processing] }
           ])
         end
+      end
+
+      context 'when :matrix is not allowed' do
+        let(:metadata) { { allowed_strategies: [:numeric] } }
+
+        it_behaves_like 'invalid config', /cannot use "parallel: matrix"/
       end
     end
   end

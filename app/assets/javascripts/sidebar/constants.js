@@ -1,6 +1,8 @@
 import { IssuableType } from '~/issue_show/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
+import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
+import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
 import updateEpicMutation from '~/sidebar/queries/update_epic_confidential.mutation.graphql';
 import updateIssueConfidentialMutation from '~/sidebar/queries/update_issue_confidential.mutation.graphql';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
@@ -29,5 +31,14 @@ export const confidentialityQueries = {
   [IssuableType.Epic]: {
     query: epicConfidentialQuery,
     mutation: updateEpicMutation,
+  },
+};
+
+export const referenceQueries = {
+  [IssuableType.Issue]: {
+    query: issueReferenceQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: mergeRequestReferenceQuery,
   },
 };

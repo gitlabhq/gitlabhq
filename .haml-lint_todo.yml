@@ -201,7 +201,6 @@ linters:
       - 'app/views/projects/imports/new.html.haml'
       - 'app/views/projects/imports/show.html.haml'
       - 'app/views/projects/issues/_new_branch.html.haml'
-      - 'app/views/projects/issues/import_csv/_modal.html.haml'
       - 'app/views/projects/issues/show.html.haml'
       - 'app/views/projects/jobs/_header.html.haml'
       - 'app/views/projects/jobs/_table.html.haml'

@@ -1095,3 +1095,25 @@ export const getStartOfDay = (date, { utc = false } = {}) => {
 
   return new Date(cloneValue);
 };
+
+/**
+ * Returns the start of the current week against the provide date
+ *
+ * @param {Date} date The current date instance to calculate against
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC time.
+ * If `true`, the time returned will be midnight UTC. If `false` (the default)
+ * the time returned will be midnight in the user's local time.
+ *
+ * @returns {Date} A new `Date` object that represents the start of the current week
+ * of the provided date
+ */
+export const getStartOfWeek = (date, { utc = false } = {}) => {
+  const cloneValue = utc
+    ? new Date(date.setUTCHours(0, 0, 0, 0))
+    : new Date(date.setHours(0, 0, 0, 0));
+
+  const diff = cloneValue.getDate() - cloneValue.getDay() + (cloneValue.getDay() === 0 ? -6 : 1);
+
+  return new Date(date.setDate(diff));
+};

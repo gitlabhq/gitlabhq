@@ -1,19 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'Pipeline Processing Service' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
+  let(:user)    { project.owner }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, ref: 'master', project: project)
-  end
-
-  before do
-    stub_ci_pipeline_to_return_yaml_file
-
-    stub_not_protect_default_branch
-
-    project.add_developer(user)
   end
 
   context 'when simple pipeline is defined' do
@@ -866,10 +858,74 @@ RSpec.shared_examples 'Pipeline Processing Service' do
     end
   end
 
+  context 'when a bridge job has parallel:matrix config', :sidekiq_inline do
+    let(:parent_config) do
+      <<-EOY
+      test:
+        stage: test
+        script: echo test
+
+      deploy:
+        stage: deploy
+        trigger:
+          include: .child.yml
+        parallel:
+          matrix:
+            - PROVIDER: ovh
+              STACK: [monitoring, app]
+      EOY
+    end
+
+    let(:child_config) do
+      <<-EOY
+      test:
+        stage: test
+        script: echo test
+      EOY
+    end
+
+    let(:pipeline) do
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push)
+    end
+
+    before do
+      allow_next_instance_of(Repository) do |repository|
+        allow(repository)
+          .to receive(:blob_data_at)
+          .with(an_instance_of(String), '.gitlab-ci.yml')
+          .and_return(parent_config)
+
+        allow(repository)
+          .to receive(:blob_data_at)
+          .with(an_instance_of(String), '.child.yml')
+          .and_return(child_config)
+      end
+    end
+
+    it 'creates pipeline with bridges, then passes the matrix variables to downstream jobs' do
+      expect(all_builds_names).to contain_exactly('test', 'deploy: [ovh, monitoring]', 'deploy: [ovh, app]')
+      expect(all_builds_statuses).to contain_exactly('pending', 'created', 'created')
+
+      succeed_pending
+
+      # bridge jobs directly transition to success
+      expect(all_builds_statuses).to contain_exactly('success', 'success', 'success')
+
+      bridge1 = all_builds.find_by(name: 'deploy: [ovh, monitoring]')
+      bridge2 = all_builds.find_by(name: 'deploy: [ovh, app]')
+
+      downstream_job1 = bridge1.downstream_pipeline.processables.first
+      downstream_job2 = bridge2.downstream_pipeline.processables.first
+
+      expect(downstream_job1.scoped_variables.to_hash).to include('PROVIDER' => 'ovh', 'STACK' => 'monitoring')
+      expect(downstream_job2.scoped_variables.to_hash).to include('PROVIDER' => 'ovh', 'STACK' => 'app')
+    end
+  end
+
   private
 
   def all_builds
-    pipeline.builds.order(:stage_idx, :id)
+    pipeline.processables.order(:stage_idx, :id)
   end
 
   def builds

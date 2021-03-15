@@ -336,7 +336,7 @@ You can move group wiki repositories by using the [Group repository storage move
 There are a few limitations compared to project wikis:
 
 - Git LFS is not supported.
-- Group wikis are not included in global search and Geo replication.
+- Group wikis are not included in global search.
 - Changes to group wikis don't show up in the group's activity feed.
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).

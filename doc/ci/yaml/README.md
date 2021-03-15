@@ -3662,6 +3662,40 @@ deploystacks:
       - PROVIDER: [aws, ovh, gcp, vultr]
 ```
 
+##### Parallel `matrix` trigger jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
+
+Use `matrix:` to run a [trigger](#trigger) job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job.
+
+```yaml
+deploystacks:
+  stage: deploy
+  trigger:
+    include: path/to/child-pipeline.yml
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK: [monitoring, app1]
+      - PROVIDER: ovh
+        STACK: [monitoring, backup]
+      - PROVIDER: [gcp, vultr]
+        STACK: [data]
+```
+
+This example generates 6 parallel `deploystacks` trigger jobs, each with different values
+for `PROVIDER` and `STACK`, and they create 6 different child pipelines with those variables.
+
+```plaintext
+deploystacks: [aws, monitoring]
+deploystacks: [aws, app1]
+deploystacks: [ovh, monitoring]
+deploystacks: [ovh, backup]
+deploystacks: [gcp, data]
+deploystacks: [vultr, data]
+```
+
 ### `trigger`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.

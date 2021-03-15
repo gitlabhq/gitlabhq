@@ -50,10 +50,11 @@
       = s_('AdminArea|Bots')
     %td.p-3.text-right
       = @users_statistics&.bots.to_i
+  = render_if_exists 'admin/dashboard/billable_users_row'
   %tr.bg-gray-light.gl-text-gray-900
     %td.p-3
       %strong
-        = render_if_exists 'admin/dashboard/billable_users_text'
+        = s_('AdminArea|Active users')
     %td.p-3.text-right
       %strong
         = @users_statistics&.active.to_i

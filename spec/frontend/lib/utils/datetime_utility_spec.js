@@ -1136,3 +1136,32 @@ describe('getStartOfDay', () => {
     },
   );
 });
+
+describe('getStartOfWeek', () => {
+  beforeEach(() => {
+    timezoneMock.register('US/Eastern');
+  });
+
+  afterEach(() => {
+    timezoneMock.unregister();
+  });
+
+  it.each`
+    inputAsString                      | options           | expectedAsString
+    ${'2021-01-29T18:08:23.014Z'}      | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-29T13:08:23.014-05:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-30T03:08:23.014+09:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{}}             | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{ utc: false }} | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{ utc: true }}  | ${'2021-01-26T00:00:00.000Z'}
+  `(
+    'when the provided date is $inputAsString and the options parameter is $options, returns $expectedAsString',
+    ({ inputAsString, options, expectedAsString }) => {
+      const inputDate = new Date(inputAsString);
+      const actual = datetimeUtility.getStartOfWeek(inputDate, options);
+
+      expect(actual.toISOString()).toEqual(expectedAsString);
+    },
+  );
+});

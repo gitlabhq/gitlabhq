@@ -94,11 +94,37 @@ describe('CsvImportExportButtons', () => {
         expect(findImportCsvButton().exists()).toBe(true);
       });
 
-      it('import button has a tooltip', () => {
-        const tooltip = getBinding(findImportDropdown().element, 'gl-tooltip');
+      describe('when showLabel=false', () => {
+        beforeEach(() => {
+          wrapper = createComponent({ showImportButton: true, showLabel: false });
+        });
 
-        expect(tooltip).toBeDefined();
-        expect(tooltip.value).toBe('Import issues');
+        it('does not have a button text', () => {
+          expect(findImportCsvButton().props('text')).toBe(null);
+        });
+
+        it('import button has a tooltip', () => {
+          const tooltip = getBinding(findImportDropdown().element, 'gl-tooltip');
+
+          expect(tooltip).toBeDefined();
+          expect(tooltip.value).toBe('Import issues');
+        });
+      });
+
+      describe('when showLabel=true', () => {
+        beforeEach(() => {
+          wrapper = createComponent({ showImportButton: true, showLabel: true });
+        });
+
+        it('displays a button text', () => {
+          expect(findImportCsvButton().props('text')).toBe('Import issues');
+        });
+
+        it('import button has no tooltip', () => {
+          const tooltip = getBinding(findImportDropdown().element, 'gl-tooltip');
+
+          expect(tooltip.value).toBe(null);
+        });
       });
 
       it('renders the import modal', () => {
