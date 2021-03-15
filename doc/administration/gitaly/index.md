@@ -136,6 +136,12 @@ To see if GitLab can access the repository file system directly, we use the foll
 Direct Git access is enable by default in Omnibus GitLab because it fills in the correct repository
 paths in the GitLab configuration file `config/gitlab.yml`. This satisfies the UUID check.
 
+WARNING:
+If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
+default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
+Copying this file causes GitLab to use the Rugged patches for repositories hosted on the Gitaly server,
+leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
+
 ### Transition to Gitaly Cluster
 
 For the sake of removing complexity, we must remove direct Git access in GitLab. However, we can't

@@ -143,6 +143,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
+  require_dependency 'gitlab/metrics/subscribers/action_cable'
   require_dependency 'gitlab/metrics/subscribers/action_view'
   require_dependency 'gitlab/metrics/subscribers/active_record'
   require_dependency 'gitlab/metrics/subscribers/rails_cache'
