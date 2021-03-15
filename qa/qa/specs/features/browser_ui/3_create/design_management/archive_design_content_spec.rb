@@ -15,7 +15,7 @@ module QA
       let(:third_design) do
         Resource::Design.fabricate! do |design|
           design.issue = second_design.issue
-          design.filename = 'tanuki.jpg'
+          design.filename = 'testfile.png'
         end
       end
 

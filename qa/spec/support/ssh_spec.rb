@@ -26,6 +26,16 @@ RSpec.describe QA::Support::SSH do
       end
     end
 
+    context 'when no port specified in https uri' do
+      let(:uri) { 'https://foo.com' }
+
+      it 'does not provide port in ssh command' do
+        expect(ssh).to receive(:run).with(expected_ssh_command_no_port, any_args).and_return(result)
+
+        call_method
+      end
+    end
+
     context 'when port 80 specified in uri' do
       let(:uri) { 'http://foo.com:80' }
 
@@ -76,6 +86,18 @@ RSpec.describe QA::Support::SSH do
   describe '#git_user' do
     context 'when running on CI' do
       let(:uri) { 'http://gitlab.com' }
+
+      before do
+        allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(true)
+      end
+
+      it 'returns git user' do
+        expect(ssh.send(:git_user)).to eq('git')
+      end
+    end
+
+    context 'when running on a review app in CI' do
+      let(:uri) { 'https://gitlab-review.app' }
 
       before do
         allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(true)

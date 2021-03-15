@@ -51,11 +51,21 @@ module QA
       private
 
       def uri_port
-        uri.port && (uri.port != 80) ? uri.port : nil
+        use_typical_params? ? nil : uri.port
       end
 
       def git_user
-        QA::Runtime::Env.running_in_ci? || [443, 80].include?(uri.port) ? 'git' : Etc.getlogin
+        QA::Runtime::Env.running_in_ci? || use_typical_params? ? 'git' : Etc.getlogin
+      end
+
+      # Checks if typical parameters should be used. That means the SSH port will not be
+      # needed because it's port 22, and the git user is named 'git'. We assume that
+      # typical parameters should be used if the host URI includes a typical HTTP(S)
+      # port (80 or 443)
+      #
+      # @return [Boolean] whether typical SSH port and git user parameters should be used
+      def use_typical_params?
+        [443, 80].include?(uri.port)
       end
     end
   end

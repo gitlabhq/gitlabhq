@@ -162,13 +162,13 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         end
 
         expect(page).to have_content('Grafana URL')
-        expect(page).to have_content('API Token')
-        expect(page).to have_button('Save Changes')
+        expect(page).to have_content('API token')
+        expect(page).to have_button('Save changes')
 
         fill_in('grafana-url', with: 'http://gitlab-test.grafana.net')
         fill_in('grafana-token', with: 'token')
 
-        click_button('Save Changes')
+        click_button('Save changes')
 
         wait_for_requests
 

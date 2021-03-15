@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlIcon } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlIcon, GlLink } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -9,9 +10,15 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlIcon,
+    GlLink,
   },
   data() {
-    return { placeholderUrl: 'https://my-url.grafana.net/' };
+    return {
+      helpUrl: helpPagePath('operations/metrics/embed_grafana', {
+        anchor: 'use-integration-with-grafana-api',
+      }),
+      placeholderUrl: 'https://my-grafana.example.com/',
+    };
   },
   computed: {
     ...mapState(['operationsSettingsEndpoint', 'grafanaToken', 'grafanaUrl', 'grafanaEnabled']),
@@ -59,7 +66,12 @@ export default {
       </h4>
       <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
-        {{ s__('GrafanaIntegration|Embed Grafana charts in GitLab issues.') }}
+        {{
+          s__(
+            'GrafanaIntegration|Set up Grafana authentication to embed Grafana panels in GitLab Flavored Markdown.',
+          )
+        }}
+        <gl-link :href="helpUrl">{{ __('Learn more.') }}</gl-link>
       </p>
     </div>
     <div class="settings-content">
@@ -78,22 +90,22 @@ export default {
         >
           <gl-form-input id="grafana-url" v-model="localGrafanaUrl" :placeholder="placeholderUrl" />
         </gl-form-group>
-        <gl-form-group :label="s__('GrafanaIntegration|API Token')" label-for="grafana-token">
+        <gl-form-group :label="s__('GrafanaIntegration|API token')" label-for="grafana-token">
           <gl-form-input id="grafana-token" v-model="localGrafanaToken" />
           <p class="form-text text-muted">
-            {{ s__('GrafanaIntegration|Enter the Grafana API Token.') }}
+            {{ s__('GrafanaIntegration|Enter the Grafana API token.') }}
             <a
               href="https://grafana.com/docs/http_api/auth/#create-api-token"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ __('More information') }}
+              {{ __('More information.') }}
               <gl-icon name="external-link" class="vertical-align-middle" />
             </a>
           </p>
         </gl-form-group>
         <gl-button variant="success" category="primary" @click="updateGrafanaIntegration">
-          {{ __('Save Changes') }}
+          {{ __('Save changes') }}
         </gl-button>
       </form>
     </div>
