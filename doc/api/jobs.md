@@ -61,6 +61,7 @@ Example of response
     "name": "teaspoon",
     "pipeline": {
       "id": 6,
+      "project_id": 1,
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
@@ -114,6 +115,7 @@ Example of response
     "name": "rspec:other",
     "pipeline": {
       "id": 6,
+      "project_id": 1,
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
@@ -193,6 +195,7 @@ Example of response
     "name": "rspec:other",
     "pipeline": {
       "id": 6,
+      "project_id": 1,
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
@@ -256,6 +259,7 @@ Example of response
     "name": "teaspoon",
     "pipeline": {
       "id": 6,
+      "project_id": 1,
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
@@ -338,6 +342,7 @@ Example of response
     "name": "teaspoon",
     "pipeline": {
       "id": 6,
+      "project_id": 1,
       "ref": "master",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending",
@@ -419,6 +424,7 @@ Example of response
   "name": "rubocop",
   "pipeline": {
     "id": 6,
+    "project_id": 1,
     "ref": "master",
     "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
     "status": "pending"
@@ -494,6 +500,7 @@ Example of response
   "name": "rubocop",
   "pipeline": {
     "id": 6,
+    "project_id": 1,
     "ref": "master",
     "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
     "status": "pending"

@@ -1,0 +1,31 @@
+config:
+  build:
+    stage: build
+    script: exit 0
+    rules:
+      - if: $CI_COMMIT_REF_NAME == "invalid"
+
+  test:
+    stage: test
+    script: exit 0
+    needs:
+      - job: build
+        optional: true
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      test: pending
+    jobs:
+      test: pending
+
+transitions:
+  - event: success
+    jobs: [test]
+    expect:
+      pipeline: success
+      stages:
+        test: success
+      jobs:
+        test: success

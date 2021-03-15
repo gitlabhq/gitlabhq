@@ -149,8 +149,8 @@ and `~"group::knowledge"` is picked up by someone in the Access group of the Pla
 the issue should be relabeled as `~"group::access"` while keeping the original
 `~"devops::create"` unchanged.
 
-We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
-Please read [Stage and Group labels in Throughput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.
+We also use stage and group labels to help measure our [merge request rates](https://about.gitlab.com/handbook/engineering/merge-request-rate/).
+Please read [Stage and Group labels](https://about.gitlab.com/handbook/engineering/metrics/#stage-and-group-labels) for more information on how the labels are used in this context.
 
 ### Category labels
 

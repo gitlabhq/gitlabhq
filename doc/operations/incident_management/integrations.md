@@ -57,18 +57,35 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
+   1. Click the **Add new integration** button.
    1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
-   1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
-      for the webhook configuration. You must also input the URL and Authorization Key
-      in your external service.
-   1. _(Optional)_ To generate a test alert to test the new integration, enter a
-      sample payload, then click **Save and test alert payload**. Valid JSON is required.
-   1. Click **Save Integration**.
+   1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
+      configuration are available in the **View credentials** tab after you save the integration.
+      You must also input the URL and Authorization Key in your external service.
+   1. _(Optional)_ To map fields from your monitoring tool's alert to GitLab fields, enter a sample
+      payload and click **Parse payload for custom mapping**. Valid JSON is required. If you update
+      a sample payload, you must also remap the fields.
+
+   1. _(Optional)_ If you provided a valid sample payload, select each value in
+      **Payload alert key** to [map to a **GitLab alert key**](#map-fields-in-custom-alerts).
+   1. To save your integration, click **Save Integration**. If desired, you can send a test alert
+      from your integration's **Send test alert** tab after the integration is created.
 
 The new HTTP Endpoint displays in the [integrations list](#integrations-list).
-You can edit the integration by selecting the **{pencil}** pencil icon on the right
+You can edit the integration by selecting the **{settings}** settings icon on the right
 side of the integrations list.
+
+#### Map fields in custom alerts
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10.
+
+You can integrate your monitoring tool's alert format with GitLab alerts. To show the
+correct information in the [Alert list](alerts.md) and the
+[Alert Details page](alerts.md#alert-details-page), map your alert's fields to
+GitLab fields when you [create an HTTP endpoint](#http-endpoints):
+
+![Alert Management List](img/custom_alert_mapping_v13_10.png)
 
 ### External Prometheus integration
 

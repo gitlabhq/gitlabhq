@@ -9,6 +9,8 @@ RSpec.describe Projects::CommitController do
   let(:commit) { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit) { project.commit(master_pickable_sha) }
+  let(:pipeline) { create(:ci_pipeline, project: project, ref: project.default_branch, sha: commit.sha, status: :running) }
+  let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
 
   before do
     sign_in(user)
@@ -32,6 +34,19 @@ RSpec.describe Projects::CommitController do
         go(id: commit.id)
 
         expect(response).to be_ok
+      end
+
+      context 'when a pipeline job is running' do
+        before do
+          build.run
+        end
+
+        it 'defines last pipeline information' do
+          go(id: commit.id)
+
+          expect(assigns(:last_pipeline)).to have_attributes(id: pipeline.id, status: 'running')
+          expect(assigns(:last_pipeline_stages)).not_to be_empty
+        end
       end
     end
 
@@ -363,14 +378,21 @@ RSpec.describe Projects::CommitController do
     context 'when the commit exists' do
       context 'when the commit has pipelines' do
         before do
-          create(:ci_pipeline, project: project, sha: commit.id)
+          build.run
         end
 
         context 'when rendering a HTML format' do
-          it 'shows pipelines' do
+          before do
             get_pipelines(id: commit.id)
+          end
 
+          it 'shows pipelines' do
             expect(response).to be_ok
+          end
+
+          it 'defines last pipeline information' do
+            expect(assigns(:last_pipeline)).to have_attributes(id: pipeline.id, status: 'running')
+            expect(assigns(:last_pipeline_stages)).not_to be_empty
           end
         end
 

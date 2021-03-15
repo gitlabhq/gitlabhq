@@ -63,7 +63,7 @@ module GroupsHelper
   end
 
   def group_open_issues_count(group)
-    if Feature.enabled?(:cached_sidebar_open_issues_count, group)
+    if Feature.enabled?(:cached_sidebar_open_issues_count, group, default_enabled: :yaml)
       cached_open_group_issues_count(group)
     else
       number_with_delimiter(group_issues_count(state: 'opened'))

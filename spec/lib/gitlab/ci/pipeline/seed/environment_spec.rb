@@ -123,16 +123,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
             expect { subject }.to raise_error(ArgumentError, "'unknown' is not a valid tier")
           end
         end
-
-        context 'when environment_tier feature flag is disabled' do
-          before do
-            stub_feature_flags(environment_tier: false)
-          end
-
-          it 'does not set the specified tier' do
-            expect(subject.tier).to be_nil
-          end
-        end
       end
 
       context 'when environment has already been created' do

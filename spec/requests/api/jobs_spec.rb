@@ -44,6 +44,7 @@ RSpec.describe API::Jobs do
     it 'returns common pipeline data' do
       expect(json_response['pipeline']).not_to be_empty
       expect(json_response['pipeline']['id']).to eq jobx.pipeline.id
+      expect(json_response['pipeline']['project_id']).to eq jobx.pipeline.project_id
       expect(json_response['pipeline']['ref']).to eq jobx.pipeline.ref
       expect(json_response['pipeline']['sha']).to eq jobx.pipeline.sha
       expect(json_response['pipeline']['status']).to eq jobx.pipeline.status

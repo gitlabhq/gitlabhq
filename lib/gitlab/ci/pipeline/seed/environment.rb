@@ -15,7 +15,7 @@ module Gitlab
             environments.safe_find_or_create_by(name: expanded_environment_name) do |environment|
               # Initialize the attributes at creation
               environment.auto_stop_in = auto_stop_in
-              environment.tier = deployment_tier if ::Feature.enabled?(:environment_tier, job.project, default_enabled: :yaml)
+              environment.tier = deployment_tier
             end
           end
 

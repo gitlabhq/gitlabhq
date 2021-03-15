@@ -54,6 +54,7 @@ Example of response
 [
   {
     "id": 47,
+    "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
@@ -63,6 +64,7 @@ Example of response
   },
   {
     "id": 48,
+    "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
     "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
@@ -95,6 +97,7 @@ Example of response
 ```json
 {
   "id": 46,
+  "project_id": 1,
   "status": "success",
   "ref": "master",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
@@ -230,6 +233,7 @@ Example of response
 ```json
 {
   "id": 61,
+  "project_id": 1,
   "sha": "384c444e840a515b23f21915ee5766b87068a70d",
   "ref": "master",
   "status": "pending",
@@ -277,6 +281,7 @@ Response:
 ```json
 {
   "id": 46,
+  "project_id": 1,
   "status": "pending",
   "ref": "master",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
@@ -324,6 +329,7 @@ Response:
 ```json
 {
   "id": 46,
+  "project_id": 1,
   "status": "canceled",
   "ref": "master",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",

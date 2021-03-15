@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# The Rails Console
+# Rails console **(FREE SELF)**
 
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 provides a way to interact with your GitLab instance from the command line.

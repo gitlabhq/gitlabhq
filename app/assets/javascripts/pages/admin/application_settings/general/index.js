@@ -6,7 +6,7 @@ import Vue from 'vue';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
 import initUserInternalRegexPlaceholder from '../account_and_limits';
 
-document.addEventListener('DOMContentLoaded', () => {
+(() => {
   initUserInternalRegexPlaceholder();
 
   const gitpodSettingEl = document.querySelector('#js-gitpod-settings-help-text');
@@ -22,4 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
       IntegrationHelpText,
     },
   });
-});
+})();

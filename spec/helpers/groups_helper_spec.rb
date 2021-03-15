@@ -460,18 +460,12 @@ RSpec.describe GroupsHelper do
       allow(helper).to receive(:current_user) { current_user }
     end
 
-    context 'when cached_sidebar_open_issues_count feature flag is enabled' do
-      before do
-        stub_feature_flags(cached_sidebar_open_issues_count: true)
+    it 'returns count value from cache' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(2500)
       end
 
-      it 'returns count value from cache' do
-        allow_next_instance_of(count_service) do |service|
-          allow(service).to receive(:count).and_return(2500)
-        end
-
-        expect(helper.group_open_issues_count(group)).to eq('2.5k')
-      end
+      expect(helper.group_open_issues_count(group)).to eq('2.5k')
     end
 
     context 'when cached_sidebar_open_issues_count feature flag is disabled' do

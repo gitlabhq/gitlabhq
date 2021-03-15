@@ -53,18 +53,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       expect { environment.update!(name: 'gstg') }.not_to change { environment.reload.tier }
     end
-
-    context 'when environment_tier feature flag is disabled' do
-      before do
-        stub_feature_flags(environment_tier: false)
-      end
-
-      it 'does not ensure environment tier' do
-        environment = build(:environment, name: 'gprd', tier: nil)
-
-        expect { environment.save }.not_to change { environment.tier }
-      end
-    end
   end
 
   describe '.order_by_last_deployed_at' do

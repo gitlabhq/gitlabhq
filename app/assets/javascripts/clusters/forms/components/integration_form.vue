@@ -9,8 +9,14 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { mapState } from 'vuex';
+import { s__ } from '~/locale';
 
 export default {
+  i18n: {
+    toggleLabel: s__(
+      "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster.",
+    ),
+  },
   components: {
     GlFormGroup,
     GlToggle,
@@ -79,11 +85,9 @@ export default {
             data-qa-selector="integration_status_toggle"
             aria-describedby="toggleCluster"
             :disabled="!editable"
-            :title="
-              s__(
-                'ClusterIntegration|Enable or disable GitLab\'s connection to your Kubernetes cluster.',
-              )
-            "
+            :label="$options.i18n.toggleLabel"
+            label-position="hidden"
+            :title="$options.i18n.toggleLabel"
           />
         </div>
       </div>

@@ -202,6 +202,26 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
       end
     end
 
+    context 'when variable is raw' do
+      it 'does not export raw value when it is false' do
+        runner_variable = described_class
+                            .new(key: 'VAR', value: 'value', raw: false)
+                            .to_runner_variable
+
+        expect(runner_variable)
+          .to eq(key: 'VAR', value: 'value', public: true, masked: false)
+      end
+
+      it 'exports raw value when it is true' do
+        runner_variable = described_class
+                            .new(key: 'VAR', value: 'value', raw: true)
+                            .to_runner_variable
+
+        expect(runner_variable)
+          .to eq(key: 'VAR', value: 'value', public: true, raw: true, masked: false)
+      end
+    end
+
     context 'when referencing a variable' do
       it '#depends_on contains names of dependencies' do
         runner_variable = described_class.new(key: 'CI_VAR', value: '${CI_VAR_2}-123-$CI_VAR_3')

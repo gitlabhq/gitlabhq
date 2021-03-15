@@ -67,6 +67,10 @@ module Gitlab
       def self.multiple_cache_per_job?
         ::Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml)
       end
+
+      def self.ci_commit_pipeline_mini_graph_vue_enabled?(project)
+        ::Feature.enabled?(:ci_commit_pipeline_mini_graph_vue, project, default_enabled: :yaml)
+      end
     end
   end
 end

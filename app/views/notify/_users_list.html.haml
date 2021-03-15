@@ -6,5 +6,5 @@
       - users.each do |user|
         %li
           %img.avatar{ alt: "Avatar", height: "24", src: avatar_icon_for_user(user, 24, only_path: false), style: "border-radius: 12px; max-width: 100%; height: auto; -ms-interpolation-mode: bicubic; margin: -2px 0;", width: "24" }
-            %a.muted{ href: user_url(user), style: "color: #333333; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; vertical-align: top;" }
-              = user.name
+          %a.muted{ href: user_url(user), style: "color: #333333; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; vertical-align: top;" }
+            = user.name

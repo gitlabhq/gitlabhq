@@ -111,8 +111,8 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns key value' do
           expect(needs.value).to eq(
             job: [
-              { name: 'first_job_name',  artifacts: true },
-              { name: 'second_job_name', artifacts: true }
+              { name: 'first_job_name',  artifacts: true, optional: false },
+              { name: 'second_job_name', artifacts: true, optional: false }
             ]
           )
         end
@@ -124,8 +124,8 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
     context 'with complex job entries composed' do
       let(:config) do
         [
-          { job: 'first_job_name',  artifacts: true },
-          { job: 'second_job_name', artifacts: false }
+          { job: 'first_job_name',  artifacts: true, optional: false },
+          { job: 'second_job_name', artifacts: false, optional: false }
         ]
       end
 
@@ -137,8 +137,8 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns key value' do
           expect(needs.value).to eq(
             job: [
-              { name: 'first_job_name',  artifacts: true },
-              { name: 'second_job_name', artifacts: false }
+              { name: 'first_job_name',  artifacts: true, optional: false },
+              { name: 'second_job_name', artifacts: false, optional: false }
             ]
           )
         end
@@ -163,8 +163,8 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns key value' do
           expect(needs.value).to eq(
             job: [
-              { name: 'first_job_name',  artifacts: true },
-              { name: 'second_job_name', artifacts: false }
+              { name: 'first_job_name',  artifacts: true, optional: false },
+              { name: 'second_job_name', artifacts: false, optional: false }
             ]
           )
         end

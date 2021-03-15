@@ -444,17 +444,17 @@ RSpec.describe API::GenericPackages do
         'PUBLIC'  | :guest     | true  | :user_basic_auth               | :success
         'PUBLIC'  | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | true  | :invalid_personal_access_token | :unauthorized
-        'PUBLIC'  | :developer | true  | :invalid_user_basic_auth       | :unauthorized
-        'PUBLIC'  | :guest     | true  | :invalid_user_basic_auth       | :unauthorized
+        'PUBLIC'  | :developer | true  | :invalid_user_basic_auth       | :success
+        'PUBLIC'  | :guest     | true  | :invalid_user_basic_auth       | :success
         'PUBLIC'  | :developer | false | :personal_access_token         | :success
         'PUBLIC'  | :guest     | false | :personal_access_token         | :success
         'PUBLIC'  | :developer | false | :user_basic_auth               | :success
         'PUBLIC'  | :guest     | false | :user_basic_auth               | :success
         'PUBLIC'  | :developer | false | :invalid_personal_access_token | :unauthorized
         'PUBLIC'  | :guest     | false | :invalid_personal_access_token | :unauthorized
-        'PUBLIC'  | :developer | false | :invalid_user_basic_auth       | :unauthorized
-        'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :unauthorized
-        'PUBLIC'  | :anonymous | false | :none                          | :unauthorized
+        'PUBLIC'  | :developer | false | :invalid_user_basic_auth       | :success
+        'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :success
+        'PUBLIC'  | :anonymous | false | :none                          | :success
         'PRIVATE' | :developer | true  | :personal_access_token         | :success
         'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
         'PRIVATE' | :developer | true  | :user_basic_auth               | :success

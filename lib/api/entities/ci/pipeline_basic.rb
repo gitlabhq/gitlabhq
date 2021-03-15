@@ -4,7 +4,7 @@ module API
   module Entities
     module Ci
       class PipelineBasic < Grape::Entity
-        expose :id, :sha, :ref, :status
+        expose :id, :project_id, :sha, :ref, :status
         expose :created_at, :updated_at
 
         expose :web_url do |pipeline, _options|

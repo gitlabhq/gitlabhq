@@ -141,6 +141,8 @@ module Gitlab
             end
 
             @needs_attributes.flat_map do |need|
+              next if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml) && need[:optional]
+
               result = @previous_stages.any? do |stage|
                 stage.seeds_names.include?(need[:name])
               end
@@ -154,8 +156,8 @@ module Gitlab
           end
 
           def variable_expansion_errors
-            sorted_collection = evaluate_context.variables.sorted_collection(@pipeline.project)
-            errors = sorted_collection.errors
+            expanded_collection = evaluate_context.variables.sort_and_expand_all(@pipeline.project)
+            errors = expanded_collection.errors
             ["#{name}: #{errors}"] if errors
           end
 

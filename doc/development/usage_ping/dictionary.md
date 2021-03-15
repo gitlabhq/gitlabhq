@@ -3548,6 +3548,42 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `counts.package_events_i_package_rubygems_delete_package`
+
+Total count of RubyGems packages delete events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210303153000_package_events_i_package_rubygems_delete_package.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.package_events_i_package_rubygems_pull_package`
+
+Total count of pull RubyGems packages events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210303153002_package_events_i_package_rubygems_pull_package.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.package_events_i_package_rubygems_push_package`
+
+Total count of push RubyGems packages events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210303153004_package_events_i_package_rubygems_push_package.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.package_events_i_package_tag_delete_package`
 
 Missing description
@@ -9392,6 +9428,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.deploy_token_packages.i_package_rubygems_deploy_token_monthly`
+
+Distinct user count events for RubyGems packages in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303154626_i_package_rubygems_deploy_token_monthly.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.deploy_token_packages.i_package_rubygems_deploy_token_weekly`
+
+Distinct RubyGems pakages deployed in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210303154624_i_package_rubygems_deploy_token_weekly.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.deploy_token_packages.i_package_tag_deploy_token_monthly`
 
 Missing description
@@ -11626,7 +11686,7 @@ Tiers:
 
 ### `redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_monthly`
 
-Missing description
+Unique users using the /invite_email quick action to add a multiple email participants to an issue within 28 days
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210222041235_i_quickactions_invite_email_multiple_monthly.yml)
 
@@ -11634,11 +11694,23 @@ Group: `group::product planning`
 
 Status: `implemented`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_weekly`
+
+Unique users using the /invite_email quick action to add a multiple email participants to an issue within 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210303154600_i_quickactions_invite_email_multiple_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_invite_email_single_monthly`
 
-Missing description
+Unique users using the /invite_email quick action to add a single email participant to an issue within 28 days
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210222041219_i_quickactions_invite_email_single_monthly.yml)
 
@@ -11646,7 +11718,19 @@ Group: `group::product planning`
 
 Status: `implemented`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.quickactions.i_quickactions_invite_email_single_weekly`
+
+Unique users using the /invite_email quick action to add a single email participant to an issue within 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210303154557_i_quickactions_invite_email_single_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_iteration_monthly`
 
@@ -13471,6 +13555,30 @@ Group: ``
 Status: `data_available`
 
 Tiers:
+
+### `redis_hll_counters.user_packages.i_package_rubygems_user_monthly`
+
+Distinct user count events for RubyGems packages in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210303154654_i_package_rubygems_user_monthly.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.user_packages.i_package_rubygems_user_weekly`
+
+Distinct user count events for RubyGems packages in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210303154652_i_package_rubygems_user_weekly.yml)
+
+Group: `group::package`
+
+Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.user_packages.i_package_tag_user_monthly`
 

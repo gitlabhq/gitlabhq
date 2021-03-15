@@ -2089,8 +2089,8 @@ module Gitlab
               only: { refs: %w[branches tags] },
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "build1", artifacts: true },
-                { name: "build2", artifacts: true }
+                { name: "build1", artifacts: true, optional: false },
+                { name: "build2", artifacts: true, optional: false }
               ],
               when: "on_success",
               allow_failure: false,
@@ -2104,7 +2104,7 @@ module Gitlab
           let(:needs) do
             [
               { job: 'parallel', artifacts: false },
-              { job: 'build1',   artifacts: true },
+              { job: 'build1',   artifacts: true, optional: true },
               'build2'
             ]
           end
@@ -2131,10 +2131,10 @@ module Gitlab
               only: { refs: %w[branches tags] },
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "parallel 1/2", artifacts: false },
-                { name: "parallel 2/2", artifacts: false },
-                { name: "build1", artifacts: true },
-                { name: "build2", artifacts: true }
+                { name: "parallel 1/2", artifacts: false, optional: false },
+                { name: "parallel 2/2", artifacts: false, optional: false },
+                { name: "build1", artifacts: true, optional: true },
+                { name: "build2", artifacts: true, optional: false }
               ],
               when: "on_success",
               allow_failure: false,
@@ -2156,8 +2156,8 @@ module Gitlab
               only: { refs: %w[branches tags] },
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "parallel 1/2", artifacts: true },
-                { name: "parallel 2/2", artifacts: true }
+                { name: "parallel 1/2", artifacts: true, optional: false },
+                { name: "parallel 2/2", artifacts: true, optional: false }
               ],
               when: "on_success",
               allow_failure: false,
@@ -2185,10 +2185,10 @@ module Gitlab
               only: { refs: %w[branches tags] },
               options: { script: ["test"] },
               needs_attributes: [
-                { name: "build1", artifacts: true },
-                { name: "build2", artifacts: true },
-                { name: "parallel 1/2", artifacts: true },
-                { name: "parallel 2/2", artifacts: true }
+                { name: "build1", artifacts: true, optional: false },
+                { name: "build2", artifacts: true, optional: false },
+                { name: "parallel 1/2", artifacts: true, optional: false },
+                { name: "parallel 2/2", artifacts: true, optional: false }
               ],
               when: "on_success",
               allow_failure: false,

@@ -18,6 +18,9 @@ import { s__, __ } from '../../locale';
 const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_STATUS;
 
 export default {
+  i18n: {
+    modSecurityEnabled: s__('ClusterIntegration|ModSecurity enabled'),
+  },
   title: __('Web Application Firewall'),
   modsecurityUrl: 'https://modsecurity.org/about.html',
   components: {
@@ -202,7 +205,12 @@ export default {
             </strong>
           </p>
           <div class="form-check form-check-inline mt-3">
-            <gl-toggle v-model="modSecurityEnabled" :disabled="saveButtonDisabled" />
+            <gl-toggle
+              v-model="modSecurityEnabled"
+              :disabled="saveButtonDisabled"
+              :label="$options.i18n.modSecurityEnabled"
+              label-position="hidden"
+            />
           </div>
           <div
             v-if="ingress.modsecurity_enabled"

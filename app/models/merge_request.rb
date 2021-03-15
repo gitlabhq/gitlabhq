@@ -1899,11 +1899,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def with_rebase_lock
-    if Feature.enabled?(:merge_request_rebase_nowait_lock, default_enabled: true)
-      with_retried_nowait_lock { yield }
-    else
-      with_lock(true) { yield }
-    end
+    with_retried_nowait_lock { yield }
   end
 
   # If the merge request is idle in transaction or has a SELECT FOR

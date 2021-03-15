@@ -539,12 +539,11 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state', () => {
-        expect(findEmptyState().find('[data-testid="header-text"]').text()).toBe(
-          'Build with confidence',
-        );
-        expect(findEmptyState().find('[data-testid="info-text"]').text()).toContain(
+        expect(findEmptyState().text()).toContain('Build with confidence');
+        expect(findEmptyState().text()).toContain(
           'GitLab CI/CD can automatically build, test, and deploy your code.',
         );
+
         expect(findEmptyState().find(GlButton).text()).toBe('Get started with CI/CD');
         expect(findEmptyState().find(GlButton).attributes('href')).toBe(
           '/help/ci/quick_start/index.md',

@@ -10299,7 +10299,8 @@ CREATE TABLE ci_build_needs (
     id integer NOT NULL,
     build_id integer NOT NULL,
     name text NOT NULL,
-    artifacts boolean DEFAULT true NOT NULL
+    artifacts boolean DEFAULT true NOT NULL,
+    optional boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq

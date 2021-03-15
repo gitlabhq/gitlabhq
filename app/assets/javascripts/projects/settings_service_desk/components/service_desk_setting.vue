@@ -4,6 +4,9 @@ import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
+  i18n: {
+    toggleLabel: __('Activate Service Desk'),
+  },
   components: {
     ClipboardButton,
     GlButton,
@@ -99,11 +102,12 @@ export default {
       id="service-desk-checkbox"
       :value="isEnabled"
       class="d-inline-block align-middle mr-1"
-      label-position="left"
+      :label="$options.i18n.toggleLabel"
+      label-position="hidden"
       @change="onCheckboxToggle"
     />
-    <label class="align-middle" for="service-desk-checkbox">
-      {{ __('Activate Service Desk') }}
+    <label class="align-middle">
+      {{ $options.i18n.toggleLabel }}
     </label>
     <div v-if="isEnabled" class="row mt-3">
       <div class="col-md-9 mb-0">

@@ -1,11 +1,14 @@
 <script>
 import { GlBadge, GlButton, GlTooltipDirective, GlModal, GlToggle, GlIcon } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ROLLOUT_STRATEGY_PERCENT_ROLLOUT, NEW_VERSION_FLAG, LEGACY_FLAG } from '../constants';
 import { labelForStrategy } from '../utils';
 
 export default {
+  i18n: {
+    toggleLabel: __('Feature flag status'),
+  },
   components: {
     GlBadge,
     GlButton,
@@ -138,6 +141,8 @@ export default {
               v-if="featureFlag.update_path"
               :value="featureFlag.active"
               :disabled="statusToggleDisabled(featureFlag)"
+              :label="$options.i18n.toggleLabel"
+              label-position="hidden"
               data-testid="feature-flag-status-toggle"
               data-track-event="click_button"
               data-track-label="feature_flag_toggle"

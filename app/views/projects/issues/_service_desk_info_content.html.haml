@@ -1,7 +1,7 @@
 - service_desk_enabled = @project.service_desk_enabled?
 
 - can_edit_project_settings = can?(current_user, :admin_project, @project)
-- title_text = _("Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab")
+- title_text = s_("ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab")
 
 .non-empty-state.media
   .svg-content
@@ -12,12 +12,12 @@
 
     - if can_edit_project_settings && service_desk_enabled
       %p
-        = _("Have your users email")
+        = s_("ServiceDesk|Your users can send emails to this address:")
         %code= @project.service_desk_address
 
-    %span= _("Those emails automatically become issues (with the comments becoming the email conversation) listed here.")
-    = link_to _('Read more'), help_page_path('user/project/service_desk')
+    %span= s_("ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.")
+    = link_to _('Learn more.'), help_page_path('user/project/service_desk')
 
     - if can_edit_project_settings && !service_desk_enabled
       .gl-mt-3
-        = link_to _("Turn on Service Desk"), edit_project_path(@project), class: 'gl-button btn btn-success'
+        = link_to s_("ServiceDesk|Enable Service Desk"), edit_project_path(@project), class: 'gl-button btn btn-success'

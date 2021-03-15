@@ -123,6 +123,30 @@ Some variables cannot be used as environment names or URLs.
 For more information about the `environment` keywords, see
 [the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
 
+## Deployment tier of environments (**FREE**)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
+
+There are cases where you might want to use a code name as an environment name instead of using
+an [industry standard](https://en.wikipedia.org/wiki/Deployment_environment). For example, your environment might be called `customer-portal` instead of `production`.
+This is perfectly fine, however, it loses information that the specific
+environment is used as production.
+
+To keep information that a specific environment is for production or
+some other use, you can set one of the following tiers to each environment:
+
+| Environment tier           | Environment names examples                                |
+| ----           | --------                                |
+| `production`   | Production, Live                        |
+| `staging`      | Staging, Model, Pre, Demo               |
+| `testing`      | Test, QC                                |
+| `development`  | Dev, [Review apps](../review_apps/index.md), Trunk |
+| `other`        |                                         |
+
+By default, an approximate tier is automatically guessed and set from [the environment name](../yaml/README.md#environmentname).
+Alternatively, you can specify a specific tier with `deployment_tier` keyword,
+see the [`.gitlab-ci.yml` syntax reference](../yaml/README.md#environmentdeployment_tier) for more details.
+
 ## Configure manual deployments
 
 You can create a job that requires someone to manually start the deployment.

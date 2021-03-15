@@ -74,22 +74,25 @@
     %span.commit-info.merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
       .spinner.vertical-align-middle
 
-  - last_pipeline = @commit.last_pipeline
-  - if can?(current_user, :read_pipeline, last_pipeline)
+  - if can?(current_user, :read_pipeline, @last_pipeline)
     .well-segment.pipeline-info
       .status-icon-container
-        = link_to project_pipeline_path(@project, last_pipeline.id), class: "ci-status-icon-#{last_pipeline.status}" do
-          = ci_icon_for_status(last_pipeline.status)
+        = link_to project_pipeline_path(@project, @last_pipeline.id), class: "ci-status-icon-#{@last_pipeline.status}" do
+          = ci_icon_for_status(@last_pipeline.status)
       #{ _('Pipeline') }
-      = link_to "##{last_pipeline.id}", project_pipeline_path(@project, last_pipeline.id)
-      = ci_label_for_status(last_pipeline.status)
-      - if last_pipeline.stages_count.nonzero?
-        #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), last_pipeline.stages_count) }
+      = link_to "##{@last_pipeline.id}", project_pipeline_path(@project, @last_pipeline.id)
+      = ci_label_for_status(@last_pipeline.status)
+      - if @last_pipeline.stages_count.nonzero?
+        #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), @last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
-          = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
-      - if last_pipeline.duration
+          - if ::Gitlab::Ci::Features.ci_commit_pipeline_mini_graph_vue_enabled?(@project)
+            .stage-cell
+              .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe } }
+          - else
+            = render 'shared/mini_pipeline_graph', pipeline: @last_pipeline, klass: 'js-commit-pipeline-graph'
+      - if @last_pipeline.duration
         in
-        = time_interval_in_words last_pipeline.duration
+        = time_interval_in_words @last_pipeline.duration
 
   - if @merge_request
     .well-segment

@@ -45,8 +45,12 @@ describe('ClusterIntegrationForm', () => {
     beforeEach(() => createWrapper());
 
     it('enables toggle if editable is true', () => {
-      expect(findGlToggle().props('disabled')).toBe(false);
+      expect(findGlToggle().props()).toMatchObject({
+        disabled: false,
+        label: IntegrationForm.i18n.toggleLabel,
+      });
     });
+
     it('sets the envScope to default', () => {
       expect(wrapper.find('[id="cluster_environment_scope"]').attributes('value')).toBe('*');
     });

@@ -9,7 +9,7 @@ DOCUMENTATION_UPDATE_MISSING = <<~MSG
 
 For more information, see:
 
-- The Handbook page on [throughput implementation](https://about.gitlab.com/handbook/engineering/management/throughput/#implementation).
+- The Handbook page on [merge request types](https://about.gitlab.com/handbook/engineering/metrics/#data-classification).
 - The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
 MSG
 

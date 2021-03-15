@@ -461,8 +461,6 @@ class Environment < ApplicationRecord
   end
 
   def ensure_environment_tier
-    return unless ::Feature.enabled?(:environment_tier, project, default_enabled: :yaml)
-
     self.tier ||= guess_tier
   end
 

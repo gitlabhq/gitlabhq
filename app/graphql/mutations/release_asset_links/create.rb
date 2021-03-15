@@ -2,12 +2,22 @@
 
 module Mutations
   module ReleaseAssetLinks
-    class Create < Base
+    class Create < BaseMutation
+      include FindsProject
+
       graphql_name 'ReleaseAssetLinkCreate'
 
       authorize :create_release
 
       include Types::ReleaseAssetLinkSharedInputArguments
+
+      argument :project_path, GraphQL::ID_TYPE,
+               required: true,
+               description: 'Full path of the project the asset link is associated with.'
+
+      argument :tag_name, GraphQL::STRING_TYPE,
+               required: true, as: :tag,
+               description: "Name of the associated release's tag."
 
       field :link,
             Types::ReleaseAssetLinkType,

@@ -197,18 +197,18 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 ## Enable or disable cached issue count **(FREE SELF)**
 
 Cached issue count in the left sidebar is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:cached_sidebar_open_issues_count)
-```
+can disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:cached_sidebar_open_issues_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_open_issues_count)
 ```

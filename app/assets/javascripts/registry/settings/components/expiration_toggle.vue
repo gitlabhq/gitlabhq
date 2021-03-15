@@ -1,8 +1,12 @@
 <script>
 import { GlFormGroup, GlToggle, GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { ENABLED_TOGGLE_DESCRIPTION, DISABLED_TOGGLE_DESCRIPTION } from '../constants';
 
 export default {
+  i18n: {
+    toggleLabel: s__('ContainerRegistry|Enable expiration policy'),
+  },
   components: {
     GlFormGroup,
     GlToggle,
@@ -39,7 +43,13 @@ export default {
 <template>
   <gl-form-group id="expiration-policy-toggle-group" label-for="expiration-policy-toggle">
     <div class="gl-display-flex">
-      <gl-toggle id="expiration-policy-toggle" v-model="enabled" :disabled="disabled" />
+      <gl-toggle
+        id="expiration-policy-toggle"
+        v-model="enabled"
+        :label="$options.i18n.toggleLabel"
+        label-position="hidden"
+        :disabled="disabled"
+      />
       <span class="gl-ml-5 gl-line-height-24" data-testid="description">
         <gl-sprintf :message="toggleText">
           <template #strong="{ content }">

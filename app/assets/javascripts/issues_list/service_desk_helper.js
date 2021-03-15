@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 
 /**
  * Generates empty state messages for Service Desk issues list.
@@ -15,23 +15,23 @@ export function generateMessages(emptyStateMeta) {
     incomingEmailHelpPage,
   } = emptyStateMeta;
 
-  const serviceDeskSupportedTitle = __(
-    'Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab',
+  const serviceDeskSupportedTitle = s__(
+    'ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab',
   );
 
-  const serviceDeskSupportedMessage = __(
-    'Those emails automatically become issues (with the comments becoming the email conversation) listed here.',
+  const serviceDeskSupportedMessage = s__(
+    'ServiceDesk|Issues created from Service Desk emails appear here. Each comment becomes part of the email conversation.',
   );
 
   const commonDescription = `
   <span>${serviceDeskSupportedMessage}</span>
-  <a href="${serviceDeskHelpPage}">${__('Read more')}</a>`;
+  <a href="${serviceDeskHelpPage}">${s__('Learn more.')}</a>`;
 
   return {
     serviceDeskEnabledAndCanEditProjectSettings: {
       title: serviceDeskSupportedTitle,
       svgPath,
-      description: `<p>${__('Have your users email')}
+      description: `<p>${s__('ServiceDesk|Your users can send emails to this address:')}
       <code>${serviceDeskAddress}</code>
       </p>
       ${commonDescription}`,
@@ -46,7 +46,7 @@ export function generateMessages(emptyStateMeta) {
       svgPath,
       description: commonDescription,
       primaryLink: editProjectPage,
-      primaryText: __('Turn on Service Desk'),
+      primaryText: s__('ServiceDesk|Enable Service Desk'),
     },
     serviceDeskDisabledAndCannotEditProjectSettings: {
       title: serviceDeskSupportedTitle,
@@ -54,19 +54,19 @@ export function generateMessages(emptyStateMeta) {
       description: commonDescription,
     },
     serviceDeskIsNotSupported: {
-      title: __('Service Desk is not supported'),
+      title: s__('ServiceDesk|Service Desk is not supported'),
       svgPath,
-      description: __(
-        'In order to enable Service Desk for your instance, you must first set up incoming email.',
+      description: s__(
+        'ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email.',
       ),
       primaryLink: incomingEmailHelpPage,
-      primaryText: __('More information'),
+      primaryText: s__('Learn more.'),
     },
     serviceDeskIsNotEnabled: {
-      title: __('Service Desk is not enabled'),
+      title: s__('ServiceDesk|Service Desk is not enabled'),
       svgPath,
-      description: __(
-        'For help setting up the Service Desk for your instance, please contact an administrator.',
+      description: s__(
+        'ServiceDesk|For help setting up the Service Desk for your instance, please contact an administrator.',
       ),
     },
   };

@@ -68,7 +68,7 @@ module Deployments
     end
 
     def renew_deployment_tier
-      return unless deployable && ::Feature.enabled?(:environment_tier, deployable.project, default_enabled: :yaml)
+      return unless deployable
 
       if (tier = deployable.environment_deployment_tier)
         environment.tier = tier

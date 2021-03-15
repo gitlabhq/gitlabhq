@@ -1,0 +1,21 @@
+---
+key_path: counts.package_events_i_package_rubygems_push_package
+description: Total count of push RubyGems packages events
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package_registry
+value_type: number
+status: data_available
+time_frame: all
+milestone: '13.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53480
+data_source: redis
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

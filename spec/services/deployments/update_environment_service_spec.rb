@@ -168,16 +168,6 @@ RSpec.describe Deployments::UpdateEnvironmentService do
               .to change { environment.reset.tier }.from(nil).to('other')
           end
         end
-
-        context 'when environment_tier feature flag is disabled' do
-          before do
-            stub_feature_flags(environment_tier: false)
-          end
-
-          it 'does not set the specified deployment tier' do
-            expect { subject.execute }.not_to change { environment.reset.tier }
-          end
-        end
       end
     end
 

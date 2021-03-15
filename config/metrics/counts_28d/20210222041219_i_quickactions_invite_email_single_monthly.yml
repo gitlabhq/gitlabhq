@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_invite_email_single_monthly
-description:
+description: Unique users using the /invite_email quick action to add a single email participant to an issue within 28 days
 product_section: dev
 product_stage: plan
 product_group: group::product planning
@@ -13,6 +13,8 @@ time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

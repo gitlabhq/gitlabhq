@@ -34,7 +34,7 @@ RSpec.describe API::Ci::Pipelines do
         expect(json_response.first['sha']).to match(/\A\h{40}\z/)
         expect(json_response.first['id']).to eq pipeline.id
         expect(json_response.first['web_url']).to be_present
-        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status web_url created_at updated_at])
+        expect(json_response.first.keys).to contain_exactly(*%w[id project_id sha ref status web_url created_at updated_at])
       end
 
       context 'when parameter is passed' do
@@ -350,6 +350,7 @@ RSpec.describe API::Ci::Pipelines do
 
         expect(json_job['pipeline']).not_to be_empty
         expect(json_job['pipeline']['id']).to eq job.pipeline.id
+        expect(json_job['pipeline']['project_id']).to eq job.pipeline.project_id
         expect(json_job['pipeline']['ref']).to eq job.pipeline.ref
         expect(json_job['pipeline']['sha']).to eq job.pipeline.sha
         expect(json_job['pipeline']['status']).to eq job.pipeline.status
@@ -512,6 +513,7 @@ RSpec.describe API::Ci::Pipelines do
 
         expect(json_bridge['pipeline']).not_to be_empty
         expect(json_bridge['pipeline']['id']).to eq bridge.pipeline.id
+        expect(json_bridge['pipeline']['project_id']).to eq bridge.pipeline.project_id
         expect(json_bridge['pipeline']['ref']).to eq bridge.pipeline.ref
         expect(json_bridge['pipeline']['sha']).to eq bridge.pipeline.sha
         expect(json_bridge['pipeline']['status']).to eq bridge.pipeline.status
@@ -522,6 +524,7 @@ RSpec.describe API::Ci::Pipelines do
 
         expect(json_bridge['downstream_pipeline']).not_to be_empty
         expect(json_bridge['downstream_pipeline']['id']).to eq downstream_pipeline.id
+        expect(json_bridge['downstream_pipeline']['project_id']).to eq downstream_pipeline.project_id
         expect(json_bridge['downstream_pipeline']['ref']).to eq downstream_pipeline.ref
         expect(json_bridge['downstream_pipeline']['sha']).to eq downstream_pipeline.sha
         expect(json_bridge['downstream_pipeline']['status']).to eq downstream_pipeline.status

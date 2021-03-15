@@ -19,6 +19,12 @@ you can use *pipelines for merge requests*.
 In the UI, these pipelines are labeled as `detached`. Otherwise, these pipelines appear the same
 as other pipelines.
 
+Pipelines for merge requests can run when you:
+
+- Create a new merge request.
+- Commit changes to the source branch for the merge request.
+- Select the **Run pipeline** button from the **Pipelines** tab in the merge request.
+
 Any user who has developer [permissions](../../user/permissions.md)
 can run a pipeline for merge requests.
 
