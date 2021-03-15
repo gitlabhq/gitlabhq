@@ -409,6 +409,11 @@ msgstr ""
 msgid "%{completedCount} completed weight"
 msgstr ""
 
+msgid "%{completedCount} of %{count} task completed"
+msgid_plural "%{completedCount} of %{count} tasks completed"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{completedWeight} of %{totalWeight} weight completed"
 msgstr ""
 
@@ -1151,6 +1156,11 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 day remaining"
+msgid_plural "%d days remaining"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 deploy key"
 msgid_plural "%d deploy keys"
 msgstr[0] ""
@@ -1191,6 +1201,11 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 month remaining"
+msgid_plural "%d months remaining"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 open issue"
 msgid_plural "%{issues} open issues"
 msgstr[0] ""
@@ -1213,6 +1228,16 @@ msgstr[1] ""
 
 msgid "1 user"
 msgid_plural "%{num} users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 week remaining"
+msgid_plural "%d weeks remaining"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 year remaining"
+msgid_plural "%d years remaining"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1933,6 +1958,9 @@ msgid "Add or subtract spent time"
 msgstr ""
 
 msgid "Add previously merged commits"
+msgstr ""
+
+msgid "Add projects"
 msgstr ""
 
 msgid "Add reaction"
@@ -21284,9 +21312,6 @@ msgstr ""
 msgid "OnDemandScans|Manage DAST scans"
 msgstr ""
 
-msgid "OnDemandScans|Manage profiles"
-msgstr ""
-
 msgid "OnDemandScans|Manage scanner profiles"
 msgstr ""
 
@@ -21309,9 +21334,6 @@ msgid "OnDemandScans|On-demand Scans"
 msgstr ""
 
 msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
-msgstr ""
-
-msgid "OnDemandScans|Run scan"
 msgstr ""
 
 msgid "OnDemandScans|Save and run scan"
@@ -26839,19 +26861,16 @@ msgstr ""
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr ""
 
-msgid "SecurityReports|Add a project to your dashboard"
-msgstr ""
-
 msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Add projects"
 msgstr ""
 
-msgid "SecurityReports|Add projects to your group"
+msgid "SecurityReports|All"
 msgstr ""
 
-msgid "SecurityReports|All"
+msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "SecurityReports|Change status"
@@ -26864,6 +26883,9 @@ msgid "SecurityReports|Comment deleted on '%{vulnerabilityName}'"
 msgstr ""
 
 msgid "SecurityReports|Comment edited on '%{vulnerabilityName}'"
+msgstr ""
+
+msgid "SecurityReports|Configure security testing"
 msgstr ""
 
 msgid "SecurityReports|Create Jira issue"
@@ -26923,16 +26945,28 @@ msgstr ""
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
-msgid "SecurityReports|Monitor vulnerabilities in your code"
+msgid "SecurityReports|Manage and track vulnerabilities identified in projects within your group. Vulnerabilities in projects are shown here when security testing is configured."
+msgstr ""
+
+msgid "SecurityReports|Manage and track vulnerabilities identified in your project. Vulnerabilities are shown here when security testing is configured."
+msgstr ""
+
+msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects with security testing configured are shown here."
+msgstr ""
+
+msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
+msgstr ""
+
+msgid "SecurityReports|Monitor vulnerabilities in your group"
+msgstr ""
+
+msgid "SecurityReports|Monitor vulnerabilities in your project"
 msgstr ""
 
 msgid "SecurityReports|Monitored projects"
 msgstr ""
 
 msgid "SecurityReports|More info"
-msgstr ""
-
-msgid "SecurityReports|More information"
 msgstr ""
 
 msgid "SecurityReports|No activity"
@@ -26998,15 +27032,6 @@ msgstr ""
 msgid "SecurityReports|Status"
 msgstr ""
 
-msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Add projects to your group to view their vulnerabilities here."
-msgstr ""
-
-msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
-msgstr ""
-
-msgid "SecurityReports|The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
-msgstr ""
-
 msgid "SecurityReports|There was an error adding the comment."
 msgstr ""
 
@@ -27056,9 +27081,6 @@ msgid "SecurityReports|Vulnerability Report"
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
-msgstr ""
-
-msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "SecurityReports|With issues"
@@ -27845,7 +27867,13 @@ msgstr[1] ""
 msgid "Showing %{limit} of %{total_count} issues. "
 msgstr ""
 
+msgid "Showing %{pageSize} of %{total} %{issuableType}"
+msgstr ""
+
 msgid "Showing %{pageSize} of %{total} issues"
+msgstr ""
+
+msgid "Showing all epics"
 msgstr ""
 
 msgid "Showing all issues"
@@ -35863,7 +35891,7 @@ msgstr ""
 msgid "manual"
 msgstr ""
 
-msgid "math|The math in this entry is taking too long to render and may not be displayed as expected. For performance reasons, math blocks are also limited to %{maxChars} characters. Consider splitting up large formulae, splitting math blocks among multiple entries, or using an image instead."
+msgid "math|Displaying this math block may cause performance issues on this page"
 msgstr ""
 
 msgid "math|There was an error rendering this math block"

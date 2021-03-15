@@ -280,6 +280,9 @@ export default {
           <template #status>
             <slot name="status" :issuable="issuable"></slot>
           </template>
+          <template #statistics>
+            <slot name="statistics" :issuable="issuable"></slot>
+          </template>
         </issuable-item>
       </ul>
       <slot v-if="!issuablesLoading && !issuables.length" name="empty-state"></slot>

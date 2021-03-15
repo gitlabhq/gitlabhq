@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import IssueCount from '~/boards/components/issue_count.vue';
+import IssueCount from '~/boards/components/item_count.vue';
 
 describe('IssueCount', () => {
   let vm;
   let maxIssueCount;
-  let issuesSize;
+  let itemsSize;
 
   const createComponent = (props) => {
     vm = shallowMount(IssueCount, { propsData: props });
@@ -12,20 +12,20 @@ describe('IssueCount', () => {
 
   afterEach(() => {
     maxIssueCount = 0;
-    issuesSize = 0;
+    itemsSize = 0;
 
     if (vm) vm.destroy();
   });
 
   describe('when maxIssueCount is zero', () => {
     beforeEach(() => {
-      issuesSize = 3;
+      itemsSize = 3;
 
-      createComponent({ maxIssueCount: 0, issuesSize });
+      createComponent({ maxIssueCount: 0, itemsSize });
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('.js-issue-size').text()).toEqual(String(issuesSize));
+      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('does not contains maxIssueCount in the template', () => {
@@ -36,9 +36,9 @@ describe('IssueCount', () => {
   describe('when maxIssueCount is greater than zero', () => {
     beforeEach(() => {
       maxIssueCount = 2;
-      issuesSize = 1;
+      itemsSize = 1;
 
-      createComponent({ maxIssueCount, issuesSize });
+      createComponent({ maxIssueCount, itemsSize });
     });
 
     afterEach(() => {
@@ -46,7 +46,7 @@ describe('IssueCount', () => {
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('.js-issue-size').text()).toEqual(String(issuesSize));
+      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('contains maxIssueCount in the template', () => {
@@ -60,10 +60,10 @@ describe('IssueCount', () => {
 
   describe('when issueSize is greater than maxIssueCount', () => {
     beforeEach(() => {
-      issuesSize = 3;
+      itemsSize = 3;
       maxIssueCount = 2;
 
-      createComponent({ maxIssueCount, issuesSize });
+      createComponent({ maxIssueCount, itemsSize });
     });
 
     afterEach(() => {
@@ -71,7 +71,7 @@ describe('IssueCount', () => {
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('.js-issue-size').text()).toEqual(String(issuesSize));
+      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('contains maxIssueCount in the template', () => {
@@ -79,7 +79,7 @@ describe('IssueCount', () => {
     });
 
     it('has text-danger class', () => {
-      expect(vm.find('.text-danger').text()).toEqual(String(issuesSize));
+      expect(vm.find('.text-danger').text()).toEqual(String(itemsSize));
     });
   });
 });

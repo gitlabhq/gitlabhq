@@ -28,16 +28,8 @@ module Gitlab
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules), default_when: 'on_success')
-
-            if multiple_cache_per_job?
-              cache = Array.wrap(attributes.delete(:cache))
-              @cache = cache.map do |cache|
-                Seed::Build::Cache.new(pipeline, cache)
-              end
-            else
-              @cache = Seed::Build::Cache
-                .new(pipeline, attributes.delete(:cache))
-            end
+            @cache = Gitlab::Ci::Build::Cache
+              .new(attributes.delete(:cache), pipeline)
           end
 
           def name
@@ -69,7 +61,7 @@ module Gitlab
               .deep_merge(pipeline_attributes)
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
-              .deep_merge(cache_attributes)
+              .deep_merge(@cache.cache_attributes)
           end
 
           def bridge?
@@ -200,26 +192,6 @@ module Gitlab
           def evaluate_context
             strong_memoize(:evaluate_context) do
               Gitlab::Ci::Build::Context::Build.new(@pipeline, @seed_attributes)
-            end
-          end
-
-          def cache_attributes
-            strong_memoize(:cache_attributes) do
-              if multiple_cache_per_job?
-                if @cache.empty?
-                  {}
-                else
-                  { options: { cache: @cache.map(&:attributes) } }
-                end
-              else
-                @cache.build_attributes
-              end
-            end
-          end
-
-          def multiple_cache_per_job?
-            strong_memoize(:multiple_cache_per_job) do
-              ::Gitlab::Ci::Features.multiple_cache_per_job?
             end
           end
 

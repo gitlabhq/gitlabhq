@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import IssuablesListApp from './components/issuables_list_app.vue';
 import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
 
@@ -61,6 +62,37 @@ function mountIssuablesListApp() {
         });
       },
     });
+  });
+}
+
+export function initIssuesListApp() {
+  const el = document.querySelector('.js-issues-list');
+
+  if (!el) {
+    return false;
+  }
+
+  const {
+    endpoint,
+    fullPath,
+    hasBlockedIssuesFeature,
+    hasIssuableHealthStatusFeature,
+    hasIssueWeightsFeature,
+  } = el.dataset;
+
+  return new Vue({
+    el,
+    // Currently does not use Vue Apollo, but need to provide {} for now until the
+    // issue is fixed upstream in https://github.com/vuejs/vue-apollo/pull/1153
+    apolloProvider: {},
+    provide: {
+      endpoint,
+      fullPath,
+      hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
+      hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+    },
+    render: (createComponent) => createComponent(IssuesListApp),
   });
 }
 

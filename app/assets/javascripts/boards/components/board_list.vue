@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
@@ -15,6 +15,7 @@ export default {
     loading: __('Loading'),
     loadingMoreboardItems: __('Loading more'),
     showingAllIssues: __('Showing all issues'),
+    showingAllEpics: __('Showing all epics'),
   },
   components: {
     BoardCard,
@@ -49,14 +50,19 @@ export default {
   },
   computed: {
     ...mapState(['pageInfoByListId', 'listsFlags']),
+    ...mapGetters(['isEpicBoard']),
+    listItemsCount() {
+      return this.isEpicBoard ? this.list.epicsCount : this.list.issuesCount;
+    },
     paginatedIssueText() {
-      return sprintf(__('Showing %{pageSize} of %{total} issues'), {
+      return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {
         pageSize: this.boardItems.length,
-        total: this.list.issuesCount,
+        total: this.listItemsCount,
+        issuableType: this.isEpicBoard ? 'epics' : 'issues',
       });
     },
     boardItemsSizeExceedsMax() {
-      return this.list.maxIssueCount > 0 && this.list.issuesCount > this.list.maxIssueCount;
+      return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
     hasNextPage() {
       return this.pageInfoByListId[this.list.id].hasNextPage;
@@ -71,8 +77,13 @@ export default {
       // When  list is draggable, the reference to the list needs to be accessed differently
       return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
     },
-    showingAllIssues() {
-      return this.boardItems.length === this.list.issuesCount;
+    showingAllItems() {
+      return this.boardItems.length === this.listItemsCount;
+    },
+    showingAllItemsText() {
+      return this.isEpicBoard
+        ? this.$options.i18n.showingAllEpics
+        : this.$options.i18n.showingAllIssues;
     },
     treeRootWrapper() {
       return this.canAdminList ? Draggable : 'ul';
@@ -235,7 +246,7 @@ export default {
           :label="$options.i18n.loadingMoreboardItems"
           data-testid="count-loading-icon"
         />
-        <span v-if="showingAllIssues">{{ $options.i18n.showingAllIssues }}</span>
+        <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>
     </component>

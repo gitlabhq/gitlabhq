@@ -298,7 +298,7 @@ RSpec.describe 'Issue Boards', :js do
 
           it 'shows issue count on the list' do
             page.within(find(".board:nth-child(2)")) do
-              expect(page.find('.js-issue-size')).to have_text(total_planning_issues)
+              expect(page.find('[data-testid="board-items-count"]')).to have_text(total_planning_issues)
               expect(page).not_to have_selector('.js-max-issue-size')
             end
           end

@@ -252,6 +252,10 @@ RSpec.configure do |config|
       # https://gitlab.com/groups/gitlab-org/-/epics/5501
       stub_feature_flags(boards_filtered_search: false)
 
+      # The following `vue_issues_list` stub can be removed once the
+      # Vue issues page has feature parity with the current Haml page
+      stub_feature_flags(vue_issues_list: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

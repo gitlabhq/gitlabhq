@@ -17,7 +17,7 @@ import sidebarEventHub from '~/sidebar/event_hub';
 import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType } from '../constants';
 import eventHub from '../eventhub';
-import IssueCount from './issue_count.vue';
+import ItemCount from './item_count.vue';
 
 export default {
   i18n: {
@@ -33,7 +33,7 @@ export default {
     GlTooltip,
     GlIcon,
     GlSprintf,
-    IssueCount,
+    ItemCount,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -337,7 +337,7 @@ export default {
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
           <span ref="itemCount" class="issue-count-badge-count">
             <gl-icon class="gl-mr-2" :name="countIcon" />
-            <issue-count :issues-size="itemsCount" :max-issue-count="list.maxIssueCount" />
+            <item-count :items-size="itemsCount" :max-issue-count="list.maxIssueCount" />
           </span>
           <!-- EE start -->
           <template v-if="weightFeatureAvailable && !isEpicBoard">

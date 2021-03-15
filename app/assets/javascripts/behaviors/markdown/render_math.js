@@ -1,6 +1,6 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import { spriteIcon } from '~/lib/utils/common_utils';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -13,30 +13,10 @@ import { s__, sprintf } from '~/locale';
 const MAX_MATH_CHARS = 1000;
 const MAX_RENDER_TIME_MS = 2000;
 
-// These messages might be used with inline errors in the future. Keep them around. For now, we will
-// display a single error message using flash().
-
-// const CHAR_LIMIT_EXCEEDED_MSG = sprintf(
-//   s__(
-//     'math|The following math is too long. For performance reasons, math blocks are limited to %{maxChars} characters. Try splitting up this block, or include an image instead.',
-//   ),
-//   { maxChars: MAX_MATH_CHARS },
-// );
-// const RENDER_TIME_EXCEEDED_MSG = s__(
-//   "math|The math in this entry is taking too long to render. Any math below this point won't be shown. Consider splitting it among multiple entries.",
-// );
-
-const RENDER_FLASH_MSG = sprintf(
-  s__(
-    'math|The math in this entry is taking too long to render and may not be displayed as expected. For performance reasons, math blocks are also limited to %{maxChars} characters. Consider splitting up large formulae, splitting math blocks among multiple entries, or using an image instead.',
-  ),
-  { maxChars: MAX_MATH_CHARS },
-);
-
 // Wait for the browser to reflow the layout. Reflowing SVG takes time.
 // This has to wrap the inner function, otherwise IE/Edge throw "invalid calling object".
 const waitForReflow = (fn) => {
-  window.requestAnimationFrame(fn);
+  window.requestIdleCallback(fn);
 };
 
 /**
@@ -67,37 +47,69 @@ class SafeMathRenderer {
 
     this.renderElement = this.renderElement.bind(this);
     this.render = this.render.bind(this);
+    this.attachEvents = this.attachEvents.bind(this);
   }
 
-  renderElement() {
-    if (!this.queue.length) {
+  renderElement(chosenEl) {
+    if (!this.queue.length && !chosenEl) {
       return;
     }
 
-    const el = this.queue.shift();
+    const el = chosenEl || this.queue.shift();
+    const forceRender = Boolean(chosenEl);
     const text = el.textContent;
 
     el.removeAttribute('style');
-
-    if (this.totalMS >= MAX_RENDER_TIME_MS || text.length > MAX_MATH_CHARS) {
-      if (!this.flashShown) {
-        flash(RENDER_FLASH_MSG);
-        this.flashShown = true;
-      }
-
+    if (!forceRender && (this.totalMS >= MAX_RENDER_TIME_MS || text.length > MAX_MATH_CHARS)) {
       // Show unrendered math code
+      const wrapperElement = document.createElement('div');
       const codeElement = document.createElement('pre');
+
       codeElement.className = 'code';
       codeElement.textContent = el.textContent;
-      el.parentNode.replaceChild(codeElement, el);
+
+      const { parentNode } = el;
+      parentNode.replaceChild(wrapperElement, el);
+
+      const html = `
+          <div class="alert gl-alert gl-alert-warning alert-dismissible lazy-render-math-container js-lazy-render-math-container fade show" role="alert">
+            ${spriteIcon('warning', 'text-warning-600 s16 gl-alert-icon')}
+            <div class="display-flex gl-alert-content">
+              <div>${s__(
+                'math|Displaying this math block may cause performance issues on this page',
+              )}</div>
+              <div class="gl-alert-actions">
+                <button class="js-lazy-render-math btn gl-alert-action btn-primary btn-md gl-button">Display anyway</button>
+              </div>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              ${spriteIcon('close', 's16')}
+            </button>
+          </div>
+          `;
+
+      if (!wrapperElement.classList.contains('lazy-alert-shown')) {
+        wrapperElement.innerHTML = html;
+        wrapperElement.append(codeElement);
+        wrapperElement.classList.add('lazy-alert-shown');
+      }
 
       // Render the next math
       this.renderElement();
     } else {
       this.startTime = Date.now();
 
+      /* Get the correct reference to the display container when:
+       * a.) Happy path: when the math block is present, and
+       * b.) When we've replace the block with <pre> for lazy rendering
+       */
+      let displayContainer = el;
+      if (el.tagName === 'PRE') {
+        displayContainer = el.parentElement;
+      }
+
       try {
-        el.innerHTML = this.katex.renderToString(text, {
+        displayContainer.innerHTML = this.katex.renderToString(text, {
           displayMode: el.getAttribute('data-math-style') === 'display',
           throwOnError: true,
           maxSize: 20,
@@ -135,6 +147,22 @@ class SafeMathRenderer {
     // and less prone to timeouts.
     setTimeout(this.renderElement, 400);
   }
+
+  attachEvents() {
+    document.body.addEventListener('click', (event) => {
+      if (!event.target.classList.contains('js-lazy-render-math')) {
+        return;
+      }
+
+      const parent = event.target.closest('.js-lazy-render-math-container');
+
+      const pre = parent.nextElementSibling;
+
+      parent.remove();
+
+      this.renderElement(pre);
+    });
+  }
 }
 
 export default function renderMath($els) {
@@ -146,6 +174,7 @@ export default function renderMath($els) {
     .then(([katex]) => {
       const renderer = new SafeMathRenderer($els.get(), katex);
       renderer.render();
+      renderer.attachEvents();
     })
     .catch(() => {});
 }

@@ -4667,7 +4667,7 @@ An edge in a connection.
 | `containerRepositories` | [`ContainerRepositoryConnection`](#containerrepositoryconnection) | Container repositories of the project. |
 | `containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | `createdAt` | [`Time`](#time) | Timestamp of the project creation. |
-| `dastProfiles` | [`DastProfileConnection`](#dastprofileconnection) | DAST Profiles associated with the project. Always returns no nodes if `dast_saved_scans` is disabled. |
+| `dastProfiles` | [`DastProfileConnection`](#dastprofileconnection) | DAST Profiles associated with the project. |
 | `dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | The DAST scanner profiles associated with the project. |
 | `dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | DAST Site Profile associated with the project. |
 | `dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. |

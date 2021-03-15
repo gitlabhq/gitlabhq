@@ -360,31 +360,29 @@ module SearchHelper
     end
   end
 
-  # Sanitize a HTML field for search display. Most tags are stripped out and the
-  # maximum length is set to 200 characters.
   def search_md_sanitize(source)
-    source = Truncato.truncate(
-      source,
-      count_tags: false,
-      count_tail: false,
-      max_length: 200
-    )
-
-    html = markdown(source)
-
-    # Truncato's filtered_tags and filtered_attributes are not quite the same
-    sanitize(html, tags: %w(a p ol ul li pre code))
+    search_sanitize(markdown(search_truncate(source)))
   end
 
   def simple_search_highlight_and_truncate(text, phrase, options = {})
-    text = Truncato.truncate(
-      text,
+    highlight(search_sanitize(search_truncate(text)), phrase.split, options)
+  end
+
+  # Sanitize a HTML field for search display. Most tags are stripped out and the
+  # maximum length is set to 200 characters.
+  def search_truncate(source)
+    Truncato.truncate(
+      source,
       count_tags: false,
       count_tail: false,
-      max_length: options.delete(:length) { 200 }
+      filtered_tags: %w(img),
+      max_length: 200
     )
+  end
 
-    highlight(text, phrase.split, options)
+  def search_sanitize(html)
+    # Truncato's filtered_tags and filtered_attributes are not quite the same
+    sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
   # _search_highlight is used in EE override

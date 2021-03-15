@@ -136,10 +136,6 @@ bar at the top of the page. Under **More**, select **Security**.
 
 ![Security Center navigation link](img/security_center_dashboard_link_v12_4.png)
 
-The dashboard and vulnerability report are empty before you add projects.
-
-![Uninitialized Security Center](img/security_center_dashboard_empty_v13_4.png)
-
 ### Adding projects to the Security Center
 
 To add projects to the Security Center:

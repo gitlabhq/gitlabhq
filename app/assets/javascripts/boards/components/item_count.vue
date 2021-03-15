@@ -7,7 +7,7 @@ export default {
       required: false,
       default: 0,
     },
-    issuesSize: {
+    itemsSize: {
       type: Number,
       required: false,
       default: 0,
@@ -18,16 +18,16 @@ export default {
       return this.maxIssueCount !== 0;
     },
     issuesExceedMax() {
-      return this.isMaxLimitSet && this.issuesSize > this.maxIssueCount;
+      return this.isMaxLimitSet && this.itemsSize > this.maxIssueCount;
     },
   },
 };
 </script>
 
 <template>
-  <div class="issue-count text-nowrap">
-    <span class="js-issue-size" :class="{ 'text-danger': issuesExceedMax }">
-      {{ issuesSize }}
+  <div class="item-count text-nowrap">
+    <span :class="{ 'text-danger': issuesExceedMax }" data-testid="board-items-count">
+      {{ itemsSize }}
     </span>
     <span v-if="isMaxLimitSet" class="js-max-issue-size">
       {{ maxIssueCount }}

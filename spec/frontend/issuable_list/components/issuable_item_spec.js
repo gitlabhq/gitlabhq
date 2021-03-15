@@ -294,7 +294,17 @@ describe('IssuableItem', () => {
 
       expect(confidentialEl.exists()).toBe(true);
       expect(confidentialEl.props('name')).toBe('eye-slash');
-      expect(confidentialEl.attributes('title')).toBe('Confidential');
+      expect(confidentialEl.attributes()).toMatchObject({
+        title: 'Confidential',
+        arialabel: 'Confidential',
+      });
+    });
+
+    it('renders task status', () => {
+      const taskStatus = wrapper.find('[data-testid="task-status"]');
+      const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} tasks completed`;
+
+      expect(taskStatus.text()).toBe(expected);
     });
 
     it('renders issuable reference', () => {
