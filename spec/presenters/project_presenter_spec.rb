@@ -563,6 +563,51 @@ RSpec.describe ProjectPresenter do
         end
       end
     end
+
+    describe '#upload_anchor_data' do
+      context 'with empty_repo_upload enabled' do
+        before do
+          stub_experiments(empty_repo_upload: :candidate)
+        end
+
+        context 'user can push to branch' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'returns upload_anchor_data' do
+            expect(presenter.upload_anchor_data).to have_attributes(
+              is_link: false,
+              label:  a_string_including('Upload file'),
+              data: {
+                "can_push_code" => "true",
+                "original_branch" => "master",
+                "path" => "/#{project.full_path}/-/create/master",
+                "project_path" => project.path,
+                "target_branch" => "master"
+              }
+            )
+          end
+        end
+
+        context 'user cannot push to branch' do
+          it 'returns nil' do
+            expect(presenter.upload_anchor_data).to be_nil
+          end
+        end
+      end
+
+      context 'with empty_repo_upload disabled' do
+        before do
+          stub_experiments(empty_repo_upload: :control)
+          project.add_developer(user)
+        end
+
+        it 'returns nil' do
+          expect(presenter.upload_anchor_data).to be_nil
+        end
+      end
+    end
   end
 
   describe '#statistics_buttons' do

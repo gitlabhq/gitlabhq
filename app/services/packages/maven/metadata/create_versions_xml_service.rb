@@ -3,9 +3,7 @@
 module Packages
   module Maven
     module Metadata
-      class CreateVersionsXmlService
-        include Gitlab::Utils::StrongMemoize
-
+      class CreateVersionsXmlService < BaseCreateXmlService
         XPATH_VERSIONING = '//metadata/versioning'
         XPATH_VERSIONS = '//versions'
         XPATH_VERSION = '//version'
@@ -13,17 +11,10 @@ module Packages
         XPATH_RELEASE = '//release'
         XPATH_LAST_UPDATED = '//lastUpdated'
 
-        INDENT_SPACE = 2
-
         EMPTY_VERSIONS_PAYLOAD = {
           changes_exist: true,
           empty_versions: true
         }.freeze
-
-        def initialize(metadata_content:, package:)
-          @metadata_content = metadata_content
-          @package = package
-        end
 
         def execute
           return ServiceResponse.error(message: 'package not set') unless @package
@@ -57,7 +48,7 @@ module Packages
           version_xml_nodes.remove
 
           versions_from_database.each do |version|
-            versions_xml_node.add_child(version_node_for(version))
+            versions_xml_node.add_child(xml_node('version', version))
           end
           true
         end
@@ -131,10 +122,6 @@ module Packages
           end
         end
 
-        def version_node_for(version)
-          Nokogiri::XML::Node.new('version', xml_doc).tap { |node| node.content = version }
-        end
-
         def versions_from_xml
           strong_memoize(:versions_from_xml) do
             versions_xml_node.xpath(XPATH_VERSION)
@@ -170,14 +157,6 @@ module Packages
           strong_memoize(:release_from_database) do
             non_snapshot_versions_from_database = versions_from_database.reject { |v| v.ends_with?('SNAPSHOT') }
             non_snapshot_versions_from_database.last
-          end
-        end
-
-        def xml_doc
-          strong_memoize(:xml_doc) do
-            Nokogiri::XML(@metadata_content) do |config|
-              config.default_xml.noblanks
-            end
           end
         end
       end

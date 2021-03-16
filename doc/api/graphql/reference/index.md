@@ -86,8 +86,10 @@ Returns [`DevopsAdoptionSegmentConnection`](#devopsadoptionsegmentconnection).
 | ---- | ---- | ----------- |
 | `after` | [`String`](#string) | Returns the elements in the list that come after the specified cursor. |
 | `before` | [`String`](#string) | Returns the elements in the list that come before the specified cursor. |
+| `directDescendantsOnly` | [`Boolean`](#boolean) | Limits segments to direct descendants of specified parent. |
 | `first` | [`Int`](#int) | Returns the first _n_ elements from the list. |
 | `last` | [`Int`](#int) | Returns the last _n_ elements from the list. |
+| `parentNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by ancestor namespace. |
 
 ### `echo`
 

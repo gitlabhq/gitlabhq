@@ -208,6 +208,11 @@ msgid_plural "%d failed security jobs"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
 msgstr[0] ""
@@ -8023,7 +8028,7 @@ msgstr ""
 msgid "Container does not exist"
 msgstr ""
 
-msgid "Container must be a project."
+msgid "Container must be a project or a group."
 msgstr ""
 
 msgid "Container registry images"
@@ -36051,9 +36056,6 @@ msgstr ""
 msgid "mrWidget|Fork project merge requests do not create merge request pipelines that validate a post merge result unless invoked by a project member."
 msgstr ""
 
-msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
-msgstr ""
-
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
 msgstr ""
 
@@ -36204,16 +36206,10 @@ msgstr ""
 msgid "mrWidget|You can merge after removing denied licenses"
 msgstr ""
 
-msgid "mrWidget|You can merge this merge request manually using the"
-msgstr ""
-
 msgid "mrWidget|Your password"
 msgstr ""
 
 msgid "mrWidget|branch does not exist."
-msgstr ""
-
-msgid "mrWidget|command line"
 msgstr ""
 
 msgid "mrWidget|into"

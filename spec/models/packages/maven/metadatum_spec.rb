@@ -36,5 +36,38 @@ RSpec.describe Packages::Maven::Metadatum, type: :model do
         expect(maven_metadatum.errors.to_a).to include('Package type must be Maven')
       end
     end
+
+    context 'with a package' do
+      let_it_be(:package) { create(:package) }
+
+      describe '.for_package_ids' do
+        let_it_be(:metadata) { create_list(:maven_metadatum, 3, package: package) }
+
+        subject { Packages::Maven::Metadatum.for_package_ids(package.id) }
+
+        it { is_expected.to match_array(metadata) }
+      end
+
+      describe '.order_created' do
+        let_it_be(:metadatum1) { create(:maven_metadatum, package: package) }
+        let_it_be(:metadatum2) { create(:maven_metadatum, package: package) }
+        let_it_be(:metadatum3) { create(:maven_metadatum, package: package) }
+        let_it_be(:metadatum4) { create(:maven_metadatum, package: package) }
+
+        subject { Packages::Maven::Metadatum.for_package_ids(package.id).order_created }
+
+        it { is_expected.to eq([metadatum1, metadatum2, metadatum3, metadatum4]) }
+      end
+
+      describe '.pluck_app_name' do
+        let_it_be(:metadatum1) { create(:maven_metadatum, package: package, app_name: 'one') }
+        let_it_be(:metadatum2) { create(:maven_metadatum, package: package, app_name: 'two') }
+        let_it_be(:metadatum3) { create(:maven_metadatum, package: package, app_name: 'three') }
+
+        subject { Packages::Maven::Metadatum.for_package_ids(package.id).pluck_app_name }
+
+        it { is_expected.to match_array([metadatum1, metadatum2, metadatum3].map(&:app_name)) }
+      end
+    end
   end
 end

@@ -202,16 +202,16 @@ Upon the next sync, the user is deprovisioned, which means that the user is remo
 NOTE:
 Deprovisioning does not delete the user account.
 
+During the synchronization process, all of your users get GitLab accounts, welcoming them
+to their respective groups, with an invitation email. When implementing SCIM provisioning,
+you may want to warn your security-conscious employees about this email.
+
 ```mermaid
 graph TD
   A[Remove User from SCIM app] -->|IdP sends request to GitLab| B(GitLab: Is the user part of the group?)
   B -->|No| C[Nothing to do]
   B -->|Yes| D[GitLab removes user from GitLab group]
 ```
-
-During the synchronization process, all of your users get GitLab accounts, welcoming them
-to their respective groups, with an invitation email. When implementing SCIM provisioning,
-you may want to warn your security-conscious employees about this email.
 
 ## Troubleshooting
 

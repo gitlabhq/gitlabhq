@@ -6,9 +6,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { trackFileUploadEvent } from '~/projects/upload_file_experiment_tracking';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
+jest.mock('~/projects/upload_file_experiment_tracking');
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
@@ -19,7 +21,7 @@ const initialProps = {
   modalId: 'upload-blob',
   commitMessage: 'Upload New File',
   targetBranch: 'master',
-  origionalBranch: 'master',
+  originalBranch: 'master',
   canPushCode: true,
   path: 'new_upload',
 };
@@ -160,6 +162,10 @@ describe('UploadBlobModal', () => {
             await waitForPromises();
           });
 
+          it('tracks the click_upload_modal_trigger event when opening the modal', () => {
+            expect(trackFileUploadEvent).toHaveBeenCalledWith('click_upload_modal_form_submit');
+          });
+
           it('redirects to the uploaded file', () => {
             expect(visitUrl).toHaveBeenCalled();
           });
@@ -177,6 +183,10 @@ describe('UploadBlobModal', () => {
             findModal().vm.$emit('primary', mockEvent);
 
             await waitForPromises();
+          });
+
+          it('does not track an event', () => {
+            expect(trackFileUploadEvent).not.toHaveBeenCalled();
           });
 
           it('creates a flash error', () => {

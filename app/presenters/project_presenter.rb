@@ -253,8 +253,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                          nil,
                          nil,
                          {
-                           'toggle' => 'modal',
-                           'target' => '#modal-upload-blob'
+                           'target_branch' => default_branch_or_master,
+                           'original_branch' => default_branch_or_master,
+                           'can_push_code' => 'true',
+                           'path' => project_create_blob_path(project, default_branch_or_master),
+                           'project_path' => project.path
                          }
                         )
         end

@@ -16,26 +16,50 @@ module Packages
           return error('Non existing versionless package') unless versionless_package_for_versions
           return error('Non existing metadata file for versions') unless metadata_package_file_for_versions
 
+          if metadata_package_file_for_plugins
+            result = update_plugins_xml
+
+            return result if result.error?
+          end
+
           update_versions_xml
         end
 
         private
 
         def update_versions_xml
-          return error('Metadata file for versions is too big') if metadata_package_file_for_versions.size > MAX_FILE_SIZE
+          update_xml(
+            kind: :versions,
+            package_file: metadata_package_file_for_versions,
+            service_class: CreateVersionsXmlService,
+            payload_empty_field: :empty_versions
+          )
+        end
 
-          metadata_package_file_for_versions.file.use_open_file do |file|
-            result = CreateVersionsXmlService.new(metadata_content: file, package: versionless_package_for_versions)
-                                             .execute
+        def update_plugins_xml
+          update_xml(
+            kind: :plugins,
+            package_file: metadata_package_file_for_plugins,
+            service_class: CreatePluginsXmlService,
+            payload_empty_field: :empty_plugins
+          )
+        end
+
+        def update_xml(kind:, package_file:, service_class:, payload_empty_field:)
+          return error("Metadata file for #{kind} is too big") if package_file.size > MAX_FILE_SIZE
+
+          package_file.file.use_open_file do |file|
+            result = service_class.new(metadata_content: file, package: package_file.package)
+                                  .execute
 
             next result unless result.success?
-            next success('No changes for versions xml') unless result.payload[:changes_exist]
+            next success("No changes for #{kind} xml") unless result.payload[:changes_exist]
 
-            if result.payload[:empty_versions]
-              versionless_package_for_versions.destroy!
-              success('Versionless package for versions destroyed')
+            if result.payload[payload_empty_field]
+              package_file.package.destroy!
+              success("Versionless package for #{kind} destroyed")
             else
-              AppendPackageFileService.new(metadata_content: result.payload[:metadata_content], package: versionless_package_for_versions)
+              AppendPackageFileService.new(metadata_content: result.payload[:metadata_content], package: package_file.package)
                                       .execute
             end
           end
@@ -43,26 +67,47 @@ module Packages
 
         def metadata_package_file_for_versions
           strong_memoize(:metadata_file_for_versions) do
-            versionless_package_for_versions.package_files
-                                            .with_file_name(Metadata.filename)
-                                            .recent
-                                            .first
+            metadata_package_file_for(versionless_package_for_versions)
           end
         end
 
         def versionless_package_for_versions
           strong_memoize(:versionless_package_for_versions) do
-            project.packages
-                   .maven
-                   .displayable
-                   .with_name(package_name)
-                   .with_version(nil)
-                   .first
+            versionless_package_named(package_name)
           end
+        end
+
+        def metadata_package_file_for_plugins
+          strong_memoize(:metadata_package_file_for_plugins) do
+            metadata_package_file_for(versionless_package_named(package_name_for_plugins))
+          end
+        end
+
+        def metadata_package_file_for(package)
+          return unless package
+
+          package.package_files
+                 .with_file_name(Metadata.filename)
+                 .recent
+                 .first
+        end
+
+        def versionless_package_named(name)
+          project.packages
+                 .maven
+                 .displayable
+                 .with_name(name)
+                 .with_version(nil)
+                 .first
         end
 
         def package_name
           params[:package_name]
+        end
+
+        def package_name_for_plugins
+          group = versionless_package_for_versions.maven_metadatum.app_group
+          group.tr('.', '/')
         end
 
         def error(message)

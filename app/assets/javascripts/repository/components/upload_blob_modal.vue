@@ -15,6 +15,7 @@ import { ContentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { trackFileUploadEvent } from '~/projects/upload_file_experiment_tracking';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 const PRIMARY_OPTIONS_TEXT = __('Upload file');
@@ -62,7 +63,7 @@ export default {
       type: String,
       required: true,
     },
-    origionalBranch: {
+    originalBranch: {
       type: String,
       required: true,
     },
@@ -113,7 +114,7 @@ export default {
       return numberToHumanSize(this.file.size);
     },
     showCreateNewMrToggle() {
-      return this.canPushCode && this.target !== this.origionalBranch;
+      return this.canPushCode && this.target !== this.originalBranch;
     },
     formCompleted() {
       return this.file && this.commit && this.target;
@@ -158,6 +159,7 @@ export default {
           },
         })
         .then((response) => {
+          trackFileUploadEvent('click_upload_modal_form_submit');
           visitUrl(response.data.filePath);
         })
         .catch(() => {

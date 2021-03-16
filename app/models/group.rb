@@ -340,6 +340,13 @@ class Group < Namespace
     has_owner?(user) && members_with_parents.owners.size == 1
   end
 
+  def last_blocked_owner?(user)
+    return false if members_with_parents.owners.any?
+
+    blocked_owners = members.blocked.where(access_level: Gitlab::Access::OWNER)
+    blocked_owners.size == 1 && blocked_owners.exists?(user_id: user)
+  end
+
   def ldap_synced?
     false
   end

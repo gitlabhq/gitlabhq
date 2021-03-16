@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Static Application Security Testing (SAST)
+# Static Application Security Testing (SAST) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
 > - All open source (OSS) analyzers were moved to GitLab Free in GitLab 13.3.

@@ -1,24 +1,33 @@
-import ExperimentTracking from '~/experimentation/experiment_tracking';
+import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import createRouter from '~/repository/router';
+import UploadButton from './details/upload_button.vue';
 
-function trackEvent(eventName) {
-  const isEmpty = Boolean(document.querySelector('.project-home-panel.empty-project'));
-  const property = isEmpty ? 'empty' : 'nonempty';
-  const label = 'blob-upload-modal';
-  const Tracking = new ExperimentTracking('empty_repo_upload', { label, property });
-
-  Tracking.event(eventName);
-}
-
-export function initUploadFileTrigger() {
+export const initUploadFileTrigger = () => {
   const uploadFileTriggerEl = document.querySelector('.js-upload-file-experiment-trigger');
 
-  if (uploadFileTriggerEl) {
-    uploadFileTriggerEl.addEventListener('click', () => {
-      trackEvent('click_upload_modal_trigger');
-    });
-  }
-}
+  if (!uploadFileTriggerEl) return false;
 
-export function trackUploadFileFormSubmitted() {
-  trackEvent('click_upload_modal_form_submit');
-}
+  const {
+    targetBranch,
+    originalBranch,
+    canPushCode,
+    path,
+    projectPath,
+  } = uploadFileTriggerEl.dataset;
+
+  return new Vue({
+    el: uploadFileTriggerEl,
+    router: createRouter(projectPath, originalBranch),
+    provide: {
+      targetBranch,
+      originalBranch,
+      canPushCode: parseBoolean(canPushCode),
+      path,
+      projectPath,
+    },
+    render(h) {
+      return h(UploadButton);
+    },
+  });
+};

@@ -91,18 +91,6 @@ describe('MrWidgetOptions', () => {
         });
       });
 
-      describe('shouldRenderMergeHelp', () => {
-        it('should return false for the initial merged state', () => {
-          expect(wrapper.vm.shouldRenderMergeHelp).toBeFalsy();
-        });
-
-        it('should return true for a state which requires help widget', () => {
-          wrapper.vm.mr.state = 'conflicts';
-
-          expect(wrapper.vm.shouldRenderMergeHelp).toBeTruthy();
-        });
-      });
-
       describe('shouldRenderPipelines', () => {
         it('should return true when hasCI is true', () => {
           wrapper.vm.mr.hasCI = true;

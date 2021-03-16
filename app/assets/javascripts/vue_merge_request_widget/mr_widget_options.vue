@@ -18,7 +18,6 @@ import GroupedTestReportsApp from '../reports/grouped_test_report/grouped_test_r
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
-import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
@@ -59,7 +58,6 @@ export default {
     // ExtensionsContainer,
     'mr-widget-header': WidgetHeader,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
-    'mr-widget-merge-help': WidgetMergeHelp,
     MrWidgetPipelineContainer,
     'mr-widget-related-links': WidgetRelatedLinks,
     MrWidgetAlertMessage,
@@ -139,9 +137,6 @@ export default {
     },
     componentName() {
       return stateMaps.stateToComponentMap[this.mr.state];
-    },
-    shouldRenderMergeHelp() {
-      return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     hasPipelineMustSucceedConflict() {
       return !this.mr.hasCI && this.mr.onlyAllowMergeIfPipelineSucceeds;
@@ -529,9 +524,6 @@ export default {
 
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
         </div>
-      </div>
-      <div v-if="shouldRenderMergeHelp" class="mr-widget-footer">
-        <mr-widget-merge-help />
       </div>
     </div>
     <mr-widget-pipeline-container

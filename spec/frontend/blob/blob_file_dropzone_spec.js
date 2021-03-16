@@ -1,10 +1,5 @@
 import $ from 'jquery';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
-import { trackUploadFileFormSubmitted } from '~/projects/upload_file_experiment';
-
-jest.mock('~/projects/upload_file_experiment', () => ({
-  trackUploadFileFormSubmitted: jest.fn(),
-}));
 
 describe('BlobFileDropzone', () => {
   let dropzone;
@@ -44,14 +39,6 @@ describe('BlobFileDropzone', () => {
       expect(window.alert).not.toHaveBeenCalled();
       expect(replaceFileButton.is(':disabled')).toEqual(true);
       expect(dropzone.processQueue).toHaveBeenCalled();
-    });
-
-    it('calls the tracking event', () => {
-      jest.spyOn(window, 'alert').mockImplementation(() => {});
-
-      replaceFileButton.click();
-
-      expect(trackUploadFileFormSubmitted).toHaveBeenCalled();
     });
   });
 });

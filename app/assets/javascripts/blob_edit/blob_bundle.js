@@ -4,7 +4,6 @@ import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
-import { initUploadFileTrigger } from '~/projects/upload_file_experiment';
 import Tracking from '~/tracking';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
 import NewCommitForm from '../new_commit_form';
@@ -48,7 +47,6 @@ export const initUploadForm = () => {
     new NewCommitForm(uploadBlobForm);
 
     disableButtonIfEmptyField(uploadBlobForm.find('.js-commit-message'), '.btn-upload-file');
-    initUploadFileTrigger();
   }
 };
 

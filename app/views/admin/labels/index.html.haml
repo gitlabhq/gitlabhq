@@ -13,5 +13,6 @@
       = render @labels
 
     = paginate @labels, theme: 'gitlab'
-  - else
-    .nothing-here-block= _('There are no labels yet')
+
+  .nothing-here-block{ class: ('hidden' if @labels.present?) }
+    = _('There are no labels yet')

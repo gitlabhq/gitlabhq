@@ -565,6 +565,42 @@ RSpec.describe Group do
     end
   end
 
+  describe '#last_blocked_owner?' do
+    let(:blocked_user) { create(:user, :blocked) }
+
+    before do
+      group.add_user(blocked_user, GroupMember::OWNER)
+    end
+
+    it { expect(group.last_blocked_owner?(blocked_user)).to be_truthy }
+
+    context 'with another active owner' do
+      before do
+        group.add_user(create(:user), GroupMember::OWNER)
+      end
+
+      it { expect(group.last_blocked_owner?(blocked_user)).to be_falsy }
+    end
+
+    context 'with 2 blocked owners' do
+      before do
+        group.add_user(create(:user, :blocked), GroupMember::OWNER)
+      end
+
+      it { expect(group.last_blocked_owner?(blocked_user)).to be_falsy }
+    end
+
+    context 'with owners from a parent' do
+      before do
+        parent_group = create(:group)
+        create(:group_member, :owner, group: parent_group)
+        group.update(parent: parent_group)
+      end
+
+      it { expect(group.last_blocked_owner?(blocked_user)).to be_falsy }
+    end
+  end
+
   describe '#lfs_enabled?' do
     context 'LFS enabled globally' do
       before do

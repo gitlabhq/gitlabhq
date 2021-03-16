@@ -11,6 +11,7 @@ class Explore::SnippetsController < Explore::ApplicationController
       .page(params[:page])
       .without_count
       .inc_author
+      .inc_statistics
 
     @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
   end
