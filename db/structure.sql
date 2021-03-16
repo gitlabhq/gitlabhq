@@ -11808,6 +11808,31 @@ CREATE SEQUENCE dast_scanner_profiles_id_seq
 
 ALTER SEQUENCE dast_scanner_profiles_id_seq OWNED BY dast_scanner_profiles.id;
 
+CREATE TABLE dast_site_profile_secret_variables (
+    id bigint NOT NULL,
+    dast_site_profile_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    variable_type smallint DEFAULT 1 NOT NULL,
+    key text NOT NULL,
+    encrypted_value bytea NOT NULL,
+    encrypted_value_iv bytea NOT NULL,
+    CONSTRAINT check_236213f179 CHECK ((length(encrypted_value) <= 13352)),
+    CONSTRAINT check_8cbef204b2 CHECK ((char_length(key) <= 255)),
+    CONSTRAINT check_b49080abbf CHECK ((length(encrypted_value_iv) <= 17))
+);
+
+COMMENT ON TABLE dast_site_profile_secret_variables IS '{"owner":"group::dynamic analysis","description":"Secret variables used in DAST on-demand scans"}';
+
+CREATE SEQUENCE dast_site_profile_secret_variables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dast_site_profile_secret_variables_id_seq OWNED BY dast_site_profile_secret_variables.id;
+
 CREATE TABLE dast_site_profiles (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -19141,6 +19166,8 @@ ALTER TABLE ONLY dast_profiles ALTER COLUMN id SET DEFAULT nextval('dast_profile
 
 ALTER TABLE ONLY dast_scanner_profiles ALTER COLUMN id SET DEFAULT nextval('dast_scanner_profiles_id_seq'::regclass);
 
+ALTER TABLE ONLY dast_site_profile_secret_variables ALTER COLUMN id SET DEFAULT nextval('dast_site_profile_secret_variables_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_site_profiles ALTER COLUMN id SET DEFAULT nextval('dast_site_profiles_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_site_tokens ALTER COLUMN id SET DEFAULT nextval('dast_site_tokens_id_seq'::regclass);
@@ -20340,6 +20367,9 @@ ALTER TABLE ONLY dast_profiles
 
 ALTER TABLE ONLY dast_scanner_profiles
     ADD CONSTRAINT dast_scanner_profiles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dast_site_profile_secret_variables
+    ADD CONSTRAINT dast_site_profile_secret_variables_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT dast_site_profiles_pkey PRIMARY KEY (id);
@@ -22015,6 +22045,8 @@ CREATE INDEX index_ci_pipeline_schedules_on_next_run_at_and_active ON ci_pipelin
 
 CREATE INDEX index_ci_pipeline_schedules_on_owner_id ON ci_pipeline_schedules USING btree (owner_id);
 
+CREATE INDEX index_ci_pipeline_schedules_on_owner_id_and_id_and_active ON ci_pipeline_schedules USING btree (owner_id, id) WHERE (active = true);
+
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_variables_on_pipeline_id_and_key ON ci_pipeline_variables USING btree (pipeline_id, key);
@@ -23678,6 +23710,8 @@ CREATE INDEX index_services_on_type_id_when_active_and_project_id_not_null ON se
 CREATE UNIQUE INDEX index_services_on_unique_group_id_and_type ON services USING btree (group_id, type);
 
 CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);
+
+CREATE UNIQUE INDEX index_site_profile_secret_variables_on_site_profile_id_and_key ON dast_site_profile_secret_variables USING btree (dast_site_profile_id, key);
 
 CREATE INDEX index_slack_integrations_on_service_id ON slack_integrations USING btree (service_id);
 
@@ -25559,6 +25593,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 
 ALTER TABLE ONLY lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dast_site_profile_secret_variables
+    ADD CONSTRAINT fk_rails_43e2897950 FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_assignees
     ADD CONSTRAINT fk_rails_443443ce6f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

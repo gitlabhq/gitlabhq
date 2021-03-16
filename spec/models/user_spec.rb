@@ -1766,7 +1766,7 @@ RSpec.describe User do
   end
 
   describe 'blocking user' do
-    let(:user) { create(:user, name: 'John Smith') }
+    let_it_be_with_refind(:user) { create(:user, name: 'John Smith') }
 
     it 'blocks user' do
       user.block
@@ -1787,6 +1787,14 @@ RSpec.describe User do
         expect(service).to receive(:execute).with(user)
 
         user.block
+      end
+    end
+
+    context 'when user has active CI pipeline schedules' do
+      let_it_be(:schedule) { create(:ci_pipeline_schedule, active: true, owner: user) }
+
+      it 'disables any pipeline schedules' do
+        expect { user.block }.to change { schedule.reload.active? }.to(false)
       end
     end
   end

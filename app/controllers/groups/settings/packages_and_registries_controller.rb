@@ -3,6 +3,7 @@
 module Groups
   module Settings
     class PackagesAndRegistriesController < Groups::ApplicationController
+      layout 'group_settings'
       before_action :authorize_admin_group!
       before_action :verify_packages_enabled!
 

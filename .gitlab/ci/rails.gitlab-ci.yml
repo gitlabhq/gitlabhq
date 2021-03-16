@@ -183,6 +183,7 @@ setup-test-env:
       - tmp/tests/gitlab-workhorse/gitlab-workhorse
       - tmp/tests/gitlab-workhorse/gitlab-resize-image
       - tmp/tests/gitlab-workhorse/config.toml
+      - tmp/tests/gitlab-workhorse/WORKHORSE_TREE
       - tmp/tests/repositories/
       - tmp/tests/second_storage/
     when: always

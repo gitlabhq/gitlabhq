@@ -1,5 +1,3 @@
-- enable_search_settings locals: { container_class: 'gl-my-5' }
-
 = form_for @group, html: { multipart: true, class: 'gl-show-field-errors js-general-settings-form' }, authenticity_token: true do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-general-settings' }
   = form_errors(@group)

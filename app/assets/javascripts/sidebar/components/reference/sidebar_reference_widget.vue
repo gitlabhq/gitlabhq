@@ -65,7 +65,9 @@ export default {
       css-class="sidebar-collapsed-icon dont-change-state"
       tooltip-placement="left"
     />
-    <div class="gl-display-flex gl-align-items-center gl-justify-between gl-mb-2 hide-collapsed">
+    <div
+      class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mb-2 hide-collapsed"
+    >
       <span class="gl-overflow-hidden gl-text-overflow-ellipsis gl-white-space-nowrap">
         {{ $options.i18n.text }}: {{ reference }}
         <gl-loading-icon v-if="isLoading" inline :label="$options.i18n.text" />

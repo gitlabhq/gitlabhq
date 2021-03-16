@@ -1,0 +1,9 @@
+- add_to_breadcrumbs _("Group applications"), group_settings_applications_path(@group)
+- breadcrumb_title @application.name
+- page_title @application.name, _("Group applications")
+- @content_class = "limit-container-width" unless fluid_layout
+
+%h3.page-title
+  = _("Group application: %{name}") % { name: @application.name }
+
+= render 'shared/doorkeeper/applications/show', edit_path: edit_group_settings_application_path(@group, @application), delete_path: group_settings_application_path(@group, @application)

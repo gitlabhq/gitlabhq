@@ -1189,3 +1189,86 @@ export const jobsInStage = {
   path: '/gitlab-org/gitlab-shell/pipelines/27#build',
   dropdown_path: '/gitlab-org/gitlab-shell/pipelines/27/stage.json?stage=build',
 };
+
+export const mockPipelineWithoutMR = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  ref: {
+    name: 'test-branch',
+  },
+};
+
+export const mockPipelineWithAttachedMR = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  flags: {
+    merge_request_pipeline: true,
+    detached_merge_request_pipeline: false,
+  },
+  merge_request: {
+    iid: 1234,
+    path: '/root/detached-merge-request-pipelines/-/merge_requests/1',
+    title: 'Update README.md',
+    source_branch: 'feature-1234',
+    source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1234',
+    target_branch: 'master',
+    target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
+  },
+  ref: {
+    name: 'test-branch',
+  },
+};
+
+export const mockPipelineDetached = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  flags: {
+    merge_request_pipeline: false,
+    detached_merge_request_pipeline: true,
+  },
+  merge_request: {
+    iid: 1234,
+    path: '/root/detached-merge-request-pipelines/-/merge_requests/1',
+    title: 'Update README.md',
+    source_branch: 'feature-1234',
+    source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1234',
+    target_branch: 'master',
+    target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
+  },
+  ref: {
+    name: 'test-branch',
+  },
+};

@@ -53,7 +53,7 @@ module Mutations
         end
 
         def resolve(board:, **args)
-          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
+          Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
 
           raise_resource_not_available_error! unless board
           authorize_board!(board)

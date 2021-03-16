@@ -14,7 +14,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]
-  before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
+  before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :authorize_read_actual_head_pipeline!, only: [
     :test_reports,
@@ -468,9 +468,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     access_denied! unless @merge_request.can_be_merged_by?(current_user)
   end
 
-  def whitelist_query_limiting
+  def disable_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42441
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42438')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42438')
   end
 
   def reports_response(report_comparison, pipeline = nil)

@@ -56,13 +56,13 @@ describe('gl_emoji', () => {
       'bomb emoji just with name attribute',
       '<gl-emoji data-name="bomb"></gl-emoji>',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb">💣</gl-emoji>',
-      '<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/1/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-name="bomb" data-unicode-version="6.0" title="bomb"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/2/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>',
     ],
     [
       'bomb emoji with name attribute and unicode version',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0">💣</gl-emoji>',
       '<gl-emoji data-name="bomb" data-unicode-version="6.0">💣</gl-emoji>',
-      '<gl-emoji data-name="bomb" data-unicode-version="6.0"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/1/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-name="bomb" data-unicode-version="6.0"><img class="emoji" title=":bomb:" alt=":bomb:" src="/-/emojis/2/bomb.png" width="20" height="20" align="absmiddle"></gl-emoji>',
     ],
     [
       'bomb emoji with sprite fallback',
@@ -80,7 +80,7 @@ describe('gl_emoji', () => {
       'invalid emoji',
       '<gl-emoji data-name="invalid_emoji"></gl-emoji>',
       '<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament">❔</gl-emoji>',
-      '<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament"><img class="emoji" title=":grey_question:" alt=":grey_question:" src="/-/emojis/1/grey_question.png" width="20" height="20" align="absmiddle"></gl-emoji>',
+      '<gl-emoji data-name="grey_question" data-unicode-version="6.0" title="white question mark ornament"><img class="emoji" title=":grey_question:" alt=":grey_question:" src="/-/emojis/2/grey_question.png" width="20" height="20" align="absmiddle"></gl-emoji>',
     ],
   ])('%s', (name, markup, withEmojiSupport, withoutEmojiSupport) => {
     it(`renders correctly with emoji support`, async () => {

@@ -3,8 +3,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - deploy_token_description = s_('DeployTokens|Deploy tokens allow access to packages, your repository, and registry images.')
 
-- enable_search_settings locals: { container_class: 'gl-my-5' }
-
 = render "projects/default_branch/show"
 = render_if_exists "projects/push_rules/index"
 = render "projects/mirrors/mirror_repos"

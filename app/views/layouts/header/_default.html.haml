@@ -19,10 +19,13 @@
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
-        - if current_user
-          = render "layouts/nav/dashboard"
+        - if Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
+          = render "layouts/nav/combined_menu"
         - else
-          = render "layouts/nav/explore"
+          - if current_user
+            = render "layouts/nav/dashboard"
+          - else
+            = render "layouts/nav/explore"
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav

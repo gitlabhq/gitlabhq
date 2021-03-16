@@ -1,4 +1,5 @@
 - page_title _("Edit"), @application.name, _("Applications")
 - @content_class = "limit-container-width" unless fluid_layout
+
 %h3.page-title= _('Edit application')
-= render 'form', application: @application
+= render 'shared/doorkeeper/applications/form', url: doorkeeper_submit_path(@application)

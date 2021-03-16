@@ -382,6 +382,27 @@ RSpec.describe MarkupHelper do
       end
     end
 
+    context 'when file is Kramdown' do
+      let(:extension) { 'rmd' }
+      let(:content) do
+        <<-EOF
+{::options parse_block_html="true" /}
+
+<div>
+FooBar
+</div>
+        EOF
+      end
+
+      it 'renders using #markdown_unsafe helper method' do
+        expect(helper).to receive(:markdown_unsafe).with(content, context)
+
+        result = helper.render_wiki_content(wiki)
+
+        expect(result).to be_empty
+      end
+    end
+
     context 'any other format' do
       let(:extension) { 'foo' }
 

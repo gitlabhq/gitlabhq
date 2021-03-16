@@ -66,9 +66,6 @@ Monaco uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html
 
 If you are missing Syntax Highlighting support for any language, we prepared a short guide on how to [add support for a missing language Syntax Highlighting.](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/ide/lib/languages/README.md)
 
-NOTE:
-Single file editing is based on the [Ace Editor](https://ace.c9.io).
-
 ### Themes
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in GitLab 13.0.
@@ -81,6 +78,12 @@ You can pick a theme from your [profile preferences](../../profile/preferences.m
 | Solarized Dark Theme                                        | Dark Theme                              |
 |-------------------------------------------------------------|-----------------------------------------|
 | ![Solarized Dark Theme](img/solarized_dark_theme_v13_1.png) | ![Dark Theme](img/dark_theme_v13_0.png) |
+
+## Highlight lines
+
+WebIDE is built with the [Web Editor](../repository/web_editor.md). This enables WebIDE to share the
+same core features for highlighting and linking to particular lines in the edited files
+[described for the Web Editor](../repository/web_editor.md#highlight-lines).
 
 ## Schema based validation
 

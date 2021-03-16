@@ -239,9 +239,6 @@ from the OmniAuth provider's documentation.
 If you have successfully set up a provider that is not shipped with GitLab itself,
 please let us know.
 
-You can help others by reporting successful configurations and probably share a
-few insights or provide warnings for common errors or pitfalls.
-
 While we can't officially support every possible authentication mechanism out there,
 we'd like to at least help those with specific needs.
 

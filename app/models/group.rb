@@ -70,6 +70,7 @@ class Group < Namespace
   has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'

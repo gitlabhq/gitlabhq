@@ -29,7 +29,15 @@ module Gitlab
       def validate!
         unless skip_validation?
           self.class.schemer.validate(attributes.stringify_keys).each do |error|
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new("#{error["details"] || error['data_pointer']} for `#{path}`"))
+            error_message = <<~ERROR_MSG
+              Error type: #{error['type']}
+              Data: #{error['data']}
+              Path: #{error['data_pointer']}
+              Details: #{error['details']}
+              Metric file: #{path}
+            ERROR_MSG
+
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new(error_message))
           end
         end
       end

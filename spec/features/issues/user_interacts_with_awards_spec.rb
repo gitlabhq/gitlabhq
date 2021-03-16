@@ -137,11 +137,11 @@ RSpec.describe 'User interacts with awards' do
         page.within('.note-actions') do
           find('.note-emoji-button').click
         end
-        find('gl-emoji[data-name="8ball"]').click
+        find('gl-emoji[data-name="grinning"]').click
         wait_for_requests
 
         page.within('.note-awards') do
-          expect(page).to have_emoji('8ball')
+          expect(page).to have_emoji('grinning')
         end
         expect(note.reload.award_emoji.size).to eq(2)
       end

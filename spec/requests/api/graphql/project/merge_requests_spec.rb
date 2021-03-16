@@ -47,10 +47,10 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
 
     before do
-      # We cannot call the whitelist here, since the transaction does not
+      # We cannot disable SQL query limiting here, since the transaction does not
       # begin until we enter the controller.
       headers = {
-        'X-GITLAB-QUERY-WHITELIST-ISSUE' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/322979'
+        'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/322979'
       }
 
       post_graphql(query, current_user: current_user, headers: headers)

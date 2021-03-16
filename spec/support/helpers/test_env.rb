@@ -170,7 +170,14 @@ module TestEnv
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
-        Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        Gitlab::SetupHelper::Gitaly.create_configuration(
+          gitaly_dir,
+          { 'default' => repos_path },
+          force: true,
+          options: {
+            prometheus_listen_addr: ':9236'
+          }
+        )
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,
           { 'default' => repos_path },

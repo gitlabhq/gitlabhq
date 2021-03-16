@@ -4,7 +4,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include Analytics::UniqueVisitsHelper
 
-  before_action :whitelist_query_limiting, only: [:create, :retry]
+  before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
@@ -92,7 +92,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/26657')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/26657')
 
     respond_to do |format|
       format.html
@@ -269,9 +269,9 @@ class Projects::PipelinesController < Projects::ApplicationController
             &.present(current_user: current_user)
   end
 
-  def whitelist_query_limiting
+  def disable_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42343
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42339')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42339')
   end
 
   def authorize_update_pipeline!

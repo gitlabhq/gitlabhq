@@ -19,7 +19,7 @@ module Mutations
     def resolve(project_path:, iid:, assignee_usernames:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
       resource = authorized_find!(project_path: project_path, iid: iid)
 
-      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/36098') if resource.is_a?(MergeRequest)
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/36098') if resource.is_a?(MergeRequest)
 
       update_service_class.new(
         resource.project,

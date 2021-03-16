@@ -13,7 +13,7 @@ module Boards
 
     requires_cross_project_access if: -> { board&.group_board? }
 
-    before_action :whitelist_query_limiting, only: [:bulk_move]
+    before_action :disable_query_limiting, only: [:bulk_move]
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
@@ -147,8 +147,8 @@ module Boards
       serializer.represent(resource, opts)
     end
 
-    def whitelist_query_limiting
-      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/35174')
+    def disable_query_limiting
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/35174')
     end
 
     def validate_id_list

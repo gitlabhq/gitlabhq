@@ -212,11 +212,11 @@ RSpec.describe 'GFM autocomplete', :js do
       end
 
       it 'doesn\'t wrap for emoji values' do
-        fill_in 'Comment', with: ':cartwheel_'
+        fill_in 'Comment', with: ':thumb'
 
         find_highlighted_autocomplete_item.click
 
-        expect(find_field('Comment').value).to have_text('cartwheel_tone1')
+        expect(find_field('Comment').value).to have_text('thumbsdown')
       end
 
       it 'doesn\'t open autocomplete after non-word character' do

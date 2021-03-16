@@ -709,9 +709,9 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'displays the PipelineSchedule in an active state' do
+        it 'displays the PipelineSchedule in an inactive state' do
           visit project_pipeline_schedules_path(project)
-          page.click_link('Active')
+          page.click_link('Inactive')
 
           expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
         end

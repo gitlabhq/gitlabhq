@@ -7,7 +7,7 @@ class Projects::ForksController < Projects::ApplicationController
   include Gitlab::Utils::StrongMemoize
 
   # Authorize
-  before_action :whitelist_query_limiting, only: [:create]
+  before_action :disable_query_limiting, only: [:create]
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
@@ -110,8 +110,8 @@ class Projects::ForksController < Projects::ApplicationController
     access_denied! unless fork_namespace && fork_service.valid_fork_target?
   end
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')
   end
 
   def load_namespaces_with_associations

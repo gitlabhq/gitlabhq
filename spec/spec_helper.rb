@@ -92,6 +92,25 @@ RSpec.configure do |config|
     config.full_backtrace = true
   end
 
+  # Attempt to troubleshoot https://gitlab.com/gitlab-org/gitlab/-/issues/297359
+  if ENV['CI']
+    config.after do |example|
+      if example.exception.is_a?(GRPC::Unavailable)
+        warn "=== gRPC unavailable detected, process list:"
+        processes = `ps -ef | grep toml`
+        warn processes
+        warn "=== free memory"
+        warn `free -m`
+        warn "=== uptime"
+        warn `uptime`
+        warn "=== Prometheus metrics:"
+        warn `curl -s http://localhost:9236/metrics`
+        warn "=== Taking goroutine dump in log/goroutines.log..."
+        warn `curl -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
+      end
+    end
+  end
+
   unless ENV['CI']
     # Re-run failures locally with `--only-failures`
     config.example_status_persistence_file_path = './spec/examples.txt'
@@ -340,6 +359,9 @@ RSpec.configure do |config|
 
     # Reset all feature flag stubs to default for testing
     stub_all_feature_flags
+
+    # Re-enable query limiting in case it was disabled
+    Gitlab::QueryLimiting.enable!
   end
 
   config.before(:example, :mailer) do

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Applications, :api do
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
-  let!(:application) { create(:application, name: 'another_application', redirect_uri: 'http://other_application.url', scopes: '') }
+  let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: '') }
 
   describe 'POST /applications' do
     context 'authenticated and authorized user' do
@@ -142,6 +142,12 @@ RSpec.describe API::Applications, :api do
         end.to change { Doorkeeper::Application.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'cannot delete non-existing application' do
+        delete api("/applications/#{non_existing_record_id}", admin_user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

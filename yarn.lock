@@ -4388,10 +4388,10 @@ emoji-regex@^8.0.0:
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
 
-emoji-unicode-version@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/emoji-unicode-version/-/emoji-unicode-version-0.2.1.tgz#0ebf3666b5414097971d34994e299fce75cdbafc"
-  integrity sha1-Dr82ZrVBQJeXHTSZTimfznXNuvw=
+emoji-unicode-version@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/emoji-unicode-version/-/emoji-unicode-version-0.3.0.tgz#5cfc511d4a7ccacf3cd02887909a5911b6dde5ec"
+  integrity sha512-DCHEeGr11QbUy9HMZ70f/NsOJp+cqzMktO5tBMJhX393ZphHDH5WAp3CzZmMawRxfc4Opr1GZTAwWtSGC8/flA==
 
 emojis-list@^3.0.0:
   version "3.0.0"

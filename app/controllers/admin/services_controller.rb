@@ -4,7 +4,7 @@ class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
   before_action :service, only: [:edit, :update]
-  before_action :whitelist_query_limiting, only: [:index]
+  before_action :disable_query_limiting, only: [:index]
 
   feature_category :integrations
 
@@ -39,7 +39,7 @@ class Admin::ServicesController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/220357')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/220357')
   end
 end

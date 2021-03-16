@@ -14,7 +14,7 @@ class ProjectsController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
-  before_action :whitelist_query_limiting, only: [:show, :create]
+  before_action :disable_query_limiting, only: [:show, :create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create, :resolve]
@@ -510,8 +510,8 @@ class ProjectsController < Projects::ApplicationController
     redirect_to(request.original_url.sub(%r{\.git/?\Z}, ''))
   end
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/20826')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20826')
   end
 
   def present_project

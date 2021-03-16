@@ -16,7 +16,7 @@ module Mutations
 
         argument :api_url, GraphQL::STRING_TYPE,
                  required: false,
-                 description: "Endpoint at which prometheus can be queried."
+                 description: "Endpoint at which Prometheus can be queried."
 
         def resolve(args)
           integration = authorized_find!(id: args[:id])

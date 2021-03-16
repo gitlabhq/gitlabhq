@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard shortcuts', :js do
+  before do
+    stub_feature_flags(combined_menu: false)
+  end
+
   context 'logged in' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

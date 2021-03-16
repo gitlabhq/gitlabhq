@@ -9,6 +9,8 @@ RSpec.describe 'Admin mode' do
   let(:admin) { create(:admin) }
 
   before do
+    stub_feature_flags(combined_menu: false)
+
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 

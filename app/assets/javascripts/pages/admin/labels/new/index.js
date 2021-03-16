@@ -1,3 +1,3 @@
 import Labels from '../../../../labels';
 
-document.addEventListener('DOMContentLoaded', () => new Labels());
+new Labels(); // eslint-disable-line no-new

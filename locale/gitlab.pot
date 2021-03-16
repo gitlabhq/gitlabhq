@@ -11203,6 +11203,9 @@ msgstr ""
 msgid "Edit fork in Web IDE"
 msgstr ""
 
+msgid "Edit group application"
+msgstr ""
+
 msgid "Edit group: %{group_name}"
 msgstr ""
 
@@ -14551,6 +14554,12 @@ msgid "Group URL"
 msgstr ""
 
 msgid "Group Wikis"
+msgstr ""
+
+msgid "Group application: %{name}"
+msgstr ""
+
+msgid "Group applications"
 msgstr ""
 
 msgid "Group avatar"
@@ -18548,6 +18557,9 @@ msgid "Manage all notifications"
 msgstr ""
 
 msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
+msgstr ""
+
+msgid "Manage applications that can use GitLab as an OAuth provider."
 msgstr ""
 
 msgid "Manage applications that you've authorized to use your account."
@@ -35148,7 +35160,7 @@ msgstr ""
 msgid "[No reason]"
 msgstr ""
 
-msgid "[Unchanged]"
+msgid "[Redacted]"
 msgstr ""
 
 msgid "`end_time` should not exceed one month after `start_time`"

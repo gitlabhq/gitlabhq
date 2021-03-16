@@ -43,7 +43,7 @@ export default class EditBlob {
       blobPath: fileNameEl.value,
       blobContent: editorEl.innerText,
     });
-    this.editor.use(new FileTemplateExtension());
+    this.editor.use(new FileTemplateExtension({ instance: this.editor }));
 
     fileNameEl.addEventListener('change', () => {
       this.editor.updateModelLanguage(fileNameEl.value);

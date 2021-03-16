@@ -8,6 +8,8 @@ RSpec.describe 'The group dashboard' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(combined_menu: false)
+
     sign_in user
   end
 

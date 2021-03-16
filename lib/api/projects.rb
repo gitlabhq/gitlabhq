@@ -215,7 +215,7 @@ module API
         use :create_params
       end
       post do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/21139')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
@@ -248,7 +248,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id", feature_category: :projects do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/21139')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
@@ -310,7 +310,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
       end
       post ':id/fork', feature_category: :source_code_management do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')
 
         not_found! unless can?(current_user, :fork_project, user_project)
 

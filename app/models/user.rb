@@ -351,6 +351,7 @@ class User < ApplicationRecord
     # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
       Ci::CancelUserPipelinesService.new.execute(user)
+      Ci::DisableUserPipelineSchedulesService.new.execute(user)
     end
     # rubocop: enable CodeReuse/ServiceClass
   end
