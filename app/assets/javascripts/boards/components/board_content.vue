@@ -17,7 +17,7 @@ export default {
       gon.features?.graphqlBoardLists || gon.features?.epicBoards
         ? BoardColumn
         : BoardColumnDeprecated,
-    BoardContentSidebar: () => import('ee_component/boards/components/board_content_sidebar.vue'),
+    BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
@@ -69,7 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['moveList']),
+    ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
@@ -100,7 +100,7 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="error" variant="danger" :dismissible="false">
+    <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
     <component
@@ -134,6 +134,9 @@ export default {
       :disabled="disabled"
     />
 
-    <board-content-sidebar v-if="isSwimlanesOn || glFeatures.graphqlBoardLists" />
+    <board-content-sidebar
+      v-if="isSwimlanesOn || glFeatures.graphqlBoardLists"
+      class="issue-boards-sidebar"
+    />
   </div>
 </template>

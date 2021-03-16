@@ -10,6 +10,7 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
+import BoardBlockedIcon from './board_blocked_icon.vue';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
@@ -22,6 +23,7 @@ export default {
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    BoardBlockedIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -52,7 +54,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isShowingLabels']),
+    ...mapState(['isShowingLabels', 'issuableType']),
     ...mapGetters(['isEpicBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
@@ -114,7 +116,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['performSearch']),
+    ...mapActions(['performSearch', 'setError']),
     isIndexLessThanlimit(index) {
       return index < this.limitBeforeCounter;
     },
@@ -164,14 +166,12 @@ export default {
   <div>
     <div class="gl-display-flex" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0">
-        <gl-icon
+        <board-blocked-icon
           v-if="item.blocked"
-          v-gl-tooltip
-          name="issue-block"
-          :title="blockedLabel"
-          class="issue-blocked-icon gl-mr-2"
-          :aria-label="blockedLabel"
-          data-testid="issue-blocked-icon"
+          :item="item"
+          :unique-id="`${item.id}${list.id}`"
+          :issuable-type="issuableType"
+          @blocking-issuables-error="setError"
         />
         <gl-icon
           v-if="item.confidential"
@@ -181,13 +181,9 @@ export default {
           class="confidential-icon gl-mr-2"
           :aria-label="__('Confidential')"
         />
-        <a
-          :href="item.path || item.webUrl || ''"
-          :title="item.title"
-          class="js-no-trigger"
-          @mousemove.stop
-          >{{ item.title }}</a
-        >
+        <a :href="item.path || item.webUrl || ''" :title="item.title" @mousemove.stop>{{
+          item.title
+        }}</a>
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">

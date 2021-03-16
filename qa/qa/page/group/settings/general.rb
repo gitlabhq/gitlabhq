@@ -9,6 +9,7 @@ module QA
 
           view 'app/views/groups/edit.html.haml' do
             element :permission_lfs_2fa_content
+            element :advanced_settings_content
           end
 
           view 'app/views/groups/settings/_permissions.html.haml' do
@@ -38,6 +39,16 @@ module QA
 
           view 'app/views/groups/settings/_project_creation_level.html.haml' do
             element :project_creation_level_dropdown
+          end
+
+          view 'app/views/groups/settings/_advanced.html.haml' do
+            element :select_group_dropdown
+            element :transfer_group_button
+          end
+
+          view 'app/helpers/dropdowns_helper.rb' do
+            element :dropdown_input_field
+            element :dropdown_list_content
           end
 
           def set_group_name(name)
@@ -105,6 +116,19 @@ module QA
             end
 
             click_element(:save_permissions_changes_button)
+          end
+
+          def transfer_group(target_group)
+            expand_content :advanced_settings_content
+
+            click_element :select_group_dropdown
+            fill_element(:dropdown_input_field, target_group)
+
+            within_element(:dropdown_list_content) do
+              click_on target_group
+            end
+
+            click_element :transfer_group_button
           end
         end
       end

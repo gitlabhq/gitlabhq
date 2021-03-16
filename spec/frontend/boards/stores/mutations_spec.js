@@ -666,4 +666,14 @@ describe('Board Store Mutations', () => {
       expect(state.selectedBoardItems).toEqual([]);
     });
   });
+
+  describe('SET_ERROR', () => {
+    it('Should set error state', () => {
+      state.error = undefined;
+
+      mutations[types.SET_ERROR](state, 'mayday');
+
+      expect(state.error).toBe('mayday');
+    });
+  });
 });

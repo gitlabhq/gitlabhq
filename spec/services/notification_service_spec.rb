@@ -105,7 +105,7 @@ RSpec.describe NotificationService, :mailer do
       recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
       allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1])
 
-      expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: current_user.id, klass: object.class, object_id: object.id)
+      expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: current_user.id, klass: object.class.to_s, object_id: object.id)
 
       action
 

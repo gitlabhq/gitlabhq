@@ -125,7 +125,7 @@ export const labels = [
 export const rawIssue = {
   title: 'Issue 1',
   id: 'gid://gitlab/Issue/436',
-  iid: 27,
+  iid: '27',
   dueDate: null,
   timeEstimate: 0,
   weight: null,
@@ -152,7 +152,7 @@ export const rawIssue = {
 
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
-  iid: 27,
+  iid: '27',
   title: 'Issue 1',
   dueDate: null,
   timeEstimate: 0,
@@ -398,3 +398,93 @@ export const mockActiveGroupProjects = [
   { ...mockGroupProject1, archived: false },
   { ...mockGroupProject2, archived: false },
 ];
+
+export const mockIssueGroupPath = 'gitlab-org';
+export const mockIssueProjectPath = `${mockIssueGroupPath}/gitlab-test`;
+
+export const mockBlockingIssue1 = {
+  id: 'gid://gitlab/Issue/525',
+  iid: '6',
+  title: 'blocking issue title 1',
+  reference: 'gitlab-org/my-project-1#6',
+  webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/6',
+  __typename: 'Issue',
+};
+
+export const mockBlockingIssue2 = {
+  id: 'gid://gitlab/Issue/524',
+  iid: '5',
+  title:
+    'blocking issue title 2 + blocking issue title 2 + blocking issue title 2 + blocking issue title 2',
+  reference: 'gitlab-org/my-project-1#5',
+  webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/5',
+  __typename: 'Issue',
+};
+
+export const mockBlockingIssue3 = {
+  id: 'gid://gitlab/Issue/523',
+  iid: '4',
+  title: 'blocking issue title 3',
+  reference: 'gitlab-org/my-project-1#4',
+  webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/4',
+  __typename: 'Issue',
+};
+
+export const mockBlockingIssue4 = {
+  id: 'gid://gitlab/Issue/522',
+  iid: '3',
+  title: 'blocking issue title 4',
+  reference: 'gitlab-org/my-project-1#3',
+  webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/3',
+  __typename: 'Issue',
+};
+
+export const mockBlockingIssuablesResponse1 = {
+  data: {
+    issuable: {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/527',
+      blockingIssuables: {
+        __typename: 'IssueConnection',
+        nodes: [mockBlockingIssue1],
+      },
+    },
+  },
+};
+
+export const mockBlockingIssuablesResponse2 = {
+  data: {
+    issuable: {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/527',
+      blockingIssuables: {
+        __typename: 'IssueConnection',
+        nodes: [mockBlockingIssue2],
+      },
+    },
+  },
+};
+
+export const mockBlockingIssuablesResponse3 = {
+  data: {
+    issuable: {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/527',
+      blockingIssuables: {
+        __typename: 'IssueConnection',
+        nodes: [mockBlockingIssue1, mockBlockingIssue2, mockBlockingIssue3, mockBlockingIssue4],
+      },
+    },
+  },
+};
+
+export const mockBlockedIssue1 = {
+  id: '527',
+  blockedByCount: 1,
+};
+
+export const mockBlockedIssue2 = {
+  id: '527',
+  blockedByCount: 4,
+  webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/0',
+};

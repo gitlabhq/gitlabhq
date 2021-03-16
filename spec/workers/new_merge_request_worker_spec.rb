@@ -53,7 +53,7 @@ RSpec.describe NewMergeRequestWorker do
           expect(Notify).not_to receive(:new_merge_request_email)
             .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
 
-          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: merge_request.class, object_id: merge_request.id)
+          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: merge_request.class.to_s, object_id: merge_request.id)
 
           worker.perform(merge_request.id, user.id)
         end

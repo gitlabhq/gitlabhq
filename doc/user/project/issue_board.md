@@ -280,6 +280,7 @@ group-level objects are available.
 #### GraphQL-based sidebar for group issue boards **(PREMIUM)**
 
 <!-- When the feature flag is removed, integrate this section into the above ("Group issue boards"). -->
+<!-- This anchor is linked from #blocked-issues as well. -->
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
@@ -407,12 +408,18 @@ To set a WIP limit for a list:
 
 ## Blocked issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
+> - [View blocking issues when hovering over blocked icon](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10.
 
 If an issue is blocked by another issue, an icon appears next to its title to indicate its blocked
 status.
 
-![Blocked issues](img/issue_boards_blocked_icon_v13_6.png)
+When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
+
+To enable this in group issue boards, enable the [GraphQL-based sidebar](#graphql-based-sidebar-for-group-issue-boards).
+The feature is enabled by default when you use group issue boards with epic swimlanes.
+
+![Blocked issues](img/issue_boards_blocked_icon_v13_10.png)
 
 ## Actions you can take on an issue board
 

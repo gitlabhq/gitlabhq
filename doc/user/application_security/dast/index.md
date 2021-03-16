@@ -7,125 +7,135 @@ type: reference, howto
 
 # Dynamic Application Security Testing (DAST) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4348) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+If you deploy your web application into a new environment, your application may
+become exposed to new types of attacks. For example, misconfigurations of your
+application server or incorrect assumptions about security controls may not be
+visible from the source code.
 
-Your application may be exposed to a new category of attacks once deployed into a new environment. For
-example, application server misconfigurations or incorrect assumptions about security controls may
-not be visible from source code alone. Dynamic Application Security Testing (DAST) checks an
-application for these types of vulnerabilities in a deployed environment. GitLab DAST uses the
-popular open source tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) to analyze your running
-web application.
+Dynamic Application Security Testing (DAST) examines applications for
+vulnerabilities like these in deployed environments. DAST uses the open source
+tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) for analysis.
 
 NOTE:
-The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
-explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
-organization.
+To learn how four of the top six attacks were application-based and how
+to protect your organization, download our
+["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
+whitepaper.
 
-In GitLab, DAST is commonly initiated by a merge request and runs as a job in the CI/CD pipeline.
-You can also run a DAST scan on demand, outside the CI/CD pipeline. Your running web application is
-analyzed for known vulnerabilities. GitLab checks the DAST report, compares the vulnerabilities
-found between the source and target branches, and shows any relevant findings on the merge request.
+You can use DAST to examine your web applications:
 
-Note that this comparison logic uses only the latest pipeline executed for the target branch's base
-commit. Running the pipeline on any other commit has no effect on the merge request.
+- When initiated by a merge request, running as CI/CD pipeline job.
+- On demand, outside the CI/CD pipeline.
 
-![DAST widget, showing the vulnerability statistics and a list of vulnerabilities](img/dast_v13_4.png)
+After DAST creates its report, GitLab evaluates it for discovered
+vulnerabilities between the source and target branches. Relevant
+findings are noted in the merge request.
+
+The comparison logic uses only the latest pipeline executed for the target
+branch's base commit. Running the pipeline on other commits has no effect on
+the merge request.
+
+## Prerequisite
+
+To use DAST, ensure you're using GitLab Runner with the
+[`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
 ## Enable DAST
 
-### Prerequisites
-
-- GitLab Runner with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
-
 To enable DAST, either:
 
-- Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast), provided by
-  [Auto DevOps](../../../topics/autodevops/index.md).
-- [Include the DAST template](#dast-cicd-template) in your existing `.gitlab-ci.yml` file.
+- Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast) (provided
+  by [Auto DevOps](../../../topics/autodevops/index.md)).
+- Manually [include the DAST template](#include-the-dast-template) in your existing
+  `.gitlab-ci.yml` file.
 
-### DAST CI/CD template
+### Include the DAST template
 
-The DAST job is defined in a CI/CD template file you reference in your CI/CD configuration file. The
-template is included with GitLab. Updates to the template are provided with GitLab upgrades. You
-benefit from any improvements and additions.
+If you want to manually add DAST to your application, the DAST job is defined
+in a CI/CD template file. Updates to the template are provided with GitLab
+upgrades, allowing you to benefit from any improvements and additions.
 
-The following templates are available:
+To include the DAST template:
 
-- [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
-  Stable version of the DAST CI/CD template.
-- [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
-  Latest version of the DAST template. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325)
-  in GitLab 13.8). Please note that the latest version may include breaking changes. Check the
-  [DAST troubleshooting guide](#troubleshooting) if you experience problems.
+1. Select the CI/CD template you want to use:
 
-Use the stable template unless you need a feature provided only in the latest template.
+   - [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
+     Stable version of the DAST CI/CD template.
+   - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
+     Latest version of the DAST template. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325)
+     in GitLab 13.8).
 
-See the CI/CD [documentation](../../../development/cicd/templates.md#latest-version)
-on template versioning for more information.
+   WARNING:
+   The latest version of the template may include breaking changes. Use the
+   stable template unless you need a feature provided only in the latest template.
 
-#### Include the DAST template
+   For more information about template versioning, see the
+   [CI/CD documentation](../../../development/cicd/templates.md#latest-version).
 
-The method of including the DAST template depends on the GitLab version:
+1. Add the template to GitLab, based on your version of GitLab:
 
-- In GitLab 11.9 and later, [include](../../../ci/yaml/README.md#includetemplate) the
-  `DAST.gitlab-ci.yml` template.
+   - In GitLab 11.9 and later, [include](../../../ci/yaml/README.md#includetemplate)
+     the template by adding the following to your `.gitlab-ci.yml` file:
 
-  Add the following to your `.gitlab-ci.yml` file:
+     ```yaml
+     include:
+       - template: <template_file.yml>
 
-  ```yaml
-  include:
-    - template: DAST.gitlab-ci.yml
+     variables:
+       DAST_WEBSITE: https://example.com
+     ```
 
-  variables:
-    DAST_WEBSITE: https://example.com
-  ```
+   - In GitLab 11.8 and earlier, add the contents of the template to your
+     `.gitlab_ci.yml` file.
 
-- In GitLab 11.8 and earlier, copy the template's content into your `.gitlab_ci.yml` file.
+1. Define the URL to be scanned by DAST by using one of these methods:
 
-#### Template options
+   - Set the `DAST_WEBSITE` [CI/CD variable](../../../ci/yaml/README.md#variables).
+     If set, this value takes precedence.
 
-Running a DAST scan requires a URL. There are two ways to define the URL to be scanned by DAST:
+   - Add the URL in an `environment_url.txt` file at the root of your project. This is
+     useful for testing in dynamic environments. To run DAST against an application
+     dynamically created during a GitLab CI/CD pipeline, a job that runs prior to
+     the DAST scan must persist the application's domain in an `environment_url.txt`
+     file. DAST automatically parses the `environment_url.txt` file to find its
+     scan target.
 
-1. Set the `DAST_WEBSITE` [CI/CD variable](../../../ci/yaml/README.md#variables).
+     For example, in a job that runs prior to DAST, you could include code that
+     looks similar to:
 
-1. Add it in an `environment_url.txt` file at the root of your project.
-   This is useful for testing in dynamic environments. To run DAST against an application
-   dynamically created during a GitLab CI/CD pipeline, a job that runs prior to the DAST scan must
-   persist the application's domain in an `environment_url.txt` file. DAST automatically parses the
-   `environment_url.txt` file to find its scan target.
+     ```yaml
+     script:
+       - echo http://${CI_PROJECT_ID}-${CI_ENVIRONMENT_SLUG}.domain.com > environment_url.txt
+     artifacts:
+       paths: [environment_url.txt]
+       when: always
+     ```
 
-   For example, in a job that runs prior to DAST, you could include code that looks similar to:
-
-   ```yaml
-   script:
-     - echo http://${CI_PROJECT_ID}-${CI_ENVIRONMENT_SLUG}.domain.com > environment_url.txt
-   artifacts:
-     paths: [environment_url.txt]
-     when: always
-   ```
-  
-   You can see an example of this in our [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml) file.
-
-If both values are set, the `DAST_WEBSITE` value takes precedence.
+     You can see an example of this in our
+     [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
+     file.
 
 The included template creates a `dast` job in your CI/CD pipeline and scans
 your project's running application for possible vulnerabilities.
 
 The results are saved as a
 [DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast)
-that you can later download and analyze. Due to implementation limitations we
+that you can later download and analyze. Due to implementation limitations, we
 always take the latest DAST artifact available. Behind the scenes, the
 [GitLab DAST Docker image](https://gitlab.com/gitlab-org/security-products/dast)
-is used to run the tests on the specified URL and scan it for possible vulnerabilities.
+is used to run the tests on the specified URL and scan it for possible
+vulnerabilities.
 
 By default, the DAST template uses the latest major version of the DAST Docker
 image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
 
-- Automatically update DAST with new features and fixes by pinning to a major version (such as `1`).
+- Automatically update DAST with new features and fixes by pinning to a major
+  version (such as `1`).
 - Only update fixes by pinning to a minor version (such as `1.6`).
 - Prevent all updates by pinning to a specific version (such as `1.6.4`).
 
-Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases) page.
+Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases)
+page.
 
 ## Deployment options
 
@@ -747,7 +757,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use DAST in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisites).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisite).
 - Docker Container Registry with a locally available copy of the DAST
   [container image](https://gitlab.com/gitlab-org/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/gitlab-org/security-products/dast/container_registry).

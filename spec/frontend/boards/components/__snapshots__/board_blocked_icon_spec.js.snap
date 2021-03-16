@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BoardBlockedIcon on mouseenter on blocked icon with more than three blocking issues matches the snapshot 1`] = `
+"<div class=\\"gl-display-inline\\"><svg data-testid=\\"issue-blocked-icon\\" aria-hidden=\\"true\\" class=\\"issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-icon s16\\" id=\\"blocked-icon-uniqueId\\">
+    <use href=\\"#issue-block\\"></use>
+  </svg>
+  <div class=\\"gl-popover\\">
+    <ul class=\\"gl-list-style-none gl-p-0\\">
+      <li><a href=\\"http://gdk.test:3000/gitlab-org/my-project-1/-/issues/6\\" class=\\"gl-link gl-text-blue-500! gl-font-sm\\">my-project-1#6</a>
+        <p data-testid=\\"issuable-title\\" class=\\"gl-mb-3 gl-display-block!\\">
+          blocking issue title 1
+        </p>
+      </li>
+      <li><a href=\\"http://gdk.test:3000/gitlab-org/my-project-1/-/issues/5\\" class=\\"gl-link gl-text-blue-500! gl-font-sm\\">my-project-1#5</a>
+        <p data-testid=\\"issuable-title\\" class=\\"gl-mb-3 gl-display-block!\\">
+          blocking issue title 2 + blocking issue title 2 + blocking issue title 2 + bloc…
+        </p>
+      </li>
+      <li><a href=\\"http://gdk.test:3000/gitlab-org/my-project-1/-/issues/4\\" class=\\"gl-link gl-text-blue-500! gl-font-sm\\">my-project-1#4</a>
+        <p data-testid=\\"issuable-title\\" class=\\"gl-mb-3 gl-display-block!\\">
+          blocking issue title 3
+        </p>
+      </li>
+    </ul>
+    <div class=\\"gl-mt-4\\">
+      <p data-testid=\\"hidden-blocking-count\\" class=\\"gl-mb-3\\">+ 1 more issue</p> <a data-testid=\\"view-all-issues\\" href=\\"http://gdk.test:3000/gitlab-org/my-project-1/-/issues/0#related-issues\\" class=\\"gl-link gl-text-blue-500! gl-font-sm\\">View all blocking issues</a>
+    </div><span data-testid=\\"popover-title\\">Blocked by 4 issues</span>
+  </div>
+</div>"
+`;

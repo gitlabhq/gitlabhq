@@ -49,7 +49,7 @@ RSpec.describe NewIssueWorker do
           expect(Notify).not_to receive(:new_issue_email)
             .with(mentioned.id, issue.id, NotificationReason::MENTIONED)
 
-          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: issue.class, object_id: issue.id)
+          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: issue.class.to_s, object_id: issue.id)
 
           worker.perform(issue.id, user.id)
         end

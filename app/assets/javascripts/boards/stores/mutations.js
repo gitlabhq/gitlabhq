@@ -309,4 +309,8 @@ export default {
   [mutationTypes.RESET_BOARD_ITEM_SELECTION]: (state) => {
     state.selectedBoardItems = [];
   },
+
+  [mutationTypes.SET_ERROR]: (state, error) => {
+    state.error = error;
+  },
 };
