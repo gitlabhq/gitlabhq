@@ -73,3 +73,93 @@ RSpec.shared_examples 'merge request reviewers cache counters invalidator' do
     described_class.new(project, user, {}).execute(merge_request)
   end
 end
+
+RSpec.shared_examples_for 'a service that can create a merge request' do
+  subject(:last_mr) { MergeRequest.last }
+
+  it 'creates a merge request with the correct target branch' do
+    branch = push_options[:target] || project.default_branch
+
+    expect { service.execute }.to change { MergeRequest.count }.by(1)
+    expect(last_mr.target_branch).to eq(branch)
+  end
+
+  context 'when project has been forked', :sidekiq_might_not_need_inline do
+    let(:forked_project) { fork_project(project, user1, repository: true) }
+    let(:service) { described_class.new(forked_project, user1, changes, push_options) }
+
+    before do
+      allow(forked_project).to receive(:empty_repo?).and_return(false)
+    end
+
+    it 'sets the correct source and target project' do
+      service.execute
+
+      expect(last_mr.source_project).to eq(forked_project)
+      expect(last_mr.target_project).to eq(project)
+    end
+  end
+end
+
+RSpec.shared_examples_for 'a service that does not create a merge request' do
+  it do
+    expect { service.execute }.not_to change { MergeRequest.count }
+  end
+end
+
+# In the non-foss version of GitLab, there can be many assignees, so
+# there 'count' can be something other than 0 or 1. In the foss
+# version of GitLab, there can be only one assignee though, so 'count'
+# can only be 0 or 1.
+RSpec.shared_examples_for 'a service that can change assignees of a merge request' do |count|
+  subject(:last_mr) { MergeRequest.last }
+
+  it 'changes assignee count' do
+    service.execute
+
+    expect(last_mr.assignees.count).to eq(count)
+  end
+end
+
+RSpec.shared_examples 'with an existing branch that has a merge request open' do |count|
+  let(:changes) { existing_branch_changes }
+  let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch)}
+
+  it_behaves_like 'a service that does not create a merge request'
+  it_behaves_like 'a service that can change assignees of a merge request', count
+end
+
+RSpec.shared_examples 'when coupled with the `create` push option' do |count|
+  let(:push_options) { { create: true, assign: assigned, unassign: unassigned } }
+
+  it_behaves_like 'a service that can create a merge request'
+  it_behaves_like 'a service that can change assignees of a merge request', count
+end
+
+RSpec.shared_examples 'with a new branch' do |count|
+  let(:changes) { new_branch_changes }
+
+  it_behaves_like 'a service that does not create a merge request'
+
+  it 'adds an error to the service' do
+    service.execute
+
+    expect(service.errors).to include(error_mr_required)
+  end
+
+  it_behaves_like 'when coupled with the `create` push option', count
+end
+
+RSpec.shared_examples 'with an existing branch but no open MR' do |count|
+  let(:changes) { existing_branch_changes }
+
+  it_behaves_like 'a service that does not create a merge request'
+
+  it 'adds an error to the service' do
+    service.execute
+
+    expect(service.errors).to include(error_mr_required)
+  end
+
+  it_behaves_like 'when coupled with the `create` push option', count
+end

@@ -11,7 +11,7 @@ RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker do
     end
 
     it 'executes a service' do
-      expect_next_instance_of(::Ci::PipelineArtifacts::DestroyExpiredArtifactsService) do |instance|
+      expect_next_instance_of(::Ci::PipelineArtifacts::DestroyAllExpiredService) do |instance|
         expect(instance).to receive(:execute)
       end
 

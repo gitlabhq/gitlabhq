@@ -1,15 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import pipelineHeader from './components/header_component.vue';
 
 Vue.use(VueApollo);
 
-const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
-});
-
-export const createPipelineHeaderApp = (elSelector) => {
+export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResourceEtag) => {
   const el = document.querySelector(elSelector);
 
   if (!el) {
@@ -27,6 +22,7 @@ export const createPipelineHeaderApp = (elSelector) => {
     provide: {
       paths: {
         fullProject: fullPath,
+        graphqlResourceEtag,
         pipelinesPath,
       },
       pipelineId,

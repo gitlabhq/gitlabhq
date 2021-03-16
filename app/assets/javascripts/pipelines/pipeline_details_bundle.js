@@ -7,6 +7,7 @@ import { reportToSentry } from './components/graph/utils';
 import TestReports from './components/test_reports/test_reports.vue';
 import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import createDagApp from './pipeline_details_dag';
+import { apolloProvider } from './pipeline_shared_client';
 import createTestReportsStore from './stores/test_reports';
 
 Vue.use(Translate);
@@ -80,7 +81,7 @@ const createTestDetails = () => {
 
 export default async function initPipelineDetailsBundle() {
   createTestDetails();
-  createDagApp();
+  createDagApp(apolloProvider);
 
   const canShowNewPipelineDetails =
     gon.features.graphqlPipelineDetails || gon.features.graphqlPipelineDetailsUsers;
@@ -93,7 +94,7 @@ export default async function initPipelineDetailsBundle() {
         /* webpackChunkName: 'createPipelinesDetailApp' */ './pipeline_details_graph'
       );
 
-      createPipelinesDetailApp(SELECTORS.PIPELINE_GRAPH, dataset);
+      createPipelinesDetailApp(SELECTORS.PIPELINE_GRAPH, apolloProvider, dataset);
     } catch {
       Flash(__('An error occurred while loading the pipeline.'));
     }
@@ -111,7 +112,7 @@ export default async function initPipelineDetailsBundle() {
     const { createPipelineHeaderApp } = await import(
       /* webpackChunkName: 'createPipelineHeaderApp' */ './pipeline_details_header'
     );
-    createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER);
+    createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER, apolloProvider, dataset.graphqlResourceEtag);
   } catch {
     Flash(__('An error occurred while loading a section of this page.'));
   }

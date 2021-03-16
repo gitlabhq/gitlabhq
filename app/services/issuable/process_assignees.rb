@@ -14,12 +14,13 @@ module Issuable
     end
 
     def execute
-      if assignee_ids.blank?
-        updated_new_assignees = new_assignee_ids
+      updated_new_assignees = new_assignee_ids
+
+      if add_assignee_ids.blank? && remove_assignee_ids.blank?
+        updated_new_assignees = assignee_ids if assignee_ids
+      else
         updated_new_assignees |= add_assignee_ids if add_assignee_ids
         updated_new_assignees -= remove_assignee_ids if remove_assignee_ids
-      else
-        updated_new_assignees = assignee_ids
       end
 
       updated_new_assignees.uniq

@@ -532,10 +532,6 @@ table.code {
       &.parallel {
         display: table-cell;
         width: 46%;
-
-        span {
-          word-break: break-all;
-        }
       }
 
       &.old {

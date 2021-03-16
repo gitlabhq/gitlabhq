@@ -2,7 +2,7 @@
 
 module Ci
   module PipelineArtifacts
-    class DestroyExpiredArtifactsService
+    class DestroyAllExpiredService
       include ::Gitlab::LoopHelpers
       include ::Gitlab::Utils::StrongMemoize
 

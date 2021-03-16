@@ -2325,8 +2325,8 @@ The valid values of `when` are:
 1. `delayed` - [Delay the execution of a job](#whendelayed) for a specified duration.
     Added in GitLab 11.14.
 1. `never`:
-   - With [`rules`](#rules), don't execute job.
-   - With [`workflow`](#workflow), don't run pipeline.
+   - With job [`rules`](#rules), don't execute job.
+   - With [`workflow:rules`](#workflow), don't run pipeline.
 
 In the following example, the script:
 

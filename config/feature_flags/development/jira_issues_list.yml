@@ -1,8 +1,0 @@
----
-name: jira_issues_list
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45678
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/273726
-milestone: '13.6'
-type: development
-group: group::ecosystem
-default_enabled: false

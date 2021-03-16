@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::DestroyExpiredArtifactsService do
+RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
   let(:service) { described_class.new }
 
   describe '.execute' do
@@ -10,7 +10,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyExpiredArtifactsService do
 
     context 'when timeout happens' do
       before do
-        stub_const('Ci::PipelineArtifacts::DestroyExpiredArtifactsService::LOOP_TIMEOUT', 0.1.seconds)
+        stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_TIMEOUT', 0.1.seconds)
         allow(service).to receive(:destroy_artifacts_batch) { true }
       end
 
@@ -27,8 +27,8 @@ RSpec.describe Ci::PipelineArtifacts::DestroyExpiredArtifactsService do
 
     context 'when the loop limit is reached' do
       before do
-        stub_const('::Ci::PipelineArtifacts::DestroyExpiredArtifactsService::LOOP_LIMIT', 1)
-        stub_const('::Ci::PipelineArtifacts::DestroyExpiredArtifactsService::BATCH_SIZE', 1)
+        stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_LIMIT', 1)
+        stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
         create_list(:ci_pipeline_artifact, 2, expire_at: 1.week.ago)
       end
@@ -44,7 +44,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyExpiredArtifactsService do
 
     context 'when there are artifacts more than batch sizes' do
       before do
-        stub_const('Ci::PipelineArtifacts::DestroyExpiredArtifactsService::BATCH_SIZE', 1)
+        stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
         create_list(:ci_pipeline_artifact, 2, expire_at: 1.week.ago)
       end

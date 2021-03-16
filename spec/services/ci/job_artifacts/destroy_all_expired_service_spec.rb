@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   let(:service) { described_class.new }
@@ -24,7 +24,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
           job = create(:ci_build, pipeline: artifact.job.pipeline)
           create(:ci_job_artifact, :archive, :expired, job: job)
 
-          stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 1)
+          stub_const("#{described_class}::LOOP_LIMIT", 1)
         end
 
         it 'performs the smallest number of queries for job_artifacts' do
@@ -113,7 +113,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
     context 'when failed to destroy artifact' do
       before do
-        stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 10)
+        stub_const("#{described_class}::LOOP_LIMIT", 10)
       end
 
       context 'when the import fails' do
@@ -159,8 +159,8 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
       let!(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
 
       before do
-        stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_TIMEOUT', 0.seconds)
-        stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
+        stub_const("#{described_class}::LOOP_TIMEOUT", 0.seconds)
+        stub_const("#{described_class}::BATCH_SIZE", 1)
 
         second_artifact.job.pipeline.unlocked!
       end
@@ -176,8 +176,8 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
     context 'when loop reached loop limit' do
       before do
-        stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 1)
-        stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
+        stub_const("#{described_class}::LOOP_LIMIT", 1)
+        stub_const("#{described_class}::BATCH_SIZE", 1)
 
         second_artifact.job.pipeline.unlocked!
       end
@@ -209,7 +209,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
     context 'when there are artifacts more than batch sizes' do
       before do
-        stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
+        stub_const("#{described_class}::BATCH_SIZE", 1)
 
         second_artifact.job.pipeline.unlocked!
       end
