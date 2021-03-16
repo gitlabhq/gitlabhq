@@ -333,10 +333,20 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
-  config.around do |example|
-    # Wrap each example in it's own context to make sure the contexts don't
-    # leak
-    Labkit::Context.with_context { example.run }
+  if ENV['SKIP_RSPEC_CONTEXT_WRAPPING']
+    config.around(:example, :context_aware) do |example|
+      # Wrap each example in it's own context to make sure the contexts don't
+      # leak
+      Gitlab::ApplicationContext.with_raw_context { example.run }
+    end
+  else
+    config.around do |example|
+      if [:controller, :request, :feature].include?(example.metadata[:type]) || example.metadata[:context_aware]
+        Gitlab::ApplicationContext.with_raw_context { example.run }
+      else
+        example.run
+      end
+    end
   end
 
   config.around do |example|

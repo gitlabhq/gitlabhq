@@ -8,7 +8,7 @@ module Mutations
 
         ADMIN_MESSAGE = 'You must be an admin to use this mutation'
 
-        Labkit::Context::KNOWN_KEYS.each do |key|
+        Gitlab::ApplicationContext::KNOWN_KEYS.each do |key|
           argument key,
                    GraphQL::STRING_TYPE,
                    required: false,

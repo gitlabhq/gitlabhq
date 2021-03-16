@@ -1382,6 +1382,38 @@ describe('Api', () => {
     });
   });
 
+  describe('updateFreezePeriod', () => {
+    const options = {
+      id: 10,
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+      created_at: '2020-07-11T07:04:50.153Z',
+      updated_at: '2020-07-11T07:04:50.153Z',
+    };
+    const projectId = 8;
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods/${options.id}`;
+
+    const expectedResult = {
+      id: 10,
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+      created_at: '2020-07-11T07:04:50.153Z',
+      updated_at: '2020-07-11T07:04:50.153Z',
+    };
+
+    describe('when the freeze period is successfully updated', () => {
+      it('resolves the Promise', () => {
+        mock.onPut(expectedUrl, options).replyOnce(httpStatus.OK, expectedResult);
+
+        return Api.updateFreezePeriod(projectId, options).then(({ data }) => {
+          expect(data).toStrictEqual(expectedResult);
+        });
+      });
+    });
+  });
+
   describe('createPipeline', () => {
     it('creates new pipeline', () => {
       const redirectUrl = 'ci-project/-/pipelines/95';

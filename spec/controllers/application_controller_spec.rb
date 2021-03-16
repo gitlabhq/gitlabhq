@@ -898,7 +898,7 @@ RSpec.describe ApplicationController do
       feature_category :issue_tracking
 
       def index
-        Labkit::Context.with_context do |context|
+        Gitlab::ApplicationContext.with_raw_context do |context|
           render json: context.to_h
         end
       end

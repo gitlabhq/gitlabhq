@@ -12,11 +12,11 @@ module API
           namespace 'queues' do
             desc 'Drop jobs matching the given metadata from the Sidekiq queue'
             params do
-              Labkit::Context::KNOWN_KEYS.each do |key|
+              Gitlab::ApplicationContext::KNOWN_KEYS.each do |key|
                 optional key, type: String, allow_blank: false
               end
 
-              at_least_one_of(*Labkit::Context::KNOWN_KEYS)
+              at_least_one_of(*Gitlab::ApplicationContext::KNOWN_KEYS)
             end
             delete ':queue_name' do
               result =

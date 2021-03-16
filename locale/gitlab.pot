@@ -10245,13 +10245,19 @@ msgstr ""
 msgid "DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}"
 msgstr ""
 
+msgid "DeployFreeze|Add deploy freeze"
+msgstr ""
+
+msgid "DeployFreeze|Edit"
+msgstr ""
+
 msgid "DeployFreeze|Freeze end"
 msgstr ""
 
 msgid "DeployFreeze|Freeze start"
 msgstr ""
 
-msgid "DeployFreeze|No deploy freezes exist for this project. To add one, click %{strongStart}Add deploy freeze%{strongEnd}"
+msgid "DeployFreeze|No deploy freezes exist for this project. To add one, select %{strongStart}Add deploy freeze%{strongEnd}"
 msgstr ""
 
 msgid "DeployFreeze|Specify deploy freezes using %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}."
@@ -11189,6 +11195,9 @@ msgid "Edit application"
 msgstr ""
 
 msgid "Edit comment"
+msgstr ""
+
+msgid "Edit deploy freeze"
 msgstr ""
 
 msgid "Edit description"
@@ -26434,6 +26443,9 @@ msgid "Save changes before testing"
 msgstr ""
 
 msgid "Save comment"
+msgstr ""
+
+msgid "Save deploy freeze"
 msgstr ""
 
 msgid "Save password"

@@ -268,7 +268,13 @@ To install a package:
    Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
    as basic-auth, with the token as a username and a blank password. This results in a 401 error.
 
-Output indicates that the package has been successfully installed.
+1. With the `composer.json` and `auth.json` files configured, you can install the package by running:
+
+   ```shell
+   composer update
+   ```
+
+   If successful, you should see output indicating that the package installed successfully.
 
 WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,

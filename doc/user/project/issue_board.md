@@ -340,6 +340,31 @@ As in other list types, click the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v13_6.png)
 
+### Iteration lists **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.10.
+> - It's [deployed behind the `board_new_lists` feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-new-add-list-form).
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You're also able to create lists of an iteration.
+These are lists that filter issues by the assigned
+iteration. To add an iteration list:
+
+1. Select **Create list**.
+1. Select the **Iteration**.
+1. In the dropdown, select an iteration.
+1. Select **Add to board**.
+
+Like the milestone lists, you're able to [drag issues](#drag-issues-between-lists)
+to and from a iteration list to manipulate the iteration of the dragged issues.
+
+![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
+
 ### Group issues in swimlanes **(PREMIUM)**
 
 > - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
@@ -648,4 +673,23 @@ To disable it:
 
 ```ruby
 Feature.disable(:add_issues_button)
+```
+
+### Enable or disable new add list form **(FREE SELF)**
+
+The new form for adding lists is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:board_new_list)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:board_new_list)
 ```

@@ -79,6 +79,7 @@ const Api = {
   issuePath: '/api/:version/projects/:id/issues/:issue_iid',
   tagsPath: '/api/:version/projects/:id/repository/tags',
   freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
+  freezePeriodPath: '/api/:version/projects/:id/freeze_periods/:freeze_period_id',
   usageDataIncrementCounterPath: '/api/:version/usage_data/increment_counter',
   usageDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
@@ -830,6 +831,14 @@ const Api = {
     const url = Api.buildUrl(this.freezePeriodsPath).replace(':id', encodeURIComponent(id));
 
     return axios.post(url, freezePeriod);
+  },
+
+  updateFreezePeriod(id, freezePeriod = {}) {
+    const url = Api.buildUrl(this.freezePeriodPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':freeze_period_id', encodeURIComponent(freezePeriod.id));
+
+    return axios.put(url, freezePeriod);
   },
 
   trackRedisCounterEvent(event) {

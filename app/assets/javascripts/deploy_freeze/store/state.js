@@ -6,6 +6,7 @@ export default ({
   selectedTimezoneIdentifier = '',
   freezeStartCron = '',
   freezeEndCron = '',
+  selectedId = '',
 }) => ({
   projectId,
   freezePeriods,
@@ -14,4 +15,5 @@ export default ({
   selectedTimezoneIdentifier,
   freezeStartCron,
   freezeEndCron,
+  selectedId,
 });

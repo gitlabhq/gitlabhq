@@ -18,7 +18,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
       worker_context user: nil
 
       def perform(identifier, *args)
-        self.class.contexts.merge!(identifier => Labkit::Context.current.to_h)
+        self.class.contexts.merge!(identifier => Gitlab::ApplicationContext.current)
       end
     end
   end

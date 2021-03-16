@@ -13,10 +13,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   before_action :disable_query_limiting, only: [:usage_data]
 
-  before_action only: [:ci_cd] do
-    push_frontend_feature_flag(:ci_instance_variables_ui, default_enabled: true)
-  end
-
   feature_category :not_owned, [
                      :general, :reporting, :metrics_and_profiling, :network,
                      :preferences, :update, :reset_health_check_token

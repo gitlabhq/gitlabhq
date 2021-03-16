@@ -21,15 +21,30 @@ RSpec.describe BuildArtifactEntity do
       expect(subject).to include(:expired, :expire_at)
     end
 
-    it 'contains paths to the artifacts' do
-      expect(subject[:path])
-        .to include "jobs/#{job.id}/artifacts/download?file_type=codequality"
+    it 'exposes the artifact download path' do
+      expect(subject[:path]).to include "jobs/#{job.id}/artifacts/download?file_type=codequality"
+    end
 
-      expect(subject[:keep_path])
-        .to include "jobs/#{job.id}/artifacts/keep"
+    context 'with remove_duplicate_artifact_exposure_paths enabled' do
+      before do
+        stub_feature_flags(remove_duplicate_artifact_exposure_paths: true)
+      end
 
-      expect(subject[:browse_path])
-        .to include "jobs/#{job.id}/artifacts/browse"
+      it 'has no keep or browse path' do
+        expect(subject).not_to include(:keep_path)
+        expect(subject).not_to include(:browse_path)
+      end
+    end
+
+    context 'with remove_duplicate_artifact_exposure_paths disabled' do
+      before do
+        stub_feature_flags(remove_duplicate_artifact_exposure_paths: false)
+      end
+
+      it 'has keep and browse paths' do
+        expect(subject[:keep_path]).to be_present
+        expect(subject[:browse_path]).to be_present
+      end
     end
   end
 end

@@ -45,7 +45,8 @@ module.exports = (path) => {
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
-    'test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
+    '^test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
+    '^ee_else_ce_test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
   };
 
   const collectCoverageFrom = ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'];
@@ -56,6 +57,7 @@ module.exports = (path) => {
       '^ee(/.*)$': rootDirEE,
       '^ee_component(/.*)$': rootDirEE,
       '^ee_else_ce(/.*)$': rootDirEE,
+      '^ee_else_ce_test_helpers(/.*)$': '<rootDir>/ee/spec/frontend_integration/test_helpers$1',
       '^ee_jest/(.*)$': '<rootDir>/ee/spec/frontend/$1',
       [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
     });

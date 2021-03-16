@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Metrics::BackgroundTransaction do
 
   describe '#labels' do
     it 'provides labels with endpoint_id and feature_category' do
-      Labkit::Context.with_context(feature_category: 'projects', caller_id: 'TestWorker') do
+      Gitlab::ApplicationContext.with_raw_context(feature_category: 'projects', caller_id: 'TestWorker') do
         expect(transaction.labels).to eq({ endpoint_id: 'TestWorker', feature_category: 'projects' })
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Metrics::BackgroundTransaction do
       value = 1
       expect(prometheus_metric).to receive(metric_method).with({ endpoint_id: 'TestWorker', feature_category: 'projects' }, value)
 
-      Labkit::Context.with_context(feature_category: 'projects', caller_id: 'TestWorker') do
+      Gitlab::ApplicationContext.with_raw_context(feature_category: 'projects', caller_id: 'TestWorker') do
         transaction.send(metric_method, :test_metric, value)
       end
     end
