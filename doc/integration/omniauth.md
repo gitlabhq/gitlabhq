@@ -257,9 +257,9 @@ To enable/disable an OmniAuth provider:
 1. In the top navigation bar, go to **Admin Area**.
 1. In the left sidebar, go to **Settings**.
 1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
-1. Next to **Enabled OAuth Sign-In sources**, select the check box for each provider you want to enable or disable.
+1. Below **Enabled OAuth Sign-In sources**, select the check box for each provider you want to enable or disable.
 
-   ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
+   ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources_v13_10.png)
 
 ## Disabling OmniAuth
 
@@ -356,3 +356,32 @@ You may also bypass the auto sign in feature by browsing to
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
 guide provides an overview about how GitLab generates and sets passwords for
 users created with OmniAuth.
+
+## Custom OmniAuth provider icon
+
+Most supported providers include a built-in icon for the rendered sign-in button.
+After you ensure your image is optimized for rendering at 64 x 64 pixels,
+you can override this icon in one of two ways:
+
+- **Provide a custom image path**:
+  1. *If you are hosting the image outside of your GitLab server domain,* ensure
+     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration.html#content-security-policy)
+     are configured to allow access to the image file.
+  1. Depending on your method of installing GitLab, add a custom `icon` parameter
+     to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)
+     for an example for the OpenID Connect provider.
+- **Directly embed an image in a configuration file**: This example creates a Base64-encoded
+  version of your image you can serve through a
+  [Data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs):
+  1. Encode your image file with GNU `base64` command (such as `base64 -w 0 <logo.png>`)
+     which returns a single-line `<base64-data>` string.
+  1. Add the Base64-encoded data to a custom `icon` parameter in your GitLab configuration file:
+
+     ```yaml
+     omniauth:
+       providers:
+         - { name: '...'
+             icon: 'data:image/png;base64,<base64-data>'
+             ...
+           }
+     ```

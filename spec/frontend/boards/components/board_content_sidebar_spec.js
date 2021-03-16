@@ -19,12 +19,14 @@ describe('BoardContentSidebar', () => {
     store = new Vuex.Store({
       state: {
         sidebarType: ISSUABLE,
-        issues: { [mockIssue.id]: mockIssue },
+        issues: { [mockIssue.id]: { ...mockIssue, epic: null } },
         activeId: mockIssue.id,
         issuableType: 'issue',
       },
       getters: {
-        activeIssue: () => mockIssue,
+        activeIssue: () => {
+          return { ...mockIssue, epic: null };
+        },
         groupPathForActiveIssue: () => mockIssueGroupPath,
         projectPathForActiveIssue: () => mockIssueProjectPath,
         isSidebarOpen: () => true,
@@ -35,11 +37,18 @@ describe('BoardContentSidebar', () => {
   };
 
   const createComponent = () => {
+    /*
+      Dynamically imported components (in our case ee imports)
+      aren't stubbed automatically in VTU v1:
+      https://github.com/vuejs/vue-test-utils/issues/1279.
+
+      This requires us to additionally mock apollo or vuex stores.
+    */
     wrapper = shallowMount(BoardContentSidebar, {
       provide: {
         canUpdate: true,
         rootPath: '/',
-        groupId: '#',
+        groupId: 1,
       },
       store,
       stubs: {
@@ -51,6 +60,12 @@ describe('BoardContentSidebar', () => {
         $apollo: {
           queries: {
             participants: {
+              loading: false,
+            },
+            currentIteration: {
+              loading: false,
+            },
+            iterations: {
               loading: false,
             },
           },
@@ -117,7 +132,7 @@ describe('BoardContentSidebar', () => {
 
       expect(toggleBoardItem).toHaveBeenCalledTimes(1);
       expect(toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {
-        boardItem: mockIssue,
+        boardItem: { ...mockIssue, epic: null },
         sidebarType: ISSUABLE,
       });
     });

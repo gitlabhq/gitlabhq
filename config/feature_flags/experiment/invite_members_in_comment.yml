@@ -1,0 +1,8 @@
+---
+name: invite_members_in_comment
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51400'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/300'
+milestone: '13.10'
+type: experiment
+group: group::expansion
+default_enabled: false

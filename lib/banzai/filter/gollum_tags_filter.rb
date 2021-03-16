@@ -98,14 +98,15 @@ module Banzai
 
         return unless image?(content)
 
-        if url?(content)
-          path = content
-        elsif file = wiki.find_file(content, load_content: false)
-          path = ::File.join(wiki_base_path, file.path)
-        end
+        path =
+          if url?(content)
+            content
+          elsif file = wiki.find_file(content, load_content: false)
+            file.path
+          end
 
         if path
-          content_tag(:img, nil, data: { src: path }, class: 'gfm')
+          content_tag(:img, nil, src: path, class: 'gfm')
         end
       end
 

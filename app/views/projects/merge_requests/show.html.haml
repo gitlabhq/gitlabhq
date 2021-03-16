@@ -108,3 +108,6 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
 #js-review-bar
+
+= render 'shared/issuable/invite_members_trigger', project: @project
+

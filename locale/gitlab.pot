@@ -16875,6 +16875,9 @@ msgstr ""
 msgid "InviteMember|Don't worry, you can always invite teammates later"
 msgstr ""
 
+msgid "InviteMember|Invite Member"
+msgstr ""
+
 msgid "InviteMember|Invite Members (optional)"
 msgstr ""
 

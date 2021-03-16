@@ -209,6 +209,32 @@ RSpec.describe Projects::IssuesController do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['issue_email_participants']).to contain_exactly({ "email" => participants[0].email }, { "email" => participants[1].email })
     end
+
+    context 'with the invite_members_in_comment experiment', :experiment do
+      context 'when user can invite' do
+        before do
+          stub_experiments(invite_members_in_comment: :invite_member_link)
+          project.add_maintainer(user)
+        end
+
+        it 'assigns the candidate experience and tracks the event' do
+          expect(experiment(:invite_member_link)).to track(:view, property: project.root_ancestor.id.to_s)
+                                                       .on_any_instance
+                                                       .for(:invite_member_link)
+                                                       .with_context(namespace: project.root_ancestor)
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        end
+      end
+
+      context 'when user can not invite' do
+        it 'does not track the event' do
+          expect(experiment(:invite_member_link)).not_to track(:view)
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        end
+      end
+    end
   end
 
   describe 'GET #new' do

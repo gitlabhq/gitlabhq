@@ -3,6 +3,7 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
+import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import { IssuableType } from '~/issuable_show/constants';
 import Issue from '~/issue';
 import '~/notes/index';
@@ -34,6 +35,7 @@ export default function initShowIssue() {
   initIssueHeaderActions(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
+  initInviteMembersModal();
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
     .then((module) => module.default())

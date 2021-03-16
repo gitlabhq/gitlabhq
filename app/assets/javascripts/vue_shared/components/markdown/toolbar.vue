@@ -1,13 +1,18 @@
 <script>
 import { GlButton, GlLink, GlLoadingIcon, GlSprintf, GlIcon } from '@gitlab/ui';
+import { isExperimentVariant } from '~/experimentation/utils';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import { INVITE_MEMBERS_IN_COMMENT } from '~/invite_members/constants';
 
 export default {
+  inviteMembersInComment: INVITE_MEMBERS_IN_COMMENT,
   components: {
     GlButton,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
     GlIcon,
+    InviteMembersTrigger,
   },
   props: {
     markdownDocsPath: {
@@ -29,6 +34,9 @@ export default {
     hasQuickActionsDocsPath() {
       return this.quickActionsDocsPath !== '';
     },
+    inviteCommentEnabled() {
+      return isExperimentVariant(INVITE_MEMBERS_IN_COMMENT, 'invite_member_link');
+    },
   },
 };
 </script>
@@ -37,9 +45,9 @@ export default {
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank">{{
-          __('Markdown is supported')
-        }}</gl-link>
+        <gl-link :href="markdownDocsPath" target="_blank">
+          {{ __('Markdown is supported') }}
+        </gl-link>
       </template>
       <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
         <gl-sprintf
@@ -59,6 +67,16 @@ export default {
       </template>
     </div>
     <span v-if="canAttachFile" class="uploading-container">
+      <invite-members-trigger
+        v-if="inviteCommentEnabled"
+        classes="gl-mr-3 gl-vertical-align-text-bottom"
+        :display-text="s__('InviteMember|Invite Member')"
+        icon="assignee"
+        variant="link"
+        :track-experiment="$options.inviteMembersInComment"
+        :trigger-source="$options.inviteMembersInComment"
+        data-track-event="comment_invite_click"
+      />
       <span class="uploading-progress-container hide">
         <gl-icon name="media" />
         <span class="attaching-file-message"></span>

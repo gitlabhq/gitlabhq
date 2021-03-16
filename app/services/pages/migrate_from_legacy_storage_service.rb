@@ -64,7 +64,7 @@ module Pages
       end
 
       if result[:status] == :success
-        @logger.info("project_id: #{project.id} #{project.pages_path} has been migrated in #{time.round(2)} seconds")
+        @logger.info("project_id: #{project.id} #{project.pages_path} has been migrated in #{time.round(2)} seconds: #{result[:message]}")
         @counters_lock.synchronize { @migrated += 1 }
       else
         @logger.error("project_id: #{project.id} #{project.pages_path} failed to be migrated in #{time.round(2)} seconds: #{result[:message]}")

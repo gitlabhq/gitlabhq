@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 
@@ -26,10 +27,29 @@ export default {
       required: false,
       default: undefined,
     },
+    triggerSource: {
+      type: String,
+      required: false,
+      default: 'unknown',
+    },
+    trackExperiment: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+  },
+  mounted() {
+    this.trackExperimentOnShow();
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal', { inviteeType: 'members' });
+      eventHub.$emit('openModal', { inviteeType: 'members', source: this.triggerSource });
+    },
+    trackExperimentOnShow() {
+      if (this.trackExperiment) {
+        const tracking = new ExperimentTracking(this.trackExperiment);
+        tracking.event('comment_invite_shown');
+      }
     },
   },
 };

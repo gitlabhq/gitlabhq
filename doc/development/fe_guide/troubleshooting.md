@@ -66,3 +66,29 @@ TypeError: $ is not a function
 ```
 
 **Remedy - Try moving the script into a separate repository and point to it to files in the GitLab repository**
+
+## Using Vue component issues
+
+### When rendering a component that uses GlFilteredSearch and the component or its parent uses Vue Apollo
+
+When trying to render our component GlFilteredSearch, you might get an error in the component's `provide` function:
+
+`cannot read suggestionsListClass of undefined`
+
+Currently, `vue-apollo` tries to [manually call a component's `provide()` in the `beforeCreate` part](https://github.com/vuejs/vue-apollo/blob/35e27ec398d844869e1bbbde73c6068b8aabe78a/packages/vue-apollo/src/mixin.js#L149) of the component lifecycle. This means that when a `provide()` references props, which aren't actually setup until after `created`, it will blow up.
+
+See this [closed MR](https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2019#note_514671251) for more context.
+
+**Remedy - try providing `apolloProvider` to the top-level Vue instance options**
+
+VueApollo will skip manually running `provide()` if it sees that an `apolloProvider` is provided in the `$options`.
+
+```patch
+  new Vue(
+    el,
++   apolloProvider: {},
+    render(h) {
+      return h(App);
+    },
+  );
+```

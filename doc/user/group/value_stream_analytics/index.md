@@ -193,17 +193,21 @@ GitLab allows users to create multiple value streams, hide default stages and cr
 
 ### Stage path
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
+> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/feature_flags.md). **(FREE SELF)**
 
-Stages are visually depicted as a horizontal process flow. Selecting a stage will update the
-the content below the value stream.
+![Value stream path navigation](img/vsa_path_nav_v13_10.png "Value stream path navigation")
 
-This is disabled by default. If you have a self-managed instance, an
+Stages are visually depicted as a horizontal process flow. Selecting a stage updates the content below the value stream.
+
+This is enabled by default. If you have a self-managed instance, an
 administrator can [open a Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md)
-and enable it with the following command:
+and disable it with the following command:
 
 ```ruby
-Feature.enable(:value_stream_analytics_path_navigation)
+Feature.disable(:value_stream_analytics_path_navigation)
 ```
 
 ### Adding a stage

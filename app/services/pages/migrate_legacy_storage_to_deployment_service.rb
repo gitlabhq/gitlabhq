@@ -30,15 +30,17 @@ module Pages
       zip_result = ::Pages::ZipDirectoryService.new(project.pages_path, ignore_invalid_entries: @ignore_invalid_entries).execute
 
       if zip_result[:status] == :error
-        if !project.pages_metadatum&.reload&.pages_deployment &&
-           Feature.enabled?(:pages_migration_mark_as_not_deployed, project)
-          project.mark_pages_as_not_deployed
-        end
-
         return error("Can't create zip archive: #{zip_result[:message]}")
       end
 
       archive_path = zip_result[:archive_path]
+
+      unless archive_path
+        project.set_first_pages_deployment!(nil)
+
+        return success(
+          message: "Archive not created. Missing public directory in #{project.pages_path} ? Marked project as not deployed")
+      end
 
       deployment = nil
       File.open(archive_path) do |file|

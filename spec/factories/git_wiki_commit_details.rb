@@ -5,7 +5,7 @@ FactoryBot.define do
     skip_create
 
     transient do
-      author { create(:user) }
+      author { association(:user) }
     end
 
     sequence(:message) { |n| "Commit message #{n}" }

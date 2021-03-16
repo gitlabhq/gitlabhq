@@ -10,7 +10,11 @@ module Ci
 
     Result = Struct.new(:build, :build_json, :valid?)
 
-    MAX_QUEUE_DEPTH = 50
+    ##
+    # The queue depth limit number has been determined by observing 95
+    # percentile of effective queue depth on gitlab.com. This is only likely to
+    # affect 5% of the worst case scenarios.
+    MAX_QUEUE_DEPTH = 45
 
     def initialize(runner)
       @runner = runner
@@ -105,7 +109,7 @@ module Ci
         builds = builds.queued_before(params[:job_age].seconds.ago)
       end
 
-      if Feature.enabled?(:ci_register_job_service_one_by_one, runner)
+      if Feature.enabled?(:ci_register_job_service_one_by_one, runner, default_enabled: true)
         build_ids = builds.pluck(:id)
 
         @metrics.observe_queue_size(-> { build_ids.size })
@@ -171,7 +175,7 @@ module Ci
 
     def max_queue_depth
       @max_queue_depth ||= begin
-        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: false)
+        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: true)
           MAX_QUEUE_DEPTH
         else
           ::Gitlab::Database::MAX_INT_VALUE

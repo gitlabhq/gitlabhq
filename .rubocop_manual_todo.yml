@@ -41,16 +41,6 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/vulnerability_severity_enum.rb'
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
 
-# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
-FactoryBot/InlineAssociation:
-  Exclude:
-    - 'spec/factories/atlassian_identities.rb'
-    - 'spec/factories/events.rb'
-    - 'spec/factories/git_wiki_commit_details.rb'
-    - 'spec/factories/gitaly/commit.rb'
-    - 'spec/factories/group_group_links.rb'
-    - 'spec/factories/import_export_uploads.rb'
-
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:

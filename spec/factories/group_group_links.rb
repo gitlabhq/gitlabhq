@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :group_group_link do
-    shared_group { create(:group) }
-    shared_with_group { create(:group) }
+    shared_group { association(:group) }
+    shared_with_group { association(:group) }
     group_access { Gitlab::Access::DEVELOPER }
 
     trait(:guest) { group_access { Gitlab::Access::GUEST } }

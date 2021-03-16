@@ -40,6 +40,32 @@ RSpec.describe Projects::MergeRequestsController do
       get :show, params: params.merge(extra_params)
     end
 
+    context 'with the invite_members_in_comment experiment', :experiment do
+      context 'when user can invite' do
+        before do
+          stub_experiments(invite_members_in_comment: :invite_member_link)
+          project.add_maintainer(user)
+        end
+
+        it 'assigns the candidate experience and tracks the event' do
+          expect(experiment(:invite_member_link)).to track(:view, property: project.root_ancestor.id.to_s)
+                                                       .on_any_instance
+                                                       .for(:invite_member_link)
+                                                       .with_context(namespace: project.root_ancestor)
+
+          go
+        end
+      end
+
+      context 'when user can not invite' do
+        it 'does not track the event' do
+          expect(experiment(:invite_member_link)).not_to track(:view)
+
+          go
+        end
+      end
+    end
+
     context 'with view param' do
       before do
         go(view: 'parallel')

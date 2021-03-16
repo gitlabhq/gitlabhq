@@ -87,6 +87,7 @@ The following table depicts the various user permission levels in a project.
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
+| See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
 | View Code Review analytics **(STARTER)**          |         | ✓          | ✓           | ✓        | ✓      |

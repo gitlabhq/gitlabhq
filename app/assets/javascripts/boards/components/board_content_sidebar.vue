@@ -1,9 +1,6 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import BoardSidebarEpicSelect from 'ee_component/boards/components/sidebar/board_sidebar_epic_select.vue';
-import BoardSidebarWeightInput from 'ee_component/boards/components/sidebar/board_sidebar_weight_input.vue';
-import SidebarIterationWidget from 'ee_component/sidebar/components/sidebar_iteration_widget.vue';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
 import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
@@ -26,9 +23,12 @@ export default {
     BoardSidebarDueDate,
     BoardSidebarSubscription,
     BoardSidebarMilestoneSelect,
-    BoardSidebarEpicSelect,
-    SidebarIterationWidget,
-    BoardSidebarWeightInput,
+    BoardSidebarEpicSelect: () =>
+      import('ee_component/boards/components/sidebar/board_sidebar_epic_select.vue'),
+    BoardSidebarWeightInput: () =>
+      import('ee_component/boards/components/sidebar/board_sidebar_weight_input.vue'),
+    SidebarIterationWidget: () =>
+      import('ee_component/sidebar/components/sidebar_iteration_widget.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {

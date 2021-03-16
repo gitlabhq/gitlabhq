@@ -6016,12 +6016,15 @@ RSpec.describe Project, factory_default: :keep do
       project.set_first_pages_deployment!(deployment)
 
       expect(project.pages_metadatum.reload.pages_deployment).to eq(deployment)
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
 
     it "updates the existing metadara record with deployment" do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
+
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
 
     it 'only updates metadata for this project' do
@@ -6030,6 +6033,8 @@ RSpec.describe Project, factory_default: :keep do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.not_to change { other_project.pages_metadatum.reload.pages_deployment }.from(nil)
+
+      expect(other_project.pages_metadatum.reload.deployed).to eq(false)
     end
 
     it 'does nothing if metadata already references some deployment' do
@@ -6039,6 +6044,14 @@ RSpec.describe Project, factory_default: :keep do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.not_to change { project.pages_metadatum.reload.pages_deployment }.from(existing_deployment)
+    end
+
+    it 'marks project as not deployed if deployment is nil' do
+      project.mark_pages_as_deployed
+
+      expect do
+        project.set_first_pages_deployment!(nil)
+      end.to change { project.pages_metadatum.reload.deployed }.from(true).to(false)
     end
   end
 

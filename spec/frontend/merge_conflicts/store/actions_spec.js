@@ -1,5 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import Cookies from 'js-cookie';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import createFlash from '~/flash';
@@ -10,6 +11,7 @@ import { restoreFileLinesState, markLine, decorateFiles } from '~/merge_conflict
 
 jest.mock('~/flash.js');
 jest.mock('~/merge_conflicts/utils');
+jest.mock('js-cookie');
 
 describe('merge conflicts actions', () => {
   let mock;
@@ -80,6 +82,25 @@ describe('merge conflicts actions', () => {
     });
   });
 
+  describe('setConflictsData', () => {
+    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', (done) => {
+      decorateFiles.mockReturnValue([{ bar: 'baz' }]);
+      testAction(
+        actions.setConflictsData,
+        { files, foo: 'bar' },
+        {},
+        [
+          {
+            type: types.SET_CONFLICTS_DATA,
+            payload: { foo: 'bar', files: [{ bar: 'baz' }] },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('submitResolvedConflicts', () => {
     useMockLocationHelper();
     const resolveConflictsPath = 'resolve/conflicts/path/mock';
@@ -120,21 +141,109 @@ describe('merge conflicts actions', () => {
     });
   });
 
-  describe('setConflictsData', () => {
-    it('INTERACTIVE_RESOLVE_MODE updates the correct file ', (done) => {
-      decorateFiles.mockReturnValue([{ bar: 'baz' }]);
+  describe('setLoadingState', () => {
+    it('commits the right mutation', () => {
       testAction(
-        actions.setConflictsData,
-        { files, foo: 'bar' },
+        actions.setLoadingState,
+        true,
         {},
         [
           {
-            type: types.SET_CONFLICTS_DATA,
-            payload: { foo: 'bar', files: [{ bar: 'baz' }] },
+            type: types.SET_LOADING_STATE,
+            payload: true,
           },
         ],
         [],
-        done,
+      );
+    });
+  });
+
+  describe('setErrorState', () => {
+    it('commits the right mutation', () => {
+      testAction(
+        actions.setErrorState,
+        true,
+        {},
+        [
+          {
+            type: types.SET_ERROR_STATE,
+            payload: true,
+          },
+        ],
+        [],
+      );
+    });
+  });
+
+  describe('setFailedRequest', () => {
+    it('commits the right mutation', () => {
+      testAction(
+        actions.setFailedRequest,
+        'errors in the request',
+        {},
+        [
+          {
+            type: types.SET_FAILED_REQUEST,
+            payload: 'errors in the request',
+          },
+        ],
+        [],
+      );
+    });
+  });
+
+  describe('setViewType', () => {
+    it('commits the right mutation', (done) => {
+      const payload = 'viewType';
+      testAction(
+        actions.setViewType,
+        payload,
+        {},
+        [
+          {
+            type: types.SET_VIEW_TYPE,
+            payload,
+          },
+        ],
+        [],
+        () => {
+          expect(Cookies.set).toHaveBeenCalledWith('diff_view', payload);
+          done();
+        },
+      );
+    });
+  });
+
+  describe('setSubmitState', () => {
+    it('commits the right mutation', () => {
+      testAction(
+        actions.setSubmitState,
+        true,
+        {},
+        [
+          {
+            type: types.SET_SUBMIT_STATE,
+            payload: true,
+          },
+        ],
+        [],
+      );
+    });
+  });
+
+  describe('updateCommitMessage', () => {
+    it('commits the right mutation', () => {
+      testAction(
+        actions.updateCommitMessage,
+        'some message',
+        {},
+        [
+          {
+            type: types.UPDATE_CONFLICTS_DATA,
+            payload: { commitMessage: 'some message' },
+          },
+        ],
+        [],
       );
     });
   });

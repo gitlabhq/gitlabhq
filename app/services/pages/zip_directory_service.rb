@@ -19,6 +19,10 @@ module Pages
 
     def execute
       unless resolve_public_dir
+        if Feature.enabled?(:pages_migration_mark_as_not_deployed)
+          return success
+        end
+
         return error("Can not find valid public dir in #{@input_dir}")
       end
 
