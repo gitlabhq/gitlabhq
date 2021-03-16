@@ -1,6 +1,6 @@
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { humanize } from '~/lib/utils/text_utility';
 import EmojiGroup from './emoji_group.vue';
 
 export default {
@@ -25,16 +25,13 @@ export default {
   },
   computed: {
     categoryTitle() {
-      return capitalizeFirstCharacter(this.category);
+      return humanize(this.category);
     },
   },
   methods: {
     categoryAppeared() {
       this.renderGroup = true;
       this.$emit('appear', this.category);
-    },
-    categoryDissappeared() {
-      this.renderGroup = false;
     },
   },
 };

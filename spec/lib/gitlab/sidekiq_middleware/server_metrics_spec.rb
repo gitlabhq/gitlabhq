@@ -229,6 +229,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       it_behaves_like "a metrics middleware"
     end
 
+    context 'for ActionMailer::MailDeliveryJob' do
+      let(:job) { { 'class' => ActionMailer::MailDeliveryJob } }
+      let(:worker) { ActionMailer::MailDeliveryJob.new }
+      let(:worker_class) { ActionMailer::MailDeliveryJob }
+      let(:labels) { default_labels.merge(feature_category: 'issue_tracking') }
+
+      it_behaves_like 'a metrics middleware'
+    end
+
     context "when workers are attributed" do
       def create_attributed_worker_class(urgency, external_dependencies, resource_boundary, category)
         Class.new do

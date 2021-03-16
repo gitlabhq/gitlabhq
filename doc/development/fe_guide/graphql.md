@@ -767,6 +767,66 @@ export default {
 };
 ```
 
+#### Polling and Performance
+
+While the Apollo client has support for simple polling, for performance reasons, our [Etag-based caching](../polling.md) is preferred to hitting the database each time.
+
+Once the backend is set up, there are a few changes to make on the frontend.
+
+First, get your resource Etag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
+
+```javascript
+/* pipelines/components/graph/utils.js */
+
+/* eslint-disable @gitlab/require-i18n-strings */
+const getQueryHeaders = (etagResource) => {
+  return {
+    fetchOptions: {
+      method: 'GET',
+    },
+    headers: {
+      /* This will depend on your feature */
+      'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'verify/ci/pipeline-graph',
+      'X-GITLAB-GRAPHQL-RESOURCE-ETAG': etagResource,
+      'X-REQUESTED-WITH': 'XMLHttpRequest',
+    },
+  };
+};
+/* eslint-enable @gitlab/require-i18n-strings */
+
+/* component.vue */
+
+apollo: {
+  pipeline: {
+    context() {
+      return getQueryHeaders(this.graphqlResourceEtag);
+    },
+    query: getPipelineDetails,
+    pollInterval: 10000,
+    ..
+  },
+},
+```
+
+Then, becasue Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our defaut Apollo client know to use a different library. 
+
+```javascript
+/* componentMountIndex.js */
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(
+    {},
+    {
+      useGet: true,
+    },
+  ),
+});
+```
+
+Keep in mind, this means your app will not batch queries.
+
+Once subscriptions are mature, this process can be replaced by using them and we can remove the separate link library and return to batching queries. 
+
 ### Testing
 
 #### Generating the GraphQL schema

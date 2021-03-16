@@ -10,6 +10,7 @@ module Gitlab
 
       def create_labels(worker_class, queue, job)
         worker_name = (job['wrapped'].presence || worker_class).to_s
+        worker = find_worker(worker_name, worker_class)
 
         labels = { queue: queue.to_s,
                    worker: worker_name,
@@ -18,15 +19,15 @@ module Gitlab
                    feature_category: "",
                    boundary: "" }
 
-        return labels unless worker_class && worker_class.include?(WorkerAttributes)
+        return labels unless worker.respond_to?(:get_urgency)
 
-        labels[:urgency] = worker_class.get_urgency.to_s
-        labels[:external_dependencies] = bool_as_label(worker_class.worker_has_external_dependencies?)
+        labels[:urgency] = worker.get_urgency.to_s
+        labels[:external_dependencies] = bool_as_label(worker.worker_has_external_dependencies?)
 
-        feature_category = worker_class.get_feature_category
+        feature_category = worker.get_feature_category
         labels[:feature_category] = feature_category.to_s
 
-        resource_boundary = worker_class.get_worker_resource_boundary
+        resource_boundary = worker.get_worker_resource_boundary
         labels[:boundary] = resource_boundary == :unknown ? "" : resource_boundary.to_s
 
         labels
@@ -34,6 +35,10 @@ module Gitlab
 
       def bool_as_label(value)
         value ? TRUE_LABEL : FALSE_LABEL
+      end
+
+      def find_worker(worker_name, worker_class)
+        Gitlab::SidekiqConfig::DEFAULT_WORKERS.fetch(worker_name, worker_class)
       end
     end
   end

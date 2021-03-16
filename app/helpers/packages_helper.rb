@@ -50,6 +50,7 @@ module PackagesHelper
 
   def track_package_event(event_name, scope, **args)
     ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
-    track_event(event_name, **args)
+    category = args.delete(:category) || self.class.name
+    ::Gitlab::Tracking.event(category, event_name.to_s, **args)
   end
 end

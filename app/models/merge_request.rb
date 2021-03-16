@@ -289,10 +289,19 @@ class MergeRequest < ApplicationRecord
     joins(:notes).where(notes: { commit_id: sha })
   end
   scope :join_project, -> { joins(:target_project) }
-  scope :join_metrics, -> do
+  scope :join_metrics, -> (target_project_id = nil) do
+    # Do not join the relation twice
+    return self if self.arel.join_sources.any? { |join| join.left.try(:name).eql?(MergeRequest::Metrics.table_name) }
+
     query = joins(:metrics)
-    query = query.where(MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id]))
-    query
+
+    project_condition = if target_project_id
+                          MergeRequest::Metrics.arel_table[:target_project_id].eq(target_project_id)
+                        else
+                          MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id])
+                        end
+
+    query.where(project_condition)
   end
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {

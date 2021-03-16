@@ -13,10 +13,17 @@ module Gitlab
       (EE_QUEUE_CONFIG_PATH if Gitlab.ee?)
     ].compact.freeze
 
-    DEFAULT_WORKERS = [
-      DummyWorker.new('default', weight: 1, tags: []),
-      DummyWorker.new('mailers', weight: 2, tags: [])
-    ].map { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: false) }.freeze
+    # This maps workers not in our application code to queues. We need
+    # these queues in our YAML files to ensure we don't accidentally
+    # miss jobs from these queues.
+    #
+    # The default queue should be unused, which is why it maps to an
+    # invalid class name. We keep it in the YAML file for safety, just
+    # in case anything does get scheduled to run there.
+    DEFAULT_WORKERS = {
+      '_' => DummyWorker.new('default', weight: 1, tags: []),
+      'ActionMailer::MailDeliveryJob' => DummyWorker.new('mailers', feature_category: :issue_tracking, urgency: 'low', weight: 2, tags: [])
+    }.transform_values { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: false) }.freeze
 
     class << self
       include Gitlab::SidekiqConfig::CliMethods
@@ -40,7 +47,7 @@ module Gitlab
       def workers
         @workers ||= begin
           result = []
-          result.concat(DEFAULT_WORKERS)
+          result.concat(DEFAULT_WORKERS.values)
           result.concat(find_workers(Rails.root.join('app', 'workers'), ee: false))
 
           if Gitlab.ee?

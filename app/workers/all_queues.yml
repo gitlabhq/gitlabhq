@@ -1781,9 +1781,9 @@
   :idempotent: true
   :tags: []
 - :name: mailers
-  :feature_category:
+  :feature_category: :issue_tracking
   :has_external_dependencies:
-  :urgency:
+  :urgency: low
   :resource_boundary:
   :weight: 2
   :idempotent:

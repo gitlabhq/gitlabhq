@@ -1,9 +1,9 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import { parseBoolean } from '../lib/utils/common_utils';
-import { escapeFileUrl } from '../lib/utils/url_utility';
-import { __ } from '../locale';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
@@ -55,6 +55,8 @@ export default function setupVueRepositoryList() {
     const {
       canCollaborate,
       canEditTree,
+      canPushCode,
+      selectedBranch,
       newBranchPath,
       newTagPath,
       newBlobPath,
@@ -65,8 +67,7 @@ export default function setupVueRepositoryList() {
       newDirPath,
     } = breadcrumbEl.dataset;
 
-    router.afterEach(({ params: { path = '/' } }) => {
-      updateFormAction('.js-upload-blob-form', uploadPath, path);
+    router.afterEach(({ params: { path } }) => {
       updateFormAction('.js-create-dir-form', newDirPath, path);
     });
 
@@ -81,12 +82,16 @@ export default function setupVueRepositoryList() {
             currentPath: this.$route.params.path,
             canCollaborate: parseBoolean(canCollaborate),
             canEditTree: parseBoolean(canEditTree),
+            canPushCode: parseBoolean(canPushCode),
+            originalBranch: ref,
+            selectedBranch,
             newBranchPath,
             newTagPath,
             newBlobPath,
             forkNewBlobPath,
             forkNewDirectoryPath,
             forkUploadBlobPath,
+            uploadPath,
           },
         });
       },

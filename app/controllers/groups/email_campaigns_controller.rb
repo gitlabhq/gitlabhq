@@ -2,7 +2,6 @@
 
 class Groups::EmailCampaignsController < Groups::ApplicationController
   include InProductMarketingHelper
-  include Gitlab::Tracking::ControllerConcern
 
   EMAIL_CAMPAIGNS_SCHEMA_URL = 'iglu:com.gitlab/email_campaigns/jsonschema/1-0-0'
 
@@ -25,7 +24,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       subject_line: subject_line(@track, @series)
     }
 
-    track_self_describing_event(EMAIL_CAMPAIGNS_SCHEMA_URL, data: data)
+    ::Gitlab::Tracking.self_describing_event(EMAIL_CAMPAIGNS_SCHEMA_URL, data: data)
   end
 
   def redirect_link
