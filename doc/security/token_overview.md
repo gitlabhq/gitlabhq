@@ -71,7 +71,7 @@ You can use the runner registration token to add runners that execute jobs in a 
 
 After registration, the runner receives an authentication token, which it uses to authenticate with GitLab when picking up jobs from the job queue. The authentication token is stored locally in the runner's [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file.
 
-After authentication with GitLab, the runner receives a [job token](../user/project/new_ci_build_permissions_model.md#job-token), which it uses to execute the job.
+After authentication with GitLab, the runner receives a [job token](../api/README.md#gitlab-cicd-job-token), which it uses to execute the job.
 
 In case of Docker Machine/Kubernetes/VirtualBox/Parallels/SSH executors, the execution environment has no access to the runner authentication token, because it stays on the runner machine. They have access to the job token only, which is needed to execute the job.
 
@@ -79,9 +79,9 @@ Malicious access to a runner's file system may expose the `config.toml` file and
 
 ## CI/CD job tokens
 
-The [CI/CD](../api/README.md#gitlab-ci-job-token) job token
+The [CI/CD](../api/README.md#gitlab-cicd-job-token) job token
 is a short lived token only valid for the duration of a job. It gives a CI/CD job
-access to a limited amount of [API endpoints](../api/README.md#gitlab-ci-job-token).
+access to a limited amount of API endpoints.
 API authentication uses the job token, by using the authorization of the user
 triggering the job.
 
@@ -105,4 +105,4 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 1. Limited to the one project.
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
-1. Limited to certain [endpoints](../api/README.md#gitlab-ci-job-token).
+1. Limited to certain [endpoints](../api/README.md#gitlab-cicd-job-token).

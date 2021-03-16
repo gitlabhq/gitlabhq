@@ -482,10 +482,6 @@ instance and project. In addition, all admins can use the admin interface under
 NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-NOTE:
-GitLab 8.12 has a completely redesigned job permissions system.
-Read all about the [new model and its implications](project/new_ci_build_permissions_model.md).
-
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
@@ -506,11 +502,6 @@ users:
 
 1. Only if the user is not an external one
 1. Only if the user is a member of the project
-
-### New CI job permissions model
-
-GitLab 8.12 has a completely redesigned job permissions system. To learn more,
-read through the documentation on the [new CI/CD permissions model](project/new_ci_build_permissions_model.md#new-ci-job-permissions-model).
 
 ## Running pipelines on protected branches
 

@@ -125,7 +125,7 @@ There are several methods you can use to authenticate with the GitLab API:
 - [Personal access tokens](../user/profile/personal_access_tokens.md)
 - [Project access tokens](../user/project/settings/project_access_tokens.md)
 - [Session cookie](#session-cookie)
-- [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
+- [GitLab CI/CD job token](#gitlab-cicd-job-token) **(Specific endpoints only)**
 
 NOTE:
 Project access tokens are supported for self-managed instances on Free and
@@ -198,22 +198,50 @@ The primary user of this authentication method is the web frontend of GitLab
 itself, which can, for example, use the API as the authenticated user to get a
 list of their projects without needing to explicitly pass an access token.
 
-### GitLab CI job token
+### GitLab CI/CD job token
 
-With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/new_ci_build_permissions_model.md#job-token)
-to authenticate with the API:
+When a pipeline job is about to run, GitLab generates a unique token and injects it as the
+[`CI_JOB_TOKEN` predefined variable](../ci/variables/predefined_variables.md).
+
+You can use a GitLab CI/CD job token to authenticate with specific API endpoints:
 
 - Packages:
-  - [Package Registry](../user/packages/package_registry/index.md)
+  - [Package Registry](../user/packages/package_registry/index.md). To push to the
+    Package Registry, you can use [deploy tokens](../user/project/deploy_tokens/index.md).
   - [Container Registry](../user/packages/container_registry/index.md)
-    (`$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`)
-- [Get job artifacts](job_artifacts.md#get-job-artifacts)
-- [Get job token's job](jobs.md#get-job-tokens-job)
-- [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
-- [Release creation](releases/index.md#create-a-release)
-- [Terraform plan](../user/infrastructure/index.md)
+    (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
+- [Get job artifacts](job_artifacts.md#get-job-artifacts).
+- [Get job token's job](jobs.md#get-job-tokens-job).
+- [Pipeline triggers](pipeline_triggers.md), using the `token=` parameter.
+- [Release creation](releases/index.md#create-a-release).
+- [Terraform plan](../user/infrastructure/index.md).
 
-The token is valid as long as the job is running.
+The token has the same permissions to access the API as the user that triggers the
+pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../user/permissions.md).
+
+The token is valid only while the pipeline job runs. After the job finishes, you can't
+use the token anymore.
+
+A job token can access a project's resources without any configuration, but it might
+give extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
+to redesign the feature for more strategic control of the access permissions.
+
+#### GitLab CI/CD job token security
+
+To make sure that this token doesn't leak, GitLab:
+
+- Masks the job token in job logs.
+- Grants permissions to the job token only when the job is running.
+
+To make sure that this token doesn't leak, you should also configure
+your [runners](../ci/runners/README.md) to be secure. Avoid:
+
+- Using Docker's `privileged` mode if the machines are re-used.
+- Using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+  run on the same machine.
+
+If you have an insecure GitLab Runner configuration, you increase the risk that someone
+tries to steal tokens from other jobs.
 
 ### Impersonation tokens
 

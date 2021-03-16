@@ -21,13 +21,13 @@ Publish generic files, like release binaries, in your project’s Package Regist
 ## Authenticate to the Package Registry
 
 To authenticate to the Package Registry, you need either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-[CI job token](../../../api/README.md#gitlab-ci-job-token), or [deploy token](../../project/deploy_tokens/index.md).
+[CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
 may be any value, and the `password` must be either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-a [CI job token](../../../api/README.md#gitlab-ci-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
+a [CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file
 
