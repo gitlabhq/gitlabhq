@@ -136,11 +136,7 @@ module Ci
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
 
-    scope :with_job, -> do
-      if Feature.enabled?(:non_public_artifacts, type: :development)
-        joins(:job).includes(:job)
-      end
-    end
+    scope :with_job, -> { joins(:job).includes(:job) }
 
     scope :with_file_types, -> (file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
@@ -311,12 +307,12 @@ module Ci
       max_size&.megabytes.to_i
     end
 
-    def to_deleted_object_attrs
+    def to_deleted_object_attrs(pick_up_at = nil)
       {
         file_store: file_store,
         store_dir: file.store_dir.to_s,
         file: file_identifier,
-        pick_up_at: expire_at || Time.current
+        pick_up_at: pick_up_at || expire_at || Time.current
       }
     end
 

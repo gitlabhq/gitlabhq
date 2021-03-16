@@ -142,5 +142,12 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
 
       expect(output).to include("<span>#</span>#{issue.iid}")
     end
+
+    it 'converts user reference with escaped underscore because of italics' do
+      markdown = '_@test\__'
+      output = described_class.to_html(markdown, project: project)
+
+      expect(output).to include('<em>@test_</em>')
+    end
   end
 end

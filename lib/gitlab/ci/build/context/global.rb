@@ -19,8 +19,7 @@ module Gitlab
               # to the CI variables to evaluate workflow:rules
               # with the result. We should refactor away the extra Build.new,
               # but be able to get CI Variables directly from the Seed::Build.
-              stub_build.scoped_variables_hash
-                .reject { |key, _value| key =~ /\ACI_(JOB|BUILD)/ }
+              stub_build.scoped_variables.reject { |var| var[:key] =~ /\ACI_(JOB|BUILD)/ }
             end
           end
 

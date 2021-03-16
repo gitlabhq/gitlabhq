@@ -4,6 +4,9 @@ module AlertManagement
   class CreateAlertIssueService
     include Gitlab::Utils::StrongMemoize
 
+    DEFAULT_ALERT_TITLE = ::Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE
+    DEFAULT_INCIDENT_TITLE = 'New: Incident'
+
     # @param alert [AlertManagement::Alert]
     # @param user [User]
     def initialize(alert, user)
@@ -20,6 +23,8 @@ module AlertManagement
 
       issue = result.payload[:issue]
       return error(object_errors(alert), issue) unless associate_alert_with_issue(issue)
+
+      update_title_for(issue)
 
       SystemNoteService.new_alert_issue(alert, issue, user)
 
@@ -48,6 +53,12 @@ module AlertManagement
 
     def associate_alert_with_issue(issue)
       alert.update(issue_id: issue.id)
+    end
+
+    def update_title_for(issue)
+      return unless issue.title == DEFAULT_ALERT_TITLE
+
+      issue.update!(title: "#{DEFAULT_INCIDENT_TITLE} #{issue.iid}")
     end
 
     def error(message, issue = nil)

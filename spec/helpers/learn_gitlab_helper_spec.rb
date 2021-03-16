@@ -41,11 +41,13 @@ RSpec.describe LearnGitlabHelper do
     it 'sets correct path and completion status' do
       expect(onboarding_actions_data[:git_write]).to eq({
         url: project_issue_url(project, LearnGitlabHelper::ACTION_ISSUE_IDS[:git_write]),
-        completed: true
+        completed: true,
+        svg: helper.image_path("learn_gitlab/git_write.svg")
       })
       expect(onboarding_actions_data[:pipeline_created]).to eq({
         url: project_issue_url(project, LearnGitlabHelper::ACTION_ISSUE_IDS[:pipeline_created]),
-        completed: false
+        completed: false,
+        svg: helper.image_path("learn_gitlab/pipeline_created.svg")
       })
     end
   end

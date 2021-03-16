@@ -21,7 +21,7 @@
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "ACKNOWLEDGED",
     "assignees": { "nodes": [{ "username": "root", "avatarUrl": "/url", "name": "root" }] },
-    "issueIid": "1",
+    "issue": { "state" : "closed", "iid": "1", "title": "My test issue" },
     "notes": {
       "nodes": [
         {

@@ -25,10 +25,10 @@ module Gitlab
       end
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil) # rubocop:disable Metrics/ParameterLists
-        context += [Tracking::StandardContext.new(project: project, user: user, namespace: namespace).to_context]
+        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace).to_context, *context]
 
-        snowplow.event(category, action, label: label, property: property, value: value, context: context)
-        product_analytics.event(category, action, label: label, property: property, value: value, context: context)
+        snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
+        product_analytics.event(category, action, label: label, property: property, value: value, context: contexts)
       end
 
       def self_describing_event(schema_url, data:, context: nil)

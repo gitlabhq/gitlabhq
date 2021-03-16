@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Digital Ocean and Docker Machine test environment
+# Digital Ocean and Docker Machine test environment **(FREE SELF)**
 
 This guide is for quickly testing different versions of GitLab and not
 recommended for ease of future upgrades or keeping the data you create.

@@ -46,7 +46,7 @@ class WebexTeamsService < ChatNotificationService
 
   def notify(message, opts)
     header = { 'Content-Type' => 'application/json' }
-    response = Gitlab::HTTP.post(webhook, headers: header, body: { markdown: message.pretext }.to_json)
+    response = Gitlab::HTTP.post(webhook, headers: header, body: { markdown: message.summary }.to_json)
 
     response if response.success?
   end

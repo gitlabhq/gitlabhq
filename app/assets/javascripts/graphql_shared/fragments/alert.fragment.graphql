@@ -5,7 +5,11 @@ fragment AlertListItem on AlertManagementAlert {
   status
   startedAt
   eventCount
-  issueIid
+  issue {
+    iid
+    state
+    title
+  }
   assignees {
     nodes {
       name

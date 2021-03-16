@@ -68,18 +68,11 @@ RSpec.describe API::Discussions do
         mr_commit = '0b4bc9a49b562e85de7cc9e834518ea6828729b9'
         parent_commit = 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f'
         file = "files/ruby/feature.rb"
-        line_range = {
-          "start_line_code" => Gitlab::Git.diff_line_code(file, 1, 1),
-          "end_line_code" => Gitlab::Git.diff_line_code(file, 1, 1),
-          "start_line_type" => "text",
-          "end_line_type" => "text"
-        }
         position = build(
           :text_diff_position,
           :added,
           file: file,
           new_line: 1,
-          line_range: line_range,
           base_sha: parent_commit,
           head_sha: mr_commit,
           start_sha: parent_commit

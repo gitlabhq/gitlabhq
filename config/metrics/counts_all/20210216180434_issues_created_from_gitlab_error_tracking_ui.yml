@@ -1,0 +1,16 @@
+---
+key_path: counts.issues_created_from_gitlab_error_tracking_ui
+description: Count of issues manually created from the GitLab UI on Sentry errors
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: error_tracking
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

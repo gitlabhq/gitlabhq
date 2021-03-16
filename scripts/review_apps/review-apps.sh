@@ -314,7 +314,7 @@ function deploy() {
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
   local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
 
-  echoinfo "Deploying ${release}..." true
+  echoinfo "Deploying ${release} to ${CI_ENVIRONMENT_URL} ..." true
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
   gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-ee"

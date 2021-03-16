@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
-
-return unless gitlab_danger.ci?
+return unless helper.ci?
 
 SPECIALIZATIONS = {
   database: 'database',
@@ -14,7 +12,7 @@ SPECIALIZATIONS = {
   ci_template: 'ci::templates'
 }.freeze
 
-labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
+labels_to_add = project_helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
   label = SPECIALIZATIONS[category]
 
   memo << label if label && !gitlab.mr_labels.include?(label)

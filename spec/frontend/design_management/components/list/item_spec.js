@@ -8,7 +8,7 @@ const localVue = createLocalVue();
 localVue.use(VueRouter);
 const router = new VueRouter();
 
-// Referenced from: doc/api/graphql/reference/gitlab_schema.graphql:DesignVersionEvent
+// Referenced from: gitlab_schema.graphql:DesignVersionEvent
 const DESIGN_VERSION_EVENT = {
   CREATION: 'CREATION',
   DELETION: 'DELETION',

@@ -13,8 +13,6 @@ RSpec.describe 'Issue Boards', :js do
   let_it_be(:user2)   { create(:user) }
 
   before do
-    stub_feature_flags(board_new_list: false)
-
     project.add_maintainer(user)
     project.add_maintainer(user2)
 
@@ -68,6 +66,8 @@ RSpec.describe 'Issue Boards', :js do
     let_it_be(:issue10) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
 
     before do
+      stub_feature_flags(board_new_list: false)
+
       visit project_board_path(project, board)
 
       wait_for_requests
@@ -161,19 +161,6 @@ RSpec.describe 'Issue Boards', :js do
     end
 
     it 'allows user to delete board' do
-      remove_list
-
-      wait_for_requests
-
-      expect(page).to have_selector('.board', count: 3)
-    end
-
-    it 'removes checkmark in new list dropdown after deleting' do
-      click_button 'Add list'
-      wait_for_requests
-
-      find('.js-new-board-list').click
-
       remove_list
 
       wait_for_requests
@@ -311,7 +298,7 @@ RSpec.describe 'Issue Boards', :js do
 
           it 'shows issue count on the list' do
             page.within(find(".board:nth-child(2)")) do
-              expect(page.find('.js-issue-size')).to have_text(total_planning_issues)
+              expect(page.find('[data-testid="board-items-count"]')).to have_text(total_planning_issues)
               expect(page).not_to have_selector('.js-max-issue-size')
             end
           end
@@ -321,6 +308,7 @@ RSpec.describe 'Issue Boards', :js do
       context 'new list' do
         it 'shows all labels in new list dropdown' do
           click_button 'Add list'
+
           wait_for_requests
 
           page.within('.dropdown-menu-issues-board-new') do

@@ -10,16 +10,25 @@ const resolvers = {
   Mutation: {
     updateCurrentIntegration: (
       _,
-      { id = null, name, active, token, type, url, apiUrl },
+      {
+        id = null,
+        name,
+        active,
+        token,
+        type,
+        url,
+        apiUrl,
+        payloadExample,
+        payloadAttributeMappings,
+        payloadAlertFields,
+      },
       { cache },
     ) => {
       const sourceData = cache.readQuery({ query: getCurrentIntegrationQuery });
       const data = produce(sourceData, (draftData) => {
         if (id === null) {
-          // eslint-disable-next-line no-param-reassign
           draftData.currentIntegration = null;
         } else {
-          // eslint-disable-next-line no-param-reassign
           draftData.currentIntegration = {
             id,
             name,
@@ -28,6 +37,9 @@ const resolvers = {
             type,
             url,
             apiUrl,
+            payloadExample,
+            payloadAttributeMappings,
+            payloadAlertFields,
           };
         }
       });

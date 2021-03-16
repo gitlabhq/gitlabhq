@@ -46,6 +46,11 @@ export default {
       required: false,
       default: false,
     },
+    tooltipBoundary: {
+      type: String,
+      required: false,
+      default: null,
+    },
     cssClass: {
       type: String,
       required: false,
@@ -75,8 +80,11 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip="{ placement: tooltipPlacement, container: tooltipContainer }"
-    v-gl-tooltip.hover.blur
+    v-gl-tooltip.hover.blur.viewport="{
+      placement: tooltipPlacement,
+      container: tooltipContainer,
+      boundary: tooltipBoundary,
+    }"
     :class="cssClass"
     :title="title"
     :data-clipboard-text="clipboardText"

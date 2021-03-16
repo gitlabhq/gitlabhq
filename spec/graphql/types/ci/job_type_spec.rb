@@ -14,6 +14,8 @@ RSpec.describe Types::Ci::JobType do
       detailedStatus
       scheduledAt
       artifacts
+      finished_at
+      duration
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

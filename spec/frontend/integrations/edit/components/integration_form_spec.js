@@ -207,27 +207,6 @@ describe('IntegrationForm', () => {
 
         expect(findJiraTriggerFields().exists()).toBe(true);
       });
-
-      describe('featureFlag jiraIssuesIntegration is false', () => {
-        it('does not render JiraIssuesFields', () => {
-          createComponent({
-            customStateProps: { type: 'jira' },
-            featureFlags: { jiraIssuesIntegration: false },
-          });
-
-          expect(findJiraIssuesFields().exists()).toBe(false);
-        });
-      });
-
-      describe('featureFlag jiraIssuesIntegration is true', () => {
-        it('renders JiraIssuesFields', () => {
-          createComponent({
-            customStateProps: { type: 'jira' },
-            featureFlags: { jiraIssuesIntegration: true },
-          });
-          expect(findJiraIssuesFields().exists()).toBe(true);
-        });
-      });
     });
 
     describe('triggerEvents is present', () => {

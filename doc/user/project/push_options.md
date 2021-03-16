@@ -34,12 +34,12 @@ git push -o <push_option>
 
 ## Push options for GitLab CI/CD
 
-You can use push options to skip a CI/CD pipeline, or pass environment variables.
+You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
 | Push option                    | Description                                                                                 | Introduced in version |
 | ------------------------------ | ------------------------------------------------------------------------------------------- |---------------------- |
 | `ci.skip`                      | Do not create a CI pipeline for the latest push.                                            | [11.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) |
-| `ci.variable="<name>=<value>"` | Provide [environment variables](../../ci/variables/README.md) to be used in a CI pipeline, if one is created due to the push. | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/README.md) to be used in a CI pipeline, if one is created due to the push. | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
 
 An example of using `ci.skip`:
 
@@ -47,7 +47,7 @@ An example of using `ci.skip`:
 git push -o ci.skip
 ```
 
-An example of passing some environment variables for a pipeline:
+An example of passing some CI/CD variables for a pipeline:
 
 ```shell
 git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"
@@ -66,7 +66,7 @@ time as pushing changes:
 | `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged.                                             | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
 | `merge_request.title="<title>"`              | Set the title of the merge request. Ex: `git push -o merge_request.title="The title I want"`.                   | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
 | `merge_request.description="<description>"`  | Set the description of the merge request. Ex: `git push -o merge_request.description="The description I want"`. | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
-| `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it will be created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
+| `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it is created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
 | `merge_request.unlabel="<label>"`            | Remove labels from the merge request. For example, for two labels: `git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
 
 If you use a push option that requires text with spaces in it, you need to enclose it
@@ -108,7 +108,7 @@ option](#push-options-for-merge-requests):
 git config --global alias.mwps "push -o merge_request.create -o merge_request.target=master -o merge_request.merge_when_pipeline_succeeds"
 ```
 
-Then to quickly push a local branch that will target master and merge when the
+Then to quickly push a local branch that targets the default branch and merges when the
 pipeline succeeds:
 
 ```shell

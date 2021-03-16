@@ -130,7 +130,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Kerberos authentication](../integration/kerberos.md).
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Email users](../tools/email.md): Email GitLab users from within GitLab.
-- [User Cohorts](../user/admin_area/analytics/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
+- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - [Audit events](audit_events.md): View the changes made within the GitLab server for:
   - Groups and projects.
   - Instances.
@@ -176,7 +176,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Job logs](job_logs.md): Information about the job logs.
 - [Register runners](../ci/runners/README.md#types-of-runners): Learn how to register and configure runners.
 - [Shared runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for shared runners.
-- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
+- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enable-or-disable-auto-devops): Enable or disable Auto DevOps for your instance.
 
 ## Snippet settings
 

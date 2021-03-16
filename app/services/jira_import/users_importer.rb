@@ -13,7 +13,7 @@ module JiraImport
 
       ServiceResponse.success(payload: mapped_users)
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => error
-      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      Gitlab::ErrorTracking.log_exception(error, project_id: project.id)
       ServiceResponse.error(message: "There was an error when communicating to Jira")
     rescue Projects::ImportService::Error => error
       ServiceResponse.error(message: error.message)

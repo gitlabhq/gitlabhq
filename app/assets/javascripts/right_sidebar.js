@@ -26,6 +26,8 @@ Sidebar.prototype.removeListeners = function () {
   // eslint-disable-next-line @gitlab/no-global-event-off
   this.sidebar.off('hidden.gl.dropdown');
   // eslint-disable-next-line @gitlab/no-global-event-off
+  this.sidebar.off('hiddenGlDropdown');
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $('.dropdown').off('loading.gl.dropdown');
   // eslint-disable-next-line @gitlab/no-global-event-off
   $('.dropdown').off('loaded.gl.dropdown');
@@ -37,6 +39,7 @@ Sidebar.prototype.addEventListeners = function () {
 
   this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
   this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
+  this.sidebar.on('hiddenGlDropdown', this, this.onSidebarDropdownHidden);
 
   $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
   return $(document)

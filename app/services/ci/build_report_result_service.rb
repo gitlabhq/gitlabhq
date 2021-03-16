@@ -33,7 +33,8 @@ module Ci
           failed: test_suite.failed_count,
           errored: test_suite.error_count,
           skipped: test_suite.skipped_count,
-          success: test_suite.success_count
+          success: test_suite.success_count,
+          suite_error: test_suite.suite_error
         }
       }
     end

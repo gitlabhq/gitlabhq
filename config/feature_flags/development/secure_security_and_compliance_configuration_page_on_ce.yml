@@ -1,8 +1,0 @@
----
-name: secure_security_and_compliance_configuration_page_on_ce
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50282
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/294076
-milestone: '13.9'
-type: development
-group: group::static analysis
-default_enabled: false

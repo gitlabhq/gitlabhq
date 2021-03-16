@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'rubocop'
 
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/inline_association'
 

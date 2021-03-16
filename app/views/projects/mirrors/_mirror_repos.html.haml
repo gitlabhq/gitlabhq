@@ -5,8 +5,8 @@
 
 %section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { qa_selector: 'mirroring_repositories_settings_content' } }
   .settings-header
-    %h4= _('Mirroring repositories')
-    %button.btn.gl-button.js-settings-toggle
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Mirroring repositories')
+    %button.btn.gl-button.btn-default.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
@@ -35,7 +35,7 @@
                 = link_to _('Learn more.'), help_page_path('user/project/repository/repository_mirroring', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
           .panel-footer
-            = f.submit _('Mirror repository'), class: 'gl-button btn btn-success js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
+            = f.submit _('Mirror repository'), class: 'gl-button btn btn-confirm js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
     - else
       .gl-alert.gl-alert-info{ role: 'alert' }
         = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')

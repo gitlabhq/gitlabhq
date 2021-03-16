@@ -14,10 +14,13 @@ project's dependencies for their licenses. You can then decide whether to allow 
 each license. For example, if your application uses an external (open source) library whose license
 is incompatible with yours, then you can deny the use of that license.
 
-You can take advantage of License Compliance by either [including the job](#configuration)
-in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
-that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
+You can take advantage of License Compliance by either:
+
+- [Including the job](#configuration)
+  in your existing `.gitlab-ci.yml` file.
+- Implicitly using
+  [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance),
+  provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 The [License Finder](https://github.com/pivotal/LicenseFinder) scan tool runs as part of the CI/CD
 pipeline, and detects the licenses in use. GitLab checks the License Compliance report, compares the
@@ -76,7 +79,7 @@ The reported licenses might be incomplete or inaccurate.
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
 | Scala      | [sbt](https://www.scala-sbt.org/)                                                                             |
-| Rust       | [Cargo](https://crates.io/)                                                                                   |
+| Rust       | [Cargo](https://crates.io)                                                                                   |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Requirements

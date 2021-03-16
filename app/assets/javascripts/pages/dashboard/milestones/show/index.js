@@ -6,6 +6,4 @@ document.addEventListener('DOMContentLoaded', () => {
   new Milestone(); // eslint-disable-line no-new
   new Sidebar(); // eslint-disable-line no-new
   new MountMilestoneSidebar(); // eslint-disable-line no-new
-
-  Milestone.initDeprecationMessage();
 });

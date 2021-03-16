@@ -58,7 +58,7 @@ end
 If the test has a `before` or `after`, you must add the `only` metadata
 to the outer `RSpec.describe`.
 
-If you want to run an `only: { :pipeline }` tagged test on your local GDK make sure either the `CI_PROJECT_NAME` environment variable is unset, or that the `CI_PROJECT_NAME` environment variable matches the specified pipeline in the `only: { :pipeline }` tag, or just delete the `only: { :pipeline }` tag.
+If you want to run an `only: { :pipeline }` tagged test on your local GDK make sure either the `CI_PROJECT_NAME` CI/CD variable is unset, or that the `CI_PROJECT_NAME` variable matches the specified pipeline in the `only: { :pipeline }` tag, or just delete the `only: { :pipeline }` tag.
 
 ## Quarantining a test for a specific environment
 

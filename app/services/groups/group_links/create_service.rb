@@ -18,7 +18,7 @@ module Groups
         )
 
         if link.save
-          group.refresh_members_authorized_projects
+          group.refresh_members_authorized_projects(direct_members_only: true)
           success(link: link)
         else
           error(link.errors.full_messages.to_sentence, 409)

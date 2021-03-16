@@ -26,7 +26,14 @@
     "existing_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
     "new_errors": { "type": "array", "items": { "$ref": "test_case.json" } },
     "resolved_errors": { "type": "array", "items": { "$ref": "test_case.json" } },
-    "existing_errors": { "type": "array", "items": { "$ref": "test_case.json" } }
+    "existing_errors": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "suite_errors": {
+      "type": ["object", "null"],
+      "properties": {
+        "head": { "type": ["string", "null"] },
+        "base": { "type": ["string", "null"] }
+      }
+    }
   },
   "additionalProperties": false
 }

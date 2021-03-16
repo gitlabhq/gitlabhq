@@ -25,7 +25,7 @@ module QA
           def go_to_ci_cd_settings
             hover_settings do
               within_submenu do
-                click_link('CI / CD')
+                click_link('CI/CD')
               end
             end
           end

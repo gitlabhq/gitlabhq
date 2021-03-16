@@ -62,7 +62,7 @@ describe('grafana integration component', () => {
       wrapper = shallowMount(GrafanaIntegration, { store });
 
       expect(wrapper.find('.js-section-sub-header').text()).toContain(
-        'Embed Grafana charts in GitLab issues.',
+        'Set up Grafana authentication to embed Grafana panels in GitLab Flavored Markdown.\n      Learn more.',
       );
     });
   });

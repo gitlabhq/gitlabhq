@@ -1,0 +1,17 @@
+---
+key_path: usage_activity_by_stage_monthly.plan.service_desk_enabled_projects
+description:
+product_section: dev
+product_stage:
+product_group: group::plan
+product_category:
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+- ee
+tier:
+- free
+skip_validation: true

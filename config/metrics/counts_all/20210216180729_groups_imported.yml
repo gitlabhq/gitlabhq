@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.manage.groups_imported
+description: Distinct count of users that imported groups using Group Import
+product_section: dev
+product_stage: manage
+product_group: group::import
+product_category:
+value_type: number
+status: deprecated
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

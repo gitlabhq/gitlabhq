@@ -1,10 +1,10 @@
-.btn-group
-  = render 'shared/issuable/csv_export/button', issuable_type: 'merge-requests'
+- issuable_type = 'merge-requests'
+- notification_email = @current_user.present? ? @current_user.notification_email : nil
+
+.js-csv-import-export-buttons{ data: { show_export_button: "true", issuable_type: issuable_type, issuable_count: issuables_count_for_state(issuable_type.to_sym, params[:state]), email: notification_email, export_csv_path: export_csv_project_merge_requests_path(@project, request.query_parameters), container_class: 'gl-mr-3' } }
 
 - if @can_bulk_update
-  = button_tag "Edit merge requests", class: "gl-button btn gl-mr-3 js-bulk-update-toggle"
+  = button_tag "Edit merge requests", class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
 - if merge_project
-  = link_to new_merge_request_path, class: "gl-button btn btn-success", title: "New merge request" do
+  = link_to new_merge_request_path, class: "gl-button btn btn-confirm", title: "New merge request" do
     New merge request
-
-  = render 'shared/issuable/csv_export/modal', issuable_type: 'merge_requests'

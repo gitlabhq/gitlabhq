@@ -192,11 +192,6 @@ ul.content-list {
     display: flex;
     align-items: center;
     white-space: nowrap;
-
-    // Override style that allows the flex-row text to wrap.
-    &.allow-wrap {
-      white-space: normal;
-    }
   }
 
   .row-main-content {
@@ -281,12 +276,6 @@ ul.indent-list {
 @keyframes spin-avatar {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-.namespace-title {
-  .tooltip-inner {
-    max-width: 350px;
-  }
 }
 
 .horizontal-list {

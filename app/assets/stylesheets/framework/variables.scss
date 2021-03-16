@@ -443,7 +443,7 @@ $gl-avatar-size: 40px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
-$default-icon-size: 18px;
+$default-icon-size: 16px;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
@@ -830,8 +830,8 @@ $ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
 /*
 GitLab Plans
 */
-$gl-gold-plan: #d4af37;
-$gl-silver-plan: #91a1ab;
+$gl-ultimate-plan: #d4af37;
+$gl-premium-plan: #91a1ab;
 $gl-bronze-plan: #cd7f32;
 
 /*

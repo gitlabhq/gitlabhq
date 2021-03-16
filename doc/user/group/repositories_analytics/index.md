@@ -40,6 +40,9 @@ To see the latest code coverage for each project in your group:
 1. Go to **Analytics > Repositories** in the group (not from a project).
 1. In the **Latest test coverage results** section, use the **Select projects** dropdown to choose the projects you want to check.
 
+You can download code coverage data for specific projects using
+[code coverage history](../../../ci/pipelines/settings.md#code-coverage-history).
+
 ## Download historic test coverage data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.

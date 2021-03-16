@@ -47,7 +47,7 @@ module InProductMarketingHelper
         s_('InProductMarketing|Are your runners ready?')
       ],
       trial: [
-        s_('InProductMarketing|Start a free trial of GitLab Gold – no CC required'),
+        s_('InProductMarketing|Start a free trial of GitLab Ultimate – no CC required'),
         s_('InProductMarketing|Improve app security with a 30-day trial'),
         s_('InProductMarketing|Start with a GitLab Gold free trial')
       ],
@@ -343,7 +343,7 @@ module InProductMarketingHelper
     end
   end
 
-  def inline_image_link(folder, image, **options)
+  def inline_image_link(folder, image, options)
     attachments.inline[image] = File.read(Rails.root.join("app/assets/images", folder, image))
     image_tag attachments[image].url, **options
   end

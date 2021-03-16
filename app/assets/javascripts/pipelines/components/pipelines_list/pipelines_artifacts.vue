@@ -31,6 +31,8 @@ export default {
     :text="$options.translations.artifacts"
     :aria-label="$options.translations.artifacts"
     icon="download"
+    right
+    lazy
     text-sr-only
   >
     <gl-dropdown-item

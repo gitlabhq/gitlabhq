@@ -7,7 +7,7 @@ class UserCallout < ApplicationRecord
     gke_cluster_integration: 1,
     gcp_signup_offer: 2,
     cluster_security_warning: 3,
-    gold_trial: 4,                             # EE-only
+    ultimate_trial: 4,                         # EE-only
     geo_enable_hashed_storage: 5,              # EE-only
     geo_migrate_hashed_storage: 6,             # EE-only
     canary_deployment: 7,                      # EE-only

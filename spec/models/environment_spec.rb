@@ -34,6 +34,27 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
+  describe '.before_save' do
+    it 'ensures environment tier when a new object is created' do
+      environment = build(:environment, name: 'gprd', tier: nil)
+
+      expect { environment.save }.to change { environment.tier }.from(nil).to('production')
+    end
+
+    it 'ensures environment tier when an existing object is updated' do
+      environment = create(:environment, name: 'gprd')
+      environment.update_column(:tier, nil)
+
+      expect { environment.stop! }.to change { environment.reload.tier }.from(nil).to('production')
+    end
+
+    it 'does not overwrite the existing environment tier' do
+      environment = create(:environment, name: 'gprd', tier: :production)
+
+      expect { environment.update!(name: 'gstg') }.not_to change { environment.reload.tier }
+    end
+  end
+
   describe '.order_by_last_deployed_at' do
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
@@ -48,6 +69,62 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'returns the environments in descending order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at_desc.to_a).to eq([environment1, environment2, environment3])
+    end
+  end
+
+  describe ".stopped_review_apps" do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
+    let_it_be(:new_stopped_review_env) { create(:environment, :with_review_app, :stopped, project: project) }
+    let_it_be(:old_active_review_env) { create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project) }
+    let_it_be(:old_stopped_other_env) { create(:environment, :stopped, created_at: 31.days.ago, project: project) }
+    let_it_be(:new_stopped_other_env) { create(:environment, :stopped, project: project) }
+    let_it_be(:old_active_other_env) { create(:environment, :available, created_at: 31.days.ago, project: project) }
+
+    let(:before) { 30.days.ago }
+    let(:limit) { 1000 }
+
+    subject { project.environments.stopped_review_apps(before, limit) } # rubocop: disable RSpec/SingleLineHook
+
+    it { is_expected.to contain_exactly(old_stopped_review_env) }
+
+    context "current timestamp" do
+      let(:before) { Time.zone.now }
+
+      it { is_expected.to contain_exactly(old_stopped_review_env, new_stopped_review_env) }
+    end
+  end
+
+  describe "scheduled deletion" do
+    let_it_be(:deletable_environment) { create(:environment, auto_delete_at: Time.zone.now) }
+    let_it_be(:undeletable_environment) { create(:environment, auto_delete_at: nil) }
+
+    describe ".scheduled_for_deletion" do
+      subject { described_class.scheduled_for_deletion }
+
+      it { is_expected.to contain_exactly(deletable_environment) }
+    end
+
+    describe ".not_scheduled_for_deletion" do
+      subject { described_class.not_scheduled_for_deletion }
+
+      it { is_expected.to contain_exactly(undeletable_environment) }
+    end
+
+    describe ".schedule_to_delete" do
+      subject { described_class.for_id(deletable_environment).schedule_to_delete }
+
+      it "schedules the record for deletion" do
+        freeze_time do
+          subject
+
+          deletable_environment.reload
+          undeletable_environment.reload
+
+          expect(deletable_environment.auto_delete_at).to eq(1.week.from_now)
+          expect(undeletable_environment.auto_delete_at).to be_nil
+        end
+      end
     end
   end
 
@@ -192,6 +269,62 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'plucks names' do
       is_expected.to eq(%w[production])
+    end
+  end
+
+  describe '.for_tier' do
+    let_it_be(:environment) { create(:environment, :production) }
+
+    it 'returns the production environment when searching for production tier' do
+      expect(described_class.for_tier(:production)).to eq([environment])
+    end
+
+    it 'returns nothing when searching for staging tier' do
+      expect(described_class.for_tier(:staging)).to be_empty
+    end
+  end
+
+  describe '#guess_tier' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { environment.send(:guess_tier) }
+
+    let(:environment) { build(:environment, name: name) }
+
+    where(:name, :tier) do
+      'review/feature'     | described_class.tiers[:development]
+      'review/product'     | described_class.tiers[:development]
+      'DEV'                | described_class.tiers[:development]
+      'development'        | described_class.tiers[:development]
+      'trunk'              | described_class.tiers[:development]
+      'test'               | described_class.tiers[:testing]
+      'TEST'               | described_class.tiers[:testing]
+      'testing'            | described_class.tiers[:testing]
+      'testing-prd'        | described_class.tiers[:testing]
+      'acceptance-testing' | described_class.tiers[:testing]
+      'QC'                 | described_class.tiers[:testing]
+      'gstg'               | described_class.tiers[:staging]
+      'staging'            | described_class.tiers[:staging]
+      'stage'              | described_class.tiers[:staging]
+      'Model'              | described_class.tiers[:staging]
+      'MODL'               | described_class.tiers[:staging]
+      'Pre-production'     | described_class.tiers[:staging]
+      'pre'                | described_class.tiers[:staging]
+      'Demo'               | described_class.tiers[:staging]
+      'gprd'               | described_class.tiers[:production]
+      'gprd-cny'           | described_class.tiers[:production]
+      'production'         | described_class.tiers[:production]
+      'Production'         | described_class.tiers[:production]
+      'prod'               | described_class.tiers[:production]
+      'PROD'               | described_class.tiers[:production]
+      'Live'               | described_class.tiers[:production]
+      'canary'             | described_class.tiers[:other]
+      'other'              | described_class.tiers[:other]
+      'EXP'                | described_class.tiers[:other]
+    end
+
+    with_them do
+      it { is_expected.to eq(tier) }
     end
   end
 

@@ -20,7 +20,7 @@ export default {
         'li',
         {
           class:
-            'discussion-collapsible gl-border-solid gl-border-gray-100 gl-border-1 gl-rounded-base gl-overflow-hidden clearfix',
+            'discussion-collapsible gl-border-solid gl-border-gray-100 gl-border-1 gl-rounded-base clearfix',
         },
         [h('ul', { class: 'notes' }, children)],
       );

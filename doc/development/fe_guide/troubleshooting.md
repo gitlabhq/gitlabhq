@@ -39,3 +39,30 @@ See [this video](https://youtu.be/-BkEhghP-kM) for an in-depth overview and inve
 ```
 
 Please note that `toMatchObject` actually changes the nature of the assertion and won't fail if some items are **missing** from the expectation.
+
+### Script issues
+
+## `core-js` errors when running scripts within the GitLab repository
+
+The following command assumes you've set up the GitLab repository in the
+`~/workspace/gdk` directory. When running scripts within the GitLab repository,
+such as code transformations, you might run into issues with `core-js` like this:
+
+```shell
+~/workspace/gdk/gitlab/node_modules/core-js/modules/es.global-this.js:7
+$({
+^
+TypeError: $ is not a function
+    at Object.<anonymous> (~/workspace/gdk/gitlab/node_modules/core-js/modules/es.global-this.js:6:1)
+    at Module._compile (internal/modules/cjs/loader.js:1063:30)
+    at Module._compile (~/workspace/gdk/gitlab/node_modules/pirates/lib/index.js:99:24)
+    at Module._extensions..js (internal/modules/cjs/loader.js:1092:10)
+    at Object.newLoader [as .js] (~/workspace/gdk/gitlab/node_modules/pirates/lib/index.js:104:7)
+    at Module.load (internal/modules/cjs/loader.js:928:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:769:14)
+    at Module.require (internal/modules/cjs/loader.js:952:19)
+    at require (internal/modules/cjs/helpers.js:88:18)
+    at Object.<anonymous> (~/workspace/gdk/gitlab/node_modules/core-js/modules/esnext.global-this.js:2:1)
+```
+
+**Remedy - Try moving the script into a separate repository and point to it to files in the GitLab repository**

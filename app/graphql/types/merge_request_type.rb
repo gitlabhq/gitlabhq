@@ -54,7 +54,7 @@ module Types
     field :target_branch, GraphQL::STRING_TYPE, null: false,
           description: 'Target branch of the merge request.'
     field :work_in_progress, GraphQL::BOOLEAN_TYPE, method: :work_in_progress?, null: false,
-          description: 'Indicates if the merge request is a work in progress (WIP).'
+          description: 'Indicates if the merge request is a draft.'
     field :merge_when_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS).'
     field :diff_head_sha, GraphQL::STRING_TYPE, null: true,
@@ -108,6 +108,10 @@ module Types
           null: false, calls_gitaly: true,
           method: :target_branch_exists?,
           description: 'Indicates if the target branch of the merge request exists.'
+    field :diverged_from_target_branch, GraphQL::BOOLEAN_TYPE,
+          null: false, calls_gitaly: true,
+          method: :diverged_from_target_branch?,
+          description: 'Indicates if the source branch is behind the target branch.'
     field :mergeable_discussions_state, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'
     field :web_url, GraphQL::STRING_TYPE, null: true,

@@ -35,12 +35,12 @@ This is called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
-When called from GitLab Shell no changes are passed and the internal
-API replies with the information needed to pass the request on to
-Gitaly.
+- **When called from GitLab Shell**: No changes are passed, and the internal
+  API replies with the information needed to pass the request on to Gitaly.
+- **When called from Gitaly in a `pre-receive` hook**: The changes are passed
+  and validated to determine if the push is allowed.
 
-When called from Gitaly in a `pre-receive` hook the changes are passed
-and those are validated to determine if the push is allowed.
+Calls are limited to 50 seconds each.
 
 ```plaintext
 POST /internal/allowed
@@ -470,7 +470,7 @@ curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "A
 
 ## Subscriptions
 
-The subscriptions endpoint is used by `[customers.gitlab.com](https://gitlab.com/gitlab-org/customers-gitlab-com)` (CustomersDot)
+The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 in order to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating a subscription
@@ -488,7 +488,7 @@ POST /namespaces/:id/gitlab_subscription
 | `plan_code` | string  | no       | Subscription tier code |
 | `seats`     | integer | no       | Number of seats in subscription |
 | `max_seats_used` | integer | no  | Highest number of active users in the last month |
-| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
 | `trial`     | boolean | no       | Whether subscription is a trial |
 | `trial_starts_on` | date | no    | Start date of trial |
 | `trial_ends_on` | date | no      | End date of trial |
@@ -539,7 +539,7 @@ PUT /namespaces/:id/gitlab_subscription
 | `plan_code` | string  | no       | Subscription tier code |
 | `seats`     | integer | no       | Number of seats in subscription |
 | `max_seats_used` | integer | no  | Highest number of active users in the last month |
-| `auto_renew` | boolean | no      | Whether subscription will auto renew on end date |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
 | `trial`     | boolean | no       | Whether subscription is a trial |
 | `trial_starts_on` | date | no    | Start date of trial. Required if trial is true. |
 | `trial_ends_on` | date | no      | End date of trial |

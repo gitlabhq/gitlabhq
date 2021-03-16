@@ -48,6 +48,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
     end
 
     context 'valid params' do
+      let(:locked) { true }
+
       let(:opts) do
         {
           title: 'New title',
@@ -58,7 +60,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           label_ids: [label.id],
           target_branch: 'target',
           force_remove_source_branch: '1',
-          discussion_locked: true
+          discussion_locked: locked
         }
       end
 
@@ -116,6 +118,139 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           opts[:title] = "Non-draft/wip title string"
 
           MergeRequests::UpdateService.new(project, user, opts).execute(draft_merge_request)
+        end
+
+        context 'when MR is locked' do
+          context 'when locked again' do
+            it 'does not track discussion locking' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_discussion_locked_action)
+
+              opts[:discussion_locked] = true
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when unlocked' do
+            it 'tracks dicussion unlocking' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_discussion_unlocked_action).once.with(user: user)
+
+              opts[:discussion_locked] = false
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+        end
+
+        context 'when MR is unlocked' do
+          let(:locked) { false }
+
+          context 'when unlocked again' do
+            it 'does not track discussion unlocking' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_discussion_unlocked_action)
+
+              opts[:discussion_locked] = false
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when locked' do
+            it 'tracks dicussion locking' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_discussion_locked_action).once.with(user: user)
+
+              opts[:discussion_locked] = true
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+        end
+
+        it 'tracks time estimate and spend time changes' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_time_estimate_changed_action).once.with(user: user)
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_time_spent_changed_action).once.with(user: user)
+
+          opts[:time_estimate] = 86400
+          opts[:spend_time] = {
+            duration: 3600,
+            user_id: user.id,
+            spent_at: Date.parse('2021-02-24')
+          }
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        it 'tracks milestone change' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_milestone_changed_action).once.with(user: user)
+
+          opts[:milestone] = milestone
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        it 'track labels change' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_labels_changed_action).once.with(user: user)
+
+          opts[:label_ids] = [label2.id]
+
+          MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        context 'assignees' do
+          context 'when assignees changed' do
+            it 'tracks assignees changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_assignees_changed_action).once.with(user: user)
+
+              opts[:assignees] = [user2]
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when assignees did not change' do
+            it 'does not track assignees changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_assignees_changed_action)
+
+              opts[:assignees] = merge_request.assignees
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+        end
+
+        context 'reviewers' do
+          context 'when reviewers changed' do
+            it 'tracks reviewers changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .to receive(:track_reviewers_changed_action).once.with(user: user)
+
+              opts[:reviewers] = [user2]
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
+
+          context 'when reviewers did not change' do
+            it 'does not track reviewers changed event' do
+              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+                .not_to receive(:track_reviewers_changed_action)
+
+              opts[:reviewers] = merge_request.reviewers
+
+              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            end
+          end
         end
       end
 
@@ -652,6 +787,48 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
+        end
+      end
+    end
+
+    context 'when the draft status is changed' do
+      let!(:non_subscriber) { create(:user) }
+      let!(:subscriber) do
+        create(:user) { |u| merge_request.toggle_subscription(u, project) }
+      end
+
+      before do
+        project.add_developer(non_subscriber)
+        project.add_developer(subscriber)
+      end
+
+      context 'removing draft status' do
+        before do
+          merge_request.update_attribute(:title, 'Draft: New Title')
+        end
+
+        it 'sends notifications for subscribers', :sidekiq_might_not_need_inline do
+          opts = { title: 'New title' }
+
+          perform_enqueued_jobs do
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+
+      context 'adding draft status' do
+        it 'does not send notifications', :sidekiq_might_not_need_inline do
+          opts = { title: 'Draft: New title' }
+
+          perform_enqueued_jobs do
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
         end
       end
     end

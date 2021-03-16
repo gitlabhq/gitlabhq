@@ -2,6 +2,7 @@
 
 class IssueRebalancingService
   MAX_ISSUE_COUNT = 10_000
+  BATCH_SIZE = 100
   TooManyIssues = Class.new(StandardError)
 
   def initialize(issue)
@@ -21,13 +22,13 @@ class IssueRebalancingService
       Issue.transaction do
         assign_positions(start, indexed_ids)
           .sort_by(&:first)
-          .each_slice(100) do |pairs_with_position|
+          .each_slice(BATCH_SIZE) do |pairs_with_position|
           update_positions(pairs_with_position, 'rebalance issue positions in batches ordered by id')
         end
       end
     else
       Issue.transaction do
-        indexed_ids.each_slice(100) do |pairs|
+        indexed_ids.each_slice(BATCH_SIZE) do |pairs|
           pairs_with_position = assign_positions(start, pairs)
           update_positions(pairs_with_position, 'rebalance issue positions')
         end

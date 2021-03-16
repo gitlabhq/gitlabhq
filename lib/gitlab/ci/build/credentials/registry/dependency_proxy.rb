@@ -7,7 +7,7 @@ module Gitlab
         module Registry
           class DependencyProxy < GitlabRegistry
             def url
-              "#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}"
+              Gitlab.host_with_port
             end
 
             def valid?

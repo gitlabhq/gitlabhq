@@ -43,7 +43,7 @@ hardcoded value (10).
 At this point, we need to investigate what is using more connections
 than we anticipated. To do that, we can use the
 `gitlab_ruby_threads_running_threads` metric. For example, [this
-graph](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum%20by%20(thread_name)%20(%20gitlab_ruby_threads_running_threads%7Buses_db_connection%3D%22yes%22%7D%20)&g0.tab=0)
+graph](https://thanos.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum%20by%20(thread_name)%20(%20gitlab_ruby_threads_running_threads%7Buses_db_connection%3D%22yes%22%7D%20)&g0.tab=0)
 shows all running threads that connect to the database by their
 name. Threads labeled `puma worker` or `sidekiq_worker_thread` are
 the threads that define `Gitlab::Runtime.max_threads` so those are

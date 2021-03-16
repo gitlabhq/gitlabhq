@@ -23,7 +23,7 @@ module QA
         Flow::Login.sign_in
 
         puts "Creating an API scoped access token for the root user..."
-        puts "Token: #{Resource::PersonalAccessToken.fabricate!.access_token}"
+        puts "Token: #{Resource::PersonalAccessToken.fabricate!.token}"
       end
     end
   end

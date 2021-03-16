@@ -1,28 +1,13 @@
 # frozen_string_literal: true
 
-# SnippetRepositoryStorageMove are details of repository storage moves for a
-# snippet. For example, moving a snippet to another gitaly node to help
-# balance storage capacity.
-class SnippetRepositoryStorageMove < ApplicationRecord
-  extend ::Gitlab::Utils::Override
-  include RepositoryStorageMovable
-
-  belongs_to :container, class_name: 'Snippet', inverse_of: :repository_storage_moves, foreign_key: :snippet_id
-  alias_attribute :snippet, :container
-
-  override :schedule_repository_storage_update_worker
-  def schedule_repository_storage_update_worker
-    SnippetUpdateRepositoryStorageWorker.perform_async(
-      snippet_id,
-      destination_storage_name,
-      id
-    )
-  end
-
-  private
-
-  override :error_key
-  def error_key
-    :snippet
-  end
+# This is a compatibility class to avoid calling a non-existent
+# class from sidekiq during deployment.
+#
+# This class was moved to a namespace in https://gitlab.com/gitlab-org/gitlab/-/issues/299853.
+# we cannot remove this class entirely because there can be jobs
+# referencing it.
+#
+# We can get rid of this class in 14.0
+# https://gitlab.com/gitlab-org/gitlab/-/issues/322393
+class SnippetRepositoryStorageMove < Snippets::RepositoryStorageMove
 end

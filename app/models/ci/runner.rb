@@ -9,6 +9,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
     include IgnorableColumns
+    include FeatureGate
 
     add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
@@ -251,10 +252,21 @@ module Ci
       runner_projects.any?
     end
 
+    # TODO: remove this method in favor of `matches_build?` once feature flag is removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/323317
     def can_pick?(build)
-      return false if self.ref_protected? && !build.protected?
+      if Feature.enabled?(:ci_runners_short_circuit_assignable_for, self, default_enabled: :yaml)
+        matches_build?(build)
+      else
+        #  Run `matches_build?` checks before, since they are cheaper than
+        # `assignable_for?`.
+        #
+        matches_build?(build) && assignable_for?(build.project_id)
+      end
+    end
 
-      assignable_for?(build.project_id) && accepting_tags?(build)
+    def match_build_if_online?(build)
+      active? && online? && can_pick?(build)
     end
 
     def only_for?(project)
@@ -263,6 +275,16 @@ module Ci
 
     def short_sha
       token[0...8] if token
+    end
+
+    def tag_list
+      return super unless Feature.enabled?(:ci_preload_runner_tags, default_enabled: :yaml)
+
+      if tags.loaded?
+        tags.map(&:name)
+      else
+        super
+      end
     end
 
     def has_tags?
@@ -304,8 +326,10 @@ module Ci
     end
 
     def pick_build!(build)
-      if can_pick?(build)
-        tick_runner_queue
+      if Feature.enabled?(:ci_reduce_queries_when_ticking_runner_queue, self, default_enabled: :yaml)
+        tick_runner_queue if matches_build?(build)
+      else
+        tick_runner_queue if can_pick?(build)
       end
     end
 
@@ -341,6 +365,8 @@ module Ci
       end
     end
 
+    # TODO: remove this method once feature flag ci_runners_short_circuit_assignable_for
+    # is removed. https://gitlab.com/gitlab-org/gitlab/-/issues/323317
     def assignable_for?(project_id)
       self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
     end
@@ -367,6 +393,12 @@ module Ci
       unless groups.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
+    end
+
+    def matches_build?(build)
+      return false if self.ref_protected? && !build.protected?
+
+      accepting_tags?(build)
     end
 
     def accepting_tags?(build)

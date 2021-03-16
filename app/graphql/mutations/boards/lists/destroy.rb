@@ -33,7 +33,7 @@ module Mutations
         def can_admin_list?(list)
           return false unless list.present?
 
-          Ability.allowed?(current_user, :admin_list, list.board)
+          Ability.allowed?(current_user, :admin_issue_board_list, list.board)
         end
       end
     end

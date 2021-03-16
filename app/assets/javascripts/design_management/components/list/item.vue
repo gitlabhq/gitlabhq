@@ -138,6 +138,7 @@ export default {
           <gl-icon
             :name="icon.name"
             :size="18"
+            use-deprecated-sizes
             :class="icon.classes"
             data-qa-selector="design_status_icon"
             :data-qa-status="icon.name"

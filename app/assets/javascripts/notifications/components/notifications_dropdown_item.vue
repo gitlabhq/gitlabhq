@@ -33,7 +33,13 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item is-check-item :is-checked="isActive" @click="$emit('item-selected', level)">
+  <gl-dropdown-item
+    is-check-item
+    :is-checked="isActive"
+    :class="{ 'is-active': isActive }"
+    data-testid="notification-item"
+    @click="$emit('item-selected', level)"
+  >
     <div class="gl-display-flex gl-flex-direction-column">
       <span class="gl-font-weight-bold">{{ title }}</span>
       <span class="gl-text-gray-500">{{ description }}</span>

@@ -7,7 +7,14 @@ import {
   PERMISSION_READ_MR,
   PERMISSION_CREATE_MR,
   PERMISSION_PUSH_CODE,
+  PUSH_RULE_REJECT_UNSIGNED_COMMITS,
 } from '../constants';
+import {
+  MSG_CANNOT_PUSH_CODE,
+  MSG_CANNOT_PUSH_CODE_SHORT,
+  MSG_CANNOT_PUSH_UNSIGNED,
+  MSG_CANNOT_PUSH_UNSIGNED_SHORT,
+} from '../messages';
 import { getChangesCountForFiles, filePathMatches } from './utils';
 
 export const activeFile = (state) => state.openFiles.find((file) => file.active) || null;
@@ -153,14 +160,47 @@ export const getDiffInfo = (state, getters) => (path) => {
 export const findProjectPermissions = (state, getters) => (projectId) =>
   getters.findProject(projectId)?.userPermissions || DEFAULT_PERMISSIONS;
 
+export const findPushRules = (state, getters) => (projectId) =>
+  getters.findProject(projectId)?.pushRules || {};
+
 export const canReadMergeRequests = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_READ_MR]);
 
 export const canCreateMergeRequests = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_CREATE_MR]);
 
-export const canPushCode = (state, getters) =>
-  Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE]);
+/**
+ * Returns an object with `isAllowed` and `message` based on why the user cant push code
+ */
+export const canPushCodeStatus = (state, getters) => {
+  const canPushCode = getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE];
+  const rejectUnsignedCommits = getters.findPushRules(state.currentProjectId)[
+    PUSH_RULE_REJECT_UNSIGNED_COMMITS
+  ];
+
+  if (rejectUnsignedCommits) {
+    return {
+      isAllowed: false,
+      message: MSG_CANNOT_PUSH_UNSIGNED,
+      messageShort: MSG_CANNOT_PUSH_UNSIGNED_SHORT,
+    };
+  }
+  if (!canPushCode) {
+    return {
+      isAllowed: false,
+      message: MSG_CANNOT_PUSH_CODE,
+      messageShort: MSG_CANNOT_PUSH_CODE_SHORT,
+    };
+  }
+
+  return {
+    isAllowed: true,
+    message: '',
+    messageShort: '',
+  };
+};
+
+export const canPushCode = (state, getters) => getters.canPushCodeStatus.isAllowed;
 
 export const entryExists = (state) => (path) =>
   Boolean(state.entries[path] && !state.entries[path].deleted);

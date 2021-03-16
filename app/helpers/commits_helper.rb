@@ -105,7 +105,7 @@ module CommitsHelper
       tooltip = _("Browse Directory")
     end
 
-    link_to url, class: "btn gl-button btn-default has-tooltip", title: tooltip, data: { container: "body" } do
+    link_to url, class: "btn gl-button btn-default btn-icon has-tooltip", title: tooltip, data: { container: "body" } do
       sprite_icon('folder-open')
     end
   end
@@ -127,10 +127,20 @@ module CommitsHelper
   end
 
   def conditionally_paginate_diff_files(diffs, paginate:, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
-    if paginate && Feature.enabled?(:paginate_commit_view, @project, type: :development)
+    if paginate
       Kaminari.paginate_array(diffs.diff_files.to_a).page(params[:page]).per(per)
     else
       diffs.diff_files
+    end
+  end
+
+  def cherry_pick_projects_data(project)
+    target_projects(project).map do |project|
+      {
+        id: project.id.to_s,
+        name: project.full_path,
+        refsUrl: refs_project_path(project)
+      }
     end
   end
 

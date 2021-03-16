@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Resources
 
-[Mozilla’s HTTP Observatory CLI](https://github.com/mozilla/http-observatory-cli) and 
+[Mozilla’s HTTP Observatory CLI](https://github.com/mozilla/http-observatory-cli) and
 [Qualys SSL Labs Server Test](https://www.ssllabs.com/ssltest/analyze.html) are good resources for finding
 potential problems and ensuring compliance with security best practices.
 
@@ -105,3 +105,9 @@ element.appendChild(sanitize(unsafeHtml));
 
 This `sanitize` function takes the same configuration as the
 original.
+
+### Fixing Security Issues
+
+When refactoring old code, it's important that we don't accidentally remove specs written to catch security issues which might still be relevant.
+
+We should mark specs with `#security` in either the `describe` or `it` blocks to communicate to the engineer reading the code that by removing these specs could have severe consequences down the road, and you are removing code that could catch a reintroduction of a security issue.

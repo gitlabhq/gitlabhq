@@ -53,7 +53,9 @@ The JWT's payload looks like this:
   "job_id": "1212",                              #
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job
   "ref_type": "branch",                          # Git ref type, branch or tag
-  "ref_protected": "true"                        # true if this git ref is protected, false otherwise
+  "ref_protected": "true",                       # true if this git ref is protected, false otherwise
+  "environment": "production",                   # Environment this job deploys to, if present (GitLab 13.9 and later)
+  "environment_protected": "true"                # true if deployed environment is protected, false otherwise (GitLab 13.9 and later)
 }
 ```
 
@@ -178,7 +180,7 @@ $ vault write auth/jwt/config \
 
 For the full list of available configuration options, see Vault's [API documentation](https://www.vaultproject.io/api/auth/jwt#configure).
 
-The following job, when run for the `master` branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
+The following job, when run for the default branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
 
 ```yaml
 read_secrets:

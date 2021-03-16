@@ -27,3 +27,18 @@ RSpec.shared_examples 'Alert Notification Service sends no notifications' do |ht
     end
   end
 end
+
+RSpec.shared_examples 'creates status-change system note for an auto-resolved alert' do
+  it 'has 2 new system notes' do
+    expect { subject }.to change(Note, :count).by(2)
+    expect(Note.last.note).to include('Resolved')
+  end
+end
+
+# Requires `source` to be defined
+RSpec.shared_examples 'creates single system note based on the source of the alert' do
+  it 'has one new system note' do
+    expect { subject }.to change(Note, :count).by(1)
+    expect(Note.last.note).to include(source)
+  end
+end

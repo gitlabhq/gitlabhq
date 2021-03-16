@@ -36,7 +36,7 @@ Note the following about server hooks:
   - [Webhooks](../user/project/integrations/webhooks.md).
   - [GitLab CI/CD](../ci/README.md).
   - [Push Rules](../push_rules/push_rules.md), for a user-configurable Git hook
-    interface. **(STARTER)**
+    interface.
 - Server hooks aren't replicated to [Geo](geo/index.md) secondary nodes.
 
 ## Create a server hook for a repository
@@ -51,10 +51,10 @@ repository directory might not exactly match the instructions below. In that cas
 
 Follow the steps below to set up a server-side hook for a repository:
 
-1. Navigate to **Admin area > Projects** and click on the project you want to add a server hook to.
+1. Go to **Admin area > Projects** and select the project you want to add a server hook to.
 1. Locate the **Gitaly relative path** on the page that appears. This is where the server hook
    must be implemented. For information on interpreting the relative path, see
-   [Translating hashed storage paths](repository_storage_types.md#translating-hashed-storage-paths).
+   [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths).
 1. On the file system, create a new directory in this location called `custom_hooks`.
 1. Inside the new `custom_hooks` directory, create a file with a name matching the hook type. For
    example, for a pre-receive hook the filename should be `pre-receive` with no extension.
@@ -104,8 +104,6 @@ Now test the hook to check whether it is functioning properly.
 
 ## Chained hooks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/93) in GitLab Shell 4.1.0 and GitLab 8.15.
-
 Server hooks set [per project](#create-a-server-hook-for-a-repository) or
 [globally](#create-a-global-server-hook-for-all-repositories) can be executed in a chain.
 
@@ -128,7 +126,7 @@ Any other names are ignored.
 
 Files in `.d` directories must be executable and not match the backup file pattern (`*~`).
 
-For `<project>.git` you need to [translate](repository_storage_types.md#translating-hashed-storage-paths)
+For `<project>.git` you need to [translate](repository_storage_types.md#translate-hashed-storage-paths)
 your project name into the hashed storage format that GitLab uses.
 
 ## Environment Variables
@@ -157,8 +155,6 @@ While other environment variables can be passed to server hooks, your applicatio
 them as they can change.
 
 ## Custom error messages
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.
 
 To have custom error messages appear in the GitLab UI when a commit is declined or an error occurs
 during the Git hook, your script should:

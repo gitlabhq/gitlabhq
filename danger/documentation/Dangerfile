@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-def gitlab_danger
-  @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
-end
-
 def feature_mr?
-  return false unless helper.gitlab_helper&.mr_labels
-
-  (helper.gitlab_helper.mr_labels & %w[feature::addition feature::enhancement]).any?
+  (helper.mr_labels & %w[feature::addition feature::enhancement]).any?
 end
 
 DOCUMENTATION_UPDATE_MISSING = <<~MSG
@@ -15,11 +9,11 @@ DOCUMENTATION_UPDATE_MISSING = <<~MSG
 
 For more information, see:
 
-- The Handbook page on [throughput implementation](https://about.gitlab.com/handbook/engineering/management/throughput/#implementation).
+- The Handbook page on [merge request types](https://about.gitlab.com/handbook/engineering/metrics/#data-classification).
 - The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
 MSG
 
-docs_paths_to_review = helper.changes_by_category[:docs]
+docs_paths_to_review = project_helper.changes_by_category[:docs]
 
 # Documentation should be updated for feature::addition and feature::enhancement
 if docs_paths_to_review.empty?
@@ -30,7 +24,7 @@ end
 
 message 'This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.'
 
-return unless gitlab_danger.ci?
+return unless helper.ci?
 
 markdown(<<~MARKDOWN)
   ## Documentation review
@@ -41,6 +35,7 @@ markdown(<<~MARKDOWN)
 
   The review does not need to block merging this merge request. See the:
 
-  - [Technical Writers assignments](https://about.gitlab.com/handbook/engineering/technical-writing/#designated-technical-writers) for the appropriate technical writer for this review.
+  - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
+  - The [Technical Writer assigned](https://about.gitlab.com/handbook/engineering/technical-writing/#designated-technical-writers) for that stage and group.
   - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
 MARKDOWN

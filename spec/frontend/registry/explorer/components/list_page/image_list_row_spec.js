@@ -12,6 +12,7 @@ import {
   CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
+  ROOT_IMAGE_TEXT,
 } from '~/registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -73,13 +74,19 @@ describe('Image List Row', () => {
       mountComponent();
 
       const link = findDetailsLink();
-      expect(link.html()).toContain(item.path);
-      expect(link.props('to')).toMatchObject({
+      expect(link.text()).toBe(item.path);
+      expect(findDetailsLink().props('to')).toMatchObject({
         name: 'details',
         params: {
           id: getIdFromGraphQLId(item.id),
         },
       });
+    });
+
+    it(`when the image has no name appends ${ROOT_IMAGE_TEXT} to the path`, () => {
+      mountComponent({ item: { ...item, name: '' } });
+
+      expect(findDetailsLink().text()).toBe(`${item.path}/ ${ROOT_IMAGE_TEXT}`);
     });
 
     it('contains a clipboard button', () => {

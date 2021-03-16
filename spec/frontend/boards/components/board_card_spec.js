@@ -1,43 +1,50 @@
-/* global List */
-/* global ListAssignee */
-/* global ListLabel */
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 
-import { mount } from '@vue/test-utils';
-
-import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
 import BoardCard from '~/boards/components/board_card.vue';
-import issueCardInner from '~/boards/components/issue_card_inner.vue';
-import eventHub from '~/boards/eventhub';
-import store from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
-import axios from '~/lib/utils/axios_utils';
+import BoardCardInner from '~/boards/components/board_card_inner.vue';
+import { inactiveId } from '~/boards/constants';
+import { mockLabelList, mockIssue } from '../mock_data';
 
-import sidebarEventHub from '~/sidebar/event_hub';
-import '~/boards/models/label';
-import '~/boards/models/assignee';
-import '~/boards/models/list';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
-
-describe('BoardCard', () => {
+describe('Board card', () => {
   let wrapper;
-  let mock;
-  let list;
+  let store;
+  let mockActions;
 
-  const findIssueCardInner = () => wrapper.find(issueCardInner);
-  const findUserAvatarLink = () => wrapper.find(userAvatarLink);
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
+
+  const createStore = ({ initialState = {}, isSwimlanesOn = false } = {}) => {
+    mockActions = {
+      toggleBoardItem: jest.fn(),
+      toggleBoardItemMultiSelection: jest.fn(),
+    };
+
+    store = new Vuex.Store({
+      state: {
+        activeId: inactiveId,
+        selectedBoardItems: [],
+        ...initialState,
+      },
+      actions: mockActions,
+      getters: {
+        isSwimlanesOn: () => isSwimlanesOn,
+        isEpicBoard: () => false,
+      },
+    });
+  };
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = (propsData) => {
-    wrapper = mount(BoardCard, {
+  const mountComponent = ({ propsData = {}, provide = {} } = {}) => {
+    wrapper = shallowMount(BoardCard, {
+      localVue,
       stubs: {
-        issueCardInner,
+        BoardCardInner,
       },
       store,
       propsData: {
-        list,
-        issue: list.issues[0],
+        list: mockLabelList,
+        item: mockIssue,
         disabled: false,
         index: 0,
         ...propsData,
@@ -46,174 +53,94 @@ describe('BoardCard', () => {
         groupId: null,
         rootPath: '/',
         scopedLabelsAvailable: false,
+        ...provide,
       },
     });
   };
 
-  const setupData = async () => {
-    list = new List(listObj);
-    boardsStore.create();
-    boardsStore.detail.issue = {};
-    const label1 = new ListLabel({
-      id: 3,
-      title: 'testing 123',
-      color: '#000cff',
-      text_color: 'white',
-      description: 'test',
-    });
-    await waitForPromises();
-
-    list.issues[0].labels.push(label1);
+  const selectCard = async () => {
+    wrapper.trigger('mouseup');
+    await wrapper.vm.$nextTick();
   };
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    mock.onAny().reply(boardsMockInterceptor);
-    setMockEndpoints();
-    return setupData();
-  });
+  const multiSelectCard = async () => {
+    wrapper.trigger('mouseup', { ctrlKey: true });
+    await wrapper.vm.$nextTick();
+  };
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    list = null;
-    mock.restore();
+    store = null;
   });
 
-  it('when details issue is empty does not show the element', () => {
-    mountComponent();
-    expect(wrapper.find('[data-testid="board_card"').classes()).not.toContain('is-active');
-  });
-
-  it('when detailIssue is equal to card issue shows the element', () => {
-    [boardsStore.detail.issue] = list.issues;
-    mountComponent();
-
-    expect(wrapper.classes()).toContain('is-active');
-  });
-
-  it('when multiSelect does not contain issue removes multi select class', () => {
-    mountComponent();
-    expect(wrapper.classes()).not.toContain('multi-select');
-  });
-
-  it('when multiSelect contain issue add multi select class', () => {
-    boardsStore.multiSelect.list = [list.issues[0]];
-    mountComponent();
-
-    expect(wrapper.classes()).toContain('multi-select');
-  });
-
-  it('adds user-can-drag class if not disabled', () => {
-    mountComponent();
-    expect(wrapper.classes()).toContain('user-can-drag');
-  });
-
-  it('does not add user-can-drag class disabled', () => {
-    mountComponent({ disabled: true });
-
-    expect(wrapper.classes()).not.toContain('user-can-drag');
-  });
-
-  it('does not add disabled class', () => {
-    mountComponent();
-    expect(wrapper.classes()).not.toContain('is-disabled');
-  });
-
-  it('adds disabled class is disabled is true', () => {
-    mountComponent({ disabled: true });
-
-    expect(wrapper.classes()).toContain('is-disabled');
-  });
-
-  describe('mouse events', () => {
-    it('does not set detail issue if showDetail is false', () => {
+  describe.each`
+    isSwimlanesOn
+    ${true}       | ${false}
+  `('when isSwimlanesOn is $isSwimlanesOn', ({ isSwimlanesOn }) => {
+    it('should not highlight the card by default', async () => {
+      createStore({ isSwimlanesOn });
       mountComponent();
-      expect(boardsStore.detail.issue).toEqual({});
+
+      expect(wrapper.classes()).not.toContain('is-active');
+      expect(wrapper.classes()).not.toContain('multi-select');
     });
 
-    it('does not set detail issue if link is clicked', () => {
-      mountComponent();
-      findIssueCardInner().find('a').trigger('mouseup');
-
-      expect(boardsStore.detail.issue).toEqual({});
-    });
-
-    it('does not set detail issue if img is clicked', () => {
-      mountComponent({
-        issue: {
-          ...list.issues[0],
-          assignees: [
-            new ListAssignee({
-              id: 1,
-              name: 'testing 123',
-              username: 'test',
-              avatar: 'test_image',
-            }),
-          ],
+    it('should highlight the card with a correct style when selected', async () => {
+      createStore({
+        initialState: {
+          activeId: mockIssue.id,
         },
+        isSwimlanesOn,
+      });
+      mountComponent();
+
+      expect(wrapper.classes()).toContain('is-active');
+      expect(wrapper.classes()).not.toContain('multi-select');
+    });
+
+    it('should highlight the card with a correct style when multi-selected', async () => {
+      createStore({
+        initialState: {
+          activeId: inactiveId,
+          selectedBoardItems: [mockIssue],
+        },
+        isSwimlanesOn,
+      });
+      mountComponent();
+
+      expect(wrapper.classes()).toContain('multi-select');
+      expect(wrapper.classes()).not.toContain('is-active');
+    });
+
+    describe('when mouseup event is called on the card', () => {
+      beforeEach(() => {
+        createStore({ isSwimlanesOn });
+        mountComponent();
       });
 
-      findUserAvatarLink().trigger('mouseup');
+      describe('when not using multi-select', () => {
+        it('should call vuex action "toggleBoardItem" with correct parameters', async () => {
+          await selectCard();
 
-      expect(boardsStore.detail.issue).toEqual({});
-    });
+          expect(mockActions.toggleBoardItem).toHaveBeenCalledTimes(1);
+          expect(mockActions.toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {
+            boardItem: mockIssue,
+          });
+        });
+      });
 
-    it('does not set detail issue if showDetail is false after mouseup', () => {
-      mountComponent();
-      wrapper.trigger('mouseup');
+      describe('when using multi-select', () => {
+        it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
+          await multiSelectCard();
 
-      expect(boardsStore.detail.issue).toEqual({});
-    });
-
-    it('sets detail issue to card issue on mouse up', () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-      mountComponent();
-
-      wrapper.trigger('mousedown');
-      wrapper.trigger('mouseup');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', wrapper.vm.issue, false);
-      expect(boardsStore.detail.list).toEqual(wrapper.vm.list);
-    });
-
-    it('resets detail issue to empty if already set', () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      const [issue] = list.issues;
-      boardsStore.detail.issue = issue;
-      mountComponent();
-
-      wrapper.trigger('mousedown');
-      wrapper.trigger('mouseup');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', false);
-    });
-  });
-
-  describe('sidebarHub events', () => {
-    it('closes all sidebars before showing an issue if no issues are opened', () => {
-      jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
-      boardsStore.detail.issue = {};
-      mountComponent();
-
-      // sets conditional so that event is emitted.
-      wrapper.trigger('mousedown');
-
-      wrapper.trigger('mouseup');
-
-      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('sidebar.closeAll');
-    });
-
-    it('it does not closes all sidebars before showing an issue if an issue is opened', () => {
-      jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
-      const [issue] = list.issues;
-      boardsStore.detail.issue = issue;
-      mountComponent();
-
-      wrapper.trigger('mousedown');
-
-      expect(sidebarEventHub.$emit).not.toHaveBeenCalledWith('sidebar.closeAll');
+          expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledTimes(1);
+          expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledWith(
+            expect.any(Object),
+            mockIssue,
+          );
+        });
+      });
     });
   });
 });

@@ -18,8 +18,14 @@ RSpec.describe GroupsHelper do
 
     it 'gives default avatar_icon when no avatar is present' do
       group = create(:group)
-      group.save!
       expect(group_icon_url(group.path)).to match_asset_path('group_avatar.png')
+    end
+  end
+
+  describe 'group_dependency_proxy_url' do
+    it 'converts uppercase letters to lowercase' do
+      group = create(:group, path: 'GroupWithUPPERcaseLetters')
+      expect(group_dependency_proxy_url(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
     end
   end
 
@@ -454,18 +460,12 @@ RSpec.describe GroupsHelper do
       allow(helper).to receive(:current_user) { current_user }
     end
 
-    context 'when cached_sidebar_open_issues_count feature flag is enabled' do
-      before do
-        stub_feature_flags(cached_sidebar_open_issues_count: true)
+    it 'returns count value from cache' do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_return(2500)
       end
 
-      it 'returns count value from cache' do
-        allow_next_instance_of(count_service) do |service|
-          allow(service).to receive(:count).and_return(2500)
-        end
-
-        expect(helper.group_open_issues_count(group)).to eq('2.5k')
-      end
+      expect(helper.group_open_issues_count(group)).to eq('2.5k')
     end
 
     context 'when cached_sidebar_open_issues_count feature flag is disabled' do

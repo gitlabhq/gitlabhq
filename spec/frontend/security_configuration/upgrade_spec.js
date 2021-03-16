@@ -1,28 +1,29 @@
 import { mount } from '@vue/test-utils';
-import { UPGRADE_CTA } from '~/security_configuration/components/features_constants';
+import { UPGRADE_CTA } from '~/security_configuration/components/scanners_constants';
 import Upgrade from '~/security_configuration/components/upgrade.vue';
 
+const TEST_URL = 'http://www.example.test';
 let wrapper;
-const createComponent = () => {
-  wrapper = mount(Upgrade, {});
+const createComponent = (componentData = {}) => {
+  wrapper = mount(Upgrade, componentData);
 };
-
-beforeEach(() => {
-  createComponent();
-});
 
 afterEach(() => {
   wrapper.destroy();
 });
 
 describe('Upgrade component', () => {
+  beforeEach(() => {
+    createComponent({ provide: { upgradePath: TEST_URL } });
+  });
+
   it('renders correct text in link', () => {
     expect(wrapper.text()).toMatchInterpolatedText(UPGRADE_CTA);
   });
 
-  it('renders link with correct attributes', () => {
+  it('renders link with correct default attributes', () => {
     expect(wrapper.find('a').attributes()).toMatchObject({
-      href: 'https://about.gitlab.com/pricing/',
+      href: TEST_URL,
       target: '_blank',
     });
   });

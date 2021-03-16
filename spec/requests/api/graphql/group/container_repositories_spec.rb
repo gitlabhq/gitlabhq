@@ -18,7 +18,7 @@ RSpec.describe 'getting container repositories in a group' do
     <<~GQL
       edges {
         node {
-          #{all_graphql_fields_for('container_repositories'.classify)}
+          #{all_graphql_fields_for('container_repositories'.classify, max_depth: 1)}
         }
       }
     GQL

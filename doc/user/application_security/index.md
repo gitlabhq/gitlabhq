@@ -5,17 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# GitLab Secure **(ULTIMATE)**
+# Application security **(ULTIMATE)**
 
 GitLab can check your application for security vulnerabilities that may lead to unauthorized access,
 data leaks, denial of services, and more. GitLab reports vulnerabilities in the merge request so you
-can fix them before merging. The [Security Dashboard](security_dashboard/index.md) provides a
-high-level view of vulnerabilities detected in your projects, pipeline, and groups. The [Threat Monitoring](threat_monitoring/index.md)
-page provides runtime security metrics for application environments. With the information provided,
-you can immediately begin risk analysis and remediation.
+can fix them before you merge.
+
+- The [Security Dashboard](security_dashboard/index.md) provides a
+  high-level view of vulnerabilities detected in your projects, pipeline, and groups.
+- The [Threat Monitoring](threat_monitoring/index.md) page provides runtime security metrics
+  for application environments. With the information provided,
+  you can immediately begin risk analysis and remediation.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of application security with GitLab, see
+For an overview of GitLab application security, see
 [Security Deep Dive](https://www.youtube.com/watch?v=k4vEJnGYy84).
 
 ## Quick start
@@ -123,7 +126,7 @@ latest versions of the scanning tools without having to do anything. There are s
 with this approach, however, and there is a
 [plan to resolve them](https://gitlab.com/gitlab-org/gitlab/-/issues/9725).
 
-## Viewing security scan information in merge requests **(FREE)**
+## View security scan information in merge requests **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Free 13.5.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
@@ -136,25 +139,7 @@ reports are available to download. To download a report, click on the
 
 ![Security widget](img/security_widget_v13_7.png)
 
-## Interacting with the vulnerabilities
-
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
-
-Each security vulnerability in the merge request report or the
-[Vulnerability Report](vulnerability_report/index.md) is actionable. Click an entry to view detailed
-information with several options:
-
-- [Dismiss vulnerability](#dismissing-a-vulnerability): Dismissing a vulnerability styles it in
-  strikethrough.
-- [Create issue](vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability): Create a new issue with the title and
-  description pre-populated with information from the vulnerability report. By default, such issues
-  are [confidential](../project/issues/confidential_issues.md).
-- [Automatic Remediation](#automatic-remediation-for-vulnerabilities): For some vulnerabilities,
-  a solution is provided for how to fix the vulnerability.
-
-![Interacting with security reports](img/interacting_with_vulnerability_v13_3.png)
-
-### View details of a DAST vulnerability
+## View details of a DAST vulnerability
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 
@@ -165,11 +150,10 @@ investigate and rectify the underlying cause.
 To view details of DAST vulnerabilities:
 
 1. To see all vulnerabilities detected:
-
    - In a project, go to the project's **{shield}** **Security & Compliance** page.
    - Only in a merge request, go the merge request's **Security** tab.
 
-1. Click on the vulnerability's description. The following details are provided:
+1. Select the vulnerability's description. The following details are provided:
 
 | Field            | Description                                                        |
 |:-----------------|:------------------------------------------------------------------ |
@@ -187,14 +171,14 @@ To view details of DAST vulnerabilities:
 | Links            | Links to further details of the detected vulnerability.            |
 | Solution         | Details of a recommended solution to the vulnerability (optional). |
 
-#### Hide sensitive information in headers
+### Hide sensitive information in headers
 
 HTTP request and response headers may contain sensitive information, including cookies and
 authorization credentials. By default, content of specific headers are masked in DAST vulnerability
 reports. You can specify the list of all headers to be masked. For details, see
 [Hide sensitive information](dast/index.md#hide-sensitive-information).
 
-### View details of an API Fuzzing vulnerability
+## View details of an API Fuzzing vulnerability
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
 
@@ -231,65 +215,79 @@ Follow these steps to view details of a fuzzing fault:
 | Severity         | Severity of the finding is always Unknown.                          |
 | Scanner Type     | Scanner used to perform testing.                                   |
 
-### Dismissing a vulnerability
+## Addressing vulnerabilities
 
-To dismiss a vulnerability, you must set its status to Dismissed. This dismisses the vulnerability
-for the entire project. Follow these steps to do so:
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
+
+For each security vulnerability in a merge request or [Vulnerability Report](vulnerability_report/index.md),
+you can:
+
+- [Dismiss the vulnerability](#dismiss-a-vulnerability).
+- Create a [confidential](../project/issues/confidential_issues.md)
+  [issue](vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability).
+- Apply an [automatically remediation](#apply-an-automatic-remediation-for-a-vulnerability).
+
+### Dismiss a vulnerability
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0, a dismissal reason.
+
+You can dismiss a vulnerability for the entire project.
 
 1. Select the vulnerability in the Security Dashboard.
-1. Select **Dismissed** from the **Status** selector menu at the top-right.
+1. In the top-right, from the **Status** selector menu, select **Dismissed**.
+1. Optional. Add a reason for the dismissal and select **Save comment**.
 
-You can undo this action by selecting a different status from the same menu.
+To undo this action, select a different status from the same menu.
 
-#### Adding a dismissal reason
-
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-
-When dismissing a vulnerability, it's often helpful to provide a reason for doing so. Upon setting a
-vulnerability's status to Dismissed, a text box appears for you to add a comment with your
-dismissal. Once added, you can edit or delete it. This allows you to add and update context for a
-vulnerability as you learn more over time.
-
-![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_4.png)
-
-#### Dismissing multiple vulnerabilities
+#### Dismiss multiple vulnerabilities
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35816) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
-You can dismiss multiple vulnerabilities at once, providing an optional reason.
-Selecting the checkboxes on the side of each vulnerability in the list selects that individual vulnerability.
-Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
-Deselecting the checkbox in the header deselects all the vulnerabilities in the list.
-After you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
-Pressing the "Dismiss Selected" button dismisses all the selected vulnerabilities at once, with the reason you chose.
+You can dismiss multiple vulnerabilities at once.
 
-![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
+1. In the list of vulnerabilities, select the checkbox for each vulnerability you want to dismiss.
+   To select all, select the checkbox in the table header.
+1. Above the table, select a dismissal reason.
+1. Select **Dismiss Selected**.
 
 ### Create an issue for a vulnerability
 
-You can create a GitLab issue, or a Jira issue (if it's enabled) for a vulnerability. For more
-details, see [Vulnerability Pages](vulnerabilities/index.md).
+You can create a GitLab or Jira issue for a vulnerability. For details, see [Vulnerability Pages](vulnerabilities/index.md).
 
-### Automatic remediation for vulnerabilities
+#### Link to an existing issue
+
+If you already have an open issue, you can link to it from the vulnerability.
+
+- The vulnerability page shows related issues, but the issue page doesn't show the vulnerability it's related to.
+- An issue can only be related to one vulnerability at a time.
+- Issues can be linked across groups and projects.
+
+To link to an existing issue:
+
+1. Open the vulnerability.
+1. In the **Related Issues** section, select the plus (**{plus}**) icon.
+1. In the text box that appears, type an issue number or paste an issue link.
+   - Type `#` followed by a number to show an autocomplete menu.
+   - You can enter multiple issues at once. Press the space bar after each issue number or link to converts them to tags.
+1. Select **Add**.
+
+To remove an issue, to the right of the issue number, select **{close}**.
+
+![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
+
+### Apply an automatic remediation for a vulnerability
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5656) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.7.
 
 Some vulnerabilities can be fixed by applying the solution that GitLab automatically generates.
-Although the feature name is Automatic Remediation, this feature is also commonly called
-Auto-Remediation, Auto Remediation, or Suggested Solutions. The following scanners are supported:
+The following scanners are supported:
 
-- [Dependency Scanning](dependency_scanning/index.md):
+- [Dependency Scanning](dependency_scanning/index.md).
   Automatic Patch creation is only available for Node.js projects managed with
   `yarn`.
-- [Container Scanning](container_scanning/index.md)
+- [Container Scanning](container_scanning/index.md).
 
-When an automatic solution is available, the button in the header shows **Resolve with merge request**:
-
-![Resolve with Merge Request button](img/vulnerability_page_merge_request_button_v13_1.png)
-
-Selecting the button creates a merge request with the solution.
-
-#### Manually applying the suggested patch
+#### Manually apply the suggested patch
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
@@ -301,49 +299,22 @@ To manually apply the patch that GitLab generated for a vulnerability:
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
 
-#### Creating a merge request from a vulnerability
+#### Create a merge request with the suggested patch
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9224) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
 
-In certain cases, GitLab allows you to create a merge request that automatically remediates the
+In some cases, you can create a merge request that automatically remediates the
 vulnerability. Any vulnerability that has a
-[solution](#automatic-remediation-for-vulnerabilities) can have a merge
+[solution](#apply-an-automatic-remediation-for-a-vulnerability) can have a merge
 request created to automatically solve the issue.
 
-If this action is available, the vulnerability page or modal contains a **Create merge request** button.
-Click this button to create a merge request to apply the solution onto the source branch.
+If this action is available:
 
-![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+1. Select the **Resolve with merge request** dropdown, then select **Resolve with merge request**.
+   
+   ![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
 
-### Managing related issues for a vulnerability
-
-Issues can be linked to a vulnerability using the related issues block on the vulnerability page.
-The relationship is uni-directional. The vulnerability page shows related issues, but the issue page
-doesn't show the vulnerability it's related to. An issue can only be related to one vulnerability at
-a time. Issues can be linked across groups and projects.
-
-#### Adding a related issue
-
-You can link an issue by clicking the **{plus}** button in the **Related Issues** block.
-
-![Vulnerability related issues add button](img/vulnerability_related_issues_add_button_v13_2.png)
-
-A text box appears that lets you type an issue number or paste an issue link. You can enter multiple
-issues at once. Pressing the space bar after each issue number or link converts them to tags that
-you can remove by clicking the **{close}** icon to the tag's right. Typing `#` followed by a number
-shows an autocomplete menu. Click an issue in the menu to add it as a tag. When you're finished
-entering issues, click the **Add** button to link the issues to the vulnerability. Alternatively,
-click **Cancel** to exit without linking any issues.
-
-![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
-
-### Removing a related issue
-
-Click the **{close}** icon to right of an issue to remove it as a related issue. Note that this only
-removes it as a related issue of the vulnerability; it doesn't modify or remove the issue itself.
-You can link it to the vulnerability again if desired.
-
-![Vulnerability related issues remove issue animation](img/vulnerability_related_issues_remove_v13_2.gif)
+A merge request is created. It that applies the solution to the source branch.
 
 ## Security approvals in merge requests
 

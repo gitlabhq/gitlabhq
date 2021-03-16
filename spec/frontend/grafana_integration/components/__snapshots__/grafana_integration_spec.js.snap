@@ -31,8 +31,11 @@ exports[`grafana integration component default state to match the default snapsh
       class="js-section-sub-header"
     >
       
-      Embed Grafana charts in GitLab issues.
-    
+      Set up Grafana authentication to embed Grafana panels in GitLab Flavored Markdown.
+      
+      <gl-link-stub>
+        Learn more.
+      </gl-link-stub>
     </p>
   </div>
    
@@ -56,13 +59,13 @@ exports[`grafana integration component default state to match the default snapsh
       >
         <gl-form-input-stub
           id="grafana-url"
-          placeholder="https://my-url.grafana.net/"
+          placeholder="https://my-grafana.example.com/"
           value="http://test.host"
         />
       </gl-form-group-stub>
        
       <gl-form-group-stub
-        label="API Token"
+        label="API token"
         label-for="grafana-token"
       >
         <gl-form-input-stub
@@ -74,7 +77,7 @@ exports[`grafana integration component default state to match the default snapsh
           class="form-text text-muted"
         >
           
-          Enter the Grafana API Token.
+          Enter the Grafana API token.
           
           <a
             href="https://grafana.com/docs/http_api/auth/#create-api-token"
@@ -82,7 +85,7 @@ exports[`grafana integration component default state to match the default snapsh
             target="_blank"
           >
             
-            More information
+            More information.
             
             <gl-icon-stub
               class="vertical-align-middle"
@@ -101,7 +104,7 @@ exports[`grafana integration component default state to match the default snapsh
         variant="success"
       >
         
-        Save Changes
+        Save changes
       
       </gl-button-stub>
     </form>

@@ -2,14 +2,9 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/migration/schedule_async'
 
 RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
-  include CopHelper
-
   let(:cop) { described_class.new }
   let(:source) do
     <<~SOURCE
@@ -21,9 +16,7 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
 
   shared_examples 'a disabled cop' do
     it 'does not register any offenses' do
-      inspect_source(source)
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(source)
     end
   end
 
@@ -50,101 +43,73 @@ RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
       end
 
       context 'BackgroundMigrationWorker.perform_async' do
-        it 'adds an offence when calling `BackgroundMigrationWorker.peform_async`' do
-          inspect_source(source)
+        it 'adds an offense when calling `BackgroundMigrationWorker.peform_async` and corrects', :aggregate_failures do
+          expect_offense(<<~RUBY)
+            def up
+              BackgroundMigrationWorker.perform_async(ClazzName, "Bar", "Baz")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
+            end
+          RUBY
 
-          expect(cop.offenses.size).to eq(1)
-        end
-
-        it 'autocorrects to the right version' do
-          correct_source = <<~CORRECT
-          def up
-            migrate_async(ClazzName, "Bar", "Baz")
-          end
-          CORRECT
-
-          expect(autocorrect_source(source)).to eq(correct_source)
+          expect_correction(<<~RUBY)
+            def up
+              migrate_async(ClazzName, "Bar", "Baz")
+            end
+          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.perform_in' do
-        let(:source) do
-          <<~SOURCE
+        it 'adds an offense and corrects', :aggregate_failures do
+          expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
                 .perform_in(delay, ClazzName, "Bar", "Baz")
             end
-          SOURCE
-        end
+          RUBY
 
-        it 'adds an offence' do
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
-        end
-
-        it 'autocorrects to the right version' do
-          correct_source = <<~CORRECT
+          expect_correction(<<~RUBY)
             def up
               migrate_in(delay, ClazzName, "Bar", "Baz")
             end
-          CORRECT
-
-          expect(autocorrect_source(source)).to eq(correct_source)
+          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.bulk_perform_async' do
-        let(:source) do
-          <<~SOURCE
+        it 'adds an offense and corrects', :aggregate_failures do
+          expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
                 .bulk_perform_async(jobs)
             end
-          SOURCE
-        end
+          RUBY
 
-        it 'adds an offence' do
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
-        end
-
-        it 'autocorrects to the right version' do
-          correct_source = <<~CORRECT
+          expect_correction(<<~RUBY)
             def up
               bulk_migrate_async(jobs)
             end
-          CORRECT
-
-          expect(autocorrect_source(source)).to eq(correct_source)
+          RUBY
         end
       end
 
       context 'BackgroundMigrationWorker.bulk_perform_in' do
-        let(:source) do
-          <<~SOURCE
+        it 'adds an offense and corrects', :aggregate_failures do
+          expect_offense(<<~RUBY)
             def up
               BackgroundMigrationWorker
+              ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't call [...]
                 .bulk_perform_in(5.minutes, jobs)
             end
-          SOURCE
-        end
+          RUBY
 
-        it 'adds an offence' do
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
-        end
-
-        it 'autocorrects to the right version' do
-          correct_source = <<~CORRECT
+          expect_correction(<<~RUBY)
             def up
               bulk_migrate_in(5.minutes, jobs)
             end
-          CORRECT
-
-          expect(autocorrect_source(source)).to eq(correct_source)
+          RUBY
         end
       end
     end

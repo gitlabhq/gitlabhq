@@ -69,7 +69,7 @@ module API
           ).execute
 
           if token_response.success?
-            present token_response.payload[:access_token], with: Entities::PersonalAccessToken
+            present token_response.payload[:access_token], with: Entities::PersonalAccessTokenWithToken
           else
             bad_request!(token_response.message)
           end

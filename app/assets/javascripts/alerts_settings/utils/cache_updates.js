@@ -15,7 +15,6 @@ const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, va
   });
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = draftData.project.alertManagementIntegrations.nodes.filter(
       ({ id }) => id !== integration.id,
     );
@@ -46,10 +45,34 @@ const addIntegrationToStore = (
   });
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.alertManagementIntegrations.nodes = [
       integration,
       ...draftData.project.alertManagementIntegrations.nodes,
+    ];
+  });
+
+  store.writeQuery({
+    query,
+    variables,
+    data,
+  });
+};
+
+const addHttpIntegrationToStore = (store, query, { httpIntegrationCreate }, variables) => {
+  const integration = httpIntegrationCreate?.integration;
+  if (!integration) {
+    return;
+  }
+
+  const sourceData = store.readQuery({
+    query,
+    variables,
+  });
+
+  const data = produce(sourceData, (draftData) => {
+    draftData.project.alertManagementHttpIntegrations.nodes = [
+      integration,
+      ...draftData.project.alertManagementHttpIntegrations.nodes,
     ];
   });
 
@@ -80,5 +103,13 @@ export const updateStoreAfterIntegrationAdd = (store, query, data, variables) =>
     onError(data, ADD_INTEGRATION_ERROR);
   } else {
     addIntegrationToStore(store, query, data, variables);
+  }
+};
+
+export const updateStoreAfterHttpIntegrationAdd = (store, query, data, variables) => {
+  if (hasErrors(data)) {
+    onError(data, ADD_INTEGRATION_ERROR);
+  } else {
+    addHttpIntegrationToStore(store, query, data, variables);
   }
 };

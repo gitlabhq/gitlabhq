@@ -7,7 +7,7 @@
     projects:
     - if can? current_user, :admin_group, @group
       .controls
-        = link_to new_project_path(namespace_id: @group.id), class: "btn gl-button btn-sm btn-success" do
+        = link_to new_project_path(namespace_id: @group.id), class: "btn gl-button btn-sm btn-confirm" do
           New project
   %ul.projects-list.content-list.group-settings-projects
     - @projects.each do |project|

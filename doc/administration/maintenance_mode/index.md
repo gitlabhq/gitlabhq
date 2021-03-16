@@ -172,7 +172,7 @@ You can monitor queues and disable jobs in **Admin Area > Monitoring > Backgroun
 
 [Incident management](../../operations/incident_management/index.md) functions will be limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) will be paused entirely. Notifications and paging on alerts and incidents will therefore be disabled.
 
-### Feature flags 
+### Feature flags
 
 - [Development feature flags](../../development/feature_flags/index.md) cannot be turned on or off through the API, but can be toggled through the Rails console.
 - [The feature flag service](../../operations/feature_flags.md) will respond to feature flag checks but feature flags cannot be toggled

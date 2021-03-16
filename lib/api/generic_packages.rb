@@ -13,7 +13,7 @@ module API
 
     before do
       require_packages_enabled!
-      authenticate!
+      authenticate_non_get!
 
       require_generic_packages_available!
     end

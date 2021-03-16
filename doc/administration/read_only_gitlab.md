@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Place GitLab into a read-only state **(FREE SELF)**
 
-WARNING:
-This document should be used as a temporary solution.
-There's work in progress to make this
-[possible with Geo](https://gitlab.com/groups/gitlab-org/-/epics/2149).
+NOTE:
+In GitLab 13.9 and later, the recommended method to
+place GitLab in a read-only state is to enable
+[maintenance mode](../administration/maintenance_mode/index.md).
 
 In some cases, you might want to place GitLab under a read-only state.
 The configuration for doing so depends on your desired outcome.

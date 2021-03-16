@@ -1,8 +1,0 @@
----
-name: shared_group_membership_auth
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46412
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/224771
-milestone: '13.6'
-type: development
-group: group::access
-default_enabled: false

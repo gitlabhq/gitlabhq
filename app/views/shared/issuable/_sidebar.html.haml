@@ -34,7 +34,7 @@
 
       - if issuable_sidebar[:supports_milestone]
         - milestone = issuable_sidebar[:milestone] || {}
-        .block.milestone{ data: { qa_selector: 'milestone_block' } }
+        .block.milestone{ class: 'gl-border-b-0!', data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
             = sprite_icon('clock')
             %span.milestone-title.collapse-truncated-title
@@ -58,8 +58,10 @@
           .selectbox.hide-collapsed
             = f.hidden_field 'milestone_id', value: milestone[:id], id: nil
             = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable_type}[milestone_id]", project_id: issuable_sidebar[:project_id], issuable_id: issuable_sidebar[:id], ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], use_id: true, default_no: true, selected: milestone[:title], null_default: true, display: 'static' }})
-          - if @project.group.present? && issuable_sidebar[:supports_iterations]
-            = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
+
+      - if @project.group.present? && issuable_sidebar[:supports_iterations]
+        .block{ class: 'gl-pt-0!' }
+          = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:supports_time_tracking]
         #issuable-time-tracker.block
@@ -118,6 +120,8 @@
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
+        = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
+
       %script#js-lock-issue-data{ type: "application/json" }= { is_locked: !!issuable_sidebar[:discussion_locked], is_editable: can_edit_issuable }.to_json.html_safe
       #js-lock-entry-point
 
@@ -126,17 +130,8 @@
       - if signed_in
         .js-sidebar-subscriptions-entry-point
 
-      - project_ref = issuable_sidebar[:reference]
       .block.with-sub-blocks
-        .project-reference.sub-block
-          .sidebar-collapsed-icon.dont-change-state
-            = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
-          .cross-project-reference.hide-collapsed
-            %span
-              = _('Reference:')
-              %cite{ title: project_ref }
-                = project_ref
-            = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
+        #js-reference-entry-point
         - if issuable_type == 'merge_request'
           .sidebar-source-branch.sub-block
             .sidebar-collapsed-icon.dont-change-state
@@ -163,7 +158,7 @@
               = dropdown_content
               = dropdown_loading
               = dropdown_footer add_content_class: true do
-                %button.gl-button.btn.btn-success.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ type: 'button', disabled: true }
+                %button.gl-button.btn.btn-confirm.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ type: 'button', disabled: true }
                   = _('Move')
                   = loading_icon(css_class: 'gl-vertical-align-text-bottom sidebar-move-issue-confirmation-loading-icon')
 

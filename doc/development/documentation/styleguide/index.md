@@ -108,7 +108,7 @@ of GitLab more efficient.
 
 New information that would be useful toward the future usage or troubleshooting
 of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation MR and then referenced, as described above. 
+but added to a documentation MR and then referenced, as described above.
 
 The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
@@ -601,6 +601,7 @@ Follow these guidelines for punctuation:
 
 | Rule                                                             | Example                                                |
 |------------------------------------------------------------------|--------------------------------------------------------|
+| Avoid semicolons. Use two sentences instead.                     | _That's the way that the world goes 'round. You're up one day and the next you're down._
 | Always end full sentences with a period.                         | _For a complete overview, read through this document._ |
 | Always add a space after a period when beginning a new sentence. | _For a complete overview, check this doc. For other references, check out this guide._ |
 | Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).) | --- |
@@ -1606,34 +1607,32 @@ displayed for the page or feature.
 
 #### Version text in the **Version History**
 
-If all content in a section is related, add version text after the header
-for the section. The version information must be surrounded by blank lines, and
-each entry should be on its own line.
+If all content in a section is related, add version text after the header for
+the section. The version information must:
 
-Add the version history information as a blockquote:
+- Be surrounded by blank lines.
+- Start with `>`. If there are multiple bullets, each line must start with `> -`.
+- The string must include these words in this order (capitalization doesn't matter):
+  - `introduced`, `deprecated`, `moved`
+  - `in` or `to`
+  - `GitLab`
+- Whenever possible, include a link to the completed issue, merge request, or epic
+  that introduced the feature. An issue is preferred over a merge request, and
+  a merge request is preferred over an epic.
 
 ```markdown
 ## Feature name
 
-> Introduced in GitLab 11.3.
+> [Introduced](<link-to-issue>) in GitLab 11.3.
 
 This feature does something.
-```
 
-Whenever possible, version text should have a link to the completed issue, merge
-request, or epic that introduced the feature. An issue is preferred over a merge
-request, and a merge request is preferred over an epic. For example:
+## Feature name 2
 
-```markdown
-> [Introduced](<link-to-issue>) in GitLab 11.3.
-```
-
-If you're adding information about new features or changes in a release, update
-the blockquote to use a bulleted list:
-
-```markdown
 > - [Introduced](<link-to-issue>) in GitLab 11.3.
-> - Enabled by default in GitLab 11.4.
+> - [Enabled by default](<link-to-issue>) in GitLab 11.4.
+
+This feature does something else.
 ```
 
 If a feature is moved to another tier:

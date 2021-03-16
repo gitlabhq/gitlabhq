@@ -35,6 +35,15 @@ module Gitlab
       MR_EDIT_MR_TITLE_ACTION = 'i_code_review_edit_mr_title'
       MR_EDIT_MR_DESC_ACTION = 'i_code_review_edit_mr_desc'
       MR_CREATE_FROM_ISSUE_ACTION = 'i_code_review_user_create_mr_from_issue'
+      MR_DISCUSSION_LOCKED_ACTION = 'i_code_review_user_mr_discussion_locked'
+      MR_DISCUSSION_UNLOCKED_ACTION = 'i_code_review_user_mr_discussion_unlocked'
+      MR_TIME_ESTIMATE_CHANGED_ACTION = 'i_code_review_user_time_estimate_changed'
+      MR_TIME_SPENT_CHANGED_ACTION = 'i_code_review_user_time_spent_changed'
+      MR_ASSIGNEES_CHANGED_ACTION = 'i_code_review_user_assignees_changed'
+      MR_REVIEWERS_CHANGED_ACTION = 'i_code_review_user_reviewers_changed'
+      MR_INCLUDING_CI_CONFIG_ACTION = 'o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile'
+      MR_MILESTONE_CHANGED_ACTION = 'i_code_review_user_milestone_changed'
+      MR_LABELS_CHANGED_ACTION = 'i_code_review_user_labels_changed'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -151,6 +160,45 @@ module Gitlab
 
         def track_mr_create_from_issue(user:)
           track_unique_action_by_user(MR_CREATE_FROM_ISSUE_ACTION, user)
+        end
+
+        def track_discussion_locked_action(user:)
+          track_unique_action_by_user(MR_DISCUSSION_LOCKED_ACTION, user)
+        end
+
+        def track_discussion_unlocked_action(user:)
+          track_unique_action_by_user(MR_DISCUSSION_UNLOCKED_ACTION, user)
+        end
+
+        def track_time_estimate_changed_action(user:)
+          track_unique_action_by_user(MR_TIME_ESTIMATE_CHANGED_ACTION, user)
+        end
+
+        def track_time_spent_changed_action(user:)
+          track_unique_action_by_user(MR_TIME_SPENT_CHANGED_ACTION, user)
+        end
+
+        def track_assignees_changed_action(user:)
+          track_unique_action_by_user(MR_ASSIGNEES_CHANGED_ACTION, user)
+        end
+
+        def track_reviewers_changed_action(user:)
+          track_unique_action_by_user(MR_REVIEWERS_CHANGED_ACTION, user)
+        end
+
+        def track_mr_including_ci_config(user:, merge_request:)
+          return unless Feature.enabled?(:usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile, user, default_enabled: :yaml)
+          return unless merge_request.includes_ci_config?
+
+          track_unique_action_by_user(MR_INCLUDING_CI_CONFIG_ACTION, user)
+        end
+
+        def track_milestone_changed_action(user:)
+          track_unique_action_by_user(MR_MILESTONE_CHANGED_ACTION, user)
+        end
+
+        def track_labels_changed_action(user:)
+          track_unique_action_by_user(MR_LABELS_CHANGED_ACTION, user)
         end
 
         private

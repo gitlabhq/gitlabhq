@@ -7,7 +7,7 @@ import {
   GlIntersectionObserver,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 import { ListType } from '../constants';
@@ -49,7 +49,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['groupProjects', 'groupProjectsFlags']),
+    ...mapState(['groupProjectsFlags']),
+    ...mapGetters(['activeGroupProjects']),
     selectedProjectName() {
       return this.selectedProject.name || this.$options.i18n.dropdownText;
     },
@@ -65,7 +66,7 @@ export default {
       };
     },
     isFetchResultEmpty() {
-      return this.groupProjects.length === 0;
+      return this.activeGroupProjects.length === 0;
     },
     hasNextPage() {
       return this.groupProjectsFlags.pageInfo?.hasNextPage;
@@ -84,7 +85,7 @@ export default {
   methods: {
     ...mapActions(['fetchGroupProjects', 'setSelectedProject']),
     selectProject(projectId) {
-      this.selectedProject = this.groupProjects.find((project) => project.id === projectId);
+      this.selectedProject = this.activeGroupProjects.find((project) => project.id === projectId);
       this.setSelectedProject(this.selectedProject);
     },
     loadMoreProjects() {
@@ -113,7 +114,7 @@ export default {
         :placeholder="$options.i18n.searchPlaceholder"
       />
       <gl-dropdown-item
-        v-for="project in groupProjects"
+        v-for="project in activeGroupProjects"
         v-show="!groupProjectsFlags.isLoading"
         :key="project.id"
         :name="project.name"

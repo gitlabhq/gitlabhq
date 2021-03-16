@@ -4,6 +4,8 @@ module Gitlab
   module Ci
     module Reports
       class TestSuiteSummary
+        include Gitlab::Utils::StrongMemoize
+
         def initialize(build_report_results)
           @build_report_results = build_report_results
         end
@@ -42,6 +44,12 @@ module Gitlab
         end
         # rubocop: disable CodeReuse/ActiveRecord
 
+        def suite_error
+          strong_memoize(:suite_error) do
+            @build_report_results.map(&:suite_error).compact.first
+          end
+        end
+
         def to_h
           {
             time: total_time,
@@ -49,7 +57,8 @@ module Gitlab
             success: success_count,
             failed: failed_count,
             skipped: skipped_count,
-            error: error_count
+            error: error_count,
+            suite_error: suite_error
           }
         end
       end

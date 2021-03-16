@@ -62,7 +62,7 @@ class Projects::GraphsController < Projects::ApplicationController
     return unless can?(current_user, :read_build_report_results, project)
 
     date_today = Date.current
-    report_window = Projects::Ci::DailyBuildGroupReportResultsController::REPORT_WINDOW
+    report_window = ::Ci::DailyBuildGroupReportResultsFinder::REPORT_WINDOW
 
     @daily_coverage_options = {
       base_params: {

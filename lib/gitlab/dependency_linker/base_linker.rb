@@ -80,7 +80,7 @@ module Gitlab
         highlighted_lines.map!.with_index do |rich_line, i|
           marker = StringRegexMarker.new((plain_lines[i].chomp! || plain_lines[i]), rich_line.html_safe)
 
-          marker.mark(regex, group: :name) do |text, left:, right:|
+          marker.mark(regex, group: :name) do |text, left:, right:, mode:|
             url = yield(text)
             url ? link_tag(text, url) : text
           end

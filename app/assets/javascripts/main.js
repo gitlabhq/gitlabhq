@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     e.preventDefault();
 
-    $this.toggleClass('active');
+    $this.toggleClass('selected');
 
     if ($this.hasClass('active')) {
       notesHolders.show().find('.hide, .content').show();

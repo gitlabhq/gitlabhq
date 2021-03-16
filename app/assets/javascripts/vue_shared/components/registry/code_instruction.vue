@@ -56,27 +56,29 @@ export default {
 </script>
 
 <template>
-  <div v-if="!multiline" class="gl-mb-3">
+  <div>
     <label v-if="label" :for="generateFormId('instruction-input')">{{ label }}</label>
-    <div class="input-group gl-mb-3">
-      <input
-        :id="generateFormId('instruction-input')"
-        :value="instruction"
-        type="text"
-        class="form-control gl-font-monospace"
-        data-testid="instruction-input"
-        readonly
-        @copy="trackCopy"
-      />
-      <span class="input-group-append" data-testid="instruction-button" @click="trackCopy">
-        <clipboard-button :text="instruction" :title="copyText" class="input-group-text" />
-      </span>
+    <div v-if="!multiline" class="gl-mb-3">
+      <div class="input-group gl-mb-3">
+        <input
+          :id="generateFormId('instruction-input')"
+          :value="instruction"
+          type="text"
+          class="form-control gl-font-monospace"
+          data-testid="instruction-input"
+          readonly
+          @copy="trackCopy"
+        />
+        <span class="input-group-append" data-testid="instruction-button" @click="trackCopy">
+          <clipboard-button :text="instruction" :title="copyText" class="input-group-text" />
+        </span>
+      </div>
     </div>
-  </div>
 
-  <div v-else>
-    <pre class="gl-font-monospace" data-testid="multiline-instruction" @copy="trackCopy">{{
-      instruction
-    }}</pre>
+    <div v-else>
+      <pre class="gl-font-monospace" data-testid="multiline-instruction" @copy="trackCopy">{{
+        instruction
+      }}</pre>
+    </div>
   </div>
 </template>

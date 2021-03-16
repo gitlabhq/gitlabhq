@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
   let(:seed) do
     double('build seed',
       to_resource: ci_build,
-      variables: ci_build.scoped_variables_hash
+      variables: ci_build.scoped_variables
     )
   end
 
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
       let(:seed) do
         double('bridge seed',
           to_resource: bridge,
-          variables: ci_build.scoped_variables_hash
+          variables: ci_build.scoped_variables
         )
       end
 

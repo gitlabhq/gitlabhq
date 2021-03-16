@@ -81,6 +81,32 @@ RSpec.describe AlertManagement::HttpIntegration do
     end
   end
 
+  describe 'before validation' do
+    describe '#ensure_payload_example_not_nil' do
+      subject(:integration) { build(:alert_management_http_integration, payload_example: payload_example) }
+
+      context 'when the payload_example is nil' do
+        let(:payload_example) { nil }
+
+        it 'sets the payload_example to empty JSON' do
+          integration.valid?
+
+          expect(integration.payload_example).to eq({})
+        end
+      end
+
+      context 'when the payload_example is not nil' do
+        let(:payload_example) { { 'key' => 'value' } }
+
+        it 'sets the payload_example to specified value' do
+          integration.valid?
+
+          expect(integration.payload_example).to eq(payload_example)
+        end
+      end
+    end
+  end
+
   describe '#token' do
     subject { integration.token }
 

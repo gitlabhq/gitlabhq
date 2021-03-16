@@ -14,6 +14,10 @@ module QA
           element :group_settings_item
         end
 
+        view 'app/views/groups/sidebar/_packages_settings.html.haml' do
+          element :group_package_settings_link
+        end
+
         view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do
           element :analytics_link
           element :analytics_sidebar_submenu
@@ -51,6 +55,15 @@ module QA
           hover_issues do
             within_submenu do
               click_element(:group_milestones_link)
+            end
+          end
+        end
+
+        def go_to_package_settings
+          scroll_to_element(:group_settings_item)
+          hover_element(:group_settings_item) do
+            within_submenu(:group_sidebar_submenu) do
+              click_element(:group_package_settings_link)
             end
           end
         end

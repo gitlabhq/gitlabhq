@@ -117,8 +117,14 @@ attribute. As a prerequisite, you must use an LDAP server that:
    ```ruby
    gitlab_rails['smartcard_enabled'] = true
    gitlab_rails['smartcard_ca_file'] = "/etc/ssl/certs/CA.pem"
+   gitlab_rails['smartcard_client_certificate_required_host'] = "smartcard.example.com"
    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
    ```
+
+   NOTE: **Note**
+   Assign a value to at least one of the following variables:
+   gitlab_rails['smartcard_client_certificate_required_host'] or
+   gitlab_rails['smartcard_client_certificate_required_port'].
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.

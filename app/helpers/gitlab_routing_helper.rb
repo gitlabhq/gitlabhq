@@ -347,6 +347,11 @@ module GitlabRoutingHelper
     Gitlab::UrlBuilder.wiki_page_url(wiki, page, only_path: true, **options)
   end
 
+  # GraphQL ETag routes
+  def graphql_etag_pipeline_path(pipeline)
+    [api_graphql_path, "pipelines/id/#{pipeline.id}"].join(':')
+  end
+
   private
 
   def snippet_query_params(snippet, *args)

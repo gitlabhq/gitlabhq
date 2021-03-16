@@ -126,7 +126,7 @@ It does not make sense to test our `getFahrenheit` function because underneath i
 Let's take a short look into Vue land. Vue is a critical part of the GitLab JavaScript codebase. When writing specs for Vue components, a common gotcha is to actually end up testing Vue provided functionality, because it appears to be the easiest thing to test. Here's an example taken from our codebase.
 
 ```javascript
-// Component
+// Component script
 {
   computed: {
     hasMetricTypes() {
@@ -135,27 +135,46 @@ Let's take a short look into Vue land. Vue is a critical part of the GitLab Java
 }
 ```
 
-and here's the corresponding spec
+```html
+<!-- Component template -->
+<template>
+  <gl-dropdown v-if="hasMetricTypes">
+    <!-- Dropdown content -->
+  </gl-dropdown>
+</template>
+```
+
+Testing the `hasMetricTypes` computed prop would seem like a given here. But to test if the computed property is returning the length of `metricTypes`, is testing the Vue library itself. There is no value in this, besides it adding to the test suite. It's better to test a component in the way the user interacts with it: checking the rendered template.
 
 ```javascript
- describe('computed', () => {
-    describe('hasMetricTypes', () => {
-      it('returns true if metricTypes exist', () => {
-        factory({ metricTypes });
-        expect(wrapper.vm.hasMetricTypes).toBe(2);
-      });
-
-      it('returns true if no metricTypes exist', () => {
-        factory();
-        expect(wrapper.vm.hasMetricTypes).toBe(0);
-      });
+// Bad
+describe('computed', () => {
+  describe('hasMetricTypes', () => {
+    it('returns true if metricTypes exist', () => {
+      factory({ metricTypes });
+      expect(wrapper.vm.hasMetricTypes).toBe(2);
     });
+
+    it('returns true if no metricTypes exist', () => {
+      factory();
+      expect(wrapper.vm.hasMetricTypes).toBe(0);
+    });
+  });
+});
+
+// Good
+it('displays a dropdown if metricTypes exist', () => {
+  factory({ metricTypes });
+  expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
+});
+
+it('does not display a dropdown if no metricTypes exist', () => {
+  factory();
+  expect(wrapper.findComponent(GlDropdown).exists()).toBe(false);
 });
 ```
 
-Testing the `hasMetricTypes` computed prop would seem like a given, but to test if the computed property is returning the length of `metricTypes`, is testing the Vue library itself. There is no value in this, besides it adding to the test suite. Better is to test it in the way the user interacts with it. Probably through the template.
-
-Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries.
+Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A rule of thumb here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
 
 Some more examples can be found in the [Frontend unit tests section](testing_levels.md#frontend-unit-tests)
 
@@ -193,7 +212,7 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries/#byrole)
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/queries/byrole/)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
@@ -539,21 +558,6 @@ When looking at this initially you'd suspect that the component is setup before 
 
 This is however not entirely true as the `destroy` method does not remove everything which has been mutated on the `wrapper` object. For functional components, destroy only removes the rendered DOM elements from the document.
 
-In order to ensure that a clean wrapper object and DOM are being used in each test, the breakdown of the component should rather be performed as follows:
-
-```javascript
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-```
-
-<!-- vale gitlab.Spelling = NO -->
-
-See also the [Vue Test Utils documentation on `destroy`](https://vue-test-utils.vuejs.org/api/wrapper/#destroy).
-
-<!-- vale gitlab.Spelling = YES -->
-
 ### Jest best practices
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.
@@ -687,7 +691,7 @@ Similarly, if you really need to use the real `Date` class, then you can import 
 ```javascript
 import { useRealDate } from 'helpers/fake_date';
 
-// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.). 
+// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.).
 describe('with real date', () => {
   useRealDate();
 });
@@ -1034,7 +1038,7 @@ describe "Admin::AbuseReports", :js do
 end
 ```
 
-### Jest test timeout due to async imports
+### Jest test timeout due to asynchronous imports
 
 If a module asynchronously imports some other modules at runtime, these modules must be
 transpiled by the Jest loaders at runtime. It's possible that this can cause [Jest to timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/280809).
@@ -1182,6 +1186,95 @@ You can download any older version of Firefox from the releases FTP server, <htt
 1. Move the application to the `Applications` folder.
 1. Open up a terminal and run `/Applications/Firefox_Old.app/Contents/MacOS/firefox-bin -profilemanager` to create a new profile specific to that Firefox version.
 1. Once the profile has been created, quit the app, and run it again like normal. You now have a working older Firefox version.
+
+## Snapshots
+
+By now you've probably heard of [Jest snapshot tests](https://jestjs.io/docs/en/snapshot-testing) and why they are useful for various reasons.
+To use them within GitLab, there are a few guidelines that should be highlighted:
+
+- Treat snapshots as code
+- Don't think of a snapshot file as a Blackbox
+- Care for the output of the snapshot, otherwise, it's not providing any real value. This will usually involve reading the generated snapshot file as you would read any other piece of code
+
+Think of a snapshot test as a simple way to store a raw `String` representation of what you've put into the item being tested. This can be used to evaluate changes in a component, a store, a complex piece of generated output, etc. You can see more in the list below for some recommended `Do's and Don'ts`.
+While snapshot tests can be a very powerful tool. They are meant to supplement, not to replace unit tests.
+
+Jest provides a great set of docs on [best practices](https://jestjs.io/docs/en/snapshot-testing#best-practices) that we should keep in mind when creating snapshots.
+
+### How does a snapshot work?
+
+A snapshot is purely a stringified version of what you ask to be tested on the lefthand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
+
+Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
+
+Find all the details in Jests official documentation [https://jestjs.io/docs/en/snapshot-testing](https://jestjs.io/docs/en/snapshot-testing)
+
+### How to take a snapshot
+
+```javascript
+it('makes the name look pretty', () => {
+  expect(prettifyName('Homer Simpson')).toMatchSnapshot()
+})
+```
+
+When this test runs the first time a fresh `.snap` file will be created. It will look something like this:
+
+```txt
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`makes the name look pretty`] = `
+Sir Homer Simpson the Third
+`
+```
+
+Now, every time you call this test, the new snapshot will be evaluated against the previously created version. This should highlight the fact that it's important to understand the content of your snapshot file and treat it with care. Snapshots will lose their value if the output of the snapshot is too big or complex to read, this means keeping snapshots isolated to human-readable items that can be either evaluated in a merge request review or are guaranteed to never change.
+The same can be done for `wrappers` or `elements`
+
+```javascript
+it('renders the component correctly', () => {
+  expect(wrapper).toMatchSnapshot()
+  expect(wrapper.element).toMatchSnapshot();
+})
+```
+
+The above test will create two snapshots, what's important is to decide which of the snapshots provide more value for the codebase safety i.e. if one of these snapshots changes, does that highlight a possible un-wanted break in the codebase? This can help catch unexpected changes if something in an underlying dependency changes without our knowledge.
+
+### Pros and Cons
+
+**Pros**
+
+- Speed up the creation of unit tests
+- Easy to maintain
+- Provides a good safety net to protect against accidental breakage of important HTML structures
+
+**Cons**
+
+- Is not a catch-all solution that replaces the work of integration or unit tests
+- No meaningful assertions or expectations within snapshots
+- When carelessly used with [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui) it can create fragility in tests when the underlying library changes the HTML of a component we are testing
+
+A good guideline to follow: the more complex the component you may want to steer away from just snapshot testing. But that's not to say you can't still snapshot test and test your component as normal.
+
+### When to use
+
+**Use snapshots when**
+
+- to capture a components rendered output
+- to fully or partially match templates
+- to match readable data structures
+- to verify correctly composed native HTML elements
+- as a safety net for critical structures so others don't break it by accident
+- Template heavy component
+- Not a lot of logic in the component
+- Composed of native HTML elements
+
+### When not to use
+
+**Don't use snapshots when**
+
+- To capture large data structures just to have something
+- To just have some kind of test written
+- To capture highly volatile ui elements without stubbing them (Think of GitLab UI version updates)
 
 ---
 

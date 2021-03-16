@@ -4,6 +4,7 @@
  */
 
 $mr-widget-min-height: 69px;
+$tabs-holder-z-index: 250;
 
 .space-children {
   @include clearfix;
@@ -223,10 +224,6 @@ $mr-widget-min-height: 69px;
     .dropdown-menu {
       z-index: $zindex-dropdown-menu;
     }
-  }
-
-  .mini-pipeline-graph-dropdown-toggle {
-    vertical-align: top;
   }
 
   .normal {
@@ -675,7 +672,7 @@ $mr-widget-min-height: 69px;
 
 .mr-version-controls {
   position: relative;
-  z-index: 203;
+  z-index: $tabs-holder-z-index + 10;
   background: $white;
   color: $gl-text-color;
   margin-top: -1px;
@@ -745,7 +742,7 @@ $mr-widget-min-height: 69px;
 .merge-request-tabs-holder,
 .epic-tabs-holder {
   top: $header-height;
-  z-index: 250;
+  z-index: $tabs-holder-z-index;
   background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 
@@ -981,15 +978,15 @@ $mr-widget-min-height: 69px;
     line-height: initial;
   }
 
-  .mini-pipeline-graph-dropdown-toggle,
-  .stage-cell .mini-pipeline-graph-dropdown-toggle svg,
-  // As the `mini-pipeline-item` mixin specificity is lower
-  // than the toggle of dropdown with 'variant="link"' we add
-  // classes ".gl-button.btn-link" to make it more specific.
-  // Once FF ci_mini_pipeline_gl_dropdown is removed, the `mini-pipeline-item`
-  // itself could increase its specificity to simplify this selector
-  button.gl-button.btn-link.mini-pipeline-graph-gl-dropdown-toggle,
-  .stage-cell button.gl-button.btn-link.mini-pipeline-graph-gl-dropdown-toggle svg {
+  // GlDropdown mini pipeline (Vue)
+  //   As the `mini-pipeline-item` mixin specificity is lower
+  //   than the toggle of dropdown with 'variant="link"' we add
+  //   classes ".gl-button.btn-link" to make it more specific
+  //   and avoid having the size overriden
+  //
+  //   See https://gitlab.com/gitlab-org/gitlab/-/issues/320737
+  button.gl-button.btn-link.mini-pipeline-graph-dropdown-toggle,
+  .stage-cell button.gl-button.btn-link.mini-pipeline-graph-dropdown-toggle svg {
     height: $ci-action-icon-size-lg;
     width: $ci-action-icon-size-lg;
   }

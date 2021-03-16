@@ -1,0 +1,19 @@
+---
+key_path: counts.sast_jobs
+description: Count of SAST CI jobs for the month. Job names ending in '-sast'
+product_section: sec
+product_stage: secure
+product_group: group::static analysis
+product_category: static_application_security_testing
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

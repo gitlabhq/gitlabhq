@@ -141,6 +141,11 @@ RSpec.describe Snippets::NotesController do
       it 'creates the note' do
         expect { post :create, params: request_params }.to change { Note.count }.by(1)
       end
+
+      it_behaves_like 'request exceeding rate limit', :clean_gitlab_redis_cache do
+        let(:params) { request_params }
+        let(:request_full_path) { snippet_notes_path(public_snippet) }
+      end
     end
 
     context 'when a snippet is internal' do
@@ -163,6 +168,11 @@ RSpec.describe Snippets::NotesController do
 
       it 'creates the note' do
         expect { post :create, params: request_params }.to change { Note.count }.by(1)
+      end
+
+      it_behaves_like 'request exceeding rate limit', :clean_gitlab_redis_cache do
+        let(:params) { request_params }
+        let(:request_full_path) { snippet_notes_path(internal_snippet) }
       end
     end
 
@@ -227,6 +237,12 @@ RSpec.describe Snippets::NotesController do
 
         it 'creates the note' do
           expect { post :create, params: request_params }.to change { Note.count }.by(1)
+        end
+
+        it_behaves_like 'request exceeding rate limit', :clean_gitlab_redis_cache do
+          let(:params) { request_params }
+          let(:request_full_path) { snippet_notes_path(private_snippet) }
+          let(:user) { private_snippet.author }
         end
       end
     end

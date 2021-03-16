@@ -13,13 +13,13 @@ module QA
             end
 
             def require_admin_approval_after_user_signup
-              check_element :require_admin_approval_after_user_signup_checkbox
-              click_element :save_changes_button
+              check_element(:require_admin_approval_after_user_signup_checkbox)
+              click_element(:save_changes_button)
             end
 
             def disable_signups
-              uncheck_element :signup_enabled_checkbox
-              click_element :save_changes_button
+              uncheck_element(:signup_enabled_checkbox)
+              click_element(:save_changes_button)
             end
           end
         end

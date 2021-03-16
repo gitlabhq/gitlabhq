@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import ApplySuggestion from '~/vue_shared/components/markdown/apply_suggestion.vue';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
 
 const DEFAULT_PROPS = {
@@ -38,7 +39,7 @@ describe('Suggestion Diff component', () => {
     wrapper.destroy();
   });
 
-  const findApplyButton = () => wrapper.find('.js-apply-btn');
+  const findApplyButton = () => wrapper.find(ApplySuggestion);
   const findApplyBatchButton = () => wrapper.find('.js-apply-batch-btn');
   const findAddToBatchButton = () => wrapper.find('.js-add-to-batch-btn');
   const findRemoveFromBatchButton = () => wrapper.find('.js-remove-from-batch-btn');
@@ -88,7 +89,7 @@ describe('Suggestion Diff component', () => {
     beforeEach(() => {
       createComponent();
 
-      findApplyButton().vm.$emit('click');
+      findApplyButton().vm.$emit('apply');
     });
 
     it('emits apply', () => {

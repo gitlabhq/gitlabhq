@@ -15,6 +15,7 @@ module Gitlab
       # the sake of keeping things simple we hardcode this value here, it's not
       # supposed to be changed very often anyway.
       THRESHOLD = 100
+      LOG_THRESHOLD = THRESHOLD * 1.5
 
       # Error that is raised whenever exceeding the maximum number of queries.
       ThresholdExceededError = Class.new(StandardError)
@@ -45,6 +46,7 @@ module Gitlab
         @action = nil
         @count = 0
         @whitelisted = false
+        @sql_executed = []
       end
 
       # Sends a notification based on the number of executed SQL queries.
@@ -60,6 +62,10 @@ module Gitlab
         @count += 1 unless whitelisted
       end
 
+      def executed_sql(sql)
+        @sql_executed << sql if @count <= LOG_THRESHOLD
+      end
+
       def raise_error?
         Rails.env.test?
       end
@@ -71,8 +77,11 @@ module Gitlab
       def error_message
         header = 'Too many SQL queries were executed'
         header = "#{header} in #{action}" if action
+        msg = "a maximum of #{THRESHOLD} is allowed but #{count} SQL queries were executed"
+        log = @sql_executed.each_with_index.map { |sql, i| "#{i}: #{sql}" }.join("\n").presence
+        ellipsis = '...' if @count > LOG_THRESHOLD
 
-        "#{header}: a maximum of #{THRESHOLD} is allowed but #{count} SQL queries were executed"
+        ["#{header}: #{msg}", log, ellipsis].compact.join("\n")
       end
     end
   end

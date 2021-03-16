@@ -67,7 +67,13 @@ RSpec.describe 'Container Registry', :js do
       end
 
       it 'shows the image title' do
-        expect(page).to have_content 'my/image tags'
+        expect(page).to have_content 'my/image'
+      end
+
+      it 'shows the image tags' do
+        expect(page).to have_content 'Image tags'
+        first_tag = first('[data-testid="name"]')
+        expect(first_tag).to have_content 'latest'
       end
 
       it 'user removes a specific tag from container repository' do

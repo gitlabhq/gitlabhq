@@ -1,36 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
+redirect_to: '../../../topics/git/cherry_picking.md'
 ---
 
-# Cherry Pick
+This document was moved to [another location](../../../topics/git/cherry_picking.md).
 
-- Given an existing commit on one branch, apply the change to another branch
-- Useful for backporting bug fixes to previous release branches
-- Make the commit on the master branch and pick in to stable
-
-## Cherry Pick sample workflow
-
-1. Check out a new 'stable' branch from 'master'
-1. Change back to 'master'
-1. Edit '`cherry_pick.rb`' and commit the changes.
-1. Check commit log to get the commit SHA
-1. Check out the 'stable' branch
-1. Cherry pick the commit using the SHA obtained earlier
-
-```shell
-git checkout master
-git checkout -b stable
-git checkout master
-
-# Edit `cherry_pick.rb`
-git add cherry_pick.rb
-git commit -m 'Fix bugs in cherry_pick.rb'
-git log
-# Copy commit SHA
-git checkout stable
-
-git cherry-pick <commit SHA>
-```
+<!-- This redirect file can be deleted after <2021-06-01>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

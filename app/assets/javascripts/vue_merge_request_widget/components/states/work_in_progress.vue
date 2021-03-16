@@ -70,7 +70,7 @@ export default {
               data: {
                 mergeRequestSetWip: {
                   errors,
-                  mergeRequest: { workInProgress, title },
+                  mergeRequest: { mergeableDiscussionsState, workInProgress, title },
                 },
               },
             },
@@ -87,9 +87,8 @@ export default {
             });
 
             const data = produce(sourceData, (draftState) => {
-              // eslint-disable-next-line no-param-reassign
+              draftState.project.mergeRequest.mergeableDiscussionsState = mergeableDiscussionsState;
               draftState.project.mergeRequest.workInProgress = workInProgress;
-              // eslint-disable-next-line no-param-reassign
               draftState.project.mergeRequest.title = title;
             });
 
@@ -107,6 +106,7 @@ export default {
               errors: [],
               mergeRequest: {
                 __typename: 'MergeRequest',
+                mergeableDiscussionsState: true,
                 title: this.mr.title,
                 workInProgress: false,
               },

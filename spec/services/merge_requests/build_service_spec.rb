@@ -19,8 +19,21 @@ RSpec.describe MergeRequests::BuildService do
   let(:label_ids) { [] }
   let(:merge_request) { service.execute }
   let(:compare) { double(:compare, commits: commits) }
-  let(:commit_1) { double(:commit_1, sha: 'f00ba7', safe_message: "Initial commit\n\nCreate the app") }
-  let(:commit_2) { double(:commit_2, sha: 'f00ba7', safe_message: 'This is a bad commit message!') }
+  let(:commit_1) do
+    double(:commit_1, sha: 'f00ba6', safe_message: 'Initial commit',
+                          gitaly_commit?: false, id: 'f00ba6', parent_ids: ['f00ba5'])
+  end
+
+  let(:commit_2) do
+    double(:commit_2, sha: 'f00ba7', safe_message: "Closes #1234 Second commit\n\nCreate the app",
+                          gitaly_commit?: false, id: 'f00ba7', parent_ids: ['f00ba6'])
+  end
+
+  let(:commit_3) do
+    double(:commit_3, sha: 'f00ba8', safe_message: 'This is a bad commit message!',
+                          gitaly_commit?: false, id: 'f00ba8', parent_ids: ['f00ba7'])
+  end
+
   let(:commits) { nil }
 
   let(:params) do
@@ -47,6 +60,7 @@ RSpec.describe MergeRequests::BuildService do
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
     allow(project).to receive(:commit).and_return(commit_1)
     allow(project).to receive(:commit).and_return(commit_2)
+    allow(project).to receive(:commit).and_return(commit_3)
   end
 
   shared_examples 'allows the merge request to be created' do
@@ -137,7 +151,7 @@ RSpec.describe MergeRequests::BuildService do
 
     context 'when target branch is missing' do
       let(:target_branch) { nil }
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       before do
         stub_compare
@@ -199,8 +213,8 @@ RSpec.describe MergeRequests::BuildService do
     end
 
     context 'one commit in the diff' do
-      let(:commits) { Commit.decorate([commit_1], project) }
-      let(:commit_description) { commit_1.safe_message.split(/\n+/, 2).last }
+      let(:commits) { Commit.decorate([commit_2], project) }
+      let(:commit_description) { commit_2.safe_message.split(/\n+/, 2).last }
 
       before do
         stub_compare
@@ -209,7 +223,7 @@ RSpec.describe MergeRequests::BuildService do
       it_behaves_like 'allows the merge request to be created'
 
       it 'uses the title of the commit as the title of the merge request' do
-        expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
+        expect(merge_request.title).to eq(commit_2.safe_message.split("\n").first)
       end
 
       it 'uses the description of the commit as the description of the merge request' do
@@ -225,10 +239,10 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       context 'commit has no description' do
-        let(:commits) { Commit.decorate([commit_2], project) }
+        let(:commits) { Commit.decorate([commit_3], project) }
 
         it 'uses the title of the commit as the title of the merge request' do
-          expect(merge_request.title).to eq(commit_2.safe_message)
+          expect(merge_request.title).to eq(commit_3.safe_message)
         end
 
         it 'sets the description to nil' do
@@ -257,7 +271,7 @@ RSpec.describe MergeRequests::BuildService do
           end
 
           it 'uses the title of the commit as the title of the merge request' do
-            expect(merge_request.title).to eq('Initial commit')
+            expect(merge_request.title).to eq('Closes #1234 Second commit')
           end
 
           it 'appends the closing description' do
@@ -310,8 +324,8 @@ RSpec.describe MergeRequests::BuildService do
       end
     end
 
-    context 'more than one commit in the diff' do
-      let(:commits) { Commit.decorate([commit_1, commit_2], project) }
+    context 'no multi-line commit messages in the diff' do
+      let(:commits) { Commit.decorate([commit_1, commit_3], project) }
 
       before do
         stub_compare
@@ -365,6 +379,55 @@ RSpec.describe MergeRequests::BuildService do
           end
         end
       end
+    end
+
+    context 'a multi-line commit message in the diff' do
+      let(:commits) { Commit.decorate([commit_1, commit_2, commit_3], project) }
+
+      before do
+        stub_compare
+      end
+
+      it_behaves_like 'allows the merge request to be created'
+
+      it 'uses the first line of the first multi-line commit message as the title' do
+        expect(merge_request.title).to eq('Closes #1234 Second commit')
+      end
+
+      it 'adds the remaining lines of the first multi-line commit message as the description' do
+        expect(merge_request.description).to eq('Create the app')
+      end
+
+      context 'when the source branch matches an issue' do
+        where(:issue_tracker, :source_branch, :title, :closing_message) do
+          :jira                 | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira                 | 'fix-issue'         | 'Fix issue'                   | nil
+          :custom_issue_tracker | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
+          :custom_issue_tracker | 'fix-issue'         | 'Fix issue'                   | nil
+          :internal             | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
+          :internal             | 'fix-issue'         | 'Fix issue'                   | nil
+          :internal             | '124-fix-issue'     | '124 fix issue'               | nil
+        end
+
+        with_them do
+          before do
+            if issue_tracker == :internal
+              issue.update!(iid: 123)
+            else
+              create(:"#{issue_tracker}_service", project: project)
+              project.reload
+            end
+          end
+
+          it 'sets the correct title' do
+            expect(merge_request.title).to eq('Closes #1234 Second commit')
+          end
+
+          it 'sets the closing description' do
+            expect(merge_request.description).to eq("Create the app#{closing_message ? "\n\n" + closing_message : ''}")
+          end
+        end
+      end
 
       context 'when the issue is not accessible to user' do
         let(:source_branch) { "#{issue.iid}-fix-issue" }
@@ -373,12 +436,12 @@ RSpec.describe MergeRequests::BuildService do
           project.team.truncate
         end
 
-        it 'uses branch title as the merge request title' do
-          expect(merge_request.title).to eq("#{issue.iid} fix issue")
+        it 'uses the first line of the first multi-line commit message as the title' do
+          expect(merge_request.title).to eq('Closes #1234 Second commit')
         end
 
-        it 'does not set a description' do
-          expect(merge_request.description).to be_nil
+        it 'adds the remaining lines of the first multi-line commit message as the description' do
+          expect(merge_request.description).to eq('Create the app')
         end
       end
 
@@ -386,12 +449,12 @@ RSpec.describe MergeRequests::BuildService do
         let(:source_branch) { "#{issue.iid}-fix-issue" }
         let(:issue_confidential) { true }
 
-        it 'uses the title of the branch as the merge request title' do
-          expect(merge_request.title).to eq("#{issue.iid} fix issue")
+        it 'uses the first line of the first multi-line commit message as the title' do
+          expect(merge_request.title).to eq('Closes #1234 Second commit')
         end
 
-        it 'does not set a description' do
-          expect(merge_request.description).to be_nil
+        it 'adds the remaining lines of the first multi-line commit message as the description' do
+          expect(merge_request.description).to eq('Create the app')
         end
       end
     end
@@ -399,7 +462,7 @@ RSpec.describe MergeRequests::BuildService do
     context 'source branch does not exist' do
       before do
         allow(project).to receive(:commit).with(source_branch).and_return(nil)
-        allow(project).to receive(:commit).with(target_branch).and_return(commit_1)
+        allow(project).to receive(:commit).with(target_branch).and_return(commit_2)
       end
 
       it_behaves_like 'forbids the merge request from being created' do
@@ -409,7 +472,7 @@ RSpec.describe MergeRequests::BuildService do
 
     context 'target branch does not exist' do
       before do
-        allow(project).to receive(:commit).with(source_branch).and_return(commit_1)
+        allow(project).to receive(:commit).with(source_branch).and_return(commit_2)
         allow(project).to receive(:commit).with(target_branch).and_return(nil)
       end
 
@@ -433,7 +496,7 @@ RSpec.describe MergeRequests::BuildService do
     context 'upstream project has disabled merge requests' do
       let(:upstream_project) { create(:project, :merge_requests_disabled) }
       let(:project) { create(:project, forked_from_project: upstream_project) }
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets target project correctly' do
         expect(merge_request.target_project).to eq(project)
@@ -441,8 +504,8 @@ RSpec.describe MergeRequests::BuildService do
     end
 
     context 'target_project is set and accessible by current_user' do
-      let(:target_project) { create(:project, :public, :repository)}
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:target_project) { create(:project, :public, :repository) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets target project correctly' do
         expect(merge_request.target_project).to eq(target_project)
@@ -450,8 +513,8 @@ RSpec.describe MergeRequests::BuildService do
     end
 
     context 'target_project is set but not accessible by current_user' do
-      let(:target_project) { create(:project, :private, :repository)}
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:target_project) { create(:project, :private, :repository) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets target project correctly' do
         expect(merge_request.target_project).to eq(project)
@@ -469,8 +532,8 @@ RSpec.describe MergeRequests::BuildService do
     end
 
     context 'source_project is set and accessible by current_user' do
-      let(:source_project) { create(:project, :public, :repository)}
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:source_project) { create(:project, :public, :repository) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       before do
         # To create merge requests _from_ a project the user needs at least
@@ -484,8 +547,8 @@ RSpec.describe MergeRequests::BuildService do
     end
 
     context 'source_project is set but not accessible by current_user' do
-      let(:source_project) { create(:project, :private, :repository)}
-      let(:commits) { Commit.decorate([commit_1], project) }
+      let(:source_project) { create(:project, :private, :repository) }
+      let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets source project correctly' do
         expect(merge_request.source_project).to eq(project)

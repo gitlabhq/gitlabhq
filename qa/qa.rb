@@ -95,6 +95,7 @@ module QA
     autoload :Visibility, 'qa/resource/visibility'
     autoload :ProjectSnippet, 'qa/resource/project_snippet'
     autoload :Design, 'qa/resource/design'
+    autoload :RegistryRepository, 'qa/resource/registry_repository'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -120,6 +121,7 @@ module QA
 
     module Wiki
       autoload :ProjectPage, 'qa/resource/wiki/project_page'
+      autoload :GroupPage, 'qa/resource/wiki/group_page'
     end
   end
 
@@ -231,6 +233,7 @@ module QA
 
       module Settings
         autoload :General, 'qa/page/group/settings/general'
+        autoload :PackageRegistries, 'qa/page/group/settings/package_registries'
       end
     end
 
@@ -291,6 +294,10 @@ module QA
       module Packages
         autoload :Index, 'qa/page/project/packages/index'
         autoload :Show, 'qa/page/project/packages/show'
+      end
+
+      module Registry
+        autoload :Show, 'qa/page/project/registry/show'
       end
 
       module Settings
@@ -374,7 +381,6 @@ module QA
         autoload :Edit, 'qa/page/project/wiki/edit'
         autoload :Show, 'qa/page/project/wiki/show'
         autoload :GitAccess, 'qa/page/project/wiki/git_access'
-        autoload :Sidebar, 'qa/page/project/wiki/sidebar'
         autoload :List, 'qa/page/project/wiki/list'
       end
 
@@ -489,6 +495,10 @@ module QA
       autoload :ProjectSelector, 'qa/page/component/project_selector'
       autoload :Snippet, 'qa/page/component/snippet'
       autoload :NewSnippet, 'qa/page/component/new_snippet'
+      autoload :InviteMembersModal, 'qa/page/component/invite_members_modal'
+      autoload :Wiki, 'qa/page/component/wiki'
+      autoload :WikiSidebar, 'qa/page/component/wiki_sidebar'
+      autoload :WikiPageForm, 'qa/page/component/wiki_page_form'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

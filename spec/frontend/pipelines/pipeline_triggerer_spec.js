@@ -35,8 +35,8 @@ describe('Pipelines Triggerer', () => {
     wrapper.destroy();
   });
 
-  it('should render a table cell', () => {
-    expect(wrapper.find('.table-section').exists()).toBe(true);
+  it('should render pipeline triggerer table cell', () => {
+    expect(wrapper.find('[data-testid="pipeline-triggerer"]').exists()).toBe(true);
   });
 
   it('should pass triggerer information when triggerer is provided', () => {

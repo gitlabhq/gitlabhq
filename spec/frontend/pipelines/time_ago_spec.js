@@ -8,7 +8,11 @@ describe('Timeago component', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(TimeAgo, {
       propsData: {
-        ...props,
+        pipeline: {
+          details: {
+            ...props,
+          },
+        },
       },
       data() {
         return {
@@ -25,10 +29,11 @@ describe('Timeago component', () => {
 
   const duration = () => wrapper.find('.duration');
   const finishedAt = () => wrapper.find('.finished-at');
+  const findInProgress = () => wrapper.find('[data-testid="pipeline-in-progress"]');
 
   describe('with duration', () => {
     beforeEach(() => {
-      createComponent({ duration: 10, finishedTime: '' });
+      createComponent({ duration: 10, finished_at: '' });
     });
 
     it('should render duration and timer svg', () => {
@@ -41,7 +46,7 @@ describe('Timeago component', () => {
 
   describe('without duration', () => {
     beforeEach(() => {
-      createComponent({ duration: 0, finishedTime: '' });
+      createComponent({ duration: 0, finished_at: '' });
     });
 
     it('should not render duration and timer svg', () => {
@@ -51,7 +56,7 @@ describe('Timeago component', () => {
 
   describe('with finishedTime', () => {
     beforeEach(() => {
-      createComponent({ duration: 0, finishedTime: '2017-04-26T12:40:23.277Z' });
+      createComponent({ duration: 0, finished_at: '2017-04-26T12:40:23.277Z' });
     });
 
     it('should render time and calendar icon', () => {
@@ -66,11 +71,28 @@ describe('Timeago component', () => {
 
   describe('without finishedTime', () => {
     beforeEach(() => {
-      createComponent({ duration: 0, finishedTime: '' });
+      createComponent({ duration: 0, finished_at: '' });
     });
 
     it('should not render time and calendar icon', () => {
       expect(finishedAt().exists()).toBe(false);
     });
+  });
+
+  describe('in progress', () => {
+    it.each`
+      durationTime | finishedAtTime                | shouldShow
+      ${10}        | ${'2017-04-26T12:40:23.277Z'} | ${false}
+      ${10}        | ${''}                         | ${false}
+      ${0}         | ${'2017-04-26T12:40:23.277Z'} | ${false}
+      ${0}         | ${''}                         | ${true}
+    `(
+      'progress state shown: $shouldShow when pipeline duration is $durationTime and finished_at is $finishedAtTime',
+      ({ durationTime, finishedAtTime, shouldShow }) => {
+        createComponent({ duration: durationTime, finished_at: finishedAtTime });
+
+        expect(findInProgress().exists()).toBe(shouldShow);
+      },
+    );
   });
 });

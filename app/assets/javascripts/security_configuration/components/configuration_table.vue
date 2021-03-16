@@ -1,16 +1,18 @@
 <script>
-import { GlLink, GlSprintf, GlTable, GlAlert } from '@gitlab/ui';
+import { GlLink, GlTable, GlAlert } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
+  REPORT_TYPE_DAST_PROFILES,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
+  REPORT_TYPE_API_FUZZING,
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
-import { features } from './features_constants';
 import ManageSast from './manage_sast.vue';
+import { scanners } from './scanners_constants';
 import Upgrade from './upgrade.vue';
 
 const borderClasses = 'gl-border-b-1! gl-border-b-solid! gl-border-gray-100!';
@@ -19,14 +21,14 @@ const thClass = `gl-text-gray-900 gl-bg-transparent! ${borderClasses}`;
 export default {
   components: {
     GlLink,
-    GlSprintf,
     GlTable,
     GlAlert,
   },
-  data: () => ({
-    features,
-    errorMessage: '',
-  }),
+  data() {
+    return {
+      errorMessage: '',
+    };
+  },
   methods: {
     getFeatureDocumentationLinkLabel(item) {
       return sprintf(s__('SecurityConfiguration|Feature documentation for %{featureName}'), {
@@ -40,9 +42,11 @@ export default {
       const COMPONENTS = {
         [REPORT_TYPE_SAST]: ManageSast,
         [REPORT_TYPE_DAST]: Upgrade,
+        [REPORT_TYPE_DAST_PROFILES]: Upgrade,
         [REPORT_TYPE_DEPENDENCY_SCANNING]: Upgrade,
         [REPORT_TYPE_CONTAINER_SCANNING]: Upgrade,
         [REPORT_TYPE_COVERAGE_FUZZING]: Upgrade,
+        [REPORT_TYPE_API_FUZZING]: Upgrade,
         [REPORT_TYPE_LICENSE_COMPLIANCE]: Upgrade,
       };
 
@@ -62,7 +66,7 @@ export default {
         thClass,
       },
     ],
-    items: features,
+    items: scanners,
   },
 };
 </script>
@@ -81,7 +85,8 @@ export default {
           {{ item.description }}
           <gl-link
             target="_blank"
-            :href="item.link"
+            data-testid="help-link"
+            :href="item.helpPath"
             :aria-label="getFeatureDocumentationLinkLabel(item)"
           >
             {{ s__('SecurityConfiguration|More information') }}

@@ -17,12 +17,12 @@ module Gitlab
 
       def call(env)
         request = ActionDispatch::Request.new(env)
-        route = Gitlab::EtagCaching::Router.match(request.path_info)
+        route = Gitlab::EtagCaching::Router.match(request)
         return @app.call(env) unless route
 
         track_event(:etag_caching_middleware_used, route)
 
-        etag, cached_value_present = get_etag(request)
+        etag, cached_value_present = get_etag(request, route)
         if_none_match = env['HTTP_IF_NONE_MATCH']
 
         if if_none_match == etag
@@ -36,8 +36,8 @@ module Gitlab
 
       private
 
-      def get_etag(request)
-        cache_key = request.path
+      def get_etag(request, route)
+        cache_key = route.cache_key(request)
         store = Gitlab::EtagCaching::Store.new
         current_value = store.get(cache_key)
         cached_value_present = current_value.present?

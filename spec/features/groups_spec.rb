@@ -143,7 +143,7 @@ RSpec.describe 'Group' do
     end
   end
 
-  describe 'create a nested group', :js do
+  describe 'create a nested group' do
     let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
@@ -153,13 +153,21 @@ RSpec.describe 'Group' do
         visit new_group_path(group, parent_id: group.id)
       end
 
-      it 'creates a nested group' do
-        fill_in 'Group name', with: 'bar'
-        fill_in 'Group URL', with: 'bar'
-        click_button 'Create group'
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'creates a nested group' do
+          fill_in 'Group name', with: 'bar'
+          fill_in 'Group URL', with: 'bar'
+          click_button 'Create group'
 
-        expect(current_path).to eq(group_path('foo/bar'))
-        expect(page).to have_content("Group 'bar' was successfully created.")
+          expect(current_path).to eq(group_path('foo/bar'))
+          expect(page).to have_content("Group 'bar' was successfully created.")
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'is not allowed' do
+          expect(page).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

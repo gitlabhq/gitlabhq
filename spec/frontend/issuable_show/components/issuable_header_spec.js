@@ -119,6 +119,27 @@ describe('IssuableHeader', () => {
       expect(avatarEl.find(GlAvatarLabeled).find(GlIcon).exists()).toBe(false);
     });
 
+    it('renders tast status text when `taskCompletionStatus` prop is defined', () => {
+      let taskStatusEl = wrapper.findByTestId('task-status');
+
+      expect(taskStatusEl.exists()).toBe(true);
+      expect(taskStatusEl.text()).toContain('0 of 5 tasks completed');
+
+      const wrapperSingleTask = createComponent({
+        ...issuableHeaderProps,
+        taskCompletionStatus: {
+          completedCount: 0,
+          count: 1,
+        },
+      });
+
+      taskStatusEl = wrapperSingleTask.findByTestId('task-status');
+
+      expect(taskStatusEl.text()).toContain('0 of 1 task completed');
+
+      wrapperSingleTask.destroy();
+    });
+
     it('renders sidebar toggle button', () => {
       const toggleButtonEl = wrapper.findByTestId('sidebar-toggle');
 

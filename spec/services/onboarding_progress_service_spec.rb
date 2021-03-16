@@ -3,9 +3,49 @@
 require 'spec_helper'
 
 RSpec.describe OnboardingProgressService do
+  describe '.async' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:action) { :git_pull }
+
+    subject(:execute_service) { described_class.async(namespace.id).execute(action: action) }
+
+    context 'when not onboarded' do
+      it 'does not schedule a worker' do
+        expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+
+        execute_service
+      end
+    end
+
+    context 'when onboarded' do
+      before do
+        OnboardingProgress.onboard(namespace)
+      end
+
+      context 'when action is already completed' do
+        before do
+          OnboardingProgress.register(namespace, action)
+        end
+
+        it 'does not schedule a worker' do
+          expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+
+          execute_service
+        end
+      end
+
+      context 'when action is not yet completed' do
+        it 'schedules a worker' do
+          expect(Namespaces::OnboardingProgressWorker).to receive(:perform_async)
+
+          execute_service
+        end
+      end
+    end
+  end
+
   describe '#execute' do
-    let(:namespace) { create(:namespace, parent: root_namespace) }
-    let(:root_namespace) { nil }
+    let(:namespace) { create(:namespace) }
     let(:action) { :namespace_action }
 
     subject(:execute_service) { described_class.new(namespace).execute(action: :subscription_created) }
@@ -23,16 +63,16 @@ RSpec.describe OnboardingProgressService do
     end
 
     context 'when the namespace is not the root' do
-      let(:root_namespace) { build(:namespace) }
+      let(:group) { create(:group, :nested) }
 
       before do
-        OnboardingProgress.onboard(root_namespace)
+        OnboardingProgress.onboard(group)
       end
 
-      it 'registers a namespace onboarding progress action for the root namespace' do
+      it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to eq(true)
+        expect(OnboardingProgress.completed?(group, :subscription_created)).to be(nil)
       end
     end
 
@@ -42,7 +82,7 @@ RSpec.describe OnboardingProgressService do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(OnboardingProgress.completed?(root_namespace, :subscription_created)).to be(nil)
+        expect(OnboardingProgress.completed?(namespace, :subscription_created)).to be(nil)
       end
     end
   end

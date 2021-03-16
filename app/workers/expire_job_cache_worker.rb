@@ -16,18 +16,12 @@ class ExpireJobCacheWorker
     pipeline = job.pipeline
     project = job.project
 
-    Gitlab::EtagCaching::Store.new.tap do |store|
-      store.touch(project_pipeline_path(project, pipeline))
-      store.touch(project_job_path(project, job))
-    end
+    Gitlab::EtagCaching::Store.new.touch(project_job_path(project, job))
+    ExpirePipelineCacheWorker.perform_async(pipeline.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
-
-  def project_pipeline_path(project, pipeline)
-    Gitlab::Routing.url_helpers.project_pipeline_path(project, pipeline, format: :json)
-  end
 
   def project_job_path(project, job)
     Gitlab::Routing.url_helpers.project_build_path(project, job.id, format: :json)

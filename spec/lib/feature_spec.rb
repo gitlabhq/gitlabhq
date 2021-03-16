@@ -269,7 +269,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
 
       it 'when invalid type is used' do
-        expect { described_class.enabled?(:my_feature_flag, type: :licensed) }
+        expect { described_class.enabled?(:my_feature_flag, type: :ops) }
           .to raise_error(/The `type:` of/)
       end
 

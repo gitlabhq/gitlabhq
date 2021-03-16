@@ -5,11 +5,13 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Snippets API
+# Snippets API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6373) in GitLab 8.15.
 
-Snippets API operates on [snippets](../user/snippets.md).
+Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
+[project snippets](project_snippets.md) and
+[moving snippets between storages](snippet_repository_storage_moves.md).
 
 ## Snippet visibility level
 
@@ -230,7 +232,7 @@ curl --request POST "https://gitlab.example.com/api/v4/snippets" \
       "content": "Hello world",
       "file_path": "test.txt"
     }
-  ]  
+  ]
 }
 ```
 
@@ -289,13 +291,11 @@ Parameters:
 | `content`             | string          | no       | Deprecated: Use `files` instead. Content of a snippet                               |
 | `description`         | string          | no       | Description of a snippet                                                            |
 | `visibility`          | string          | no       | Snippet's [visibility](#snippet-visibility-level)                                   |
-| `files`               | array of hashes | no       | An array of snippet files                                                           |
-| `files:action`        | string          | yes      | Type of action to perform on the file, one of: 'create', 'update', 'delete', 'move' |
+| `files`               | array of hashes | sometimes | An array of snippet files. Required when updating snippets with multiple files. |
+| `files:action`        | string          | yes      | Type of action to perform on the file, one of: `create`, `update`, `delete`, `move` |
 | `files:file_path`     | string          | no       | File path of the snippet file                                                       |
 | `files:previous_path` | string          | no       | Previous path of the snippet file                                                   |
 | `files:content`       | string          | no       | Content of the snippet file                                                         |
-
-Updates to snippets with multiple files *must* use the `files` attribute.
 
 Example request:
 

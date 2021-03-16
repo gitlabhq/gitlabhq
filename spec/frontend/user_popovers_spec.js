@@ -3,9 +3,21 @@ import initUserPopovers from '~/user_popovers';
 
 describe('User Popovers', () => {
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
-  preloadFixtures(fixtureTemplate);
 
   const selector = '.js-user-link, .gfm-project_member';
+  const findFixtureLinks = () => {
+    return Array.from(document.querySelectorAll(selector)).filter(
+      ({ dataset }) => dataset.user || dataset.userId,
+    );
+  };
+  const createUserLink = () => {
+    const link = document.createElement('a');
+
+    link.classList.add('js-user-link');
+    link.setAttribute('data-user', '1');
+
+    return link;
+  };
 
   const dummyUser = { name: 'root' };
   const dummyUserStatus = { message: 'active' };
@@ -37,11 +49,18 @@ describe('User Popovers', () => {
   });
 
   it('initializes a popover for each user link with a user id', () => {
-    const linksWithUsers = Array.from(document.querySelectorAll(selector)).filter(
-      ({ dataset }) => dataset.user || dataset.userId,
-    );
+    const linksWithUsers = findFixtureLinks();
 
     expect(linksWithUsers.length).toBe(popovers.length);
+  });
+
+  it('adds popovers to user links added to the DOM tree after the initial call', async () => {
+    document.body.appendChild(createUserLink());
+    document.body.appendChild(createUserLink());
+
+    const linksWithUsers = findFixtureLinks();
+
+    expect(linksWithUsers.length).toBe(popovers.length + 2);
   });
 
   it('does not initialize the user popovers twice for the same element', () => {

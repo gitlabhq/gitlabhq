@@ -18,13 +18,12 @@ You can find the **Blame** button with each file in a project.
 
 ![File blame button](img/file_blame_button_v12_6.png "Blame button")
 
-When you select the **Blame** button, you'll see a screen with the
-noted information:
+When you select the **Blame** button, this information is shown:
 
 ![Git blame output](img/file_blame_output_v12_6.png "Blame button output")
 
-If you hover over a commit in the UI, you'll see a precise date and time
-for that commit.
+If you hover over a commit in the UI, the commit's precise date and time
+are shown.
 
 ## Blame previous commit
 
@@ -45,7 +44,7 @@ about a `README.md` file in the local directory, run the following command:
 git blame README.md
 ```
 
-You'll see output similar to the following, which includes the commit time
+The output looks similar to the following, which includes the commit time
 in UTC format:
 
 ```shell

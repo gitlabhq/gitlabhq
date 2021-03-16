@@ -92,8 +92,6 @@ module Gitlab
           def extract_attribute_values(order_value)
             if ordering_by_lower?(order_value)
               [order_value.expr.expressions[0].name.to_s, order_value.direction, order_value.expr]
-            elsif ordering_by_similarity?(order_value)
-              ['similarity', order_value.direction, order_value.expr]
             elsif ordering_by_case?(order_value)
               ['case_order_value', order_value.direction, order_value.expr]
             elsif ordering_by_array_position?(order_value)
@@ -111,11 +109,6 @@ module Gitlab
           # determine if ordering using ARRAY_POSITION, eg. "ORDER BY ARRAY_POSITION(Array[4,3,1,2]::smallint, state)"
           def ordering_by_array_position?(order_value)
             order_value.expr.is_a?(Arel::Nodes::NamedFunction) && order_value.expr&.name&.downcase == 'array_position'
-          end
-
-          # determine if ordering using SIMILARITY scoring based on Gitlab::Database::SimilarityScore
-          def ordering_by_similarity?(order_value)
-            Gitlab::Database::SimilarityScore.order_by_similarity?(order_value)
           end
 
           # determine if ordering using CASE

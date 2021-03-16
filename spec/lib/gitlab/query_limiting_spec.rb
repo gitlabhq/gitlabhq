@@ -63,6 +63,20 @@ RSpec.describe Gitlab::QueryLimiting do
 
         expect(transaction.count).to eq(before)
       end
+
+      it 'whitelists when enabled' do
+        described_class.whitelist('https://example.com')
+
+        expect(transaction.whitelisted).to eq(true)
+      end
+
+      it 'does not whitelist when disabled' do
+        allow(described_class).to receive(:enable?).and_return(false)
+
+        described_class.whitelist('https://example.com')
+
+        expect(transaction.whitelisted).to eq(false)
+      end
     end
   end
 end

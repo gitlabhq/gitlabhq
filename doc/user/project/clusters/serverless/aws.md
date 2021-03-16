@@ -367,12 +367,11 @@ sam init -h
 ### Setting up your AWS credentials with your GitLab account
 
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both
-`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be set in the project's CI/CD
-variables.
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be set in the project's CI/CD variables.
 
 To set these:
 
-1. Navigate to the project's **Settings > CI / CD**.
+1. Navigate to the project's **Settings > CI/CD**.
 1. Expand the **Variables** section and create entries for `AWS_ACCESS_KEY_ID` and
    `AWS_SECRET_ACCESS_KEY`.
 1. Mask the credentials so they do not show in logs using the **Masked** toggle.
@@ -424,8 +423,8 @@ deploys your application. If your:
   - Incompatible versions of software. For example, Python runtime version might be
     different from the Python on the build machine. Address this by installing the
     required versions of the software.
-  - You may not be able to access your AWS account from GitLab. Check the environment
-    variables you set up with AWS credentials.
+  - You may not be able to access your AWS account from GitLab. Check the CI/CD variables
+    you set up with AWS credentials.
   - You may not have permission to deploy a serverless application. Make sure you
     provide all required permissions to deploy a serverless application.
 

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Facebook OAuth2 OmniAuth Provider
+# Facebook OAuth2 OmniAuth Provider **(FREE)**
 
 To enable the Facebook OmniAuth provider you must register your application with Facebook. Facebook generates an app ID and secret key for you to use.
 

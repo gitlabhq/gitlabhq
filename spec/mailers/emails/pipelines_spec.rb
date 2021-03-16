@@ -89,7 +89,7 @@ RSpec.describe Emails::Pipelines do
     let(:sha) { project.commit(ref).sha }
 
     it_behaves_like 'correct pipeline information' do
-      let(:status) { 'Succesful' }
+      let(:status) { 'Successful' }
       let(:status_text) { "Pipeline ##{pipeline.id} has passed!" }
     end
   end

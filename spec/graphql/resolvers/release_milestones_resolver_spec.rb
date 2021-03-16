@@ -14,7 +14,7 @@ RSpec.describe Resolvers::ReleaseMilestonesResolver do
 
   describe '#resolve' do
     it "uses offset-pagination" do
-      expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetPaginatedRelation)
+      expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
     end
 
     it "includes the release's milestones in the returned OffsetActiveRecordRelationConnection" do

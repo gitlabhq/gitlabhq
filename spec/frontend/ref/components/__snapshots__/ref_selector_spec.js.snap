@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ref selector component footer slot passes the expected slot props 1`] = `
+Object {
+  "isLoading": false,
+  "matches": Object {
+    "branches": Object {
+      "error": null,
+      "list": Array [
+        Object {
+          "default": false,
+          "name": "add_images_and_changes",
+        },
+        Object {
+          "default": false,
+          "name": "conflict-contains-conflict-markers",
+        },
+        Object {
+          "default": false,
+          "name": "deleted-image-test",
+        },
+        Object {
+          "default": false,
+          "name": "diff-files-image-to-symlink",
+        },
+        Object {
+          "default": false,
+          "name": "diff-files-symlink-to-image",
+        },
+        Object {
+          "default": false,
+          "name": "markdown",
+        },
+        Object {
+          "default": true,
+          "name": "master",
+        },
+      ],
+      "totalCount": 123,
+    },
+    "commits": Object {
+      "error": null,
+      "list": Array [
+        Object {
+          "name": "b83d6e39",
+          "subtitle": "Merge branch 'branch-merged' into 'master'",
+          "value": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+        },
+      ],
+      "totalCount": 1,
+    },
+    "tags": Object {
+      "error": null,
+      "list": Array [
+        Object {
+          "name": "v1.1.1",
+        },
+        Object {
+          "name": "v1.1.0",
+        },
+        Object {
+          "name": "v1.0.0",
+        },
+      ],
+      "totalCount": 456,
+    },
+  },
+  "query": "abcd1234",
+}
+`;

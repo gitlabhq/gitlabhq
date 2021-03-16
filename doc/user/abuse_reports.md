@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Abuse reports
+# Abuse reports **(FREE)**
 
 You can report abuse from other GitLab users to GitLab administrators.
 
@@ -12,7 +12,7 @@ A GitLab administrator [can then choose](admin_area/abuse_reports.md) to:
 
 - Remove the user, which deletes them from the instance.
 - Block the user, which denies them access to the instance.
-- Or remove the report, which retains the users access to the instance.
+- Or remove the report, which retains the user's access to the instance.
 
 You can report a user through their:
 

@@ -2,7 +2,7 @@
 
 .form-group#project-merge-options{ data: { project_full_path: @project.full_path } }
   %b= s_('ProjectSettings|Merge options')
-  %p.text-secondary= s_('ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed')
+  %p.text-secondary= s_('ProjectSettings|Additional settings that influence how and when merges are done.')
   = render_if_exists 'projects/merge_pipelines_settings', form: form
   = render_if_exists 'projects/merge_trains_settings', form: form
   .form-check.mb-2
@@ -12,10 +12,10 @@
   .form-check.mb-2
     = form.check_box :printing_merge_request_link_enabled, class: 'form-check-input'
     = form.label :printing_merge_request_link_enabled, class: 'form-check-label' do
-      = s_('ProjectSettings|Show link to create/view merge request when pushing from the command line')
+      = s_('ProjectSettings|Show link to create or view a merge request when pushing from the command line')
   .form-check.mb-2
     = form.check_box :remove_source_branch_after_merge, class: 'form-check-input'
     = form.label :remove_source_branch_after_merge, class: 'form-check-label' do
-      = s_("ProjectSettings|Enable 'Delete source branch' option by default")
+      = s_('ProjectSettings|Enable "Delete source branch" option by default')
       .descr.text-secondary
-        = s_('ProjectSettings|Existing merge requests and protected branches are not affected')
+        = s_('ProjectSettings|Existing merge requests and protected branches are not affected.')

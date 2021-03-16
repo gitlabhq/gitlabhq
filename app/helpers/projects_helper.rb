@@ -379,8 +379,8 @@ module ProjectsHelper
   private
 
   def can_read_security_configuration?(project, current_user)
-    ::Feature.enabled?(:secure_security_and_compliance_configuration_page_on_ce, @subject, default_enabled: :yaml) &&
-      can?(current_user, :read_security_configuration, project)
+    can?(current_user, :access_security_and_compliance, project) &&
+    can?(current_user, :read_security_configuration, project)
   end
 
   def get_project_security_nav_tabs(project, current_user)
@@ -646,7 +646,8 @@ module ProjectsHelper
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
-      allowEditingCommitMessages: project.allow_editing_commit_messages?
+      allowEditingCommitMessages: project.allow_editing_commit_messages?,
+      securityAndComplianceAccessLevel: project.security_and_compliance_access_level
     }
   end
 

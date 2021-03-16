@@ -405,8 +405,8 @@ Rackspace Cloud is supported only with the storage-specific form.
 | `provider` | The provider name | `Rackspace` |
 | `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
 | `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
-| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
-| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
+| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://docs.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
+| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://docs.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
 
 Regardless of whether the container has public access enabled or disabled, Fog
 uses the TempURL method to grant access to LFS objects. If you see error
@@ -572,13 +572,15 @@ See the following additional guides:
 
 ## Warnings, limitations, and known issues
 
-### Separate buckets required when using Helm
+### Use separate buckets
 
-Generally, using the same bucket for your Object Storage is fine to do
-for convenience.
+Using separate buckets for each data type is the recommended approach for GitLab.
+This ensures there are no collisions across the various types of data GitLab stores.
+There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
+in the future.
 
-However, if you're using or planning to use Helm, separate buckets will
-be required as there is a [known limitation with restorations of Helm chart backups](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
+Helm-based installs require separate buckets to
+[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
 
 ### S3 API compatibility issues
 

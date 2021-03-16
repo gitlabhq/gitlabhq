@@ -18,8 +18,6 @@ describe('SigninTabsMemoizer', () => {
     return memo;
   }
 
-  preloadFixtures(fixtureTemplate);
-
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
 

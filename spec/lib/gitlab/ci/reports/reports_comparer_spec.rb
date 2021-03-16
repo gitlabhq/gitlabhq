@@ -45,6 +45,22 @@ RSpec.describe Gitlab::Ci::Reports::ReportsComparer do
         expect(status).to eq('failed')
       end
     end
+
+    context 'when base_report is nil' do
+      let(:base_report) { nil }
+
+      it 'returns status not_found' do
+        expect(status).to eq('not_found')
+      end
+    end
+
+    context 'when head_report is nil' do
+      let(:head_report) { nil }
+
+      it 'returns status not_found' do
+        expect(status).to eq('not_found')
+      end
+    end
   end
 
   describe '#success?' do
@@ -92,6 +108,24 @@ RSpec.describe Gitlab::Ci::Reports::ReportsComparer do
 
     it 'returns not implemented error' do
       expect { total_count }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#not_found?' do
+    subject(:not_found) { comparer.not_found? }
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when base report exists' do
+      before do
+        allow(comparer).to receive(:success?).and_return(true)
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 end

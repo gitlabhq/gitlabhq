@@ -31,6 +31,12 @@ module Gitlab
           end
         end
 
+        def average
+          strong_memoize(:average) do
+            Average.new(stage: stage, query: query)
+          end
+        end
+
         private
 
         attr_reader :stage, :params

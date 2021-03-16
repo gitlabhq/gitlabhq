@@ -6,8 +6,6 @@ describe('Quick Submit behavior', () => {
 
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
-  preloadFixtures('snippets/show.html');
-
   beforeEach(() => {
     loadFixtures('snippets/show.html');
 

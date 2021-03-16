@@ -43,6 +43,17 @@ rules:
   promise/always-return: off
   promise/no-callback-in-promise: off
   '@gitlab/no-global-event-off': error
+  no-param-reassign:
+    - error
+    - props: true
+      ignorePropertyModificationsFor:
+        - acc
+        - accumulator
+        - el
+        - element
+        - state
+      ignorePropertyModificationsForRegex:
+        - '^draft'
   import/order:
     - error
     - groups:
@@ -89,3 +100,15 @@ overrides:
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
+  - files:
+      - 'config/**/*'
+      - 'scripts/**/*'
+      - '*.config.js'
+      - '*.config.*.js'
+    rules:
+      '@gitlab/require-i18n-strings': off
+      import/no-extraneous-dependencies: off
+      import/no-commonjs: off
+      import/no-nodejs-modules: off
+      filenames/match-regex: off
+      no-console: off

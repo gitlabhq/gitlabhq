@@ -42,7 +42,7 @@ RSpec.describe Resolvers::GroupLabelsResolver do
 
     context 'without parent' do
       it 'returns no labels' do
-        expect(resolve_labels(nil)).to eq(Label.none)
+        expect(resolve_labels(nil)).to be_empty
       end
     end
 

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create Jira Server username and password
+# Create Jira Server username and password **(FREE)**
 
 For [integrations with Jira](jira.md), you must create a user account in Jira to have access to
 all projects that need to integrate with GitLab.

@@ -8,7 +8,7 @@
 = form.select :public_email, options_for_select(@user.public_verified_emails, selected: @user.public_email),
   { help: s_("Profiles|This email will be displayed on your public profile"), include_blank: s_("Profiles|Do not show on profile") },
   control_class: 'select2 input-lg', disabled: email_change_disabled
-- commit_email_link_url = help_page_path('user/profile/index', anchor: 'commit-email', target: '_blank')
+- commit_email_link_url = help_page_path('user/profile/index', anchor: 'change-the-email-displayed-on-your-commits', target: '_blank')
 - commit_email_link_start = '<a href="%{url}">'.html_safe % { url: commit_email_link_url }
 - commit_email_docs_link = s_('Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more%{commit_email_link_end}').html_safe % { commit_email_link_start: commit_email_link_start, commit_email_link_end: '</a>'.html_safe }
 = form.select :commit_email, options_for_select(commit_email_select_options(@user), selected: selected_commit_email(@user)),

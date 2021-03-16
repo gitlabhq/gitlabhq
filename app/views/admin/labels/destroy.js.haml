@@ -1,2 +1,3 @@
 - if @labels.size == 0
-  $('.labels').load(document.URL + ' .nothing-here-block').hide().fadeIn(1000)
+  var emptyState = document.querySelector('.labels .nothing-here-block.hidden');
+  if (emptyState) emptyState.classList.remove('hidden');

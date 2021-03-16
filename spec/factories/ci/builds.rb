@@ -475,7 +475,7 @@ FactoryBot.define do
     trait :license_scanning do
       options do
         {
-          artifacts: { reports: { license_management: 'gl-license-scanning-report.json' } }
+          artifacts: { reports: { license_scanning: 'gl-license-scanning-report.json' } }
         }
       end
     end

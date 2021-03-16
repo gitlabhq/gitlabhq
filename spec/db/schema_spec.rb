@@ -87,7 +87,8 @@ RSpec.describe 'Database schema' do
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
-    web_hooks: %w[group_id]
+    web_hooks: %w[group_id],
+    web_hook_logs_part_0c5294f417: %w[web_hook_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -102,7 +103,12 @@ RSpec.describe 'Database schema' do
         context 'all foreign keys' do
           # for index to be effective, the FK constraint has to be at first place
           it 'are indexed' do
-            first_indexed_column = indexes.map(&:columns).map(&:first)
+            first_indexed_column = indexes.map(&:columns).map do |columns|
+              # In cases of complex composite indexes, a string is returned eg:
+              # "lower((extern_uid)::text), group_id"
+              columns = columns.split(',') if columns.is_a?(String)
+              columns.first.chomp
+            end
             foreign_keys_columns = foreign_keys.map(&:column)
 
             # Add the primary key column to the list of indexed columns because

@@ -70,7 +70,7 @@ Alternatively, you can use the API to protect an environment:
      name: ${CI_JOB_NAME}
    ```
 
-1. Use the UI to [create a new group](../../user/group/index.md#create-a-new-group).
+1. Use the UI to [create a new group](../../user/group/index.md#create-a-group).
    For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
    that the rest of the examples in these steps use this group.
 
@@ -125,10 +125,18 @@ they have the following privileges:
 ## Deployment-only access to protected environments
 
 Users granted access to a protected environment, but not push or merge access
-to the branch deployed to it, are only granted access to deploy the environment.
+to the branch deployed to it, are only granted access to deploy the environment. An individual in a
+group with the Reporter permission, or in groups added to the project with Reporter permissions,
+appears in the dropdown menu for deployment-only access.
 
-Note that deployment-only access is the only possible access level for users with
-[Reporter permissions](../../user/permissions.md).
+To add deployment-only access:
+
+1. Add a group with Reporter permissions.
+1. Add user(s) to the group.
+1. Invite the group to be a project member.
+1. Follow the steps outlined in [Protecting Environments](#protecting-environments).
+
+Note that deployment-only access is the only possible access level for groups with [Reporter permissions](../../user/permissions.md).
 
 ## Modifying and unprotecting environments
 

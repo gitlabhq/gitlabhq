@@ -20,6 +20,11 @@ CI/CD pipeline, you can interact with your chosen cloud provider more easily.
 GitLab provides Docker images that you can use to [run AWS commands from GitLab CI/CD](#run-aws-commands-from-gitlab-cicd), and a template to make
 it easier to [deploy to AWS](#deploy-your-application-to-the-aws-elastic-container-service-ecs).
 
+### Quick start
+
+If you're using GitLab.com, see the [quick start guide](ecs/quick_start_guide.md)
+for setting up Continuous Deployment to [AWS Elastic Container Service](https://aws.amazon.com/ecs/) (ECS).
+
 ### Run AWS commands from GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31167) in GitLab 12.6.
@@ -37,7 +42,7 @@ Some credentials are required to be able to run `aws` commands:
    NOTE:
    A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
-1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
+1. In your GitLab project, go to **Settings > CI/CD**. Set the following as
    [CI/CD variables](../variables/README.md)
    (see table below):
 
@@ -319,4 +324,4 @@ For a video walkthrough of this configuration process, see [Auto Deploy to EC2](
 
 ## Deploy to Google Cloud
 
-- [Deploying with GitLab on Google Cloud](https://about.gitlab.com/solutions/google-cloud-platform/)
+- [Deploying with GitLab on Google Cloud](https://about.gitlab.com/partners/technology-partners/google-cloud-platform/)

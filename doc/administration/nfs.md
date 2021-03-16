@@ -365,21 +365,26 @@ You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcac
 we expect the performance reduction will still be significant. As noted above, we strongly recommend upgrading to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
 
-### Avoid using AWS's Elastic File System (EFS)
+### Avoid using cloud-based file systems
 
-GitLab strongly recommends against using AWS Elastic File System (EFS).
-Our support team will not be able to assist on performance issues related to
-file system access.
+GitLab strongly recommends against using cloud-based file systems such as:
 
-Customers and users have reported that AWS EFS does not perform well for the GitLab
-use-case. Workloads where many small files are written in a serialized manner, like `git`,
-are not well-suited for EFS. EBS with an NFS server on top will perform much better.
+- AWS Elastic File System (EFS).
+- Google Cloud Filestore.
+- Azure Files.
 
-If you do choose to use EFS, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
+Our support team cannot assist with performance issues related to cloud-based file system access.
+
+Customers and users have reported that these file systems don't perform well for
+the file system access GitLab requires. Workloads where many small files are written in
+a serialized manner, like `git`, are not well suited to cloud-based file systems.
+
+If you do choose to use these, avoid storing GitLab log files (for example, those in `/var/log/gitlab`)
 there because this will also affect performance. We recommend that the log files be
 stored on a local volume.
 
-For more details on another person's experience with EFS, see this [Commit Brooklyn 2019 video](https://youtu.be/K6OS8WodRBQ?t=313).
+For more details on the experience of using a cloud-based file systems with GitLab,
+see this [Commit Brooklyn 2019 video](https://youtu.be/K6OS8WodRBQ?t=313).
 
 ### Avoid using CephFS and GlusterFS
 

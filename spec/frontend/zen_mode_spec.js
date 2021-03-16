@@ -13,8 +13,6 @@ describe('ZenMode', () => {
   let dropzoneForElementSpy;
   const fixtureName = 'snippets/show.html';
 
-  preloadFixtures(fixtureName);
-
   function enterZen() {
     $('.notes-form .js-zen-enter').click();
   }

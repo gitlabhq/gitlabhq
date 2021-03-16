@@ -133,8 +133,6 @@ describe('Filtered Search Visual Tokens', () => {
     const jsonFixtureName = 'labels/project_labels.json';
     const dummyEndpoint = '/dummy/endpoint';
 
-    preloadFixtures(jsonFixtureName);
-
     let labelData;
 
     beforeAll(() => {

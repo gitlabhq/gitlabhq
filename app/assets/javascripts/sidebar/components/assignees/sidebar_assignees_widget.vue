@@ -15,13 +15,12 @@ import { IssuableType } from '~/issue_show/constants';
 import { __, n__ } from '~/locale';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { assigneesQueries } from '~/sidebar/constants';
+import { assigneesQueries, ASSIGNEES_DEBOUNCE_DELAY } from '~/sidebar/constants';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 
 export const assigneesWidget = Vue.observable({
   updateAssignees: null,
 });
-
 export default {
   i18n: {
     unassigned: __('Unassigned'),
@@ -88,10 +87,10 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.issuable || data.project?.issuable;
+        return data.workspace?.issuable;
       },
       result({ data }) {
-        const issuable = data.issuable || data.project?.issuable;
+        const issuable = data.workspace?.issuable;
         if (issuable) {
           this.selected = this.moveCurrentUserToStart(cloneDeep(issuable.assignees.nodes));
         }
@@ -104,13 +103,24 @@ export default {
       query: searchUsers,
       variables() {
         return {
+          fullPath: this.fullPath,
           search: this.search,
         };
       },
       update(data) {
-        return data.users?.nodes || [];
+        const searchResults = data.workspace?.users?.nodes.map(({ user }) => user) || [];
+        const mergedSearchResults = this.participants.reduce((acc, current) => {
+          if (
+            !acc.some((user) => current.username === user.username) &&
+            (current.name.includes(this.search) || current.username.includes(this.search))
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, searchResults);
+        return mergedSearchResults;
       },
-      debounce: 250,
+      debounce: ASSIGNEES_DEBOUNCE_DELAY,
       skip() {
         return this.isSearchEmpty;
       },
@@ -185,7 +195,7 @@ export default {
       return this.selected.some(isCurrentUser) || this.participants.some(isCurrentUser);
     },
     noUsersFound() {
-      return !this.isSearchEmpty && this.unselectedFiltered.length === 0;
+      return !this.isSearchEmpty && this.searchUsers.length === 0;
     },
     showCurrentUser() {
       return !this.isCurrentUserInParticipants && (this.isSearchEmpty || this.isSearching);
@@ -218,7 +228,7 @@ export default {
           },
         })
         .then(({ data }) => {
-          this.$emit('assignees-updated', data);
+          this.$emit('assignees-updated', data.issuableSetAssignees.issuable.assignees.nodes);
           return data;
         })
         .catch(() => {
@@ -281,6 +291,9 @@ export default {
     collapseWidget() {
       this.$refs.toggle.collapse();
     },
+    showDivider(list) {
+      return list.length > 0 && this.isSearchEmpty;
+    },
   },
 };
 </script>
@@ -306,6 +319,7 @@ export default {
       <issuable-assignees
         :users="assignees"
         :issuable-type="issuableType"
+        class="gl-mt-2"
         @assign-self="assignSelf"
       />
     </template>
@@ -334,12 +348,14 @@ export default {
                 data-testid="unassign"
                 @click="selectAssignee()"
               >
-                <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'">{{
-                  $options.i18n.unassigned
-                }}</span></gl-dropdown-item
+                <span
+                  :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'"
+                  class="gl-font-weight-bold"
+                  >{{ $options.i18n.unassigned }}</span
+                ></gl-dropdown-item
               >
-              <gl-dropdown-divider data-testid="unassign-divider" />
             </template>
+            <gl-dropdown-divider v-if="showDivider(selectedFiltered)" />
             <gl-dropdown-item
               v-for="item in selectedFiltered"
               :key="item.id"
@@ -358,10 +374,10 @@ export default {
                 />
               </gl-avatar-link>
             </gl-dropdown-item>
-            <gl-dropdown-divider v-if="!selectedIsEmpty" data-testid="selected-user-divider" />
             <template v-if="showCurrentUser">
+              <gl-dropdown-divider />
               <gl-dropdown-item
-                data-testid="unselected-participant"
+                data-testid="current-user"
                 @click.stop="selectAssignee(currentUser)"
               >
                 <gl-avatar-link>
@@ -370,12 +386,12 @@ export default {
                     :label="currentUser.name"
                     :sub-label="currentUser.username"
                     :src="currentUser.avatarUrl"
-                    class="gl-align-items-center"
+                    class="gl-align-items-center gl-pl-6!"
                   />
                 </gl-avatar-link>
               </gl-dropdown-item>
-              <gl-dropdown-divider />
             </template>
+            <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
             <gl-dropdown-item
               v-for="unselectedUser in unselectedFiltered"
               :key="unselectedUser.id"
@@ -392,7 +408,7 @@ export default {
                 />
               </gl-avatar-link>
             </gl-dropdown-item>
-            <gl-dropdown-item v-if="noUsersFound && !isSearching">
+            <gl-dropdown-item v-if="noUsersFound && !isSearching" data-testid="empty-results">
               {{ __('No matching results') }}
             </gl-dropdown-item>
           </template>

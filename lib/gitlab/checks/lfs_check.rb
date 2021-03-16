@@ -13,6 +13,7 @@ module Gitlab
 
         return unless project.lfs_enabled?
         return if skip_lfs_integrity_check
+        return if deletion?
 
         logger.log_timed(LOG_MESSAGE) do
           lfs_check = Checks::LfsIntegrity.new(project, newrev, logger.time_left)

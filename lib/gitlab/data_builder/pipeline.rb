@@ -67,7 +67,8 @@ module Gitlab
           artifacts_file: {
             filename: build.artifacts_file&.filename,
             size: build.artifacts_size
-          }
+          },
+          environment: environment_hook_attrs(build)
         }
       end
 
@@ -78,6 +79,15 @@ module Gitlab
           active: runner.active?,
           is_shared: runner.instance_type?,
           tags: runner.tags&.map(&:name)
+        }
+      end
+
+      def environment_hook_attrs(build)
+        return unless build.has_environment?
+
+        {
+          name: build.expanded_environment_name,
+          action: build.environment_action
         }
       end
     end

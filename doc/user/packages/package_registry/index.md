@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Package Registry
+# Package Registry **(FREE)**
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
@@ -20,6 +20,8 @@ You can view packages for your project or group.
 1. Go to **Packages & Registries > Package Registry**.
 
 You can search, sort, and filter packages on this page.
+
+You can also find helpful code snippets for configuring your package manager or installing a given package.
 
 When you view packages in a group:
 

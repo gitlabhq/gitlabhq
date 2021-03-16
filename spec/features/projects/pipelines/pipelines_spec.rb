@@ -14,6 +14,7 @@ RSpec.describe 'Pipelines', :js do
       sign_in(user)
       stub_feature_flags(graphql_pipeline_details: false)
       stub_feature_flags(graphql_pipeline_details_users: false)
+      stub_feature_flags(new_pipelines_table: false)
 
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })
@@ -519,73 +520,56 @@ RSpec.describe 'Pipelines', :js do
         end
       end
 
-      shared_examples 'mini pipeline renders' do |ci_mini_pipeline_gl_dropdown_enabled|
-        context 'mini pipeline graph' do
+      context 'mini pipeline graph' do
+        let!(:build) do
+          create(:ci_build, :pending, pipeline: pipeline,
+                                      stage: 'build',
+                                      name: 'build')
+        end
+
+        dropdown_selector = '[data-testid="mini-pipeline-graph-dropdown"]'
+
+        before do
+          visit_project_pipelines
+        end
+
+        it 'renders a mini pipeline graph' do
+          expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
+          expect(page).to have_selector(dropdown_selector)
+        end
+
+        context 'when clicking a stage badge' do
+          it 'opens a dropdown' do
+            find(dropdown_selector).click
+
+            expect(page).to have_link build.name
+          end
+
+          it 'is possible to cancel pending build' do
+            find(dropdown_selector).click
+            find('.js-ci-action').click
+            wait_for_requests
+
+            expect(build.reload).to be_canceled
+          end
+        end
+
+        context 'for a failed pipeline' do
           let!(:build) do
-            create(:ci_build, :pending, pipeline: pipeline,
-                                        stage: 'build',
-                                        name: 'build')
+            create(:ci_build, :failed, pipeline: pipeline,
+                                      stage: 'build',
+                                      name: 'build')
           end
 
-          before do
-            stub_feature_flags(ci_mini_pipeline_gl_dropdown: ci_mini_pipeline_gl_dropdown_enabled)
-            visit_project_pipelines
-          end
+          it 'displays the failure reason' do
+            find(dropdown_selector).click
 
-          let_it_be(:dropdown_toggle_selector) do
-            if ci_mini_pipeline_gl_dropdown_enabled
-              '[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle'
-            else
-              '[data-testid="mini-pipeline-graph-dropdown-toggle"]'
-            end
-          end
-
-          it 'renders a mini pipeline graph' do
-            expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
-            expect(page).to have_selector(dropdown_toggle_selector)
-          end
-
-          context 'when clicking a stage badge' do
-            it 'opens a dropdown' do
-              find(dropdown_toggle_selector).click
-
-              expect(page).to have_link build.name
-            end
-
-            it 'is possible to cancel pending build' do
-              find(dropdown_toggle_selector).click
-              find('.js-ci-action').click
-              wait_for_requests
-
-              expect(build.reload).to be_canceled
-            end
-          end
-
-          context 'for a failed pipeline' do
-            let!(:build) do
-              create(:ci_build, :failed, pipeline: pipeline,
-                                        stage: 'build',
-                                        name: 'build')
-            end
-
-            it 'displays the failure reason' do
-              find(dropdown_toggle_selector).click
-
-              within('.js-builds-dropdown-list') do
-                build_element = page.find('.mini-pipeline-graph-dropdown-item')
-                expect(build_element['title']).to eq('build - failed - (unknown failure)')
-              end
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              expect(build_element['title']).to eq('build - failed - (unknown failure)')
             end
           end
         end
-      end
-
-      context 'with ci_mini_pipeline_gl_dropdown disabled' do
-        it_behaves_like "mini pipeline renders", false
-      end
-
-      context 'with ci_mini_pipeline_gl_dropdown enabled' do
-        it_behaves_like "mini pipeline renders", true
       end
 
       context 'with pagination' do

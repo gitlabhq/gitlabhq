@@ -7,11 +7,11 @@ module QA
         module Kubernetes
           class Index < Page::Base
             view 'app/views/clusters/clusters/_empty_state.html.haml' do
-              element :add_kubernetes_cluster_button, "link_to s_('ClusterIntegration|Integrate with a cluster certificate')" # rubocop:disable QA/ElementWithPattern
+              element :add_kubernetes_cluster_link
             end
 
             def add_kubernetes_cluster
-              click_on 'Connect cluster with certificate'
+              click_element :add_kubernetes_cluster_link
             end
 
             def has_cluster?(cluster)

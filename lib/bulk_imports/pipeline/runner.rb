@@ -8,7 +8,7 @@ module BulkImports
       MarkedAsFailedError = Class.new(StandardError)
 
       def run
-        raise MarkedAsFailedError if marked_as_failed?
+        raise MarkedAsFailedError if context.entity.failed?
 
         info(message: 'Pipeline started')
 
@@ -40,7 +40,7 @@ module BulkImports
       private # rubocop:disable Lint/UselessAccessModifier
 
       def run_pipeline_step(step, class_name = nil)
-        raise MarkedAsFailedError if marked_as_failed?
+        raise MarkedAsFailedError if context.entity.failed?
 
         info(pipeline_step: step, step_class: class_name)
 
@@ -62,24 +62,13 @@ module BulkImports
       end
 
       def mark_as_failed
-        warn(message: 'Pipeline failed', pipeline_class: pipeline)
+        warn(message: 'Pipeline failed')
 
         context.entity.fail_op!
       end
 
-      def marked_as_failed?
-        return true if context.entity.failed?
-
-        false
-      end
-
       def log_skip(extra = {})
-        log = {
-          message: 'Skipping due to failed pipeline status',
-          pipeline_class: pipeline
-        }.merge(extra)
-
-        info(log)
+        info({ message: 'Skipping due to failed pipeline status' }.merge(extra))
       end
 
       def log_import_failure(exception, step)
@@ -92,25 +81,39 @@ module BulkImports
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
         }
 
-        BulkImports::Failure.create(attributes)
-      end
+        error(
+          pipeline_step: step,
+          exception_class: exception.class.to_s,
+          exception_message: exception.message
+        )
 
-      def warn(extra = {})
-        logger.warn(log_params(extra))
+        BulkImports::Failure.create(attributes)
       end
 
       def info(extra = {})
         logger.info(log_params(extra))
       end
 
+      def warn(extra = {})
+        logger.warn(log_params(extra))
+      end
+
+      def error(extra = {})
+        logger.error(log_params(extra))
+      end
+
       def log_params(extra)
         defaults = {
+          bulk_import_id: context.bulk_import.id,
           bulk_import_entity_id: context.entity.id,
           bulk_import_entity_type: context.entity.source_type,
-          pipeline_class: pipeline
+          pipeline_class: pipeline,
+          context_extra: context.extra
         }
 
-        defaults.merge(extra).compact
+        defaults
+          .merge(extra)
+          .reject { |_key, value| value.blank? }
       end
 
       def logger

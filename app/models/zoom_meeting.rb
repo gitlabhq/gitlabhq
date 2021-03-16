@@ -10,7 +10,7 @@ class ZoomMeeting < ApplicationRecord
   validates :project, presence: true, unless: :importing?
   validates :issue, presence: true, unless: :importing?
 
-  validates :url, presence: true, length: { maximum: 255 }, zoom_url: true
+  validates :url, presence: true, length: { maximum: 255 }, 'gitlab/utils/zoom_url': true
   validates :issue, same_project_association: true, unless: :importing?
 
   enum issue_status: {

@@ -15,10 +15,9 @@ RSpec.describe Security::LicenseComplianceJobsFinder do
     let!(:container_scanning_build) { create(:ci_build, :container_scanning, pipeline: pipeline) }
     let!(:dast_build) { create(:ci_build, :dast, pipeline: pipeline) }
     let!(:license_scanning_build) { create(:ci_build, :license_scanning, pipeline: pipeline) }
-    let!(:license_management_build) { create(:ci_build, :license_management, pipeline: pipeline) }
 
-    it 'returns only the license_scanning jobs' do
-      is_expected.to contain_exactly(license_scanning_build, license_management_build)
+    it 'returns only the license_scanning job' do
+      is_expected.to contain_exactly(license_scanning_build)
     end
   end
 end

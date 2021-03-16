@@ -13,10 +13,5 @@ FactoryBot.define do
       ended_at { Time.now }
       payload_key { nil }
     end
-
-    trait :none do
-      status { nil }
-      started_at { nil }
-    end
   end
 end

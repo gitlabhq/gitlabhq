@@ -91,7 +91,7 @@ As part of publishing a package, semantic-release increases the version number i
 1. Navigate to **Project > Settings > Access Tokens**.
 1. Give the token a name, and select the `api` scope.
 1. Click **Create project access token** and copy its value.
-1. Navigate to **Project > Settings > CI / CD > Variables**.
+1. Navigate to **Project > Settings > CI/CD > Variables**.
 1. Click **Add Variable**.
 1. In the **Key** field, enter `GITLAB_TOKEN`. In the **Value** field, paste the token created above. Check the **Mask variable** option and click **Add variable**.
 
@@ -126,7 +126,7 @@ Test the pipeline by creating a commit with a message like:
 fix: testing patch releases
 ```
 
-Push the commit to `master`. The pipeline should create a new release (`v1.0.0`) on the project's **Releases** page and publish a new version of the package to the project's **Package Registry** page.
+Push the commit to the default branch. The pipeline should create a new release (`v1.0.0`) on the project's **Releases** page and publish a new version of the package to the project's **Package Registry** page.
 
 To create a minor release, use a commit message like:
 

@@ -31,7 +31,7 @@ module UserCalloutsHelper
     render 'shared/flash_user_callout', flash_type: flash_type, message: message, feature_name: feature_name
   end
 
-  def render_dashboard_gold_trial(user)
+  def render_dashboard_ultimate_trial(user)
   end
 
   def render_account_recovery_regular_check

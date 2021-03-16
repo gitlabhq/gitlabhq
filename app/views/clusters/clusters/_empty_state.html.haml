@@ -11,4 +11,4 @@
 
       - if clusterable.can_add_cluster?
         .gl-text-center
-          = link_to s_('ClusterIntegration|Integrate with a cluster certificate'), clusterable.new_path, class: 'gl-button btn btn-success'
+          = link_to s_('ClusterIntegration|Integrate with a cluster certificate'), clusterable.new_path, class: 'gl-button btn btn-confirm', data: { qa_selector: 'add_kubernetes_cluster_link' }

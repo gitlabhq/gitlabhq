@@ -19,4 +19,4 @@
             = (_("Changes affect new repositories only. If not specified, either the configured application-wide default or Git's default name %{branch_name_default} will be used.") % { branch_name_default: fallback_branch_name }).html_safe
 
       = f.hidden_field :redirect_target, value: "repository_settings"
-      = f.submit _('Save changes'), class: 'btn gl-button btn-success'
+      = f.submit _('Save changes'), class: 'btn gl-button btn-confirm'

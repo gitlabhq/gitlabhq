@@ -19,22 +19,6 @@ RSpec.describe NotificationsHelper do
     it { expect(notification_title(:global)).to match('Global') }
   end
 
-  describe '#notification_event_name' do
-    context 'for success_pipeline' do
-      it 'returns the custom name' do
-        expect(FastGettext).to receive(:cached_find).with('NotificationEvent|Successful pipeline')
-        expect(notification_event_name(:success_pipeline)).to eq('Successful pipeline')
-      end
-    end
-
-    context 'for everything else' do
-      it 'returns a humanized name' do
-        expect(FastGettext).to receive(:cached_find).with('NotificationEvent|Failed pipeline')
-        expect(notification_event_name(:failed_pipeline)).to eq('Failed pipeline')
-      end
-    end
-  end
-
   describe '#notification_icon_level' do
     let(:user) { create(:user) }
     let(:global_setting) { user.global_notification_setting }

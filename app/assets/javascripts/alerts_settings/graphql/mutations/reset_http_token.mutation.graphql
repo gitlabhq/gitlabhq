@@ -1,10 +1,10 @@
-#import "../fragments/integration_item.fragment.graphql"
+#import "../fragments/http_integration_item.fragment.graphql"
 
 mutation resetHttpIntegrationToken($id: ID!) {
   httpIntegrationResetToken(input: { id: $id }) {
     errors
     integration {
-      ...IntegrationItem
+      ...HttpIntegrationItem
     }
   }
 }

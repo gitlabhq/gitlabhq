@@ -1,21 +1,19 @@
 - if current_user
-  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3
-    %button.count-badge-button.btn.btn-default.btn-xs.d-flex.align-items-center.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }
+  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3.btn-group
+    %button.gl-button.btn.btn-default.btn-sm.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }
       - if current_user.starred?(@project)
         = sprite_icon('star', css_class: 'icon')
         %span.starred= s_('ProjectOverview|Unstar')
       - else
         = sprite_icon('star-o', css_class: 'icon')
         %span= s_('ProjectOverview|Star')
-    %span.star-count.count-badge-count.d-flex.align-items-center
-      = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'count' do
-        = @project.star_count
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm star-count count' do
+      = @project.star_count
 
 - else
-  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3
-    = link_to new_user_session_path, class: 'btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3.btn-group
+    = link_to new_user_session_path, class: 'gl-button btn btn-default btn-sm has-tooltip star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
       = sprite_icon('star-o', css_class: 'icon')
       %span= s_('ProjectOverview|Star')
-    %span.star-count.count-badge-count.d-flex.align-items-center
-      = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'count' do
-        = @project.star_count
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm star-count count' do
+      = @project.star_count

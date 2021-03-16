@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
   GlSprintf,
 } from '@gitlab/ui';
+import { capitalize } from 'lodash';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import {
@@ -77,6 +78,7 @@ export default {
     {
       key: 'type',
       label: __('Type'),
+      formatter: (value) => (value === typeSet.prometheus ? capitalize(value) : value),
     },
     {
       key: 'actions',
@@ -120,13 +122,16 @@ export default {
       const { category, action } = trackAlertIntegrationsViewsOptions;
       Tracking.event(category, action);
     },
-    setIntegrationToDelete({ name, id }) {
-      this.integrationToDelete.id = id;
-      this.integrationToDelete.name = name;
+    setIntegrationToDelete(integration) {
+      this.integrationToDelete = integration;
     },
     deleteIntegration() {
-      this.$emit('delete-integration', { id: this.integrationToDelete.id });
+      const { id, type } = this.integrationToDelete;
+      this.$emit('delete-integration', { id, type });
       this.integrationToDelete = { ...integrationToDeleteDefault };
+    },
+    editIntegration({ id, type }) {
+      this.$emit('edit-integration', { id, type });
     },
   },
 };
@@ -169,7 +174,7 @@ export default {
 
       <template #cell(actions)="{ item }">
         <gl-button-group class="gl-ml-3">
-          <gl-button icon="pencil" @click="$emit('edit-integration', { id: item.id })" />
+          <gl-button icon="settings" @click="editIntegration(item)" />
           <gl-button
             v-gl-modal.deleteIntegration
             :disabled="item.type === $options.typeSet.prometheus"

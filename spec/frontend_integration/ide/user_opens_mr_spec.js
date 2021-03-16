@@ -24,11 +24,11 @@ describe('IDE: User opens Merge Request', () => {
 
     vm = startWebIDE(container, { mrId });
 
-    await ideHelper.waitForTabToOpen(basename(changes[0].new_path));
-    await ideHelper.waitForMonacoEditor();
+    const editor = await ideHelper.waitForMonacoEditor();
+    await ideHelper.waitForEditorModelChange(editor);
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     vm.$destroy();
     vm = null;
   });

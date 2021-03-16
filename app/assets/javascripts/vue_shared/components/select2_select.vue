@@ -20,6 +20,12 @@ export default {
     },
   },
 
+  watch: {
+    value() {
+      $(this.$refs.dropdownInput).val(this.value).trigger('change');
+    },
+  },
+
   mounted() {
     loadCSSFile(gon.select2_css_path)
       .then(() => {

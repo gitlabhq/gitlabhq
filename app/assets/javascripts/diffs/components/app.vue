@@ -23,9 +23,7 @@ import {
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
-  EVT_VIEW_FILE_BY_FILE,
 } from '../constants';
-import eventHub from '../event_hub';
 
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
@@ -127,7 +125,7 @@ export default {
       required: false,
       default: '',
     },
-    mrReviews: {
+    rehydratedMrReviews: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -166,6 +164,7 @@ export default {
       'canMerge',
       'hasConflicts',
       'viewDiffsFileByFile',
+      'mrReviews',
     ]),
     ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
@@ -270,7 +269,7 @@ export default {
       showSuggestPopover: this.showSuggestPopover,
       viewDiffsFileByFile: fileByFile(this.fileByFileUserPreference),
       defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
-      mrReviews: this.mrReviews || {},
+      mrReviews: this.rehydratedMrReviews,
     });
 
     if (this.shouldShow) {
@@ -332,15 +331,10 @@ export default {
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
-      eventHub.$on(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
     },
     unsubscribeFromEvents() {
-      eventHub.$off(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
-    },
-    fileByFileListener({ setting } = {}) {
-      this.setFileByFile({ fileByFile: setting });
     },
     navigateToDiffFileNumber(number) {
       this.navigateToDiffFileIndex(number - 1);
@@ -520,7 +514,7 @@ export default {
               v-for="(file, index) in diffs"
               :key="file.newPath"
               :file="file"
-              :reviewed="fileReviews[index]"
+              :reviewed="fileReviews[file.id]"
               :is-first-file="index === 0"
               :is-last-file="index === diffFilesLength - 1"
               :help-page-path="helpPagePath"

@@ -23,6 +23,22 @@ RSpec.describe 'aggregated metrics' do
     end
   end
 
+  RSpec::Matchers.define :have_known_time_frame do
+    allowed_time_frames = [
+      Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME,
+      Gitlab::Utils::UsageData::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME,
+      Gitlab::Utils::UsageData::SEVEN_DAYS_TIME_FRAME_NAME
+    ]
+
+    match do |aggregate|
+      (aggregate[:time_frame] - allowed_time_frames).empty?
+    end
+
+    failure_message do |aggregate|
+      "Aggregate with name: `#{aggregate[:name]}` uses not allowed time_frame`#{aggregate[:time_frame] - allowed_time_frames}`"
+    end
+  end
+
   let_it_be(:known_events) do
     Gitlab::UsageDataCounters::HLLRedisCounter.known_events
   end
@@ -38,9 +54,17 @@ RSpec.describe 'aggregated metrics' do
       expect(aggregated_metrics).to all has_known_source
     end
 
+    it 'all aggregated metrics has known source' do
+      expect(aggregated_metrics).to all have_known_time_frame
+    end
+
     aggregated_metrics&.select { |agg| agg[:source] == Gitlab::Usage::Metrics::Aggregates::REDIS_SOURCE }&.each do |aggregate|
       context "for #{aggregate[:name]} aggregate of #{aggregate[:events].join(' ')}" do
         let_it_be(:events_records) { known_events.select { |event| aggregate[:events].include?(event[:name]) } }
+
+        it "does not include 'all' time frame for Redis sourced aggregate" do
+          expect(aggregate[:time_frame]).not_to include(Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME)
+        end
 
         it "only refers to known events" do
           expect(aggregate[:events]).to all be_known_event

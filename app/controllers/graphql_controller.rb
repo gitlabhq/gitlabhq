@@ -4,6 +4,8 @@ class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
 
+  WHITELIST_HEADER = 'HTTP_X_GITLAB_QUERY_WHITELIST_ISSUE'
+
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
   # We can't enable this for anonymous users because that would cause users using
@@ -21,6 +23,7 @@ class GraphqlController < ApplicationController
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
+  before_action :whitelist_query!
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -59,6 +62,14 @@ class GraphqlController < ApplicationController
 
   private
 
+  # Tests may mark some queries as exempt from query limits
+  def whitelist_query!
+    whitelist_issue = request.headers[WHITELIST_HEADER]
+    return unless whitelist_issue
+
+    Gitlab::QueryLimiting.whitelist(whitelist_issue)
+  end
+
   def set_user_last_activity
     return unless current_user
 
@@ -66,7 +77,8 @@ class GraphqlController < ApplicationController
   end
 
   def track_vs_code_usage
-    Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter.track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+    Gitlab::UsageDataCounters::VSCodeExtensionActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 
   def execute_multiplex

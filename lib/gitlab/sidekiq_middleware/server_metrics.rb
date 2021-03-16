@@ -34,7 +34,8 @@ module Gitlab
         monotonic_time_start = Gitlab::Metrics::System.monotonic_time
         job_thread_cputime_start = get_thread_cputime
         begin
-          yield
+          transaction = Gitlab::Metrics::BackgroundTransaction.new
+          transaction.run { yield }
           job_succeeded = true
         ensure
           monotonic_time_end = Gitlab::Metrics::System.monotonic_time

@@ -9,6 +9,7 @@ RSpec.describe Projects::IssuesController do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user, reload: true) { create(:user) }
   let(:issue) { create(:issue, project: project) }
+  let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   describe "GET #index" do
     context 'external issue tracker' do
@@ -613,12 +614,15 @@ RSpec.describe Projects::IssuesController do
         context 'when allow_possible_spam feature flag is false' do
           before do
             stub_feature_flags(allow_possible_spam: false)
+            expect(controller).to(receive(:spam_action_response_fields).with(issue)) do
+              spam_action_response_fields
+            end
           end
 
-          it 'renders json with recaptcha_html' do
+          it 'renders json with spam_action_response_fields' do
             subject
 
-            expect(json_response).to have_key('recaptcha_html')
+            expect(json_response).to eq(spam_action_response_fields)
           end
         end
 
@@ -948,12 +952,17 @@ RSpec.describe Projects::IssuesController do
               context 'renders properly' do
                 render_views
 
-                it 'renders recaptcha_html json response' do
+                before do
+                  expect(controller).to(receive(:spam_action_response_fields).with(issue)) do
+                    spam_action_response_fields
+                  end
+                end
+
+                it 'renders spam_action_response_fields json response' do
                   update_issue
 
-                  expect(response).to have_gitlab_http_status(:ok)
-                  expect(json_response).to have_key('recaptcha_html')
-                  expect(json_response['recaptcha_html']).not_to be_empty
+                  expect(response).to have_gitlab_http_status(:conflict)
+                  expect(json_response).to eq(spam_action_response_fields)
                 end
               end
             end

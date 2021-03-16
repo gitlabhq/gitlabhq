@@ -1,9 +1,9 @@
-import { GlSprintf, GlButton } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import {
-  DETAILS_PAGE_TITLE,
   UNSCHEDULED_STATUS,
   SCHEDULED_STATUS,
   ONGOING_STATUS,
@@ -13,6 +13,8 @@ import {
   CLEANUP_SCHEDULED_TOOLTIP,
   CLEANUP_ONGOING_TOOLTIP,
   CLEANUP_UNFINISHED_TOOLTIP,
+  ROOT_IMAGE_TEXT,
+  ROOT_IMAGE_TOOLTIP,
 } from '~/registry/explorer/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
@@ -41,6 +43,7 @@ describe('Details Header', () => {
   const findTagsCount = () => findByTestId('tags-count');
   const findCleanup = () => findByTestId('cleanup');
   const findDeleteButton = () => wrapper.find(GlButton);
+  const findInfoIcon = () => wrapper.find(GlIcon);
 
   const waitForMetadataItems = async () => {
     // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
@@ -51,8 +54,10 @@ describe('Details Header', () => {
   const mountComponent = (propsData = { image: defaultImage }) => {
     wrapper = shallowMount(component, {
       propsData,
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
       stubs: {
-        GlSprintf,
         TitleArea,
       },
     });
@@ -62,15 +67,41 @@ describe('Details Header', () => {
     wrapper.destroy();
     wrapper = null;
   });
+  describe('image name', () => {
+    describe('missing image name', () => {
+      it('root image ', () => {
+        mountComponent({ image: { ...defaultImage, name: '' } });
 
-  it('has the correct title ', () => {
-    mountComponent({ image: { ...defaultImage, name: '' } });
-    expect(findTitle().text()).toMatchInterpolatedText(DETAILS_PAGE_TITLE);
-  });
+        expect(findTitle().text()).toBe(ROOT_IMAGE_TEXT);
+      });
 
-  it('shows imageName in the title', () => {
-    mountComponent();
-    expect(findTitle().text()).toContain('foo');
+      it('has an icon', () => {
+        mountComponent({ image: { ...defaultImage, name: '' } });
+
+        expect(findInfoIcon().exists()).toBe(true);
+        expect(findInfoIcon().props('name')).toBe('information-o');
+      });
+
+      it('has a tooltip', () => {
+        mountComponent({ image: { ...defaultImage, name: '' } });
+
+        const tooltip = getBinding(findInfoIcon().element, 'gl-tooltip');
+        expect(tooltip.value).toBe(ROOT_IMAGE_TOOLTIP);
+      });
+    });
+
+    describe('with image name present', () => {
+      it('shows image.name ', () => {
+        mountComponent();
+        expect(findTitle().text()).toContain('foo');
+      });
+
+      it('has no icon', () => {
+        mountComponent();
+
+        expect(findInfoIcon().exists()).toBe(false);
+      });
+    });
   });
 
   describe('delete button', () => {

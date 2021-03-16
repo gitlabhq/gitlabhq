@@ -180,6 +180,8 @@ RSpec.configure do |config|
   end
 
   if ENV['FLAKY_RSPEC_GENERATE_REPORT']
+    require_relative '../tooling/rspec_flaky/listener'
+
     config.reporter.register_listener(
       RspecFlaky::Listener.new,
       :example_passed,
@@ -244,13 +246,20 @@ RSpec.configure do |config|
 
       stub_feature_flags(unified_diff_components: false)
 
+      # Disable this feature flag as we iterate and
+      # refactor filtered search to use gitlab ui
+      # components to meet feature parody. More details found
+      # https://gitlab.com/groups/gitlab-org/-/epics/5501
+      stub_feature_flags(boards_filtered_search: false)
+
+      # The following `vue_issues_list` stub can be removed once the
+      # Vue issues page has feature parity with the current Haml page
+      stub_feature_flags(vue_issues_list: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
     end
-
-    # Enable Marginalia feature for all specs in the test suite.
-    Gitlab::Marginalia.enabled = true
 
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:

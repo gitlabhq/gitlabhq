@@ -2,11 +2,10 @@
 
 module Analytics
   module InstanceStatistics
+    # This worker will be removed in 14.0
     class CountJobTriggerWorker
       include ApplicationWorker
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
-
-      DEFAULT_DELAY = 3.minutes.freeze
 
       feature_category :devops_reports
       urgency :low
@@ -14,19 +13,8 @@ module Analytics
       idempotent!
 
       def perform
-        recorded_at = Time.zone.now
-
-        worker_arguments = Gitlab::Analytics::InstanceStatistics::WorkersArgumentBuilder.new(
-          measurement_identifiers: ::Analytics::InstanceStatistics::Measurement.measurement_identifier_values,
-          recorded_at: recorded_at
-        ).execute
-
-        perform_in = DEFAULT_DELAY.minutes.from_now
-        worker_arguments.each do |args|
-          CounterJobWorker.perform_in(perform_in, *args)
-
-          perform_in += DEFAULT_DELAY
-        end
+        # Delegate to the new worker
+        Analytics::UsageTrends::CountJobTriggerWorker.new.perform
       end
     end
   end

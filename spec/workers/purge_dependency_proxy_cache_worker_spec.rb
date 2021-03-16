@@ -26,18 +26,24 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
     end
 
     context 'an admin user' do
-      include_examples 'an idempotent worker' do
-        let(:job_args) { [user.id, group_id] }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        include_examples 'an idempotent worker' do
+          let(:job_args) { [user.id, group_id] }
 
-        it 'deletes the blobs and returns ok', :aggregate_failures do
-          expect(group.dependency_proxy_blobs.size).to eq(1)
-          expect(group.dependency_proxy_manifests.size).to eq(1)
+          it 'deletes the blobs and returns ok', :aggregate_failures do
+            expect(group.dependency_proxy_blobs.size).to eq(1)
+            expect(group.dependency_proxy_manifests.size).to eq(1)
 
-          subject
+            subject
 
-          expect(group.dependency_proxy_blobs.size).to eq(0)
-          expect(group.dependency_proxy_manifests.size).to eq(0)
+            expect(group.dependency_proxy_blobs.size).to eq(0)
+            expect(group.dependency_proxy_manifests.size).to eq(0)
+          end
         end
+      end
+
+      context 'when admin mode is disabled' do
+        it_behaves_like 'returns nil'
       end
     end
 

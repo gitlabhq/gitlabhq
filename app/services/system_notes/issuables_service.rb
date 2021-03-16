@@ -125,8 +125,8 @@ module SystemNotes
 
       old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 
-      marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs, mode: :deletion)
-      marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs, mode: :addition)
+      marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs)
+      marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs)
 
       body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
 
@@ -352,6 +352,10 @@ module SystemNotes
     def mark_canonical_issue_of_duplicate(duplicate_issue)
       body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
       create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+    end
+
+    def add_email_participants(body)
+      create_note(NoteSummary.new(noteable, project, author, body))
     end
 
     def discussion_lock

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
 RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware do

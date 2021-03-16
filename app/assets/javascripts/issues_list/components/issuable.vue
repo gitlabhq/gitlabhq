@@ -25,16 +25,16 @@ import {
   newDateAsLocaleTime,
 } from '~/lib/utils/datetime_utility';
 import { convertToCamelCase } from '~/lib/utils/text_utility';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, setUrlFragment, isExternal } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
 export default {
   i18n: {
-    openedAgo: __('opened %{timeAgoString} by %{user}'),
-    openedAgoJira: __('opened %{timeAgoString} by %{user} in Jira'),
-    openedAgoServiceDesk: __('opened %{timeAgoString} by %{email} via %{user}'),
+    openedAgo: __('created %{timeAgoString} by %{user}'),
+    openedAgoJira: __('created %{timeAgoString} by %{user} in Jira'),
+    openedAgoServiceDesk: __('created %{timeAgoString} by %{email} via %{user}'),
   },
   components: {
     IssueAssignees,
@@ -102,8 +102,14 @@ export default {
     isJiraIssue() {
       return this.issuable.external_tracker === 'jira';
     },
+    webUrl() {
+      return this.issuable.gitlab_web_url || this.issuable.web_url;
+    },
+    isIssuableUrlExternal() {
+      return isExternal(this.webUrl);
+    },
     linkTarget() {
-      return this.isJiraIssue ? '_blank' : null;
+      return this.isIssuableUrlExternal ? '_blank' : null;
     },
     issueCreatedToday() {
       return getDayDifference(new Date(this.issuable.created_at), new Date()) < 1;
@@ -188,7 +194,7 @@ export default {
           value: this.issuable.blocking_issues_count,
           title: __('Blocking issues'),
           dataTestId: 'blocking-issues',
-          href: `${this.issuable.web_url}#related-issues`,
+          href: setUrlFragment(this.webUrl, 'related-issues'),
           icon: 'issue-block',
         },
         {
@@ -197,7 +203,7 @@ export default {
           value: this.issuable.user_notes_count,
           title: __('Comments'),
           dataTestId: 'notes-count',
-          href: `${this.issuable.web_url}#notes`,
+          href: setUrlFragment(this.webUrl, 'notes'),
           class: { 'no-comments': !this.issuable.user_notes_count, 'issuable-comments': true },
           icon: 'comments',
         },
@@ -252,7 +258,7 @@ export default {
     :class="{ today: issueCreatedToday, closed: isClosed }"
     :data-id="issuable.id"
     :data-labels="labelIdsString"
-    :data-url="issuable.web_url"
+    :data-url="webUrl"
     data-qa-selector="issue_container"
     :data-qa-issue-title="issuable.title"
   >
@@ -284,13 +290,14 @@ export default {
               :aria-label="$options.confidentialTooltipText"
             />
             <gl-link
-              :href="issuable.web_url"
+              :href="webUrl"
               :target="linkTarget"
               data-testid="issuable-title"
               data-qa-selector="issue_link"
-              >{{ issuable.title
-              }}<gl-icon
-                v-if="isJiraIssue"
+            >
+              {{ issuable.title }}
+              <gl-icon
+                v-if="isIssuableUrlExternal"
                 name="external-link"
                 class="gl-vertical-align-text-bottom gl-ml-2"
               />

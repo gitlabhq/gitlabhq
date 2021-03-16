@@ -1,7 +1,17 @@
 import { TEST_HOST } from 'helpers/test_constants';
+import {
+  DEFAULT_PERMISSIONS,
+  PERMISSION_PUSH_CODE,
+  PUSH_RULE_REJECT_UNSIGNED_COMMITS,
+} from '~/ide/constants';
+import {
+  MSG_CANNOT_PUSH_CODE,
+  MSG_CANNOT_PUSH_CODE_SHORT,
+  MSG_CANNOT_PUSH_UNSIGNED,
+  MSG_CANNOT_PUSH_UNSIGNED_SHORT,
+} from '~/ide/messages';
 import { createStore } from '~/ide/stores';
 import * as getters from '~/ide/stores/getters';
-import { DEFAULT_PERMISSIONS } from '../../../../app/assets/javascripts/ide/constants';
 import { file } from '../helpers';
 
 const TEST_PROJECT_ID = 'test_project';
@@ -385,22 +395,23 @@ describe('IDE store getters', () => {
     );
   });
 
-  describe('findProjectPermissions', () => {
-    it('returns false if project not found', () => {
-      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toEqual(
-        DEFAULT_PERMISSIONS,
-      );
+  describe.each`
+    getterName                  | projectField         | defaultValue
+    ${'findProjectPermissions'} | ${'userPermissions'} | ${DEFAULT_PERMISSIONS}
+    ${'findPushRules'}          | ${'pushRules'}       | ${{}}
+  `('$getterName', ({ getterName, projectField, defaultValue }) => {
+    const callGetter = (...args) => localStore.getters[getterName](...args);
+
+    it('returns default if project not found', () => {
+      expect(callGetter(TEST_PROJECT_ID)).toEqual(defaultValue);
     });
 
-    it('finds permission in given project', () => {
-      const userPermissions = {
-        readMergeRequest: true,
-        createMergeRequestsIn: false,
-      };
+    it('finds field in given project', () => {
+      const obj = { test: 'foo' };
 
-      localState.projects[TEST_PROJECT_ID] = { userPermissions };
+      localState.projects[TEST_PROJECT_ID] = { [projectField]: obj };
 
-      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toBe(userPermissions);
+      expect(callGetter(TEST_PROJECT_ID)).toBe(obj);
     });
   });
 
@@ -408,7 +419,6 @@ describe('IDE store getters', () => {
     getterName                  | permissionKey
     ${'canReadMergeRequests'}   | ${'readMergeRequest'}
     ${'canCreateMergeRequests'} | ${'createMergeRequestIn'}
-    ${'canPushCode'}            | ${'pushCode'}
   `('$getterName', ({ getterName, permissionKey }) => {
     it.each([true, false])('finds permission for current project (%s)', (val) => {
       localState.projects[TEST_PROJECT_ID] = {
@@ -419,6 +429,38 @@ describe('IDE store getters', () => {
       localState.currentProjectId = TEST_PROJECT_ID;
 
       expect(localStore.getters[getterName]).toBe(val);
+    });
+  });
+
+  describe('canPushCodeStatus', () => {
+    it.each`
+      pushCode | rejectUnsignedCommits | expected
+      ${true}  | ${false}              | ${{ isAllowed: true, message: '', messageShort: '' }}
+      ${false} | ${false}              | ${{ isAllowed: false, message: MSG_CANNOT_PUSH_CODE, messageShort: MSG_CANNOT_PUSH_CODE_SHORT }}
+      ${false} | ${true}               | ${{ isAllowed: false, message: MSG_CANNOT_PUSH_UNSIGNED, messageShort: MSG_CANNOT_PUSH_UNSIGNED_SHORT }}
+    `(
+      'with pushCode="$pushCode" and rejectUnsignedCommits="$rejectUnsignedCommits"',
+      ({ pushCode, rejectUnsignedCommits, expected }) => {
+        localState.projects[TEST_PROJECT_ID] = {
+          pushRules: {
+            [PUSH_RULE_REJECT_UNSIGNED_COMMITS]: rejectUnsignedCommits,
+          },
+          userPermissions: {
+            [PERMISSION_PUSH_CODE]: pushCode,
+          },
+        };
+        localState.currentProjectId = TEST_PROJECT_ID;
+
+        expect(localStore.getters.canPushCodeStatus).toEqual(expected);
+      },
+    );
+  });
+
+  describe('canPushCode', () => {
+    it.each([true, false])('with canPushCodeStatus.isAllowed = $s', (isAllowed) => {
+      const canPushCodeStatus = { isAllowed };
+
+      expect(getters.canPushCode({}, { canPushCodeStatus })).toBe(isAllowed);
     });
   });
 

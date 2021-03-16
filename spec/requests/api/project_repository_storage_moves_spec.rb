@@ -7,6 +7,6 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
     let_it_be(:container) { create(:project, :repository).tap { |project| project.track_project_repository } }
     let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, container: container) }
     let(:repository_storage_move_factory) { :project_repository_storage_move }
-    let(:bulk_worker_klass) { ProjectScheduleBulkRepositoryShardMovesWorker }
+    let(:bulk_worker_klass) { Projects::ScheduleBulkRepositoryShardMovesWorker }
   end
 end

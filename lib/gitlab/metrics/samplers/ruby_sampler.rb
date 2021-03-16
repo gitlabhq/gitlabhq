@@ -7,7 +7,7 @@ module Gitlab
     module Samplers
       class RubySampler < BaseSampler
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 60
-        GC_REPORT_BUCKETS = [0.005, 0.01, 0.02, 0.04, 0.07, 0.1, 0.5].freeze
+        GC_REPORT_BUCKETS = [0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 1].freeze
 
         def initialize(*)
           GC::Profiler.clear

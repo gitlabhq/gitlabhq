@@ -53,6 +53,10 @@ export const mockIssuable = {
   },
   assignees: [mockAuthor],
   userDiscussionsCount: 2,
+  taskCompletionStatus: {
+    count: 2,
+    completedCount: 1,
+  },
 };
 
 export const mockIssuables = [

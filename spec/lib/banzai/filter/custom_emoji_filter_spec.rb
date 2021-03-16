@@ -10,6 +10,10 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
   let_it_be(:custom_emoji) { create(:custom_emoji, name: 'tanuki', group: group) }
   let_it_be(:custom_emoji2) { create(:custom_emoji, name: 'happy_tanuki', group: group, file: 'https://foo.bar/happy.png') }
 
+  it_behaves_like 'emoji filter' do
+    let(:emoji_name) { ':tanuki:' }
+  end
+
   it 'replaces supported name custom emoji' do
     doc = filter('<p>:tanuki:</p>', project: project)
 
@@ -17,23 +21,10 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
     expect(doc.css('gl-emoji img').size).to eq 1
   end
 
-  it 'ignores non existent custom emoji' do
-    exp = act = '<p>:foo:</p>'
-    doc = filter(act)
-
-    expect(doc.to_html).to match Regexp.escape(exp)
-  end
-
   it 'correctly uses the custom emoji URL' do
     doc = filter('<p>:tanuki:</p>')
 
     expect(doc.css('img').first.attributes['src'].value).to eq(custom_emoji.file)
-  end
-
-  it 'matches with adjacent text' do
-    doc = filter('tanuki (:tanuki:)')
-
-    expect(doc.css('img').size).to eq 1
   end
 
   it 'matches multiple same custom emoji' do
@@ -52,18 +43,6 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
     doc = filter('tanuki:tanuki:')
 
     expect(doc.css('img').size).to be 0
-  end
-
-  it 'keeps whitespace intact' do
-    doc = filter('This deserves a :tanuki:, big time.')
-
-    expect(doc.to_html).to match(/^This deserves a <gl-emoji.+>, big time\.\z/)
-  end
-
-  it 'does not match emoji in a string' do
-    doc = filter("'2a00:tanuki:100::1'")
-
-    expect(doc.css('gl-emoji').size).to eq 0
   end
 
   it 'does not do N+1 query' do

@@ -2,6 +2,9 @@
 
 module Import
   class GithubService < Import::BaseService
+    include ActiveSupport::NumberHelper
+    include Gitlab::Utils::StrongMemoize
+
     attr_accessor :client
     attr_reader :params, :current_user
 
@@ -12,6 +15,10 @@ module Import
 
       unless authorized?
         return error(_('This namespace has already been taken! Please choose another one.'), :unprocessable_entity)
+      end
+
+      if oversized?
+        return error(oversize_error_message, :unprocessable_entity)
       end
 
       project = create_project(access_params, provider)
@@ -32,7 +39,8 @@ module Import
         target_namespace,
         current_user,
         type: provider,
-        **access_params).execute(extra_project_attrs)
+        **access_params
+      ).execute(extra_project_attrs)
     end
 
     def repo
@@ -53,6 +61,30 @@ module Import
 
     def extra_project_attrs
       {}
+    end
+
+    def oversized?
+      repository_size_limit > 0 && repo.size > repository_size_limit
+    end
+
+    def oversize_error_message
+      _('"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
+        repository_name: repo.name,
+        repository_size: number_to_human_size(repo.size),
+        limit: number_to_human_size(repository_size_limit)
+      }
+    end
+
+    def repository_size_limit
+      strong_memoize :repository_size_limit do
+        namespace_limit = target_namespace.repository_size_limit.to_i
+
+        if namespace_limit > 0
+          namespace_limit
+        else
+          Gitlab::CurrentSettings.repository_size_limit.to_i
+        end
+      end
     end
 
     def authorized?

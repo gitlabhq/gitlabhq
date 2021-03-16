@@ -1,3 +1,3 @@
 export default () => ({
-  errorMessage: undefined,
+  alert: undefined,
 });

@@ -47,7 +47,7 @@ class UnifyCircuitService < ChatNotificationService
   def notify(message, opts)
     response = Gitlab::HTTP.post(webhook, body: {
       subject: message.project_name,
-      text: message.pretext,
+      text: message.summary,
       markdown: true
     }.to_json)
 

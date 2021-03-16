@@ -6,11 +6,13 @@ import IssuableBody from '~/issuable_show/components/issuable_body.vue';
 import IssuableDescription from '~/issuable_show/components/issuable_description.vue';
 import IssuableEditForm from '~/issuable_show/components/issuable_edit_form.vue';
 import IssuableTitle from '~/issuable_show/components/issuable_title.vue';
+import TaskList from '~/task_list';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
 jest.mock('~/autosave');
+jest.mock('~/flash');
 
 const issuableBodyProps = {
   ...mockIssuableShowProps,
@@ -76,6 +78,75 @@ describe('IssuableBody', () => {
     describe('updatedBy', () => {
       it('returns value of `issuable.updatedBy`', () => {
         expect(wrapper.vm.updatedBy).toBe(mockIssuable.updatedBy);
+      });
+    });
+  });
+
+  describe('watchers', () => {
+    describe('editFormVisible', () => {
+      it('calls initTaskList in nextTick', async () => {
+        jest.spyOn(wrapper.vm, 'initTaskList');
+        wrapper.setProps({
+          editFormVisible: true,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        wrapper.setProps({
+          editFormVisible: false,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.initTaskList).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('mounted', () => {
+    it('initializes TaskList instance when enabledEdit and enableTaskList props are true', () => {
+      expect(wrapper.vm.taskList instanceof TaskList).toBe(true);
+      expect(wrapper.vm.taskList).toMatchObject({
+        dataType: 'issue',
+        fieldName: 'description',
+        lockVersion: issuableBodyProps.taskListLockVersion,
+        selector: '.js-detail-page-description',
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      });
+    });
+
+    it('does not initialize TaskList instance when either enabledEdit or enableTaskList prop is false', () => {
+      const wrapperNoTaskList = createComponent({
+        ...issuableBodyProps,
+        enableTaskList: false,
+      });
+
+      expect(wrapperNoTaskList.vm.taskList).not.toBeDefined();
+
+      wrapperNoTaskList.destroy();
+    });
+  });
+
+  describe('methods', () => {
+    describe('handleTaskListUpdateSuccess', () => {
+      it('emits `task-list-update-success` event on component', () => {
+        const updatedIssuable = {
+          foo: 'bar',
+        };
+
+        wrapper.vm.handleTaskListUpdateSuccess(updatedIssuable);
+
+        expect(wrapper.emitted('task-list-update-success')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-success')[0]).toEqual([updatedIssuable]);
+      });
+    });
+
+    describe('handleTaskListUpdateFailure', () => {
+      it('emits `task-list-update-failure` event on component', () => {
+        wrapper.vm.handleTaskListUpdateFailure();
+
+        expect(wrapper.emitted('task-list-update-failure')).toBeTruthy();
       });
     });
   });

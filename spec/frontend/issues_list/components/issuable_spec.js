@@ -1,4 +1,4 @@
-import { GlSprintf, GlLabel, GlIcon } from '@gitlab/ui';
+import { GlSprintf, GlLabel, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
@@ -31,6 +31,7 @@ const TEST_MILESTONE = {
 };
 const TEXT_CLOSED = 'CLOSED';
 const TEST_META_COUNT = 100;
+const MOCK_GITLAB_URL = 'http://0.0.0.0:3000';
 
 describe('Issuable component', () => {
   let issuable;
@@ -54,6 +55,7 @@ describe('Issuable component', () => {
 
   beforeEach(() => {
     issuable = { ...simpleIssue };
+    gon.gitlab_url = MOCK_GITLAB_URL;
   });
 
   afterEach(() => {
@@ -190,15 +192,42 @@ describe('Issuable component', () => {
       expect(wrapper.classes('closed')).toBe(false);
     });
 
-    it('renders fuzzy opened date and author', () => {
+    it('renders fuzzy created date and author', () => {
       expect(trimText(findOpenedAgoContainer().text())).toContain(
-        `opened 1 month ago by ${TEST_USER_NAME}`,
+        `created 1 month ago by ${TEST_USER_NAME}`,
       );
     });
 
     it('renders no comments', () => {
       expect(findNotes().classes('no-comments')).toBe(true);
     });
+
+    it.each`
+      gitlabWebUrl           | webUrl                        | expectedHref                  | expectedTarget | isExternal
+      ${undefined}           | ${`${MOCK_GITLAB_URL}/issue`} | ${`${MOCK_GITLAB_URL}/issue`} | ${undefined}   | ${false}
+      ${undefined}           | ${'https://jira.com/issue'}   | ${'https://jira.com/issue'}   | ${'_blank'}    | ${true}
+      ${'/gitlab-org/issue'} | ${'https://jira.com/issue'}   | ${'/gitlab-org/issue'}        | ${undefined}   | ${false}
+    `(
+      'renders issuable title correctly when `gitlabWebUrl` is `$gitlabWebUrl` and webUrl is `$webUrl`',
+      async ({ webUrl, gitlabWebUrl, expectedHref, expectedTarget, isExternal }) => {
+        factory({
+          issuable: {
+            ...issuable,
+            web_url: webUrl,
+            gitlab_web_url: gitlabWebUrl,
+          },
+        });
+
+        const titleEl = findIssuableTitle();
+
+        expect(titleEl.exists()).toBe(true);
+        expect(titleEl.find(GlLink).attributes('href')).toBe(expectedHref);
+        expect(titleEl.find(GlLink).attributes('target')).toBe(expectedTarget);
+        expect(titleEl.find(GlLink).text()).toBe(issuable.title);
+
+        expect(titleEl.find(GlIcon).exists()).toBe(isExternal);
+      },
+    );
   });
 
   describe('with confidential issuable', () => {

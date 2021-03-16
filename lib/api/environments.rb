@@ -75,6 +75,33 @@ module API
         end
       end
 
+      desc "Delete multiple stopped review apps" do
+        detail "Remove multiple stopped review environments older than a specific age"
+        success Entities::Environment
+      end
+      params do
+        optional :before, type: Time, desc: "The timestamp before which environments can be deleted. Defaults to 30 days ago.", default: -> { 30.days.ago }
+        optional :limit, type: Integer, desc: "Maximum number of environments to delete. Defaults to 100.", default: 100, values: 1..1000
+        optional :dry_run, type: Boolean, desc: "If set, perform a dry run where no actual deletions will be performed. Defaults to true.", default: true
+      end
+      delete ":id/environments/review_apps" do
+        authorize! :read_environment, user_project
+
+        result = ::Environments::ScheduleToDeleteReviewAppsService.new(user_project, current_user, params).execute
+
+        response = {
+          scheduled_entries: Entities::Environment.represent(result.scheduled_entries),
+          unprocessable_entries: Entities::Environment.represent(result.unprocessable_entries)
+        }
+
+        if result.success?
+          status result.status
+          present response, current_user: current_user
+        else
+          render_api_error!(response.merge!(message: result.error_message), result.status)
+        end
+      end
+
       desc 'Deletes an existing environment' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Environment

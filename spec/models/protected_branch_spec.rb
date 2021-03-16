@@ -207,6 +207,28 @@ RSpec.describe ProtectedBranch do
     end
   end
 
+  describe "#allow_force_push?" do
+    context "when the attr allow_force_push is true" do
+      let(:subject_branch) { create(:protected_branch, allow_force_push: true, name: "foo") }
+
+      it "returns true" do
+        project = subject_branch.project
+
+        expect(described_class.allow_force_push?(project, "foo")).to eq(true)
+      end
+    end
+
+    context "when the attr allow_force_push is false" do
+      let(:subject_branch) { create(:protected_branch, allow_force_push: false, name: "foo") }
+
+      it "returns false" do
+        project = subject_branch.project
+
+        expect(described_class.allow_force_push?(project, "foo")).to eq(false)
+      end
+    end
+  end
+
   describe '#any_protected?' do
     context 'existing project' do
       let(:project) { create(:project, :repository) }

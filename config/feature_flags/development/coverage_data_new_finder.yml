@@ -1,8 +1,0 @@
----
-name: coverage_data_new_finder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53670
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/301093
-milestone: '13.9'
-type: development
-group: group::testing
-default_enabled: false

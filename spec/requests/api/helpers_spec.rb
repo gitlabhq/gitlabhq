@@ -314,14 +314,13 @@ RSpec.describe API::Helpers do
 
       expect(Gitlab::ErrorTracking).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
       Gitlab::ErrorTracking.configure
-      Raven.client.configuration.encoding = 'json'
     end
 
     it 'does not report a MethodNotAllowed exception to Sentry' do
       exception = Grape::Exceptions::MethodNotAllowed.new({ 'X-GitLab-Test' => '1' })
       allow(exception).to receive(:backtrace).and_return(caller)
 
-      expect(Raven).not_to receive(:capture_exception).with(exception)
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception).with(exception)
 
       handle_api_exception(exception)
     end
@@ -330,8 +329,7 @@ RSpec.describe API::Helpers do
       exception = RuntimeError.new('test error')
       allow(exception).to receive(:backtrace).and_return(caller)
 
-      expect(Raven).to receive(:capture_exception).with(exception, tags:
-        a_hash_including(correlation_id: 'new-correlation-id'), extra: {})
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception)
 
       Labkit::Correlation::CorrelationId.use_id('new-correlation-id') do
         handle_api_exception(exception)
@@ -355,20 +353,6 @@ RSpec.describe API::Helpers do
         expect(response).to have_gitlab_http_status(:internal_server_error)
         expect(json_response['message']).not_to include("undefined local variable or method `request'")
         expect(json_response['message']).to start_with("\nRuntimeError (Runtime Error!):")
-      end
-    end
-
-    context 'extra information' do
-      # Sentry events are an array of the form [auth_header, data, options]
-      let(:event_data) { Raven.client.transport.events.first[1] }
-
-      it 'sends the params, excluding confidential values' do
-        expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
-
-        get api('/projects', user), params: { password: 'dont_send_this', other_param: 'send_this' }
-
-        expect(event_data).to include('other_param=send_this')
-        expect(event_data).to include('password=********')
       end
     end
   end

@@ -25,10 +25,6 @@ class ApplicationSetting < ApplicationRecord
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
 
-  def self.repository_storages_weighted_attributes
-    @repository_storages_weighted_atributes ||= Gitlab.config.repositories.storages.keys.map { |k| "repository_storages_weighted_#{k}".to_sym }.freeze
-  end
-
   def self.kroki_formats_attributes
     {
       blockdiag: {
@@ -44,7 +40,6 @@ class ApplicationSetting < ApplicationRecord
   end
 
   store_accessor :kroki_formats, *ApplicationSetting.kroki_formats_attributes.keys, prefix: true
-  store_accessor :repository_storages_weighted, *Gitlab.config.repositories.storages.keys, prefix: true
 
   # Include here so it can override methods from
   # `add_authentication_token_field`
@@ -503,6 +498,7 @@ class ApplicationSetting < ApplicationRecord
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
   before_validation :ensure_uuid!
+  before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -581,12 +577,6 @@ class ApplicationSetting < ApplicationRecord
 
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
-  end
-
-  repository_storages_weighted_attributes.each do |attribute|
-    define_method :"#{attribute}=" do |value|
-      super(value.to_i)
-    end
   end
 
   kroki_formats_attributes.keys.each do |key|

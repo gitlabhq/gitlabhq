@@ -12,7 +12,7 @@ module QA
         group.visit!
 
         Page::Group::Show.perform(&:go_to_new_project)
-        go_to_import_tab
+        go_to_import_page
         Page::Project::New.perform(&:click_github_link)
 
         Page::Project::Import::Github.perform do |import_page|
@@ -21,7 +21,7 @@ module QA
         end
       end
 
-      def go_to_import_tab
+      def go_to_import_page
         Page::Project::New.perform(&:click_import_project)
       end
     end

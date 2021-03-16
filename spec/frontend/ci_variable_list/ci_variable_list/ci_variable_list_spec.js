@@ -4,9 +4,6 @@ import VariableList from '~/ci_variable_list/ci_variable_list';
 const HIDE_CLASS = 'hide';
 
 describe('VariableList', () => {
-  preloadFixtures('pipeline_schedules/edit.html');
-  preloadFixtures('pipeline_schedules/edit_with_variables.html');
-
   let $wrapper;
   let variableList;
 

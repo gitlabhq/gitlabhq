@@ -23,14 +23,12 @@ you never miss a page.
 
 ## Email notifications
 
-Email notifications are available in projects that have been
-[configured to create incidents automatically](incidents.md#create-incidents-automatically)
-for triggered alerts. Project members with the **Owner** or **Maintainer** roles are
-sent an email notification automatically. (This is not configurable.) To optionally
-send additional email notifications to project members with the **Developer** role:
+Email notifications are available in projects for triggered alerts. Project
+members with the **Owner** or **Maintainer** roles have the option to receive
+a single email notification for new alerts.
 
 1. Navigate to **Settings > Operations**.
 1. Expand the **Incidents** section.
-1. In the **Alert Integration** tab, select the **Send a separate email notification to Developers**
-   check box.
+1. In the **Alert Integration** tab, select the checkbox
+   **Send a single email notification to Owners and Maintainers for new alerts**.
 1. Select **Save changes**.

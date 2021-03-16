@@ -8,7 +8,7 @@ module Types
 
       NONE = 'NONE'
 
-      value NONE, 'No change'
+      value NONE, 'No change.'
 
       ::DesignManagement::Action.events.keys.each do |event_name|
         value event_name.upcase, value: event_name, description: "A #{event_name} event"

@@ -14,7 +14,7 @@ large projects with speed and efficiency.
 [GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
 software development. Besides Git's functionalities, GitLab has a lot of
 powerful [features](https://about.gitlab.com/features/) to enhance your
-[workflow](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/).
+[workflow](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/).
 
 We've gathered some resources to help you to get the best from Git with GitLab.
 
@@ -22,7 +22,7 @@ More information is also available on the [Git website](https://git-scm.com).
 
 ## Getting started
 
-The following resources will help you get started with Git:
+The following resources can help you get started with Git:
 
 - [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4),
   a video introduction to Git.
@@ -42,7 +42,7 @@ The following resources will help you get started with Git:
 - [Git stash](../../university/training/topics/stash.md)
 - [Git file blame](../../user/project/repository/git_blame.md)
 - [Git file history](../../user/project/repository/git_history.md)
-- [Git tags](../../university/training/user_training.md#tags)
+- [Git tags](tags.md)
 
 ### Concepts
 
@@ -84,7 +84,7 @@ The following are advanced topics for those who want to get the most out of Git:
 - [Introduction to Git rebase, force-push, and merge conflicts](git_rebase.md)
 - [Server Hooks](../../administration/server_hooks.md)
 - [Git Attributes](../../user/project/git_attributes.md)
-- Git Submodules: [Using Git submodules with GitLab CI](../../ci/git_submodules.md#using-git-submodules-with-gitlab-ci)
+- Git Submodules: [Using Git submodules with GitLab CI](../../ci/git_submodules.md)
 - [Partial Clone](partial_clone.md)
 
 ## API

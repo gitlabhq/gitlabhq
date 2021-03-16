@@ -224,17 +224,7 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-Table description links:
-
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
-- [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit)
-- [GitLab chart](https://docs.gitlab.com/charts/)
-- [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings)
-- [GitLab.com](https://gitlab.com)
-- [Source](../install/installation.md)
-- [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-
-| Component                                             | Description                                                          | Omnibus GitLab | GitLab Environment Toolkit (GET) | GitLab chart | Minikube Minimal | GitLab.com | Source | GDK |  CE/EE  |
+| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙       |       ✅         |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
@@ -332,7 +322,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/migrations/)
-  - [Source](../update/upgrading_from_source.md#14-install-libraries-migrations-etc)
+  - [Source](../update/upgrading_from_source.md#10-install-libraries-migrations-etc)
 - Layer: Core Service (Data)
 
 #### Elasticsearch
@@ -651,7 +641,7 @@ Redis is packaged to provide a place to store:
 
 - [Project page](https://github.com/docker/distribution/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../update/upgrading_from_source.md#14-install-libraries-migrations-etc)
+  - [Omnibus](../update/upgrading_from_source.md#10-install-libraries-migrations-etc)
   - [Charts](https://docs.gitlab.com/charts/charts/registry/)
   - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md)
@@ -909,7 +899,7 @@ in Rails, scheduled to run whenever an SSH key is modified by a user.
 instead of keys. In this case, `AuthorizedKeysCommand` is replaced with an
 `AuthorizedPrincipalsCommand`. This extracts a username from the certificate
 without using the Rails internal API, which is used instead of `key_id` in the
-`/api/internal/allowed` call later.
+[`/api/internal/allowed`](internal_api.md) call later.
 
 GitLab Shell also has a few operations that do not involve Gitaly, such as
 resetting two-factor authentication codes. These are handled in the same way,

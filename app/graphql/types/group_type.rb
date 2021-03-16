@@ -95,6 +95,10 @@ module Types
     field :container_repositories_count, GraphQL::INT_TYPE, null: false,
           description: 'Number of container repositories in the group.'
 
+    field :packages,
+          description: 'Packages of the group.',
+          resolver: Resolvers::GroupPackagesResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

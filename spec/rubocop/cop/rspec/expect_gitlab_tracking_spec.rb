@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/expect_gitlab_tracking'
 
 RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking do

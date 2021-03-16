@@ -60,7 +60,7 @@ module Mutations
       def authorized_find_all_pending_by_current_user(ids)
         return Todo.none if ids.blank? || current_user.nil?
 
-        Todo.for_ids(ids).for_user(current_user).done
+        Todo.id_in(ids).for_user(current_user).done
       end
 
       def restore(todos)

@@ -11,4 +11,3 @@ graphql-verify:
   script:
     - bundle exec rake gitlab:graphql:validate
     - bundle exec rake gitlab:graphql:check_docs
-    - bundle exec rake gitlab:graphql:check_schema

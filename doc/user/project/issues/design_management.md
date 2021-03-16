@@ -257,6 +257,6 @@ This will be rendered as:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/225205) in GitLab 13.2.
 
 User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
-displayed on the [user profile](../../profile/index.md#user-profile),
+displayed on the [user profile](../../profile/index.md#access-your-user-profile),
 [group](../../group/index.md#view-group-activity),
 and [project](../working_with_projects.md#project-activity) activity pages.

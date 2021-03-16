@@ -769,6 +769,19 @@ export const nMonthsAfter = (date, numberOfMonths, { utc = false } = {}) => {
 };
 
 /**
+ * Returns the date `n` years after the date provided.
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfYears number of years after
+ * @return {Date} A `Date` object `n` years after the provided `Date`
+ */
+export const nYearsAfter = (date, numberOfYears) => {
+  const clone = newDate(date);
+  clone.setFullYear(clone.getFullYear() + numberOfYears);
+  return clone;
+};
+
+/**
  * Returns the date `n` months before the date provided
  *
  * @param {Date} date the initial date
@@ -993,6 +1006,78 @@ export const isToday = (date) => {
 };
 
 /**
+ * Checks whether the date is in the past.
+ *
+ * @param {Date} date
+ * @return {Boolean} Returns true if the date falls before today, otherwise false.
+ */
+export const isInPast = (date) => !isToday(date) && differenceInMilliseconds(date, Date.now()) > 0;
+
+/**
+ * Checks whether the date is in the future.
+ * .
+ * @param {Date} date
+ * @return {Boolean} Returns true if the date falls after today, otherwise false.
+ */
+export const isInFuture = (date) =>
+  !isToday(date) && differenceInMilliseconds(Date.now(), date) > 0;
+
+/**
+ * Checks whether dateA falls before dateB.
+ *
+ * @param {Date} dateA
+ * @param {Date} dateB
+ * @return {Boolean} Returns true if dateA falls before dateB, otherwise false
+ */
+export const fallsBefore = (dateA, dateB) => differenceInMilliseconds(dateA, dateB) > 0;
+
+/**
+ * Removes the time component of the date.
+ *
+ * @param {Date} date
+ * @return {Date} Returns a clone of the date with the time set to midnight
+ */
+export const removeTime = (date) => {
+  const clone = newDate(date);
+  clone.setHours(0, 0, 0, 0);
+  return clone;
+};
+
+/**
+ * Calculates the time remaining from today in words in the format
+ * `n days/weeks/months/years remaining`.
+ *
+ * @param {Date} date A date in future
+ * @return {String} The time remaining in the format `n days/weeks/months/years remaining`
+ */
+export const getTimeRemainingInWords = (date) => {
+  const today = removeTime(new Date());
+  const dateInFuture = removeTime(date);
+
+  const oneWeekFromNow = nWeeksAfter(today, 1);
+  const oneMonthFromNow = nMonthsAfter(today, 1);
+  const oneYearFromNow = nYearsAfter(today, 1);
+
+  if (fallsBefore(dateInFuture, oneWeekFromNow)) {
+    const days = getDayDifference(today, dateInFuture);
+    return n__('1 day remaining', '%d days remaining', days);
+  }
+
+  if (fallsBefore(dateInFuture, oneMonthFromNow)) {
+    const weeks = Math.floor(getDayDifference(today, dateInFuture) / 7);
+    return n__('1 week remaining', '%d weeks remaining', weeks);
+  }
+
+  if (fallsBefore(dateInFuture, oneYearFromNow)) {
+    const months = differenceInMonths(today, dateInFuture);
+    return n__('1 month remaining', '%d months remaining', months);
+  }
+
+  const years = dateInFuture.getFullYear() - today.getFullYear();
+  return n__('1 year remaining', '%d years remaining', years);
+};
+
+/**
  * Returns the start of the provided day
  *
  * @param {Object} [options={}] Additional options for this calculation
@@ -1009,4 +1094,26 @@ export const getStartOfDay = (date, { utc = false } = {}) => {
   const cloneValue = utc ? clone.setUTCHours(0, 0, 0, 0) : clone.setHours(0, 0, 0, 0);
 
   return new Date(cloneValue);
+};
+
+/**
+ * Returns the start of the current week against the provide date
+ *
+ * @param {Date} date The current date instance to calculate against
+ * @param {Object} [options={}] Additional options for this calculation
+ * @param {boolean} [options.utc=false] Performs the calculation using UTC time.
+ * If `true`, the time returned will be midnight UTC. If `false` (the default)
+ * the time returned will be midnight in the user's local time.
+ *
+ * @returns {Date} A new `Date` object that represents the start of the current week
+ * of the provided date
+ */
+export const getStartOfWeek = (date, { utc = false } = {}) => {
+  const cloneValue = utc
+    ? new Date(date.setUTCHours(0, 0, 0, 0))
+    : new Date(date.setHours(0, 0, 0, 0));
+
+  const diff = cloneValue.getDate() - cloneValue.getDay() + (cloneValue.getDay() === 0 ? -6 : 1);
+
+  return new Date(date.setDate(diff));
 };

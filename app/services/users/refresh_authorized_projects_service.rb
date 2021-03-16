@@ -92,7 +92,7 @@ module Users
     # remove - The IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[user id, project id, access level]`
     def update_authorizations(remove = [], add = [])
-      log_refresh_details(remove.length, add.length)
+      log_refresh_details(remove, add)
 
       User.transaction do
         user.remove_project_authorizations(remove) unless remove.empty?
@@ -104,11 +104,16 @@ module Users
       user.reset
     end
 
-    def log_refresh_details(rows_deleted, rows_added)
+    def log_refresh_details(remove, add)
       Gitlab::AppJsonLogger.info(event: 'authorized_projects_refresh',
+                                 user_id: user.id,
                                  'authorized_projects_refresh.source': source,
-                                 'authorized_projects_refresh.rows_deleted': rows_deleted,
-                                 'authorized_projects_refresh.rows_added': rows_added)
+                                 'authorized_projects_refresh.rows_deleted_count': remove.length,
+                                 'authorized_projects_refresh.rows_added_count': add.length,
+                                 # most often there's only a few entries in remove and add, but limit it to the first 5
+                                 # entries to avoid flooding the logs
+                                 'authorized_projects_refresh.rows_deleted_slice': remove.first(5),
+                                 'authorized_projects_refresh.rows_added_slice': add.first(5))
     end
 
     def fresh_access_levels_per_project

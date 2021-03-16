@@ -73,8 +73,12 @@ RSpec.describe BasePolicy do
     end
   end
 
-  describe 'full private access' do
+  describe 'full private access: read_all_resources' do
     it_behaves_like 'admin only access', :read_all_resources
+  end
+
+  describe 'full private access: admin_all_resources' do
+    it_behaves_like 'admin only access', :admin_all_resources
   end
 
   describe 'change_repository_storage' do

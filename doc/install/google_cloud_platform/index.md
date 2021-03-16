@@ -6,7 +6,7 @@ description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 type: howto
 ---
 
-# Installing GitLab on Google Cloud Platform
+# Installing GitLab on Google Cloud Platform **(FREE SELF)**
 
 This guide will help you install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official GitLab Linux package. You should customize it to accommodate your needs.
 

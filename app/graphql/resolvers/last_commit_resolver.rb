@@ -4,6 +4,8 @@ module Resolvers
   class LastCommitResolver < BaseResolver
     type Types::CommitType, null: true
 
+    calls_gitaly!
+
     alias_method :tree, :object
 
     def resolve(**args)

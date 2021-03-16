@@ -8,6 +8,7 @@ module Gitlab
 
         STATUS_SUCCESS = 'success'
         STATUS_FAILED = 'failed'
+        STATUS_NOT_FOUND = 'not_found'
 
         attr_reader :base_report, :head_report
 
@@ -17,7 +18,13 @@ module Gitlab
         end
 
         def status
-          success? ? STATUS_SUCCESS : STATUS_FAILED
+          if base_report.nil? || head_report.nil?
+            STATUS_NOT_FOUND
+          elsif success?
+            STATUS_SUCCESS
+          else
+            STATUS_FAILED
+          end
         end
 
         def success?
@@ -46,6 +53,10 @@ module Gitlab
 
         def total_count
           existing_errors.size + new_errors.size
+        end
+
+        def not_found?
+          status == STATUS_NOT_FOUND
         end
       end
     end

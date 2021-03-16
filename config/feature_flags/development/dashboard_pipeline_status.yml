@@ -1,8 +1,0 @@
----
-name: dashboard_pipeline_status
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22029
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/209061
-milestone: '12.7'
-type: development
-group: group::continuous integration
-default_enabled: true

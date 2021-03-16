@@ -1,10 +1,14 @@
 <script>
 /* eslint-disable vue/no-v-html */
+import { GlButton } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '../../../locale';
 
 export default {
   name: 'TimeTrackingHelpState',
+  components: {
+    GlButton,
+  },
   computed: {
     href() {
       return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
@@ -40,7 +44,7 @@ export default {
       <p>{{ __('Quick actions can be used in the issues description and comment boxes.') }}</p>
       <p v-html="estimateText"></p>
       <p v-html="spendText"></p>
-      <a :href="href" class="btn btn-default learn-more-button"> {{ __('Learn more') }} </a>
+      <gl-button :href="href">{{ __('Learn more') }}</gl-button>
     </div>
   </div>
 </template>

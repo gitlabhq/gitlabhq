@@ -116,7 +116,7 @@ LDAP Users remain confirmed if all of the following conditions are met:
 
 - The ["User email confirmation at sign-up" option](../security/user_email_confirmation.md) is set to false.
 - The first sign-in is based on user LDAP credentials.
-- The user has added and verified [a secondary email address](profile/index.md#user-settings) some time later.
+- The user has added and verified [a secondary email address](profile/index.md) some time later.
 
 NOTE:
 Confirmation timestamps (primary vs. secondary) are different.
@@ -124,6 +124,6 @@ Confirmation timestamps (primary vs. secondary) are different.
 Users remain unconfirmed by the background migration if any of the following conditions are met:
 
 - They [create an account through GitLab](profile/account/create_accounts.md).
-- They [swap their primary email address](profile/index.md#user-settings) and verify it.
+- They [swap their primary email address](profile/index.md#change-the-email-displayed-on-your-commits) and verify it.
 - If they have two email addresses with the same `confirmed_at` timestamp due to the linked [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/121664).
 - [LDAP is introduced](../administration/auth/ldap/index.md), and users' primary email address matches that in LDAP.

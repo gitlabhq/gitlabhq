@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 description: "How to create Merge Requests in GitLab."
@@ -30,11 +30,16 @@ button and start a merge request from there.
 
 ## New Merge Request page
 
-On the **New Merge Request** page, start by filling in the title
-and description for the merge request. If there are already
-commits on the branch, the title is prefilled with the first
-line of the first commit message, and the description is
-prefilled with any additional lines in the commit message.
+On the **New Merge Request** page, start by filling in the title and description
+for the merge request. If commits already exist on the branch, GitLab suggests a
+merge request title for you:
+
+- **If a multi-line commit message exists**: GitLab adds the first line of the
+  first multi-line commit message as the title. Any additional lines in that
+  commit message become the description.
+- **If no multi-line commit message exists**: GitLab adds the branch name as the
+  title, and leaves the description blank.
+
 The title is the only field that is mandatory in all cases.
 
 From there, you can fill it with information (title, description,

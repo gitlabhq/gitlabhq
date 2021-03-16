@@ -70,3 +70,5 @@ class UsersStatistics < ApplicationRecord
     end
   end
 end
+
+UsersStatistics.prepend_if_ee('EE::UsersStatistics')

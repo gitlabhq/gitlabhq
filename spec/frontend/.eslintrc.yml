@@ -14,7 +14,6 @@ settings:
 globals:
   getJSONFixture: false
   loadFixtures: false
-  preloadFixtures: false
   setFixtures: false
 rules:
   jest/expect-expect:

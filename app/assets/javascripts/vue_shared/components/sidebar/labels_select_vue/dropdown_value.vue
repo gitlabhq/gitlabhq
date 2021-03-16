@@ -21,11 +21,14 @@ export default {
       'allowLabelRemove',
       'allowScopedLabels',
       'labelsFilterBasePath',
+      'labelsFilterParam',
     ]),
   },
   methods: {
     labelFilterUrl(label) {
-      return `${this.labelsFilterBasePath}?label_name[]=${encodeURIComponent(label.title)}`;
+      return `${this.labelsFilterBasePath}?${this.labelsFilterParam}[]=${encodeURIComponent(
+        label.title,
+      )}`;
     },
     scopedLabel(label) {
       return this.allowScopedLabels && isScopedLabel(label);

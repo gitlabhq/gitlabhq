@@ -96,7 +96,7 @@ describe('DiscussionActions', () => {
 
     it('emits showReplyForm event when clicking on reply placeholder', () => {
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find(ReplyPlaceholder).find('button').trigger('click');
+      wrapper.find(ReplyPlaceholder).find('textarea').trigger('focus');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('showReplyForm');
     });
 

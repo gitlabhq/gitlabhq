@@ -1,0 +1,9 @@
+query parsePayloadFields($projectPath: ID!, $payload: String!) {
+  project(fullPath: $projectPath) {
+    alertManagementPayloadFields(payloadExample: $payload) {
+      path
+      label
+      type
+    }
+  }
+}

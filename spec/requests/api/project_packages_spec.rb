@@ -257,6 +257,10 @@ RSpec.describe API::ProjectPackages do
       context 'project is private' do
         let(:project) { create(:project, :private) }
 
+        before do
+          expect(::Packages::Maven::Metadata::SyncWorker).not_to receive(:perform_async)
+        end
+
         it 'returns 404 for non authenticated user' do
           delete api(package_url)
 
@@ -299,6 +303,19 @@ RSpec.describe API::ProjectPackages do
           delete api(package_url, user)
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'with a maven package' do
+        let_it_be(:package1) { create(:maven_package, project: project) }
+
+        it 'enqueues a sync worker job' do
+          project.add_maintainer(user)
+
+          expect(::Packages::Maven::Metadata::SyncWorker)
+            .to receive(:perform_async).with(user.id, project.id, package1.name)
+
+          delete api(package_url, user)
         end
       end
     end

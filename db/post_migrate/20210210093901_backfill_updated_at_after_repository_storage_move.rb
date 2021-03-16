@@ -10,16 +10,16 @@ class BackfillUpdatedAtAfterRepositoryStorageMove < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
-  class ProjectRepositoryStorageMove < ActiveRecord::Base
+  class RepositoryStorageMove < ActiveRecord::Base
     include EachBatch
 
     self.table_name = 'project_repository_storage_moves'
   end
 
   def up
-    ProjectRepositoryStorageMove.reset_column_information
+    RepositoryStorageMove.reset_column_information
 
-    ProjectRepositoryStorageMove.select(:project_id).distinct.each_batch(of: BATCH_SIZE, column: :project_id) do |batch, index|
+    RepositoryStorageMove.select(:project_id).distinct.each_batch(of: BATCH_SIZE, column: :project_id) do |batch, index|
       migrate_in(
         INTERVAL * index,
         MIGRATION_CLASS,

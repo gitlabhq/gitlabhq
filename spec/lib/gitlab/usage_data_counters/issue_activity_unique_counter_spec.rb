@@ -9,7 +9,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   let(:time) { Time.zone.now }
 
   context 'for Issue title edit actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_TITLE_CHANGED }
 
       def track_action(params)
@@ -19,7 +19,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue description edit actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_DESCRIPTION_CHANGED }
 
       def track_action(params)
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue assignee edit actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_ASSIGNEE_CHANGED }
 
       def track_action(params)
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue make confidential actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_MADE_CONFIDENTIAL }
 
       def track_action(params)
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue make visible actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_MADE_VISIBLE }
 
       def track_action(params)
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue created actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_CREATED }
 
       def track_action(params)
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue closed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_CLOSED }
 
       def track_action(params)
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue reopened actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_REOPENED }
 
       def track_action(params)
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue label changed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_LABEL_CHANGED }
 
       def track_action(params)
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue cross-referenced actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_CROSS_REFERENCED }
 
       def track_action(params)
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue moved actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_MOVED }
 
       def track_action(params)
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue cloned actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_CLONED }
 
       def track_action(params)
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue relate actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_RELATED }
 
       def track_action(params)
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue unrelate actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_UNRELATED }
 
       def track_action(params)
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue marked as duplicate actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_MARKED_AS_DUPLICATE }
 
       def track_action(params)
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue locked actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_LOCKED }
 
       def track_action(params)
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue unlocked actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_UNLOCKED }
 
       def track_action(params)
@@ -179,7 +179,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs added actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_DESIGNS_ADDED }
 
       def track_action(params)
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs modified actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_DESIGNS_MODIFIED }
 
       def track_action(params)
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue designs removed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_DESIGNS_REMOVED }
 
       def track_action(params)
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue due date changed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_DUE_DATE_CHANGED }
 
       def track_action(params)
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue time estimate changed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_TIME_ESTIMATE_CHANGED }
 
       def track_action(params)
@@ -229,7 +229,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue time spent changed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_TIME_SPENT_CHANGED }
 
       def track_action(params)
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue comment added actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_COMMENT_ADDED }
 
       def track_action(params)
@@ -249,7 +249,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue comment edited actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_COMMENT_EDITED }
 
       def track_action(params)
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue comment removed actions' do
-    it_behaves_like 'a tracked issue edit event' do
+    it_behaves_like 'a daily tracked issuable event' do
       let(:action) { described_class::ISSUE_COMMENT_REMOVED }
 
       def track_action(params)

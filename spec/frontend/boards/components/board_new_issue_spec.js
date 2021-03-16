@@ -2,7 +2,6 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 
-import '~/boards/models/list';
 import { mockList, mockGroupProjects } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -31,7 +30,7 @@ describe('Issue boards new issue form', () => {
     const store = new Vuex.Store({
       state: { selectedProject: mockGroupProjects[0] },
       actions: { addListNewIssue: addListNewIssuesSpy },
-      getters: {},
+      getters: { isGroupBoard: () => false, isProjectBoard: () => true },
     });
 
     wrapper = shallowMount(BoardNewIssue, {

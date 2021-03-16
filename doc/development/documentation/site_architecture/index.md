@@ -118,7 +118,7 @@ If you change the Dockerfile configuration and rebuild the images, you can break
 pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an image with
 a different name first and test it to ensure you do not break the pipelines.
 
-1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Pipelines**.
+1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Pipelines**.
 1. Click the **Run Pipeline** button.
 1. See that a new pipeline is running. The jobs that build the images are in the first
    stage, `build-images`. You can click the pipeline number to see the larger pipeline
@@ -137,7 +137,7 @@ and deploys it to <https://docs.gitlab.com>.
 
 If you need to build and deploy the site immediately (must have maintainer level permissions):
 
-1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Schedules**.
+1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Schedules**.
 1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
 
 Read more about the [deployment process](deployment_process.md).

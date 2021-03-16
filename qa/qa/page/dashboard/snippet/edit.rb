@@ -18,13 +18,17 @@ module QA
             element :delete_file_button
           end
 
+          view 'app/assets/javascripts/snippets/components/snippet_visibility_edit.vue' do
+            element :visibility_content
+          end
+
           def add_to_file_content(content)
             text_area.set content
             text_area.has_text?(content) # wait for changes to take effect
           end
 
           def change_visibility_to(visibility_type)
-            choose(visibility_type)
+            click_element(:visibility_content, visibility: visibility_type)
           end
 
           def click_add_file

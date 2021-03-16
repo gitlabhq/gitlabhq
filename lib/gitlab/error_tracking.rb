@@ -27,31 +27,14 @@ module Gitlab
           config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
           config.processors << ::Gitlab::ErrorTracking::Processor::SidekiqProcessor
           config.processors << ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor
+          config.processors << ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor
 
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
-          config.tags = extra_tags_from_env.merge(program: Gitlab.process_name)
           config.before_send = method(:before_send)
 
           yield config if block_given?
         end
-      end
-
-      def with_context(current_user = nil)
-        last_user_context = Raven.context.user
-
-        user_context = {
-          id: current_user&.id,
-          email: current_user&.email,
-          username: current_user&.username
-        }.compact
-
-        Raven.tags_context(default_tags)
-        Raven.user_context(user_context)
-
-        yield
-      ensure
-        Raven.user_context(last_user_context)
       end
 
       # This should be used when you want to passthrough exception handling:
@@ -118,35 +101,18 @@ module Gitlab
       end
 
       def process_exception(exception, sentry: false, logging: true, extra:)
-        exception.try(:sentry_extra_data)&.tap do |data|
-          extra = extra.merge(data) if data.is_a?(Hash)
-        end
-
-        extra = sanitize_request_parameters(extra)
+        context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra)
 
         if sentry && Raven.configuration.server
-          Raven.capture_exception(exception, tags: default_tags, extra: extra)
+          Raven.capture_exception(exception, **context_payload)
         end
 
         if logging
-          # TODO: this logic could migrate into `Gitlab::ExceptionLogFormatter`
-          # and we could also flatten deep nested hashes if required for search
-          # (e.g. if `extra` includes hash of hashes).
-          # In the current implementation, we don't flatten multi-level folded hashes.
-          log_hash = {}
-          Raven.context.tags.each { |name, value| log_hash["tags.#{name}"] = value }
-          Raven.context.user.each { |name, value| log_hash["user.#{name}"] = value }
-          Raven.context.extra.merge(extra).each { |name, value| log_hash["extra.#{name}"] = value }
-
-          Gitlab::ExceptionLogFormatter.format!(exception, log_hash)
+          formatter = Gitlab::ErrorTracking::LogFormatter.new
+          log_hash = formatter.generate_log(exception, context_payload)
 
           Gitlab::ErrorTracking::Logger.error(log_hash)
         end
-      end
-
-      def sanitize_request_parameters(parameters)
-        filter = ActiveSupport::ParameterFilter.new(::Rails.application.config.filter_parameters)
-        filter.filter(parameters)
       end
 
       def sentry_dsn
@@ -158,22 +124,6 @@ module Gitlab
 
       def should_raise_for_dev?
         Rails.env.development? || Rails.env.test?
-      end
-
-      def default_tags
-        {
-          Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id,
-          locale: I18n.locale
-        }
-      end
-
-      # Static tags that are set on application start
-      def extra_tags_from_env
-        Gitlab::Json.parse(ENV.fetch('GITLAB_SENTRY_EXTRA_TAGS', '{}')).to_hash
-      rescue => e
-        Gitlab::AppLogger.debug("GITLAB_SENTRY_EXTRA_TAGS could not be parsed as JSON: #{e.class.name}: #{e.message}")
-
-        {}
       end
 
       # Group common, mostly non-actionable exceptions by type and message,

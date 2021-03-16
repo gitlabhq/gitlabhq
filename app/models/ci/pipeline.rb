@@ -228,7 +228,7 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id) if pipeline.cacheable?
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -573,7 +573,7 @@ module Ci
     end
 
     def cancel_running(retries: nil)
-      retry_optimistic_lock(cancelable_statuses, retries) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses, retries, name: 'ci_pipeline_cancel_running') do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -693,14 +693,6 @@ module Ci
         .exists?
     end
 
-    # TODO: this logic is duplicate with Pipeline::Chain::Config::Content
-    # we should persist this is `ci_pipelines.config_path`
-    def config_path
-      return unless repository_source? || unknown_source?
-
-      project.ci_config_path_or_default
-    end
-
     def has_yaml_errors?
       yaml_errors.present?
     end
@@ -744,7 +736,7 @@ module Ci
     end
 
     def set_status(new_status)
-      retry_optimistic_lock(self) do
+      retry_optimistic_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
@@ -785,8 +777,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-
-        variables.append(key: 'CI_CONFIG_PATH', value: config_path)
+        variables.append(key: 'CI_PIPELINE_CREATED_AT', value: created_at&.iso8601)
 
         variables.concat(predefined_commit_variables)
 
@@ -936,6 +927,12 @@ module Ci
         .new(self.class.unscoped.where(id: id), options: { same_project: true })
         .base_and_ancestors(hierarchy_order: :desc)
         .first
+    end
+
+    def self_with_ancestors_and_descendants(same_project: false)
+      ::Gitlab::Ci::PipelineObjectHierarchy
+        .new(self.class.unscoped.where(id: id), options: { same_project: same_project })
+        .all_objects
     end
 
     def bridge_triggered?
@@ -1117,7 +1114,7 @@ module Ci
       detached_merge_request_pipeline? && !merge_request_ref?
     end
 
-    def merge_request_pipeline?
+    def merged_result_pipeline?
       merge_request? && target_sha.present?
     end
 
@@ -1157,7 +1154,7 @@ module Ci
       return unless merge_request?
 
       strong_memoize(:merge_request_event_type) do
-        if merge_request_pipeline?
+        if merged_result_pipeline?
           :merged_result
         elsif detached_merge_request_pipeline?
           :detached
@@ -1167,10 +1164,6 @@ module Ci
 
     def persistent_ref
       @persistent_ref ||= PersistentRef.new(pipeline: self)
-    end
-
-    def cacheable?
-      !dangling?
     end
 
     def dangling?
@@ -1247,7 +1240,7 @@ module Ci
     def merge_request_diff_sha
       return unless merge_request?
 
-      if merge_request_pipeline?
+      if merged_result_pipeline?
         source_sha
       else
         sha

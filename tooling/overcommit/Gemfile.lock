@@ -10,7 +10,6 @@ GEM
     ast (2.4.1)
     childprocess (3.0.0)
     concurrent-ruby (1.1.7)
-    ffi (1.12.2)
     gitlab-styles (5.4.0)
       rubocop (~> 0.89.1)
       rubocop-gitlab-security (~> 0.1.0)
@@ -37,10 +36,6 @@ GEM
       ast (~> 2.4.1)
     rack (2.2.3)
     rainbow (3.0.0)
-    rake (12.3.3)
-    rb-fsevent (0.10.2)
-    rb-inotify (0.9.10)
-      ffi (>= 0.5.0, < 2)
     regexp_parser (1.8.2)
     rexml (3.2.4)
     rubocop (0.89.1)
@@ -67,14 +62,6 @@ GEM
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
     ruby-progressbar (1.10.1)
-    sass (3.5.5)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    scss_lint (0.56.0)
-      rake (>= 0.9, < 13)
-      sass (~> 3.5.3)
     sysexits (1.2.0)
     temple (0.8.2)
     thread_safe (0.3.6)
@@ -91,7 +78,6 @@ DEPENDENCIES
   gitlab-styles (~> 5.4.0)
   haml_lint (~> 0.34.0)
   overcommit
-  scss_lint (~> 0.56.0)
 
 BUNDLED WITH
    2.1.4

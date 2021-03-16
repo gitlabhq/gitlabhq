@@ -42,7 +42,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'terraform',
         'ci_templates',
         'quickactions',
-        'pipeline_authoring'
+        'pipeline_authoring',
+        'epics_usage'
       )
     end
   end
@@ -150,8 +151,15 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect { described_class.track_event(different_aggregation, values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
         end
 
-        it 'raise error if metrics of unknown aggregation' do
+        it 'raise error if metrics of unknown event' do
           expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+        end
+
+        it 'reports an error if Feature.enabled raise an error' do
+          expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+          described_class.track_event(:g_analytics_contribution, values: entity1, time: Date.current)
         end
 
         context 'for weekly events' do

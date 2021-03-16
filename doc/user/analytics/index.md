@@ -61,6 +61,6 @@ The following analytics features are available at the project level:
 - [Insights](../project/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
-  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
+  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 - [Repository](repository_analytics.md). **(FREE)**
 - [Value Stream](value_stream_analytics.md). **(FREE)**

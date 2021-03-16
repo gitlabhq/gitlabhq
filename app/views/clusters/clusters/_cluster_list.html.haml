@@ -4,9 +4,9 @@
   .top-area.adjust
     .gl-display-block.gl-text-right.gl-my-4.gl-w-full
       - if clusterable.can_add_cluster?
-        = link_to s_('ClusterIntegration|Connect cluster with certificate'), clusterable.new_path, class: 'btn gl-button btn-success js-add-cluster gl-py-2', qa_selector: :integrate_kubernetes_cluster_button
+        = link_to s_('ClusterIntegration|Connect cluster with certificate'), clusterable.new_path, class: 'btn gl-button btn-confirm js-add-cluster gl-py-2', qa_selector: :integrate_kubernetes_cluster_button
       - else
-        %span.btn.gl-button.btn-success.js-add-cluster.disabled.gl-py-2
+        %span.btn.gl-button.btn-confirm.js-add-cluster.disabled.gl-py-2
           = s_("ClusterIntegration|Connect cluster with certificate")
 
   #js-clusters-list-app{ data: js_clusters_list_data(clusterable.index_path(format: :json)) }

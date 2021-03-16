@@ -21,7 +21,8 @@
     %ul.content-list.event_commits
       = render "events/commit", project: project, event: event
 
-      - create_mr = event.new_ref? && create_mr_button?(project.default_branch, event.ref_name, project) && event.authored_by?(current_user)
+      - create_mr = event.new_ref? && create_mr_button?(from: project.default_branch, to: event.ref_name, source_project: project, target_project: project) && event.authored_by?(current_user)
+      - create_mr_path = create_mr_path(from: project.default_branch, to: event.ref_name, source_project: project, target_project: project) if create_mr
       - if event.commits_count > 1
         %li.commits-stat
           %span ... and #{pluralize(event.commits_count - 1, 'more commit')}.
@@ -40,9 +41,9 @@
           - if create_mr
             %span
               or
-              = link_to create_mr_path(project.default_branch, event.ref_name, project) do
+              = link_to create_mr_path do
                 create a merge request
       - elsif create_mr
         %li.commits-stat
-          = link_to create_mr_path(project.default_branch, event.ref_name, project) do
+          = link_to create_mr_path do
             Create Merge Request

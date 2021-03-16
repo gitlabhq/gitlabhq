@@ -212,7 +212,7 @@ To delete a project, first navigate to the home page for that project.
 1. Click **Delete project**
 1. Confirm this action by typing in the expected text.
 
-Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enabling delayed project removal](../group/index.md#enabling-delayed-project-removal).
+Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enable delayed project removal](../group/index.md#enable-delayed-project-removal).
 
 ## Project settings
 
@@ -278,7 +278,7 @@ databases if the module name or a prefix of it appears in `GONOPRIVATE` or
 ### Authenticate Go requests
 
 To authenticate requests to private projects made by Go, use a [`.netrc`
-file](https://ec.haxx.se/usingcurl-netrc.html) and a [personal access
+file](https://everything.curl.dev/usingcurl/netrc) and a [personal access
 token](../profile/personal_access_tokens.md) in the password field. **This only
 works if your GitLab instance can be accessed with HTTPS.** The `go` command
 does not transmit credentials over insecure connections. This authenticates

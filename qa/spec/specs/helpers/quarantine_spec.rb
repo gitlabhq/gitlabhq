@@ -15,7 +15,7 @@ end
 # expanding into the global state
 # See: https://github.com/rspec/rspec-core/issues/2603
 def describe_successfully(*args, &describe_body)
-  example_group    = RSpec.describe(*args, &describe_body)
+  example_group = RSpec.describe(*args, &describe_body)
   ran_successfully = example_group.run RaiseOnFailuresReporter
   expect(ran_successfully).to eq true
   example_group
@@ -156,28 +156,51 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
           described_class.configure_rspec
         end
 
-        it 'is skipped when set on contexts or descriptions' do
-          group = describe_successfully 'Quarantined in staging', quarantine: { only: { subdomain: :staging } } do
-            it('runs in staging') {}
+        context 'no pipeline specified' do
+          it 'is skipped when set on contexts or descriptions' do
+            group = describe_successfully 'Quarantined in staging', quarantine: { only: { subdomain: :staging } } do
+              it('runs in staging') {}
+            end
+
+            expect(group.examples.first.execution_result.status).to eq(:pending)
+            expect(group.examples.first.execution_result.pending_message)
+              .to eq('In quarantine')
           end
 
-          expect(group.examples.first.execution_result.status).to eq(:pending)
-          expect(group.examples.first.execution_result.pending_message)
-            .to eq('In quarantine')
+          it 'is skipped only in staging' do
+            group = describe_successfully do
+              it('skipped in staging', quarantine: { only: { subdomain: :staging } }) {}
+              it('runs in staging', quarantine: { only: :production }) {}
+              it('skipped in staging also', quarantine: { only: { subdomain: %i[release staging] } }) {}
+              it('runs in any env') {}
+            end
+
+            expect(group.examples[0].execution_result.status).to eq(:pending)
+            expect(group.examples[1].execution_result.status).to eq(:passed)
+            expect(group.examples[2].execution_result.status).to eq(:pending)
+            expect(group.examples[3].execution_result.status).to eq(:passed)
+          end
         end
 
-        it 'is skipped only in staging' do
-          group = describe_successfully do
-            it('skipped in staging', quarantine: { only: { subdomain: :staging } }) {}
-            it('runs in staging', quarantine: { only: :production }) {}
-            it('skipped in staging also', quarantine: { only: { subdomain: %i[release staging] } }) {}
-            it('runs in any env') {}
+        context 'multiple pipelines specified' do
+          shared_examples 'skipped in project' do |project|
+            before do
+              stub_env('CI_PROJECT_NAME', project)
+              described_class.configure_rspec
+            end
+
+            it "is skipped in #{project}" do
+              group = describe_successfully do
+                it('does not run in specified projects', quarantine: { only: { pipeline: [:staging, :canary, :production] } }) {}
+              end
+
+              expect(group.examples[0].execution_result.status).to eq(:pending)
+            end
           end
 
-          expect(group.examples[0].execution_result.status).to eq(:pending)
-          expect(group.examples[1].execution_result.status).to eq(:passed)
-          expect(group.examples[2].execution_result.status).to eq(:pending)
-          expect(group.examples[3].execution_result.status).to eq(:passed)
+          it_behaves_like 'skipped in project', 'STAGING'
+          it_behaves_like 'skipped in project', 'CANARY'
+          it_behaves_like 'skipped in project', 'PRODUCTION'
         end
       end
 
@@ -368,8 +391,8 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
       it 'runs on a custom environment' do
         group = describe_successfully do
-          it('runs on release gitlab net', only: { tld: '.net', subdomain: :release, domain: 'gitlab' } ) {}
-          it('does not run on release', only: :production ) {}
+          it('runs on release gitlab net', only: { tld: '.net', subdomain: :release, domain: 'gitlab' }) {}
+          it('does not run on release', only: :production) {}
         end
 
         expect(group.examples.first.execution_result.status).to eq(:passed)
@@ -384,7 +407,7 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
       it 'runs on production' do
         group = describe_successfully do
-          it('runs on prod', only: :production ) {}
+          it('runs on prod', only: :production) {}
           it('does not run in prod', only: { subdomain: :staging }) {}
           it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
         end
@@ -412,7 +435,7 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
         it 'runs on any pipeline' do
           group = describe_successfully do
-            it('runs given a single named pipeline', only: { pipeline: :nightly } ) {}
+            it('runs given a single named pipeline', only: { pipeline: :nightly }) {}
             it('runs given an array of pipelines', only: { pipeline: [:canary, :not_nightly] }) {}
           end
 
@@ -431,9 +454,9 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
         it 'runs on default branch pipelines' do
           group = describe_successfully do
-            it('runs on master pipeline given a single pipeline', only: { pipeline: :master } ) {}
+            it('runs on master pipeline given a single pipeline', only: { pipeline: :master }) {}
             it('runs in master given an array of pipelines', only: { pipeline: [:canary, :master] }) {}
-            it('does not run in non-default pipelines', only: { pipeline: [:nightly, :not_nightly, :not_master] } ) {}
+            it('does not run in non-default pipelines', only: { pipeline: [:nightly, :not_nightly, :not_master] }) {}
           end
 
           aggregate_failures do
@@ -452,8 +475,8 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
         it 'runs on designated pipeline' do
           group = describe_successfully do
-            it('runs on nightly', only: { pipeline: :nightly } ) {}
-            it('does not run in not_nightly', only: { pipeline: :not_nightly } ) {}
+            it('runs on nightly', only: { pipeline: :nightly }) {}
+            it('does not run in not_nightly', only: { pipeline: :not_nightly }) {}
             it('runs on nightly given an array', only: { pipeline: [:canary, :nightly] }) {}
             it('does not run in not_nightly given an array', only: { pipeline: [:not_nightly, :canary] }) {}
           end

@@ -6,7 +6,7 @@ type: reference, index
 description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
 ---
 
-# User Docs
+# User Docs **(FREE)**
 
 Welcome to GitLab! We're glad to have you here!
 
@@ -31,10 +31,10 @@ For more information, see [All GitLab Features](https://about.gitlab.com/feature
 To get familiar with the concepts needed to develop code on GitLab, read the following articles:
 
 - [Demo: Mastering Code Review With GitLab](https://about.gitlab.com/blog/2017/03/17/demo-mastering-code-review-with-gitlab/).
-- [GitLab Workflow: An Overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+- [GitLab Workflow: An Overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/#gitlab-workflow-a-use-case-scenario).
 - [Tutorial: It's all connected in GitLab](https://about.gitlab.com/blog/2016/03/08/gitlab-tutorial-its-all-connected/): an overview on code collaboration with GitLab.
 - [Trends in Version Control Land: Microservices](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
-- [Trends in Version Control Land: Innersourcing](https://about.gitlab.com/blog/2016/07/07/trends-version-control-innersourcing/).
+- [Trends in Version Control Land: Innersourcing](https://about.gitlab.com/topics/version-control/what-is-innersource/).
 
 ## Use cases
 
@@ -56,12 +56,12 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Improve collaboration with:
-  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md). **(STARTER)**
-  - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md). **(STARTER)**
+  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md).
+  - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [Related Issues](project/issues/related_issues.md).
 - Use [Burndown Charts](project/milestones/burndown_and_burnup_charts.md) to track progress during a sprint or while working on a new version of their software.
-- Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_global_search.md) and [Advanced Search Syntax](search/advanced_search_syntax.md) for faster, more advanced code search across your entire GitLab instance.
+- Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_search.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](../integration/kerberos.md).
 - [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/multi_project_pipelines.md).
@@ -85,7 +85,7 @@ There are several types of users in GitLab:
 
 ## User activity
 
-You can follow or unfollow other users from their [user profiles](profile/index.md#user-profile).
+You can follow or unfollow other users from their [user profiles](profile/index.md#access-your-user-profile).
 To see their activity in the top-level Activity view, select Follow or Unfollow, and select
 the Followed Users tab:
 
@@ -198,7 +198,7 @@ Learn what is [Git](../topics/git/index.md) and its best practices.
 
 See [various statistics](admin_area/analytics/index.md) of your GitLab instance.
 
-## Operations Dashboard **(PREMIUM)**
+## Operations Dashboard
 
 See [Operations Dashboard](operations_dashboard/index.md) for a summary of each
 project's operational health.

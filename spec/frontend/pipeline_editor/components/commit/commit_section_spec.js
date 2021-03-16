@@ -3,7 +3,11 @@ import { mount } from '@vue/test-utils';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
-import { COMMIT_SUCCESS } from '~/pipeline_editor/constants';
+import {
+  COMMIT_ACTION_CREATE,
+  COMMIT_ACTION_UPDATE,
+  COMMIT_SUCCESS,
+} from '~/pipeline_editor/constants';
 import commitCreate from '~/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
 
 import {
@@ -25,6 +29,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 const mockVariables = {
+  action: COMMIT_ACTION_UPDATE,
   projectPath: mockProjectFullPath,
   startBranch: mockDefaultBranch,
   message: mockCommitMessage,
@@ -35,7 +40,6 @@ const mockVariables = {
 
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
-  defaultBranch: mockDefaultBranch,
   projectFullPath: mockProjectFullPath,
   newMergeRequestPath: mockNewMergeRequestPath,
 };
@@ -64,6 +68,8 @@ describe('Pipeline Editor | Commit section', () => {
       data() {
         return {
           commitSha: mockCommitSha,
+          currentBranch: mockDefaultBranch,
+          isNewCiConfigFile: Boolean(options?.isNewCiConfigfile),
         };
       },
       mocks: {
@@ -100,23 +106,58 @@ describe('Pipeline Editor | Commit section', () => {
     await findCancelBtn().trigger('click');
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     mockMutate.mockReset();
-
     wrapper.destroy();
-    wrapper = null;
+  });
+
+  describe('when the user commits a new file', () => {
+    beforeEach(async () => {
+      createComponent({ options: { isNewCiConfigfile: true } });
+      await submitCommit();
+    });
+
+    it('calls the mutation with the CREATE action', () => {
+      expect(mockMutate).toHaveBeenCalledTimes(1);
+      expect(mockMutate).toHaveBeenCalledWith({
+        mutation: commitCreate,
+        update: expect.any(Function),
+        variables: {
+          ...mockVariables,
+          action: COMMIT_ACTION_CREATE,
+          branch: mockDefaultBranch,
+        },
+      });
+    });
+  });
+
+  describe('when the user commits an update to an existing file', () => {
+    beforeEach(async () => {
+      createComponent();
+      await submitCommit();
+    });
+
+    it('calls the mutation with the UPDATE action', () => {
+      expect(mockMutate).toHaveBeenCalledTimes(1);
+      expect(mockMutate).toHaveBeenCalledWith({
+        mutation: commitCreate,
+        update: expect.any(Function),
+        variables: {
+          ...mockVariables,
+          action: COMMIT_ACTION_UPDATE,
+          branch: mockDefaultBranch,
+        },
+      });
+    });
   });
 
   describe('when the user commits changes to the current branch', () => {
     beforeEach(async () => {
+      createComponent();
       await submitCommit();
     });
 
-    it('calls the mutation with the default branch', () => {
+    it('calls the mutation with the current branch', () => {
       expect(mockMutate).toHaveBeenCalledTimes(1);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
@@ -157,6 +198,7 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
+      createComponent();
       await submitCommit({
         branch: newBranch,
       });
@@ -178,6 +220,7 @@ describe('Pipeline Editor | Commit section', () => {
     const newBranch = 'new-branch';
 
     beforeEach(async () => {
+      createComponent();
       await submitCommit({
         branch: newBranch,
         openMergeRequest: true,
@@ -195,6 +238,10 @@ describe('Pipeline Editor | Commit section', () => {
   });
 
   describe('when the commit is ocurring', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('shows a saving state', async () => {
       mockMutate.mockImplementationOnce(() => {
         expect(findCommitBtnLoadingIcon().exists()).toBe(true);

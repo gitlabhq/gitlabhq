@@ -8,7 +8,7 @@
         = f.label :email
         = f.email_field :email, class: "form-control gl-form-input", required: true, title: 'Please provide a valid email address.', value: nil
       .clearfix
-        = f.submit "Resend", class: 'gl-button btn btn-success'
+        = f.submit "Resend", class: 'gl-button btn btn-confirm'
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

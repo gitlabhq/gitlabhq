@@ -35,7 +35,7 @@ UNKNOWN_FILES_MESSAGE = <<MARKDOWN
 
 These files couldn't be categorised, so Danger was unable to suggest a reviewer.
 Please consider creating a merge request to
-[add support](https://gitlab.com/gitlab-org/gitlab/blob/master/tooling/danger/helper.rb)
+[add support](https://gitlab.com/gitlab-org/gitlab/blob/master/tooling/danger/project_helper.rb)
 for them.
 MARKDOWN
 
@@ -67,7 +67,7 @@ def markdown_row_for_spins(category, spins_array)
   "| #{helper.label_for_category(category)} | #{reviewer_note} | #{maintainer_note} |"
 end
 
-changes = helper.changes_by_category
+changes = project_helper.changes_by_category
 
 # Ignore any files that are known but uncategorized. Prompt for any unknown files
 changes.delete(:none)
@@ -76,10 +76,10 @@ changes.delete(:docs)
 categories = changes.keys - [:unknown]
 
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
-categories << :database if helper.gitlab_helper&.mr_labels&.include?('database') && !categories.include?(:database)
+categories << :database if helper.mr_labels.include?('database') && !categories.include?(:database)
 
 if changes.any?
-  project = helper.project_name
+  project = project_helper.project_name
 
   random_roulette_spins = roulette.spin(project, categories, timezone_experiment: false)
 

@@ -1,13 +1,12 @@
 <script>
-import Tab from '~/vue_shared/components/tabs/tab.vue';
-import Tabs from '~/vue_shared/components/tabs/tabs';
+import { GlTab, GlTabs } from '@gitlab/ui';
 import BranchesSearchList from './branches/search_list.vue';
 import MergeRequestSearchList from './merge_requests/list.vue';
 
 export default {
   components: {
-    Tabs,
-    Tab,
+    GlTab,
+    GlTabs,
     BranchesSearchList,
     MergeRequestSearchList,
   },
@@ -23,20 +22,14 @@ export default {
 
 <template>
   <div class="ide-nav-form p-0">
-    <tabs v-if="showMergeRequests" stop-propagation>
-      <tab active>
-        <template #title>
-          {{ __('Branches') }}
-        </template>
+    <gl-tabs v-if="showMergeRequests">
+      <gl-tab :title="__('Branches')">
         <branches-search-list />
-      </tab>
-      <tab>
-        <template #title>
-          {{ __('Merge Requests') }}
-        </template>
+      </gl-tab>
+      <gl-tab :title="__('Merge Requests')">
         <merge-request-search-list />
-      </tab>
-    </tabs>
+      </gl-tab>
+    </gl-tabs>
     <branches-search-list v-else />
   </div>
 </template>

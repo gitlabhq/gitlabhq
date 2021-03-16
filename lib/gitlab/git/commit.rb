@@ -20,6 +20,7 @@ module Gitlab
       ].freeze
 
       attr_accessor(*SERIALIZE_KEYS)
+      attr_reader :repository
 
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)

@@ -7,6 +7,6 @@
   = form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .form-actions
-      = f.submit _('Create New Domain'), class: "btn btn-success"
+      = f.submit _('Create New Domain'), class: "gl-button btn btn-confirm"
       .float-right
-        = link_to _('Cancel'), project_pages_path(@project), class: 'btn btn-cancel'
+        = link_to _('Cancel'), project_pages_path(@project), class: 'gl-button btn btn-default btn-cancel'

@@ -3,12 +3,13 @@
 module Issuable
   module Clone
     class BaseService < IssuableBaseService
-      attr_reader :original_entity, :new_entity
+      attr_reader :original_entity, :new_entity, :target_project
 
       alias_method :old_project, :project
 
-      def execute(original_entity, new_project = nil)
+      def execute(original_entity, target_project = nil)
         @original_entity = original_entity
+        @target_project = target_project
 
         # Using transaction because of a high resources footprint
         # on rewriting notes (unfolding references)
@@ -76,6 +77,12 @@ module Issuable
         if new_entity.project&.group && current_user.can?(:read_group, new_entity.project.group)
           new_entity.project.group
         end
+      end
+
+      def relative_position
+        return if original_entity.project.root_ancestor.id != target_project.root_ancestor.id
+
+        original_entity.relative_position
       end
     end
   end

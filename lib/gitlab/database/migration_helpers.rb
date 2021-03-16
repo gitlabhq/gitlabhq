@@ -87,9 +87,10 @@ module Gitlab
       # See Rails' `create_table` for more info on the available arguments.
       def create_table_with_constraints(table_name, **options, &block)
         helper_context = self
-        check_constraints = []
 
         with_lock_retries do
+          check_constraints = []
+
           create_table(table_name, **options) do |t|
             t.define_singleton_method(:check_constraint) do |name, definition|
               helper_context.send(:validate_check_constraint_name!, name) # rubocop:disable GitlabSecurity/PublicSend
@@ -1015,7 +1016,7 @@ module Gitlab
           'CopyColumnUsingBackgroundMigrationJob',
           interval,
           batch_size: batch_size,
-          other_job_arguments: [table, primary_key, column, tmp_column, sub_batch_size],
+          other_job_arguments: [table, primary_key, sub_batch_size, column, tmp_column],
           track_jobs: true,
           primary_column_name: primary_key
         )

@@ -1,23 +1,26 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 
 describe('Pipelines Artifacts dropdown', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = mount(PipelineArtifacts, {
+    wrapper = shallowMount(PipelineArtifacts, {
       propsData: {
         artifacts: [
           {
-            name: 'artifact',
+            name: 'job my-artifact',
             path: '/download/path',
           },
           {
-            name: 'artifact two',
+            name: 'job-2 my-artifact-2',
             path: '/download/path-two',
           },
         ],
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -39,8 +42,8 @@ describe('Pipelines Artifacts dropdown', () => {
   });
 
   it('should render a link with the provided path', () => {
-    expect(findFirstGlDropdownItem().find('a').attributes('href')).toEqual('/download/path');
+    expect(findFirstGlDropdownItem().attributes('href')).toBe('/download/path');
 
-    expect(findFirstGlDropdownItem().text()).toContain('artifact');
+    expect(findFirstGlDropdownItem().text()).toBe('Download job my-artifact artifact');
   });
 });

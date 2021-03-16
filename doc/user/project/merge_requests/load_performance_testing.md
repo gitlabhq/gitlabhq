@@ -104,8 +104,8 @@ An example configuration workflow:
 
 1. Set up GitLab Runner to run Docker containers, like the
    [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
-1. Configure the default Load Performance Testing CI job in your `.gitlab-ci.yml` file.
-   You need to include the template and configure it with variables:
+1. Configure the default Load Performance Testing CI/CD job in your `.gitlab-ci.yml` file.
+   You need to include the template and configure it with CI/CD variables:
 
    ```yaml
    include:
@@ -153,7 +153,7 @@ but it can be extended to work with [review apps](../../../ci/review_apps) or
 [dynamic environments](../../../ci/environments) with a few extra steps.
 
 The best approach is to capture the dynamic URL in a [`.env` file](https://docs.docker.com/compose/env-file/)
-as a job artifact to be shared, then use a custom environment variable we've provided named `K6_DOCKER_OPTIONS`
+as a job artifact to be shared, then use a custom CI/CD variable we've provided named `K6_DOCKER_OPTIONS`
 to configure the k6 Docker container to use the file. With this, k6 can then use any
 environment variables from the `.env` file in scripts using standard JavaScript,
 such as: ``http.get(`${__ENV.ENVIRONMENT_URL}`)``.

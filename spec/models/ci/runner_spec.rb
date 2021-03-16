@@ -40,41 +40,39 @@ RSpec.describe Ci::Runner do
     context 'runner_type validations' do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project) }
-      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-      let(:instance_runner) { create(:ci_runner, :instance) }
 
       it 'disallows assigning group to project_type runner' do
-        project_runner.groups << build(:group)
+        project_runner = build(:ci_runner, :project, groups: [group])
 
         expect(project_runner).not_to be_valid
         expect(project_runner.errors.full_messages).to include('Runner cannot have groups assigned')
       end
 
       it 'disallows assigning group to instance_type runner' do
-        instance_runner.groups << build(:group)
+        instance_runner = build(:ci_runner, :instance, groups: [group])
 
         expect(instance_runner).not_to be_valid
         expect(instance_runner.errors.full_messages).to include('Runner cannot have groups assigned')
       end
 
       it 'disallows assigning project to group_type runner' do
-        group_runner.projects << build(:project)
+        group_runner = build(:ci_runner, :instance, projects: [project])
 
         expect(group_runner).not_to be_valid
         expect(group_runner.errors.full_messages).to include('Runner cannot have projects assigned')
       end
 
       it 'disallows assigning project to instance_type runner' do
-        instance_runner.projects << build(:project)
+        instance_runner = build(:ci_runner, :instance, projects: [project])
 
         expect(instance_runner).not_to be_valid
         expect(instance_runner.errors.full_messages).to include('Runner cannot have projects assigned')
       end
 
       it 'fails to save a group assigned to a project runner even if the runner is already saved' do
-        group.runners << project_runner
-        expect { group.save! }
+        project_runner = create(:ci_runner, :project, projects: [project])
+
+        expect { create(:group, runners: [project_runner]) }
           .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
@@ -352,6 +350,8 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#can_pick?' do
+    using RSpec::Parameterized::TableSyntax
+
     let_it_be(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner_project) { build.project }
@@ -364,6 +364,11 @@ RSpec.describe Ci::Runner do
     context 'a different runner' do
       let(:other_project) { create(:project) }
       let(:other_runner) { create(:ci_runner, :project, projects: [other_project], tag_list: tag_list, run_untagged: run_untagged) }
+
+      before do
+        # `can_pick?` is not used outside the runners available for the project
+        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+      end
 
       it 'cannot handle builds' do
         expect(other_runner.can_pick?(build)).to be_falsey
@@ -432,9 +437,32 @@ RSpec.describe Ci::Runner do
           expect(runner.can_pick?(build)).to be_truthy
         end
       end
+
+      it 'does not query for owned or instance runners' do
+        expect(described_class).not_to receive(:owned_or_instance_wide)
+
+        runner.can_pick?(build)
+      end
+
+      context 'when feature flag ci_runners_short_circuit_assignable_for is disabled' do
+        before do
+          stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+        end
+
+        it 'does not query for owned or instance runners' do
+          expect(described_class).to receive(:owned_or_instance_wide).and_call_original
+
+          runner.can_pick?(build)
+        end
+      end
     end
 
     context 'when runner is not shared' do
+      before do
+        # `can_pick?` is not used outside the runners available for the project
+        stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
+      end
+
       context 'when runner is assigned to a project' do
         it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
@@ -500,6 +528,29 @@ RSpec.describe Ci::Runner do
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'matches tags' do
+      where(:run_untagged, :runner_tags, :build_tags, :result) do
+        true  | []      | []      | true
+        true  | []      | ['a']   | false
+        true  | %w[a b] | ['a']   | true
+        true  | ['a']   | %w[a b] | false
+        true  | ['a']   | ['a']   | true
+        false | ['a']   | ['a']   | true
+        false | ['b']   | ['a']   | false
+        false | %w[a b] | ['a']   | true
+      end
+
+      with_them do
+        let(:tag_list) { runner_tags }
+
+        before do
+          build.tag_list = build_tags
+        end
+
+        it { is_expected.to eq(result) }
       end
     end
   end
@@ -844,27 +895,50 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#pick_build!' do
+    let(:build) { create(:ci_build) }
+    let(:runner) { create(:ci_runner) }
+
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
-        ci_build = build(:ci_build)
-        runner = build(:ci_runner)
-        allow(runner).to receive(:can_pick?).with(ci_build).and_return(true)
-
         expect(runner).to receive(:tick_runner_queue)
 
-        runner.pick_build!(ci_build)
+        runner.pick_build!(build)
       end
     end
 
     context 'runner cannot pick the build' do
-      it 'does not call #tick_runner_queue' do
-        ci_build = build(:ci_build)
-        runner = build(:ci_runner)
-        allow(runner).to receive(:can_pick?).with(ci_build).and_return(false)
+      before do
+        build.tag_list = [:docker]
+      end
 
+      it 'does not call #tick_runner_queue' do
         expect(runner).not_to receive(:tick_runner_queue)
 
-        runner.pick_build!(ci_build)
+        runner.pick_build!(build)
+      end
+    end
+
+    context 'build picking improvement enabled' do
+      before do
+        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: true)
+      end
+
+      it 'does not check if the build is assignable to a runner' do
+        expect(runner).not_to receive(:can_pick?)
+
+        runner.pick_build!(build)
+      end
+    end
+
+    context 'build picking improvement disabled' do
+      before do
+        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: false)
+      end
+
+      it 'checks if the build is assignable to a runner' do
+        expect(runner).to receive(:can_pick?).and_call_original
+
+        runner.pick_build!(build)
       end
     end
   end

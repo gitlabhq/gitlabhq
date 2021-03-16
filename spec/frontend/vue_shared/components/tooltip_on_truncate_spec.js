@@ -11,6 +11,15 @@ jest.mock('~/lib/utils/dom_utils', () => ({
     throw new Error('this needs to be mocked');
   }),
 }));
+jest.mock('@gitlab/ui', () => ({
+  GlTooltipDirective: {
+    bind(el, binding) {
+      el.classList.add('gl-tooltip');
+      el.setAttribute('data-original-title', el.title);
+      el.dataset.placement = binding.value.placement;
+    },
+  },
+}));
 
 describe('TooltipOnTruncate component', () => {
   let wrapper;
@@ -52,7 +61,7 @@ describe('TooltipOnTruncate component', () => {
     wrapper = parent.find(TooltipOnTruncate);
   };
 
-  const hasTooltip = () => wrapper.classes('js-show-tooltip');
+  const hasTooltip = () => wrapper.classes('gl-tooltip');
 
   afterEach(() => {
     wrapper.destroy();

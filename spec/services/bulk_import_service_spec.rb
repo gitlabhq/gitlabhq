@@ -48,5 +48,22 @@ RSpec.describe BulkImportService do
 
       subject.execute
     end
+
+    it 'returns success ServiceResponse' do
+      result = subject.execute
+
+      expect(result).to be_a(ServiceResponse)
+      expect(result).to be_success
+    end
+
+    it 'returns ServiceResponse with error if validation fails' do
+      params[0][:source_full_path] = nil
+
+      result = subject.execute
+
+      expect(result).to be_a(ServiceResponse)
+      expect(result).to be_error
+      expect(result.message).to eq("Validation failed: Source full path can't be blank")
+    end
   end
 end

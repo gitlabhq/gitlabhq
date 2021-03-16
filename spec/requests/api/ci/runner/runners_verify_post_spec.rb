@@ -37,10 +37,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       end
 
       context 'when valid token is provided' do
+        subject { post api('/runners/verify'), params: { token: runner.token } }
+
         it 'verifies Runner credentials' do
-          post api('/runners/verify'), params: { token: runner.token }
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'storing arguments in the application context' do
+          let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
       end
     end

@@ -52,7 +52,7 @@ RSpec.describe PrometheusAlertEvent do
       let(:started_at) { Time.current }
 
       context 'when status is none' do
-        subject { build(:prometheus_alert_event, :none) }
+        subject { build(:prometheus_alert_event, status: nil, started_at: nil) }
 
         it 'fires an event' do
           result = subject.fire(started_at)

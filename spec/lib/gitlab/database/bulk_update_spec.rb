@@ -13,8 +13,8 @@ RSpec.describe Gitlab::Database::BulkUpdate do
       i_a, i_b = create_list(:issue, 2)
 
       {
-        i_a  => { title: 'Issue a' },
-        i_b  => { title: 'Issue b' }
+        i_a => { title: 'Issue a' },
+        i_b => { title: 'Issue b' }
       }
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Database::BulkUpdate do
 
   it 'is possible to update all objects in a single query' do
     users = create_list(:user, 3)
-    mapping = users.zip(%w(foo bar baz)).to_h do |u, name|
+    mapping = users.zip(%w[foo bar baz]).to_h do |u, name|
       [u, { username: name, admin: true }]
     end
 
@@ -61,13 +61,13 @@ RSpec.describe Gitlab::Database::BulkUpdate do
 
     # We have optimistically updated the values
     expect(users).to all(be_admin)
-    expect(users.map(&:username)).to eq(%w(foo bar baz))
+    expect(users.map(&:username)).to eq(%w[foo bar baz])
 
     users.each(&:reset)
 
     # The values are correct on reset
     expect(users).to all(be_admin)
-    expect(users.map(&:username)).to eq(%w(foo bar baz))
+    expect(users.map(&:username)).to eq(%w[foo bar baz])
   end
 
   it 'is possible to update heterogeneous sets' do
@@ -79,8 +79,8 @@ RSpec.describe Gitlab::Database::BulkUpdate do
 
     mapping = {
       mr_a => { title: 'MR a' },
-      i_a  => { title: 'Issue a' },
-      i_b  => { title: 'Issue b' }
+      i_a => { title: 'Issue a' },
+      i_b => { title: 'Issue b' }
     }
 
     expect do
@@ -99,8 +99,8 @@ RSpec.describe Gitlab::Database::BulkUpdate do
       i_a, i_b = create_list(:issue, 2)
 
       mapping = {
-        i_a  => { title: 'Issue a' },
-        i_b  => { title: 'Issue b' }
+        i_a => { title: 'Issue a' },
+        i_b => { title: 'Issue b' }
       }
 
       described_class.execute(%i[title], mapping)
@@ -113,23 +113,19 @@ RSpec.describe Gitlab::Database::BulkUpdate do
   include_examples 'basic functionality'
 
   context 'when prepared statements are configured differently to the normal test environment' do
-    # rubocop: disable RSpec/LeakyConstantDeclaration
-    # This cop is disabled because you cannot call establish_connection on
-    # an anonymous class.
-    class ActiveRecordBasePreparedStatementsInverted < ActiveRecord::Base
-      def self.abstract_class?
-        true # So it gets its own connection
+    before do
+      klass = Class.new(ActiveRecord::Base) do
+        def self.abstract_class?
+          true # So it gets its own connection
+        end
       end
-    end
-    # rubocop: enable RSpec/LeakyConstantDeclaration
 
-    before_all do
+      stub_const('ActiveRecordBasePreparedStatementsInverted', klass)
+
       c = ActiveRecord::Base.connection.instance_variable_get(:@config)
       inverted = c.merge(prepared_statements: !ActiveRecord::Base.connection.prepared_statements)
       ActiveRecordBasePreparedStatementsInverted.establish_connection(inverted)
-    end
 
-    before do
       allow(ActiveRecord::Base).to receive(:connection_specification_name)
         .and_return(ActiveRecordBasePreparedStatementsInverted.connection_specification_name)
     end

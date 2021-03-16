@@ -30,13 +30,13 @@ then
   ((ERRORCODE++))
 fi
 
-# Test for non-standard spaces (NBSP, NNBSP) in documentation.
+# Test for non-standard spaces (NBSP, NNBSP, ZWSP) in documentation.
 echo '=> Checking for non-standard spaces...'
 echo
-grep --extended-regexp --binary-file=without-match --recursive '[  ]' doc/ >/dev/null 2>&1
+grep --extended-regexp --binary-file=without-match --recursive '[  ​]' doc/ >/dev/null 2>&1
 if [ $? -eq 0 ]
 then
-  echo '✖ ERROR: Non-standard spaces (NBSP, NNBSP) should not be used in documentation.
+  echo '✖ ERROR: Non-standard spaces (NBSP, NNBSP, ZWSP) should not be used in documentation.
          https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#spaces-between-words
          Replace with standard spaces:' >&2
   # Find the spaces, then add color codes with sed to highlight each NBSP or NNBSP in the output.
@@ -78,7 +78,7 @@ then
   echo
   echo '  ✖ ERROR: The number of README.md file(s) has changed. Use index.md instead of README.md.' >&2
   echo '  ✖        If removing a README.md file, update NUMBER_READMES in lint-doc.sh.' >&2
-  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#work-with-directories-and-files'
+  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#work-with-directories-and-files'
   echo
   ((ERRORCODE++))
 fi

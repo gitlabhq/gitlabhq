@@ -27,14 +27,14 @@
     %td
       .float-right.btn-group
         - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
-          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn gl-button btn-default btn-svg' do
+          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn gl-button btn-default btn-icon' do
             = sprite_icon('play')
         - if can?(current_user, :take_ownership_pipeline_schedule, pipeline_schedule)
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn gl-button btn-default' do
             = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
-          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: _('Edit'), class: 'btn gl-button btn-default' do
+          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: _('Edit'), class: 'btn gl-button btn-default btn-icon' do
             = sprite_icon('pencil')
         - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
-          = link_to pipeline_schedule_path(pipeline_schedule), title: _('Delete'), method: :delete, class: 'btn gl-button btn-danger', data: { confirm: _("Are you sure you want to delete this pipeline schedule?") } do
+          = link_to pipeline_schedule_path(pipeline_schedule), title: _('Delete'), method: :delete, class: 'btn gl-button btn-danger btn-icon', data: { confirm: _("Are you sure you want to delete this pipeline schedule?") } do
             = sprite_icon('remove')

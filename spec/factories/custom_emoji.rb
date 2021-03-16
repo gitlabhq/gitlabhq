@@ -6,5 +6,6 @@ FactoryBot.define do
     namespace
     group
     file { 'https://gitlab.com/images/partyparrot.png' }
+    creator { namespace.owner }
   end
 end

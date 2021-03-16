@@ -13,7 +13,7 @@ guidelines so you can build an integration that fits with the workflow GitLab
 users are already familiar with.
 
 This page also provides resources for the technical work associated
-with [onboarding as a partner](https://about.gitlab.com/partners/integrate/).
+with [onboarding as a partner](https://about.gitlab.com/partners/technology-partners/integrate/).
 The steps below are a high-level view of what needs to be done to complete an
 integration as well as linking to more detailed resources for how to do so.
 
@@ -101,7 +101,7 @@ and complete an integration with the Secure stage.
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
 1. Optional: Provide auto-remediation steps:
-   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/index.md#automatic-remediation-for-vulnerabilities)
+   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/index.md#apply-an-automatic-remediation-for-a-vulnerability)
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please

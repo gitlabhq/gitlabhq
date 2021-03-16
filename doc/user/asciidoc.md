@@ -30,7 +30,7 @@ Line comments, which are lines that start with `//`, are skipped:
 
 A blank line separates paragraphs.
 
-A paragraph with the `[%hardbreaks]` option will preserve line breaks:
+A paragraph with the `[%hardbreaks]` option preserves line breaks:
 
 ```plaintext
 [%hardbreaks]
@@ -381,7 +381,7 @@ Supported formats (named colors are not supported):
 - RGB: `` `RGB[A](R, G, B[, A])` ``
 - HSL: `` `HSL[A](H, S, L[, A])` ``
 
-Color written inside backticks will be followed by a color "chip":
+Color written inside backticks is followed by a color "chip":
 
 ```plaintext
 - `#F00`
@@ -399,7 +399,7 @@ Color written inside backticks will be followed by a color "chip":
 
 To activate equation and formula support,
 set the `stem` attribute in the document's header to `latexmath`.
-Equations and formulas will be rendered using [KaTeX](https://katex.org/):
+Equations and formulas are rendered using [KaTeX](https://katex.org/):
 
 ```plaintext
 :stem: latexmath

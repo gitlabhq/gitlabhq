@@ -25,4 +25,12 @@
 
     = render_if_exists 'admin/application_settings/email_additional_text_setting', form: f
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }
+    .form-group
+      .form-check
+        = f.check_box :in_product_marketing_emails_enabled, class: 'form-check-input'
+        = f.label :in_product_marketing_emails_enabled, class: 'form-check-label' do
+          = _('Enable in-product marketing emails')
+        .form-text.text-muted
+          = _('By default, GitLab sends emails to help guide users through the onboarding process.')
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

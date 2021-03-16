@@ -7,12 +7,8 @@ module Members
 
     INVITE_TYPE = 'initial_email'
 
-    def rollout_strategy
-      :round_robin
-    end
-
-    def variants
-      %i[avatar permission_info control]
+    def resolve_variant_name
+      Strategy::RoundRobin.new(feature_flag_name, %i[avatar permission_info control]).execute
     end
   end
 end

@@ -21,11 +21,6 @@ describe('MergeRequestTabs', () => {
     $.extend(stubLocation, defaults, stubs || {});
   };
 
-  preloadFixtures(
-    'merge_requests/merge_request_with_task_list.html',
-    'merge_requests/diff_comment.html',
-  );
-
   beforeEach(() => {
     initMrPage();
 

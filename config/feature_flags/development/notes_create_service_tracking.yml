@@ -1,8 +1,8 @@
 ---
 name: notes_create_service_tracking
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18890
 rollout_issue_url: 
-milestone: 
+milestone: '12.5'
 type: development
-group: 
+group: group::testing
 default_enabled: false

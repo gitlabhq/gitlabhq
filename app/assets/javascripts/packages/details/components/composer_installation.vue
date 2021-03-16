@@ -2,12 +2,14 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
+import InstallationTitle from '~/packages/details/components/installation_title.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 import { TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'ComposerInstallation',
   components: {
+    InstallationTitle,
     CodeInstruction,
     GlLink,
     GlSprintf,
@@ -27,12 +29,13 @@ export default {
   },
   trackingActions: { ...TrackingActions },
   TrackingLabels,
+  installOptions: [{ value: 'composer', label: s__('PackageRegistry|Show Composer commands') }],
 };
 </script>
 
 <template>
   <div v-if="groupExists" data-testid="root-node">
-    <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
+    <installation-title package-type="composer" :options="$options.installOptions" />
 
     <code-instruction
       :label="$options.i18n.registryInclude"

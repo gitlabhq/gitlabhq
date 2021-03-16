@@ -82,9 +82,10 @@ export default {
     },
     triggerEvent(target, event) {
       const tooltip = this.findTooltipByTarget(target);
+      const tooltipRef = this.$refs[tooltip?.id];
 
-      if (tooltip) {
-        this.$refs[tooltip.id][0].$emit(event);
+      if (tooltipRef) {
+        tooltipRef[0].$emit(event);
       }
     },
     tooltipExists(element) {
@@ -113,6 +114,7 @@ export default {
       :boundary="tooltip.boundary"
       :disabled="tooltip.disabled"
       :show="tooltip.show"
+      @hidden="$emit('hidden', tooltip)"
     >
       <span v-if="tooltip.html" v-safe-html:[$options.safeHtmlConfig]="tooltip.title"></span>
       <span v-else>{{ tooltip.title }}</span>

@@ -16,7 +16,7 @@ module Projects
 
       finder_params[:group_ids] = @project.group.self_and_ancestors.select(:id) if @project.group
 
-      MilestonesFinder.new(finder_params).execute.select([:iid, :title])
+      MilestonesFinder.new(finder_params).execute.select([:iid, :title, :due_date])
     end
 
     def merge_requests

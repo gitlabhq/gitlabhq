@@ -68,6 +68,18 @@ RSpec.describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for followed user activities' do
+        before do
+          user.dashboard = 'followed_user_activity'
+        end
+
+        it 'redirects to the activity list' do
+          get :index
+
+          expect(response).to redirect_to activity_dashboard_path(filter: 'followed')
+        end
+      end
+
       context 'who has customized their dashboard setting for groups' do
         before do
           user.dashboard = 'groups'
@@ -123,11 +135,7 @@ RSpec.describe RootController do
           expect(response).to render_template 'dashboard/projects/index'
         end
 
-        context 'when experiment is enabled' do
-          before do
-            stub_experiment_for_subject(customize_homepage: true)
-          end
-
+        context 'when customize_homepage is enabled' do
           it 'renders the default dashboard' do
             get :index
 
@@ -135,9 +143,9 @@ RSpec.describe RootController do
           end
         end
 
-        context 'when experiment not enabled' do
+        context 'when customize_homepage is not enabled' do
           before do
-            stub_experiment(customize_homepage: false)
+            stub_feature_flags(customize_homepage: false)
           end
 
           it 'renders the default dashboard' do

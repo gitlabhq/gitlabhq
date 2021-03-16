@@ -64,6 +64,8 @@ export default {
       v-if="!activeIssue.emailsDisabled"
       :value="activeIssue.subscribed"
       :is-loading="loading"
+      :label="$options.i18n.header.title"
+      label-position="hidden"
       data-testid="notification-subscribe-toggle"
       @change="handleToggleSubscription"
     />

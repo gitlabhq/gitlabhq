@@ -18,7 +18,10 @@
   .js-cherry-pick-commit-modal{ data: { title: title,
     endpoint: cherry_pick_namespace_project_commit_path(commit, namespace_id: @project.namespace.full_path, project_id: @project),
     branch: @project.default_branch,
+    target_project_id: @project.id,
+    target_project_name: @project.full_path,
     push_code: can?(current_user, :push_code, @project).to_s,
     branch_collaboration: @project.branch_allows_collaboration?(current_user, selected_branch).to_s,
     existing_branch: ERB::Util.html_escape(selected_branch),
-    branches_endpoint: project_branches_path(@project) } }
+    branches_endpoint: refs_project_path(@project),
+    projects: cherry_pick_projects_data(@project).to_json } }

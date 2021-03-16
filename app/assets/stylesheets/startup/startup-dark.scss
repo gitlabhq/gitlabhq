@@ -1031,6 +1031,7 @@ body.gl-dark .logo-text svg {
 }
 body.gl-dark .navbar-gitlab {
   background-color: #2e2e2e;
+  box-shadow: 0 1px 0 0 var(--gray-100);
 }
 body.gl-dark .navbar-gitlab .navbar-sub-nav li.active > a,
 body.gl-dark .navbar-gitlab .navbar-sub-nav li.active > button,

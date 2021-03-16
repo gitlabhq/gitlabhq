@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# File hooks **(FREE)**
+# File hooks **(FREE SELF)**
 
 > - Introduced in GitLab 10.6.
 > - Until GitLab 12.8, the feature name was Plugins.

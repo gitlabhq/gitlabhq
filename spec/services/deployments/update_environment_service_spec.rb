@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Deployments::UpdateEnvironmentService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
-  let(:options) { { name: 'production' } }
+  let(:options) { { name: environment_name } }
   let(:pipeline) do
     create(
       :ci_pipeline,
@@ -20,13 +20,14 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       pipeline: pipeline,
       ref: 'master',
       tag: false,
-      environment: 'production',
+      environment: environment_name,
       options: { environment: options },
       project: project)
   end
 
   let(:deployment) { job.deployment }
   let(:environment) { deployment.environment }
+  let(:environment_name) { 'production' }
 
   subject(:service) { described_class.new(deployment) }
 
@@ -129,6 +130,56 @@ RSpec.describe Deployments::UpdateEnvironmentService do
           expect { subject.execute }
             .to change { environment.reset.auto_stop_at&.round }.from(nil).to(1.day.since.round)
         end
+      end
+    end
+
+    context 'when deployment tier is specified' do
+      let(:environment_name) { 'customer-portal' }
+      let(:options) { { name: environment_name, deployment_tier: 'production' } }
+
+      context 'when tier has already been set' do
+        before do
+          environment.update_column(:tier, Environment.tiers[:other])
+        end
+
+        it 'overwrites the guessed tier by the specified deployment tier' do
+          expect { subject.execute }
+            .to change { environment.reset.tier }.from('other').to('production')
+        end
+      end
+
+      context 'when tier has not been set' do
+        before do
+          environment.update_column(:tier, nil)
+        end
+
+        it 'sets the specified deployment tier' do
+          expect { subject.execute }
+            .to change { environment.reset.tier }.from(nil).to('production')
+        end
+
+        context 'when deployment was created by an external CD system' do
+          before do
+            deployment.update_column(:deployable_id, nil)
+          end
+
+          it 'guesses the deployment tier' do
+            expect { subject.execute }
+              .to change { environment.reset.tier }.from(nil).to('other')
+          end
+        end
+      end
+    end
+
+    context 'when deployment tier is not specified' do
+      let(:environment_name) { 'customer-portal' }
+      let(:options) { { name: environment_name } }
+
+      it 'guesses the deployment tier' do
+        environment.update_column(:tier, nil)
+
+        expect { subject.execute }
+          .to change { environment.reset.tier }.from(nil).to('other')
       end
     end
   end

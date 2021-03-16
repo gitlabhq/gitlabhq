@@ -15,7 +15,7 @@ module Banzai
       end
 
       def extra_element_attrs
-        { width: "400" }
+        { width: "400", preload: "metadata" }
       end
     end
   end

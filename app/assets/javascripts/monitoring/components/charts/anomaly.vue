@@ -86,7 +86,6 @@ export default {
       const originalMetricQuery = this.graphData.metrics[0];
 
       const metricQuery = produce(originalMetricQuery, (draftQuery) => {
-        // eslint-disable-next-line no-param-reassign
         draftQuery.result[0].values = draftQuery.result[0].values.map(([x, y]) => [
           x,
           y + this.yOffset,

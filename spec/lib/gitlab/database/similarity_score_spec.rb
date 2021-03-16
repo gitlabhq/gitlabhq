@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Database::SimilarityScore do
       let(:search) { 'xyz' }
 
       it 'results have 0 similarity score' do
-        expect(query_result.map { |row| row['similarity'] }).to all(eq(0))
+        expect(query_result.map { |row| row['similarity'].to_f }).to all(eq(0))
       end
     end
   end

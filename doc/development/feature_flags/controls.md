@@ -36,7 +36,7 @@ easier to measure the impact of both separately.
 
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
-Flags process](process.md) guide) supports rolling out changes to a percentage of
+Flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
 For an up to date list of feature flag commands please see [the source
@@ -240,7 +240,7 @@ To disable a feature flag that has been enabled for a specific project you can r
 /chatops run feature set --group=gitlab-org some_feature false
 ```
 
-You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](development.md#selectively-disable-by-actor) the feature flags.
+You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
 
 ### Feature flag change logging
 
@@ -276,17 +276,19 @@ and reduces confidence in our testing suite covering all possible combinations.
 Additionally, a feature flag overwritten in some of the environments can result
 in undefined and untested system behavior.
 
-To remove a feature flag:
+To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
-1. Open a new merge request with the ~"feature flag" label so
-   release managers are aware the changes are hidden behind a feature flag.
+1. Add the ~"feature flag" label so release managers are aware the changes are hidden behind a feature flag.
 1. If the merge request has to be picked into a stable branch, add the
    appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
-   See [the feature flag process](process.md#including-a-feature-behind-feature-flag-in-the-final-release)
+   See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle#including-a-feature-behind-feature-flag-in-the-final-release)
    for further details.
-1. Remove all references to the feature flag from the codebase.
+1. Remove all references to the feature flag from the codebase, including tests.
 1. Remove the YAML definition for the feature from the repository.
-1. Clean up the feature flag from all environments with `/chatops run feature delete some_feature`.
+
+Once the above MR has been merged, you should:
+
+1. [Clean up the feature flag from all environments](#cleanup-chatops) with `/chatops run feature delete some_feature`.
 1. Close the rollout issue for the feature flag after the feature flag is removed from the codebase.
 
 ### Cleanup ChatOps

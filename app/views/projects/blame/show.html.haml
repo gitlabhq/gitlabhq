@@ -6,18 +6,56 @@
 
   .file-holder
     = render "projects/blob/header", blob: @blob, blame: true
+
     .file-blame-legend
-      = render 'age_map_legend'
+      %span.left-label Newer
+      %span.legend-box.legend-box-0
+      %span.legend-box.legend-box-1
+      %span.legend-box.legend-box-2
+      %span.legend-box.legend-box-3
+      %span.legend-box.legend-box-4
+      %span.legend-box.legend-box-5
+      %span.legend-box.legend-box-6
+      %span.legend-box.legend-box-7
+      %span.legend-box.legend-box-8
+      %span.legend-box.legend-box-9
+      %span.right-label Older
+
     .table-responsive.file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
         - @blame.groups.each do |blame_group|
           - commit_data = @blame.commit_data(blame_group[:commit])
+          - line_count = blame_group[:lines].count
 
-          = render 'blame_group',
-            blame_group: blame_group,
-            current_line: current_line,
-            link_icon: link_icon,
-            commit_data: commit_data
+          %tr
+            %td.blame-commit{ class: commit_data.age_map_class }
+              .commit
+                = commit_data.author_avatar
 
-          - current_line += blame_group[:lines].count
+                .commit-row-title
+                  %span.item-title.str-truncated-100
+                    = commit_data.commit_link
+                  %span
+                    = commit_data.project_blame_link
+                  &nbsp;
+
+                .light
+                  = commit_data.commit_author_link
+                  = _('committed')
+                  #{commit_data.time_ago_tooltip}
+
+            %td.line-numbers
+              - (current_line...(current_line + line_count)).each do |i|
+                %a.diff-line-num.gl-justify-content-end{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i, class: "gl-display-flex!" }
+                  = link_icon
+                  = i
+                \
+
+            %td.lines
+              %pre.code.highlight
+                %code
+                  - blame_group[:lines].each do |line|
+                    #{line}
+
+          - current_line += line_count

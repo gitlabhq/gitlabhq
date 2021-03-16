@@ -764,6 +764,21 @@ describe('date addition/subtraction methods', () => {
     );
   });
 
+  describe('nYearsAfter', () => {
+    it.each`
+      date            | numberOfYears | expected
+      ${'2020-07-06'} | ${1}          | ${'2021-07-06'}
+      ${'2020-07-06'} | ${15}         | ${'2035-07-06'}
+    `(
+      'returns $expected for "$numberOfYears year(s) after $date"',
+      ({ date, numberOfYears, expected }) => {
+        expect(datetimeUtility.nYearsAfter(new Date(date), numberOfYears)).toEqual(
+          new Date(expected),
+        );
+      },
+    );
+  });
+
   describe('nMonthsBefore', () => {
     // The previous month (February) has 28 days
     const march2019 = '2019-03-15T00:00:00.000Z';
@@ -1018,6 +1033,81 @@ describe('isToday', () => {
   });
 });
 
+describe('isInPast', () => {
+  it.each`
+    date                                   | expected
+    ${new Date('2024-12-15')}              | ${false}
+    ${new Date('2020-07-06T00:00')}        | ${false}
+    ${new Date('2020-07-05T23:59:59.999')} | ${true}
+    ${new Date('2020-07-05')}              | ${true}
+    ${new Date('1999-03-21')}              | ${true}
+  `('returns $expected for $date', ({ date, expected }) => {
+    expect(datetimeUtility.isInPast(date)).toBe(expected);
+  });
+});
+
+describe('isInFuture', () => {
+  it.each`
+    date                                   | expected
+    ${new Date('2024-12-15')}              | ${true}
+    ${new Date('2020-07-07T00:00')}        | ${true}
+    ${new Date('2020-07-06T23:59:59.999')} | ${false}
+    ${new Date('2020-07-06')}              | ${false}
+    ${new Date('1999-03-21')}              | ${false}
+  `('returns $expected for $date', ({ date, expected }) => {
+    expect(datetimeUtility.isInFuture(date)).toBe(expected);
+  });
+});
+
+describe('fallsBefore', () => {
+  it.each`
+    dateA                                  | dateB                                  | expected
+    ${new Date('2020-07-06T23:59:59.999')} | ${new Date('2020-07-07T00:00')}        | ${true}
+    ${new Date('2020-07-07T00:00')}        | ${new Date('2020-07-06T23:59:59.999')} | ${false}
+    ${new Date('2020-04-04')}              | ${new Date('2021-10-10')}              | ${true}
+    ${new Date('2021-10-10')}              | ${new Date('2020-04-04')}              | ${false}
+  `('returns $expected for "$dateA falls before $dateB"', ({ dateA, dateB, expected }) => {
+    expect(datetimeUtility.fallsBefore(dateA, dateB)).toBe(expected);
+  });
+});
+
+describe('removeTime', () => {
+  it.each`
+    date                                   | expected
+    ${new Date('2020-07-07')}              | ${new Date('2020-07-07T00:00:00.000')}
+    ${new Date('2020-07-07T00:00:00.001')} | ${new Date('2020-07-07T00:00:00.000')}
+    ${new Date('2020-07-07T23:59:59.999')} | ${new Date('2020-07-07T00:00:00.000')}
+    ${new Date('2020-07-07T12:34:56.789')} | ${new Date('2020-07-07T00:00:00.000')}
+  `('returns $expected for $date', ({ date, expected }) => {
+    expect(datetimeUtility.removeTime(date)).toEqual(expected);
+  });
+});
+
+describe('getTimeRemainingInWords', () => {
+  it.each`
+    date                                   | expected
+    ${new Date('2020-07-06T12:34:56.789')} | ${'0 days remaining'}
+    ${new Date('2020-07-07T12:34:56.789')} | ${'1 day remaining'}
+    ${new Date('2020-07-08T12:34:56.789')} | ${'2 days remaining'}
+    ${new Date('2020-07-12T12:34:56.789')} | ${'6 days remaining'}
+    ${new Date('2020-07-13T12:34:56.789')} | ${'1 week remaining'}
+    ${new Date('2020-07-19T12:34:56.789')} | ${'1 week remaining'}
+    ${new Date('2020-07-20T12:34:56.789')} | ${'2 weeks remaining'}
+    ${new Date('2020-07-27T12:34:56.789')} | ${'3 weeks remaining'}
+    ${new Date('2020-08-03T12:34:56.789')} | ${'4 weeks remaining'}
+    ${new Date('2020-08-05T12:34:56.789')} | ${'4 weeks remaining'}
+    ${new Date('2020-08-06T12:34:56.789')} | ${'1 month remaining'}
+    ${new Date('2020-09-06T12:34:56.789')} | ${'2 months remaining'}
+    ${new Date('2021-06-06T12:34:56.789')} | ${'11 months remaining'}
+    ${new Date('2021-07-06T12:34:56.789')} | ${'1 year remaining'}
+    ${new Date('2022-07-06T12:34:56.789')} | ${'2 years remaining'}
+    ${new Date('2030-07-06T12:34:56.789')} | ${'10 years remaining'}
+    ${new Date('2119-07-06T12:34:56.789')} | ${'99 years remaining'}
+  `('returns $expected for $date', ({ date, expected }) => {
+    expect(datetimeUtility.getTimeRemainingInWords(date)).toEqual(expected);
+  });
+});
+
 describe('getStartOfDay', () => {
   beforeEach(() => {
     timezoneMock.register('US/Eastern');
@@ -1041,6 +1131,35 @@ describe('getStartOfDay', () => {
     ({ inputAsString, options, expectedAsString }) => {
       const inputDate = new Date(inputAsString);
       const actual = datetimeUtility.getStartOfDay(inputDate, options);
+
+      expect(actual.toISOString()).toEqual(expectedAsString);
+    },
+  );
+});
+
+describe('getStartOfWeek', () => {
+  beforeEach(() => {
+    timezoneMock.register('US/Eastern');
+  });
+
+  afterEach(() => {
+    timezoneMock.unregister();
+  });
+
+  it.each`
+    inputAsString                      | options           | expectedAsString
+    ${'2021-01-29T18:08:23.014Z'}      | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-29T13:08:23.014-05:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-30T03:08:23.014+09:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${undefined}      | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{}}             | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{ utc: false }} | ${'2021-01-25T05:00:00.000Z'}
+    ${'2021-01-28T18:08:23.014-10:00'} | ${{ utc: true }}  | ${'2021-01-26T00:00:00.000Z'}
+  `(
+    'when the provided date is $inputAsString and the options parameter is $options, returns $expectedAsString',
+    ({ inputAsString, options, expectedAsString }) => {
+      const inputDate = new Date(inputAsString);
+      const actual = datetimeUtility.getStartOfWeek(inputDate, options);
 
       expect(actual.toISOString()).toEqual(expectedAsString);
     },

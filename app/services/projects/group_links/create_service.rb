@@ -23,7 +23,7 @@ module Projects
       private
 
       def setup_authorizations(group, group_access = nil)
-        if Feature.enabled?(:specialized_project_authorization_project_share_worker)
+        if Feature.enabled?(:specialized_project_authorization_project_share_worker, default_enabled: :yaml)
           AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker.perform_async(
             project.id, group.id, group_access)
 

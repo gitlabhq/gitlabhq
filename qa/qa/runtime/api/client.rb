@@ -23,22 +23,30 @@ module QA
             # unless a specific user has been passed
             @user.nil? ? Runtime::Env.personal_access_token ||= create_personal_access_token : create_personal_access_token
           end
+
+          if @user&.admin?
+            Runtime::Env.admin_personal_access_token = @personal_access_token
+          end
+
+          @personal_access_token
         end
 
         def self.as_admin
-          if Runtime::Env.admin_personal_access_token
-            Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
-          else
-            user = Resource::User.fabricate_via_api! do |user|
-              user.username = Runtime::User.admin_username
-              user.password = Runtime::User.admin_password
-            end
+          @admin_client ||= begin
+            if Runtime::Env.admin_personal_access_token
+              Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+            else
+              user = Resource::User.fabricate_via_api! do |user|
+                user.username = Runtime::User.admin_username
+                user.password = Runtime::User.admin_password
+              end
 
-            unless user.admin?
-              raise AuthorizationError, "User '#{user.username}' is not an administrator."
-            end
+              unless user.admin?
+                raise AuthorizationError, "User '#{user.username}' is not an administrator."
+              end
 
-            Runtime::API::Client.new(:gitlab, user: user)
+              Runtime::API::Client.new(:gitlab, user: user)
+            end
           end
         end
 
@@ -67,9 +75,9 @@ module QA
 
           Page::Main::Menu.perform(&:sign_out) if @is_new_session && signed_in_initially
 
-          Flow::Login.sign_in_unless_signed_in(as: @user)
-
-          token = Resource::PersonalAccessToken.fabricate!.access_token
+          token = Resource::PersonalAccessToken.fabricate! do |pat|
+            pat.user = user
+          end.token
 
           # If this is a new session, that tests that follow could fail if they
           # try to sign in without starting a new session.

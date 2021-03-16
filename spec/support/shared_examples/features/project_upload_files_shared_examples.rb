@@ -3,7 +3,13 @@
 RSpec.shared_examples 'it uploads and commit a new text file' do
   it 'uploads and commit a new text file', :js do
     find('.add-to-tree').click
-    click_link('Upload file')
+
+    page.within('.dropdown-menu') do
+      click_link('Upload file')
+
+      wait_for_requests
+    end
+
     drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
     page.within('#modal-upload-blob') do
@@ -29,7 +35,13 @@ end
 RSpec.shared_examples 'it uploads and commit a new image file' do
   it 'uploads and commit a new image file', :js do
     find('.add-to-tree').click
-    click_link('Upload file')
+
+    page.within('.dropdown-menu') do
+      click_link('Upload file')
+
+      wait_for_requests
+    end
+
     drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'))
 
     page.within('#modal-upload-blob') do
@@ -78,6 +90,24 @@ RSpec.shared_examples 'it uploads and commit a new file to a forked project' do
 
     wait_for_requests
 
+    expect(page).to have_content('Lorem ipsum dolor sit amet')
+    expect(page).to have_content('Sed ut perspiciatis unde omnis')
+  end
+end
+
+RSpec.shared_examples 'uploads and commits a new text file via "upload file" button' do
+  it 'uploads and commits a new text file via "upload file" button', :js do
+    find('[data-testid="upload-file-button"]').click
+
+    attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'), make_visible: true)
+
+    page.within('#details-modal-upload-blob') do
+      fill_in(:commit_message, with: 'New commit message')
+    end
+
+    click_button('Upload file')
+
+    expect(page).to have_content('New commit message')
     expect(page).to have_content('Lorem ipsum dolor sit amet')
     expect(page).to have_content('Sed ut perspiciatis unde omnis')
   end

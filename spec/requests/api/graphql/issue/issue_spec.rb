@@ -8,10 +8,9 @@ RSpec.describe 'Query.issue(id)' do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:issue_params) { { 'id' => issue.to_global_id.to_s } }
 
   let(:issue_data) { graphql_data['issue'] }
-
-  let_it_be(:issue_params) { { 'id' => issue.to_global_id.to_s } }
   let(:issue_fields) { all_graphql_fields_for('Issue'.classify) }
 
   let(:query) do
@@ -62,7 +61,7 @@ RSpec.describe 'Query.issue(id)' do
       )
     end
 
-    context 'selecting any single field' do
+    context 'when selecting any single field' do
       where(:field) do
         scalar_fields_of('Issue').map { |name| [name] }
       end
@@ -84,13 +83,13 @@ RSpec.describe 'Query.issue(id)' do
       end
     end
 
-    context 'selecting multiple fields' do
+    context 'when selecting multiple fields' do
       let(:issue_fields) { ['title', 'description', 'updatedBy { username }'] }
 
       it 'returns the Issue with the specified fields' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data.keys).to eq( %w(title description updatedBy) )
+        expect(issue_data.keys).to eq %w[title description updatedBy]
         expect(issue_data['title']).to eq(issue.title)
         expect(issue_data['description']).to eq(issue.description)
         expect(issue_data['updatedBy']['username']).to eq(issue.author.username)
@@ -110,14 +109,14 @@ RSpec.describe 'Query.issue(id)' do
       it 'returns correct attributes' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data.keys).to eq( %w(moved movedTo) )
+        expect(issue_data.keys).to eq %w[moved movedTo]
         expect(issue_data['moved']).to eq(true)
         expect(issue_data['movedTo']['title']).to eq(new_issue.title)
       end
     end
 
     context 'when passed a non-Issue gid' do
-      let(:mr) {create(:merge_request)}
+      let(:mr) { create(:merge_request) }
 
       it 'returns an error' do
         gid = mr.to_global_id.to_s

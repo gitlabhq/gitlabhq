@@ -351,6 +351,7 @@ export const issues = {
   [mockIssue4.id]: mockIssue4,
 };
 
+// The response from group project REST API
 export const mockRawGroupProjects = [
   {
     id: 0,
@@ -366,17 +367,34 @@ export const mockRawGroupProjects = [
   },
 ];
 
-export const mockGroupProjects = [
-  {
-    id: 0,
-    name: 'Example Project',
-    nameWithNamespace: 'Awesome Group / Example Project',
-    fullPath: 'awesome-group/example-project',
-  },
-  {
-    id: 1,
-    name: 'Foobar Project',
-    nameWithNamespace: 'Awesome Group / Foobar Project',
-    fullPath: 'awesome-group/foobar-project',
-  },
+// The response from GraphQL endpoint
+export const mockGroupProject1 = {
+  id: 0,
+  name: 'Example Project',
+  nameWithNamespace: 'Awesome Group / Example Project',
+  fullPath: 'awesome-group/example-project',
+  archived: false,
+};
+
+export const mockGroupProject2 = {
+  id: 1,
+  name: 'Foobar Project',
+  nameWithNamespace: 'Awesome Group / Foobar Project',
+  fullPath: 'awesome-group/foobar-project',
+  archived: false,
+};
+
+export const mockArchivedGroupProject = {
+  id: 2,
+  name: 'Archived Project',
+  nameWithNamespace: 'Awesome Group / Archived Project',
+  fullPath: 'awesome-group/archived-project',
+  archived: true,
+};
+
+export const mockGroupProjects = [mockGroupProject1, mockGroupProject2];
+
+export const mockActiveGroupProjects = [
+  { ...mockGroupProject1, archived: false },
+  { ...mockGroupProject2, archived: false },
 ];

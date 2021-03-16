@@ -35,25 +35,44 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       end
 
       context 'when valid token is provided' do
-        it 'creates runner with default values' do
-          post api('/runners'), params: { token: registration_token }
+        def request
+          post api('/runners'), params: { token: token }
+        end
 
-          runner = ::Ci::Runner.first
+        context 'with a registration token' do
+          let(:token) { registration_token }
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['id']).to eq(runner.id)
-          expect(json_response['token']).to eq(runner.token)
-          expect(runner.run_untagged).to be true
-          expect(runner.active).to be true
-          expect(runner.token).not_to eq(registration_token)
-          expect(runner).to be_instance_type
+          it 'creates runner with default values' do
+            request
+
+            runner = ::Ci::Runner.first
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['id']).to eq(runner.id)
+            expect(json_response['token']).to eq(runner.token)
+            expect(runner.run_untagged).to be true
+            expect(runner.active).to be true
+            expect(runner.token).not_to eq(registration_token)
+            expect(runner).to be_instance_type
+          end
+
+          it_behaves_like 'storing arguments in the application context' do
+            subject { request }
+
+            let(:expected_params) { { client_id: "runner/#{::Ci::Runner.first.id}" } }
+          end
+
+          it_behaves_like 'not executing any extra queries for the application context' do
+            let(:subject_proc) { proc { request } }
+          end
         end
 
         context 'when project token is used' do
           let(:project) { create(:project) }
+          let(:token) { project.runners_token }
 
           it 'creates project runner' do
-            post api('/runners'), params: { token: project.runners_token }
+            request
 
             expect(response).to have_gitlab_http_status(:created)
             expect(project.runners.size).to eq(1)
@@ -62,13 +81,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(runner.token).not_to eq(project.runners_token)
             expect(runner).to be_project_type
           end
+
+          it_behaves_like 'storing arguments in the application context' do
+            subject { request }
+
+            let(:expected_params) { { project: project.full_path, client_id: "runner/#{::Ci::Runner.first.id}" } }
+          end
+
+          it_behaves_like 'not executing any extra queries for the application context' do
+            let(:subject_proc) { proc { request } }
+          end
         end
 
         context 'when group token is used' do
           let(:group) { create(:group) }
+          let(:token) { group.runners_token }
 
           it 'creates a group runner' do
-            post api('/runners'), params: { token: group.runners_token }
+            request
 
             expect(response).to have_gitlab_http_status(:created)
             expect(group.runners.reload.size).to eq(1)
@@ -76,6 +106,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(runner.token).not_to eq(registration_token)
             expect(runner.token).not_to eq(group.runners_token)
             expect(runner).to be_group_type
+          end
+
+          it_behaves_like 'storing arguments in the application context' do
+            subject { request }
+
+            let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{::Ci::Runner.first.id}" } }
+          end
+
+          it_behaves_like 'not executing any extra queries for the application context' do
+            let(:subject_proc) { proc { request } }
           end
         end
       end

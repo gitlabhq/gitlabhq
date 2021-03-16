@@ -11,9 +11,10 @@ import {
 } from '@gitlab/ui';
 import { partition, isString } from 'lodash';
 import Api from '~/api';
+import GroupSelect from '~/invite_members/components/group_select.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
-import { s__, __, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
@@ -28,6 +29,7 @@ export default {
     GlButton,
     GlFormInput,
     MembersTokenSelect,
+    GroupSelect,
   },
   props: {
     id: {
@@ -47,7 +49,7 @@ export default {
       required: true,
     },
     defaultAccessLevel: {
-      type: String,
+      type: Number,
       required: true,
     },
     helpLink: {
@@ -60,21 +62,21 @@ export default {
       visible: true,
       modalId: 'invite-members-modal',
       selectedAccessLevel: this.defaultAccessLevel,
+      inviteeType: 'members',
       newUsersToInvite: [],
       selectedDate: undefined,
+      groupToBeSharedWith: {},
     };
   },
   computed: {
-    inviteToName() {
-      return this.name.toUpperCase();
-    },
-    inviteToType() {
-      return this.isProject ? __('project') : __('group');
+    isInviteGroup() {
+      return this.inviteeType === 'group';
     },
     introText() {
-      return sprintf(s__("InviteMembersModal|You're inviting members to the %{name} %{type}"), {
-        name: this.inviteToName,
-        type: this.inviteToType,
+      const inviteTo = this.isProject ? 'toProject' : 'toGroup';
+
+      return sprintf(this.$options.labels[this.inviteeType][inviteTo].introText, {
+        name: this.name,
       });
     },
     toastOptions() {
@@ -82,12 +84,12 @@ export default {
         onComplete: () => {
           this.selectedAccessLevel = this.defaultAccessLevel;
           this.newUsersToInvite = [];
+          this.groupToBeSharedWith = {};
         },
       };
     },
     basePostData() {
       return {
-        access_level: this.selectedAccessLevel,
         expires_at: this.selectedDate,
         format: 'json',
       };
@@ -97,9 +99,16 @@ export default {
         (key) => this.accessLevels[key] === Number(this.selectedAccessLevel),
       );
     },
+    inviteDisabled() {
+      return (
+        this.newUsersToInvite.length === 0 && Object.keys(this.groupToBeSharedWith).length === 0
+      );
+    },
   },
   mounted() {
-    eventHub.$on('openModal', this.openModal);
+    eventHub.$on('openModal', (options) => {
+      this.openModal(options);
+    });
   },
   methods: {
     partitionNewUsersToInvite() {
@@ -113,26 +122,42 @@ export default {
         usersToAddById.map((user) => user.id).join(','),
       ];
     },
-    openModal() {
+    openModal({ inviteeType }) {
+      this.inviteeType = inviteeType;
+
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     sendInvite() {
-      this.submitForm();
+      if (this.isInviteGroup) {
+        this.submitShareWithGroup();
+      } else {
+        this.submitInviteMembers();
+      }
       this.closeModal();
     },
     cancelInvite() {
       this.selectedAccessLevel = this.defaultAccessLevel;
       this.selectedDate = undefined;
-      this.newUsersToInvite = '';
+      this.newUsersToInvite = [];
+      this.groupToBeSharedWith = {};
       this.closeModal();
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
     },
-    submitForm() {
+    submitShareWithGroup() {
+      const apiShareWithGroup = this.isProject
+        ? Api.projectShareWithGroup.bind(Api)
+        : Api.groupShareWithGroup.bind(Api);
+
+      apiShareWithGroup(this.id, this.shareWithGroupPostData(this.groupToBeSharedWith.id))
+        .then(this.showToastMessageSuccess)
+        .catch(this.showToastMessageError);
+    },
+    submitInviteMembers() {
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
       const promises = [];
 
@@ -155,10 +180,25 @@ export default {
       Promise.all(promises).then(this.showToastMessageSuccess).catch(this.showToastMessageError);
     },
     inviteByEmailPostData(usersToInviteByEmail) {
-      return { ...this.basePostData, email: usersToInviteByEmail };
+      return {
+        ...this.basePostData,
+        email: usersToInviteByEmail,
+        access_level: this.selectedAccessLevel,
+      };
     },
     addByUserIdPostData(usersToAddById) {
-      return { ...this.basePostData, user_id: usersToAddById };
+      return {
+        ...this.basePostData,
+        user_id: usersToAddById,
+        access_level: this.selectedAccessLevel,
+      };
+    },
+    shareWithGroupPostData(groupToBeSharedWith) {
+      return {
+        ...this.basePostData,
+        group_id: groupToBeSharedWith,
+        group_access: this.selectedAccessLevel,
+      };
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
@@ -170,9 +210,36 @@ export default {
     },
   },
   labels: {
-    modalTitle: s__('InviteMembersModal|Invite team members'),
-    newUsersToInvite: s__('InviteMembersModal|GitLab member or Email address'),
-    userPlaceholder: s__('InviteMembersModal|Search for members to invite'),
+    members: {
+      modalTitle: s__('InviteMembersModal|Invite team members'),
+      searchField: s__('InviteMembersModal|GitLab member or Email address'),
+      placeHolder: s__('InviteMembersModal|Search for members to invite'),
+      toGroup: {
+        introText: s__(
+          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",
+        ),
+      },
+      toProject: {
+        introText: s__(
+          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
+        ),
+      },
+    },
+    group: {
+      modalTitle: s__('InviteMembersModal|Invite a group'),
+      searchField: s__('InviteMembersModal|Select a group to invite'),
+      placeHolder: s__('InviteMembersModal|Search for a group to invite'),
+      toGroup: {
+        introText: s__(
+          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group.",
+        ),
+      },
+      toProject: {
+        introText: s__(
+          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
+        ),
+      },
+    },
     accessLevel: s__('InviteMembersModal|Choose a role permission'),
     accessExpireDate: s__('InviteMembersModal|Access expiration date (optional)'),
     toastMessageSuccessful: s__('InviteMembersModal|Members were successfully added'),
@@ -189,31 +256,45 @@ export default {
   <gl-modal
     :modal-id="modalId"
     size="sm"
-    :title="$options.labels.modalTitle"
+    data-qa-selector="invite_members_modal_content"
+    :title="$options.labels[inviteeType].modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
   >
-    <div class="gl-ml-5 gl-mr-5">
-      <div>{{ introText }}</div>
+    <div>
+      <p ref="introText">
+        <gl-sprintf :message="introText">
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </p>
 
       <label :id="$options.membersTokenSelectLabelId" class="gl-font-weight-bold gl-mt-5">{{
-        $options.labels.newUsersToInvite
+        $options.labels[inviteeType].searchField
       }}</label>
       <div class="gl-mt-2">
         <members-token-select
+          v-if="!isInviteGroup"
           v-model="newUsersToInvite"
-          :label="$options.labels.newUsersToInvite"
           :aria-labelledby="$options.membersTokenSelectLabelId"
-          :placeholder="$options.labels.userPlaceholder"
+          :placeholder="$options.labels[inviteeType].placeHolder"
         />
+        <group-select v-if="isInviteGroup" v-model="groupToBeSharedWith" />
       </div>
 
-      <label class="gl-font-weight-bold gl-mt-5">{{ $options.labels.accessLevel }}</label>
+      <label class="gl-font-weight-bold gl-mt-3">{{ $options.labels.accessLevel }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-        <gl-dropdown class="gl-shadow-none gl-w-full" v-bind="$attrs" :text="selectedRoleName">
+        <gl-dropdown
+          class="gl-shadow-none gl-w-full"
+          data-qa-selector="access_level_dropdown"
+          v-bind="$attrs"
+          :text="selectedRoleName"
+        >
           <template v-for="(key, item) in accessLevels">
             <gl-dropdown-item
               :key="key"
               active-class="is-active"
+              is-check-item
               :is-checked="key === selectedAccessLevel"
               @click="changeSelectedItem(key)"
             >
@@ -223,7 +304,7 @@ export default {
         </gl-dropdown>
       </div>
 
-      <div class="gl-mt-2">
+      <div class="gl-mt-2 gl-w-half gl-xs-w-full">
         <gl-sprintf :message="$options.labels.readMoreText">
           <template #link="{ content }">
             <gl-link :href="helpLink" target="_blank">{{ content }}</gl-link>
@@ -231,7 +312,7 @@ export default {
         </gl-sprintf>
       </div>
 
-      <label class="gl-font-weight-bold gl-mt-5" for="expires_at">{{
+      <label class="gl-font-weight-bold gl-mt-5 gl-display-block" for="expires_at">{{
         $options.labels.accessExpireDate
       }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
@@ -253,15 +334,16 @@ export default {
     </div>
 
     <template #modal-footer>
-      <div class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-p-3">
+      <div class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0">
         <gl-button ref="cancelButton" @click="cancelInvite">
           {{ $options.labels.cancelButtonText }}
         </gl-button>
         <div class="gl-mr-3"></div>
         <gl-button
           ref="inviteButton"
-          :disabled="!newUsersToInvite"
+          :disabled="inviteDisabled"
           variant="success"
+          data-qa-selector="invite_button"
           @click="sendInvite"
           >{{ $options.labels.inviteButtonText }}</gl-button
         >

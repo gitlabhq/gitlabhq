@@ -1,61 +1,51 @@
-%header.jira-connect-header
-  = brand_header_logo
+%header.jira-connect-header.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-px-5.gl-border-b-solid.gl-border-b-gray-100.gl-border-b-1.gl-bg-white
+  = link_to brand_header_logo, Gitlab.config.gitlab.url, target: '_blank', rel: 'noopener noreferrer'
 
-.jira-connect-user
+.jira-connect-user.gl-font-base
   - if current_user
     - user_link = link_to(current_user.to_reference, jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in')
     = _('Signed in to GitLab as %{user_link}').html_safe % { user_link: user_link }
   - elsif @subscriptions.present?
     = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
 
-.jira-connect-app
+%main.jira-connect-app.gl-px-5.gl-pt-7.gl-mx-auto
   - if current_user.blank? && @subscriptions.empty?
-    %h2= s_('JiraService|GitLab for Jira Configuration')
-    %p= s_('JiraService|Sign in to GitLab.com to get started.')
+    .jira-connect-app-body.gl-text-center
+      %h2= s_('JiraService|GitLab for Jira Configuration')
+      %p= s_('JiraService|Sign in to GitLab.com to get started.')
 
-    .gl-mt-7
-      - sign_in_button_class = new_jira_connect_ui? ? 'btn gl-button btn-confirm' : 'ak-button ak-button__appearance-primary'
-      = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "#{sign_in_button_class} js-jira-connect-sign-in"
+      .gl-mt-7
+        = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "btn gl-button btn-confirm js-jira-connect-sign-in"
 
-    .gl-mt-7
-      %p Note: this integration only works with accounts on GitLab.com (SaaS).
+      .gl-mt-7
+        %p= s_('Integrations|Note: this integration only works with accounts on GitLab.com (SaaS).')
   - else
     .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 
-    - unless new_jira_connect_ui?
-      %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
-        .ak-field-group
-          %label
-            GitLab namespace
-
-        .ak-field-group.field-group-input
-          %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
-          %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
-            Link namespace to Jira
-
-    - if @subscriptions.present?
-      %table.subscriptions.gl-w-full
-        %thead
-          %tr
-            %th Namespace
-            %th Added
-            %th
-        %tbody
-          - @subscriptions.each do |subscription|
+    .jira-connect-app-body
+      - if @subscriptions.present?
+        %table.subscriptions.gl-w-full
+          %thead
             %tr
-              %td= subscription.namespace.full_path
-              %td= subscription.created_at
-              %td= link_to 'Remove', jira_connect_subscription_path(subscription), class: 'js-jira-connect-remove-subscription'
-    - else
-      %h4.empty-subscriptions
-        No linked namespaces
-      %p= s_('Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance.')
+              %th= _('Namespace')
+              %th= _('Added')
+              %th
+          %tbody
+            - @subscriptions.each do |subscription|
+              %tr
+                %td= subscription.namespace.full_path
+                %td= subscription.created_at
+                %td= link_to _('Remove'), jira_connect_subscription_path(subscription), class: 'js-jira-connect-remove-subscription'
+      - else
+        .gl-text-center
+          %h4= s_('Integrations|No linked namespaces')
+          %p= s_('Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance.')
 
-  %p.browser-limitations-notice
-    %strong Browser limitations:
-    Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use
-    %a{ href: 'https://www.mozilla.org/en-US/firefox/', target: '_blank', rel: 'noopener noreferrer' } Firefox
-    or enable cross‑site cookies in your browser when adding a namespace.
+  %p.jira-connect-app-body.gl-mt-7.gl-font-base.gl-text-center
+    %strong= s_('Integrations|Browser limitations')
+    - firefox_link_url = 'https://www.mozilla.org/en-US/firefox/'
+    - firefox_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: firefox_link_url }
+    = s_('Integrations|Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use %{firefox_link_start}Firefox%{firefox_link_end} or enable cross‑site cookies in your browser when adding a namespace.').html_safe % { firefox_link_start: firefox_link_start, firefox_link_end: '</a>'.html_safe }
     = link_to _('Learn more'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/284211', target: '_blank', rel: 'noopener noreferrer'
 
 = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?

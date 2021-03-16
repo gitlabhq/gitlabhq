@@ -15,25 +15,24 @@ Markdown fields. When you start typing a word in a Markdown field with one of
 the following characters, GitLab progressively autocompletes against a set of
 matching values. The string matching is not case sensitive.
 
-| Character | Autocompletes |
-| :-------- | :------------ |
-| `~`       | Labels |
-| `%`       | Milestones |
-| `@`       | Users and groups |
-| `#`       | Issues |
-| `!`       | Merge requests |
-| `&`       | Epics |
-| `$`       | Snippets |
-| `:`       | Emoji |
-| `/`       | Quick Actions |
+| Character | Autocompletes | Relevant matches shown |
+| :-------- | :------------ | :---- |
+| `~`       | Labels | 20 |
+| `%`       | Milestones | 5 |
+| `@`       | Users and groups | 10 |
+| `#`       | Issues | 5 |
+| `!`       | Merge requests | 5 |
+| `&`       | Epics | 5 |
+| `$`       | Snippets | 5 |
+| `:`       | Emoji | 5 |
+| `/`       | Quick Actions | 100 |
 
-Up to 5 of the most relevant matches are displayed in a popup list. When you
-select an item from the list, the value is entered in the field. The more
-characters you enter, the more precise the matches are.
+When you select an item from the list, the value is entered in the field.
+The more characters you enter, the more precise the matches are.
 
 Autocomplete characters are useful when combined with [Quick Actions](quick_actions.md).
 
-## Example
+## User autocomplete
 
 Assume your GitLab instance includes the following users:
 
@@ -49,17 +48,9 @@ Assume your GitLab instance includes the following users:
 
 <!-- vale gitlab.Spelling = YES -->
 
-In an Issue comment, entering `@l` results in the following popup list
-appearing. Note that user `shelba` is not included, because the list includes
-only the 5 users most relevant to the Issue.
-
-![Popup list which includes users whose username or name contains the letter `l`](img/autocomplete_characters_example1_v12_0.png)
-
-If you continue to type, `@le`, the popup list changes to the following. The
-popup now only includes users where `le` appears in their username, or a word in
-their name.
-
-![Popup list which includes users whose username or name contains the string](img/autocomplete_characters_example2_v12_0.png)
+User autocompletion sorts by the users whose username or name start with your query first.
+For example, typing `@lea` shows `leanna` first and typing `@ros` shows `Rosemarie Rogahn` and `Rosy Grant` first.
+Any usernames or names that include your query are shown afterwards in the autocomplete menu.
 
 You can also search across the full name to find a user.
-To find `Rosy Grant`, even if their username is for example `hunter2`, you can type their full name without spaces like `@rosygrant`.
+To find `Rosy Grant`, even if their username is for example `alessandra`, you can type their full name without spaces like `@rosygrant`.

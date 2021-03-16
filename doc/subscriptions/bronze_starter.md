@@ -20,15 +20,15 @@ the tiers are no longer mentioned in GitLab documentation:
   [per-group charts](../user/project/milestones/index.md#group-burndown-charts)
 - [Code owners](../user/project/code_owners.md)
 - Description templates:
-  - [Setting a default template for merge requests and issues](../user/project/description_templates.md#setting-a-default-template-for-merge-requests-and-issues)
+  - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../tools/email.md)
 - Groups:
-  - [Creating group memberships via CN](../user/group/index.md#creating-group-links-via-cn)
+  - [Creating group memberships via CN](../user/group/index.md#create-group-links-via-cn)
   - [Group push rules](../user/group/index.md#group-push-rules)
   - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
-  - [Member locking](../user/group/index.md#member-lock)
-  - [Overriding user permissions](../user/group/index.md#overriding-user-permissions)
-  - [User contribution analysis](../user/group/index.md#user-contribution-analysis)
+  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-a-group)
+  - [Overriding user permissions](../user/group/index.md#override-user-permissions)
+  - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
 - Issue Boards:
   - [Configurable issue boards](../user/project/issue_board.md#configurable-issue-boards)
@@ -107,8 +107,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Search:
   - [Filtering merge requests by approvers](../user/search/index.md#filtering-merge-requests-by-approvers)
   - [Filtering merge requests by "approved by"](../user/search/index.md#filtering-merge-requests-by-approved-by)
-  - [Advanced Global Search (Elasticsearch)](../user/search/advanced_global_search.md)
-  - [Advanced Search Syntax](../user/search/advanced_search_syntax.md)
+  - [Advanced Search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk.md)
 - [Storage usage statistics](../user/usage_quotas.md#storage-usage-statistics)
 
@@ -130,7 +129,7 @@ Bronze-level subscribers:
   - [Group iterations API](../api/group_iterations.md)
   - Project milestones API: [Get all burndown chart events for a single milestone](../api/milestones.md#get-all-burndown-chart-events-for-a-single-milestone)
   - [Project iterations API](../api/iterations.md)
-  - Fields in the [Search API](../api/search.md) available only to [Advanced Global Search (Elasticsearch)](../integration/elasticsearch.md) users
+  - Fields in the [Search API](../api/search.md) available only to [Advanced Search (Elasticsearch)](../integration/elasticsearch.md) users
   - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)

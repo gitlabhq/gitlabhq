@@ -20,5 +20,9 @@ RSpec.describe TestSuiteSummaryEntity do
     it 'contains the build_ids' do
       expect(as_json).to include(:build_ids)
     end
+
+    it 'contains the suite_error' do
+      expect(as_json).to include(:suite_error)
+    end
   end
 end

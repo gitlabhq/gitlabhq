@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
 RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
-  include CopHelper
-
   subject(:cop) { described_class.new }
 
   it 'flags violation for return inside a block' do
@@ -19,20 +16,16 @@ RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
     RUBY
   end
 
-  it "doesn't call add_offense twice for nested blocks" do
-    source = <<~RUBY
+  it "doesn't create more than one offense for nested blocks" do
+    expect_offense(<<~RUBY)
       call do
         call do
           something
           return if something_else
+          ^^^^^^ Do not return from a block, use next or break instead.
         end
       end
     RUBY
-    expect_any_instance_of(described_class) do |instance|
-      expect(instance).to receive(:add_offense).once
-    end
-
-    inspect_source(source)
   end
 
   it 'flags violation for return inside included > def > block' do

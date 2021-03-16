@@ -6,8 +6,6 @@ import TimezoneDropdown, {
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
 
 describe('Timezone Dropdown', () => {
-  preloadFixtures('pipeline_schedules/edit.html');
-
   let $inputEl = null;
   let $dropdownEl = null;
   let $wrapper = null;

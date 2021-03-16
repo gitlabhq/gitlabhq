@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe AvatarsHelper do
   include UploadHelpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe '#project_icon & #group_icon' do
     shared_examples 'resource with a default avatar' do |source_type|
@@ -89,32 +89,59 @@ RSpec.describe AvatarsHelper do
     end
   end
 
-  describe '#avatar_icon_for_email' do
+  describe '#avatar_icon_for_email', :clean_gitlab_redis_cache do
     let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
-    context 'using an email' do
-      context 'when there is a matching user' do
-        it 'returns a relative URL for the avatar' do
-          expect(helper.avatar_icon_for_email(user.email).to_s)
-            .to eq(user.avatar.url)
+    subject { helper.avatar_icon_for_email(user.email).to_s }
+
+    shared_examples "returns avatar for email" do
+      context 'using an email' do
+        context 'when there is a matching user' do
+          it 'returns a relative URL for the avatar' do
+            expect(subject).to eq(user.avatar.url)
+          end
+        end
+
+        context 'when no user exists for the email' do
+          it 'calls gravatar_icon' do
+            expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
+
+            helper.avatar_icon_for_email('foo@example.com', 20, 2)
+          end
+        end
+
+        context 'without an email passed' do
+          it 'calls gravatar_icon' do
+            expect(helper).to receive(:gravatar_icon).with(nil, 20, 2)
+            expect(User).not_to receive(:find_by_any_email)
+
+            helper.avatar_icon_for_email(nil, 20, 2)
+          end
         end
       end
+    end
 
-      context 'when no user exists for the email' do
-        it 'calls gravatar_icon' do
-          expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
-
-          helper.avatar_icon_for_email('foo@example.com', 20, 2)
-        end
+    context "when :avatar_cache_for_email flag is enabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: true)
       end
 
-      context 'without an email passed' do
-        it 'calls gravatar_icon' do
-          expect(helper).to receive(:gravatar_icon).with(nil, 20, 2)
+      it_behaves_like "returns avatar for email"
 
-          helper.avatar_icon_for_email(nil, 20, 2)
-        end
+      it "caches the request" do
+        expect(User).to receive(:find_by_any_email).once.and_call_original
+
+        expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
+        expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
       end
+    end
+
+    context "when :avatar_cache_for_email flag is disabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: false)
+      end
+
+      it_behaves_like "returns avatar for email"
     end
   end
 
@@ -346,7 +373,7 @@ RSpec.describe AvatarsHelper do
         is_expected.to eq tag(
           :img,
           alt: "#{options[:user_name]}'s avatar",
-          src: avatar_icon_for_email(options[:user_email], 16),
+          src: helper.avatar_icon_for_email(options[:user_email], 16),
           data: { container: 'body' },
           class: "avatar s16 has-tooltip",
           title: options[:user_name]
@@ -379,7 +406,7 @@ RSpec.describe AvatarsHelper do
           is_expected.to eq tag(
             :img,
             alt: "#{user_with_avatar.username}'s avatar",
-            src: avatar_icon_for_email(user_with_avatar.email, 16, only_path: false),
+            src: helper.avatar_icon_for_email(user_with_avatar.email, 16, only_path: false),
             data: { container: 'body' },
             class: "avatar s16 has-tooltip",
             title: user_with_avatar.username

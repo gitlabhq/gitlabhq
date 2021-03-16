@@ -10,7 +10,7 @@ module Resolvers
     def resolve(**args)
       scope = super
 
-      if only_count_is_selected_with_merged_at_filter?(args) && Feature.enabled?(:optimized_merge_request_count_with_merged_at_filter, default_enabled: :yaml)
+      if only_count_is_selected_with_merged_at_filter?(args)
         MergeRequest::MetricsFinder
           .new(current_user, args.merge(target_project: project))
           .execute

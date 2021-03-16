@@ -210,10 +210,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Delete merged branches
 
-Will delete all branches that are merged into the project's default branch.
+Deletes all branches that are merged into the project's default branch.
 
 NOTE:
-[Protected branches](../user/project/protected_branches.md) will not be deleted as part of this operation.
+[Protected branches](../user/project/protected_branches.md) are not deleted as part of this operation.
 
 ```plaintext
 DELETE /projects/:id/repository/merged_branches

@@ -198,14 +198,6 @@ RSpec.describe 'Dashboard Projects' do
       it_behaves_like 'hidden pipeline status'
     end
 
-    context 'when dashboard_pipeline_status is disabled' do
-      before do
-        stub_feature_flags(dashboard_pipeline_status: false)
-      end
-
-      it_behaves_like 'hidden pipeline status'
-    end
-
     context "when last_pipeline is missing" do
       before do
         project.last_pipeline.delete

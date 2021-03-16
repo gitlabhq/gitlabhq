@@ -11,10 +11,14 @@ RSpec.describe 'getting pipeline information nested in a project' do
   let(:pipeline_graphql_data) { graphql_data['project']['pipeline'] }
 
   let!(:query) do
-    graphql_query_for(
-      'project',
-      { 'fullPath' => project.full_path },
-      query_graphql_field('pipeline', iid: pipeline.iid.to_s)
+    %(
+      query {
+        project(fullPath:  "#{project.full_path}") {
+          pipeline(iid: "#{pipeline.iid}") {
+            configSource
+          }
+        }
+      }
     )
   end
 

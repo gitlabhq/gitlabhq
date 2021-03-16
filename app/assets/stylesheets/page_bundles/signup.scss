@@ -32,11 +32,6 @@
     @include media-breakpoint-down(md) {
       width: 100%;
     }
-
-    img {
-      width: $default-icon-size;
-      height: $default-icon-size;
-    }
   }
 
   .decline-page {

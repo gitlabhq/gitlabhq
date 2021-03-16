@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require 'rspec-parameterized'
 
 require_relative '../../rubocop/migration_helpers'

@@ -279,6 +279,10 @@ module GpgHelpers
       KEY
     end
 
+    def primary_keyid2
+      fingerprint2[-16..-1]
+    end
+
     def fingerprint2
       'C447A6F6BFD9CEF8FB371785571625A930241179'
     end

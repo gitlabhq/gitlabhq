@@ -25,7 +25,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
 
   const createWrapper = ({ labels = [] } = {}) => {
     store = createStore();
-    store.state.issues = { [TEST_ISSUE.id]: { ...TEST_ISSUE, labels } };
+    store.state.boardItems = { [TEST_ISSUE.id]: { ...TEST_ISSUE, labels } };
     store.state.activeId = TEST_ISSUE.id;
 
     wrapper = shallowMount(BoardSidebarLabelsSelect, {
@@ -66,7 +66,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
 
       jest.spyOn(wrapper.vm, 'setActiveIssueLabels').mockImplementation(() => TEST_LABELS);
       findLabelsSelect().vm.$emit('updateSelectedLabels', TEST_LABELS_PAYLOAD);
-      store.state.issues[TEST_ISSUE.id].labels = TEST_LABELS;
+      store.state.boardItems[TEST_ISSUE.id].labels = TEST_LABELS;
       await wrapper.vm.$nextTick();
     });
 

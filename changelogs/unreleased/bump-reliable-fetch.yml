@@ -1,0 +1,5 @@
+---
+title: Update gitlab-sidekiq-fetcher to 0.5.5 to handle namespaced queues
+merge_request: 55013
+author:
+type: fixed

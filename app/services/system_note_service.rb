@@ -175,7 +175,7 @@ module SystemNoteService
   # Example Note text is based on event_type:
   #
   #   update: "changed target branch from `Old` to `New`"
-  #   delete: "changed automatically target branch to `New` because `Old` was deleted"
+  #   delete: "deleted the `Old` branch. This merge request now targets the `New` branch"
   #
   # Returns the created Note object
   def change_branch(noteable, project, author, branch_type, event_type, old_branch, new_branch)
@@ -239,6 +239,10 @@ module SystemNoteService
 
   def mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).mark_canonical_issue_of_duplicate(duplicate_issue)
+  end
+
+  def add_email_participants(noteable, project, author, body)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).add_email_participants(body)
   end
 
   def discussion_lock(issuable, author)
@@ -321,6 +325,10 @@ module SystemNoteService
 
   def change_incident_severity(incident, author)
     ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_severity
+  end
+
+  def log_resolving_alert(alert, monitoring_tool)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project).log_resolving_alert(monitoring_tool)
   end
 
   private

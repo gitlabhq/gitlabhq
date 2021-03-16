@@ -7,7 +7,7 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      %integration-help-text{ "id" => "js-gitpod-settings-help-text", "message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" }
+      #js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }
       = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
 
 
@@ -25,4 +25,4 @@
           = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|e.g. https://gitpod.example.com')
           .form-text.text-muted
             = s_('Gitpod|Add the URL to your Gitpod instance configured to read your GitLab projects.')
-      = f.submit s_('Save changes'), class: 'gl-button btn btn-success'
+      = f.submit s_('Save changes'), class: 'gl-button btn btn-confirm'

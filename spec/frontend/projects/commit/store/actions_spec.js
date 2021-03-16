@@ -47,7 +47,7 @@ describe('Commit form modal store actions', () => {
     it('dispatch correct actions on fetchBranches', (done) => {
       jest
         .spyOn(axios, 'get')
-        .mockImplementation(() => Promise.resolve({ data: mockData.mockBranches }));
+        .mockImplementation(() => Promise.resolve({ data: { Branches: mockData.mockBranches } }));
 
       testAction(
         actions.fetchBranches,
@@ -106,6 +106,45 @@ describe('Commit form modal store actions', () => {
           payload: {},
         },
       ]);
+    });
+  });
+
+  describe('setBranchesEndpoint', () => {
+    it('commits SET_BRANCHES_ENDPOINT mutation', () => {
+      const endpoint = 'some/endpoint';
+
+      testAction(actions.setBranchesEndpoint, endpoint, {}, [
+        {
+          type: types.SET_BRANCHES_ENDPOINT,
+          payload: endpoint,
+        },
+      ]);
+    });
+  });
+
+  describe('setSelectedProject', () => {
+    const id = 1;
+
+    it('commits SET_SELECTED_PROJECT mutation', () => {
+      testAction(
+        actions.setSelectedProject,
+        id,
+        {},
+        [
+          {
+            type: types.SET_SELECTED_PROJECT,
+            payload: id,
+          },
+        ],
+        [
+          {
+            type: 'setBranchesEndpoint',
+          },
+          {
+            type: 'fetchBranches',
+          },
+        ],
+      );
     });
   });
 });

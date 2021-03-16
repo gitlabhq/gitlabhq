@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Git::Push do
       it { is_expected.to be_force_push }
     end
 
-    context 'when called muiltiple times' do
+    context 'when called mulitiple times' do
       it 'does not make make multiple calls to the force push check' do
         expect(Gitlab::Checks::ForcePush).to receive(:force_push?).once
 

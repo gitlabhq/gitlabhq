@@ -93,6 +93,29 @@ RSpec.describe PostReceive do
 
         perform
       end
+
+      it 'tracks an event for the empty_repo_upload experiment', :snowplow do
+        allow_next_instance_of(ApplicationExperiment) do |e|
+          allow(e).to receive(:should_track?).and_return(true)
+          allow(e).to receive(:track_initial_writes)
+        end
+
+        perform
+
+        expect_snowplow_event(category: 'empty_repo_upload', action: 'initial_write', context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', data: anything }])
+      end
+
+      it 'does not track an event for the empty_repo_upload experiment when project is not empty', :snowplow do
+        allow(empty_project).to receive(:empty_repo?).and_return(false)
+        allow_next_instance_of(ApplicationExperiment) do |e|
+          allow(e).to receive(:should_track?).and_return(true)
+          allow(e).to receive(:track_initial_writes)
+        end
+
+        perform
+
+        expect_no_snowplow_event
+      end
     end
 
     shared_examples 'not updating remote mirrors' do
@@ -159,7 +182,7 @@ RSpec.describe PostReceive do
         end
 
         it 'expires the status cache' do
-          expect(project.repository).to receive(:empty?).and_return(true)
+          expect(project.repository).to receive(:empty?).at_least(:once).and_return(true)
           expect(project.repository).to receive(:expire_status_cache)
 
           perform

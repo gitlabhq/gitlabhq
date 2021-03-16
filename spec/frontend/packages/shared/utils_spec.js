@@ -35,7 +35,7 @@ describe('Packages shared utils', () => {
       packageType   | expectedResult
       ${'conan'}    | ${'Conan'}
       ${'maven'}    | ${'Maven'}
-      ${'npm'}      | ${'NPM'}
+      ${'npm'}      | ${'npm'}
       ${'nuget'}    | ${'NuGet'}
       ${'pypi'}     | ${'PyPI'}
       ${'composer'} | ${'Composer'}

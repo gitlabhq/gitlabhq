@@ -252,7 +252,7 @@ on the **secondary** node.
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. This is enabled by default, but if converting an existing node to Geo it should be checked:
 
-1. Navigate to **Admin Area > Settings** (`/admin/application_settings/general`) on the **primary** node.
+1. Go to **Admin Area > Settings** (`/admin/application_settings/general`) on the **primary** node.
 1. Expand "Visibility and access controls".
 1. Ensure "Enabled Git access protocols" is set to either "Both SSH and HTTP(S)" or "Only HTTP(S)".
 

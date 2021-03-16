@@ -175,7 +175,7 @@ export default {
             :href="mr.emailPatchesPath"
             class="js-download-email-patches"
             download
-            data-qa-selector="download_email_patches"
+            data-qa-selector="download_email_patches_menu_item"
           >
             {{ s__('mrWidget|Email patches') }}
           </gl-dropdown-item>
@@ -183,7 +183,7 @@ export default {
             :href="mr.plainDiffPath"
             class="js-download-plain-diff"
             download
-            data-qa-selector="download_plain_diff"
+            data-qa-selector="download_plain_diff_menu_item"
           >
             {{ s__('mrWidget|Plain diff') }}
           </gl-dropdown-item>

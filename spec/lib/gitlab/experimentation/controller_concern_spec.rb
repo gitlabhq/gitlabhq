@@ -520,6 +520,78 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     end
   end
 
+  describe '#record_experiment_group' do
+    let(:group) { 'a group object' }
+    let(:experiment_key) { :some_experiment_key }
+    let(:dnt_enabled) { false }
+    let(:experiment_active) { true }
+    let(:rollout_strategy) { :whatever }
+    let(:variant) { 'variant' }
+
+    before do
+      allow(controller).to receive(:dnt_enabled?).and_return(dnt_enabled)
+      allow(::Gitlab::Experimentation).to receive(:active?).and_return(experiment_active)
+      allow(::Gitlab::Experimentation).to receive(:rollout_strategy).and_return(rollout_strategy)
+      allow(controller).to receive(:tracking_group).and_return(variant)
+      allow(::Experiment).to receive(:add_group)
+    end
+
+    subject(:record_experiment_group) { controller.record_experiment_group(experiment_key, group) }
+
+    shared_examples 'exits early without recording' do
+      it 'returns early without recording the group as an ExperimentSubject' do
+        expect(::Experiment).not_to receive(:add_group)
+        record_experiment_group
+      end
+    end
+
+    shared_examples 'calls tracking_group' do |using_cookie_rollout|
+      it "calls tracking_group with #{using_cookie_rollout ? 'a nil' : 'the group as the'} subject" do
+        expect(controller).to receive(:tracking_group).with(experiment_key, nil, subject: using_cookie_rollout ? nil : group).and_return(variant)
+        record_experiment_group
+      end
+    end
+
+    shared_examples 'records the group' do
+      it 'records the group' do
+        expect(::Experiment).to receive(:add_group).with(experiment_key, group: group, variant: variant)
+        record_experiment_group
+      end
+    end
+
+    context 'when DNT is enabled' do
+      let(:dnt_enabled) { true }
+
+      include_examples 'exits early without recording'
+    end
+
+    context 'when the experiment is not active' do
+      let(:experiment_active) { false }
+
+      include_examples 'exits early without recording'
+    end
+
+    context 'when a nil group is given' do
+      let(:group) { nil }
+
+      include_examples 'exits early without recording'
+    end
+
+    context 'when the experiment uses a cookie-based rollout strategy' do
+      let(:rollout_strategy) { :cookie }
+
+      include_examples 'calls tracking_group', true
+      include_examples 'records the group'
+    end
+
+    context 'when the experiment uses a non-cookie-based rollout strategy' do
+      let(:rollout_strategy) { :group }
+
+      include_examples 'calls tracking_group', false
+      include_examples 'records the group'
+    end
+  end
+
   describe '#record_experiment_conversion_event' do
     let(:user) { build(:user) }
 
@@ -534,7 +606,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     end
 
     it 'records the conversion event for the experiment & user' do
-      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user)
+      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user, {})
       record_conversion_event
     end
 

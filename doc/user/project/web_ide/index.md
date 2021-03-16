@@ -71,19 +71,16 @@ Single file editing is based on the [Ace Editor](https://ace.c9.io).
 
 ### Themes
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in GitLab in 13.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in GitLab 13.0.
 > - Full Solarized Dark Theme [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219228) in GitLab 13.1.
+> - Full [Solarized Light](https://gitlab.com/gitlab-org/gitlab/-/issues/221035) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) Themes introduced in GitLab 13.6.
 
-All the themes GitLab supports for syntax highlighting are added to the Web IDE's code editor.
+All the themes GitLab supports for syntax highlighting are applied to the Web IDE's entire screen.
 You can pick a theme from your [profile preferences](../../profile/preferences.md).
 
-The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808) and
-the [Solarized dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/219228),
-which apply to the entire Web IDE screen.
-
-| Solarized Light Theme                                         | Solarized Dark Theme                                        | Dark Theme                              |
-|---------------------------------------------------------------|-------------------------------------------------------------|-----------------------------------------|
-| ![Solarized Light Theme](img/solarized_light_theme_v13_0.png) | ![Solarized Dark Theme](img/solarized_dark_theme_v13_1.png) | ![Dark Theme](img/dark_theme_v13_0.png) |
+| Solarized Dark Theme                                        | Dark Theme                              |
+|-------------------------------------------------------------|-----------------------------------------|
+| ![Solarized Dark Theme](img/solarized_dark_theme_v13_1.png) | ![Dark Theme](img/dark_theme_v13_0.png) |
 
 ## Schema based validation
 
@@ -237,7 +234,7 @@ different branch.
 
 When you edit Markdown files in the Web IDE, you can preview your changes by
 clicking the **Preview Markdown** tab above the file editor. The Markdown preview
-supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 
 You can also upload any local images by pasting them directly in the Markdown file.
 The image is uploaded to the same directory and is named `image.png` by default.
@@ -424,7 +421,7 @@ terminal:
   See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/-/issues/7) for
   more information.
 - `$CI_PROJECT_DIR` is a
-  [predefined environment variable](../../../ci/variables/predefined_variables.md)
+  [predefined CI/CD variable](../../../ci/variables/predefined_variables.md)
   for GitLab Runners. This is where your project's repository resides.
 
 After you have configured the web terminal for file syncing, then when the web

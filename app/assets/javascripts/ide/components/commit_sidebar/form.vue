@@ -1,16 +1,12 @@
 <script>
 import { GlModal, GlSafeHtmlDirective, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { n__, s__ } from '~/locale';
+import { n__ } from '~/locale';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 import { createUnexpectedCommitError } from '../../lib/errors';
 import Actions from './actions.vue';
 import CommitMessageField from './message_field.vue';
 import SuccessMessage from './success_message.vue';
-
-const MSG_CANNOT_PUSH_CODE = s__(
-  'WebIDE|You need permission to edit files directly in this project.',
-);
 
 export default {
   components: {
@@ -35,14 +31,14 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading', 'commitError']),
-    ...mapGetters(['someUncommittedChanges', 'canPushCode']),
+    ...mapGetters(['someUncommittedChanges', 'canPushCodeStatus']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     commitButtonDisabled() {
-      return !this.canPushCode || !this.someUncommittedChanges;
+      return !this.canPushCodeStatus.isAllowed || !this.someUncommittedChanges;
     },
     commitButtonTooltip() {
-      if (!this.canPushCode) {
-        return MSG_CANNOT_PUSH_CODE;
+      if (!this.canPushCodeStatus.isAllowed) {
+        return this.canPushCodeStatus.messageShort;
       }
 
       return '';
@@ -86,7 +82,7 @@ export default {
     commit() {
       // Even though the submit button will be disabled, we need to disable the submission
       // since hitting enter on the branch name text input also submits the form.
-      if (!this.canPushCode) {
+      if (!this.canPushCodeStatus.isAllowed) {
         return false;
       }
 
@@ -130,8 +126,6 @@ export default {
       this.componentHeight = null;
     },
   },
-  // Expose for tests
-  MSG_CANNOT_PUSH_CODE,
 };
 </script>
 

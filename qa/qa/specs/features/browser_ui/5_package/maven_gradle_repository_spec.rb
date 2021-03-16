@@ -13,7 +13,7 @@ module QA
           Flow::Login.sign_in
         end
 
-        Resource::PersonalAccessToken.fabricate!.access_token
+        Resource::PersonalAccessToken.fabricate!.token
       end
 
       let(:project) do

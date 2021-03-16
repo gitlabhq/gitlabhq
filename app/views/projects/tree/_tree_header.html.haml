@@ -7,7 +7,7 @@
 .tree-controls
   .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3<
     = render_if_exists 'projects/tree/lock_link'
-    #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }
+    #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil

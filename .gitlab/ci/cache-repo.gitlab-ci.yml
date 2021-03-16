@@ -29,6 +29,7 @@ cache-repo:
     - '[ -z "$CI_REPO_CACHE_CREDENTIALS" ] || gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS'
   script:
     # Enable shallow repo caching only if the $ENABLE_SHALLOW_REPO_CACHING variable exists
+    # The `git repack` call works around a Git bug with shallow clones: https://gitlab.com/gitlab-org/git/-/issues/86
     - if [ -n "$ENABLE_SHALLOW_REPO_CACHING" ]; then
         cd .. && rm -rf $CI_PROJECT_NAME;
         today=$(date +%Y-%m-%d);
@@ -38,6 +39,7 @@ cache-repo:
         echo "Cloning $CI_REPOSITORY_URL into $CI_PROJECT_NAME with commits from $one_year_ago.";
         time git clone --progress --no-checkout --shallow-since=$one_year_ago $CI_REPOSITORY_URL $CI_PROJECT_NAME;
         cd $CI_PROJECT_NAME;
+        time git repack -d;
         echo "Archiving $CI_PROJECT_NAME into /tmp/$SHALLOW_CLONE_TAR_FILENAME.";
         time tar cf /tmp/$SHALLOW_CLONE_TAR_FILENAME .;
         echo "GZipping /tmp/$SHALLOW_CLONE_TAR_FILENAME.";

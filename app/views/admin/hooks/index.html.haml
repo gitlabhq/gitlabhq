@@ -7,7 +7,7 @@
   .col-lg-8.gl-mb-3
     = form_for @hook, as: :hook, url: admin_hooks_path do |f|
       = render partial: 'form', locals: { form: f, hook: @hook }
-      = f.submit _('Add system hook'), class: 'btn gl-button btn-success'
+      = f.submit _('Add system hook'), class: 'btn gl-button btn-confirm'
 
     = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class
 

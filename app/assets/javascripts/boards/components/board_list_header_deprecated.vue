@@ -17,7 +17,7 @@ import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType } from '../constants';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
-import IssueCount from './issue_count.vue';
+import IssueCount from './item_count.vue';
 
 // This component is being replaced in favor of './board_list_header.vue' for GraphQL boards
 
@@ -308,7 +308,7 @@ export default {
           <gl-tooltip :target="() => $refs.issueCount" :title="issuesTooltipLabel" />
           <span ref="issueCount" class="issue-count-badge-count">
             <gl-icon class="gl-mr-2" name="issues" />
-            <issue-count :issues-size="issuesCount" :max-issue-count="list.maxIssueCount" />
+            <issue-count :items-size="issuesCount" :max-issue-count="list.maxIssueCount" />
           </span>
           <!-- The following is only true in EE. -->
           <template v-if="weightFeatureAvailable">

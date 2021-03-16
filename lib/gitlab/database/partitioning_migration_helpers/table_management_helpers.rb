@@ -9,7 +9,7 @@ module Gitlab
         include ::Gitlab::Database::MigrationHelpers
         include ::Gitlab::Database::Migrations::BackgroundMigrationHelpers
 
-        ALLOWED_TABLES = %w[audit_events].freeze
+        ALLOWED_TABLES = %w[audit_events web_hook_logs].freeze
         ERROR_SCOPE = 'table partitioning'
 
         MIGRATION_CLASS_NAME = "::#{module_parent_name}::BackfillPartitionedTable"

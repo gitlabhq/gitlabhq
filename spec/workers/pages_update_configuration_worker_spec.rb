@@ -2,9 +2,9 @@
 require "spec_helper"
 
 RSpec.describe PagesUpdateConfigurationWorker do
-  describe "#perform" do
-    let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
+  describe "#perform" do
     it "does not break if the project doesn't exist" do
       expect { subject.perform(-1) }.not_to raise_error
     end
@@ -40,6 +40,24 @@ RSpec.describe PagesUpdateConfigurationWorker do
         expect(File.mtime(config_path)).not_to be_nil
         expect { subject }.not_to change { File.mtime(config_path) }
       end
+    end
+  end
+
+  describe '#perform_async' do
+    it "calls the correct service", :sidekiq_inline do
+      expect_next_instance_of(Projects::UpdatePagesConfigurationService, project) do |service|
+        expect(service).to receive(:execute).and_return(status: :success)
+      end
+
+      described_class.perform_async(project.id)
+    end
+
+    it "doesn't schedule a worker if updates on legacy storage are disabled", :sidekiq_inline do
+      stub_feature_flags(pages_update_legacy_storage: false)
+
+      expect(Projects::UpdatePagesConfigurationService).not_to receive(:new)
+
+      described_class.perform_async(project.id)
     end
   end
 end

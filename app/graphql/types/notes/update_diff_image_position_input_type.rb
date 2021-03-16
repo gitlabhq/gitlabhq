@@ -3,8 +3,6 @@
 module Types
   module Notes
     # InputType used for updateImageDiffNote mutation.
-    #
-    # rubocop: disable Graphql/AuthorizeTypes
     class UpdateDiffImagePositionInputType < BaseInputObject
       graphql_name 'UpdateDiffImagePositionInput'
 
@@ -32,6 +30,5 @@ module Types
         end
       end
     end
-    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

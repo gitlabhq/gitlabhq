@@ -51,7 +51,7 @@ module Gitlab
         logger.log_timed(LOG_MESSAGES[:protected_branch_checks]) do
           return unless ProtectedBranch.protected?(project, branch_name) # rubocop:disable Cop/AvoidReturnFromBlocks
 
-          if forced_push?
+          if forced_push? && !ProtectedBranch.allow_force_push?(project, branch_name)
             raise GitAccess::ForbiddenError, ERROR_MESSAGES[:force_push_protected_branch]
           end
         end

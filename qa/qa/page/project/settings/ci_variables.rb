@@ -10,7 +10,6 @@ module QA
           view 'app/assets/javascripts/ci_variable_list/components/ci_variable_modal.vue' do
             element :ci_variable_key_field
             element :ci_variable_value_field
-            element :ci_variable_masked_checkbox
             element :ci_variable_save_button
             element :ci_variable_delete_button
           end

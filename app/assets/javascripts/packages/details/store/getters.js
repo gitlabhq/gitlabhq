@@ -110,4 +110,20 @@ export const composerPackageInclude = ({ packageEntity }) =>
   // eslint-disable-next-line @gitlab/require-i18n-strings
   `composer req ${[packageEntity.name]}:${packageEntity.version}`;
 
+export const gradleGroovyInstalCommand = ({ packageEntity }) => {
+  const {
+    app_group: group = '',
+    app_name: name = '',
+    app_version: version = '',
+  } = packageEntity.maven_metadatum;
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `implementation '${group}:${name}:${version}'`;
+};
+
+export const gradleGroovyAddSourceCommand = ({ mavenPath }) =>
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  `maven {
+  url '${mavenPath}'
+}`;
+
 export const groupExists = ({ groupListUrl }) => groupListUrl.length > 0;

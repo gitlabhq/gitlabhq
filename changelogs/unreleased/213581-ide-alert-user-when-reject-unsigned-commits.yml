@@ -1,0 +1,5 @@
+---
+title: Web IDE disallow commit when project has 'reject unsigned commits' rule
+merge_request: 54166
+author:
+type: changed

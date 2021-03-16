@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.plan.projects_jira_dvcs_server_active
+description:
+product_section: dev
+product_stage:
+product_group: group::plan
+product_category:
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

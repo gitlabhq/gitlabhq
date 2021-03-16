@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Project integrations
+# Project integrations **(FREE)**
 
 You can find the available integrations under your project's
 **Settings > Integrations** page. You need to have at least

@@ -19,7 +19,7 @@ module QA
             private
 
             def check_allow_requests_to_local_network_from_services_checkbox
-              check_element :allow_requests_from_services_checkbox
+              check_element(:allow_requests_from_services_checkbox)
             end
 
             def click_save_changes_button

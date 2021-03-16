@@ -196,10 +196,6 @@
     @include btn-orange;
   }
 
-  &.btn-close {
-    @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
-  }
-
   &.btn-danger {
     @include btn-red;
   }
@@ -216,6 +212,7 @@
     color: $gray-700;
   }
 
+  // deprecated class
   &.btn-text-field {
     width: 100%;
     text-align: left;
@@ -436,32 +433,27 @@
 }
 
 // All disabled buttons, regardless of color, type, etc
-%disabled {
-  background-color: $gray-light;
-  border-color: $gray-100;
-  color: $gl-text-color-disabled;
-  opacity: 1;
-  text-decoration: none;
-  cursor: default;
-
-  &.cursor-not-allowed {
-    cursor: not-allowed;
-  }
-
-  i {
-    color: $gl-text-color-disabled;
-  }
-}
-
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn,
 .dropdown-toggle[disabled],
 [disabled].dropdown-menu-toggle {
-  @extend %disabled;
-
+  &,
   &:hover {
-    @extend %disabled;
+    background-color: $gray-light;
+    border-color: $gray-100;
+    color: $gl-text-color-disabled;
+    opacity: 1;
+    text-decoration: none;
+    cursor: default;
+
+    &.cursor-not-allowed {
+      cursor: not-allowed;
+    }
+
+    i {
+      color: $gl-text-color-disabled;
+    }
   }
 
   &.btn-link {

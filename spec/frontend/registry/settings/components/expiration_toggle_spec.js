@@ -32,7 +32,7 @@ describe('ExpirationToggle', () => {
     it('has a toggle component', () => {
       mountComponent();
 
-      expect(findToggle().exists()).toBe(true);
+      expect(findToggle().props('label')).toBe(component.i18n.toggleLabel);
     });
 
     it('has a description', () => {

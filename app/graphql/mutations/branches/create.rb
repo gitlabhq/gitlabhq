@@ -30,8 +30,6 @@ module Mutations
       def resolve(project_path:, name:, ref:)
         project = authorized_find!(project_path)
 
-        context.scoped_set!(:branch_project, project)
-
         result = ::Branches::CreateService.new(project, current_user)
                    .execute(name, ref)
 

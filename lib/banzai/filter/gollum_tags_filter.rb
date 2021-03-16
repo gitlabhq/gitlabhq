@@ -100,7 +100,7 @@ module Banzai
 
         if url?(content)
           path = content
-        elsif file = wiki.find_file(content)
+        elsif file = wiki.find_file(content, load_content: false)
           path = ::File.join(wiki_base_path, file.path)
         end
 

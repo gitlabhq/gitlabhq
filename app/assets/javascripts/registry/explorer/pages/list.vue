@@ -288,7 +288,6 @@ export default {
         :images-count="containerRepositoriesCount"
         :expiration-policy="config.expirationPolicy"
         :help-page-path="config.helpPagePath"
-        :expiration-policy-help-page-path="config.expirationPolicyHelpPagePath"
         :hide-expiration-policy-data="config.isGroupPage"
       >
         <template #commands>

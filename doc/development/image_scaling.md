@@ -73,7 +73,7 @@ we simply follow the path we take to serve any ordinary upload.
 ### Workhorse
 
 Assuming Rails decided the request to be valid, Workhorse will take over. Upon receiving the `send-scaled-image`
-instruction through the Rails response, a [special response injecter](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/master/internal/imageresizer/image_resizer.go)
+instruction through the Rails response, a [special response injector](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/master/internal/imageresizer/image_resizer.go)
 will be invoked that knows how to rescale images. The only inputs it requires are the location of the image
 (a path if the image resides in block storage, or a URL to remote storage otherwise) and the desired width.
 Workhorse will handle the location transparently so Rails does not need to be concerned with where the image

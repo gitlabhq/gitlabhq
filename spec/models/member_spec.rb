@@ -24,7 +24,7 @@ RSpec.describe Member do
       it { is_expected.to allow_value(nil).for(:expires_at) }
     end
 
-    it_behaves_like 'an object with email-formated attributes', :invite_email do
+    it_behaves_like 'an object with email-formatted attributes', :invite_email do
       subject { build(:project_member) }
     end
 
@@ -130,14 +130,18 @@ RSpec.describe Member do
       @maintainer_user = create(:user).tap { |u| project.add_maintainer(u) }
       @maintainer = project.members.find_by(user_id: @maintainer_user.id)
 
-      @blocked_user = create(:user).tap do |u|
+      @blocked_maintainer_user = create(:user).tap do |u|
         project.add_maintainer(u)
+
+        u.block!
+      end
+      @blocked_developer_user = create(:user).tap do |u|
         project.add_developer(u)
 
         u.block!
       end
-      @blocked_maintainer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::MAINTAINER)
-      @blocked_developer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::DEVELOPER)
+      @blocked_maintainer = project.members.find_by(user_id: @blocked_maintainer_user.id, access_level: Gitlab::Access::MAINTAINER)
+      @blocked_developer = project.members.find_by(user_id: @blocked_developer_user.id, access_level: Gitlab::Access::DEVELOPER)
 
       @invited_member = create(:project_member, :developer,
                               project: project,
@@ -161,7 +165,7 @@ RSpec.describe Member do
 
     describe '.access_for_user_ids' do
       it 'returns the right access levels' do
-        users = [@owner_user.id, @maintainer_user.id, @blocked_user.id]
+        users = [@owner_user.id, @maintainer_user.id, @blocked_maintainer_user.id]
         expected = {
           @owner_user.id => Gitlab::Access::OWNER,
           @maintainer_user.id => Gitlab::Access::MAINTAINER
@@ -382,6 +386,20 @@ RSpec.describe Member do
       it { is_expected.not_to include @member_with_minimal_access }
     end
 
+    describe '.blocked' do
+      subject { described_class.blocked.to_a }
+
+      it { is_expected.not_to include @owner }
+      it { is_expected.not_to include @maintainer }
+      it { is_expected.not_to include @invited_member }
+      it { is_expected.not_to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.not_to include @accepted_request_member }
+      it { is_expected.to include @blocked_maintainer }
+      it { is_expected.to include @blocked_developer }
+      it { is_expected.not_to include @member_with_minimal_access }
+    end
+
     describe '.active_without_invites_and_requests' do
       subject { described_class.active_without_invites_and_requests.to_a }
 
@@ -425,12 +443,10 @@ RSpec.describe Member do
         end
 
         context 'when admin mode is disabled' do
-          # Skipped because `Group#max_member_access_for_user` needs to be migrated to use admin mode
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/207950
-          xit 'rejects setting members.created_by to the given admin current_user' do
+          it 'rejects setting members.created_by to the given admin current_user' do
             member = described_class.add_user(source, user, :maintainer, current_user: admin)
 
-            expect(member.created_by).not_to be_persisted
+            expect(member.created_by).to be_nil
           end
         end
 

@@ -1,0 +1,3 @@
+fragment HttpIntegrationPayloadData on AlertManagementHttpIntegration {
+  id
+}

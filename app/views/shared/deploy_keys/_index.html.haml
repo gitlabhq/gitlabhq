@@ -1,8 +1,8 @@
 - expanded = expanded_by_default?
 %section.qa-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_keys_settings_content' } }
   .settings-header
-    %h4= _('Deploy keys')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Deploy keys')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_keys/index') }

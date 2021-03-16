@@ -13,8 +13,4 @@
   = html_escape(_("Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision.")) % { b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
 
 .prepend-top-20
-  #js-compare-selector{ data: { project_compare_index_path: project_compare_index_path(@project),
-    refs_project_path: refs_project_path(@project),
-    params_from: params[:from], params_to: params[:to],
-    project_merge_request_path: @merge_request.present? ? project_merge_request_path(@project, @merge_request) : '',
-    create_mr_path: create_mr_button? ? create_mr_path : '' } }
+  #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }

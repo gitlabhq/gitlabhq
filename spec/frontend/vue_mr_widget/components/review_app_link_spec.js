@@ -1,10 +1,8 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import component from '~/vue_merge_request_widget/components/review_app_link.vue';
+import ReviewAppLink from '~/vue_merge_request_widget/components/review_app_link.vue';
 
 describe('review app link', () => {
-  const Component = Vue.extend(component);
   const props = {
     link: '/review',
     cssClass: 'js-link',
@@ -13,37 +11,35 @@ describe('review app link', () => {
       tooltip: '',
     },
   };
-  let vm;
-  let el;
+  let wrapper;
 
   beforeEach(() => {
-    vm = mountComponent(Component, props);
-    el = vm.$el;
+    wrapper = shallowMount(ReviewAppLink, { propsData: props });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders provided link as href attribute', () => {
-    expect(el.getAttribute('href')).toEqual(props.link);
+    expect(wrapper.attributes('href')).toBe(props.link);
   });
 
   it('renders provided cssClass as class attribute', () => {
-    expect(el.getAttribute('class')).toContain(props.cssClass);
+    expect(wrapper.classes('js-link')).toBe(true);
   });
 
   it('renders View app text', () => {
-    expect(el.textContent.trim()).toEqual('View app');
+    expect(wrapper.text().trim()).toBe('View app');
   });
 
   it('renders svg icon', () => {
-    expect(el.querySelector('svg')).not.toBeNull();
+    expect(wrapper.find('svg')).not.toBeNull();
   });
 
   it('tracks an event when clicked', () => {
-    const spy = mockTracking('_category_', el, jest.spyOn);
-    triggerEvent(el);
+    const spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+    triggerEvent(wrapper.element);
 
     expect(spy).toHaveBeenCalledWith('_category_', 'open_review_app', {
       label: 'review_app',

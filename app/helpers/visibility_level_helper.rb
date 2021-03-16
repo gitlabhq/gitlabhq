@@ -35,9 +35,7 @@ module VisibilityLevelHelper
   end
 
   def visibility_level_label(level)
-    # The visibility level can be:
-    # 'VisibilityLevel|Private', 'VisibilityLevel|Internal', 'VisibilityLevel|Public'
-    s_(Project.visibility_levels.key(level))
+    Project.visibility_levels.key(level)
   end
 
   def restricted_visibility_levels(show_all = false)

@@ -9,7 +9,6 @@ export const updateContainerExpirationPolicy = (projectPath) => (client, { data:
   const sourceData = client.readQuery(queryAndParams);
 
   const data = produce(sourceData, (draftState) => {
-    // eslint-disable-next-line no-param-reassign
     draftState.project.containerExpirationPolicy = {
       ...updatedData.updateContainerExpirationPolicy.containerExpirationPolicy,
     };

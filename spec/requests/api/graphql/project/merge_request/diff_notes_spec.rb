@@ -34,7 +34,7 @@ RSpec.describe 'getting notes for a merge request' do
         notes {
           edges {
             node {
-              #{all_graphql_fields_for('Note')}
+              #{all_graphql_fields_for('Note', excluded: ['pipeline'])}
             }
           }
         }

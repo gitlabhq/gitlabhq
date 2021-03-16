@@ -13,7 +13,7 @@ new_karma_files = get_karma_files(git.added_files.to_a)
 
 unless new_karma_files.empty?
 
-  if GitlabDanger.new(helper.gitlab_helper).ci?
+  if helper.ci?
     markdown(<<~MARKDOWN)
     ## New karma spec file
 
@@ -36,7 +36,7 @@ return if changed_karma_files.empty?
 
 warn 'You have edited karma spec files. Please consider migrating them to jest.'
 
-if GitlabDanger.new(helper.gitlab_helper).ci?
+if helper.ci?
   markdown(<<~MARKDOWN)
     ## Edited karma files
 

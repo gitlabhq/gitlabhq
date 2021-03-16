@@ -1,8 +1,11 @@
 {
   "type": "object",
-  "required": ["id", "sha", "ref", "status", "created_at", "updated_at", "web_url"],
+  "required": ["id", "project_id", "sha", "ref", "status", "created_at", "updated_at", "web_url"],
   "properties": {
     "id": {
+      "type": "integer"
+    },
+    "project_id": {
       "type": "integer"
     },
     "sha": {

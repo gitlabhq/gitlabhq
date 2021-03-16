@@ -87,11 +87,11 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def by_category(category, project = nil)
+        def by_category(category, project = nil, empty_category_title: nil)
           directory = category_directory(category)
           files = finder(project).list_files_for(directory)
 
-          files.map { |f| new(f, project, category: category) }.sort
+          files.map { |f| new(f, project, category: category.presence || empty_category_title) }.sort
         end
 
         def category_directory(category)

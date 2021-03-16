@@ -35,7 +35,14 @@ module Gitlab
             end
 
             def value
-              { name: @config, artifacts: true }
+              if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml)
+                { name: @config,
+                  artifacts: true,
+                  optional: false }
+              else
+                { name: @config,
+                  artifacts: true }
+              end
             end
           end
 
@@ -43,14 +50,15 @@ module Gitlab
             include ::Gitlab::Config::Entry::Validatable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[job artifacts].freeze
-            attributes :job, :artifacts
+            ALLOWED_KEYS = %i[job artifacts optional].freeze
+            attributes :job, :artifacts, :optional
 
             validations do
               validates :config, presence: true
               validates :config, allowed_keys: ALLOWED_KEYS
               validates :job, type: String, presence: true
               validates :artifacts, boolean: true, allow_nil: true
+              validates :optional, boolean: true, allow_nil: true
             end
 
             def type
@@ -58,7 +66,14 @@ module Gitlab
             end
 
             def value
-              { name: job, artifacts: artifacts || artifacts.nil? }
+              if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml)
+                { name: job,
+                  artifacts: artifacts || artifacts.nil?,
+                  optional: !!optional }
+              else
+                { name: job,
+                  artifacts: artifacts || artifacts.nil? }
+              end
             end
           end
 

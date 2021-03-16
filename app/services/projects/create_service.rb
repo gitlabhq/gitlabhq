@@ -19,6 +19,8 @@ module Projects
 
       @project = Project.new(params)
 
+      @project.visibility_level = @project.group.visibility_level unless @project.visibility_level_allowed_by_group?
+
       # If a project is newly created it should have shared runners settings
       # based on its group having it enabled. This is like the "default value"
       @project.shared_runners_enabled = false if !params.key?(:shared_runners_enabled) && @project.group && @project.group.shared_runners_setting != 'enabled'

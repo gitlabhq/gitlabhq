@@ -34,4 +34,16 @@ class TestSuiteComparerEntity < Grape::Entity
   expose :resolved_errors, using: TestCaseEntity do |suite|
     suite.limited_tests.resolved_errors
   end
+
+  expose :suite_errors do |suite|
+    head_suite_error = suite.head_suite.suite_error
+    base_suite_error = suite.base_suite.suite_error
+
+    next unless head_suite_error.present? || base_suite_error.present?
+
+    {
+      head: head_suite_error,
+      base: base_suite_error
+    }
+  end
 end

@@ -1,3 +1,3 @@
-import initForm from '../../../../shared/milestones/form';
+import initForm from '~/shared/milestones/form';
 
-document.addEventListener('DOMContentLoaded', () => initForm());
+initForm();

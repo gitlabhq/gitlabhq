@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   WEBIDE_MARK_APP_START,
   WEBIDE_MARK_FILE_FINISH,
@@ -23,10 +23,6 @@ eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
     WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
     WEBIDE_MARK_FILE_CLICKED,
   ),
-);
-
-const MSG_CANNOT_PUSH_CODE = s__(
-  'WebIDE|You need permission to edit files directly in this project. Fork this project to make your changes and submit a merge request.',
 );
 
 export default {
@@ -63,7 +59,7 @@ export default {
       'loading',
     ]),
     ...mapGetters([
-      'canPushCode',
+      'canPushCodeStatus',
       'activeFile',
       'someUncommittedChanges',
       'isCommitModeActive',
@@ -116,7 +112,6 @@ export default {
       this.loadDeferred = true;
     },
   },
-  MSG_CANNOT_PUSH_CODE,
 };
 </script>
 
@@ -125,8 +120,8 @@ export default {
     class="ide position-relative d-flex flex-column align-items-stretch"
     :class="{ [`theme-${themeName}`]: themeName }"
   >
-    <gl-alert v-if="!canPushCode" :dismissible="false">{{
-      $options.MSG_CANNOT_PUSH_CODE
+    <gl-alert v-if="!canPushCodeStatus.isAllowed" :dismissible="false">{{
+      canPushCodeStatus.message
     }}</gl-alert>
     <error-message v-if="errorMessage" :message="errorMessage" />
     <div class="ide-view flex-grow d-flex">

@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesTableRowComponent from '~/pipelines/components/pipelines_list/pipelines_table_row.vue';
 import eventHub from '~/pipelines/event_hub';
 
@@ -9,7 +10,6 @@ describe('Pipelines Table Row', () => {
     mount(PipelinesTableRowComponent, {
       propsData: {
         pipeline,
-        autoDevopsHelpPath: 'foo',
         viewType: 'root',
       },
     });
@@ -18,8 +18,6 @@ describe('Pipelines Table Row', () => {
   let pipeline;
   let pipelineWithoutAuthor;
   let pipelineWithoutCommit;
-
-  preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
@@ -149,16 +147,22 @@ describe('Pipelines Table Row', () => {
   });
 
   describe('stages column', () => {
-    beforeEach(() => {
-      wrapper = createWrapper(pipeline);
-    });
+    const findAllMiniPipelineStages = () =>
+      wrapper.findAll('.table-section:nth-child(5) [data-testid="mini-pipeline-graph-dropdown"]');
 
     it('should render an icon for each stage', () => {
-      expect(
-        wrapper.findAll(
-          '.table-section:nth-child(4) [data-testid="mini-pipeline-graph-dropdown-toggle"]',
-        ).length,
-      ).toEqual(pipeline.details.stages.length);
+      wrapper = createWrapper(pipeline);
+
+      expect(findAllMiniPipelineStages()).toHaveLength(pipeline.details.stages.length);
+    });
+
+    it('should not render stages when stages are empty', () => {
+      const withoutStages = { ...pipeline };
+      withoutStages.details = { ...withoutStages.details, stages: null };
+
+      wrapper = createWrapper(withoutStages);
+
+      expect(findAllMiniPipelineStages()).toHaveLength(0);
     });
   });
 
@@ -183,9 +187,16 @@ describe('Pipelines Table Row', () => {
       expect(wrapper.find('.js-pipelines-retry-button').attributes('title')).toMatch('Retry');
       expect(wrapper.find('.js-pipelines-cancel-button').exists()).toBe(true);
       expect(wrapper.find('.js-pipelines-cancel-button').attributes('title')).toMatch('Cancel');
-      const dropdownMenu = wrapper.find('.dropdown-menu');
+    });
 
-      expect(dropdownMenu.text()).toContain(scheduledJobAction.name);
+    it('should render the manual actions', async () => {
+      const manualActions = wrapper.find('[data-testid="pipelines-manual-actions-dropdown"]');
+
+      // Click on the dropdown and wait for `lazy` dropdown items
+      manualActions.find('.dropdown-toggle').trigger('click');
+      await waitForPromises();
+
+      expect(manualActions.text()).toContain(scheduledJobAction.name);
     });
 
     it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {

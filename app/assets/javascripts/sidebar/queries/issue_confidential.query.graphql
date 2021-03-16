@@ -1,0 +1,10 @@
+query issueConfidential($fullPath: ID!, $iid: String) {
+  workspace: project(fullPath: $fullPath) {
+    __typename
+    issuable: issue(iid: $iid) {
+      __typename
+      id
+      confidential
+    }
+  }
+}

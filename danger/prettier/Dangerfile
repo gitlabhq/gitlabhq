@@ -19,7 +19,7 @@ return if unpretty.empty?
 
 warn 'This merge request changed frontend files without pretty printing them.'
 
-if GitlabDanger.new(helper.gitlab_helper).ci?
+if helper.ci?
   markdown(<<~MARKDOWN)
     ## Pretty print Frontend files
 

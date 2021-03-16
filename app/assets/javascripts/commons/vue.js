@@ -6,3 +6,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 Vue.use(GlFeatureFlagsPlugin);
+
+Vue.config.ignoredElements = ['gl-emoji'];

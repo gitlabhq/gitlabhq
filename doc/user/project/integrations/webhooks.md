@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Webhooks
+# Webhooks **(FREE)**
 
 Project webhooks allow you to trigger a percent-encoded URL if, for example, new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
@@ -1133,6 +1133,10 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
+         },
+         "environment": {
+           "name": "production",
+           "action": "start"
          }
       },
       {
@@ -1167,7 +1171,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 378,
@@ -1200,7 +1205,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 376,
@@ -1233,7 +1239,8 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
-         }
+         },
+         "environment": null
       },
       {
          "id": 379,
@@ -1257,6 +1264,10 @@ X-Gitlab-Event: Pipeline Hook
          "artifacts_file":{
             "filename": null,
             "size": null
+         },
+         "environment": {
+           "name": "staging",
+           "action": "start"
          }
       }
    ]
@@ -1329,7 +1340,8 @@ X-Gitlab-Event: Job Hook
       "linux",
       "docker"
     ]
-  }
+  },
+  "environment": null
 }
 ```
 
@@ -1554,7 +1566,7 @@ X-Gitlab-Event: Subgroup Hook
 ```
 
 NOTE:
-Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transferring-groups)
+Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transfer-a-group)
 
 ### Feature Flag events
 

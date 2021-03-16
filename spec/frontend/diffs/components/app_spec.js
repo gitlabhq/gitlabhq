@@ -14,9 +14,6 @@ import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 
-import { EVT_VIEW_FILE_BY_FILE } from '~/diffs/constants';
-
-import eventHub from '~/diffs/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import createDiffsStore from '../create_diffs_store';
@@ -696,25 +693,6 @@ describe('diffs/components/app', () => {
           await nextTick();
 
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
-        },
-      );
-    });
-
-    describe('control via event stream', () => {
-      it.each`
-        setting
-        ${true}
-        ${false}
-      `(
-        'triggers the action with the new fileByFile setting - $setting - when the event with that setting is received',
-        async ({ setting }) => {
-          createComponent();
-          await nextTick();
-
-          eventHub.$emit(EVT_VIEW_FILE_BY_FILE, { setting });
-          await nextTick();
-
-          expect(store.state.diffs.viewDiffsFileByFile).toBe(setting);
         },
       );
     });

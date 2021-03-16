@@ -1,0 +1,17 @@
+---
+key_path: counts.service_desk_issues
+description: Count of service desk issues
+product_section: dev
+product_stage: plan
+product_group: group::certify
+product_category: service_desk
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+skip_validation: true

@@ -429,37 +429,67 @@ RSpec.describe 'Environments page', :js do
   end
 
   describe 'environments folders' do
-    before do
-      create(:environment, :will_auto_stop,
-                           project: project,
-                           name: 'staging/review-1',
-                           state: :available)
-      create(:environment, :will_auto_stop,
-                           project: project,
-                           name: 'staging/review-2',
-                           state: :available)
-    end
-
-    it 'users unfurls an environment folder' do
-      visit_environments(project)
-
-      expect(page).not_to have_content 'review-1'
-      expect(page).not_to have_content 'review-2'
-      expect(page).to have_content 'staging 2'
-
-      within('.folder-row') do
-        find('.folder-name', text: 'staging').click
+    describe 'available environments' do
+      before do
+        create(:environment, :will_auto_stop,
+                            project: project,
+                            name: 'staging/review-1',
+                            state: :available)
+        create(:environment, :will_auto_stop,
+                            project: project,
+                            name: 'staging/review-2',
+                            state: :available)
       end
 
-      expect(page).to have_content 'review-1'
-      expect(page).to have_content 'review-2'
-      within('.ci-table') do
-        within('[data-qa-selector="environment_item"]', text: 'review-1') do
-          expect(find('.js-auto-stop').text).not_to be_empty
+      it 'users unfurls an environment folder' do
+        visit_environments(project)
+
+        expect(page).not_to have_content 'review-1'
+        expect(page).not_to have_content 'review-2'
+        expect(page).to have_content 'staging 2'
+
+        within('.folder-row') do
+          find('.folder-name', text: 'staging').click
         end
-        within('[data-qa-selector="environment_item"]', text: 'review-2') do
-          expect(find('.js-auto-stop').text).not_to be_empty
+
+        expect(page).to have_content 'review-1'
+        expect(page).to have_content 'review-2'
+        within('.ci-table') do
+          within('[data-qa-selector="environment_item"]', text: 'review-1') do
+            expect(find('.js-auto-stop').text).not_to be_empty
+          end
+          within('[data-qa-selector="environment_item"]', text: 'review-2') do
+            expect(find('.js-auto-stop').text).not_to be_empty
+          end
         end
+      end
+    end
+
+    describe 'stopped environments' do
+      before do
+        create(:environment, :will_auto_stop,
+                            project: project,
+                            name: 'staging/review-1',
+                            state: :stopped)
+        create(:environment, :will_auto_stop,
+                            project: project,
+                            name: 'staging/review-2',
+                            state: :stopped)
+      end
+
+      it 'users unfurls an environment folder' do
+        visit_environments(project, scope: 'stopped')
+
+        expect(page).not_to have_content 'review-1'
+        expect(page).not_to have_content 'review-2'
+        expect(page).to have_content 'staging 2'
+
+        within('.folder-row') do
+          find('.folder-name', text: 'staging').click
+        end
+
+        expect(page).to have_content 'review-1'
+        expect(page).to have_content 'review-2'
       end
     end
   end

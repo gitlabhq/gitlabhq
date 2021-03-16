@@ -1,3 +1,3 @@
-import initExpiresAtField from '~/access_tokens';
+import { initExpiresAtField } from '~/access_tokens';
 
 initExpiresAtField();

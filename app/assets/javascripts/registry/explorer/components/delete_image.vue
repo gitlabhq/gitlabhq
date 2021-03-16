@@ -29,7 +29,6 @@ export default {
       });
 
       const data = produce(sourceData, (draftState) => {
-        // eslint-disable-next-line no-param-reassign
         draftState.containerRepository.status =
           destroyContainerRepository.containerRepository.status;
       });

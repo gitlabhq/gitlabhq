@@ -52,6 +52,12 @@ module Gitlab
         strong_memoize(:cert_store) do
           store = OpenSSL::X509::Store.new
           store.set_default_paths
+
+          if Feature.enabled?(:x509_forced_cert_loading, type: :ops)
+            # Forcibly load the default cert file because the OpenSSL library seemingly ignores it
+            store.add_file(OpenSSL::X509::DEFAULT_CERT_FILE) if File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+          end
+
           # valid_signing_time? checks the time attributes already
           # this flag is required, otherwise expired certificates would become
           # unverified when notAfter within certificate attribute is reached

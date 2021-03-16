@@ -9,5 +9,5 @@
     - if invite_group_members?(@group)
       = link_to _('Invite your team'),
         group_group_members_path(@group),
-        class: 'gl-button btn btn-success-secondary',
+        class: 'gl-button btn btn-confirm-secondary',
         data: { track_event: 'click_invite_team_group_empty_state', track_label: 'invite_team_group_empty_state' }

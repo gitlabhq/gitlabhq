@@ -1,5 +1,12 @@
 @import 'mixins_and_variables_and_functions';
 
+// Fixing double scrollbar issue
+// See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1156 and
+// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54837
+.import-entities-namespace-dropdown.show.dropdown .dropdown-menu {
+  max-height: initial;
+}
+
 .import-jobs-to-col {
   width: 39%;
 }

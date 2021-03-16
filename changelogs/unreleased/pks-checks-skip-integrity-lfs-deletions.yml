@@ -1,0 +1,5 @@
+---
+title: 'checks: Skip LFS checks when deleting refs'
+merge_request: 55609
+author:
+type: fixed

@@ -7,8 +7,6 @@ describe('UserInternalRegexHandler', () => {
   let $userEmail;
   let $warningMessage;
 
-  preloadFixtures(FIXTURE);
-
   beforeEach(() => {
     loadFixtures(FIXTURE);
     // eslint-disable-next-line no-new

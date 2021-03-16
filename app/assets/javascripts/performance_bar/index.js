@@ -29,6 +29,7 @@ const initPerformanceBar = (el) => {
         requestId: performanceBarData.requestId,
         peekUrl: performanceBarData.peekUrl,
         profileUrl: performanceBarData.profileUrl,
+        statsUrl: performanceBarData.statsUrl,
       };
     },
     mounted() {
@@ -119,6 +120,7 @@ const initPerformanceBar = (el) => {
           requestId: this.requestId,
           peekUrl: this.peekUrl,
           profileUrl: this.profileUrl,
+          statsUrl: this.statsUrl,
         },
         on: {
           'add-request': this.addRequestManually,

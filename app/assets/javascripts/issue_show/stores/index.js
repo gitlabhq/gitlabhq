@@ -11,7 +11,7 @@ export default class Store {
       lockedWarningVisible: false,
       updateLoading: false,
       lock_version: 0,
-      issuableTemplates: [],
+      issuableTemplates: {},
     };
   }
 

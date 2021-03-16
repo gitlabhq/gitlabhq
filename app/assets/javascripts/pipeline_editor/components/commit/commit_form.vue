@@ -21,7 +21,7 @@ export default {
     GlSprintf,
   },
   props: {
-    defaultBranch: {
+    currentBranch: {
       type: String,
       required: false,
       default: '',
@@ -40,23 +40,23 @@ export default {
   data() {
     return {
       message: this.defaultMessage,
-      branch: this.defaultBranch,
       openMergeRequest: false,
+      targetBranch: this.currentBranch,
     };
   },
   computed: {
-    isDefaultBranch() {
-      return this.branch === this.defaultBranch;
+    isCurrentBranchTarget() {
+      return this.targetBranch === this.currentBranch;
     },
     submitDisabled() {
-      return !(this.message && this.branch);
+      return !(this.message && this.targetBranch);
     },
   },
   methods: {
     onSubmit() {
       this.$emit('submit', {
         message: this.message,
-        branch: this.branch,
+        targetBranch: this.targetBranch,
         openMergeRequest: this.openMergeRequest,
       });
     },
@@ -100,12 +100,12 @@ export default {
       >
         <gl-form-input
           id="target-branch-field"
-          v-model="branch"
+          v-model="targetBranch"
           class="gl-font-monospace!"
           required
         />
         <gl-form-checkbox
-          v-if="!isDefaultBranch"
+          v-if="!isCurrentBranchTarget"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
           class="gl-mt-3"

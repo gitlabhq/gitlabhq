@@ -39,24 +39,11 @@ Examples of queries with comments as observed in `development.log`:
 1. Rails:
 
    ```sql
-   SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = $1 LIMIT $2 [["project_id", 5], ["LIMIT", 1]] /*application:web,controller:jobs,action:trace,correlation_id:rYF4mey9CH3,line:/app/policies/project_policy.rb:504:in `feature_available?'*/
+   /*application:web,controller:jobs,action:trace,correlation_id:rYF4mey9CH3,line:/app/policies/project_policy.rb:504:in `feature_available?'*/ SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = $1 LIMIT $2 [["project_id", 5], ["LIMIT", 1]]
    ```
 
 1. Sidekiq:
 
    ```sql
-   SELECT "ci_pipelines".* FROM "ci_pipelines" WHERE "ci_pipelines"."id" = $1 LIMIT $2 [["id", 64], ["LIMIT", 1]] /*application:sidekiq,jid:e7d6668a39a991e323009833,job_class:ExpireJobCacheWorker,correlation_id:rYF4mey9CH3,line:/app/workers/expire_job_cache_worker.rb:14:in `perform'*/
+   /*application:sidekiq,jid:e7d6668a39a991e323009833,job_class:ExpireJobCacheWorker,correlation_id:rYF4mey9CH3,line:/app/workers/expire_job_cache_worker.rb:14:in `perform'*/ SELECT "ci_pipelines".* FROM "ci_pipelines" WHERE "ci_pipelines"."id" = $1 LIMIT $2 [["id", 64], ["LIMIT", 1]]
    ```
-
-## Enable/Disable the feature
-
-Enabling or disabling the feature requires a **restart/SIGHUP** of the Web and
-Sidekiq workers, as the feature flag's state is memoized upon starting up.
-
-The `feature_flag` for this feature is **disabled** by default. You can enable
-or disable it with:
-
-```ruby
-Feature.enable(:marginalia)
-Feature.disable(:marginalia)
-```

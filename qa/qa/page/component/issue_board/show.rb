@@ -43,6 +43,10 @@ module QA
             element :focus_mode_button
           end
 
+          view 'app/assets/javascripts/boards/components/config_toggle.vue' do
+            element :boards_config_button
+          end
+
           # The `focused_board` method does not use `find_element` with an element defined
           # with the attribute `data-qa-selector` since such element is not unique when the
           # `is-focused` class is not set, and it was not possible to find a better solution.
@@ -80,6 +84,10 @@ module QA
                 find_element(:board_card)
               end
             end
+          end
+
+          def click_boards_config_button
+            click_element(:boards_config_button)
           end
 
           def click_boards_dropdown_button

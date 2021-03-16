@@ -131,6 +131,10 @@ class Label < ApplicationRecord
     nil
   end
 
+  def self.ids_on_board(board_id)
+    on_board(board_id).pluck(:label_id)
+  end
+
   # Searches for labels with a matching title or description.
   #
   # This method uses ILIKE on PostgreSQL.

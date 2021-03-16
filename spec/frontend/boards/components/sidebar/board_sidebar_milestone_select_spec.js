@@ -22,7 +22,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
 
   const createWrapper = ({ milestone = null, loading = false } = {}) => {
     store = createStore();
-    store.state.issues = { [TEST_ISSUE.id]: { ...TEST_ISSUE, milestone } };
+    store.state.boardItems = { [TEST_ISSUE.id]: { ...TEST_ISSUE, milestone } };
     store.state.activeId = TEST_ISSUE.id;
 
     wrapper = shallowMount(BoardSidebarMilestoneSelect, {
@@ -113,7 +113,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
       createWrapper();
 
       jest.spyOn(wrapper.vm, 'setActiveIssueMilestone').mockImplementation(() => {
-        store.state.issues[TEST_ISSUE.id].milestone = TEST_MILESTONE;
+        store.state.boardItems[TEST_ISSUE.id].milestone = TEST_MILESTONE;
       });
       findDropdownItem().vm.$emit('click');
       await wrapper.vm.$nextTick();
@@ -137,7 +137,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
       createWrapper({ milestone: TEST_MILESTONE });
 
       jest.spyOn(wrapper.vm, 'setActiveIssueMilestone').mockImplementation(() => {
-        store.state.issues[TEST_ISSUE.id].milestone = null;
+        store.state.boardItems[TEST_ISSUE.id].milestone = null;
       });
       findUnsetMilestoneItem().vm.$emit('click');
       await wrapper.vm.$nextTick();

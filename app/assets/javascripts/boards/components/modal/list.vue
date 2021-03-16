@@ -2,11 +2,11 @@
 import { GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import ModalStore from '../../stores/modal_store';
-import IssueCardInner from '../issue_card_inner.vue';
+import BoardCardInner from '../board_card_inner.vue';
 
 export default {
   components: {
-    IssueCardInner,
+    BoardCardInner,
     GlIcon,
   },
   props: {
@@ -126,7 +126,7 @@ export default {
           class="board-card position-relative p-3 rounded"
           @click="toggleIssue($event, issue)"
         >
-          <issue-card-inner :issue="issue" />
+          <board-card-inner :item="issue" />
           <gl-icon
             v-if="issue.selected"
             :aria-label="'Issue #' + issue.id + ' selected'"

@@ -1,9 +1,16 @@
 <script>
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import { COMMIT_FAILURE, COMMIT_SUCCESS } from '../../constants';
+import {
+  COMMIT_ACTION_CREATE,
+  COMMIT_ACTION_UPDATE,
+  COMMIT_FAILURE,
+  COMMIT_SUCCESS,
+} from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
+import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
+import getIsNewCiConfigFile from '../../graphql/queries/client/is_new_ci_config_file.graphql';
 
 import CommitForm from './commit_form.vue';
 
@@ -21,7 +28,7 @@ export default {
   components: {
     CommitForm,
   },
-  inject: ['projectFullPath', 'ciConfigPath', 'defaultBranch', 'newMergeRequestPath'],
+  inject: ['projectFullPath', 'ciConfigPath', 'newMergeRequestPath'],
   props: {
     ciFileContent: {
       type: String,
@@ -31,15 +38,25 @@ export default {
   data() {
     return {
       commit: {},
+      isNewCiConfigFile: false,
       isSaving: false,
     };
   },
   apollo: {
+    isNewCiConfigFile: {
+      query: getIsNewCiConfigFile,
+    },
     commitSha: {
       query: getCommitSha,
     },
+    currentBranch: {
+      query: getCurrentBranch,
+    },
   },
   computed: {
+    action() {
+      return this.isNewCiConfigFile ? COMMIT_ACTION_CREATE : COMMIT_ACTION_UPDATE;
+    },
     defaultCommitMessage() {
       return sprintf(this.$options.i18n.defaultCommitMessage, { sourcePath: this.ciConfigPath });
     },
@@ -49,13 +66,13 @@ export default {
       const url = mergeUrlParams(
         {
           [MR_SOURCE_BRANCH]: sourceBranch,
-          [MR_TARGET_BRANCH]: this.defaultBranch,
+          [MR_TARGET_BRANCH]: this.currentBranch,
         },
         this.newMergeRequestPath,
       );
       redirectTo(url);
     },
-    async onCommitSubmit({ message, branch, openMergeRequest }) {
+    async onCommitSubmit({ message, targetBranch, openMergeRequest }) {
       this.isSaving = true;
 
       try {
@@ -66,9 +83,10 @@ export default {
         } = await this.$apollo.mutate({
           mutation: commitCIFile,
           variables: {
+            action: this.action,
             projectPath: this.projectFullPath,
-            branch,
-            startBranch: this.defaultBranch,
+            branch: targetBranch,
+            startBranch: this.currentBranch,
             message,
             filePath: this.ciConfigPath,
             content: this.ciFileContent,
@@ -86,7 +104,7 @@ export default {
         if (errors?.length) {
           this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
         } else if (openMergeRequest) {
-          this.redirectToNewMergeRequest(branch);
+          this.redirectToNewMergeRequest(targetBranch);
         } else {
           this.$emit('commit', { type: COMMIT_SUCCESS });
         }
@@ -105,7 +123,7 @@ export default {
 
 <template>
   <commit-form
-    :default-branch="defaultBranch"
+    :current-branch="currentBranch"
     :default-message="defaultCommitMessage"
     :is-saving="isSaving"
     @cancel="onCommitCancel"

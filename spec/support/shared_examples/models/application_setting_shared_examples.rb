@@ -289,6 +289,7 @@ RSpec.shared_examples 'application settings examples' do
 
   describe '#pick_repository_storage' do
     before do
+      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(%w(default backup))
       allow(setting).to receive(:repository_storages_weighted).and_return({ 'default' => 20, 'backup' => 80 })
     end
 
@@ -304,15 +305,19 @@ RSpec.shared_examples 'application settings examples' do
   describe '#normalized_repository_storage_weights' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:storages, :normalized) do
-      { 'default' => 0, 'backup' => 100 }   | { 'default' => 0.0, 'backup' => 1.0 }
-      { 'default' => 100, 'backup' => 100 } | { 'default' => 0.5, 'backup' => 0.5 }
-      { 'default' => 20, 'backup' => 80 }   | { 'default' => 0.2, 'backup' => 0.8 }
-      { 'default' => 0, 'backup' => 0 }     | { 'default' => 0.0, 'backup' => 0.0 }
+    where(:config_storages, :storages, :normalized) do
+      %w(default backup) | { 'default' => 0, 'backup' => 100 }   | { 'default' => 0.0, 'backup' => 1.0 }
+      %w(default backup) | { 'default' => 100, 'backup' => 100 } | { 'default' => 0.5, 'backup' => 0.5 }
+      %w(default backup) | { 'default' => 20, 'backup' => 80 }   | { 'default' => 0.2, 'backup' => 0.8 }
+      %w(default backup) | { 'default' => 0, 'backup' => 0 }     | { 'default' => 0.0, 'backup' => 0.0 }
+      %w(default)        | { 'default' => 0, 'backup' => 100 }   | { 'default' => 0.0 }
+      %w(default)        | { 'default' => 100, 'backup' => 100 } | { 'default' => 1.0 }
+      %w(default)        | { 'default' => 20, 'backup' => 80 }   | { 'default' => 1.0 }
     end
 
     with_them do
       before do
+        allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(config_storages)
         allow(setting).to receive(:repository_storages_weighted).and_return(storages)
       end
 

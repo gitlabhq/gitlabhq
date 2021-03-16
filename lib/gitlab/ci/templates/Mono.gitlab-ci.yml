@@ -24,8 +24,8 @@ before_script:
 
 release:
   stage: deploy
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   artifacts:
     paths:
       - build/release/MyProject.exe

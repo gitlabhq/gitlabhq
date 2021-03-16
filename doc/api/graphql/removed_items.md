@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
-According to our [process for removing items](index.md#deprecation-process), here are the items that have been removed.
+According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
 ## GitLab 13.6
 

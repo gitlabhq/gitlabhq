@@ -20,6 +20,7 @@ export default function initInviteMembersModal() {
           ...el.dataset,
           isProject: parseBoolean(el.dataset.isProject),
           accessLevels: JSON.parse(el.dataset.accessLevels),
+          defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
         },
       }),
   });

@@ -2,20 +2,26 @@
 
 exports[`Package code instruction multiline to match the snapshot 1`] = `
 <div>
-  <pre
-    class="gl-font-monospace"
-    data-testid="multiline-instruction"
+  <label
+    for="instruction-input_3"
   >
-    this is some
+    foo_label
+  </label>
+   
+  <div>
+    <pre
+      class="gl-font-monospace"
+      data-testid="multiline-instruction"
+    >
+      this is some
 multiline text
-  </pre>
+    </pre>
+  </div>
 </div>
 `;
 
 exports[`Package code instruction single line to match the default snapshot 1`] = `
-<div
-  class="gl-mb-3"
->
+<div>
   <label
     for="instruction-input_2"
   >
@@ -23,42 +29,46 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
   </label>
    
   <div
-    class="input-group gl-mb-3"
+    class="gl-mb-3"
   >
-    <input
-      class="form-control gl-font-monospace"
-      data-testid="instruction-input"
-      id="instruction-input_2"
-      readonly="readonly"
-      type="text"
-    />
-     
-    <span
-      class="input-group-append"
-      data-testid="instruction-button"
+    <div
+      class="input-group gl-mb-3"
     >
-      <button
-        aria-label="Copy this value"
-        class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
-        data-clipboard-text="npm i @my-package"
-        title="Copy npm install command"
-        type="button"
+      <input
+        class="form-control gl-font-monospace"
+        data-testid="instruction-input"
+        id="instruction-input_2"
+        readonly="readonly"
+        type="text"
+      />
+       
+      <span
+        class="input-group-append"
+        data-testid="instruction-button"
       >
-        <!---->
-         
-        <svg
-          aria-hidden="true"
-          class="gl-button-icon gl-icon s16"
-          data-testid="copy-to-clipboard-icon"
+        <button
+          aria-label="Copy this value"
+          class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
+          data-clipboard-text="npm i @my-package"
+          title="Copy npm install command"
+          type="button"
         >
-          <use
-            href="#copy-to-clipboard"
-          />
-        </svg>
-          
-        <!---->
-      </button>
-    </span>
+          <!---->
+           
+          <svg
+            aria-hidden="true"
+            class="gl-button-icon gl-icon s16"
+            data-testid="copy-to-clipboard-icon"
+          >
+            <use
+              href="#copy-to-clipboard"
+            />
+          </svg>
+            
+          <!---->
+        </button>
+      </span>
+    </div>
   </div>
 </div>
 `;

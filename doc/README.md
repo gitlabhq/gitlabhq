@@ -67,7 +67,7 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 | Topic                                                                                             | Description |
 |:--------------------------------------------------------------------------------------------------|:------------|
 | [GitLab basics guides](gitlab-basics/index.md)                                                   | Start working on the command line and with GitLab. |
-| [GitLab workflow overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow. |
+| [GitLab workflow overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/) | Enhance your workflow with the best of GitLab Workflow. |
 | [Get started with GitLab CI/CD](ci/quick_start/index.md)                                         | Quickly implement GitLab CI/CD. |
 | [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab. |
 | [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown). |
@@ -80,7 +80,7 @@ Learn more about GitLab account management:
 |:-----------------------------------------------------------|:------------|
 | [User account](user/profile/index.md)                      | Manage your account. |
 | [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
-| [User settings](user/profile/index.md#user-settings) | Manage your user settings, two factor authentication, and more. |
+| [User settings](user/profile/index.md#access-your-user-settings) | Manage your user settings, two factor authentication, and more. |
 | [User permissions](user/permissions.md)                    | Learn what each role in a project can do. |
 
 ### Git and GitLab

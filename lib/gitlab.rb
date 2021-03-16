@@ -19,6 +19,10 @@ module Gitlab
     Settings
   end
 
+  def self.host_with_port
+    "#{self.config.gitlab.host}:#{self.config.gitlab.port}"
+  end
+
   def self.revision
     @_revision ||= begin
       if File.exist?(root.join("REVISION"))

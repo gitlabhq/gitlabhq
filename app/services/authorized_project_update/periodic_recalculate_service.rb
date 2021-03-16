@@ -2,8 +2,8 @@
 
 module AuthorizedProjectUpdate
   class PeriodicRecalculateService
-    BATCH_SIZE = 480
-    DELAY_INTERVAL = 30.seconds.to_i
+    BATCH_SIZE = 450
+    DELAY_INTERVAL = 50.seconds.to_i
 
     def execute
       # Using this approach (instead of eg. User.each_batch) keeps the arguments

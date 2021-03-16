@@ -9,6 +9,7 @@ const DEFAULT_PROPS = {
     username: 'root',
     name: 'Administrator',
     location: 'Vienna',
+    bot: false,
     bio: null,
     workInformation: null,
     status: null,
@@ -18,14 +19,10 @@ const DEFAULT_PROPS = {
 
 describe('User Popover Component', () => {
   const fixtureTemplate = 'merge_requests/diff_comment.html';
-  preloadFixtures(fixtureTemplate);
 
   let wrapper;
 
   beforeEach(() => {
-    window.gon.features = {
-      securityAutoFix: true,
-    };
     loadFixtures(fixtureTemplate);
   });
 
@@ -37,6 +34,7 @@ describe('User Popover Component', () => {
   const findUserStatus = () => wrapper.find('.js-user-status');
   const findTarget = () => document.querySelector('.js-user-link');
   const findUserName = () => wrapper.find(UserNameWithStatus);
+  const findSecurityBotDocsLink = () => findByTestId('user-popover-bot-docs-link');
 
   const createWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(UserPopover, {
@@ -85,6 +83,12 @@ describe('User Popover Component', () => {
       const iconEl = wrapper.find(GlIcon);
 
       expect(iconEl.props('name')).toEqual('location');
+    });
+
+    it("should not show a link to bot's documentation", () => {
+      createWrapper();
+      const securityBotDocsLink = findSecurityBotDocsLink();
+      expect(securityBotDocsLink.exists()).toBe(false);
     });
   });
 
@@ -230,29 +234,20 @@ describe('User Popover Component', () => {
     });
   });
 
-  describe('security bot', () => {
+  describe('bot user', () => {
     const SECURITY_BOT_USER = {
       ...DEFAULT_PROPS.user,
       name: 'GitLab Security Bot',
       username: 'GitLab-Security-Bot',
       websiteUrl: '/security/bot/docs',
+      bot: true,
     };
-    const findSecurityBotDocsLink = () => findByTestId('user-popover-bot-docs-link');
 
     it("shows a link to the bot's documentation", () => {
       createWrapper({ user: SECURITY_BOT_USER });
       const securityBotDocsLink = findSecurityBotDocsLink();
       expect(securityBotDocsLink.exists()).toBe(true);
       expect(securityBotDocsLink.attributes('href')).toBe(SECURITY_BOT_USER.websiteUrl);
-    });
-
-    it('does not show the link if the feature flag is disabled', () => {
-      window.gon.features = {
-        securityAutoFix: false,
-      };
-      createWrapper({ user: SECURITY_BOT_USER });
-
-      expect(findSecurityBotDocsLink().exists()).toBe(false);
     });
   });
 });

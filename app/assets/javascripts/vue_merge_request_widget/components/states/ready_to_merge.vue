@@ -5,6 +5,7 @@ import {
   GlButtonGroup,
   GlDropdown,
   GlDropdownItem,
+  GlFormCheckbox,
   GlSprintf,
   GlLink,
   GlTooltipDirective,
@@ -81,6 +82,7 @@ export default {
     GlButtonGroup,
     GlDropdown,
     GlDropdownItem,
+    GlFormCheckbox,
     GlSkeletonLoader,
     MergeTrainHelperText: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_helper_text.vue'),
@@ -453,12 +455,13 @@ export default {
       <div class="mr-widget-body media" :class="{ 'gl-pb-3': shouldRenderMergeTrainHelperText }">
         <status-icon :status="iconClass" />
         <div class="media-body">
-          <div class="mr-widget-body-controls media space-children">
-            <gl-button-group>
+          <div class="mr-widget-body-controls gl-display-flex gl-align-items-center">
+            <gl-button-group class="gl-align-self-start">
               <gl-button
                 size="medium"
                 category="primary"
-                class="qa-merge-button accept-merge-request"
+                class="accept-merge-request"
+                data-testid="merge-button"
                 :variant="mergeButtonVariant"
                 :disabled="isMergeButtonDisabled"
                 :loading="isMakingRequest"
@@ -481,7 +484,7 @@ export default {
                 <gl-dropdown-item
                   icon-name="warning"
                   button-class="accept-merge-request js-merge-immediately-button"
-                  data-qa-selector="merge_immediately_option"
+                  data-qa-selector="merge_immediately_menu_item"
                   @click="handleMergeImmediatelyButtonClick"
                 >
                   {{ __('Merge immediately') }}
@@ -493,47 +496,48 @@ export default {
                 />
               </gl-dropdown>
             </gl-button-group>
-            <div class="media-body-wrap space-children">
-              <template v-if="shouldShowMergeControls">
-                <label v-if="canRemoveSourceBranch">
-                  <input
-                    id="remove-source-branch-input"
-                    v-model="removeSourceBranch"
-                    :disabled="isRemoveSourceBranchButtonDisabled"
-                    class="js-remove-source-branch-checkbox"
-                    type="checkbox"
-                  />
-                  {{ __('Delete source branch') }}
-                </label>
+            <div
+              v-if="shouldShowMergeControls"
+              class="gl-display-flex gl-align-items-center gl-flex-wrap"
+            >
+              <gl-form-checkbox
+                v-if="canRemoveSourceBranch"
+                id="remove-source-branch-input"
+                v-model="removeSourceBranch"
+                :disabled="isRemoveSourceBranchButtonDisabled"
+                class="js-remove-source-branch-checkbox gl-mx-3 gl-display-flex gl-align-items-center"
+              >
+                {{ __('Delete source branch') }}
+              </gl-form-checkbox>
 
-                <!-- Placeholder for EE extension of this component -->
-                <squash-before-merge
-                  v-if="shouldShowSquashBeforeMerge"
-                  v-model="squashBeforeMerge"
-                  :help-path="mr.squashBeforeMergeHelpPath"
-                  :is-disabled="isSquashReadOnly"
-                />
-              </template>
-              <template v-else>
-                <div class="bold js-resolve-mr-widget-items-message">
-                  <div
-                    v-if="hasPipelineMustSucceedConflict"
-                    class="gl-display-flex gl-align-items-center"
-                    data-testid="pipeline-succeed-conflict"
-                  >
-                    <gl-sprintf :message="pipelineMustSucceedConflictText" />
-                    <gl-link
-                      :href="mr.pipelineMustSucceedDocsPath"
-                      target="_blank"
-                      class="gl-display-flex gl-ml-2"
-                    >
-                      <gl-icon name="question" />
-                    </gl-link>
-                  </div>
-                  <gl-sprintf v-else :message="mergeDisabledText" />
-                </div>
-              </template>
+              <!-- Placeholder for EE extension of this component -->
+              <squash-before-merge
+                v-if="shouldShowSquashBeforeMerge"
+                v-model="squashBeforeMerge"
+                :help-path="mr.squashBeforeMergeHelpPath"
+                :is-disabled="isSquashReadOnly"
+                class="gl-mx-3"
+              />
             </div>
+            <template v-else>
+              <div class="bold js-resolve-mr-widget-items-message gl-ml-3">
+                <div
+                  v-if="hasPipelineMustSucceedConflict"
+                  class="gl-display-flex gl-align-items-center"
+                  data-testid="pipeline-succeed-conflict"
+                >
+                  <gl-sprintf :message="pipelineMustSucceedConflictText" />
+                  <gl-link
+                    :href="mr.pipelineMustSucceedDocsPath"
+                    target="_blank"
+                    class="gl-display-flex gl-ml-2"
+                  >
+                    <gl-icon name="question" />
+                  </gl-link>
+                </div>
+                <gl-sprintf v-else :message="mergeDisabledText" />
+              </div>
+            </template>
           </div>
           <div v-if="isSHAMismatch" class="d-flex align-items-center mt-2 js-sha-mismatch">
             <gl-icon name="warning-solid" class="text-warning mr-1" />
@@ -559,7 +563,11 @@ export default {
         :merge-train-when-pipeline-succeeds-docs-path="mr.mergeTrainWhenPipelineSucceedsDocsPath"
       />
       <template v-if="shouldShowMergeControls">
-        <div v-if="!shouldShowMergeEdit" class="mr-fast-forward-message">
+        <div
+          v-if="!shouldShowMergeEdit"
+          class="mr-fast-forward-message"
+          data-qa-selector="fast_forward_message_content"
+        >
           {{ __('Fast-forward merge without a merge commit') }}
         </div>
         <commits-header

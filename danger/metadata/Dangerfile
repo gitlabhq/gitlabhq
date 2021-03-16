@@ -20,7 +20,7 @@ if gitlab.mr_body.size < 5
 end
 
 if (THROUGHPUT_LABELS & gitlab.mr_labels).empty?
-  warn 'Please add a [throughput label](https://about.gitlab.com/handbook/engineering/management/throughput/#implementation) to this merge request.'
+  warn 'Please add a [merge request type](https://about.gitlab.com/handbook/engineering/metrics/#data-classification) to this merge request.'
 end
 
 unless gitlab.mr_json["assignee"]

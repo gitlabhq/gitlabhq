@@ -60,6 +60,7 @@ module Gitlab
             .merge(compliance_unique_visits_data)
             .merge(search_unique_visits_data)
             .merge(redis_hll_counters)
+            .deep_merge(aggregated_metrics_data)
         end
       end
 
@@ -192,7 +193,7 @@ module Gitlab
             container_expiration_policies_usage,
             service_desk_counts
           ).tap do |data|
-            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
       end
@@ -224,10 +225,9 @@ module Gitlab
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period)),
             projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(last_28_days_time_period), :project_id)
           }.merge(
-            snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp)),
-            aggregated_metrics_monthly
+            snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp))
           ).tap do |data|
-            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
       end
@@ -242,17 +242,15 @@ module Gitlab
       def system_usage_data_settings
         {
           settings: {
-            ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? }
+            ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
+            operating_system: alt_usage_data(fallback: nil) { operating_system }
           }
         }
       end
 
       def system_usage_data_weekly
         {
-          counts_weekly: {
-          }.merge(
-            aggregated_metrics_weekly
-          )
+          counts_weekly: {}
         }
       end
 
@@ -505,6 +503,17 @@ module Gitlab
         end
       end
 
+      def operating_system
+        ohai_data = Ohai::System.new.tap do |oh|
+          oh.all_plugins(['platform'])
+        end.data
+
+        platform = ohai_data['platform']
+        platform = 'raspbian' if ohai_data['platform'] == 'debian' && /armv/.match?(ohai_data['kernel']['machine'])
+
+        "#{platform}-#{ohai_data['platform_version']}"
+      end
+
       def last_28_days_time_period(column: :created_at)
         { column => 30.days.ago..2.days.ago }
       end
@@ -620,6 +629,9 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_monitor(time_period)
+        # Calculate histogram only for overall as other time periods aren't available/useful here.
+        integrations_histogram = time_period.empty? ? histogram(::AlertManagement::HttpIntegration.active, :project_id, buckets: 1..100) : nil
+
         {
           clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
           clusters_applications_prometheus: cluster_applications_user_distinct_count(::Clusters::Applications::Prometheus, time_period),
@@ -629,8 +641,9 @@ module Gitlab
           projects_with_tracing_enabled: distinct_count(::Project.with_tracing_enabled.where(time_period), :creator_id),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
           projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
-          projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id)
-        }
+          projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id),
+          projects_with_enabled_alert_integrations_histogram: integrations_histogram
+        }.compact
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -701,15 +714,13 @@ module Gitlab
         { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
-      def aggregated_metrics_monthly
+      def aggregated_metrics_data
         {
-          aggregated_metrics: aggregated_metrics.monthly_data
-        }
-      end
-
-      def aggregated_metrics_weekly
-        {
-          aggregated_metrics: aggregated_metrics.weekly_data
+          counts_weekly: { aggregated_metrics: aggregated_metrics.weekly_data },
+          counts_monthly: { aggregated_metrics: aggregated_metrics.monthly_data },
+          counts: aggregated_metrics
+                    .all_time_data
+                    .to_h { |key, value| ["aggregate_#{key}".to_sym, value.round] }
         }
       end
 
@@ -821,11 +832,9 @@ module Gitlab
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
-        [
-          count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
+        add count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
           count(::Issue.with_self_managed_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id),
           count(::Issue.with_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id)
-        ].reduce(:+)
       end
 
       def user_minimum_id
@@ -952,7 +961,7 @@ module Gitlab
         csv_issue_imports = distinct_count(Issues::CsvImport.where(time_period), :user_id)
         group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
 
-        project_imports + bulk_imports + jira_issue_imports + csv_issue_imports + group_imports
+        add(project_imports, bulk_imports, jira_issue_imports, csv_issue_imports, group_imports)
       end
       # rubocop:enable CodeReuse/ActiveRecord
 

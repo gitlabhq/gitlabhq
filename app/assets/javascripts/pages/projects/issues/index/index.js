@@ -2,9 +2,10 @@
 
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import initCsvImportExportButtons from '~/issuable/init_csv_import_export_buttons';
 import initIssuableByEmail from '~/issuable/init_issuable_by_email';
 import IssuableIndex from '~/issuable_index';
-import initIssuablesList from '~/issues_list';
+import initIssuablesList, { initIssuesListApp } from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
@@ -26,3 +27,5 @@ new UsersSelect();
 initManualOrdering();
 initIssuablesList();
 initIssuableByEmail();
+initCsvImportExportButtons();
+initIssuesListApp();

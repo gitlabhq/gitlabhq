@@ -71,7 +71,7 @@ export const PACKAGE_TYPES = [
     type: PackageType.MAVEN,
   },
   {
-    title: s__('PackageRegistry|NPM'),
+    title: s__('PackageRegistry|npm'),
     type: PackageType.NPM,
   },
   {

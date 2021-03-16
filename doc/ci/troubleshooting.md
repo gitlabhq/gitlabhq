@@ -119,7 +119,7 @@ associated with it. Usually one pipeline is a merge request pipeline, and the ot
 is a branch pipeline.
 
 This is usually caused by the `rules` configuration, and there are several ways to
-[prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines).
+[prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines).
 
 #### A job is not in the pipeline
 
@@ -141,7 +141,7 @@ be checked to make sure the jobs are added to the correct pipeline type. For
 example, if a merge request pipeline did not run, the jobs may have been added to
 a branch pipeline instead.
 
-It's also possible that your [`workflow: rules`](yaml/README.md#workflowrules) configuration
+It's also possible that your [`workflow: rules`](yaml/README.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
 ### A job runs unexpectedly
@@ -164,7 +164,7 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 
 1. A user creates a feature branch named `example` and pushes it to a remote repository.
 1. A new pipeline starts running on the `example` branch.
-1. A user rebases the `example` branch on the latest `master` branch and force-pushes it to its remote repository.
+1. A user rebases the `example` branch on the latest default branch and force-pushes it to its remote repository.
 1. A new pipeline starts running on the `example` branch again, however,
    the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
 
@@ -258,8 +258,8 @@ When you use [`rules`](yaml/README.md#rules) with a `when:` clause without an `i
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
-To [prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines), use
-[`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules to control
+To [prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines), use
+[`workflow: rules`](yaml/README.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ### Console workaround if job using resource_group gets stuck

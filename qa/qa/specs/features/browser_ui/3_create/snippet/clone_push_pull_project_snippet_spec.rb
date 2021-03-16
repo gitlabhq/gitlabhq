@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Version control for project snippets', quarantine: { only: { pipeline: :master }, issue: 'https://gitlab.com/gitlab-org/gitaly/-/issues/3143', type: :bug } do
+    describe 'Version control for project snippets' do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }
@@ -40,7 +40,7 @@ module QA
         ssh_key.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/833' do
+      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1725' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = repository_uri_http
           push.file_name = new_file
@@ -67,6 +67,8 @@ module QA
           expect(repository.commits.first).to include 'Update snippet'
           expect(repository.file_content(new_file)).to include "#{added_content}#{changed_content}"
         end
+
+        snippet.remove_via_api!
       end
 
       it 'clones, pushes, and pulls a project snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/832' do

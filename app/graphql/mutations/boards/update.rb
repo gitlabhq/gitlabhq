@@ -17,7 +17,7 @@ module Mutations
             null: true,
             description: 'The board after mutation.'
 
-      authorize :admin_board
+      authorize :admin_issue_board
 
       def resolve(id:, **args)
         board = authorized_find!(id: id)

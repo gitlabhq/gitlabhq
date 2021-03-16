@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../rubocop/cop/safe_params'
 
 RSpec.describe RuboCop::Cop::SafeParams do

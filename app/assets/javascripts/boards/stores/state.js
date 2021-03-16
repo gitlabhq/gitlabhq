@@ -1,19 +1,22 @@
-import { inactiveId } from '~/boards/constants';
+import { inactiveId, ListType } from '~/boards/constants';
 
 export default () => ({
   boardType: null,
+  issuableType: null,
+  fullPath: null,
   disabled: false,
   isShowingLabels: true,
   activeId: inactiveId,
   sidebarType: '',
   boardLists: {},
   listsFlags: {},
-  issuesByListId: {},
+  boardItemsByListId: {},
   isSettingAssignees: false,
   pageInfoByListId: {},
-  issues: {},
+  boardItems: {},
   filterParams: {},
   boardConfig: {},
+  labelsLoading: false,
   labels: [],
   highlightedLists: [],
   selectedBoardItems: [],
@@ -25,7 +28,10 @@ export default () => ({
   },
   selectedProject: {},
   error: undefined,
-  addColumnFormVisible: false,
+  addColumnForm: {
+    visible: false,
+    columnType: ListType.label,
+  },
   // TODO: remove after ce/ee split of board_content.vue
   isShowingEpicsSwimlanes: false,
 });

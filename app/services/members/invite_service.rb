@@ -2,112 +2,97 @@
 
 module Members
   class InviteService < Members::BaseService
-    DEFAULT_LIMIT = 100
+    BlankEmailsError = Class.new(StandardError)
+    TooManyEmailsError = Class.new(StandardError)
 
-    attr_reader :errors
+    def initialize(*args)
+      super
 
-    def initialize(current_user, params)
-      @current_user, @params = current_user, params.dup
       @errors = {}
+      @emails = params[:email]&.split(',')&.uniq&.flatten
     end
 
     def execute(source)
-      return error(s_('Email cannot be blank')) if params[:email].blank?
+      validate_emails!
 
-      emails = params[:email].split(',').uniq.flatten
-      return error(s_("Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }) if
-        user_limit && emails.size > user_limit
-
-      emails.each do |email|
-        next if existing_member?(source, email)
-        next if existing_invite?(source, email)
-        next if existing_request?(source, email)
-
-        if existing_user?(email)
-          add_existing_user_as_member(current_user, source, params, email)
-          next
-        end
-
-        invite_new_member_and_user(current_user, source, params, email)
-      end
-
-      return success unless errors.any?
-
-      error(errors)
+      @source = source
+      emails.each(&method(:process_email))
+      result
+    rescue BlankEmailsError, TooManyEmailsError => e
+      error(e.message)
     end
 
     private
 
-    def invite_new_member_and_user(current_user, source, params, email)
-      new_member = (source.class.name + 'Member').constantize.create(source_id: source.id,
-        user_id: nil,
-        access_level: params[:access_level],
-        invite_email: email,
-        created_by_id: current_user.id,
-        expires_at: params[:expires_at])
+    attr_reader :source, :errors, :emails
 
-      unless new_member.valid? && new_member.persisted?
-        errors[params[:email]] = new_member.errors.full_messages.to_sentence
+    def validate_emails!
+      raise BlankEmailsError, s_('AddMember|Email cannot be blank') if emails.blank?
+
+      if user_limit && emails.size > user_limit
+        raise TooManyEmailsError, s_("AddMember|Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }
       end
-    end
-
-    def add_existing_user_as_member(current_user, source, params, email)
-      new_member = create_member(current_user, existing_user(email), source, params.merge({ invite_email: email }))
-
-      unless new_member.valid? && new_member.persisted?
-        errors[email] = new_member.errors.full_messages.to_sentence
-      end
-    end
-
-    def create_member(current_user, user, source, params)
-      source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
     end
 
     def user_limit
-      limit = params.fetch(:limit, DEFAULT_LIMIT)
+      limit = params.fetch(:limit, Members::CreateService::DEFAULT_LIMIT)
 
-      limit && limit < 0 ? nil : limit
+      limit < 0 ? nil : limit
     end
 
-    def existing_member?(source, email)
+    def process_email(email)
+      return if existing_member?(email)
+      return if existing_invite?(email)
+      return if existing_request?(email)
+
+      add_member(email)
+    end
+
+    def existing_member?(email)
       existing_member = source.members.with_user_by_email(email).exists?
 
       if existing_member
-        errors[email] = "Already a member of #{source.name}"
+        errors[email] = s_("AddMember|Already a member of %{source_name}") % { source_name: source.name }
         return true
       end
 
       false
     end
 
-    def existing_invite?(source, email)
+    def existing_invite?(email)
       existing_invite = source.members.search_invite_email(email).exists?
 
       if existing_invite
-        errors[email] = "Member already invited to #{source.name}"
+        errors[email] = s_("AddMember|Member already invited to %{source_name}") % { source_name: source.name }
         return true
       end
 
       false
     end
 
-    def existing_request?(source, email)
+    def existing_request?(email)
       existing_request = source.requesters.with_user_by_email(email).exists?
 
       if existing_request
-        errors[email] = "Member cannot be invited because they already requested to join #{source.name}"
+        errors[email] = s_("AddMember|Member cannot be invited because they already requested to join %{source_name}") % { source_name: source.name }
         return true
       end
 
       false
     end
 
-    def existing_user(email)
-      User.find_by_email(email)
+    def add_member(email)
+      new_member = source.add_user(email, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+
+      errors[email] = new_member.errors.full_messages.to_sentence if new_member.invalid?
     end
 
-    def existing_user?(email)
-      existing_user(email).present?
+    def result
+      if errors.any?
+        error(errors)
+      else
+        success
+      end
     end
   end
 end

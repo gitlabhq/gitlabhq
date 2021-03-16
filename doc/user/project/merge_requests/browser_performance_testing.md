@@ -13,6 +13,9 @@ If your application offers a web interface and you're using
 [GitLab CI/CD](../../../ci/README.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
+NOTE:
+You can automate this feature in your applications by using [Auto DevOps](../../../topics/autodevops/index.md).
+
 ## Overview
 
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
@@ -90,7 +93,7 @@ that you can later download and analyze. This implementation always takes the la
 Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
 you can view the report directly in your browser.
 
-You can also customize the jobs with environment variables:
+You can also customize the jobs with CI/CD variables:
 
 - `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
 - `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `14.1.0`).
@@ -115,7 +118,7 @@ performance:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27599) in GitLab 13.0.
 
 You can configure the sensitivity of degradation alerts to avoid getting alerts for minor drops in metrics.
-This is done by setting the `DEGRADATION_THRESHOLD` variable. In the example below, the alert only shows up
+This is done by setting the `DEGRADATION_THRESHOLD` CI/CD variable. In the example below, the alert only shows up
 if the `Total Score` metric degrades by 5 points or more:
 
 ```yaml
@@ -186,7 +189,7 @@ GitLab version:
 
 - In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
 - In 13.2 the feature was renamed from `Performance` to `Browser Performance` with
-additional template variables. The job name in the template is still `performance`
+additional template CI/CD variables. The job name in the template is still `performance`
 for compatibility reasons, but may be renamed to match in a future iteration.
 - For 11.5 to 12.3 no template is available and the job has to be defined manually as follows:
 

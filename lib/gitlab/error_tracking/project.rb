@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This should be in the ErrorTracking namespace. For more details, see:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/323342
 module Gitlab
   module ErrorTracking
     class Project

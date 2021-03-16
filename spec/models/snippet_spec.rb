@@ -21,7 +21,7 @@ RSpec.describe Snippet do
     it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
     it { is_expected.to have_one(:snippet_repository) }
     it { is_expected.to have_one(:statistics).class_name('SnippetStatistics').dependent(:destroy) }
-    it { is_expected.to have_many(:repository_storage_moves).class_name('SnippetRepositoryStorageMove').inverse_of(:container) }
+    it { is_expected.to have_many(:repository_storage_moves).class_name('Snippets::RepositoryStorageMove').inverse_of(:container) }
   end
 
   describe 'validation' do
@@ -495,6 +495,16 @@ RSpec.describe Snippet do
 
       it 'returns array of blobs' do
         expect(snippet.blobs).to all(be_a(Blob))
+      end
+
+      context 'when file does not exist' do
+        it 'removes nil values from the blobs array' do
+          allow(snippet).to receive(:list_files).and_return(%w(LICENSE non_existent_snippet_file))
+
+          blobs = snippet.blobs
+          expect(blobs.count).to eq 1
+          expect(blobs.first.name).to eq 'LICENSE'
+        end
       end
     end
   end

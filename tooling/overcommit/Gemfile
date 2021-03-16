@@ -5,5 +5,4 @@ source 'https://rubygems.org'
 
 gem 'overcommit'
 gem 'gitlab-styles', '~> 5.4.0', require: false
-gem 'scss_lint', '~> 0.56.0', require: false
 gem 'haml_lint', '~> 0.34.0', require: false

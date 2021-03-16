@@ -4,12 +4,12 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlTable,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Clusters from '~/clusters_list/components/clusters.vue';
 import ClusterStore from '~/clusters_list/store';
 import axios from '~/lib/utils/axios_utils';
-import * as Sentry from '~/sentry/wrapper';
 import { apiData } from '../mock_data';
 
 describe('Clusters', () => {

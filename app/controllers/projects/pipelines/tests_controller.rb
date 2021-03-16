@@ -32,7 +32,7 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def builds
-        @builds ||= pipeline.latest_builds.for_ids(build_ids).presence || render_404
+        @builds ||= pipeline.latest_builds.id_in(build_ids).presence || render_404
       end
 
       def build_ids

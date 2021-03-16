@@ -1,7 +1,8 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
-import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
+import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
 import PipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import mockData from '../mock_data';
@@ -25,7 +26,7 @@ describe('MRWidgetPipeline', () => {
   const findPipelineID = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineInfoContainer = () => wrapper.find('[data-testid="pipeline-info-container"]');
   const findCommitLink = () => wrapper.find('[data-testid="commit-link"]');
-  const findPipelineGraph = () => wrapper.find('[data-testid="widget-mini-pipeline-graph"]');
+  const findPipelineMiniGraph = () => wrapper.find(PipelineMiniGraph);
   const findAllPipelineStages = () => wrapper.findAll(PipelineStage);
   const findPipelineCoverage = () => wrapper.find('[data-testid="pipeline-coverage"]');
   const findPipelineCoverageDelta = () => wrapper.find('[data-testid="pipeline-coverage-delta"]');
@@ -35,7 +36,7 @@ describe('MRWidgetPipeline', () => {
     wrapper.find('[data-testid="monitoring-pipeline-message"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
-  const createWrapper = (props, mountFn = shallowMount) => {
+  const createWrapper = (props = {}, mountFn = shallowMount) => {
     wrapper = mountFn(PipelineComponent, {
       propsData: {
         ...defaultProps,
@@ -65,10 +66,13 @@ describe('MRWidgetPipeline', () => {
 
   describe('with a pipeline', () => {
     beforeEach(() => {
-      createWrapper({
-        pipelineCoverageDelta: mockData.pipelineCoverageDelta,
-        buildsWithCoverage: mockData.buildsWithCoverage,
-      });
+      createWrapper(
+        {
+          pipelineCoverageDelta: mockData.pipelineCoverageDelta,
+          buildsWithCoverage: mockData.buildsWithCoverage,
+        },
+        mount,
+      );
     });
 
     it('should render pipeline ID', () => {
@@ -84,8 +88,8 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should render pipeline graph', () => {
-      expect(findPipelineGraph().exists()).toBe(true);
-      expect(findAllPipelineStages().length).toBe(mockData.pipeline.details.stages.length);
+      expect(findPipelineMiniGraph().exists()).toBe(true);
+      expect(findAllPipelineStages()).toHaveLength(mockData.pipeline.details.stages.length);
     });
 
     describe('should render pipeline coverage information', () => {
@@ -136,7 +140,7 @@ describe('MRWidgetPipeline', () => {
       const mockCopy = JSON.parse(JSON.stringify(mockData));
       delete mockCopy.pipeline.commit;
 
-      createWrapper({});
+      createWrapper({}, mount);
     });
 
     it('should render pipeline ID', () => {
@@ -147,9 +151,15 @@ describe('MRWidgetPipeline', () => {
       expect(findPipelineInfoContainer().text()).toMatch(mockData.pipeline.details.status.label);
     });
 
-    it('should render pipeline graph', () => {
-      expect(findPipelineGraph().exists()).toBe(true);
-      expect(findAllPipelineStages().length).toBe(mockData.pipeline.details.stages.length);
+    it('should render pipeline graph with correct styles', () => {
+      const stagesCount = mockData.pipeline.details.stages.length;
+
+      expect(findPipelineMiniGraph().exists()).toBe(true);
+      expect(findPipelineMiniGraph().findAll('.mr-widget-pipeline-stages')).toHaveLength(
+        stagesCount,
+      );
+
+      expect(findAllPipelineStages()).toHaveLength(stagesCount);
     });
 
     it('should render coverage information', () => {
@@ -181,7 +191,7 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should not render a pipeline graph', () => {
-      expect(findPipelineGraph().exists()).toBe(false);
+      expect(findPipelineMiniGraph().exists()).toBe(false);
     });
   });
 

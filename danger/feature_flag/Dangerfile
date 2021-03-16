@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # rubocop:disable Style/SignalException
 
-SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags/development.html#feature-flag-definition-and-validation)."
+SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
 
 SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
 ```suggestion

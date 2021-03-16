@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Redmine Service
+# Redmine Service **(FREE)**
 
 1. To enable the Redmine integration in a project, navigate to the
    [Integrations page](overview.md#accessing-integrations), click

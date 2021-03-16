@@ -61,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <div class="block">
+  <div>
     <p
       v-if="trigger.short_token"
       :class="{ 'gl-mb-2': hasVariables, 'gl-mb-0': !hasVariables }"

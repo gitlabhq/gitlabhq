@@ -8,7 +8,7 @@ RSpec.describe Project, factory_default: :keep do
   include ExternalAuthorizationServiceHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:namespace) { create_default(:namespace).freeze }
 
   it_behaves_like 'having unique enum values'
 
@@ -145,7 +145,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it_behaves_like 'model with wiki' do
-      let_it_be(:container) { create(:project, :wiki_repo) }
+      let_it_be(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
       let(:container_without_wiki) { create(:project) }
     end
 
@@ -1599,7 +1599,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#any_runners?' do
+  describe '#any_active_runners?' do
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
       let(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
@@ -1609,31 +1609,31 @@ RSpec.describe Project, factory_default: :keep do
         let(:shared_runners_enabled) { false }
 
         it 'has no runners available' do
-          expect(project.any_runners?).to be_falsey
+          expect(project.any_active_runners?).to be_falsey
         end
 
         it 'has a specific runner' do
           specific_runner
 
-          expect(project.any_runners?).to be_truthy
+          expect(project.any_active_runners?).to be_truthy
         end
 
         it 'has a shared runner, but they are prohibited to use' do
           shared_runner
 
-          expect(project.any_runners?).to be_falsey
+          expect(project.any_active_runners?).to be_falsey
         end
 
         it 'checks the presence of specific runner' do
           specific_runner
 
-          expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
+          expect(project.any_active_runners? { |runner| runner == specific_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           specific_runner
 
-          expect(project.any_runners? { false }).to be_falsey
+          expect(project.any_active_runners? { false }).to be_falsey
         end
       end
 
@@ -1643,19 +1643,19 @@ RSpec.describe Project, factory_default: :keep do
         it 'has a shared runner' do
           shared_runner
 
-          expect(project.any_runners?).to be_truthy
+          expect(project.any_active_runners?).to be_truthy
         end
 
         it 'checks the presence of shared runner' do
           shared_runner
 
-          expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+          expect(project.any_active_runners? { |runner| runner == shared_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           shared_runner
 
-          expect(project.any_runners? { false }).to be_falsey
+          expect(project.any_active_runners? { false }).to be_falsey
         end
       end
     end
@@ -1669,13 +1669,13 @@ RSpec.describe Project, factory_default: :keep do
         let(:group_runners_enabled) { false }
 
         it 'has no runners available' do
-          expect(project.any_runners?).to be_falsey
+          expect(project.any_active_runners?).to be_falsey
         end
 
         it 'has a group runner, but they are prohibited to use' do
           group_runner
 
-          expect(project.any_runners?).to be_falsey
+          expect(project.any_active_runners?).to be_falsey
         end
       end
 
@@ -1685,19 +1685,19 @@ RSpec.describe Project, factory_default: :keep do
         it 'has a group runner' do
           group_runner
 
-          expect(project.any_runners?).to be_truthy
+          expect(project.any_active_runners?).to be_truthy
         end
 
         it 'checks the presence of group runner' do
           group_runner
 
-          expect(project.any_runners? { |runner| runner == group_runner }).to be_truthy
+          expect(project.any_active_runners? { |runner| runner == group_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           group_runner
 
-          expect(project.any_runners? { false }).to be_falsey
+          expect(project.any_active_runners? { false }).to be_falsey
         end
       end
     end
@@ -1799,7 +1799,8 @@ RSpec.describe Project, factory_default: :keep do
   describe '#default_branch_protected?' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
 
     subject { project.default_branch_protected? }
 
@@ -2198,6 +2199,44 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#set_container_registry_access_level' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    it 'updates project_feature', :aggregate_failures do
+      # Simulate an existing project that has container_registry enabled
+      project.update_column(:container_registry_enabled, true)
+      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
+
+      expect(project.container_registry_enabled).to eq(true)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::DISABLED)
+
+      project.update!(container_registry_enabled: false)
+
+      expect(project.container_registry_enabled).to eq(false)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::DISABLED)
+
+      project.update!(container_registry_enabled: true)
+
+      expect(project.container_registry_enabled).to eq(true)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::ENABLED)
+    end
+
+    it 'rollsback both projects and project_features row in case of error', :aggregate_failures do
+      project.update_column(:container_registry_enabled, true)
+      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
+
+      expect(project.container_registry_enabled).to eq(true)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::DISABLED)
+
+      allow(project).to receive(:valid?).and_return(false)
+
+      expect { project.update!(container_registry_enabled: false) }.to raise_error(ActiveRecord::RecordInvalid)
+
+      expect(project.reload.container_registry_enabled).to eq(true)
+      expect(project.project_feature.reload.container_registry_access_level).to eq(ProjectFeature::DISABLED)
     end
   end
 
@@ -2802,7 +2841,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#emails_disabled?' do
-    let(:project) { build(:project, emails_disabled: false) }
+    let_it_be(:namespace) { create(:namespace) }
+    let(:project) { build(:project, namespace: namespace, emails_disabled: false) }
 
     context 'emails disabled in group' do
       it 'returns true' do
@@ -2830,7 +2870,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#lfs_enabled?' do
-    let(:project) { build(:project) }
+    let(:namespace) { create(:namespace) }
+    let(:project) { build(:project, namespace: namespace) }
 
     shared_examples 'project overrides group' do
       it 'returns true when enabled in project' do
@@ -4463,7 +4504,11 @@ RSpec.describe Project, factory_default: :keep do
     subject { project.predefined_project_variables.to_runner_variables }
 
     specify do
-      expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false })
+      expect(subject).to include
+      [
+        { key: 'CI_PROJECT_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false },
+        { key: 'CI_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false }
+      ]
     end
 
     context 'when ci config path is overridden' do
@@ -4471,7 +4516,41 @@ RSpec.describe Project, factory_default: :keep do
         project.update!(ci_config_path: 'random.yml')
       end
 
-      it { expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: 'random.yml', public: true, masked: false }) }
+      it do
+        expect(subject).to include
+        [
+          { key: 'CI_PROJECT_CONFIG_PATH', value: 'random.yml', public: true, masked: false },
+          { key: 'CI_CONFIG_PATH', value: 'random.yml', public: true, masked: false }
+        ]
+      end
+    end
+  end
+
+  describe '#dependency_proxy_variables' do
+    let_it_be(:namespace) { create(:namespace, path: 'NameWithUPPERcaseLetters') }
+    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
+
+    subject { project.dependency_proxy_variables.to_runner_variables }
+
+    context 'when dependency_proxy is enabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: true })
+      end
+
+      it 'contains the downcased name' do
+        expect(subject).to include({ key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
+                                     value: "#{Gitlab.host_with_port}/namewithuppercaseletters#{DependencyProxy::URL_SUFFIX}",
+                                     public: true,
+                                     masked: false })
+      end
+    end
+
+    context 'when dependency_proxy is disabled' do
+      before do
+        stub_config(dependency_proxy: { enabled: false })
+      end
+
+      it { expect(subject).to be_empty }
     end
   end
 
@@ -4877,7 +4956,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'branch protection' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:namespace) { create(:namespace) }
+      let(:project) { create(:project, :repository, namespace: namespace) }
 
       before do
         create(:import_state, :started, project: project)

@@ -286,6 +286,12 @@ RSpec.describe Issues::CreateService do
 
         issue
       end
+
+      it 'schedules a namespace onboarding create action worker' do
+        expect(Namespaces::OnboardingIssueCreatedWorker).to receive(:perform_async).with(project.namespace.id)
+
+        issue
+      end
     end
 
     context 'issue create service' do

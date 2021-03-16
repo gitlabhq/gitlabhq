@@ -8,8 +8,6 @@ describe('GL Style Field Errors', () => {
     testContext = {};
   });
 
-  preloadFixtures('static/gl_field_errors.html');
-
   beforeEach(() => {
     loadFixtures('static/gl_field_errors.html');
     const $form = $('form.gl-show-field-errors');

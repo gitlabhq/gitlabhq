@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'thread comments' do |resource_name|
+RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name|
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
   let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle" }
@@ -22,23 +22,6 @@ RSpec.shared_examples 'thread comments' do |resource_name|
     new_comment = all(comments_selector).last
 
     expect(new_comment).not_to have_selector '.discussion'
-  end
-
-  if resource_name == 'issue'
-    it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
-      find("#{form_selector} .note-textarea").send_keys(comment)
-
-      click_button 'Comment & close issue'
-
-      wait_for_all_requests
-
-      expect(page).to have_content(comment)
-      expect(page).to have_content "@#{user.username} closed"
-
-      new_comment = all(comments_selector).last
-
-      expect(new_comment).not_to have_selector '.discussion'
-    end
   end
 
   describe 'when the toggle is clicked' do
@@ -110,28 +93,9 @@ RSpec.shared_examples 'thread comments' do |resource_name|
       end
 
       it 'updates the submit button text and closes the dropdown' do
-        button = find(submit_selector)
-
-        # on issues page, the submit input is a <button>, on other pages it is <input>
-        if button.tag_name == 'button'
-          expect(find(submit_selector)).to have_content 'Start thread'
-        else
-          expect(find(submit_selector).value).to eq 'Start thread'
-        end
+        expect(find(submit_selector).value).to eq 'Start thread'
 
         expect(page).not_to have_selector menu_selector
-      end
-
-      if resource_name =~ /(issue|merge request)/
-        it 'updates the close button text' do
-          expect(find(close_selector)).to have_content "Start thread & close #{resource_name}"
-        end
-
-        it 'typing does not change the close button text' do
-          find("#{form_selector} .note-textarea").send_keys('b')
-
-          expect(find(close_selector)).to have_content "Start thread & close #{resource_name}"
-        end
       end
 
       describe 'creating a thread' do
@@ -146,6 +110,165 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           find("#{comments_selector} .js-vue-discussion-reply").click
           find("#{comments_selector} .note-textarea").send_keys(text)
 
+          find("#{comments_selector} .js-comment-button").click
+          wait_for_requests
+        end
+
+        it 'clicking "Start thread" will post a thread' do
+          expect(page).to have_content(comment)
+
+          new_comment = all(comments_selector).last
+
+          expect(new_comment).to have_selector('.discussion')
+        end
+      end
+
+      describe 'when opening the menu' do
+        before do
+          find(toggle_selector).click
+        end
+
+        it 'has "Start thread" selected' do
+          find("#{menu_selector} li", match: :first)
+          items = all("#{menu_selector} li")
+
+          expect(items.first).to have_content 'Comment'
+          expect(items.first).not_to have_selector '[data-testid="check-icon"]'
+          expect(items.first['class']).not_to match 'droplab-item-selected'
+
+          expect(items.last).to have_content 'Start thread'
+          expect(items.last).to have_selector '[data-testid="check-icon"]'
+          expect(items.last['class']).to match 'droplab-item-selected'
+        end
+
+        describe 'when selecting "Comment"' do
+          before do
+            find("#{menu_selector} li", match: :first).click
+          end
+
+          it 'updates the submit button text and closes the dropdown' do
+            button = find(submit_selector)
+
+            expect(button.value).to eq 'Comment'
+
+            expect(page).not_to have_selector menu_selector
+          end
+
+          it 'has "Comment" selected when opening the menu', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/196825' do
+            find(toggle_selector).click
+
+            find("#{menu_selector} li", match: :first)
+            items = all("#{menu_selector} li")
+
+            aggregate_failures do
+              expect(items.first).to have_content 'Comment'
+              expect(items.first).to have_selector '[data-testid="check-icon"]'
+              expect(items.first['class']).to match 'droplab-item-selected'
+
+              expect(items.last).to have_content 'Start thread'
+              expect(items.last).not_to have_selector '[data-testid="check-icon"]'
+              expect(items.last['class']).not_to match 'droplab-item-selected'
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'thread comments for issue, epic and merge request' do |resource_name|
+  let(:form_selector) { '.js-main-target-form' }
+  let(:dropdown_selector) { "#{form_selector} [data-testid='comment-button']" }
+  let(:submit_button_selector) { "#{dropdown_selector} .split-content-button" }
+  let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle-split" }
+  let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
+  let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
+  let(:comments_selector) { '.timeline > .note.timeline-entry' }
+  let(:comment) { 'My comment' }
+
+  it 'clicking "Comment" will post a comment' do
+    expect(page).to have_selector toggle_selector
+
+    find("#{form_selector} .note-textarea").send_keys(comment)
+
+    find(submit_button_selector).click
+
+    expect(page).to have_content(comment)
+
+    new_comment = all(comments_selector).last
+
+    expect(new_comment).not_to have_selector '.discussion'
+  end
+
+  if resource_name == 'issue'
+    it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
+      find("#{form_selector} .note-textarea").send_keys(comment)
+
+      click_button 'Comment & close issue'
+
+      wait_for_all_requests
+
+      expect(page).to have_content(comment)
+      expect(page).to have_content "@#{user.username} closed"
+
+      new_comment = all(comments_selector).last
+
+      expect(new_comment).not_to have_selector '.discussion'
+    end
+  end
+
+  describe 'when the toggle is clicked' do
+    before do
+      find("#{form_selector} .note-textarea").send_keys(comment)
+
+      find(toggle_selector).click
+    end
+
+    it 'has a "Comment" item (selected by default) and "Start thread" item' do
+      expect(page).to have_selector menu_selector
+
+      find("#{menu_selector} li", match: :first)
+      items = all("#{menu_selector} li")
+
+      expect(page).to have_selector("#{dropdown_selector}[data-track-label='comment_button']")
+
+      expect(items.first).to have_content 'Comment'
+      expect(items.first).to have_content "Add a general comment to this #{resource_name}."
+
+      expect(items.last).to have_content 'Start thread'
+      expect(items.last).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
+    end
+
+    it 'closes the menu when clicking the toggle or body' do
+      find(toggle_selector).click
+
+      expect(page).not_to have_selector menu_selector
+
+      find(toggle_selector).click
+      find("#{form_selector} .note-textarea").click
+
+      expect(page).not_to have_selector menu_selector
+    end
+
+    describe 'when selecting "Start thread"' do
+      before do
+        find("#{menu_selector} li", match: :first)
+        all("#{menu_selector} li").last.click
+      end
+
+      describe 'creating a thread' do
+        before do
+          find(submit_button_selector).click
+          wait_for_requests
+
+          find(comments_selector, match: :first)
+        end
+
+        def submit_reply(text)
+          find("#{comments_selector} .js-vue-discussion-reply").click
+          find("#{comments_selector} .note-textarea").send_keys(text)
+
+          # .js-comment-button here refers to the reply button in note_form.vue
           find("#{comments_selector} .js-comment-button").click
           wait_for_requests
         end
@@ -228,13 +351,11 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           find("#{menu_selector} li", match: :first)
           items = all("#{menu_selector} li")
 
+          expect(page).to have_selector("#{dropdown_selector}[data-track-label='start_thread_button']")
+
           expect(items.first).to have_content 'Comment'
-          expect(items.first).not_to have_selector '[data-testid="check-icon"]'
-          expect(items.first['class']).not_to match 'droplab-item-selected'
 
           expect(items.last).to have_content 'Start thread'
-          expect(items.last).to have_selector '[data-testid="check-icon"]'
-          expect(items.last['class']).to match 'droplab-item-selected'
         end
 
         describe 'when selecting "Comment"' do
@@ -243,14 +364,9 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           end
 
           it 'updates the submit button text and closes the dropdown' do
-            button = find(submit_selector)
+            button = find(submit_button_selector)
 
-            # on issues page, the submit input is a <button>, on other pages it is <input>
-            if button.tag_name == 'button'
-              expect(button).to have_content 'Comment'
-            else
-              expect(button.value).to eq 'Comment'
-            end
+            expect(button).to have_content 'Comment'
 
             expect(page).not_to have_selector menu_selector
           end
@@ -267,21 +383,17 @@ RSpec.shared_examples 'thread comments' do |resource_name|
             end
           end
 
-          it 'has "Comment" selected when opening the menu', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/196825' do
+          it 'has "Comment" selected when opening the menu' do
             find(toggle_selector).click
 
             find("#{menu_selector} li", match: :first)
             items = all("#{menu_selector} li")
 
-            aggregate_failures do
-              expect(items.first).to have_content 'Comment'
-              expect(items.first).to have_selector '[data-testid="check-icon"]'
-              expect(items.first['class']).to match 'droplab-item-selected'
+            expect(page).to have_selector("#{dropdown_selector}[data-track-label='comment_button']")
 
-              expect(items.last).to have_content 'Start thread'
-              expect(items.last).not_to have_selector '[data-testid="check-icon"]'
-              expect(items.last['class']).not_to match 'droplab-item-selected'
-            end
+            expect(items.first).to have_content 'Comment'
+
+            expect(items.last).to have_content 'Start thread'
           end
         end
       end

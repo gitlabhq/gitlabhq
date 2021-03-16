@@ -83,7 +83,7 @@ describe('issue_note_form component', () => {
       });
 
       const message =
-        'This comment has changed since you started editing, please review the updated comment to ensure information is not lost.';
+        'This comment changed after you started editing it. Review the updated comment to ensure information is not lost.';
 
       await nextTick();
 

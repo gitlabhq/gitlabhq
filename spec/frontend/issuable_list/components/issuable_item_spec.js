@@ -202,7 +202,7 @@ describe('IssuableItem', () => {
     describe('labelTarget', () => {
       it('returns target string for a provided label param when `enableLabelPermalinks` is true', () => {
         expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe(
-          '?label_name%5B%5D=Documentation%20Update',
+          '?label_name[]=Documentation%20Update',
         );
       });
 
@@ -294,7 +294,17 @@ describe('IssuableItem', () => {
 
       expect(confidentialEl.exists()).toBe(true);
       expect(confidentialEl.props('name')).toBe('eye-slash');
-      expect(confidentialEl.attributes('title')).toBe('Confidential');
+      expect(confidentialEl.attributes()).toMatchObject({
+        title: 'Confidential',
+        arialabel: 'Confidential',
+      });
+    });
+
+    it('renders task status', () => {
+      const taskStatus = wrapper.find('[data-testid="task-status"]');
+      const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} tasks completed`;
+
+      expect(taskStatus.text()).toBe(expected);
     });
 
     it('renders issuable reference', () => {

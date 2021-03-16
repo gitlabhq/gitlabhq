@@ -8,7 +8,7 @@
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
@@ -33,7 +33,7 @@
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
       %span= _("Project slug")
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", required: true
+    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", required: true, aria: { required: true }
 - if current_user.can_create_group?
   .form-text.text-muted
     - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
@@ -55,7 +55,7 @@
     %div{ :class => "col-sm-12" }
       .form-check
         - experiment(:new_project_readme, actor: current_user) do |e|
-          = check_box_tag 'project[initialize_with_readme]', '1', e.run, class: 'form-check-input qa-initialize-with-readme-checkbox', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
+          = check_box_tag 'project[initialize_with_readme]', '1', e.run, class: 'form-check-input', data: { qa_selector: "initialize_with_readme_checkbox", track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme", track_value: "" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong= s_('ProjectsNew|Initialize repository with a README')

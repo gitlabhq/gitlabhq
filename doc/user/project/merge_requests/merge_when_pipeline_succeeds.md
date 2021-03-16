@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, concepts
 ---
@@ -94,7 +94,7 @@ merge-request-pipeline-job:
 ```
 
 You should avoid configuration like this, and only use branch (`push`) pipelines
-or merge request pipelines, when possible. See [`rules` documentation](../../../ci/yaml/README.md#prevent-duplicate-pipelines)
+or merge request pipelines, when possible. See [`rules` documentation](../../../ci/yaml/README.md#avoid-duplicate-pipelines)
 for details on avoiding two pipelines for a single merge request.
 
 ### Skipped pipelines

@@ -22,6 +22,13 @@ module Gitlab
                                                    greater_than_or_equal_to: 2,
                                                    less_than_or_equal_to: Entry::Product::Parallel::PARALLEL_LIMIT },
                                    allow_nil: true
+
+                validate do
+                  next unless opt(:allowed_strategies)
+                  next if opt(:allowed_strategies).include?(:numeric)
+
+                  errors.add(:config, 'cannot use "parallel: <number>".')
+                end
               end
 
               def value
@@ -38,6 +45,13 @@ module Gitlab
               validations do
                 validates :config, allowed_keys: PERMITTED_KEYS
                 validates :config, required_keys: PERMITTED_KEYS
+
+                validate do
+                  next unless opt(:allowed_strategies)
+                  next if opt(:allowed_strategies).include?(:matrix)
+
+                  errors.add(:config, 'cannot use "parallel: matrix".')
+                end
               end
 
               entry :matrix, Entry::Product::Matrix,

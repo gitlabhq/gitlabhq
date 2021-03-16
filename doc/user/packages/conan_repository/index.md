@@ -171,6 +171,10 @@ convention.
 
 ## Authenticate to the Package Registry
 
+GitLab requires authentication to upload packages, and to install packages
+from private and internal projects. (You can, however, install packages
+from public projects without authentication.)
+
 To authenticate to the Package Registry, you need one of the following:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md)
@@ -302,8 +306,9 @@ file.
 Prerequisites:
 
 - The Conan remote [must be configured](#add-the-package-registry-as-a-conan-remote).
-- [Authentication](#authenticate-to-the-package-registry) with the
-  Package Registry must be configured.
+- For private and internal projects, you must configure
+  [Authentication](#authenticate-to-the-package-registry)
+  with the Package Registry.
 
 1. In the project where you want to install the package as a dependency, open
    `conanfile.txt`. Or, in the root of your project, create a file called

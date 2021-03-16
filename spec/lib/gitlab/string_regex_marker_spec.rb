@@ -9,7 +9,7 @@ RSpec.describe Gitlab::StringRegexMarker do
       let(:rich) { %{<span class="key">"name"</span><span class="punctuation">: </span><span class="value">"AFNetworking"</span>}.html_safe }
 
       subject do
-        described_class.new(raw, rich).mark(/"[^"]+":\s*"(?<name>[^"]+)"/, group: :name) do |text, left:, right:|
+        described_class.new(raw, rich).mark(/"[^"]+":\s*"(?<name>[^"]+)"/, group: :name) do |text, left:, right:, mode:|
           %{<a href="#">#{text}</a>}.html_safe
         end
       end
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::StringRegexMarker do
       let(:rich) { %{a &lt;b&gt; &lt;c&gt; d}.html_safe }
 
       subject do
-        described_class.new(raw, rich).mark(/<[a-z]>/) do |text, left:, right:|
+        described_class.new(raw, rich).mark(/<[a-z]>/) do |text, left:, right:, mode:|
           %{<strong>#{text}</strong>}.html_safe
         end
       end

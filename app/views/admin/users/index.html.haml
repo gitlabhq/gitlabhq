@@ -5,7 +5,7 @@
     %a.nav-link{ href: '#users', class: active_when(params[:tab] != 'cohorts'), data: { toggle: 'tab' }, role: 'tab' }
       = s_('AdminUsers|Users')
   %li.nav-item.js-users-tab-item{ role: 'presentation' }
-    %a.nav-link{ href: '#cohorts', class: active_when(params[:tab] == 'cohorts'), data: { toggle: 'tab', track: { event: 'i_analytics_cohorts', action: 'click_tab' } }, role: 'tab' }
+    %a.nav-link{ href: '#cohorts', class: active_when(params[:tab] == 'cohorts'), data: { toggle: 'tab' }, role: 'tab' }
       = s_('AdminUsers|Cohorts')
 
 .tab-content

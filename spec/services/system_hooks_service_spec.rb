@@ -149,9 +149,6 @@ RSpec.describe SystemHooksService do
     it { expect(event_name(project, :rename)).to eq "project_rename" }
     it { expect(event_name(project, :transfer)).to eq "project_transfer" }
     it { expect(event_name(project, :update)).to eq "project_update" }
-    it { expect(event_name(project_member, :create)).to eq "user_add_to_team" }
-    it { expect(event_name(project_member, :destroy)).to eq "user_remove_from_team" }
-    it { expect(event_name(project_member, :update)).to eq "user_update_for_team" }
     it { expect(event_name(key, :create)).to eq 'key_create' }
     it { expect(event_name(key, :destroy)).to eq 'key_destroy' }
   end

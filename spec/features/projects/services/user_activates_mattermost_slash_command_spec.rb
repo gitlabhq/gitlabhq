@@ -113,7 +113,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
 
         click_link 'Add to Mattermost'
 
-        expect(page).to have_selector('.alert')
+        expect(page).to have_selector('.gl-alert')
         expect(page).to have_content('test mattermost error message')
       end
 

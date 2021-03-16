@@ -45,6 +45,9 @@ module ExpandVariables
       # Lazily initialise variables
       variables = variables.call if variables.is_a?(Proc)
 
+      # Convert Collection to variables
+      variables = variables.to_hash if variables.is_a?(Gitlab::Ci::Variables::Collection)
+
       # Convert hash array to variables
       if variables.is_a?(Array)
         variables = variables.reduce({}) do |hash, variable|

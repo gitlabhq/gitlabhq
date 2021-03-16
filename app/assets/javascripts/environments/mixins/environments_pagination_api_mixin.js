@@ -16,6 +16,7 @@ export default {
       let params = {
         scope,
         page: '1',
+        nested: true,
       };
 
       params = this.onChangeWithFilter(params);
@@ -27,6 +28,7 @@ export default {
       /* URLS parameters are strings, we need to parse to match types */
       let params = {
         page: Number(page).toString(),
+        nested: true,
       };
 
       if (this.scope) {

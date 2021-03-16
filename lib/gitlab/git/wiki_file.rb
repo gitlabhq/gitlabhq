@@ -12,6 +12,19 @@ module Gitlab
         @name = gitaly_file.name
         @path = gitaly_file.path
       end
+
+      def self.from_blob(blob)
+        hash = {
+          name: File.basename(blob.name),
+          mime_type: blob.mime_type,
+          path: blob.path,
+          raw_data: blob.data
+        }
+
+        gitaly_file = Gitlab::GitalyClient::WikiFile.new(hash)
+
+        Gitlab::Git::WikiFile.new(gitaly_file)
+      end
     end
   end
 end

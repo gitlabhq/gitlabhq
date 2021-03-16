@@ -57,14 +57,12 @@ RSpec.describe Gitlab::TreeSummary do
     context 'with caching', :use_clean_rails_memory_store_caching do
       subject { Rails.cache.fetch(key) }
 
-      before do
-        summarized
-      end
-
       context 'Repository tree cache' do
         let(:key) { ['projects', project.id, 'content', commit.id, path] }
 
         it 'creates a cache for repository content' do
+          summarized
+
           is_expected.to eq([{ file_name: 'a.txt', type: :blob }])
         end
       end
@@ -72,10 +70,33 @@ RSpec.describe Gitlab::TreeSummary do
       context 'Commits list cache' do
         let(:offset) { 0 }
         let(:limit) { 25 }
-        let(:key) { ['projects', project.id, 'last_commits_list', commit.id, path, offset, limit] }
+        let(:key) { ['projects', project.id, 'last_commits', commit.id, path, offset, limit] }
 
         it 'creates a cache for commits list' do
+          summarized
+
           is_expected.to eq('a.txt' => commit.to_hash)
+        end
+
+        context 'when commit has a very long message' do
+          before do
+            repo.create_file(
+              project.creator,
+              'long.txt',
+              '',
+              message: message,
+              branch_name: project.default_branch_or_master
+            )
+          end
+
+          let(:message) { 'a' * 1025 }
+          let(:expected_message) { message[0...1021] + '...' }
+
+          it 'truncates commit message to 1 kilobyte' do
+            summarized
+
+            is_expected.to include('long.txt' => a_hash_including(message: expected_message))
+          end
         end
       end
     end

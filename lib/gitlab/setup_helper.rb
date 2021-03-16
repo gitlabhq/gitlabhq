@@ -115,7 +115,7 @@ module Gitlab
 
           config[:storage] = storages
 
-          internal_socket_dir = File.join(gitaly_dir, 'internal_sockets')
+          internal_socket_dir = options[:internal_socket_dir] || File.join(gitaly_dir, 'internal_sockets')
           FileUtils.mkdir(internal_socket_dir) unless File.exist?(internal_socket_dir)
           config[:internal_socket_dir] = internal_socket_dir
 

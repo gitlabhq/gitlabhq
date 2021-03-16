@@ -1,0 +1,122 @@
+{
+  "payloadAlerFields": [
+    {
+      "path": [
+        "dashboardId"
+      ],
+      "label": "Dashboard Id",
+      "type": "string"
+    },
+    {
+      "path": [
+        "evalMatches"
+      ],
+      "label": "Eval Matches",
+      "type": "array"
+    },
+    {
+      "path": [
+        "createdAt"
+      ],
+      "label": "Created At",
+      "type": "datetime"
+    },
+    {
+      "path": [
+        "imageUrl"
+      ],
+      "label": "Image Url",
+      "type": "string"
+    },
+    {
+      "path": [
+        "message"
+      ],
+      "label": "Message",
+      "type": "string"
+    },
+    {
+      "path": [
+        "orgId"
+      ],
+      "label": "Org Id",
+      "type": "string"
+    },
+    {
+      "path": [
+        "panelId"
+      ],
+      "label": "Panel Id",
+      "type": "string"
+    },
+    {
+      "path": [
+        "ruleId"
+      ],
+      "label": "Rule Id",
+      "type": "string"
+    },
+    {
+      "path": [
+        "ruleName"
+      ],
+      "label": "Rule Name",
+      "type": "string"
+    },
+    {
+      "path": [
+        "ruleUrl"
+      ],
+      "label": "Rule Url",
+      "type": "string"
+    },
+    {
+      "path": [
+        "state"
+      ],
+      "label": "State",
+      "type": "string"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "label": "Title",
+      "type": "string"
+    },
+    {
+      "path": [
+        "tags",
+        "tag"
+      ],
+      "label": "Tags",
+      "type": "string"
+    }
+  ],
+  "payloadAttributeMappings": [
+    {
+      "fieldName": "title",
+      "label": "Title",
+      "type": "STRING",
+      "path": ["title"]
+    },
+    {
+      "fieldName": "description",
+      "label": "description",
+      "type": "STRING",
+      "path": ["description"]
+    },
+    {
+      "fieldName": "hosts",
+      "label": "Host",
+      "type": "ARRAY",
+      "path": ["hosts", "host"]
+    },
+    {
+      "fieldName": "startTime",
+      "label": "Created Atd",
+      "type": "STRING",
+      "path": ["time", "createdAt"]
+    }
+  ]
+}

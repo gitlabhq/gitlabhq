@@ -205,14 +205,15 @@ class WikiPage
     last_commit_sha = attrs.delete(:last_commit_sha)
 
     if last_commit_sha && last_commit_sha != self.last_commit_sha
-      raise PageChangedError
+      raise PageChangedError, s_(
+        'WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs.')
     end
 
     update_attributes(attrs)
 
     if title.present? && title_changed? && wiki.find_page(title).present?
       attributes[:title] = page.title
-      raise PageRenameError
+      raise PageRenameError, s_('WikiEdit|There is already a page with the same title in that path.')
     end
 
     save do

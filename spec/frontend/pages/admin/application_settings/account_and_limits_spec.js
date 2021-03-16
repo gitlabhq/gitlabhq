@@ -8,7 +8,6 @@ describe('AccountAndLimits', () => {
   const FIXTURE = 'application_settings/accounts_and_limit.html';
   let $userDefaultExternal;
   let $userInternalRegex;
-  preloadFixtures(FIXTURE);
 
   beforeEach(() => {
     loadFixtures(FIXTURE);

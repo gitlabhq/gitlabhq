@@ -105,7 +105,6 @@ describe('Search autocomplete dropdown', () => {
     expect(list.find(mrsIHaveCreatedLink).text()).toBe("Merge requests I've created");
   };
 
-  preloadFixtures('static/search_autocomplete.html');
   beforeEach(() => {
     loadFixtures('static/search_autocomplete.html');
 

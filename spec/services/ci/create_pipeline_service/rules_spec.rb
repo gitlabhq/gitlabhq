@@ -174,25 +174,11 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/master' }
 
           it 'overrides VAR1' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('overridden var 1')
             expect(variables['VAR2']).to eq('my var 2')
             expect(variables['VAR3']).to be_nil
-          end
-
-          context 'when FF ci_rules_variables is disabled' do
-            before do
-              stub_feature_flags(ci_rules_variables: false)
-            end
-
-            it 'does not affect variables' do
-              variables = job.scoped_variables_hash
-
-              expect(variables['VAR1']).to eq('my var 1')
-              expect(variables['VAR2']).to eq('my var 2')
-              expect(variables['VAR3']).to be_nil
-            end
           end
         end
 
@@ -200,7 +186,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/feature' }
 
           it 'overrides VAR2 and adds VAR3' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('my var 1')
             expect(variables['VAR2']).to eq('overridden var 2')
@@ -212,7 +198,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:ref) { 'refs/heads/wip' }
 
           it 'does not affect vars' do
-            variables = job.scoped_variables_hash
+            variables = job.scoped_variables.to_hash
 
             expect(variables['VAR1']).to eq('my var 1')
             expect(variables['VAR2']).to eq('my var 2')

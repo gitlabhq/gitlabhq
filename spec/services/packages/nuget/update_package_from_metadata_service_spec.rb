@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  let(:package) { create(:nuget_package) }
+  let(:package) { create(:nuget_package, :processing) }
   let(:package_file) { package.package_files.first }
   let(:service) { described_class.new(package_file) }
   let(:package_name) { 'DummyProject.DummyPackage' }
@@ -60,6 +60,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             .to change { ::Packages::Package.count }.by(0)
             .and change { Packages::DependencyLink.count }.by(0)
           expect(package_file.reload.file_name).not_to eq(package_file_name)
+          expect(package_file.package).to be_processing
           expect(package_file.package.reload.name).not_to eq(package_name)
           expect(package_file.package.version).not_to eq(package_version)
         end
@@ -78,6 +79,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
         expect(package.reload.name).to eq(package_name)
         expect(package.version).to eq(package_version)
+        expect(package).to be_default
         expect(package_file.reload.file_name).to eq(package_file_name)
         # hard reset needed to properly reload package_file.file
         expect(Packages::PackageFile.find(package_file.id).file.size).not_to eq 0
@@ -184,6 +186,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
         expect(package.reload.name).to eq(package_name)
         expect(package.version).to eq(package_version)
+        expect(package).to be_default
         expect(package_file.reload.file_name).to eq(package_file_name)
         # hard reset needed to properly reload package_file.file
         expect(Packages::PackageFile.find(package_file.id).file.size).not_to eq 0

@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../rubocop/cop/include_sidekiq_worker'
 
 RSpec.describe RuboCop::Cop::IncludeSidekiqWorker do

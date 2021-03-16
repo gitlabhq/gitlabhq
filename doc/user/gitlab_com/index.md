@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab.com settings
+# GitLab.com settings **(FREE SAAS)**
 
 This page contains information about the settings that are used on
 [GitLab.com](https://about.gitlab.com/pricing/).

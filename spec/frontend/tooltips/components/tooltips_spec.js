@@ -217,4 +217,14 @@ describe('tooltips/components/tooltips.vue', () => {
     wrapper.destroy();
     expect(observersCount()).toBe(0);
   });
+
+  it('exposes hidden event', async () => {
+    buildWrapper();
+    wrapper.vm.addTooltips([createTooltipTarget()]);
+
+    await wrapper.vm.$nextTick();
+
+    wrapper.findComponent(GlTooltip).vm.$emit('hidden');
+    expect(wrapper.emitted('hidden')).toHaveLength(1);
+  });
 });

@@ -1,0 +1,5 @@
+---
+title: Ensure Project Approvals API casts to boolean
+merge_request: 55492
+author:
+type: fixed

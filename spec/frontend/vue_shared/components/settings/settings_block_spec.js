@@ -50,6 +50,27 @@ describe('Settings Block', () => {
     expect(findDescriptionSlot().exists()).toBe(true);
   });
 
+  describe('slide animation behaviour', () => {
+    it('is animated by default', () => {
+      mountComponent();
+
+      expect(wrapper.classes('no-animate')).toBe(false);
+    });
+
+    it.each`
+      slideAnimated | noAnimatedClass
+      ${true}       | ${false}
+      ${false}      | ${true}
+    `(
+      'sets the correct state when slideAnimated is $slideAnimated',
+      ({ slideAnimated, noAnimatedClass }) => {
+        mountComponent({ slideAnimated });
+
+        expect(wrapper.classes('no-animate')).toBe(noAnimatedClass);
+      },
+    );
+  });
+
   describe('expanded behaviour', () => {
     it('is collapsed by default', () => {
       mountComponent();

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Installation from source
+# Installation from source **(FREE SELF)**
 
 This is the official installation guide to set up a production GitLab server
 using the source files. To set up a **development installation** or for many
@@ -108,9 +108,8 @@ Install the required packages (needed to compile Ruby and native extensions to R
 
 ```shell
 sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev \
-  libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev \
-  libxslt-dev libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake \
-  runit-systemd
+  libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
+  libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake runit-systemd
 ```
 
 Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
@@ -288,9 +287,9 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 13.0 and later
 
    ```shell
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-   RELEASE=$(lsb_release -cs) echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | sudo tee  /etc/apt/sources.list.d/pgdg.list
+   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
    sudo apt update
-   sudo apt -y install postgresql-11 postgresql-client-11 libpq-dev
+   sudo apt -y install postgresql-12 postgresql-client-12 libpq-dev
    ```
 
 1. Verify the PostgreSQL version you have is supported by the version of GitLab you're
@@ -571,7 +570,9 @@ Install the gems (if you want to use Kerberos for user authentication, omit
 `kerberos` in the `--without` option below):
 
 ```shell
-sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
+sudo -u git -H bundle config set deployment 'true'
+sudo -u git -H bundle config set without 'development test mysql aws kerberos'
+sudo -u git -H bundle install
 ```
 
 ### Install GitLab Shell

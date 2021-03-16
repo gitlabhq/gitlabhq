@@ -3,7 +3,23 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
-  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard analytics operations).freeze
+  FEATURES = %i[
+    issues
+    forking
+    merge_requests
+    wiki
+    snippets
+    builds
+    repository
+    pages
+    metrics_dashboard
+    analytics
+    operations
+    security_and_compliance
+    container_registry
+  ].freeze
+
+  EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance]).freeze
 
   set_available_features(FEATURES)
 
@@ -27,6 +43,8 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  before_create :set_container_registry_access_level
+
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
@@ -37,16 +55,17 @@ class ProjectFeature < ApplicationRecord
   validate :repository_children_level
   validate :allowed_access_levels
 
-  default_value_for :builds_access_level,            value: ENABLED, allows_nil: false
-  default_value_for :issues_access_level,            value: ENABLED, allows_nil: false
-  default_value_for :forking_access_level,           value: ENABLED, allows_nil: false
-  default_value_for :merge_requests_access_level,    value: ENABLED, allows_nil: false
-  default_value_for :snippets_access_level,          value: ENABLED, allows_nil: false
-  default_value_for :wiki_access_level,              value: ENABLED, allows_nil: false
-  default_value_for :repository_access_level,        value: ENABLED, allows_nil: false
-  default_value_for :analytics_access_level,         value: ENABLED, allows_nil: false
+  default_value_for :builds_access_level, value: ENABLED, allows_nil: false
+  default_value_for :issues_access_level, value: ENABLED, allows_nil: false
+  default_value_for :forking_access_level, value: ENABLED, allows_nil: false
+  default_value_for :merge_requests_access_level, value: ENABLED, allows_nil: false
+  default_value_for :snippets_access_level, value: ENABLED, allows_nil: false
+  default_value_for :wiki_access_level, value: ENABLED, allows_nil: false
+  default_value_for :repository_access_level, value: ENABLED, allows_nil: false
+  default_value_for :analytics_access_level, value: ENABLED, allows_nil: false
   default_value_for :metrics_dashboard_access_level, value: PRIVATE, allows_nil: false
-  default_value_for :operations_access_level,        value: ENABLED, allows_nil: false
+  default_value_for :operations_access_level, value: ENABLED, allows_nil: false
+  default_value_for :security_and_compliance_access_level, value: PRIVATE, allows_nil: false
 
   default_value_for(:pages_access_level, allows_nil: false) do |feature|
     if ::Gitlab::Pages.access_control_is_forced?
@@ -69,6 +88,15 @@ class ProjectFeature < ApplicationRecord
   end
 
   private
+
+  def set_container_registry_access_level
+    self.container_registry_access_level =
+      if project&.container_registry_enabled
+        ENABLED
+      else
+        DISABLED
+      end
+  end
 
   # Validates builds and merge requests access level
   # which cannot be higher than repository access level

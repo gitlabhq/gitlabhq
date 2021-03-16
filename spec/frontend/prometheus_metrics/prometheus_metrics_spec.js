@@ -6,7 +6,6 @@ import { metrics2 as metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html';
-  preloadFixtures(FIXTURE);
 
   beforeEach(() => {
     loadFixtures(FIXTURE);

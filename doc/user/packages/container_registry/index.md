@@ -577,7 +577,7 @@ Here are examples of regex patterns you may want to use:
   (?:v.+|master|release.*)
   ```
 
-### Set cleanup limits to conserve resources 
+### Set cleanup limits to conserve resources
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
@@ -595,7 +595,7 @@ To prevent server resource starvation, the following application settings are av
 - `container_registry_delete_tags_service_timeout`. The maximum time, in seconds, that the cleanup process can take to delete a batch of tags.
 - `container_registry_cleanup_tags_service_max_list_size`. The maximum number of tags that can be deleted in a single execution. Additional tags must be deleted in another execution.
    We recommend starting with a low number, like `100`, and increasing it after monitoring that container images are properly deleted.
-   
+
 For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
@@ -699,7 +699,7 @@ project or branch name. Special characters can include:
 - Leading underscore
 - Trailing hyphen/dash
 
-To get around this, you can [change the group path](../../group/index.md#changing-a-groups-path),
+To get around this, you can [change the group path](../../group/index.md#change-a-groups-path),
 [change the project path](../../project/settings/index.md#renaming-a-repository) or change the branch
 name.
 
@@ -712,7 +712,7 @@ For information on how to update your images, see the [Docker help](https://docs
 
 ### `Blob unknown to registry` error when pushing a manifest list
 
-When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list) to the GitLab Container Registry, you may receive the error `manifest blob unknown: blob unknown to registry`. This issue occurs when the individual child manifests referenced in the manifest list were not pushed to the same repository.
+When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list) to the GitLab Container Registry, you may receive the error `manifest blob unknown: blob unknown to registry`. [This issue](https://gitlab.com/gitlab-org/gitlab/-/issues/209008) occurs when the individual child manifests referenced in the manifest list were not pushed to the same repository.
 
 For example, you may have two individual images, one for `amd64` and another for `arm64v8`, and you want to build a multi-arch image with them. The `amd64` and `arm64v8` images must be pushed to the same repository where you want to push the multi-arch image.
 

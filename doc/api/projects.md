@@ -45,8 +45,8 @@ GET /projects
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
-| `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
-| `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 `YYYY-MM-DDTHH:MM:SSZ` |
+| `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 `YYYY-MM-DDTHH:MM:SSZ` |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
 | `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
 | `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for admins. Default is `created_at`. |
@@ -179,6 +179,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -284,6 +285,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -439,6 +441,7 @@ GET /users/:user_id/projects
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -544,6 +547,7 @@ GET /users/:user_id/projects
       "packages_size": 0,
       "snippets_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -658,6 +662,7 @@ Example response:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -758,6 +763,7 @@ Example response:
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
     },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -921,6 +927,7 @@ GET /projects/:id
     "packages_size": 0,
     "snippets_size": 0
   },
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -998,6 +1005,23 @@ If the project is a fork, and you provide a valid token to authenticate, the
 }
 ```
 
+### Templates for issues and merge requests **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
+
+Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+can also see the `issues_template` and `merge_requests_template` parameters for managing
+[issue and merge request description templates](../user/project/description_templates.md).
+
+```json
+{
+  "id": 3,
+  "issues_template": null,
+  "merge_requests_template": null,
+  ...
+}
+```
+
 ## Get project users
 
 Get the users list of a project.
@@ -1033,6 +1057,43 @@ GET /projects/:id/users
 ]
 ```
 
+## List a project's groups
+
+Get a list of ancestor groups for this project.
+
+```plaintext
+GET /projects/:id/groups
+```
+
+| Attribute                   | Type              | Required               | Description |
+|-----------------------------|-------------------|------------------------|-------------|
+| `id`                        | integer/string    | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
+| `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
+| `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
+| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [access level](members.md#valid-access-levels). |
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+  },
+  {
+    "id": 2,
+    "name": "Shared Group",
+    "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
+    "web_url": "http://gitlab.example.com/groups/foo/bar",
+    "full_name": "Shared Group",
+    "full_path": "foo/shared",
+  }
+]
+```
+
 ## Get project events
 
 Refer to the [Events API documentation](events.md#list-a-projects-visible-events).
@@ -1052,7 +1113,7 @@ POST /projects
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
-| `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
+| `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
@@ -1061,7 +1122,7 @@ POST /projects
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project.                |
 | `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
-| `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time in minutes that a job is able run (in seconds). |
+| `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
@@ -1126,7 +1187,7 @@ POST /projects/user/:user_id
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
-| `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
+| `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
@@ -1199,7 +1260,7 @@ PUT /projects/:id
 | Attribute                                                   | Type           | Required               | Description |
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
-| `analytics_access_level`                                    | string         | no                     | One of `disabled`, `private` or `enabled` |
+| `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
@@ -1259,6 +1320,8 @@ PUT /projects/:id
 | `visibility`                                                | string         | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                         | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                              | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
+| `issues_template` **(PREMIUM)**                             | string         | **{dotted-circle}** No | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
+| `merge_requests_template` **(PREMIUM)**                     | string         | **{dotted-circle}** No | Default description for Merge Requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
 
 ## Fork project
 
@@ -1373,6 +1436,7 @@ Example responses:
     "merge_method": "merge",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
     "_links": {
       "self": "http://example.com/api/v4/projects",
       "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1467,6 +1531,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1559,6 +1624,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1745,6 +1811,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1858,6 +1925,7 @@ Example response:
   "merge_method": "merge",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -1878,7 +1946,7 @@ This endpoint:
   merge requests).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
-  admins can [configure](../user/group/index.md#enabling-delayed-project-removal)
+  admins can [configure](../user/group/index.md#enable-delayed-project-removal)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
@@ -1886,7 +1954,7 @@ This endpoint:
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
 in GitLab 12.6 was changed to [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382)
-in GitLab 13.2, as discussed in [Enabling delayed project removal](../user/group/index.md#enabling-delayed-project-removal).
+in GitLab 13.2, as discussed in [Enable delayed project removal](../user/group/index.md#enable-delayed-project-removal).
 
 ```plaintext
 DELETE /projects/:id
@@ -2354,6 +2422,7 @@ Example response:
     "avatar_url": null,
     "web_url": "https://gitlab.example.com/groups/cute-cats"
   },
+  "container_registry_image_prefix": "registry.example.com/cute-cats/hello-world",
   "_links": {
     "self": "https://gitlab.example.com/api/v4/projects/7",
     "issues": "https://gitlab.example.com/api/v4/projects/7/issues",
@@ -2470,12 +2539,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 ## Project badges
 
 Read more in the [Project Badges](project_badges.md) documentation.
-
-## Issue and merge request description templates
-
-The non-default [issue and merge request description templates](../user/project/description_templates.md)
-are managed inside the project's repository. So you can manage them with the API
-through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).
 
 ## Download snapshot of a Git repository
 

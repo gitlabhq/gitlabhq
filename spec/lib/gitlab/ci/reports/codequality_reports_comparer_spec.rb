@@ -27,6 +27,22 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
         expect(report_status).to eq(described_class::STATUS_SUCCESS)
       end
     end
+
+    context 'when head report does not exist' do
+      let(:head_report) { nil }
+
+      it 'returns status not found' do
+        expect(report_status).to eq(described_class::STATUS_NOT_FOUND)
+      end
+    end
+
+    context 'when base report does not exist' do
+      let(:base_report) { nil }
+
+      it 'returns status success' do
+        expect(report_status).to eq(described_class::STATUS_NOT_FOUND)
+      end
+    end
   end
 
   describe '#errors_count' do
@@ -93,6 +109,14 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
         expect(resolved_count).to be_zero
       end
     end
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
+
+      it 'returns zero' do
+        expect(resolved_count).to be_zero
+      end
+    end
   end
 
   describe '#total_count' do
@@ -140,6 +164,14 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
         expect(total_count).to eq(2)
       end
     end
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
+
+      it 'returns zero' do
+        expect(total_count).to be_zero
+      end
+    end
   end
 
   describe '#existing_errors' do
@@ -172,6 +204,14 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
       before do
         head_report.add_degradation(degradation_1)
       end
+
+      it 'returns an empty array' do
+        expect(existing_errors).to be_empty
+      end
+    end
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
 
       it 'returns an empty array' do
         expect(existing_errors).to be_empty
@@ -213,6 +253,14 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
         expect(new_errors).to eq([degradation_1])
       end
     end
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
+
+      it 'returns an empty array' do
+        expect(new_errors).to be_empty
+      end
+    end
   end
 
   describe '#resolved_errors' do
@@ -245,6 +293,14 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
       before do
         head_report.add_degradation(degradation_1)
       end
+
+      it 'returns an empty array' do
+        expect(resolved_errors).to be_empty
+      end
+    end
+
+    context 'when base report is nil' do
+      let(:base_report) { nil }
 
       it 'returns an empty array' do
         expect(resolved_errors).to be_empty

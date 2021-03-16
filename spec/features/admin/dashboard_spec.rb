@@ -30,7 +30,6 @@ RSpec.describe 'admin visits dashboard' do
 
   describe 'Users statistic' do
     let_it_be(:users_statistics) { create(:users_statistics) }
-    let_it_be(:users_count_label) { Gitlab.ee? ? 'Billable users 71' : 'Active users 71' }
 
     it 'shows correct amounts of users', :aggregate_failures do
       visit admin_dashboard_stats_path
@@ -42,9 +41,16 @@ RSpec.describe 'admin visits dashboard' do
       expect(page).to have_content('Users with highest role Maintainer 6')
       expect(page).to have_content('Users with highest role Owner 5')
       expect(page).to have_content('Bots 2')
+
+      if Gitlab.ee?
+        expect(page).to have_content('Billable users 69')
+      else
+        expect(page).not_to have_content('Billable users 69')
+      end
+
       expect(page).to have_content('Blocked users 7')
       expect(page).to have_content('Total users 78')
-      expect(page).to have_content(users_count_label)
+      expect(page).to have_content('Active users 71')
     end
   end
 end

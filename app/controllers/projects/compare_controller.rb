@@ -6,6 +6,7 @@ class Projects::CompareController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include RendersCommits
+  include CompareHelper
 
   # Authorize
   before_action :require_non_empty_project
@@ -18,6 +19,10 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :merge_request, only: [:index, :show]
   # Validation
   before_action :validate_refs!
+
+  before_action do
+    push_frontend_feature_flag(:compare_repo_dropdown, source_project, default_enabled: :yaml)
+  end
 
   feature_category :source_code_management
 
@@ -37,16 +42,18 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def create
-    if params[:from].blank? || params[:to].blank?
+    from_to_vars = {
+      from: params[:from].presence,
+      to: params[:to].presence,
+      from_project_id: params[:from_project_id].presence
+    }
+
+    if from_to_vars[:from].blank? || from_to_vars[:to].blank?
       flash[:alert] = "You must select a Source and a Target revision"
-      from_to_vars = {
-        from: params[:from].presence,
-        to: params[:to].presence
-      }
-      redirect_to project_compare_index_path(@project, from_to_vars)
+
+      redirect_to project_compare_index_path(source_project, from_to_vars)
     else
-      redirect_to project_compare_path(@project,
-                                               params[:from], params[:to])
+      redirect_to project_compare_path(source_project, from_to_vars)
     end
   end
 
@@ -73,13 +80,34 @@ class Projects::CompareController < Projects::ApplicationController
     return if valid.all?
 
     flash[:alert] = "Invalid branch name"
-    redirect_to project_compare_index_path(@project)
+    redirect_to project_compare_index_path(source_project)
+  end
+
+  # target == start_ref == from
+  def target_project
+    strong_memoize(:target_project) do
+      next source_project unless params.key?(:from_project_id)
+      next source_project unless Feature.enabled?(:compare_repo_dropdown, source_project, default_enabled: :yaml)
+      next source_project if params[:from_project_id].to_i == source_project.id
+
+      target_project = target_projects(source_project).find_by_id(params[:from_project_id])
+
+      # Just ignore the field if it points at a non-existent or hidden project
+      next source_project unless target_project && can?(current_user, :download_code, target_project)
+
+      target_project
+    end
+  end
+
+  # source == head_ref == to
+  def source_project
+    project
   end
 
   def compare
     return @compare if defined?(@compare)
 
-    @compare = CompareService.new(@project, head_ref).execute(@project, start_ref)
+    @compare = CompareService.new(source_project, head_ref).execute(target_project, start_ref)
   end
 
   def start_ref
@@ -102,9 +130,9 @@ class Projects::CompareController < Projects::ApplicationController
 
   def define_environment
     if compare
-      environment_params = @repository.branch_exists?(head_ref) ? { ref: head_ref } : { commit: compare.commit }
+      environment_params = source_project.repository.branch_exists?(head_ref) ? { ref: head_ref } : { commit: compare.commit }
       environment_params[:find_latest] = true
-      @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+      @environment = EnvironmentsFinder.new(source_project, current_user, environment_params).execute.last
     end
   end
 
@@ -114,8 +142,8 @@ class Projects::CompareController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
-    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
-      .find_by(source_project: @project, source_branch: head_ref, target_branch: start_ref)
+    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: target_project.id).execute.opened
+      .find_by(source_project: source_project, source_branch: head_ref, target_branch: start_ref)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

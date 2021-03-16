@@ -87,6 +87,7 @@ $monokai-il: #ae81ff;
 $monokai-gu: #75715e;
 $monokai-gd: #f92672;
 $monokai-gi: #a6e22e;
+$monokai-gh: #75715e;
 
 .code.monokai {
   // Line numbers
@@ -281,4 +282,5 @@ $monokai-gi: #a6e22e;
   .gu { color: $monokai-gu; } /* Generic.Subheading & Diff Unified/Comment? */
   .gd { color: $monokai-gd; } /* Generic.Deleted & Diff Deleted */
   .gi { color: $monokai-gi; } /* Generic.Inserted & Diff Inserted */
+  .gh { color: $monokai-gh; } /* Generic.Heading */
 }

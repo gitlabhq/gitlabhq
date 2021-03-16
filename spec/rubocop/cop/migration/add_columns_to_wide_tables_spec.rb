@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_columns_to_wide_tables'
 
 RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
-  include CopHelper
-
   let(:cop) { described_class.new }
 
-  context 'outside of a migration' do
+  context 'when outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
         def up
@@ -19,14 +16,14 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
     end
   end
 
-  context 'in a migration' do
+  context 'when in a migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
     context 'with wide tables' do
       it 'registers an offense when adding a column to a wide table' do
-        offense = '`projects` is a wide table with several columns, addig more should be avoided unless absolutely necessary. Consider storing the column in a different table or creating a new one.'
+        offense = '`projects` is a wide table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -37,7 +34,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding a column with default to a wide table' do
-        offense = '`users` is a wide table with several columns, addig more should be avoided unless absolutely necessary. Consider storing the column in a different table or creating a new one.'
+        offense = '`users` is a wide table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -48,7 +45,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding a reference' do
-        offense = '`ci_builds` is a wide table with several columns, addig more should be avoided unless absolutely necessary. Consider storing the column in a different table or creating a new one.'
+        offense = '`ci_builds` is a wide table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up
@@ -59,7 +56,7 @@ RSpec.describe RuboCop::Cop::Migration::AddColumnsToWideTables do
       end
 
       it 'registers an offense when adding timestamps' do
-        offense = '`projects` is a wide table with several columns, addig more should be avoided unless absolutely necessary. Consider storing the column in a different table or creating a new one.'
+        offense = '`projects` is a wide table with several columns, [...]'
 
         expect_offense(<<~RUBY)
           def up

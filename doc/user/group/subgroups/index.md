@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto, concepts
 ---
@@ -147,7 +147,7 @@ From the image above, we can deduce the following things:
 - Administrator is the Owner and member of **all** subgroups and for that reason,
   as with User 3, the **Source** column indicates **Direct member**.
 
-Members can be [filtered by inherited or direct membership](../index.md#membership-filter).
+Members can be [filtered by inherited or direct membership](../index.md#filter-a-group).
 
 ### Overriding the ancestor group membership
 

@@ -54,29 +54,29 @@ transitions:
       stages:
         build: success
         test: pending
-        review: created
-        deploy: created
+        review: skipped
+        deploy: skipped
       jobs:
         build: success
         test: pending
         release_test: manual
-        review: created
-        staging: created
-        production: created
+        review: skipped
+        staging: skipped
+        production: skipped
 
   - event: success
     jobs: [test]
     expect:
-      pipeline: running
+      pipeline: success
       stages:
         build: success
         test: success
-        review: created
-        deploy: created
+        review: skipped
+        deploy: skipped
       jobs:
         build: success
         test: success
         release_test: manual
-        review: created
-        staging: created
-        production: created
+        review: skipped
+        staging: skipped
+        production: skipped

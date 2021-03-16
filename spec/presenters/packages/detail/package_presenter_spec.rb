@@ -16,7 +16,10 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
         created_at: file.created_at,
         download_path: file.download_path,
         file_name: file.file_name,
-        size: file.size
+        size: file.size,
+        file_md5: file.file_md5,
+        file_sha1: file.file_sha1,
+        file_sha256: file.file_sha256
       }
     end
   end

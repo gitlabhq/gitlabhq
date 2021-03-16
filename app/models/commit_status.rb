@@ -52,7 +52,6 @@ class CommitStatus < ApplicationRecord
   scope :before_stage, -> (index) { where('stage_idx < ?', index) }
   scope :for_stage, -> (index) { where(stage_idx: index) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
-  scope :for_ids, -> (ids) { where(id: ids) }
   scope :for_ref, -> (ref) { where(ref: ref) }
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
@@ -84,6 +83,8 @@ class CommitStatus < ApplicationRecord
   # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
   enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
+
+  default_value_for :retried, false
 
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.
@@ -289,6 +290,14 @@ class CommitStatus < ApplicationRecord
 
   def recoverable?
     failed? && !unrecoverable_failure?
+  end
+
+  def update_older_statuses_retried!
+    self.class
+      .latest
+      .where(name: name)
+      .where.not(id: id)
+      .update_all(retried: true, processed: true)
   end
 
   private

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'json_schemer'
+require 'spec_helper'
 
 RSpec.describe PagerDuty::WebhookPayloadParser do
   describe '.call' do

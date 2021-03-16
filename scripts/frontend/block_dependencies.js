@@ -1,8 +1,8 @@
-const path = require('path');
-const packageJson = require(path.join(process.cwd(), 'package.json'));
+const packageJson = require('../../package.json');
+
 const blockedDependencies = packageJson.blockedDependencies || {};
-const dependencies = packageJson.dependencies;
-const devDependencies = packageJson.devDependencies;
+const { dependencies } = packageJson;
+const { devDependencies } = packageJson;
 const blockedDependenciesNames = Object.keys(blockedDependencies);
 const blockedDependenciesFound = blockedDependenciesNames.filter(
   (blockedDependency) => dependencies[blockedDependency] || devDependencies[blockedDependency],

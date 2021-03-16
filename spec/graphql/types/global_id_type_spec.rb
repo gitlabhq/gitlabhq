@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Types::GlobalIDType do
   let_it_be(:project) { create(:project) }
   let(:gid) { project.to_global_id }
-  let(:foreign_gid) { GlobalID.new(::URI::GID.build(app: 'otherapp', model_name: 'Project', model_id: project.id, params: nil)) }
 
   it 'is has the correct name' do
     expect(described_class.to_graphql.name).to eq('GlobalID')
@@ -41,16 +40,18 @@ RSpec.describe Types::GlobalIDType do
 
     it 'rejects invalid input' do
       expect { described_class.coerce_isolated_input('not valid') }
-        .to raise_error(GraphQL::CoercionError)
+        .to raise_error(GraphQL::CoercionError, /not a valid Global ID/)
     end
 
     it 'rejects nil' do
       expect(described_class.coerce_isolated_input(nil)).to be_nil
     end
 
-    it 'rejects gids from different apps' do
-      expect { described_class.coerce_isolated_input(foreign_gid) }
-        .to raise_error(GraphQL::CoercionError)
+    it 'rejects GIDs from different apps' do
+      invalid_gid = GlobalID.new(::URI::GID.build(app: 'otherapp', model_name: 'Project', model_id: project.id, params: nil))
+
+      expect { described_class.coerce_isolated_input(invalid_gid) }
+        .to raise_error(GraphQL::CoercionError, /is not a Gitlab Global ID/)
     end
   end
 
@@ -79,13 +80,21 @@ RSpec.describe Types::GlobalIDType do
       let(:gid) { build_stubbed(:user).to_global_id }
 
       it 'raises errors when coercing results' do
-        expect { type.coerce_isolated_result(gid) }.to raise_error(GraphQL::CoercionError)
+        expect { type.coerce_isolated_result(gid) }
+          .to raise_error(GraphQL::CoercionError, /Expected a Project ID/)
       end
 
       it 'will not coerce invalid input, even if its a valid GID' do
         expect { type.coerce_isolated_input(gid.to_s) }
-          .to raise_error(GraphQL::CoercionError)
+          .to raise_error(GraphQL::CoercionError, /does not represent an instance of Project/)
       end
+    end
+
+    it 'handles GIDs for invalid resource names gracefully' do
+      invalid_gid = GlobalID.new(::URI::GID.build(app: GlobalID.app, model_name: 'invalid', model_id: 1, params: nil))
+
+      expect { type.coerce_isolated_input(invalid_gid) }
+        .to raise_error(GraphQL::CoercionError, /does not represent an instance of Project/)
     end
   end
 

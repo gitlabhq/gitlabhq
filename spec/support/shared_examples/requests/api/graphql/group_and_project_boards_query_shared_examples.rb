@@ -25,7 +25,7 @@ RSpec.shared_examples 'group and project boards query' do
       board = create(:board, resource_parent: board_parent, name: 'A')
 
       allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(user, :read_board, board).and_return(false)
+      allow(Ability).to receive(:allowed?).with(user, :read_issue_board, board).and_return(false)
 
       post_graphql(query, current_user: current_user)
 

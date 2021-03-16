@@ -551,7 +551,7 @@ RSpec.describe Projects::UpdateService do
 
             expect(project).to be_repository_read_only
             expect(project.repository_storage_moves.last).to have_attributes(
-              state: ::ProjectRepositoryStorageMove.state_machines[:state].states[:scheduled].value,
+              state: ::Projects::RepositoryStorageMove.state_machines[:state].states[:scheduled].value,
               source_storage_name: 'default',
               destination_storage_name: 'test_second_storage'
             )

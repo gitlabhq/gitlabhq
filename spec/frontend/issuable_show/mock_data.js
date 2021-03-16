@@ -12,6 +12,7 @@ export const mockIssuable = {
   blocked: false,
   confidential: false,
   updatedBy: issuable.author,
+  type: 'ISSUE',
   currentUserTodos: {
     nodes: [
       {
@@ -26,11 +27,18 @@ export const mockIssuableShowProps = {
   issuable: mockIssuable,
   descriptionHelpPath: '/help/user/markdown',
   descriptionPreviewPath: '/gitlab-org/gitlab-shell/preview_markdown',
+  taskListUpdatePath: `${mockIssuable.webUrl}.json`,
+  taskListLockVersion: 1,
   editFormVisible: false,
   enableAutocomplete: true,
   enableAutosave: true,
+  enableTaskList: true,
   enableEdit: true,
   showFieldTitle: false,
   statusBadgeClass: 'status-box-open',
   statusIcon: 'issue-open-m',
+  taskCompletionStatus: {
+    completedCount: 0,
+    count: 5,
+  },
 };

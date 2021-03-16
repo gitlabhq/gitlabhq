@@ -47,4 +47,46 @@ RSpec.describe 'Groups > Members > List members', :js do
       expect(first_row).to have_selector('gl-emoji[data-name="smirk"]')
     end
   end
+
+  describe 'when user has 2FA enabled' do
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:user_with_2fa) { create(:user, :two_factor_via_otp) }
+
+    before do
+      group.add_guest(user_with_2fa)
+    end
+
+    it 'shows 2FA badge to user with "Owner" access level' do
+      group.add_owner(user1)
+
+      visit group_group_members_path(group)
+
+      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+    end
+
+    it 'shows 2FA badge to admins' do
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
+
+      visit group_group_members_path(group)
+
+      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+    end
+
+    it 'does not show 2FA badge to users with access level below "Owner"' do
+      group.add_maintainer(user1)
+
+      visit group_group_members_path(group)
+
+      expect(find_member_row(user_with_2fa)).not_to have_content('2FA')
+    end
+
+    it 'shows 2FA badge to themselves' do
+      sign_in(user_with_2fa)
+
+      visit group_group_members_path(group)
+
+      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+    end
+  end
 end

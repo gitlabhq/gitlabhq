@@ -112,8 +112,8 @@ RSpec.describe Ci::Processable do
 
       it 'returns all needs attributes' do
         is_expected.to contain_exactly(
-          { 'artifacts' => true, 'name' => 'test1' },
-          { 'artifacts' => true, 'name' => 'test2' }
+          { 'artifacts' => true, 'name' => 'test1', 'optional' => false },
+          { 'artifacts' => true, 'name' => 'test2', 'optional' => false }
         )
       end
     end

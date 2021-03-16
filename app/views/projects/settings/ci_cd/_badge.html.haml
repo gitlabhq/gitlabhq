@@ -12,21 +12,21 @@
           = render 'shared/ref_switcher', destination: 'badges', align_right: true
       .card-body
         .row
-          .col-md-2.text-center
+          .col-md-2.gl-text-center
             Markdown
           .col-md-10.code.js-syntax-highlight
             = highlight_badge('.md', badge.to_markdown, language: 'markdown')
         .row
           %hr
         .row
-          .col-md-2.text-center
+          .col-md-2.gl-text-center
             HTML
           .col-md-10.code.js-syntax-highlight
             = highlight_badge('.html', badge.to_html, language: 'html')
         .row
           %hr
         .row
-          .col-md-2.text-center
+          .col-md-2.gl-text-center
             AsciiDoc
           .col-md-10.code.js-syntax-highlight
             = highlight_badge('.adoc', badge.to_asciidoc)

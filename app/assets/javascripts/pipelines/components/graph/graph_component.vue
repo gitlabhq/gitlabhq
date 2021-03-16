@@ -4,7 +4,7 @@ import LinksLayer from '../graph_shared/links_layer.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH } from './constants';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
-import { reportToSentry } from './utils';
+import { reportToSentry, validateConfigPaths } from './utils';
 
 export default {
   name: 'PipelineGraph',
@@ -15,14 +15,19 @@ export default {
     StageColumnComponent,
   },
   props: {
-    isLinkedPipeline: {
-      type: Boolean,
-      required: false,
-      default: false,
+    configPaths: {
+      type: Object,
+      required: true,
+      validator: validateConfigPaths,
     },
     pipeline: {
       type: Object,
       required: true,
+    },
+    isLinkedPipeline: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     type: {
       type: String,
@@ -66,6 +71,12 @@ export default {
     hasUpstreamPipelines() {
       return Boolean(this.pipeline?.upstream?.length > 0);
     },
+    metricsConfig() {
+      return {
+        path: this.configPaths.metricsPath,
+        collectMetrics: true,
+      };
+    },
     // The show downstream check prevents showing redundant linked columns
     showDownstreamPipelines() {
       return (
@@ -95,8 +106,8 @@ export default {
         height: this.$refs[this.containerId].scrollHeight,
       };
     },
-    onError(errorType) {
-      this.$emit('error', errorType);
+    onError(payload) {
+      this.$emit('error', payload);
     },
     setJob(jobName) {
       this.hoveredJobName = jobName;
@@ -131,6 +142,7 @@ export default {
         <template #upstream>
           <linked-pipelines-column
             v-if="showUpstreamPipelines"
+            :config-paths="configPaths"
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
             :type="$options.pipelineTypeConstants.UPSTREAM"
@@ -145,6 +157,8 @@ export default {
               :container-id="containerId"
               :container-measurements="measurements"
               :highlighted-job="hoveredJobName"
+              :metrics-config="metricsConfig"
+              :never-show-links="true"
               default-link-color="gl-stroke-transparent"
               @error="onError"
               @highlightedJobsChange="updateHighlightedJobs"
@@ -170,6 +184,7 @@ export default {
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
             class="gl-mr-6"
+            :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"

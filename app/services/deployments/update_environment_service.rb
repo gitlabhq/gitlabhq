@@ -25,11 +25,10 @@ module Deployments
 
     def update_environment(deployment)
       ActiveRecord::Base.transaction do
-        if (url = expanded_environment_url)
-          environment.external_url = url
-        end
-
+        # Renew attributes at update
+        renew_external_url
         renew_auto_stop_in
+        renew_deployment_tier
         environment.fire_state_event(action)
 
         if environment.save && !environment.stopped?
@@ -56,10 +55,24 @@ module Deployments
       environment_options[:action] || 'start'
     end
 
+    def renew_external_url
+      if (url = expanded_environment_url)
+        environment.external_url = url
+      end
+    end
+
     def renew_auto_stop_in
       return unless deployable
 
       environment.auto_stop_in = deployable.environment_auto_stop_in
+    end
+
+    def renew_deployment_tier
+      return unless deployable
+
+      if (tier = deployable.environment_deployment_tier)
+        environment.tier = tier
+      end
     end
   end
 end

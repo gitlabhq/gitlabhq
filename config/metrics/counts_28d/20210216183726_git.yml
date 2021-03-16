@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage_monthly.manage.projects_imported.git
+description: ''
+product_section: ''
+product_stage: ''
+product_group: ''
+product_category: ''
+value_type: number
+status: deprecated
+time_frame: 28d
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

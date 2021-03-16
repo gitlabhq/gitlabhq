@@ -324,3 +324,13 @@
   redis_slot: quickactions
   aggregation: weekly
   feature_flag: usage_data_track_quickactions
+- name: i_quickactions_invite_email_single
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
+  feature_flag: usage_data_track_quickactions
+- name: i_quickactions_invite_email_multiple
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
+  feature_flag: usage_data_track_quickactions

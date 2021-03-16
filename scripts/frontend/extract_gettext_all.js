@@ -5,6 +5,7 @@ const {
   decorateJSParserWithVueSupport,
   decorateExtractorWithHelpers,
 } = require('gettext-extractor-vue');
+const vue2TemplateCompiler = require('vue-template-compiler');
 const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line.js');
 
 const args = argumentsParser
@@ -37,12 +38,12 @@ const jsParser = extractor.createJsParser([
 ]);
 
 const vueParser = decorateJSParserWithVueSupport(jsParser, {
-  vue2TemplateCompiler: require('vue-template-compiler'),
+  vue2TemplateCompiler,
 });
 
 function printJson() {
-  const messages = extractor.getMessages().reduce((result, message) => {
-    let text = message.text;
+  const messages = extractor.getMessages().reduce((acc, message) => {
+    let { text } = message;
     if (message.textPlural) {
       text += `\u0000${message.textPlural}`;
     }
@@ -50,25 +51,35 @@ function printJson() {
     message.references.forEach((reference) => {
       const filename = reference.replace(/:\d+$/, '');
 
-      if (!Array.isArray(result[filename])) {
-        result[filename] = [];
+      if (!Array.isArray(acc[filename])) {
+        acc[filename] = [];
       }
 
-      result[filename].push([text, reference]);
+      acc[filename].push([text, reference]);
     });
 
-    return result;
+    return acc;
   }, {});
 
   console.log(JSON.stringify(messages));
 }
 
-if (args.file) {
-  vueParser.parseFile(args.file).then(() => printJson());
-} else if (args.all) {
-  vueParser.parseFilesGlob('{ee/app,app}/assets/javascripts/**/*.{js,vue}').then(() => printJson());
-} else {
-  console.warn('ERROR: Please use the script correctly:');
+async function main() {
+  if (args.file) {
+    return vueParser.parseFile(args.file).then(() => printJson());
+  }
+
+  if (args.all) {
+    return vueParser
+      .parseFilesGlob('{ee/app,app}/assets/javascripts/**/*.{js,vue}')
+      .then(() => printJson());
+  }
+
+  throw new Error('ERROR: Please use the script correctly:');
+}
+
+main().catch((error) => {
+  console.warn(error.message);
   args.outputHelp();
   process.exit(1);
-}
+});

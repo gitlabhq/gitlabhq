@@ -25,7 +25,8 @@ SAML SSO is only configurable at the top-level group.
 1. Navigate to the group and select **Settings > SAML SSO**.
 1. Configure your SAML server using the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [specific identity provider documentation](#providers) for more details.
 1. Configure the SAML response to include a NameID that uniquely identifies each user.
-1. Configure [required assertions](group_managed_accounts.md#assertions) if using [Group Managed Accounts](group_managed_accounts.md).
+1. Configure [required assertions](#assertions) at minimum containing
+   the user's email address.
 1. While the default is enabled for most SAML providers, please ensure the app is set to have [Service Provider](#glossary) initiated calls in order to link existing GitLab accounts.
 1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
 
@@ -52,6 +53,19 @@ Once users have signed into GitLab using the SSO SAML setup, changing the `NameI
 #### NameID Format
 
 We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
+
+### Assertions
+
+For users to be created with the right information with the improved [user access and management](#user-access-and-management),
+the following user details need to be passed to GitLab as SAML assertions.
+
+| Field           | Supported keys |
+|-----------------|----------------|
+| Email (required)| `email`, `mail` |
+| Username        | `username`, `nickname` |
+| Full Name       | `name` |
+| First Name      | `first_name`, `firstname`, `firstName` |
+| Last Name       | `last_name`, `lastname`, `lastName` |
 
 ### Metadata configuration
 
@@ -87,9 +101,8 @@ Please note that the certificate [fingerprint algorithm](#additional-providers-a
 With this option enabled, users must go through your group's GitLab single sign-on URL. They may also be added via SCIM, if configured. Users can't be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
 However, users are not prompted to sign in through SSO on each visit. GitLab checks whether a user
-has authenticated through SSO. If it's been more than 7 days since the last sign-in, GitLab
+has authenticated through SSO. If it's been more than 1 day since the last sign-in, GitLab
 prompts the user to sign in again through SSO.
-You can see more information about how long a session is valid in our [user profile documentation](../../profile/#why-do-i-keep-getting-signed-out).
 
 We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/9152).
 
@@ -98,7 +111,7 @@ When SSO enforcement is enabled for a group, users can't share a project in the 
 ## Providers
 
 NOTE:
-GitLab is unable to provide full support for integrating identify providers that are not listed here.
+GitLab is unable to provide full support for integrating identity providers that are not listed here.
 
 | Provider | Documentation |
 |----------|---------------|
@@ -106,7 +119,7 @@ GitLab is unable to provide full support for integrating identify providers that
 | Okta | [Setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) |
 | OneLogin | [Use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) |
 
-When [configuring your identify provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
+When [configuring your identity provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
 ### Azure setup notes
 
@@ -148,8 +161,11 @@ For NameID, the following settings are recommended; for SCIM, the following sett
 
 ### OneLogin setup notes
 
-The GitLab app listed in the OneLogin app catalog is for self-managed GitLab instances.
-For GitLab.com, use a generic SAML Test Connector such as the SAML Test Connector (Advanced).
+OneLogin supports their own [GitLab (SaaS)](https://onelogin.service-now.com/support?id=kb_article&sys_id=92e4160adbf16cd0ca1c400e0b961923&kb_category=50984e84db738300d5505eea4b961913)
+application.
+
+If you decide to use the OneLogin generic [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
+we recommend the following settings:
 
 | GitLab Setting | OneLogin Field |
 |--------------|----------------|
@@ -170,7 +186,7 @@ For more information, see our [discussion on providers](#providers).
 Your identity provider may have relevant documentation. It may be generic SAML documentation, or specifically targeted for GitLab. Examples:
 
 - [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/protocols/saml-configuration-options/configure-auth0-as-saml-identity-provider)
+- [Auth0](https://auth0.com/docs/protocols/saml-protocol/configure-auth0-as-saml-identity-provider)
 - [Google Workspace](https://support.google.com/a/answer/6087519?hl=en)
 - [JumpCloud](https://support.jumpcloud.com/support/s/article/single-sign-on-sso-with-gitlab-2019-08-21-10-36-47)
 - [PingOne by Ping Identity](https://docs.pingidentity.com/bundle/pingone/page/xsh1564020480660-1.html)
@@ -347,6 +363,11 @@ If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest access level from the groups. For example, if one group
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
 access.
+
+Users who are not members of any mapped SAML groups are removed from the GitLab group.
+
+You can prevent accidental member removal. For example, if you have a SAML group link for `Owner` level access
+in a top-level group, you should also set up a group link for all other members.
 
 ## Glossary
 

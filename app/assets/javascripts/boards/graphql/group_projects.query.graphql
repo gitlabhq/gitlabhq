@@ -8,6 +8,7 @@ query getGroupProjects($fullPath: ID!, $search: String, $after: String) {
         name
         fullPath
         nameWithNamespace
+        archived
       }
       pageInfo {
         ...PageInfo

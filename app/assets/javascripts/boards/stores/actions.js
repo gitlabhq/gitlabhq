@@ -1,6 +1,13 @@
 import { pick } from 'lodash';
+import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { BoardType, ListType, inactiveId, flashAnimationDuration } from '~/boards/constants';
+import {
+  BoardType,
+  ListType,
+  inactiveId,
+  flashAnimationDuration,
+  ISSUABLE,
+} from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
@@ -15,7 +22,6 @@ import {
   transformNotFilters,
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
-import createBoardListMutation from '../graphql/board_list_create.mutation.graphql';
 import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
@@ -79,7 +85,11 @@ export default {
     }
   },
 
-  fetchLists: ({ commit, state, dispatch }) => {
+  fetchLists: ({ dispatch }) => {
+    dispatch('fetchIssueLists');
+  },
+
+  fetchIssueLists: ({ commit, state, dispatch }) => {
     const { boardType, filterParams, fullPath, boardId } = state;
 
     const variables = {
@@ -118,9 +128,13 @@ export default {
     }, flashAnimationDuration);
   },
 
-  createList: (
+  createList: ({ dispatch }, { backlog, labelId, milestoneId, assigneeId }) => {
+    dispatch('createIssueList', { backlog, labelId, milestoneId, assigneeId });
+  },
+
+  createIssueList: (
     { state, commit, dispatch, getters },
-    { backlog, labelId, milestoneId, assigneeId },
+    { backlog, labelId, milestoneId, assigneeId, iterationId },
   ) => {
     const { boardId } = state;
 
@@ -140,25 +154,29 @@ export default {
           labelId,
           milestoneId,
           assigneeId,
+          iterationId,
         },
       })
       .then(({ data }) => {
-        if (data?.boardListCreate?.errors.length) {
-          commit(types.CREATE_LIST_FAILURE);
+        if (data.boardListCreate?.errors.length) {
+          commit(types.CREATE_LIST_FAILURE, data.boardListCreate.errors[0]);
         } else {
           const list = data.boardListCreate?.list;
           dispatch('addList', list);
           dispatch('highlightList', list.id);
         }
       })
-      .catch(() => commit(types.CREATE_LIST_FAILURE));
+      .catch((e) => {
+        commit(types.CREATE_LIST_FAILURE);
+        throw e;
+      });
   },
 
   addList: ({ commit }, list) => {
     commit(types.RECEIVE_ADD_LIST_SUCCESS, updateListPosition(list));
   },
 
-  fetchLabels: ({ state, commit }, searchTerm) => {
+  fetchLabels: ({ state, commit, getters }, searchTerm) => {
     const { fullPath, boardType } = state;
 
     const variables = {
@@ -168,15 +186,29 @@ export default {
       isProject: boardType === BoardType.project,
     };
 
+    commit(types.RECEIVE_LABELS_REQUEST);
+
     return gqlClient
       .query({
         query: boardLabelsQuery,
         variables,
       })
       .then(({ data }) => {
-        const labels = data[boardType]?.labels.nodes;
+        let labels = data[boardType]?.labels.nodes;
+
+        if (!getters.shouldUseGraphQL && !getters.isEpicBoard) {
+          labels = labels.map((label) => ({
+            ...label,
+            id: getIdFromGraphQLId(label.id),
+          }));
+        }
+
         commit(types.RECEIVE_LABELS_SUCCESS, labels);
         return labels;
+      })
+      .catch((e) => {
+        commit(types.RECEIVE_LABELS_FAILURE);
+        throw e;
       });
   },
 
@@ -225,6 +257,10 @@ export default {
       });
   },
 
+  toggleListCollapsed: ({ commit }, { listId, collapsed }) => {
+    commit(types.TOGGLE_LIST_COLLAPSED, { listId, collapsed });
+  },
+
   removeList: ({ state, commit }, listId) => {
     const listsBackup = { ...state.boardLists };
 
@@ -253,8 +289,8 @@ export default {
       });
   },
 
-  fetchIssuesForList: ({ state, commit }, { listId, fetchNext = false }) => {
-    commit(types.REQUEST_ISSUES_FOR_LIST, { listId, fetchNext });
+  fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, boardId, boardType, filterParams } = state;
 
@@ -279,28 +315,32 @@ export default {
       })
       .then(({ data }) => {
         const { lists } = data[boardType]?.board;
-        const listIssues = formatListIssues(lists);
+        const listItems = formatListIssues(lists);
         const listPageInfo = formatListsPageInfo(lists);
-        commit(types.RECEIVE_ISSUES_FOR_LIST_SUCCESS, { listIssues, listPageInfo, listId });
+        commit(types.RECEIVE_ITEMS_FOR_LIST_SUCCESS, { listItems, listPageInfo, listId });
       })
-      .catch(() => commit(types.RECEIVE_ISSUES_FOR_LIST_FAILURE, listId));
+      .catch(() => commit(types.RECEIVE_ITEMS_FOR_LIST_FAILURE, listId));
   },
 
   resetIssues: ({ commit }) => {
     commit(types.RESET_ISSUES);
   },
 
+  moveItem: ({ dispatch }) => {
+    dispatch('moveIssue');
+  },
+
   moveIssue: (
     { state, commit },
-    { issueId, issueIid, issuePath, fromListId, toListId, moveBeforeId, moveAfterId },
+    { itemId, itemIid, itemPath, fromListId, toListId, moveBeforeId, moveAfterId },
   ) => {
-    const originalIssue = state.issues[issueId];
-    const fromList = state.issuesByListId[fromListId];
-    const originalIndex = fromList.indexOf(Number(issueId));
+    const originalIssue = state.boardItems[itemId];
+    const fromList = state.boardItemsByListId[fromListId];
+    const originalIndex = fromList.indexOf(Number(itemId));
     commit(types.MOVE_ISSUE, { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId });
 
     const { boardId } = state;
-    const [fullProjectPath] = issuePath.split(/[#]/);
+    const [fullProjectPath] = itemPath.split(/[#]/);
 
     gqlClient
       .mutate({
@@ -308,7 +348,7 @@ export default {
         variables: {
           projectPath: fullProjectPath,
           boardId: fullBoardId(boardId),
-          iid: issueIid,
+          iid: itemIid,
           fromListId: getIdFromGraphQLId(fromListId),
           toListId: getIdFromGraphQLId(toListId),
           moveBeforeId,
@@ -317,7 +357,7 @@ export default {
       })
       .then(({ data }) => {
         if (data?.issueMoveList?.errors.length) {
-          commit(types.MOVE_ISSUE_FAILURE, { originalIssue, fromListId, toListId, originalIndex });
+          throw new Error();
         } else {
           const issue = data.issueMoveList?.issue;
           commit(types.MOVE_ISSUE_SUCCESS, { issue });
@@ -532,9 +572,16 @@ export default {
     commit(types.SET_SELECTED_PROJECT, project);
   },
 
-  toggleBoardItemMultiSelection: ({ commit, state }, boardItem) => {
+  toggleBoardItemMultiSelection: ({ commit, state, dispatch, getters }, boardItem) => {
     const { selectedBoardItems } = state;
     const index = selectedBoardItems.indexOf(boardItem);
+
+    // If user already selected an item (activeIssue) without using mult-select,
+    // include that item in the selection and unset state.ActiveId to hide the sidebar.
+    if (getters.activeIssue) {
+      commit(types.ADD_BOARD_ITEM_TO_SELECTION, getters.activeIssue);
+      dispatch('unsetActiveId');
+    }
 
     if (index === -1) {
       commit(types.ADD_BOARD_ITEM_TO_SELECTION, boardItem);
@@ -545,6 +592,20 @@ export default {
 
   setAddColumnFormVisibility: ({ commit }, visible) => {
     commit(types.SET_ADD_COLUMN_FORM_VISIBLE, visible);
+  },
+
+  resetBoardItemMultiSelection: ({ commit }) => {
+    commit(types.RESET_BOARD_ITEM_SELECTION);
+  },
+
+  toggleBoardItem: ({ state, dispatch }, { boardItem, sidebarType = ISSUABLE }) => {
+    dispatch('resetBoardItemMultiSelection');
+
+    if (boardItem.id === state.activeId) {
+      dispatch('unsetActiveId');
+    } else {
+      dispatch('setActiveId', { id: boardItem.id, sidebarType });
+    }
   },
 
   fetchBacklog: () => {

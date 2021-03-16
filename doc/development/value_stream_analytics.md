@@ -90,7 +90,7 @@ Some start/end event pairs are not "compatible" with each other. For example:
 - "Issue closed" to "Issue closed": Duration is always 0.
 
 The `StageEvents` module describes the allowed `start_event` and `end_event` pairings (`PAIRING_RULES` constant). If a new event is added, it needs to be registered in this module.
-​To add a new event:​
+To add a new event:
 
 1. Add an entry in `ENUM_MAPPING` with a unique number, which is used in the `Stage` model as `enum`.
 1. Define which events are compatible with the event in the `PAIRING_RULES` hash.
@@ -190,9 +190,9 @@ Currently supported parents:
 ### Default stages
 
 The [original implementation](https://gitlab.com/gitlab-org/gitlab/-/issues/847) of value stream analytics defined 7 stages. These stages are always available for each parent, however altering these stages is not possible.
-​
+
 To make things efficient and reduce the number of records created, the default stages are expressed as in-memory objects (not persisted). When the user creates a custom stage for the first time, all the stages are persisted. This behavior is implemented in the value stream analytics service objects.
-​
+
 The reason for this was that we'd like to add the abilities to hide and order stages later on.
 
 ## Data Collector

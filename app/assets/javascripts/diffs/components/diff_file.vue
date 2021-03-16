@@ -150,6 +150,11 @@ export default {
     },
   },
   watch: {
+    'file.id': {
+      handler: function fileIdHandler() {
+        this.manageViewedEffects();
+      },
+    },
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
         this.isCollapsed = isCollapsed(this.file);
@@ -186,9 +191,7 @@ export default {
       this.postRender();
     }
 
-    if (this.reviewed && !this.isCollapsed && this.showLocalFileReviews) {
-      this.handleToggle();
-    }
+    this.manageViewedEffects();
   },
   beforeDestroy() {
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
@@ -200,6 +203,11 @@ export default {
       'setRenderIt',
       'setFileCollapsedByUser',
     ]),
+    manageViewedEffects() {
+      if (this.reviewed && !this.isCollapsed && this.showLocalFileReviews) {
+        this.handleToggle();
+      }
+    },
     expandAllListener() {
       if (this.isCollapsed) {
         this.handleToggle();

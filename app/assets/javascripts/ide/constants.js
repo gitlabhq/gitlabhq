@@ -15,6 +15,7 @@ export const FILE_VIEW_MODE_PREVIEW = 'preview';
 export const PERMISSION_CREATE_MR = 'createMergeRequestIn';
 export const PERMISSION_READ_MR = 'readMergeRequest';
 export const PERMISSION_PUSH_CODE = 'pushCode';
+export const PUSH_RULE_REJECT_UNSIGNED_COMMITS = 'rejectUnsignedCommits';
 
 // The default permission object to use when the project data isn't available yet.
 // This helps us encapsulate checks like `canPushCode` without requiring an

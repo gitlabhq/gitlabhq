@@ -27,6 +27,7 @@ const mockDefaultFetchOptions = {
   with_shared: false,
   include_subgroups: true,
   order_by: 'similarity',
+  archived: false,
 };
 
 const itemsPerPage = 20;

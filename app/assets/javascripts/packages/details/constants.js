@@ -35,6 +35,9 @@ export const TrackingActions = {
 
   COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND: 'copy_composer_registry_include_command',
   COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND: 'copy_composer_package_include_command',
+
+  COPY_GRADLE_INSTALL_COMMAND: 'copy_gradle_install_command',
+  COPY_GRADLE_ADD_TO_SOURCE_COMMAND: 'copy_gradle_add_to_source_command',
 };
 
 export const NpmManager = {

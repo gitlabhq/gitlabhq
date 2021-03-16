@@ -18,12 +18,12 @@ RSpec.shared_context 'GroupPolicy context' do
    ]
   end
 
-  let(:read_group_permissions) { %i[read_label read_list read_milestone read_board] }
+  let(:read_group_permissions) { %i[read_label read_issue_board_list read_milestone read_issue_board] }
 
   let(:reporter_permissions) do
     %i[
         admin_label
-        admin_board
+        admin_issue_board
         read_container_image
         read_metrics_dashboard_annotation
         read_prometheus

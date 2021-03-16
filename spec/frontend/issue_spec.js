@@ -1,91 +1,90 @@
+import { getByText } from '@testing-library/dom';
 import MockAdapter from 'axios-mock-adapter';
-import $ from 'jquery';
+import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import Issue from '~/issue';
 import axios from '~/lib/utils/axios_utils';
-import '~/lib/utils/text_utility';
 
 describe('Issue', () => {
-  let $boxClosed;
-  let $boxOpen;
   let testContext;
+  let mock;
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+    mock.onGet(/(.*)\/related_branches$/).reply(200, {});
+
     testContext = {};
+    testContext.issue = new Issue();
   });
 
-  preloadFixtures('issues/closed-issue.html');
-  preloadFixtures('issues/open-issue.html');
+  afterEach(() => {
+    mock.restore();
+    testContext.issue.dispose();
+  });
 
-  function expectVisibility($element, shouldBeVisible) {
-    if (shouldBeVisible) {
-      expect($element).not.toHaveClass('hidden');
-    } else {
-      expect($element).toHaveClass('hidden');
-    }
-  }
+  const getIssueCounter = () => document.querySelector('.issue_counter');
+  const getOpenStatusBox = () =>
+    getByText(document, (_, el) => el.textContent.match(/Open/), {
+      selector: '.status-box-open',
+    });
+  const getClosedStatusBox = () =>
+    getByText(document, (_, el) => el.textContent.match(/Closed/), {
+      selector: '.status-box-issue-closed',
+    });
 
-  function expectIssueState(isIssueOpen) {
-    expectVisibility($boxClosed, !isIssueOpen);
-    expectVisibility($boxOpen, isIssueOpen);
-  }
-
-  function findElements() {
-    $boxClosed = $('div.status-box-issue-closed');
-
-    expect($boxClosed).toExist();
-    expect($boxClosed).toHaveText('Closed');
-
-    $boxOpen = $('div.status-box-open');
-
-    expect($boxOpen).toExist();
-    expect($boxOpen).toHaveText('Open');
-  }
-
-  [true, false].forEach((isIssueInitiallyOpen) => {
-    describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, () => {
-      const action = isIssueInitiallyOpen ? 'close' : 'reopen';
-      let mock;
-
-      function setup() {
-        testContext.issue = new Issue();
-        expectIssueState(isIssueInitiallyOpen);
-
-        testContext.$projectIssuesCounter = $('.issue_counter').first();
-        testContext.$projectIssuesCounter.text('1,001');
+  describe.each`
+    desc                                | isIssueInitiallyOpen | expectedCounterText
+    ${'with an initially open issue'}   | ${true}              | ${'1,000'}
+    ${'with an initially closed issue'} | ${false}             | ${'1,002'}
+  `('$desc', ({ isIssueInitiallyOpen, expectedCounterText }) => {
+    beforeEach(() => {
+      if (isIssueInitiallyOpen) {
+        loadFixtures('issues/open-issue.html');
+      } else {
+        loadFixtures('issues/closed-issue.html');
       }
 
+      testContext.issueCounter = getIssueCounter();
+      testContext.statusBoxClosed = getClosedStatusBox();
+      testContext.statusBoxOpen = getOpenStatusBox();
+
+      testContext.issueCounter.textContent = '1,001';
+    });
+
+    it(`has the proper visible status box when ${isIssueInitiallyOpen ? 'open' : 'closed'}`, () => {
+      if (isIssueInitiallyOpen) {
+        expect(testContext.statusBoxClosed).toHaveClass('hidden');
+        expect(testContext.statusBoxOpen).not.toHaveClass('hidden');
+      } else {
+        expect(testContext.statusBoxClosed).not.toHaveClass('hidden');
+        expect(testContext.statusBoxOpen).toHaveClass('hidden');
+      }
+    });
+
+    describe('when vue app triggers change', () => {
       beforeEach(() => {
-        if (isIssueInitiallyOpen) {
-          loadFixtures('issues/open-issue.html');
-        } else {
-          loadFixtures('issues/closed-issue.html');
-        }
-
-        mock = new MockAdapter(axios);
-        mock.onGet(/(.*)\/related_branches$/).reply(200, {});
-        jest.spyOn(axios, 'get');
-
-        findElements(isIssueInitiallyOpen);
-      });
-
-      afterEach(() => {
-        mock.restore();
-        $('div.flash-alert').remove();
-      });
-
-      it(`${action}s the issue on dispatch of issuable_vue_app:change event`, () => {
-        setup();
-
         document.dispatchEvent(
-          new CustomEvent('issuable_vue_app:change', {
+          new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, {
             detail: {
               data: { id: 1 },
               isClosed: isIssueInitiallyOpen,
             },
           }),
         );
+      });
 
-        expectIssueState(!isIssueInitiallyOpen);
+      it('displays correct status box', () => {
+        if (isIssueInitiallyOpen) {
+          expect(testContext.statusBoxClosed).not.toHaveClass('hidden');
+          expect(testContext.statusBoxOpen).toHaveClass('hidden');
+        } else {
+          expect(testContext.statusBoxClosed).toHaveClass('hidden');
+          expect(testContext.statusBoxOpen).not.toHaveClass('hidden');
+        }
+      });
+
+      it('updates issueCounter text', () => {
+        expect(testContext.issueCounter).toBeVisible();
+        expect(testContext.issueCounter).toHaveText(expectedCounterText);
       });
     });
   });

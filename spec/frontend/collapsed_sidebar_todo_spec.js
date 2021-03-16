@@ -14,9 +14,6 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   const jsonFixtureName = 'todos/todos.json';
   let mock;
 
-  preloadFixtures(fixtureName);
-  preloadFixtures(jsonFixtureName);
-
   beforeEach(() => {
     const todoData = getJSONFixture(jsonFixtureName);
     new Sidebar();

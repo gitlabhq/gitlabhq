@@ -13,7 +13,7 @@ module Resolvers
     def resolve(id: nil)
       return unless parent
 
-      ::Boards::ListService.new(parent, context[:current_user], board_id: extract_board_id(id)).execute.first
+      ::Boards::BoardsFinder.new(parent, context[:current_user], board_id: extract_board_id(id)).execute.first
     rescue ActiveRecord::RecordNotFound
       nil
     end

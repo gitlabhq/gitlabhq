@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::EmojiFilter do
   include FilterSpecHelper
 
+  it_behaves_like 'emoji filter' do
+    let(:emoji_name) { ':+1:' }
+  end
+
   it 'replaces supported name emoji' do
     doc = filter('<p>:heart:</p>')
     expect(doc.css('gl-emoji').first.text).to eq '❤'
@@ -13,12 +17,6 @@ RSpec.describe Banzai::Filter::EmojiFilter do
   it 'replaces supported unicode emoji' do
     doc = filter('<p>❤️</p>')
     expect(doc.css('gl-emoji').first.text).to eq '❤'
-  end
-
-  it 'ignores unsupported emoji' do
-    exp = act = '<p>:foo:</p>'
-    doc = filter(act)
-    expect(doc.to_html).to match Regexp.escape(exp)
   end
 
   it 'ignores unicode versions of trademark, copyright, and registered trademark' do
@@ -65,11 +63,6 @@ RSpec.describe Banzai::Filter::EmojiFilter do
     expect(doc.css('gl-emoji').size).to eq 1
   end
 
-  it 'matches with adjacent text' do
-    doc = filter('+1 (:+1:)')
-    expect(doc.css('gl-emoji').size).to eq 1
-  end
-
   it 'unicode matches with adjacent text' do
     doc = filter('+1 (👍)')
     expect(doc.css('gl-emoji').size).to eq 1
@@ -90,12 +83,6 @@ RSpec.describe Banzai::Filter::EmojiFilter do
     expect(doc.css('gl-emoji').size).to eq 6
   end
 
-  it 'does not match emoji in a string' do
-    doc = filter("'2a00:a4c0:100::1'")
-
-    expect(doc.css('gl-emoji').size).to eq 0
-  end
-
   it 'has a data-name attribute' do
     doc = filter(':-1:')
     expect(doc.css('gl-emoji').first.attr('data-name')).to eq 'thumbsdown'
@@ -104,12 +91,6 @@ RSpec.describe Banzai::Filter::EmojiFilter do
   it 'has a data-unicode-version attribute' do
     doc = filter(':-1:')
     expect(doc.css('gl-emoji').first.attr('data-unicode-version')).to eq '6.0'
-  end
-
-  it 'keeps whitespace intact' do
-    doc = filter('This deserves a :+1:, big time.')
-
-    expect(doc.to_html).to match(/^This deserves a <gl-emoji.+>, big time\.\z/)
   end
 
   it 'unicode keeps whitespace intact' do

@@ -72,6 +72,21 @@ RSpec.describe MergeRequests::RefreshService do
         allow(NotificationService).to receive(:new) { notification_service }
       end
 
+      context 'query count' do
+        it 'does not execute a lot of queries' do
+          # Hardcoded the query limit since the queries can also be reduced even
+          # if there are the same number of merge requests (e.g. by preloading
+          # associations). This should also fail in case additional queries are
+          # added elsewhere that affected this service.
+          #
+          # The limit is based on the number of queries executed at the current
+          # state of the service. As we reduce the number of queries executed in
+          # this service, the limit should be reduced as well.
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to exceed_query_limit(260)
+        end
+      end
+
       it 'executes hooks with update action' do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
@@ -154,6 +169,18 @@ RSpec.describe MergeRequests::RefreshService do
           expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
             .not_to change { @merge_request.reload.merge_request_diff }
         end
+      end
+
+      it 'calls the merge request activity counter' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_including_ci_config)
+          .with(user: @merge_request.author, merge_request: @merge_request)
+
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_mr_including_ci_config)
+          .with(user: @another_merge_request.author, merge_request: @another_merge_request)
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
       end
     end
 

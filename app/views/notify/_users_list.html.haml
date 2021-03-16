@@ -1,0 +1,10 @@
+%tr
+  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }
+    = user_label
+  %td{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; margin: 0; padding: 14px 0 0px 5px; font-size: 15px; line-height: 1.4; color: #333333; font-weight: 400; width: 75%; border-top-style: solid; border-top-color: #ededed; border-top-width: 1px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
+    %ul.users-list{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 15px; line-height: 1.4; padding-right: 5px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
+      - users.each do |user|
+        %li
+          %img.avatar{ alt: "Avatar", height: "24", src: avatar_icon_for_user(user, 24, only_path: false), style: "border-radius: 12px; max-width: 100%; height: auto; -ms-interpolation-mode: bicubic; margin: -2px 0;", width: "24" }
+          %a.muted{ href: user_url(user), style: "color: #333333; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; vertical-align: top;" }
+            = user.name

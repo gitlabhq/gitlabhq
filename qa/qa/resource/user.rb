@@ -5,6 +5,8 @@ require 'securerandom'
 module QA
   module Resource
     class User < Base
+      InvalidUserError = Class.new(RuntimeError)
+
       attr_reader :unique_id
       attr_writer :username, :password
       attr_accessor :admin, :provider, :extern_uid, :expect_fabrication_success
@@ -21,6 +23,13 @@ module QA
         @expect_fabrication_success = true
       end
 
+      def self.default
+        Resource::User.new.tap do |user|
+          user.username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
+          user.password = Runtime::User.ldap_user? ? Runtime::User.ldap_password : Runtime::User.password
+        end
+      end
+
       def admin?
         api_resource&.dig(:is_admin) || false
       end
@@ -28,10 +37,12 @@ module QA
       def username
         @username || "qa-user-#{unique_id}"
       end
+      alias_method :ldap_username, :username
 
       def password
         @password || 'password'
       end
+      alias_method :ldap_password, :password
 
       def name
         @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
@@ -138,8 +149,8 @@ module QA
         return {} unless extern_uid && provider
 
         {
-            extern_uid: extern_uid,
-            provider: provider
+          extern_uid: extern_uid,
+          provider: provider
         }
       end
 

@@ -8,13 +8,11 @@ RSpec.describe 'Thread Comments Issue', :js do
   let(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(remove_comment_close_reopen: false)
-
     project.add_maintainer(user)
     sign_in(user)
 
     visit project_issue_path(project, issue)
   end
 
-  it_behaves_like 'thread comments', 'issue'
+  it_behaves_like 'thread comments for issue, epic and merge request', 'issue'
 end

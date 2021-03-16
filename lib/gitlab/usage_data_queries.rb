@@ -32,6 +32,10 @@ module Gitlab
         raw_sql(relation, column, :distinct)
       end
 
+      def add(*args)
+        'SELECT ' + args.map {|arg| "(#{arg})" }.join(' + ')
+      end
+
       private
 
       def raw_sql(relation, column, distinct = nil)

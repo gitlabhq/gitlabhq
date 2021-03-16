@@ -209,6 +209,22 @@ RSpec.describe PipelineSerializer do
         end
       end
 
+      context 'with scheduled and manual builds' do
+        let(:ref) { 'feature' }
+
+        before do
+          create(:ci_build, :scheduled, pipeline: resource.first)
+          create(:ci_build, :scheduled, pipeline: resource.second)
+          create(:ci_build, :manual, pipeline: resource.first)
+          create(:ci_build, :manual, pipeline: resource.second)
+        end
+
+        it 'sends at most one metadata query for each type of build', :request_store do
+          # 1 for the existing failed builds and 2 for the added scheduled and manual builds
+          expect { subject }.not_to exceed_query_limit(1 + 2).for_query /SELECT "ci_builds_metadata".*/
+        end
+      end
+
       def create_pipeline(status)
         create(:ci_empty_pipeline,
                project: project,

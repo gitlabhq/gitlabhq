@@ -9,6 +9,7 @@ import {
   median,
   changeInPercent,
   formattedChangeInPercent,
+  isNumeric,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -160,6 +161,27 @@ describe('Number Utils', () => {
 
     it('shows the given fallback if the change can not be expressed in an integer', () => {
       expect(formattedChangeInPercent(0, 1, { nonFiniteResult: '*' })).toBe('*');
+    });
+  });
+
+  describe('isNumeric', () => {
+    it.each`
+      value        | outcome
+      ${0}         | ${true}
+      ${12345}     | ${true}
+      ${'0'}       | ${true}
+      ${'12345'}   | ${true}
+      ${1.0}       | ${true}
+      ${'1.0'}     | ${true}
+      ${'abcd'}    | ${false}
+      ${'abcd100'} | ${false}
+      ${''}        | ${false}
+      ${false}     | ${false}
+      ${true}      | ${false}
+      ${undefined} | ${false}
+      ${null}      | ${false}
+    `('when called with $value it returns $outcome', ({ value, outcome }) => {
+      expect(isNumeric(value)).toBe(outcome);
     });
   });
 });

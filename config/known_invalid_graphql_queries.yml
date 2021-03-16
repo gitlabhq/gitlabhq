@@ -3,3 +3,4 @@ filenames:
   - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/update_oncall_schedule_rotation.mutation.graphql
   - ee/app/assets/javascripts/security_configuration/api_fuzzing/graphql/api_fuzzing_ci_configuration.query.graphql
   - ee/app/assets/javascripts/security_configuration/api_fuzzing/graphql/create_api_fuzzing_configuration.mutation.graphql
+  - ee/app/assets/javascripts/security_configuration/dast_profiles/graphql/dast_failed_site_validations.query.graphql

@@ -18,7 +18,6 @@ module Ci
     }
 
     scope :unprotected, -> { where(protected: false) }
-    scope :by_key, -> (key) { where(key: key) }
     scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
   end
 end

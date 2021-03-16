@@ -69,13 +69,7 @@ RSpec.describe 'Task Lists', :js do
         wait_for_requests
 
         expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
-      end
-
-      it_behaves_like 'page with comment and close button', 'Close issue' do
-        def setup
-          visit_issue(project, issue)
-          wait_for_requests
-        end
+        expect(page).to have_selector('.btn-close')
       end
 
       it 'is only editable by author' do

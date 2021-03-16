@@ -3,6 +3,7 @@ export default () => ({
   branchesEndpoint: null,
   isFetching: false,
   branches: [],
+  projects: [],
   selectedBranch: '',
   pushCode: false,
   branchCollaboration: false,
@@ -10,4 +11,6 @@ export default () => ({
   existingBranch: '',
   defaultBranch: '',
   branch: '',
+  targetProjectId: '',
+  targetProjectName: '',
 });

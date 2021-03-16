@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Utils::UsageData do
+  include Database::DatabaseHelpers
+
   describe '#count' do
     let(:relation) { double(:relation) }
 
@@ -183,6 +185,120 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
   end
 
+  describe '#histogram' do
+    let_it_be(:projects) { create_list(:project, 3) }
+    let(:project1) { projects.first }
+    let(:project2) { projects.second }
+    let(:project3) { projects.third }
+
+    let(:fallback) { described_class::HISTOGRAM_FALLBACK }
+    let(:relation) { AlertManagement::HttpIntegration.active }
+    let(:column) { :project_id }
+
+    def expect_error(exception, message, &block)
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_and_raise_for_dev_exception)
+        .with(instance_of(exception))
+        .and_call_original
+
+      expect(&block).to raise_error(
+        an_instance_of(exception).and(
+          having_attributes(message: message, backtrace: be_kind_of(Array)))
+      )
+    end
+
+    it 'checks bucket bounds to be not equal' do
+      expect_error(ArgumentError, 'Lower bucket bound cannot equal to upper bucket bound') do
+        described_class.histogram(relation, column, buckets: 1..1)
+      end
+    end
+
+    it 'checks bucket_size being non-zero' do
+      expect_error(ArgumentError, 'Bucket size cannot be zero') do
+        described_class.histogram(relation, column, buckets: 1..2, bucket_size: 0)
+      end
+    end
+
+    it 'limits the amount of buckets without providing bucket_size argument' do
+      expect_error(ArgumentError, 'Bucket size 101 exceeds the limit of 100') do
+        described_class.histogram(relation, column, buckets: 1..101)
+      end
+    end
+
+    it 'limits the amount of buckets when providing bucket_size argument' do
+      expect_error(ArgumentError, 'Bucket size 101 exceeds the limit of 100') do
+        described_class.histogram(relation, column, buckets: 1..2, bucket_size: 101)
+      end
+    end
+
+    it 'without data' do
+      histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+      expect(histogram).to eq({})
+    end
+
+    it 'aggregates properly within bounds' do
+      create(:alert_management_http_integration, :active, project: project1)
+      create(:alert_management_http_integration, :inactive, project: project1)
+
+      create(:alert_management_http_integration, :active, project: project2)
+      create(:alert_management_http_integration, :active, project: project2)
+      create(:alert_management_http_integration, :inactive, project: project2)
+
+      create(:alert_management_http_integration, :active, project: project3)
+      create(:alert_management_http_integration, :inactive, project: project3)
+
+      histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+      expect(histogram).to eq('1' => 2, '2' => 1)
+    end
+
+    it 'aggregates properly out of bounds' do
+      create_list(:alert_management_http_integration, 3, :active, project: project1)
+      histogram = described_class.histogram(relation, column, buckets: 1..2)
+
+      expect(histogram).to eq('2' => 1)
+    end
+
+    it 'returns fallback and logs canceled queries' do
+      create(:alert_management_http_integration, :active, project: project1)
+
+      expect(Gitlab::AppJsonLogger).to receive(:error).with(
+        event: 'histogram',
+        relation: relation.table_name,
+        operation: 'histogram',
+        operation_args: [column, 1, 100, 99],
+        query: kind_of(String),
+        message: /PG::QueryCanceled/
+      )
+
+      with_statement_timeout(0.001) do
+        relation = AlertManagement::HttpIntegration.select('pg_sleep(0.002)')
+        histogram = described_class.histogram(relation, column, buckets: 1..100)
+
+        expect(histogram).to eq(fallback)
+      end
+    end
+  end
+
+  describe '#add' do
+    it 'adds given values' do
+      expect(described_class.add(1, 3)).to eq(4)
+    end
+
+    it 'adds given values' do
+      expect(described_class.add).to eq(0)
+    end
+
+    it 'returns the fallback value when adding fails' do
+      expect(described_class.add(nil, 3)).to eq(-1)
+    end
+
+    it 'returns the fallback value one of the arguments is negative' do
+      expect(described_class.add(-1, 1)).to eq(-1)
+    end
+  end
+
   describe '#alt_usage_data' do
     it 'returns the fallback when it gets an error' do
       expect(described_class.alt_usage_data { raise StandardError } ).to eq(-1)
@@ -201,6 +317,12 @@ RSpec.describe Gitlab::Utils::UsageData do
     context 'with block given' do
       it 'returns the fallback when it gets an error' do
         expect(described_class.redis_usage_data { raise ::Redis::CommandError } ).to eq(-1)
+      end
+
+      it 'returns the fallback when Redis HLL raises any error' do
+        stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
+
+        expect(described_class.redis_usage_data { raise Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch } ).to eq(15)
       end
 
       it 'returns the evaluated block when given' do
@@ -222,6 +344,13 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#with_prometheus_client' do
+    it 'returns fallback with for an exception in yield block' do
+      allow(described_class).to receive(:prometheus_client).and_return(Gitlab::PrometheusClient.new('http://localhost:9090'))
+      result = described_class.with_prometheus_client(fallback: -42) { |client| raise StandardError }
+
+      expect(result).to be(-42)
+    end
+
     shared_examples 'query data from Prometheus' do
       it 'yields a client instance and returns the block result' do
         result = described_class.with_prometheus_client { |client| client }
@@ -231,10 +360,10 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     shared_examples 'does not query data from Prometheus' do
-      it 'returns nil by default' do
+      it 'returns {} by default' do
         result = described_class.with_prometheus_client { |client| client }
 
-        expect(result).to be_nil
+        expect(result).to eq({})
       end
 
       it 'returns fallback if provided' do
@@ -338,38 +467,15 @@ RSpec.describe Gitlab::Utils::UsageData do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
     let(:event_name) { 'incident_management_alert_status_changed' }
     let(:unknown_event) { 'unknown' }
-    let(:feature) { "usage_data_#{event_name}" }
 
-    before do
-      skip_feature_flags_yaml_validation
+    it 'tracks redis hll event' do
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
+
+      described_class.track_usage_event(event_name, value)
     end
 
-    context 'with feature enabled' do
-      before do
-        stub_feature_flags(feature => true)
-      end
-
-      it 'tracks redis hll event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
-
-        described_class.track_usage_event(event_name, value)
-      end
-
-      it 'raise an error for unknown event' do
-        expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
-      end
-    end
-
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(feature => false)
-      end
-
-      it 'does not track event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-        described_class.track_usage_event(event_name, value)
-      end
+    it 'raise an error for unknown event' do
+      expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
     end
   end
 end

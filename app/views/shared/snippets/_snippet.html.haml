@@ -10,6 +10,8 @@
 
     %ul.controls
       %li
+        = snippet_file_count(snippet)
+      %li
         = link_to gitlab_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count == 0) do
           = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
           = notes_count

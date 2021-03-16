@@ -11,17 +11,14 @@ module QA
           include Component::Breadcrumbs
 
           view 'app/views/projects/edit.html.haml' do
-            element :advanced_settings
-            element :merge_request_settings
+            element :advanced_settings_content
+            element :merge_request_settings_content
+            element :visibility_features_permissions_content
           end
 
           view 'app/views/projects/settings/_general.html.haml' do
             element :project_name_field
             element :save_naming_topics_avatar_button
-          end
-
-          view 'app/views/projects/edit.html.haml' do
-            element :visibility_features_permissions_content
           end
 
           def rename_project_to(name)
@@ -38,13 +35,13 @@ module QA
           end
 
           def expand_advanced_settings(&block)
-            expand_content(:advanced_settings) do
+            expand_content(:advanced_settings_content) do
               Advanced.perform(&block)
             end
           end
 
           def expand_merge_requests_settings(&block)
-            expand_content(:merge_request_settings) do
+            expand_content(:merge_request_settings_content) do
               MergeRequest.perform(&block)
             end
           end

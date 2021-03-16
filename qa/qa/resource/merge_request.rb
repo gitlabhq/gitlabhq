@@ -75,7 +75,7 @@ module QA
         Page::MergeRequest::New.perform do |new_page|
           new_page.fill_title(@title)
           new_page.choose_template(@template) if @template
-          new_page.fill_description(@description) unless @template
+          new_page.fill_description(@description) if @description && !@template
           new_page.choose_milestone(@milestone) if @milestone
           new_page.assign_to_me if @assignee == 'me'
           labels.each do |label|
@@ -137,6 +137,14 @@ module QA
           project.wait_for_merge(result[:title]) if @wait_for_merge
 
           result
+        end
+      end
+
+      def reload!
+        # Refabricate so that we can return a new object with updated attributes
+        self.class.fabricate_via_api! do |resource|
+          resource.project = project
+          resource.id = api_resource[:iid]
         end
       end
 

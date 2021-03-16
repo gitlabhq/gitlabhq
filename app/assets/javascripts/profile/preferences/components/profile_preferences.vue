@@ -44,6 +44,8 @@ export default {
   data() {
     return {
       isSubmitEnabled: true,
+      darkModeOnCreate: null,
+      darkModeOnSubmit: null,
     };
   },
   computed: {
@@ -58,6 +60,7 @@ export default {
     this.formEl.addEventListener('ajax:beforeSend', this.handleLoading);
     this.formEl.addEventListener('ajax:success', this.handleSuccess);
     this.formEl.addEventListener('ajax:error', this.handleError);
+    this.darkModeOnCreate = this.darkModeSelected();
   },
   beforeDestroy() {
     this.formEl.removeEventListener('ajax:beforeSend', this.handleLoading);
@@ -65,16 +68,27 @@ export default {
     this.formEl.removeEventListener('ajax:error', this.handleError);
   },
   methods: {
+    darkModeSelected() {
+      const theme = this.getSelectedTheme();
+      return theme ? theme.css_class === 'gl-dark' : null;
+    },
+    getSelectedTheme() {
+      const themeId = new FormData(this.formEl).get('user[theme_id]');
+      return this.applicationThemes[themeId] ?? null;
+    },
     handleLoading() {
       this.isSubmitEnabled = false;
+      this.darkModeOnSubmit = this.darkModeSelected();
     },
     handleSuccess(customEvent) {
-      const formData = new FormData(this.formEl);
-      updateClasses(
-        this.bodyClasses,
-        this.applicationThemes[formData.get('user[theme_id]')].css_class,
-        this.selectedLayout,
-      );
+      // Reload the page if the theme has changed from light to dark mode or vice versa
+      // to correctly load all required styles.
+      const modeChanged = this.darkModeOnCreate ? !this.darkModeOnSubmit : this.darkModeOnSubmit;
+      if (modeChanged) {
+        window.location.reload();
+        return;
+      }
+      updateClasses(this.bodyClasses, this.getSelectedTheme().css_class, this.selectedLayout);
       const { message = this.$options.i18n.defaultSuccess, type = FLASH_TYPES.NOTICE } =
         customEvent?.detail?.[0] || {};
       createFlash({ message, type });

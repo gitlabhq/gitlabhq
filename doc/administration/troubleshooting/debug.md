@@ -255,7 +255,7 @@ separate Rails process to debug the issue:
 ### GitLab: API is not accessible
 
 This often occurs when GitLab Shell attempts to request authorization via the
-internal API (e.g., `http://localhost:8080/api/v4/internal/allowed`), and
+[internal API](../../development/internal_api.md) (e.g., `http://localhost:8080/api/v4/internal/allowed`), and
 something in the check fails. There are many reasons why this may happen:
 
 1. Timeout connecting to a database (e.g., PostgreSQL or Redis)
@@ -271,8 +271,8 @@ strace -ttTfyyy -s 1024 -p <PID of unicorn worker> -o /tmp/unicorn.txt
 ```
 
 If you cannot isolate which Unicorn worker is the issue, try to run `strace`
-on all the Unicorn workers to see where the `/internal/allowed` endpoint gets
-stuck:
+on all the Unicorn workers to see where the
+[`/internal/allowed`](../../development/internal_api.md) endpoint gets stuck:
 
 ```shell
 ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/unicorn.txt

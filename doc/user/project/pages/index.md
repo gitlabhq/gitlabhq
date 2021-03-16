@@ -46,9 +46,9 @@ To create a GitLab Pages website:
 
 | Document | Description |
 | -------- | ----------- |
-| [Fork a sample project](getting_started/pages_forked_sample_project.md)               | Create a new project with Pages already configured by forking a sample project. |
 | [Use a new project template](getting_started/pages_new_project_template.md)       | Create a new project with Pages already configured by using a new project template. |
 | [Use a `.gitlab-ci.yml` template](getting_started/pages_ci_cd_template.md) | Add a Pages site to an existing project. Use a pre-populated CI template file. |
+| [Fork a sample project](getting_started/pages_forked_sample_project.md)               | Create a new project with Pages already configured by forking a sample project. |
 | [Create a `gitlab-ci.yml` file from scratch](getting_started/pages_from_scratch.md)    | Add a Pages site to an existing project. Learn how to create and configure your own CI file. |
 
 To update a GitLab Pages website:
@@ -116,7 +116,7 @@ to use and adapt to your own needs:
 
 - [Posting to your GitLab Pages blog from iOS](https://about.gitlab.com/blog/2016/08/19/posting-to-your-gitlab-pages-blog-from-ios/).
 - [GitLab CI: Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).
-- [GitLab CI: Deployment & environments](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/).
+- [GitLab CI: Deployment & environments](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 - [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/).
 - [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
 

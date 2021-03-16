@@ -203,7 +203,7 @@ Parameters:
 - `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `branch` (required) - Name of the branch
 - `start_branch` (optional) - Name of the branch to start the new commit from
-- `encoding` (optional) - Change encoding to 'base64'. Default is text.
+- `encoding` (optional) - Change encoding to `base64`. Default is `text`.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - File content
@@ -238,7 +238,7 @@ Parameters:
 - `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `branch` (required) - Name of the branch
 - `start_branch` (optional) - Name of the branch to start the new commit from
-- `encoding` (optional) - Change encoding to 'base64'. Default is text.
+- `encoding` (optional) - Change encoding to `base64`. Default is `text`.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - New file content

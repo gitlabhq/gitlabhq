@@ -201,7 +201,12 @@ module Backup
       PoolRepository.includes(:source_project).find_each do |pool|
         progress.puts " - Object pool #{pool.disk_path}..."
 
-        pool.source_project ||= pool.member_projects.first.root_of_fork_network
+        pool.source_project ||= pool.member_projects.first&.root_of_fork_network
+        unless pool.source_project
+          progress.puts " - Object pool #{pool.disk_path}... " + "[SKIPPED]".color(:cyan)
+          next
+        end
+
         pool.state = 'none'
         pool.save
 

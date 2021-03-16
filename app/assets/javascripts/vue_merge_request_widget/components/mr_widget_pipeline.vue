@@ -11,10 +11,11 @@ import {
 } from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
+import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
-import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { MT_MERGE_STRATEGY } from '../constants';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -26,7 +27,7 @@ export default {
     GlSprintf,
     GlTooltip,
     PipelineArtifacts,
-    PipelineStage,
+    PipelineMiniGraph,
     TooltipOnTruncate,
     LinkedPipelinesMiniList: () =>
       import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
@@ -80,6 +81,11 @@ export default {
       type: String,
       required: true,
     },
+    mergeStrategy: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     hasPipeline() {
@@ -94,9 +100,7 @@ export default {
         : {};
     },
     hasStages() {
-      return (
-        this.pipeline.details && this.pipeline.details.stages && this.pipeline.details.stages.length
-      );
+      return this.pipeline?.details?.stages?.length > 0;
     },
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
@@ -129,6 +133,9 @@ export default {
         'Coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
         this.buildsWithCoverage.length,
       );
+    },
+    isMergeTrain() {
+      return this.mergeStrategy === MT_MERGE_STRATEGY;
     },
   },
   errorText: s__(
@@ -242,19 +249,13 @@ export default {
           <span class="mr-widget-pipeline-graph">
             <span class="stage-cell">
               <linked-pipelines-mini-list v-if="triggeredBy.length" :triggered-by="triggeredBy" />
-              <template v-if="hasStages">
-                <div
-                  v-for="(stage, i) in pipeline.details.stages"
-                  :key="i"
-                  :class="{
-                    'has-downstream': hasDownstream(i),
-                  }"
-                  class="stage-container dropdown mr-widget-pipeline-stages"
-                  data-testid="widget-mini-pipeline-graph"
-                >
-                  <pipeline-stage :stage="stage" />
-                </div>
-              </template>
+              <pipeline-mini-graph
+                v-if="hasStages"
+                class="gl-display-inline-block"
+                stages-class="mr-widget-pipeline-stages"
+                :stages="pipeline.details.stages"
+                :is-merge-train="isMergeTrain"
+              />
             </span>
             <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
             <pipeline-artifacts

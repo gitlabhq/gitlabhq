@@ -44,10 +44,6 @@ module QA
             element :commit_button
           end
 
-          view 'app/assets/javascripts/ide/components/commit_sidebar/new_merge_request_option.vue' do
-            element :start_new_mr_checkbox
-          end
-
           view 'app/assets/javascripts/ide/components/repo_editor.vue' do
             element :editor_container
           end

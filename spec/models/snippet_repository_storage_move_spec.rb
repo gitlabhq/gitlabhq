@@ -8,6 +8,6 @@ RSpec.describe SnippetRepositoryStorageMove, type: :model do
 
     let(:repository_storage_factory_key) { :snippet_repository_storage_move }
     let(:error_key) { :snippet }
-    let(:repository_storage_worker) { SnippetUpdateRepositoryStorageWorker }
+    let(:repository_storage_worker) { Snippets::UpdateRepositoryStorageWorker }
   end
 end

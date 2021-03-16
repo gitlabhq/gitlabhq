@@ -15,9 +15,7 @@ function initUserProfile(action) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const page = $('body').attr('data-page');
-  const action = page.split(':')[1];
-  initUserProfile(action);
-  new UserCallout(); // eslint-disable-line no-new
-});
+const page = $('body').attr('data-page');
+const action = page.split(':')[1];
+initUserProfile(action);
+new UserCallout(); // eslint-disable-line no-new

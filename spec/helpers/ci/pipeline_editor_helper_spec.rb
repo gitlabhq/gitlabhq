@@ -19,12 +19,5 @@ RSpec.describe Ci::PipelineEditorHelper do
 
       expect(subject).to be false
     end
-
-    it 'user can not view editor if feature is disabled' do
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-      stub_feature_flags(ci_pipeline_editor_page: false)
-
-      expect(subject).to be false
-    end
   end
 end

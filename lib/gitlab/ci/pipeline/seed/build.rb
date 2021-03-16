@@ -28,8 +28,8 @@ module Gitlab
               .fabricate(attributes.delete(:except))
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules), default_when: 'on_success')
-            @cache = Seed::Build::Cache
-              .new(pipeline, attributes.delete(:cache))
+            @cache = Gitlab::Ci::Build::Cache
+              .new(attributes.delete(:cache), pipeline)
           end
 
           def name
@@ -52,7 +52,7 @@ module Gitlab
             return unless included?
 
             strong_memoize(:errors) do
-              needs_errors
+              [needs_errors, variable_expansion_errors].compact.flatten
             end
           end
 
@@ -61,7 +61,7 @@ module Gitlab
               .deep_merge(pipeline_attributes)
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
-              .deep_merge(cache_attributes)
+              .deep_merge(@cache.cache_attributes)
           end
 
           def bridge?
@@ -141,6 +141,8 @@ module Gitlab
             end
 
             @needs_attributes.flat_map do |need|
+              next if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml) && need[:optional]
+
               result = @previous_stages.any? do |stage|
                 stage.seeds_names.include?(need[:name])
               end
@@ -151,6 +153,12 @@ module Gitlab
 
           def max_needs_allowed
             @pipeline.project.actual_limits.ci_needs_size_limit
+          end
+
+          def variable_expansion_errors
+            expanded_collection = evaluate_context.variables.sort_and_expand_all(@pipeline.project)
+            errors = expanded_collection.errors
+            ["#{name}: #{errors}"] if errors
           end
 
           def pipeline_attributes
@@ -169,15 +177,11 @@ module Gitlab
             strong_memoize(:rules_attributes) do
               next {} unless @using_rules
 
-              if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
-                rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                  @seed_attributes[:yaml_variables], rules_result.variables
-                )
+              rules_variables_result = ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @seed_attributes[:yaml_variables], rules_result.variables
+              )
 
-                rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
-              else
-                rules_result.build_attributes
-              end
+              rules_result.build_attributes.merge(yaml_variables: rules_variables_result)
             end
           end
 
@@ -190,12 +194,6 @@ module Gitlab
           def evaluate_context
             strong_memoize(:evaluate_context) do
               Gitlab::Ci::Build::Context::Build.new(@pipeline, @seed_attributes)
-            end
-          end
-
-          def cache_attributes
-            strong_memoize(:cache_attributes) do
-              @cache.build_attributes
             end
           end
 

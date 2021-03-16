@@ -12,8 +12,8 @@ RSpec.describe Resolvers::BoardsResolver do
       expect(resolve_boards).to eq []
     end
 
-    it 'calls Boards::ListService' do
-      expect_next_instance_of(Boards::ListService) do |service|
+    it 'calls Boards::BoardsFinder' do
+      expect_next_instance_of(Boards::BoardsFinder) do |service|
         expect(service).to receive(:execute)
       end
 

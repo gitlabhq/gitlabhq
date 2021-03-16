@@ -14,7 +14,7 @@ RSpec.describe MergeWorker do
       source_project.repository.expire_branches_cache
     end
 
-    it 'clears cache of source repo after removing source branch' do
+    it 'clears cache of source repo after removing source branch', :sidekiq_inline do
       expect(source_project.repository.branch_names).to include('markdown')
 
       described_class.new.perform(

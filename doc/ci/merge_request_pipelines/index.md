@@ -19,6 +19,12 @@ you can use *pipelines for merge requests*.
 In the UI, these pipelines are labeled as `detached`. Otherwise, these pipelines appear the same
 as other pipelines.
 
+Pipelines for merge requests can run when you:
+
+- Create a new merge request.
+- Commit changes to the source branch for the merge request.
+- Select the **Run pipeline** button from the **Pipelines** tab in the merge request.
+
 Any user who has developer [permissions](../../user/permissions.md)
 can run a pipeline for merge requests.
 
@@ -213,7 +219,7 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 ### Two pipelines created when pushing to a merge request
 
 If you are experiencing duplicated pipelines when using `rules`, take a look at
-the [important differences between `rules` and `only`/`except`](../yaml/README.md#prevent-duplicate-pipelines),
+the [important differences between `rules` and `only`/`except`](../yaml/README.md#avoid-duplicate-pipelines),
 which helps you get your starting configuration correct.
 
 If you are seeing two pipelines when using `only/except`, please see the caveats

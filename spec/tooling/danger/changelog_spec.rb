@@ -1,51 +1,76 @@
 # frozen_string_literal: true
 
-require_relative 'danger_spec_helper'
+require 'gitlab-dangerfiles'
+require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/changelog'
+require_relative '../../../tooling/danger/project_helper'
 
 RSpec.describe Tooling::Danger::Changelog do
-  include DangerSpecHelper
+  include_context "with dangerfile"
 
-  let(:added_files) { nil }
-  let(:fake_git) { double('fake-git', added_files: added_files) }
+  let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
+  let(:fake_project_helper) { double('fake-project-helper', helper: fake_helper).tap { |h| h.class.include(Tooling::Danger::ProjectHelper) } }
 
-  let(:mr_labels) { nil }
-  let(:mr_json) { nil }
-  let(:fake_gitlab) { double('fake-gitlab', mr_labels: mr_labels, mr_json: mr_json) }
+  subject(:changelog) { fake_danger.new(helper: fake_helper) }
 
-  let(:changes_by_category) { nil }
-  let(:sanitize_mr_title) { nil }
-  let(:ee?) { false }
-  let(:fake_helper) { double('fake-helper', changes_by_category: changes_by_category, sanitize_mr_title: sanitize_mr_title, ee?: ee?) }
+  before do
+    allow(changelog).to receive(:project_helper).and_return(fake_project_helper)
+  end
 
-  let(:fake_danger) { new_fake_danger.include(described_class) }
+  describe '#required_reasons' do
+    subject { changelog.required_reasons }
 
-  subject(:changelog) { fake_danger.new(git: fake_git, gitlab: fake_gitlab, helper: fake_helper) }
+    context "added files contain a migration" do
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
+
+      it { is_expected.to include(:db_changes) }
+    end
+
+    context "removed files contains a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
+
+      it { is_expected.to include(:feature_flag_removed) }
+    end
+
+    context "added files do not contain a migration" do
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :frontend)]) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context "removed files do not contain a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
+
+      it { is_expected.to be_empty }
+    end
+  end
 
   describe '#required?' do
     subject { changelog.required? }
 
     context 'added files contain a migration' do
-      [
-        'db/migrate/20200000000000_new_migration.rb',
-        'db/post_migrate/20200000000000_new_migration.rb'
-      ].each do |file_path|
-        let(:added_files) { [file_path] }
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
 
-        it { is_expected.to be_truthy }
-      end
+      it { is_expected.to be_truthy }
+    end
+
+    context "removed files contains a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
+
+      it { is_expected.to be_truthy }
     end
 
     context 'added files do not contain a migration' do
-      [
-        'app/models/model.rb',
-        'app/assets/javascripts/file.js'
-      ].each do |file_path|
-        let(:added_files) { [file_path] }
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :frontend)]) }
 
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_falsey }
+    end
+
+    context "removed files do not contain a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -58,8 +83,7 @@ RSpec.describe Tooling::Danger::Changelog do
     subject { changelog.optional? }
 
     context 'when MR contains only categories requiring no changelog' do
-      let(:changes_by_category) { { category_without_changelog => nil } }
-      let(:mr_labels) { [] }
+      let(:changes) { changes_class.new([change_class.new('foo', :modified, category_without_changelog)]) }
 
       it 'is falsey' do
         is_expected.to be_falsy
@@ -67,7 +91,7 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context 'when MR contains a label that require no changelog' do
-      let(:changes_by_category) { { category_with_changelog => nil } }
+      let(:changes) { changes_class.new([change_class.new('foo', :modified, category_with_changelog)]) }
       let(:mr_labels) { [label_with_changelog, label_without_changelog] }
 
       it 'is falsey' do
@@ -76,29 +100,28 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context 'when MR contains a category that require changelog and a category that require no changelog' do
-      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
-      let(:mr_labels) { [] }
+      let(:changes) { changes_class.new([change_class.new('foo', :modified, category_with_changelog), change_class.new('foo', :modified, category_without_changelog)]) }
 
-      it 'is truthy' do
-        is_expected.to be_truthy
+      context 'with no labels' do
+        it 'is truthy' do
+          is_expected.to be_truthy
+        end
       end
-    end
 
-    context 'when MR contains a category that require changelog and a category that require no changelog with changelog label' do
-      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
-      let(:mr_labels) { ['feature'] }
+      context 'with changelog label' do
+        let(:mr_labels) { ['feature'] }
 
-      it 'is truthy' do
-        is_expected.to be_truthy
+        it 'is truthy' do
+          is_expected.to be_truthy
+        end
       end
-    end
 
-    context 'when MR contains a category that require changelog and a category that require no changelog with no changelog label' do
-      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
-      let(:mr_labels) { ['tooling'] }
+      context 'with no changelog label' do
+        let(:mr_labels) { ['tooling'] }
 
-      it 'is truthy' do
-        is_expected.to be_falsey
+        it 'is truthy' do
+          is_expected.to be_falsey
+        end
       end
     end
   end
@@ -107,54 +130,39 @@ RSpec.describe Tooling::Danger::Changelog do
     subject { changelog.found }
 
     context 'added files contain a changelog' do
-      [
-        'changelogs/unreleased/entry.yml',
-        'ee/changelogs/unreleased/entry.yml'
-      ].each do |file_path|
-        let(:added_files) { [file_path] }
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :changelog)]) }
 
-        it { is_expected.to be_truthy }
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'added files do not contain a changelog' do
-      [
-        'app/models/model.rb',
-        'app/assets/javascripts/file.js'
-      ].each do |file_path|
-        let(:added_files) { [file_path] }
-        it { is_expected.to eq(nil) }
-      end
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :backend)]) }
+
+      it { is_expected.to eq(nil) }
     end
   end
 
   describe '#ee_changelog?' do
     subject { changelog.ee_changelog? }
 
-    before do
-      allow(changelog).to receive(:found).and_return(file_path)
-    end
-
     context 'is ee changelog' do
-      let(:file_path) { 'ee/changelogs/unreleased/entry.yml' }
+      let(:changes) { changes_class.new([change_class.new('ee/changelogs/unreleased/entry.yml', :added, :changelog)]) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'is not ee changelog' do
-      let(:file_path) { 'changelogs/unreleased/entry.yml' }
+      let(:changes) { changes_class.new([change_class.new('changelogs/unreleased/entry.yml', :added, :changelog)]) }
 
       it { is_expected.to be_falsy }
     end
   end
 
   describe '#modified_text' do
-    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
-
     subject { changelog.modified_text }
 
     context "when title is not changed from sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'Fake Title' }
+      let(:mr_title) { 'Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG.md was edited')
@@ -164,7 +172,7 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context "when title needs sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+      let(:mr_title) { 'DRAFT: Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG.md was edited')
@@ -174,39 +182,46 @@ RSpec.describe Tooling::Danger::Changelog do
     end
   end
 
-  describe '#required_text' do
-    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
+  describe '#required_texts' do
+    let(:mr_title) { 'Fake Title' }
 
-    subject { changelog.required_text }
+    subject { changelog.required_texts }
 
-    context "when title is not changed from sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'Fake Title' }
-
+    shared_examples 'changelog required text' do |key|
       specify do
-        expect(subject).to include('CHANGELOG missing')
-        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-        expect(subject).not_to include('--ee')
+        expect(subject).to have_key(key)
+        expect(subject[key]).to include('CHANGELOG missing')
+        expect(subject[key]).to include('bin/changelog -m 1234 "Fake Title"')
+        expect(subject[key]).not_to include('--ee')
       end
     end
 
-    context "when title needs sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+    context 'with a new migration file' do
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
 
-      specify do
-        expect(subject).to include('CHANGELOG missing')
-        expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-        expect(subject).not_to include('--ee')
+      context "when title is not changed from sanitization", :aggregate_failures do
+        it_behaves_like 'changelog required text', :db_changes
       end
+
+      context "when title needs sanitization", :aggregate_failures do
+        let(:mr_title) { 'DRAFT: Fake Title' }
+
+        it_behaves_like 'changelog required text', :db_changes
+      end
+    end
+
+    context 'with a removed feature flag file' do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
+
+      it_behaves_like 'changelog required text', :feature_flag_removed
     end
   end
 
   describe '#optional_text' do
-    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
-
     subject { changelog.optional_text }
 
     context "when title is not changed from sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'Fake Title' }
+      let(:mr_title) { 'Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG missing')
@@ -216,7 +231,7 @@ RSpec.describe Tooling::Danger::Changelog do
     end
 
     context "when title needs sanitization", :aggregate_failures do
-      let(:sanitize_mr_title) { 'DRAFT: Fake Title' }
+      let(:mr_title) { 'DRAFT: Fake Title' }
 
       specify do
         expect(subject).to include('CHANGELOG missing')

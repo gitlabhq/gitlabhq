@@ -155,12 +155,12 @@ RSpec.describe 'User uses shortcuts', :js do
     end
   end
 
-  context 'when navigating to the CI / CD pages' do
+  context 'when navigating to the CI/CD pages' do
     it 'redirects to the Jobs page' do
       find('body').native.send_key('g')
       find('body').native.send_key('j')
 
-      expect(page).to have_active_navigation('CI / CD')
+      expect(page).to have_active_navigation('CI/CD')
       expect(page).to have_active_sub_navigation('Jobs')
     end
   end

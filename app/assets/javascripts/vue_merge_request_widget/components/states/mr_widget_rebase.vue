@@ -176,16 +176,22 @@ export default {
           <gl-button
             :loading="isMakingRequest"
             variant="success"
-            class="qa-mr-rebase-button"
+            data-qa-selector="mr_rebase_button"
             @click="rebase"
           >
             {{ __('Rebase') }}
           </gl-button>
-          <span v-if="!rebasingError" class="gl-font-weight-bold" data-testid="rebase-message">{{
-            __(
-              'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
-            )
-          }}</span>
+          <span
+            v-if="!rebasingError"
+            class="gl-font-weight-bold"
+            data-testid="rebase-message"
+            data-qa-selector="no_fast_forward_message_content"
+            >{{
+              __(
+                'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
+              )
+            }}</span
+          >
           <span v-else class="gl-font-weight-bold danger" data-testid="rebase-message">{{
             rebasingError
           }}</span>

@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, concepts
 ---
@@ -40,8 +40,7 @@ require changes to `awesome-lib`, and so necessitate two merge requests. Merging
 the `awesome-project` merge request before the `awesome-lib` one would
 break the `master`branch.
 
-The `awesome-project` merge request could be [marked as
-**Draft**](work_in_progress_merge_requests.md),
+The `awesome-project` merge request could be [marked as **Draft**](drafts.md),
 and the reason for the draft stated included in the comments. However, this
 requires the state of the `awesome-lib` merge request to be manually
 tracked, and doesn't scale well if the `awesome-project` merge request
@@ -85,7 +84,7 @@ merge request widget:
 ![Dependencies in merge request widget](img/dependencies_view_v12_2.png)
 
 Until all dependencies have, themselves, been merged, the **Merge**
-button will be disabled for the dependent merge request. In
+button is disabled for the dependent merge request. In
 particular, note that **closed merge requests** still prevent their
 dependents from being merged - it is impossible to automatically
 determine whether the dependency expressed by a closed merge request

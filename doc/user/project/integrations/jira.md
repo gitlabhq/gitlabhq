@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira integration
+# GitLab Jira integration **(FREE)**
 
 You can use Jira to track work implemented in GitLab. The Jira integration with GitLab makes the
 process of working across these systems more efficient.

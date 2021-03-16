@@ -31,10 +31,8 @@ export default () => {
           return createElement(CommitPipelinesTable, {
             props: {
               endpoint: pipelineTableViewEl.dataset.endpoint,
-              helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
               emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
               errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-              autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
             },
           });
         },

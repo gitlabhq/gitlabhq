@@ -47,7 +47,7 @@ performance:
 ```
 
 and users include this template with passing an argument to the `performance` job.
-This can be done by specifying the environment variable `TARGET_URL` in _their_ `.gitlab-ci.yml`:
+This can be done by specifying the CI/CD variable `TARGET_URL` in _their_ `.gitlab-ci.yml`:
 
 ```yaml
 include:
@@ -72,6 +72,10 @@ Please read [versioning](#versioning) section for introducing breaking change sa
   When a root `.gitlab-ci.yml` [includes](../../ci/yaml/README.md#include)
   multiple templates, these global keywords could be overridden by the
   others and cause an unexpected behavior.
+- Include [a changelog](../changelog.md) if your merge request introduces a user-facing change.
+- Use [`$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`](../../ci/variables/predefined_variables.md)
+  instead of a hardcoded `main` branch, and never use `master`.
+- Use [`rules`](../../ci/yaml/README.md#rules) instead of [`only` or `except`](../../ci/yaml/README.md#onlyexcept-basic), if possible.
 
 ## Versioning
 
@@ -88,7 +92,7 @@ for example `Jobs/Deploy.gitlab-ci.yml`.
 You can make a new stable template by copying [the latest template](#latest-version)
 available in a major milestone release of GitLab like `13.0`. All breaking changes
 must be announced in a blog post before the official release, for example
-[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/releases/2020/05/06/gitlab-com-13-0-breaking-changes/)
+[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/blog/2020/05/06/gitlab-com-13-0-breaking-changes/)
 
 You can change a stable template version in a minor GitLab release like `13.1` if:
 
@@ -180,7 +184,7 @@ is updated in a major version GitLab release.
 ## Security
 
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
-might accidentally expose project secret variables in a job log.
+might accidentally expose secret project CI/CD variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
 
 ## Contribute CI/CD Template Merge Requests

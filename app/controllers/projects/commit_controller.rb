@@ -16,10 +16,16 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
   before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_commit_box_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
-  before_action only: [:pipelines] do
-    push_frontend_feature_flag(:ci_mini_pipeline_gl_dropdown, @project, type: :development, default_enabled: :yaml)
+
+  before_action only: [:show, :pipelines] do
+    push_frontend_feature_flag(:ci_commit_pipeline_mini_graph_vue, @project, default_enabled: :yaml)
+  end
+
+  before_action do
+    push_frontend_feature_flag(:pick_into_project)
   end
 
   BRANCH_SEARCH_LIMIT = 1000
@@ -53,6 +59,8 @@ class Projects::CommitController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
+    set_pipeline_feature_flag
+
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]).page(params[:page]).per(30) if params[:ref]
 
@@ -127,6 +135,10 @@ class Projects::CommitController < Projects::ApplicationController
 
   private
 
+  def set_pipeline_feature_flag
+    push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
+  end
+
   def create_new_branch?
     params[:create_merge_request].present? || !can?(current_user, :push_code, @project)
   end
@@ -198,6 +210,15 @@ class Projects::CommitController < Projects::ApplicationController
     @notes = prepare_notes_for_rendering(@notes, @commit)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def define_commit_box_vars
+    @last_pipeline = @commit.last_pipeline
+
+    return unless ::Gitlab::Ci::Features.ci_commit_pipeline_mini_graph_vue_enabled?(@project)
+    return unless @commit.last_pipeline
+
+    @last_pipeline_stages = StageSerializer.new(project: @project, current_user: @current_user).represent(@last_pipeline.stages)
+  end
 
   def assign_change_commit_vars
     @start_branch = params[:start_branch]

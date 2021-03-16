@@ -42,15 +42,9 @@ RSpec.describe 'issue state', :js do
   end
 
   describe 'when open', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297348' do
-    let(:open_issue) { create(:issue, project: project) }
-
-    it_behaves_like 'page with comment and close button', 'Close issue' do
-      def setup
-        visit project_issue_path(project, open_issue)
-      end
-    end
-
     context 'when clicking the top `Close issue` button', :aggregate_failures do
+      let(:open_issue) { create(:issue, project: project) }
+
       before do
         visit project_issue_path(project, open_issue)
       end
@@ -59,8 +53,9 @@ RSpec.describe 'issue state', :js do
     end
 
     context 'when clicking the bottom `Close issue` button', :aggregate_failures do
+      let(:open_issue) { create(:issue, project: project) }
+
       before do
-        stub_feature_flags(remove_comment_close_reopen: false)
         visit project_issue_path(project, open_issue)
       end
 
@@ -69,15 +64,9 @@ RSpec.describe 'issue state', :js do
   end
 
   describe 'when closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297201' do
-    let(:closed_issue) { create(:issue, project: project, state: 'closed') }
-
-    it_behaves_like 'page with comment and close button', 'Reopen issue' do
-      def setup
-        visit project_issue_path(project, closed_issue)
-      end
-    end
-
     context 'when clicking the top `Reopen issue` button', :aggregate_failures do
+      let(:closed_issue) { create(:issue, project: project, state: 'closed') }
+
       before do
         visit project_issue_path(project, closed_issue)
       end
@@ -86,8 +75,9 @@ RSpec.describe 'issue state', :js do
     end
 
     context 'when clicking the bottom `Reopen issue` button', :aggregate_failures do
+      let(:closed_issue) { create(:issue, project: project, state: 'closed') }
+
       before do
-        stub_feature_flags(remove_comment_close_reopen: false)
         visit project_issue_path(project, closed_issue)
       end
 

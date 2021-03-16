@@ -84,6 +84,11 @@ export default {
     cancelActionProps() {
       return {
         text: this.$options.translations.cancelActionLabel,
+        attributes: [
+          {
+            category: 'secondary',
+          },
+        ],
       };
     },
     canRegenerateInstanceId() {
@@ -120,11 +125,11 @@ export default {
 <template>
   <gl-modal
     :modal-id="modalId"
-    :action-cancel="cancelActionProps"
-    :action-primary="regenerateInstanceIdActionProps"
-    @canceled="clearState"
+    :action-primary="cancelActionProps"
+    :action-secondary="regenerateInstanceIdActionProps"
+    @secondary.prevent="rotateToken"
     @hide="clearState"
-    @primary.prevent="rotateToken"
+    @primary="clearState"
   >
     <template #modal-title>
       {{ $options.translations.modalTitle }}

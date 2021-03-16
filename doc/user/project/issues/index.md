@@ -137,7 +137,7 @@ You can mark two issues as related, so that when viewing one, the other is alway
 listed in its [Related Issues](related_issues.md) section. This can help display important
 context, such as past work, dependencies, or duplicates.
 
-Users on [GitLab Starter, GitLab Bronze, and higher tiers](https://about.gitlab.com/pricing/), can
+Users of [GitLab Premium](https://about.gitlab.com/pricing/) or higher can
 also mark issues as blocking or blocked by another issue.
 
 ### Crosslinking issues
@@ -162,9 +162,9 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 
 ### Health status **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4 and later.
-> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab Ultimate 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab Ultimate 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab Ultimate 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
 To help you track issue statuses, you can assign a status to each issue.
@@ -184,7 +184,7 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 
 ## Other Issue actions
 
-- [Create an issue from a template](../../project/description_templates.md#using-the-templates)
+- [Create an issue from a template](../../project/description_templates.md#use-the-templates)
 - [Set a due date](due_dates.md)
 - [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues
   in order to change their status, assignee, milestone, or labels in bulk.
@@ -197,18 +197,18 @@ You can then see issue statuses in the [issue list](#issues-list) and the
 ## Enable or disable cached issue count **(FREE SELF)**
 
 Cached issue count in the left sidebar is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:cached_sidebar_open_issues_count)
-```
+can disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:cached_sidebar_open_issues_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_open_issues_count)
 ```

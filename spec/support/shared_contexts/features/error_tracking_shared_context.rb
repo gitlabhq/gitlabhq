@@ -9,7 +9,7 @@ RSpec.shared_context 'sentry error tracking context feature' do
   let_it_be(:issue_response) { Gitlab::Json.parse(issue_response_body) }
   let_it_be(:event_response_body) { fixture_file('sentry/issue_latest_event_sample_response.json') }
   let_it_be(:event_response) { Gitlab::Json.parse(event_response_body) }
-  let(:sentry_api_urls) { Sentry::ApiUrls.new(project_error_tracking_settings.api_url) }
+  let(:sentry_api_urls) { ErrorTracking::SentryClient::ApiUrls.new(project_error_tracking_settings.api_url) }
   let(:issue_id) { issue_response['id'] }
   let(:issue_seen) { 1.year.ago.utc }
   let(:formatted_issue_seen) { issue_seen.strftime("%Y-%m-%d %-l:%M:%S%p %Z") }

@@ -1,0 +1,19 @@
+---
+key_path: counts.ingress_modsecurity_logging
+description: Whether or not ModSecurity is set to logging mode
+product_section: sec
+product_stage: protect
+product_group: group::container security
+product_category: web_firewall
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

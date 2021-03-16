@@ -97,13 +97,21 @@ describe('Environment', () => {
           jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
 
           wrapper.find('.gl-pagination li:nth-child(3) .page-link').trigger('click');
-          expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
+          expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
+            scope: 'available',
+            page: '2',
+            nested: true,
+          });
         });
 
         it('should make an API request when using tabs', () => {
           jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
           findEnvironmentsTabStopped().trigger('click');
-          expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+          expect(wrapper.vm.updateContent).toHaveBeenCalledWith({
+            scope: 'stopped',
+            page: '1',
+            nested: true,
+          });
         });
 
         it('should not make the same API request when clicking on the current scope tab', () => {

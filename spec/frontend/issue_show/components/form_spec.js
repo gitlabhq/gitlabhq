@@ -42,11 +42,21 @@ describe('Inline edit form component', () => {
     expect(vm.$el.querySelector('.js-issuable-selector-wrap')).toBeNull();
   });
 
-  it('renders template selector when templates exists', () => {
+  it('renders template selector when templates as array exists', () => {
     createComponent({
       issuableTemplates: [
         { name: 'test', id: 'test', project_path: 'test', namespace_path: 'test' },
       ],
+    });
+
+    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
+  });
+
+  it('renders template selector when templates as hash exists', () => {
+    createComponent({
+      issuableTemplates: {
+        test: [{ name: 'test', id: 'test', project_path: 'test', namespace_path: 'test' }],
+      },
     });
 
     expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();

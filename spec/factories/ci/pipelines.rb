@@ -40,6 +40,10 @@ FactoryBot.define do
       end
     end
 
+    trait :created do
+      status { :created }
+    end
+
     factory :ci_pipeline do
       transient { ci_ref_presence { true } }
 
@@ -51,10 +55,6 @@ FactoryBot.define do
         status { :failed }
         yaml_errors { 'invalid YAML' }
         failure_reason { :config_error }
-      end
-
-      trait :created do
-        status { :created }
       end
 
       trait :preparing do

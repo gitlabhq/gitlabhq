@@ -5,7 +5,6 @@ import MockWebAuthnDevice from './mock_webauthn_device';
 import { useMockNavigatorCredentials } from './util';
 
 describe('WebAuthnRegister', () => {
-  preloadFixtures('webauthn/register.html');
   useMockNavigatorCredentials();
 
   const mockResponse = {

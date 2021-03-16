@@ -129,7 +129,10 @@ describe('Feature flag table', () => {
 
     it('should have a toggle', () => {
       expect(toggle.exists()).toBe(true);
-      expect(toggle.props('value')).toBe(true);
+      expect(toggle.props()).toMatchObject({
+        label: FeatureFlagsTable.i18n.toggleLabel,
+        value: true,
+      });
     });
 
     it('should trigger a toggle event', () => {

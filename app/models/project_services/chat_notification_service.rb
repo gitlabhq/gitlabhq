@@ -97,9 +97,12 @@ class ChatNotificationService < Service
     opts[:channel] = channels if channels.present?
     opts[:username] = username if username
 
-    return false unless notify(message, opts)
+    if notify(message, opts)
+      log_usage(event_type, user_id_from_hook_data(data))
+      return true
+    end
 
-    true
+    false
   end
 
   def event_channel_names
@@ -120,6 +123,10 @@ class ChatNotificationService < Service
 
   private
 
+  def log_usage(_, _)
+    # Implement in child class
+  end
+
   def labels_to_be_notified_list
     return [] if labels_to_be_notified.nil?
 
@@ -134,6 +141,10 @@ class ChatNotificationService < Service
     label_titles = (issue_labels + merge_request_labels).pluck(:title)
 
     (labels_to_be_notified_list & label_titles).any?
+  end
+
+  def user_id_from_hook_data(data)
+    data.dig(:user, :id) || data[:user_id]
   end
 
   # every notifier must implement this independently

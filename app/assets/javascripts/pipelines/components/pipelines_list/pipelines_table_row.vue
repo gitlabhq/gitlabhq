@@ -3,13 +3,12 @@ import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
-import { PIPELINES_TABLE } from '../../constants';
 import eventHub from '../../event_hub';
+import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelineUrl from './pipeline_url.vue';
-import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
-import PipelineStage from './stage.vue';
+import PipelinesManualActionsComponent from './pipelines_manual_actions.vue';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {
@@ -22,10 +21,10 @@ export default {
     GlModalDirective,
   },
   components: {
-    PipelinesActionsComponent,
+    PipelinesManualActionsComponent,
     PipelinesArtifactsComponent,
     CommitComponent,
-    PipelineStage,
+    PipelineMiniGraph,
     PipelineUrl,
     PipelineTriggerer,
     CiBadge,
@@ -47,10 +46,6 @@ export default {
       required: false,
       default: false,
     },
-    autoDevopsHelpPath: {
-      type: String,
-      required: true,
-    },
     viewType: {
       type: String,
       required: true,
@@ -61,7 +56,6 @@ export default {
       default: null,
     },
   },
-  pipelinesTable: PIPELINES_TABLE,
   data() {
     return {
       isRetrying: false,
@@ -137,14 +131,11 @@ export default {
     commitTitle() {
       return this.pipeline?.commit?.title;
     },
-    pipelineDuration() {
-      return this.pipeline?.details?.duration ?? 0;
-    },
-    pipelineFinishedAt() {
-      return this.pipeline?.details?.finished_at ?? '';
-    },
     pipelineStatus() {
       return this.pipeline?.details?.status ?? {};
+    },
+    hasStages() {
+      return this.pipeline?.details?.stages?.length > 0;
     },
     displayPipelineActions() {
       return (
@@ -177,6 +168,10 @@ export default {
       this.isRetrying = true;
       eventHub.$emit('retryPipeline', this.pipeline.retry_path);
     },
+    handlePipelineActionRequestComplete() {
+      // warn the pipelines table to update
+      eventHub.$emit('refreshPipelinesTable');
+    },
   },
 };
 </script>
@@ -194,11 +189,7 @@ export default {
       </div>
     </div>
 
-    <pipeline-url
-      :pipeline="pipeline"
-      :pipeline-schedule-url="pipelineScheduleUrl"
-      :auto-devops-help-path="autoDevopsHelpPath"
-    />
+    <pipeline-url :pipeline="pipeline" :pipeline-schedule-url="pipelineScheduleUrl" />
     <pipeline-triggerer :pipeline="pipeline" />
 
     <div class="table-section section-wrap section-20">
@@ -220,35 +211,23 @@ export default {
     <div class="table-section section-wrap section-15 stage-cell">
       <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Stages') }}</div>
       <div class="table-mobile-content">
-        <template v-if="pipeline.details.stages.length > 0">
-          <div
-            v-for="(stage, index) in pipeline.details.stages"
-            :key="index"
-            class="stage-container dropdown"
-            data-testid="widget-mini-pipeline-graph"
-          >
-            <pipeline-stage
-              :type="$options.pipelinesTable"
-              :stage="stage"
-              :update-dropdown="updateGraphDropdown"
-            />
-          </div>
-        </template>
+        <pipeline-mini-graph
+          v-if="hasStages"
+          :stages="pipeline.details.stages"
+          :update-dropdown="updateGraphDropdown"
+          @pipelineActionRequestComplete="handlePipelineActionRequestComplete"
+        />
       </div>
     </div>
 
-    <pipelines-timeago
-      class="gl-text-right"
-      :duration="pipelineDuration"
-      :finished-time="pipelineFinishedAt"
-    />
+    <pipelines-timeago class="gl-text-right" :pipeline="pipeline" />
 
     <div
       v-if="displayPipelineActions"
       class="table-section section-20 table-button-footer pipeline-actions"
     >
       <div class="btn-group table-action-buttons">
-        <pipelines-actions-component v-if="actions.length > 0" :actions="actions" />
+        <pipelines-manual-actions-component v-if="actions.length > 0" :actions="actions" />
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"

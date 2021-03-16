@@ -12,8 +12,6 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :set_deprecation_notice_for_prometheus_service, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_service, only: [:update]
   before_action only: :edit do
-    push_frontend_feature_flag(:jira_issues_integration, @project, type: :licensed, default_enabled: true)
-    push_frontend_feature_flag(:jira_vulnerabilities_integration, @project, type: :licensed, default_enabled: true)
     push_frontend_feature_flag(:jira_for_vulnerabilities, @project, type: :development, default_enabled: :yaml)
   end
 

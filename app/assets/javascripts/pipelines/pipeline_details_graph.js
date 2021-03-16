@@ -11,12 +11,15 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(
     {},
     {
-      batchMax: 2,
+      useGet: true,
     },
   ),
 });
 
-const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid) => {
+const createPipelinesDetailApp = (
+  selector,
+  { pipelineProjectPath, pipelineIid, metricsPath, graphqlResourceEtag } = {},
+) => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
@@ -25,8 +28,10 @@ const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid) =>
     },
     apolloProvider,
     provide: {
+      metricsPath,
       pipelineProjectPath,
       pipelineIid,
+      graphqlResourceEtag,
       dataMethod: GRAPHQL,
     },
     errorCaptured(err, _vm, info) {

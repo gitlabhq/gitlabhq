@@ -11,6 +11,7 @@ import {
   featureAccessLevelEveryone,
   featureAccessLevel,
   featureAccessLevelNone,
+  CVE_ID_REQUEST_BUTTON_I18N,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import projectFeatureSetting from './project_feature_setting.vue';
@@ -19,6 +20,10 @@ import projectSettingRow from './project_setting_row.vue';
 const PAGE_FEATURE_ACCESS_LEVEL = s__('ProjectSettings|Everyone');
 
 export default {
+  i18n: {
+    ...CVE_ID_REQUEST_BUTTON_I18N,
+  },
+
   components: {
     projectFeatureSetting,
     projectSettingRow,
@@ -31,6 +36,11 @@ export default {
   mixins: [settingsMixin, glFeatureFlagsMixin()],
 
   props: {
+    requestCveAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     currentSettings: {
       type: Object,
       required: true,
@@ -74,11 +84,6 @@ export default {
       required: false,
       default: false,
     },
-    securityAndComplianceAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     visibilityHelpPath: {
       type: String,
       required: false,
@@ -95,6 +100,11 @@ export default {
       default: false,
     },
     lfsObjectsRemovalHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    cveIdRequestHelpPath: {
       type: String,
       required: false,
       default: '',
@@ -152,6 +162,7 @@ export default {
       requestAccessEnabled: true,
       highlightChangesClass: false,
       emailsDisabled: false,
+      cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
     };
@@ -229,6 +240,9 @@ export default {
       return s__(
         'ProjectSettings|View and edit files in this project. Non-project members will only have read access.',
       );
+    },
+    cveIdRequestIsDisabled() {
+      return this.visibilityLevel !== visibilityOptions.PUBLIC;
     },
   },
 
@@ -417,6 +431,19 @@ export default {
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][issues_access_level]"
         />
+        <project-setting-row
+          v-if="requestCveAvailable"
+          :help-path="cveIdRequestHelpPath"
+          :help-text="$options.i18n.cve_request_toggle_label"
+        >
+          <gl-toggle
+            v-model="cveIdRequestEnabled"
+            class="gl-my-2"
+            :disabled="cveIdRequestIsDisabled"
+            name="project[project_setting_attributes][cve_id_request_enabled]"
+            data-testid="cve_id_request_toggle"
+          />
+        </project-setting-row>
       </project-setting-row>
       <project-setting-row
         ref="repository-settings"
@@ -563,7 +590,6 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="securityAndComplianceAvailable"
         :label="s__('ProjectSettings|Security & Compliance')"
         :help-text="s__('ProjectSettings|Security & Compliance for this project')"
       >
@@ -613,7 +639,9 @@ export default {
       <project-setting-row
         ref="operations-settings"
         :label="s__('ProjectSettings|Operations')"
-        :help-text="s__('ProjectSettings|Environments, logs, cluster management, and more.')"
+        :help-text="
+          s__('ProjectSettings|Configure your project resources and monitor their health.')
+        "
       >
         <project-feature-setting
           v-model="operationsAccessLevel"

@@ -61,7 +61,7 @@ The following are important notes about 2FA:
   2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and
   is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
   without 2FA. To ensure this scenario doesn't occur,
-  [prevent sharing of projects](../user/group/index.md#share-with-group-lock)
+  [prevent sharing of projects](../user/group/index.md#prevent-a-project-from-being-shared-with-groups)
   for the 2FA-enabled group.
 - If you add additional members to a project within a group or subgroup that has
   2FA enabled, 2FA is **not** required for those individually added members.
@@ -129,8 +129,15 @@ verification can be done via a GitLab Shell command:
 ssh git@<hostname> 2fa_verify
 ```
 
-Once the OTP is verified, Git over SSH operations can be used for 15 minutes
-with the associated SSH key.
+Once the OTP is verified, Git over SSH operations can be used for a session duration of
+15 minutes (default) with the associated SSH key.
+
+### Security limitation
+
+2FA does not protect users with compromised *private* SSH keys.
+
+Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
+the configured [session duration](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 ### Enable or disable Two-factor Authentication (2FA) for Git operations
 

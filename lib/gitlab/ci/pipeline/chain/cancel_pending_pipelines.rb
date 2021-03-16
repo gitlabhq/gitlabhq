@@ -10,7 +10,7 @@ module Gitlab
           def perform!
             return unless project.auto_cancel_pending_pipelines?
 
-            Gitlab::OptimisticLocking.retry_lock(auto_cancelable_pipelines) do |cancelables|
+            Gitlab::OptimisticLocking.retry_lock(auto_cancelable_pipelines, name: 'cancel_pending_pipelines') do |cancelables|
               cancelables.find_each do |cancelable|
                 cancelable.auto_cancel_running(pipeline)
               end

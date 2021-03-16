@@ -8,8 +8,6 @@ describe('U2FAuthenticate', () => {
   let container;
   let component;
 
-  preloadFixtures('u2f/authenticate.html');
-
   beforeEach(() => {
     loadFixtures('u2f/authenticate.html');
     u2fDevice = new MockU2FDevice();

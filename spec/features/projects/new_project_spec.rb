@@ -86,7 +86,7 @@ RSpec.describe 'New project', :js do
           visit new_project_path
           find('[data-qa-selector="blank_project_link"]').click
 
-          choose(s_(key))
+          choose(key)
           click_button('Create project')
           page.within('#blank-project-pane') do
             expect(find_field("project_visibility_level_#{level}")).to be_checked
@@ -95,33 +95,55 @@ RSpec.describe 'New project', :js do
       end
 
       context 'when group visibility is private but default is internal' do
+        let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
         before do
           stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
         end
 
-        it 'has private selected' do
-          group = create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          visit new_project_path(namespace_id: group.id)
-          find('[data-qa-selector="blank_project_link"]').click
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'has private selected' do
+            visit new_project_path(namespace_id: group.id)
+            find('[data-qa-selector="blank_project_link"]').click
 
-          page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+            page.within('#blank-project-pane') do
+              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+            end
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'is not allowed' do
+            visit new_project_path(namespace_id: group.id)
+
+            expect(page).to have_content('Not Found')
           end
         end
       end
 
       context 'when group visibility is public but user requests private' do
+        let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
         before do
           stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
         end
 
-        it 'has private selected' do
-          group = create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
-          find('[data-qa-selector="blank_project_link"]').click
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'has private selected' do
+            visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+            find('[data-qa-selector="blank_project_link"]').click
 
-          page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+            page.within('#blank-project-pane') do
+              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+            end
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'is not allowed' do
+            visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+
+            expect(page).to have_content('Not Found')
           end
         end
       end

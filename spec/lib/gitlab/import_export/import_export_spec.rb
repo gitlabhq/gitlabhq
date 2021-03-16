@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport do
   describe 'export filename' do
-    let(:group) { create(:group, :nested) }
-    let(:project) { create(:project, :public, path: 'project-path', namespace: group) }
+    let(:group) { build(:group, path: 'child', parent: build(:group, path: 'parent')) }
+    let(:project) { build(:project, :public, path: 'project-path', namespace: group) }
 
     it 'contains the project path' do
       expect(described_class.export_filename(exportable: project)).to include(project.path)

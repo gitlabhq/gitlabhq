@@ -13,22 +13,33 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
     let_it_be(:group_member) { create(:group_member, :developer, group: parent_group, user: user) }
     let_it_be(:project_member) { create(:project_member, :developer, user: user, project: project) }
 
-    it 'returns empty hash when template type does not exist' do
-      expect(helper.issuable_templates(build(:project), 'non-existent-template-type')).to eq([])
+    context 'when feature flag disabled' do
+      before do
+        stub_feature_flags(inherited_issuable_templates: false)
+      end
+
+      it 'returns empty array when template type does not exist' do
+        expect(helper.issuable_templates(project, 'non-existent-template-type')).to eq([])
+      end
+    end
+
+    context 'when feature flag enabled' do
+      before do
+        stub_feature_flags(inherited_issuable_templates: true)
+      end
+
+      it 'returns empty hash when template type does not exist' do
+        expect(helper.issuable_templates(build(:project), 'non-existent-template-type')).to eq({})
+      end
     end
 
     context 'with cached issuable templates' do
-      before do
-        allow(Gitlab::Template::IssueTemplate).to receive(:template_names).and_return({})
-        allow(Gitlab::Template::MergeRequestTemplate).to receive(:template_names).and_return({})
+      it 'does not call TemplateFinder' do
+        expect(Gitlab::Template::IssueTemplate).to receive(:template_names).once.and_call_original
+        expect(Gitlab::Template::MergeRequestTemplate).to receive(:template_names).once.and_call_original
 
         helper.issuable_templates(project, 'issues')
         helper.issuable_templates(project, 'merge_request')
-      end
-
-      it 'does not call TemplateFinder' do
-        expect(Gitlab::Template::IssueTemplate).not_to receive(:template_names)
-        expect(Gitlab::Template::MergeRequestTemplate).not_to receive(:template_names)
         helper.issuable_templates(project, 'issues')
         helper.issuable_templates(project, 'merge_request')
       end
@@ -63,29 +74,78 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
   end
 
   describe '#issuable_templates_names' do
-    let(:project) { double(Project, id: 21) }
+    let_it_be(:project) { build(:project) }
 
-    let(:templates) do
-      [
-        { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-        { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
-      ]
-    end
-
-    it 'returns project templates only' do
+    before do
       allow(helper).to receive(:ref_project).and_return(project)
       allow(helper).to receive(:issuable_templates).and_return(templates)
+    end
 
-      expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
+    context 'when feature flag disabled' do
+      let(:templates) do
+        [
+          { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+          { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+        ]
+      end
+
+      before do
+        stub_feature_flags(inherited_issuable_templates: false)
+      end
+
+      it 'returns project templates only' do
+        expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
+      end
+    end
+
+    context 'when feature flag enabled' do
+      before do
+        stub_feature_flags(inherited_issuable_templates: true)
+      end
+
+      context 'with matching project templates' do
+        let(:templates) do
+          {
+            "" => [
+              { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+              { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+            ],
+            "Instance" => [
+              { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
+              { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
+            ]
+          }
+        end
+
+        it 'returns project templates only' do
+          expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
+        end
+      end
+
+      context 'without matching project templates' do
+        let(:templates) do
+          {
+            "Project Templates" => [
+              { name: "another_issue_template", id: "another_issue_template", project_id: non_existing_record_id },
+              { name: "custom_issue_template", id: "custom_issue_template", project_id: non_existing_record_id }
+            ],
+            "Instance" => [
+              { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
+              { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
+            ]
+          }
+        end
+
+        it 'returns empty array' do
+          expect(helper.issuable_templates_names(Issue.new)).to eq([])
+        end
+      end
     end
 
     context 'when there are not templates in the project' do
       let(:templates) { {} }
 
       it 'returns empty array' do
-        allow(helper).to receive(:ref_project).and_return(project)
-        allow(helper).to receive(:issuable_templates).and_return(templates)
-
         expect(helper.issuable_templates_names(Issue.new)).to eq([])
       end
     end

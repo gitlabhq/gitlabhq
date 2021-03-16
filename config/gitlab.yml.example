@@ -73,6 +73,8 @@ production: &base
         worker_src: "'self' blob:"
         report_uri:
 
+    allowed_hosts: []
+
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
     # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.
@@ -1159,9 +1161,16 @@ production: &base
     # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
 
   gitlab_kas:
+    # enabled: true
     # File that contains the secret key for verifying access for gitlab-kas.
     # Default is '.gitlab_kas_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_kas_secret
+
+    # The URL to the external KAS API (used by the Kubernetes agents)
+    # external_url: wss://kas.example.com
+
+    # The URL to the internal KAS API (used by the GitLab backend)
+    # internal_url: grpc://localhost:8153
 
   ## GitLab Elasticsearch settings
   elasticsearch:

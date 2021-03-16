@@ -1,0 +1,18 @@
+---
+key_path: redis_hll_counters.search.i_search_total_weekly
+description: Calculated unique users to perform Basic or Advanced searches by week
+product_section: enablement
+product_stage: enablement
+product_group: group::global search
+product_category: global_search
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate

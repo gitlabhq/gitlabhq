@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_weekly
+description: Unique users using the /invite_email quick action to add a multiple email participants to an issue within 7 days
+product_section: dev
+product_stage: plan
+product_group: group::product planning
+product_category: issue_tracking
+value_type: number
+status: data_available
+milestone: "13.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49264
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

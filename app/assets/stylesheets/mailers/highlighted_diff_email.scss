@@ -27,7 +27,7 @@ $highlighted-gd-bg: #fdd;
 $highlighted-gd-x: #000;
 $highlighted-gd-x-bg: #faa;
 $highlighted-gr: #a00;
-$highlighted-gh: #999;
+$highlighted-gh: #800080;
 $highlighted-gi: #000;
 $highlighted-gi-bg: #dfd;
 $highlighted-gi-x: #000;
@@ -185,7 +185,9 @@ span.highlight_word {
 
 .ge { font-style: italic; }
 .gr { color: $highlighted-gr; }
-.gh { color: $highlighted-gh; }
+
+.gh { color: $highlighted-gh;
+  font-weight: $gl-font-weight-bold; }
 
 .gi {
   color: $highlighted-gi;

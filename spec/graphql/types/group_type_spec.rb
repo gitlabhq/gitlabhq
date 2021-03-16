@@ -18,6 +18,7 @@ RSpec.describe GitlabSchema.types['Group'] do
       two_factor_grace_period auto_devops_enabled emails_disabled
       mentions_disabled parent boards milestones group_members
       merge_requests container_repositories container_repositories_count
+      packages
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

@@ -265,6 +265,7 @@
   flex: 1;
   position: relative;
   min-width: 0;
+  height: 2rem;
   background-color: $input-bg;
 }
 
@@ -453,7 +454,7 @@
 .search-token-target-branch {
   .value {
     font-family: $monospace-font;
-    font-size: 13px;
+    font-size: $gl-font-size-monospace;
   }
 }
 

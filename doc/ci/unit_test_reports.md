@@ -28,7 +28,7 @@ in the pipeline detail view.
 
 Consider the following workflow:
 
-1. Your `master` branch is rock solid, your project is using GitLab CI/CD and
+1. Your default branch is rock solid, your project is using GitLab CI/CD and
    your pipelines indicate that there isn't anything broken.
 1. Someone from your team submits a merge request, a test fails and the pipeline
    gets the known red icon. To investigate more, you have to go through the job
@@ -44,7 +44,7 @@ First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm
 as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 
-- The base branch is the target branch (usually `master`).
+- The base branch is the target branch (usually the default branch).
 - The head branch is the source branch (the latest pipeline in each merge request).
 
 The reports panel has a summary showing how many tests failed, how many had errors
@@ -197,7 +197,7 @@ There are a few tools that can produce JUnit report format XML files in C/C++.
 #### GoogleTest
 
 In the following example, `gtest` is used to generate the test reports.
-If there are multiple gtest executables created for different architectures (`x86`, `x64` or `arm`),
+If there are multiple `gtest` executables created for different architectures (`x86`, `x64` or `arm`),
 you will be required to run each test providing a unique filename. The results
 will then be aggregated together.
 
@@ -316,12 +316,20 @@ If JUnit report format XML files are generated and uploaded as part of a pipelin
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
 display a list of test suites and cases reported from the XML file.
 
-![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
+![Test Reports Widget](img/pipelines_junit_test_report_v13_10.png)
 
 You can view all the known test suites and click on each of these to see further
 details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
+
+### Unit test reports parsing errors
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263457) in GitLab 13.10.
+
+If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](jobs/index.md#group-jobs-in-a-pipeline), GitLab shows only the first error from the group.
+
+![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
 
 ## Viewing JUnit screenshots on GitLab
 

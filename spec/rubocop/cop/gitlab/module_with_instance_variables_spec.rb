@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/gitlab/module_with_instance_variables'
 
 RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do

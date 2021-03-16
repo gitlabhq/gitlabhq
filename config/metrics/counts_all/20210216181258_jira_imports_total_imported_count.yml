@@ -1,0 +1,19 @@
+---
+key_path: counts.jira_imports_total_imported_count
+description: Count of Issues imported from Jira
+product_section: dev
+product_stage: plan
+product_group: group::project management
+product_category: jira_importer
+value_type: number
+status: data_available
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

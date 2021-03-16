@@ -32,6 +32,10 @@ module QA
             # This 'element' is here only to ensure the changes in the view source aren't mistakenly changed
             element :_, "qa_selector = local_assigns.fetch(:qa_selector, '')" # rubocop:disable QA/ElementWithPattern
           end
+
+          base.view 'app/assets/javascripts/snippets/components/snippet_visibility_edit.vue' do
+            element :visibility_content
+          end
         end
 
         def fill_title(title)
@@ -44,7 +48,7 @@ module QA
         end
 
         def set_visibility(visibility)
-          choose visibility
+          click_element(:visibility_content, visibility: visibility)
         end
 
         def fill_file_name(name, file_number = nil)

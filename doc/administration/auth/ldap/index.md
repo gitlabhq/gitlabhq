@@ -180,8 +180,15 @@ production:
 | `allow_username_or_email_login` | If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you need to disable this setting, because the userPrincipalName contains an `@`. | no | boolean |
 | `block_auto_created_users` | To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator (default: false). | no | boolean |
 | `base` | Base where we can search for users. | yes | `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
-| `user_filter` | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | no | `'(employeeType=developer)'` or `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
+| `user_filter` | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | no | For examples, read [Examples of user filters](#examples-of-user-filters). |
 | `lowercase_usernames` | If lowercase_usernames is enabled, GitLab converts the name to lower case. | no | boolean |
+
+#### Examples of user filters
+
+Some examples of the `user_filter` field syntax:
+
+- `'(employeeType=developer)'`
+- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'`
 
 ### SSL Configuration Settings **(FREE SELF)**
 
@@ -469,8 +476,8 @@ be mandatory and clients cannot be authenticated with the TLS protocol.
 
 ## Multiple LDAP servers **(PREMIUM SELF)**
 
-With GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
-that your GitLab instance connects to.
+With GitLab, you can configure multiple LDAP servers that your GitLab instance
+connects to.
 
 To add another LDAP server:
 
@@ -698,8 +705,8 @@ When enabled, the following applies:
 To enable it you need to:
 
 1. [Enable LDAP](#configuration)
-1. Navigate to **Admin Area > Settings -> Visibility and access controls**.
-1. Make sure the "Lock memberships to LDAP synchronization" checkbox is enabled.
+1. Go to **Admin Area > Settings > Visibility and access controls**.
+1. Make sure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
 ### Adjusting LDAP group sync schedule **(PREMIUM SELF)**
 

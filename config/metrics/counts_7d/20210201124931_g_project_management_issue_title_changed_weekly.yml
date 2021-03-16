@@ -1,12 +1,13 @@
 ---
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly
-description: Distinct users count that changed issue title in a group for last recent week
+description: Distinct users count that changed issue title in a group for last recent
+  week
 product_stage: plan
 product_group: group::project management
 product_category: issue_tracking
 value_type: number
 status: data_available
-milestone: 13.6
+milestone: "13.6"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229918
 time_frame: 7d
 data_source: redis_hll
@@ -17,4 +18,3 @@ tier:
 - free
 - premium
 - ultimate
-

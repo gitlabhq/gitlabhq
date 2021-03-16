@@ -180,7 +180,8 @@ RSpec.describe NotificationSetting do
         :failed_pipeline,
         :success_pipeline,
         :fixed_pipeline,
-        :moved_project
+        :moved_project,
+        :merge_when_pipeline_succeeds
       )
     end
 

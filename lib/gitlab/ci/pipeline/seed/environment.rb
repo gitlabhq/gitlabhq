@@ -13,7 +13,9 @@ module Gitlab
 
           def to_resource
             environments.safe_find_or_create_by(name: expanded_environment_name) do |environment|
+              # Initialize the attributes at creation
               environment.auto_stop_in = auto_stop_in
+              environment.tier = deployment_tier
             end
           end
 
@@ -25,6 +27,10 @@ module Gitlab
 
           def auto_stop_in
             job.environment_auto_stop_in
+          end
+
+          def deployment_tier
+            job.environment_deployment_tier
           end
 
           def expanded_environment_name

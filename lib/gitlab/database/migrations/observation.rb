@@ -7,7 +7,8 @@ module Gitlab
         :migration,
         :walltime,
         :success,
-        :total_database_size_change
+        :total_database_size_change,
+        :query_statistics
       )
     end
   end

@@ -130,20 +130,15 @@ RSpec.describe ApplicationSettingsHelper do
     before do
       helper.instance_variable_set(:@application_setting, application_setting)
       stub_storage_settings({ 'default': {}, 'storage_1': {}, 'storage_2': {} })
-      allow(ApplicationSetting).to receive(:repository_storages_weighted_attributes).and_return(
-        [:repository_storages_weighted_default,
-         :repository_storages_weighted_storage_1,
-         :repository_storages_weighted_storage_2])
-
       stub_application_setting(repository_storages_weighted: { 'default' => 100, 'storage_1' => 50, 'storage_2' => nil })
     end
 
     it 'returns storages correctly' do
-      expect(helper.storage_weights).to eq([
-          { name: :repository_storages_weighted_default, label: 'default', value: 100 },
-          { name: :repository_storages_weighted_storage_1, label: 'storage_1', value: 50 },
-          { name: :repository_storages_weighted_storage_2, label: 'storage_2', value: 0 }
-        ])
+      expect(helper.storage_weights).to eq(OpenStruct.new(
+                                             default: 100,
+                                             storage_1: 50,
+                                             storage_2: 0
+                                           ))
     end
   end
 

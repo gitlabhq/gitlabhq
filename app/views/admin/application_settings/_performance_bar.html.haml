@@ -4,11 +4,11 @@
   %fieldset
     .form-group
       .form-check
-        = f.check_box :performance_bar_enabled, class: 'form-check-input'
-        = f.label :performance_bar_enabled, class: 'form-check-label qa-enable-performance-bar-checkbox' do
+        = f.check_box :performance_bar_enabled, class: 'form-check-input', data: { qa_selector: 'enable_performance_bar_checkbox'}
+        = f.label :performance_bar_enabled, class: 'form-check-label' do
           Enable access to the Performance Bar
     .form-group
       = f.label :performance_bar_allowed_group_path, 'Allowed group', class: 'label-bold'
       = f.text_field :performance_bar_allowed_group_path, class: 'form-control gl-form-input', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
 
-  = f.submit 'Save changes', class: 'gl-button btn btn-success qa-save-changes-button'
+  = f.submit 'Save changes', class: 'gl-button btn btn-confirm qa-save-changes-button'

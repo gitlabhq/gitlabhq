@@ -15,8 +15,10 @@
 - audit_reports
 - authentication_and_authorization
 - auto_devops
+- auto_portfolio_mgmt
 - backup_restore
 - boards
+- browser_performance
 - chatops
 - cloud_native_installation
 - cluster_cost_management
@@ -32,6 +34,7 @@
 - continuous_delivery
 - continuous_integration
 - database
+- dataops
 - dependency_firewall
 - dependency_proxy
 - dependency_scanning
@@ -42,6 +45,7 @@
 - editor_extension
 - epics
 - error_tracking
+- experimentation
 - feature_flags
 - five_minute_production_app
 - foundations
@@ -60,6 +64,7 @@
 - insider_threat
 - insights
 - integrations
+- intel_code_security
 - interactive_application_security_testing
 - internationalization
 - issue_tracking
@@ -78,6 +83,7 @@
 - mobile_signing_deployment
 - navigation
 - omnibus_package
+- onboarding
 - package_registry
 - pages
 - pipeline_authoring
@@ -119,5 +125,4 @@
 - vulnerability_management
 - web_firewall
 - web_ide
-- web_performance
 - wiki

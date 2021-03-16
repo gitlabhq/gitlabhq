@@ -24,8 +24,8 @@ module Gitlab
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
-        def order_by_end_event(query, extra_columns_to_select = [:id])
-          ordered_query = query.reorder(stage.end_event.timestamp_projection.desc)
+        def order_by(query, sort, direction, extra_columns_to_select = [:id])
+          ordered_query = Gitlab::Analytics::CycleAnalytics::Sorting.apply(query, stage, sort, direction)
 
           # When filtering for more than one label, postgres requires the columns in ORDER BY to be present in the GROUP BY clause
           if requires_grouping?

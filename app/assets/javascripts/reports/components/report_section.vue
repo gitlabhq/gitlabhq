@@ -184,13 +184,14 @@ export default {
           <slot name="sub-heading"></slot>
         </div>
 
-        <slot name="action-buttons"></slot>
+        <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
         <button
           v-if="isCollapsible"
           type="button"
           data-testid="report-section-expand-button"
-          class="js-collapse-btn btn float-right btn-sm align-self-center qa-expand-report-button"
+          class="js-collapse-btn btn float-right btn-sm align-self-center"
+          data-qa-selector="expand_report_button"
           @click="toggleCollapsed"
         >
           {{ collapseText }}

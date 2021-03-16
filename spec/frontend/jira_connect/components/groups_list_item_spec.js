@@ -5,7 +5,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/api';
 import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
+import { persistAlert } from '~/jira_connect/utils';
 import { mockGroup1 } from '../mock_data';
+
+jest.mock('~/jira_connect/utils');
 
 describe('GroupsListItem', () => {
   let wrapper;
@@ -85,7 +88,16 @@ describe('GroupsListItem', () => {
 
       expect(findLinkButton().props('loading')).toBe(true);
 
+      await waitForPromises();
+
       expect(addSubscriptionSpy).toHaveBeenCalledWith(mockSubscriptionPath, mockGroup1.full_path);
+      expect(persistAlert).toHaveBeenCalledWith({
+        linkUrl: '/help/integration/jira_development_panel.html#usage',
+        message:
+          'You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}',
+        title: 'Namespace successfully linked',
+        variant: 'success',
+      });
     });
 
     describe('when request is successful', () => {

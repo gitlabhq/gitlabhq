@@ -28,7 +28,7 @@
       = render_suggested_colors
   .form-actions
     - if @label.persisted?
-      = f.submit 'Save changes', class: 'btn gl-button btn-success js-save-button'
+      = f.submit 'Save changes', class: 'btn gl-button btn-confirm js-save-button'
     - else
-      = f.submit 'Create label', class: 'btn gl-button btn-success js-save-button qa-label-create-button'
-    = link_to 'Cancel', back_path, class: 'btn gl-button btn-cancel'
+      = f.submit 'Create label', class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
+    = link_to 'Cancel', back_path, class: 'btn gl-button btn-default btn-cancel'

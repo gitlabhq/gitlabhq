@@ -37,8 +37,9 @@ class BulkImports::Entity < ApplicationRecord
 
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
-  validates :source_type, :source_full_path, :destination_name,
-            :destination_namespace, presence: true
+  validates :source_type, :source_full_path, :destination_name, presence: true
+  validates :destination_namespace, exclusion: [nil], if: :group
+  validates :destination_namespace, presence: true, if: :project
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
@@ -117,8 +118,8 @@ class BulkImports::Entity < ApplicationRecord
 
     if source.self_and_descendants.any? { |namespace| namespace.full_path == destination_namespace }
       errors.add(
-        :destination_namespace,
-        s_('BulkImport|destination group cannot be part of the source group tree')
+        :base,
+        s_('BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
       )
     end
   end

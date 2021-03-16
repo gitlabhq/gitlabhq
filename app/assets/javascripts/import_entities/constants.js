@@ -7,6 +7,7 @@ export const STATUSES = {
   FINISHED: 'finished',
   FAILED: 'failed',
   SCHEDULED: 'scheduled',
+  CREATED: 'created',
   STARTED: 'started',
   NONE: 'none',
   SCHEDULING: 'scheduling',
@@ -22,6 +23,11 @@ const STATUS_MAP = {
     icon: 'failed',
     text: __('Failed'),
     textClass: 'text-danger',
+  },
+  [STATUSES.CREATED]: {
+    icon: 'pending',
+    text: __('Scheduled'),
+    textClass: 'text-warning',
   },
   [STATUSES.SCHEDULED]: {
     icon: 'pending',

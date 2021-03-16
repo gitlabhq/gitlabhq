@@ -88,6 +88,55 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
       end
     end
 
+    context 'when job has deployment tier attribute' do
+      let(:attributes) do
+        {
+          environment: 'customer-portal',
+          options: {
+            environment: {
+              name: 'customer-portal',
+              deployment_tier: deployment_tier
+            }
+          }
+        }
+      end
+
+      let(:deployment_tier) { 'production' }
+
+      context 'when environment has not been created yet' do
+        it 'sets the specified deployment tier' do
+          is_expected.to be_production
+        end
+
+        context 'when deployment tier is staging' do
+          let(:deployment_tier) { 'staging' }
+
+          it 'sets the specified deployment tier' do
+            is_expected.to be_staging
+          end
+        end
+
+        context 'when deployment tier is unknown' do
+          let(:deployment_tier) { 'unknown' }
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(ArgumentError, "'unknown' is not a valid tier")
+          end
+        end
+      end
+
+      context 'when environment has already been created' do
+        before do
+          create(:environment, :staging, project: project, name: 'customer-portal')
+        end
+
+        it 'does not overwrite the specified deployment tier' do
+          # This is to be updated when a deployment succeeded i.e. Deployments::UpdateEnvironmentService.
+          is_expected.to be_staging
+        end
+      end
+    end
+
     context 'when job starts a review app' do
       let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
       let(:expected_environment_name) { "review/#{job.ref}" }

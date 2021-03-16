@@ -116,7 +116,6 @@ export default {
       });
 
       const data = produce(sourceData, (draftData) => {
-        // eslint-disable-next-line no-param-reassign
         draftData.project.alertManagementAlerts.nodes[0].todos.nodes = [];
       });
 

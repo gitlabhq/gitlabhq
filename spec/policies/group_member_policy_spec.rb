@@ -90,6 +90,14 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_allowed(:read_group) }
   end
 
+  context 'with one blocked owner' do
+    let(:owner) { create(:user, :blocked) }
+    let(:current_user) { owner }
+
+    specify { expect_disallowed(*member_related_permissions) }
+    specify { expect_disallowed(:read_group) }
+  end
+
   context 'with more than one owner' do
     let(:current_user) { owner }
 

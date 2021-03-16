@@ -349,14 +349,22 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
             project_tree_saver.save
           end
 
-          it 'exports group members as admin' do
-            expect(member_emails).to include('group@member.com')
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'exports group members as admin' do
+              expect(member_emails).to include('group@member.com')
+            end
+
+            it 'exports group members as project members' do
+              member_types = subject.map { |pm| pm['source_type'] }
+
+              expect(member_types).to all(eq('Project'))
+            end
           end
 
-          it 'exports group members as project members' do
-            member_types = subject.map { |pm| pm['source_type'] }
-
-            expect(member_types).to all(eq('Project'))
+          context 'when admin mode is disabled' do
+            it 'does not export group members' do
+              expect(member_emails).not_to include('group@member.com')
+            end
           end
         end
       end

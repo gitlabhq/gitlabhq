@@ -12,6 +12,10 @@ type: reference
 
 Review Apps is a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
 
+NOTE:
+If you have a Kubernetes cluster, you can automate this feature in your applications
+by using [Auto DevOps](../../topics/autodevops/index.md).
+
 ## Introduction
 
 Review Apps:
@@ -27,8 +31,8 @@ In the above example:
 
 - A Review App is built every time a commit is pushed to `topic branch`.
 - The reviewer fails two reviews before passing the third review.
-- After the review has passed, `topic branch` is merged into `master` where it is deployed to staging.
-- After having been approved in staging, the changes that were merged into `master` are deployed in to production.
+- After the review passes, `topic branch` is merged into the default branch, where it's deployed to staging.
+- After its approval in staging, the changes that were merged into the default branch are deployed to production.
 
 ## How Review Apps work
 
@@ -52,7 +56,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 ## Configuring Review Apps
 
-Review Apps are built on [dynamic environments](../environments/index.md#configuring-dynamic-environments), which allow you to dynamically create a new environment for each branch.
+Review Apps are built on [dynamic environments](../environments/index.md#create-a-dynamic-environment), which allow you to dynamically create a new environment for each branch.
 
 The process of configuring Review Apps is as follows:
 
@@ -85,7 +89,7 @@ you can copy and paste into `.gitlab-ci.yml` as a starting point. To do so:
 
 ## Review Apps auto-stop
 
-See how to [configure Review Apps environments to expire and auto-stop](../environments/index.md#environments-auto-stop)
+See how to [configure Review Apps environments to expire and auto-stop](../environments/index.md#stop-an-environment-after-a-certain-time-period)
 after a given period of time.
 
 ## Review Apps examples
@@ -282,8 +286,8 @@ The visual review tools retrieve the merge request ID from the `data-merge-reque
 data attribute included in the `script` HTML tag used to add the visual review tools
 to your review app.
 
-​After determining the ID for the merge request to link to a visual review app, you
-can supply the ID by either:​​
+After determining the ID for the merge request to link to a visual review app, you
+can supply the ID by either:
 
 - Hard-coding it in the script tag via the data attribute `data-merge-request-id` of the app.
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
@@ -317,7 +321,3 @@ the user must enter a [personal access token](../../user/profile/personal_access
 with `api` scope before submitting feedback.
 
 This same method can be used to require authentication for any public projects.
-
-## Limitations
-
-Review App limitations are the same as [environments limitations](../environments/index.md#limitations).

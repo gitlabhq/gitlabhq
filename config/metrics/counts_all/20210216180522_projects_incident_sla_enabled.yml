@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.monitor.projects_incident_sla_enabled
+description: Projects where Incident SLA is enabled
+product_section: ops
+product_stage: monitor
+product_group: group::health
+product_category: error_tracking
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

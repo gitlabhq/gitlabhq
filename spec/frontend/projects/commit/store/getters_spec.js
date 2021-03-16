@@ -18,4 +18,21 @@ describe('Commit form modal getters', () => {
       expect(getters.joinedBranches(state)).toEqual(branches.slice(1));
     });
   });
+
+  describe('sortedProjects', () => {
+    it('should sort projects with variable branches', () => {
+      const state = {
+        projects: mockData.mockProjects,
+      };
+
+      expect(getters.sortedProjects(state)).toEqual(mockData.mockProjects.sort());
+    });
+
+    it('should provide a uniq list of projects', () => {
+      const projects = ['_project_', '_project_', '_some_other_project'];
+      const state = { projects };
+
+      expect(getters.sortedProjects(state)).toEqual(projects.slice(1));
+    });
+  });
 });

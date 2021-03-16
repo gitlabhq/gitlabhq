@@ -2,8 +2,6 @@ import $ from 'jquery';
 import initSettingsPanels, { isExpanded } from '~/settings_panels';
 
 describe('Settings Panels', () => {
-  preloadFixtures('groups/edit.html');
-
   beforeEach(() => {
     loadFixtures('groups/edit.html');
   });

@@ -131,43 +131,5 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::QueryBuilder do
         end
       end
     end
-
-    context 'when sorting using SIMILARITY' do
-      let(:relation) { Project.sorted_by_similarity_desc('test', include_in_select: true) }
-      let(:arel_table) { Project.arel_table }
-      let(:decoded_cursor) { { 'similarity' => 0.5, 'id' => 100 } }
-      let(:similarity_function_call) { Gitlab::Database::SimilarityScore::SIMILARITY_FUNCTION_CALL_WITH_ANNOTATION }
-      let(:similarity_sql) do
-        [
-          "(#{similarity_function_call}(COALESCE(\"projects\".\"path\", ''), 'test') * CAST('1' AS numeric))",
-          "(#{similarity_function_call}(COALESCE(\"projects\".\"name\", ''), 'test') * CAST('0.7' AS numeric))",
-          "(#{similarity_function_call}(COALESCE(\"projects\".\"description\", ''), 'test') * CAST('0.2' AS numeric))"
-        ].join(' + ')
-      end
-
-      context 'when no values are nil' do
-        context 'when :after' do
-          it 'generates the correct condition' do
-            conditions = builder.conditions.gsub(/\s+/, ' ')
-
-            expect(conditions).to include "(#{similarity_sql} < 0.5)"
-            expect(conditions).to include '"projects"."id" < 100'
-            expect(conditions).to include "OR (#{similarity_sql} IS NULL)"
-          end
-        end
-
-        context 'when :before' do
-          let(:before_or_after) { :before }
-
-          it 'generates the correct condition' do
-            conditions = builder.conditions.gsub(/\s+/, ' ')
-
-            expect(conditions).to include "(#{similarity_sql} > 0.5)"
-            expect(conditions).to include '"projects"."id" > 100'
-            expect(conditions).to include "OR ( #{similarity_sql} = 0.5"
-          end
-        end
-      end
-    end
   end
 end

@@ -1,23 +1,30 @@
 <script>
+import { __ } from '~/locale';
+
 export default {
   name: 'ReplyPlaceholder',
   props: {
-    buttonText: {
+    placeholderText: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Reply…'),
+    },
+    labelText: {
+      type: String,
+      required: false,
+      default: __('Reply to comment'),
     },
   },
 };
 </script>
 
 <template>
-  <button
-    ref="button"
-    type="button"
-    class="js-vue-discussion-reply btn btn-text-field"
-    :title="s__('MergeRequests|Add a reply')"
-    @click="$emit('onClick')"
-  >
-    {{ buttonText }}
-  </button>
+  <textarea
+    ref="textarea"
+    rows="1"
+    class="reply-placeholder-text-field js-vue-discussion-reply"
+    :placeholder="placeholderText"
+    :aria-label="labelText"
+    @focus="$emit('focus')"
+  ></textarea>
 </template>

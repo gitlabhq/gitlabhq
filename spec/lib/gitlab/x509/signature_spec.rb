@@ -11,6 +11,65 @@ RSpec.describe Gitlab::X509::Signature do
     }
   end
 
+  shared_examples "a verified signature" do
+    it 'returns a verified signature if email does match' do
+      signature = described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email,
+        X509Helpers::User1.signed_commit_time
+      )
+
+      expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+      expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+      expect(signature.verified_signature).to be_truthy
+      expect(signature.verification_status).to eq(:verified)
+    end
+
+    it 'returns an unverified signature if email does not match' do
+      signature = described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        "gitlab@example.com",
+        X509Helpers::User1.signed_commit_time
+      )
+
+      expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+      expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+      expect(signature.verified_signature).to be_truthy
+      expect(signature.verification_status).to eq(:unverified)
+    end
+
+    it 'returns an unverified signature if email does match and time is wrong' do
+      signature = described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email,
+        Time.new(2020, 2, 22)
+      )
+
+      expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+      expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+      expect(signature.verified_signature).to be_falsey
+      expect(signature.verification_status).to eq(:unverified)
+    end
+
+    it 'returns an unverified signature if certificate is revoked' do
+      signature = described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email,
+        X509Helpers::User1.signed_commit_time
+      )
+
+      expect(signature.verification_status).to eq(:verified)
+
+      signature.x509_certificate.revoked!
+
+      expect(signature.verification_status).to eq(:unverified)
+    end
+  end
+
   context 'commit signature' do
     let(:certificate_attributes) do
       {
@@ -30,62 +89,25 @@ RSpec.describe Gitlab::X509::Signature do
           allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
         end
 
-        it 'returns a verified signature if email does match' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_commit_signature,
-            X509Helpers::User1.signed_commit_base_data,
-            X509Helpers::User1.certificate_email,
-            X509Helpers::User1.signed_commit_time
-          )
+        it_behaves_like "a verified signature"
+      end
 
-          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
-          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
-          expect(signature.verified_signature).to be_truthy
-          expect(signature.verification_status).to eq(:verified)
+      context 'with the certificate defined by OpenSSL::X509::DEFAULT_CERT_FILE' do
+        before do
+          store = OpenSSL::X509::Store.new
+          certificate = OpenSSL::X509::Certificate.new(X509Helpers::User1.trust_cert)
+          file_path = Rails.root.join("tmp/cert.pem").to_s
+
+          File.open(file_path, "wb") do |f|
+            f.print certificate.to_pem
+          end
+
+          stub_const("OpenSSL::X509::DEFAULT_CERT_FILE", file_path)
+
+          allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
         end
 
-        it 'returns an unverified signature if email does not match' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_commit_signature,
-            X509Helpers::User1.signed_commit_base_data,
-            "gitlab@example.com",
-            X509Helpers::User1.signed_commit_time
-          )
-
-          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
-          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
-          expect(signature.verified_signature).to be_truthy
-          expect(signature.verification_status).to eq(:unverified)
-        end
-
-        it 'returns an unverified signature if email does match and time is wrong' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_commit_signature,
-            X509Helpers::User1.signed_commit_base_data,
-            X509Helpers::User1.certificate_email,
-            Time.new(2020, 2, 22)
-          )
-
-          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
-          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
-          expect(signature.verified_signature).to be_falsey
-          expect(signature.verification_status).to eq(:unverified)
-        end
-
-        it 'returns an unverified signature if certificate is revoked' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_commit_signature,
-            X509Helpers::User1.signed_commit_base_data,
-            X509Helpers::User1.certificate_email,
-            X509Helpers::User1.signed_commit_time
-          )
-
-          expect(signature.verification_status).to eq(:verified)
-
-          signature.x509_certificate.revoked!
-
-          expect(signature.verification_status).to eq(:unverified)
-        end
+        it_behaves_like "a verified signature"
       end
 
       context 'without trusted certificate within store' do

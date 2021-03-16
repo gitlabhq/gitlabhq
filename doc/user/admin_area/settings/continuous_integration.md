@@ -27,7 +27,7 @@ From now on, every existing project and newly created ones that don't have a
 `.gitlab-ci.yml`, will use the Auto DevOps pipelines.
 
 If you want to disable it for a specific project, you can do so in
-[its settings](../../../topics/autodevops/index.md#enablingdisabling-auto-devops).
+[its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
 ## Maximum artifacts size **(FREE SELF)**
 
@@ -50,15 +50,15 @@ To change it at the:
    1. Change the value of maximum artifacts size (in MB).
    1. Click **Save changes** for the changes to take effect.
 
-- [Group level](../../group/index.md#group-settings) (this will override the instance setting):
+- Group level (this will override the instance setting):
 
-  1. Go to the group's **Settings > CI / CD > General Pipelines**.
+  1. Go to the group's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Click **Save changes** for the changes to take effect.
 
-- [Project level](../../../ci/pipelines/settings.md) (this will override the instance and group settings):
+- Project level (this will override the instance and group settings):
 
-  1. Go to the project's **Settings > CI / CD > General Pipelines**.
+  1. Go to the project's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Click **Save changes** for the changes to take effect.
 
@@ -98,6 +98,13 @@ are allowed to expire.
 
 This setting takes precedence over the [project level setting](../../../ci/pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 If disabled at the instance level, you cannot enable this per-project.
+
+To disable the setting:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
+1. Click **Save changes**
 
 When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.

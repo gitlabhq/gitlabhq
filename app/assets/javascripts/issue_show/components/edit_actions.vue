@@ -45,15 +45,23 @@ export default {
     shouldShowDeleteButton() {
       return this.canDestroy && this.showDeleteButton;
     },
+    deleteIssuableButtonText() {
+      return sprintf(__('Delete %{issuableType}'), {
+        issuableType: issuableTypes[this.issuableType],
+      });
+    },
   },
   methods: {
     closeForm() {
       eventHub.$emit('close.form');
     },
     deleteIssuable() {
-      const confirmMessage = sprintf(__('%{issuableType} will be removed! Are you sure?'), {
-        issuableType: issuableTypes[this.issuableType],
-      });
+      const confirmMessage =
+        this.issuableType === 'epic'
+          ? __('Delete this epic and all descendants?')
+          : sprintf(__('%{issuableType} will be removed! Are you sure?'), {
+              issuableType: issuableTypes[this.issuableType],
+            });
       // eslint-disable-next-line no-alert
       if (window.confirm(confirmMessage)) {
         this.deleteLoading = true;
@@ -90,7 +98,7 @@ export default {
       class="float-right gl-mr-3 qa-delete-button"
       @click="deleteIssuable"
     >
-      {{ __('Delete') }}
+      {{ deleteIssuableButtonText }}
     </gl-button>
   </div>
 </template>

@@ -70,16 +70,16 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#current-status):
+1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
     - contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'
     - emoji is `:palm_tree:`, `:beach:`, `:beach_umbrella:`, `:beach_with_umbrella:`, `:ferris_wheel:`, `:thermometer:`, `:face_with_thermometer:`, `:red_circle:`, `:bulb:`, `:sun_with_face:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
-1. Team members whose Slack or [GitLab status](../user/profile/index.md#current-status) emoji
+1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
    - Reviewers with `:large_blue_circle:` are two times as likely to be picked as other reviewers.
    - Trainee maintainers with `:large_blue_circle:` are four times as likely to be picked as other reviewers.
-1. People whose [GitLab status](../user/profile/index.md#current-status) emoji
+1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔶 `:large_orange_diamond:` are half as likely to be picked. This applies to both reviewers and trainee maintainers.
 1. It always picks the same reviewers and maintainers for the same
    branch name (unless their OOO status changes, as in point 1). It
@@ -283,6 +283,8 @@ first time.
   you forget to remove any debugging code?
 - Consider providing instructions on how to test the merge request. This can be
   helpful for reviewers not familiar with the product feature or area of the codebase.
+- If you know your change depends on another being merged first, note it in the
+  description and set an [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - Be grateful for the reviewer's suggestions. (`Good call. I'll make that change.`)
 - Don't take it personally. The review is of the code, not of you.
 - Explain why the code exists. ("It's like that because of these reasons. Would
@@ -345,6 +347,8 @@ experience, refactors the existing code). Then:
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
+- Ensure there are no open dependencies. Check [related issues](../user/project/issues/related_issues.md) for blockers. Clarify with the author(s)
+if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
 - Assign the merge request to the author if changes are required following your
@@ -390,6 +394,8 @@ When ready to merge:
 
 - **Start a new merge request pipeline with the `Run Pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).** Note that:
+  - If **[master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
+    do not merge the merge request**. Follow these specific [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#maintaining-throughput-during-broken-master).
   - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `master`.
@@ -397,10 +403,6 @@ When ready to merge:
     Before triggering the pipeline, review all changes for **malicious code**.
     If you cannot trigger the pipeline, review the status of the fork relative to `master`.
     If it's more than 100 commits behind, ask the author to rebase it before merging.
-  - If [master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
-    in addition to the two above rules, check that any failure also happens
-    in `master` and post a link to the ~"master:broken" issue before clicking the
-    red "Merge" button.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
 

@@ -14,7 +14,7 @@ export const getPackageTypeLabel = (packageType) => {
     case PackageType.MAVEN:
       return s__('PackageType|Maven');
     case PackageType.NPM:
-      return s__('PackageType|NPM');
+      return s__('PackageType|npm');
     case PackageType.NUGET:
       return s__('PackageType|NuGet');
     case PackageType.PYPI:

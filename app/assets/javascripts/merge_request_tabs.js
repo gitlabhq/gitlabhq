@@ -361,10 +361,8 @@ export default class MergeRequestTabs {
         return createElement(CommitPipelinesTable, {
           props: {
             endpoint: pipelineTableViewEl.dataset.endpoint,
-            helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
             emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
             errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-            autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
             canCreatePipelineInTargetProject: Boolean(
               mrWidgetData?.can_create_pipeline_in_target_project,
             ),

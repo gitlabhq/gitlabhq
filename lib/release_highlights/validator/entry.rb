@@ -11,7 +11,7 @@ module ReleaseHighlights
 
     validates :title, :body, :stage, presence: true
     validates :'self-managed', :'gitlab-com', inclusion: { in: [true, false], message: "must be a boolean" }
-    validates :url, :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp, message: 'must be a URL' }
+    validates :url, :image_url, public_url: { dns_rebind_protection: true }
     validates :release, numericality: true
     validate :validate_published_at
     validate :validate_packages

@@ -11,6 +11,10 @@ export const requestBranches = ({ commit }) => {
   commit(types.REQUEST_BRANCHES);
 };
 
+export const setBranchesEndpoint = ({ commit }, endpoint) => {
+  commit(types.SET_BRANCHES_ENDPOINT, endpoint);
+};
+
 export const fetchBranches = ({ commit, dispatch, state }, query) => {
   dispatch('requestBranches');
 
@@ -18,8 +22,8 @@ export const fetchBranches = ({ commit, dispatch, state }, query) => {
     .get(state.branchesEndpoint, {
       params: { search: query },
     })
-    .then((res) => {
-      commit(types.RECEIVE_BRANCHES_SUCCESS, res.data);
+    .then(({ data }) => {
+      commit(types.RECEIVE_BRANCHES_SUCCESS, data.Branches || []);
     })
     .catch(() => {
       createFlash({ message: PROJECT_BRANCHES_ERROR });
@@ -33,4 +37,16 @@ export const setBranch = ({ commit, dispatch }, branch) => {
 
 export const setSelectedBranch = ({ commit }, branch) => {
   commit(types.SET_SELECTED_BRANCH, branch);
+};
+
+export const setSelectedProject = ({ commit, dispatch, state }, id) => {
+  let { branchesEndpoint } = state;
+
+  if (state.projects?.length) {
+    branchesEndpoint = state.projects.find((p) => p.id === id).refsUrl;
+  }
+
+  commit(types.SET_SELECTED_PROJECT, id);
+  dispatch('setBranchesEndpoint', branchesEndpoint);
+  dispatch('fetchBranches');
 };

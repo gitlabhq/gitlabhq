@@ -2,12 +2,17 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Repository tags' do
+    # TODO: Remove :requires_admin meta when the `Runtime::Feature.enable` method call is removed
+    describe 'Repository tags', :requires_admin do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-for-tags'
           project.initialize_with_readme = true
         end
+      end
+
+      before do
+        Runtime::Feature.enable(:invite_members_group_modal, project: project)
       end
 
       let(:developer_user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }

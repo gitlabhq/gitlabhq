@@ -47,6 +47,7 @@ export const mockConfig = {
   labelsFetchPath: '/gitlab-org/my-project/-/labels.json',
   labelsManagePath: '/gitlab-org/my-project/-/labels',
   labelsFilterBasePath: '/gitlab-org/my-project/issues',
+  labelsFilterParam: 'label_name',
 };
 
 export const mockSuggestedColors = {

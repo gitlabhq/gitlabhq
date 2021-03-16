@@ -265,7 +265,6 @@ export default {
         <gl-form-checkbox
           ref="masked-ci-variable"
           v-model="masked"
-          data-qa-selector="ci_variable_masked_checkbox"
           data-testid="ci-variable-masked-checkbox"
         >
           {{ __('Mask variable') }}

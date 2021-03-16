@@ -2,16 +2,16 @@
 
 desc 'Run local Danger rules'
 task :danger_local do
-  require_relative '../../tooling/gitlab_danger'
+  require_relative '../../tooling/danger/project_helper'
   require 'gitlab/popen'
 
-  puts("#{GitlabDanger.local_warning_message}\n")
+  puts("#{Tooling::Danger::ProjectHelper.local_warning_message}\n")
 
   # _status will _always_ be 0, regardless of failure or success :(
   output, _status = Gitlab::Popen.popen(%w{danger dry_run})
 
   if output.empty?
-    puts(GitlabDanger.success_message)
+    puts(Tooling::Danger::ProjectHelper.success_message)
   else
     puts(output)
     exit(1)

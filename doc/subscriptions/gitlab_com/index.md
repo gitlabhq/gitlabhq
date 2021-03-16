@@ -37,7 +37,9 @@ Every occupied seat is counted in the subscription, with the following exception
 NOTE:
 To support the open source community and encourage the development of open
 source projects, GitLab grants access to **Ultimate** features for all GitLab SaaS
-**public** projects, regardless of the subscription.
+**public** projects, regardless of the subscription. GitLab also provides qualifying
+open source projects with 50,000 CI minutes and free access to the Ultimate tier for
+groups through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
 
@@ -93,7 +95,7 @@ The **Seat usage** page lists all users occupying seats. Details for each user i
 
 - Full name
 - Username
-- Public email address (if they have provided one in their [user settings](../../user/profile/index.md#user-settings))
+- Public email address (if they have provided one in their [user settings](../../user/profile/index.md#access-your-user-settings))
 
 The Seat usage listing is updated live, but the usage statistics on the billing page are updated
 only once per day. For this reason there can be a minor difference between the seat usage listing

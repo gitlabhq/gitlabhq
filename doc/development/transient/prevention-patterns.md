@@ -10,7 +10,7 @@ This page will cover architectural patterns and tips for developers to follow to
 
 ## Common root causes
 
-We've noticed a few root causes that come up frequently when addressing transient bugs. 
+We've noticed a few root causes that come up frequently when addressing transient bugs.
 
 - Needs better state management in the backend or frontend.
 - Frontend code needs improvements.

@@ -1,3 +1,3 @@
 %li{ class: active_when(params[:id] == wiki_page.slug) }
-  = link_to wiki_page_path(@wiki, wiki_page), data: { qa_selector: 'wiki_page_link', qa_page_name: wiki_page.slug } do
+  = link_to wiki_page_path(@wiki, wiki_page), data: { qa_selector: 'wiki_page_link', qa_page_name: wiki_page.human_title } do
     = wiki_page.human_title

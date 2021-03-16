@@ -1,8 +1,0 @@
----
-name: customize_homepage_experiment_percentage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39348
-rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/187
-milestone: '13.4'
-type: experiment
-group: group::expansion
-default_enabled: false

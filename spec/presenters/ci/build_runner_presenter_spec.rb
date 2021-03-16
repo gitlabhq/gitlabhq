@@ -271,4 +271,28 @@ RSpec.describe Ci::BuildRunnerPresenter do
       end
     end
   end
+
+  describe '#variables' do
+    subject { presenter.variables }
+
+    let(:build) { create(:ci_build) }
+
+    it 'returns a Collection' do
+      is_expected.to be_an_instance_of(Gitlab::Ci::Variables::Collection)
+    end
+  end
+
+  describe '#runner_variables' do
+    subject { presenter.runner_variables }
+
+    let(:build) { create(:ci_build) }
+
+    it 'returns an array' do
+      is_expected.to be_an_instance_of(Array)
+    end
+
+    it 'returns the expected variables' do
+      is_expected.to eq(presenter.variables.to_runner_variables)
+    end
+  end
 end

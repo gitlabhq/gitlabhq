@@ -4,23 +4,19 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Dependency Proxy
+# Dependency Proxy **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
-> - [Support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
-> - Anonymous access to images in public groups is no longer available starting in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to GitLab Free in GitLab 13.6.
+> - [Support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab Free 13.7.
+> - Anonymous access to images in public groups is no longer available starting in GitLab Free 13.7.
+> - [Support for pull-by-digest and Docker version 20.x](https://gitlab.com/gitlab-org/gitlab/-/issues/290944) in GitLab Free 13.10.
 
 The GitLab Dependency Proxy is a local proxy you can use for your frequently-accessed
 upstream images.
 
 In the case of CI/CD, the Dependency Proxy receives a request and returns the
 upstream image from a registry, acting as a pull-through cache.
-
-NOTE:
-The Dependency Proxy is not compatible with Docker version 20.x and later.
-If you are using the Dependency Proxy, Docker version 19.x.x is recommended until
-[issue #290944](https://gitlab.com/gitlab-org/gitlab/-/issues/290944) is resolved.
 
 ## Prerequisites
 
@@ -60,7 +56,7 @@ Prerequisites:
 
 ### Authenticate with the Dependency Proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab Free 13.7.
 > - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
@@ -93,14 +89,17 @@ You can authenticate using:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
 > - Automatic runner authentication [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
+> - The prefix for group names containing uppercase letters was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54559) in GitLab 13.10.
 
 Runners log in to the Dependency Proxy automatically. To pull through
 the Dependency Proxy, use the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`
 [predefined CI/CD variable](../../../ci/variables/predefined_variables.md):
 
+Example pulling the latest alpine image:
+
 ```yaml
 # .gitlab-ci.yml
-image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:latest
 ```
 
 There are other additional predefined CI/CD variables you can also use:
@@ -128,11 +127,18 @@ To store a Docker image in Dependency Proxy storage:
 1. Go to your group's **Packages & Registries > Dependency Proxy**.
 1. Copy the **Dependency Proxy URL**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
+1. You can also pull images by digest to specify exactly which version of an image to pull.
 
-   - Add the URL to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
+   - Pull an image by tag by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
 
      ```shell
      image: gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
+     ```
+
+   - Pull an image by digest by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
+
+     ```shell
+     image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine@sha256:c9375e662992791e3f39e919b26f510e5254b42792519c180aad254e6b38f4dc
      ```
 
    - Manually pull the Docker image:
@@ -162,7 +168,7 @@ the [Dependency Proxy API](../../../api/dependency_proxy.md).
 
 ## Docker Hub rate limits and the Dependency Proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241639) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241639) in GitLab Free 13.7.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch how to [use the Dependency Proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).

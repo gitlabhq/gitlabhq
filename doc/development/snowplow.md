@@ -11,7 +11,7 @@ This guide provides an overview of how Snowplow works, and implementation detail
 For more information about Product Intelligence, see:
 
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Usage Ping Guide](usage_ping.md)
+- [Usage Ping Guide](usage_ping/index.md)
 
 More useful links:
 
@@ -358,6 +358,7 @@ There are several tools for developing and testing Snowplow Event
 
 1. For frontend events, in the MR description section, add a screenshot of the event's relevant section using the [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
 1. For backend events, please use Snowplow Micro and add the output of the Snowplow Micro good events  `GET http://localhost:9090/micro/good`.
+1. Include a member of the Product Intelligence team as a reviewer of your MR. Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR to request a review.
 
 ### Snowplow Analytics Debugger Chrome Extension
 
@@ -484,9 +485,9 @@ For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.c
 
 ### `gitlab_standard`
 
-We are currently working towards including the [`gitlab_standard` schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/) with every event. See [Standardize Snowplow Schema](https://gitlab.com/groups/gitlab-org/-/epics/5218) for details.
+We are including the [`gitlab_standard` schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/) with every event. See [Standardize Snowplow Schema](https://gitlab.com/groups/gitlab-org/-/epics/5218) for details.
 
-The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb) class represents this schema in the application. 
+The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb) class represents this schema in the application.
 
 | Field Name     | Required            | Type                  | Description                                                                                 |
 |----------------|---------------------|-----------------------|---------------------------------------------------------------------------------------------|

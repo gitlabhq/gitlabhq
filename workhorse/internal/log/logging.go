@@ -8,12 +8,10 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 	"golang.org/x/net/context"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/errortracker"
+	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 )
 
 type Fields = log.Fields
-
-type ConfigureLogger func(*Builder) *Builder
 
 type Builder struct {
 	entry  *logrus.Entry
@@ -85,6 +83,6 @@ func (b *Builder) Error(args ...interface{}) {
 	b.entry.Error(args...)
 
 	if b.req != nil && b.err != nil {
-		errortracker.TrackFailedRequest(b.req, b.err, b.fields)
+		helper.CaptureRavenError(b.req, b.err, b.fields)
 	}
 }

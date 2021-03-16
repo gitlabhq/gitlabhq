@@ -54,7 +54,7 @@ RSpec.describe Groups::ImportExport::ImportService do
   end
 
   context 'with group_import_ndjson feature flag disabled' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
@@ -62,6 +62,8 @@ RSpec.describe Groups::ImportExport::ImportService do
 
     before do
       stub_feature_flags(group_import_ndjson: false)
+
+      group.add_owner(user)
 
       ImportExportUpload.create!(group: group, import_file: import_file)
 
@@ -95,7 +97,7 @@ RSpec.describe Groups::ImportExport::ImportService do
     end
 
     context 'when importing a ndjson export' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:user) }
       let(:group) { create(:group) }
       let(:service) { described_class.new(group: group, user: user) }
       let(:import_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
@@ -115,6 +117,10 @@ RSpec.describe Groups::ImportExport::ImportService do
       end
 
       context 'when user has correct permissions' do
+        before do
+          group.add_owner(user)
+        end
+
         it 'imports group structure successfully' do
           expect(subject).to be_truthy
         end
@@ -147,8 +153,6 @@ RSpec.describe Groups::ImportExport::ImportService do
       end
 
       context 'when user does not have correct permissions' do
-        let(:user) { create(:user) }
-
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
             group_id:   group.id,
@@ -188,6 +192,10 @@ RSpec.describe Groups::ImportExport::ImportService do
       context 'when there are errors with the sub-relations' do
         let(:import_file) { fixture_file_upload('spec/fixtures/group_export_invalid_subrelations.tar.gz') }
 
+        before do
+          group.add_owner(user)
+        end
+
         it 'successfully imports the group' do
           expect(subject).to be_truthy
         end
@@ -207,7 +215,7 @@ RSpec.describe Groups::ImportExport::ImportService do
     end
 
     context 'when importing a json export' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:user) }
       let(:group) { create(:group) }
       let(:service) { described_class.new(group: group, user: user) }
       let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export.tar.gz') }
@@ -227,6 +235,10 @@ RSpec.describe Groups::ImportExport::ImportService do
       end
 
       context 'when user has correct permissions' do
+        before do
+          group.add_owner(user)
+        end
+
         it 'imports group structure successfully' do
           expect(subject).to be_truthy
         end
@@ -259,8 +271,6 @@ RSpec.describe Groups::ImportExport::ImportService do
       end
 
       context 'when user does not have correct permissions' do
-        let(:user) { create(:user) }
-
         it 'logs the error and raises an exception' do
           expect(import_logger).to receive(:error).with(
             group_id:   group.id,
@@ -299,6 +309,10 @@ RSpec.describe Groups::ImportExport::ImportService do
 
       context 'when there are errors with the sub-relations' do
         let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export_invalid_subrelations.tar.gz') }
+
+        before do
+          group.add_owner(user)
+        end
 
         it 'successfully imports the group' do
           expect(subject).to be_truthy

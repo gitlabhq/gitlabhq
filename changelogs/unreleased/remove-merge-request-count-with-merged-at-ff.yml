@@ -1,0 +1,5 @@
+---
+title: Remove the optimized_merge_request_count_with_merged_at_filter feature flag
+merge_request: 55600
+author:
+type: other

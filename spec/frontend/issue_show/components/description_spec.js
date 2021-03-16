@@ -70,36 +70,6 @@ describe('Description component', () => {
       });
   });
 
-  it('opens reCAPTCHA dialog if update rejected as spam', () => {
-    let modal;
-    const recaptchaChild = vm.$children.find(
-      // eslint-disable-next-line no-underscore-dangle
-      (child) => child.$options._componentTag === 'recaptcha-modal',
-    );
-
-    recaptchaChild.scriptSrc = '//scriptsrc';
-
-    vm.taskListUpdateSuccess({
-      recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
-    });
-
-    return vm
-      .$nextTick()
-      .then(() => {
-        modal = vm.$el.querySelector('.js-recaptcha-modal');
-
-        expect(modal.style.display).not.toEqual('none');
-        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
-        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
-      })
-      .then(() => modal.querySelector('.close').click())
-      .then(() => vm.$nextTick())
-      .then(() => {
-        expect(modal.style.display).toEqual('none');
-        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
-      });
-  });
-
   it('applies syntax highlighting and math when description changed', () => {
     const vmSpy = jest.spyOn(vm, 'renderGFM');
     const prototypeSpy = jest.spyOn($.prototype, 'renderGFM');
@@ -144,7 +114,6 @@ describe('Description component', () => {
         dataType: 'issuableType',
         fieldName: 'description',
         selector: '.detail-page-description',
-        onSuccess: expect.any(Function),
         onError: expect.any(Function),
         lockVersion: 0,
       });

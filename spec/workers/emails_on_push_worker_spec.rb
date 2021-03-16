@@ -97,7 +97,7 @@ RSpec.describe EmailsOnPushWorker, :mailer do
       end
 
       it "gracefully handles an input SMTP error" do
-        expect(ActionMailer::Base.deliveries.count).to eq(0)
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
 
@@ -112,6 +112,16 @@ RSpec.describe EmailsOnPushWorker, :mailer do
         end
       end
 
+      context "with mixed-case recipient" do
+        let(:recipients) { user.email.upcase }
+
+        it "retains the case" do
+          perform
+
+          expect(email_recipients).to contain_exactly(recipients)
+        end
+      end
+
       context "when the recipient addresses are a list of email addresses" do
         let(:recipients) do
           1.upto(5).map { |i| user.email.sub('@', "+#{i}@") }.join("\n")
@@ -120,7 +130,6 @@ RSpec.describe EmailsOnPushWorker, :mailer do
         it "sends the mail to each of the recipients" do
           perform
 
-          expect(ActionMailer::Base.deliveries.count).to eq(5)
           expect(email_recipients).to contain_exactly(*recipients.split)
         end
 
@@ -132,13 +141,22 @@ RSpec.describe EmailsOnPushWorker, :mailer do
         end
       end
 
+      context "when recipients are invalid" do
+        let(:recipients) { "invalid\n\nrecipients" }
+
+        it "ignores them" do
+          perform
+
+          expect(ActionMailer::Base.deliveries).to be_empty
+        end
+      end
+
       context "when the recipient addresses contains angle brackets and are separated by spaces" do
         let(:recipients) { "John Doe <johndoe@example.com> Jane Doe <janedoe@example.com>" }
 
         it "accepts emails separated by whitespace" do
           perform
 
-          expect(ActionMailer::Base.deliveries.count).to eq(2)
           expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
         end
       end
@@ -149,7 +167,6 @@ RSpec.describe EmailsOnPushWorker, :mailer do
         it "accepts both kind of emails" do
           perform
 
-          expect(ActionMailer::Base.deliveries.count).to eq(2)
           expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
         end
       end
@@ -160,8 +177,17 @@ RSpec.describe EmailsOnPushWorker, :mailer do
         it "accepts emails separated by newlines" do
           perform
 
-          expect(ActionMailer::Base.deliveries.count).to eq(2)
           expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
+        end
+      end
+
+      context 'when the recipient addresses contains duplicates' do
+        let(:recipients) { 'non@dubplicate.com Duplic@te.com duplic@te.com Duplic@te.com duplic@Te.com' }
+
+        it 'deduplicates recipients while treating the domain part as case-insensitive' do
+          perform
+
+          expect(email_recipients).to contain_exactly('non@dubplicate.com', 'Duplic@te.com')
         end
       end
     end

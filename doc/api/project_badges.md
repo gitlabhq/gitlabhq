@@ -11,14 +11,14 @@ type: reference, api
 
 ## Placeholder tokens
 
-Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
+Badges support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- **%{project_path}**: will be replaced by the project path.
-- **%{project_id}**: will be replaced by the project ID.
-- **%{default_branch}**: will be replaced by the project default branch.
-- **%{commit_sha}**: will be replaced by the last project's commit SHA.
+- **%{project_path}**: Replaced by the project path.
+- **%{project_id}**: Replaced by the project ID.
+- **%{default_branch}**: Replaced by the project default branch.
+- **%{commit_sha}**: Replaced by the last project's commit SHA.
 
 <!-- vale gitlab.Spelling = YES -->
 ## List all badges of a project
@@ -162,7 +162,7 @@ Example response:
 
 ## Remove a badge from a project
 
-Removes a badge from a project. Only project's badges will be removed by using this endpoint.
+Removes a badge from a project. Only project badges are removed by using this endpoint.
 
 ```plaintext
 DELETE /projects/:id/badges/:badge_id

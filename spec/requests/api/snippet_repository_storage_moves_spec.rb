@@ -7,6 +7,6 @@ RSpec.describe API::SnippetRepositoryStorageMoves do
     let_it_be(:container) { create(:snippet, :repository).tap { |snippet| snippet.create_repository } }
     let_it_be(:storage_move) { create(:snippet_repository_storage_move, :scheduled, container: container) }
     let(:repository_storage_move_factory) { :snippet_repository_storage_move }
-    let(:bulk_worker_klass) { SnippetScheduleBulkRepositoryShardMovesWorker }
+    let(:bulk_worker_klass) { Snippets::ScheduleBulkRepositoryShardMovesWorker }
   end
 end

@@ -28,4 +28,4 @@
         = _('All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URL%{relative_url_link_end}.').html_safe % { relative_url_link_start: relative_url_link_start, relative_url_link_end: '</a>'.html_safe }
       = f.text_area :protected_paths_raw, placeholder: '/users/sign_in,/users/password', class: 'form-control gl-form-input', rows: 10
 
-  = f.submit 'Save changes', class: 'gl-button btn btn-success'
+  = f.submit 'Save changes', class: 'gl-button btn btn-confirm'

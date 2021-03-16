@@ -32,7 +32,7 @@ To integrate security scanners other than Clair and Klar into GitLab, see
 You can enable container scanning by doing one of the following:
 
 - [Include the CI job](#configuration) in your existing `.gitlab-ci.yml` file.
-- Implicitly use [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
+- Implicitly use [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning),
   provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab compares the found vulnerabilities between the source and target branches, and shows the
@@ -455,7 +455,7 @@ For more information about the vulnerabilities database update, check the
 
 ## Interacting with the vulnerabilities
 
-After a vulnerability is found, you can [interact with it](../index.md#interacting-with-the-vulnerabilities).
+After a vulnerability is found, you can [address it](../index.md#addressing-vulnerabilities).
 
 ## Solutions for vulnerabilities (auto-remediation)
 
@@ -469,7 +469,7 @@ file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/README.m
 your `.gitlab-ci.yml` file by following the instructions described in this document's
 [overriding the container scanning template](#overriding-the-container-scanning-template) section.
 
-Read more about the [solutions for vulnerabilities](../index.md#automatic-remediation-for-vulnerabilities).
+Read more about the [solutions for vulnerabilities](../index.md#apply-an-automatic-remediation-for-a-vulnerability).
 
 ## Troubleshooting
 

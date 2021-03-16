@@ -1,5 +1,5 @@
-const stylelint = require('stylelint');
 const md5 = require('md5');
+const stylelint = require('stylelint');
 
 module.exports.createPropertiesHashmap = (
   ruleRoot,
@@ -15,7 +15,7 @@ module.exports.createPropertiesHashmap = (
     if (
       rule &&
       rule.parent &&
-      rule.parent.type != 'atrule' &&
+      rule.parent.type !== 'atrule' &&
       !(
         selector.includes('-webkit-') ||
         selector.includes('-moz-') ||
@@ -25,7 +25,7 @@ module.exports.createPropertiesHashmap = (
       )
     ) {
       let cssArray = [];
-      rule.nodes.forEach(function (property) {
+      rule.nodes.forEach((property) => {
         const { prop, value } = property;
         if (property && value) {
           const propval = `${prop}${value}${property.important ? '!important' : ''}`;
@@ -41,11 +41,11 @@ module.exports.createPropertiesHashmap = (
         const selObj = selectorGroups[hashValue];
 
         const selectorLine = `${selector} (${
-          rule.source.input.file ? rule.source.input.file + ' -' : ''
+          rule.source.input.file ? `${rule.source.input.file} -` : ''
         }${rule.source.start.line}:${rule.source.start.column})`;
 
         if (selObj) {
-          if (selectorGroups[hashValue].selectors.indexOf(selector) == -1) {
+          if (selectorGroups[hashValue].selectors.indexOf(selector) === -1) {
             let lastSelector =
               selectorGroups[hashValue].selectors[selectorGroups[hashValue].selectors.length - 1];
 
@@ -67,6 +67,7 @@ module.exports.createPropertiesHashmap = (
             }
           }
         } else if (addSelectors) {
+          // eslint-disable-next-line no-param-reassign
           selectorGroups[hashValue] = {
             selectors: [selectorLine],
           };

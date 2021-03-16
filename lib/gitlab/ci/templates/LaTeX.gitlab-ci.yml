@@ -1,11 +1,20 @@
-# use docker image with latex preinstalled
-# since there is no official latex image, use https://github.com/blang/latex-docker
-# possible alternative: https://github.com/natlownes/docker-latex
-image: blang/latex
+---
+variables:
+  # Feel free to choose the image that suits you best.
+  # blang/latex:latest ... Former image used in this template. No longer maintained by author.
+  # listx/texlive:2020 ... The default, referring to TexLive 2020. Current at least to 2021-02-02.
+
+  # Additional alternatives with high Docker pull counts:
+  # thomasweise/docker-texlive-full
+  # thomasweise/texlive
+  # adnrv/texlive
+  LATEX_IMAGE: listx/texlive:2020
 
 build:
+  image: $LATEX_IMAGE
   script:
     - latexmk -pdf
+
   artifacts:
     paths:
       - "*.pdf"

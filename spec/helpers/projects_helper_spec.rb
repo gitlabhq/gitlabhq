@@ -401,40 +401,20 @@ RSpec.describe ProjectsHelper do
 
     context 'Security & Compliance tabs' do
       before do
-        stub_feature_flags(secure_security_and_compliance_configuration_page_on_ce: feature_flag_enabled)
         allow(helper).to receive(:can?).with(user, :read_security_configuration, project).and_return(can_read_security_configuration)
       end
 
       context 'when user cannot read security configuration' do
         let(:can_read_security_configuration) { false }
 
-        context 'when feature flag is disabled' do
-          let(:feature_flag_enabled) { false }
-
-          it { is_expected.not_to include(:security_configuration) }
-        end
-
-        context 'when feature flag is enabled' do
-          let(:feature_flag_enabled) { true }
-
-          it { is_expected.not_to include(:security_configuration) }
-        end
+        it { is_expected.not_to include(:security_configuration) }
       end
 
       context 'when user can read security configuration' do
         let(:can_read_security_configuration) { true }
+        let(:feature_flag_enabled) { true }
 
-        context 'when feature flag is disabled' do
-          let(:feature_flag_enabled) { false }
-
-          it { is_expected.not_to include(:security_configuration) }
-        end
-
-        context 'when feature flag is enabled' do
-          let(:feature_flag_enabled) { true }
-
-          it { is_expected.to include(:security_configuration) }
-        end
+        it { is_expected.to include(:security_configuration) }
       end
     end
 

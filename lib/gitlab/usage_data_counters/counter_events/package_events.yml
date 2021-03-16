@@ -41,6 +41,9 @@
 - i_package_pypi_delete_package
 - i_package_pypi_pull_package
 - i_package_pypi_push_package
+- i_package_rubygems_delete_package
+- i_package_rubygems_pull_package
+- i_package_rubygems_push_package
 - i_package_tag_delete_package
 - i_package_tag_pull_package
 - i_package_tag_push_package

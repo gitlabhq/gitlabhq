@@ -41,6 +41,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
     it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:view_diffs_file_by_file).to(:user_preference) }
+    it { is_expected.to delegate_method(:view_diffs_file_by_file=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
     it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(:args) }
 
@@ -58,6 +61,9 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:experience_level).to(:user_preference) }
     it { is_expected.to delegate_method(:experience_level=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:markdown_surround_selection).to(:user_preference) }
+    it { is_expected.to delegate_method(:markdown_surround_selection=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -101,6 +107,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
     it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
+    it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
 
     describe "#user_detail" do
       it 'does not persist `user_detail` by default' do
@@ -380,11 +387,11 @@ RSpec.describe User do
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
     it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
-    it_behaves_like 'an object with email-formated attributes', :email do
+    it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:user) }
     end
 
-    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :public_email, :notification_email do
+    it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :public_email, :notification_email do
       subject { create(:user).tap { |user| user.emails << build(:email, email: email_value, confirmed_at: Time.current) } }
     end
 
@@ -1050,7 +1057,7 @@ RSpec.describe User do
       let(:user)          { create(:user) }
       let(:external_user) { create(:user, external: true) }
 
-      it "sets other properties aswell" do
+      it "sets other properties as well" do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
@@ -1061,7 +1068,7 @@ RSpec.describe User do
       let(:user)      { create(:user) }
       let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
 
-      it 'allows a verfied secondary email to be used as the primary without needing reconfirmation' do
+      it 'allows a verified secondary email to be used as the primary without needing reconfirmation' do
         user.update!(email: secondary.email)
         user.reload
         expect(user.email).to eq secondary.email
@@ -1827,7 +1834,7 @@ RSpec.describe User do
   end
 
   describe '.instance_access_request_approvers_to_be_notified' do
-    let_it_be(:admin_list) { create_list(:user, 12, :admin, :with_sign_ins) }
+    let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
 
     it 'returns up to the ten most recently active instance admins' do
       active_admins_in_recent_sign_in_desc_order = User.admins.active.order_recent_sign_in.limit(10)
@@ -2488,6 +2495,38 @@ RSpec.describe User do
       it 'shows correct avatar url' do
         expect(user.avatar_url).to eq(user.avatar.url)
         expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
+      end
+    end
+  end
+
+  describe "#clear_avatar_caches" do
+    let(:user) { create(:user) }
+
+    context "when :avatar_cache_for_email flag is enabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: true)
+      end
+
+      it "clears the avatar cache when saving" do
+        allow(user).to receive(:avatar_changed?).and_return(true)
+
+        expect(Gitlab::AvatarCache).to receive(:delete_by_email).with(*user.verified_emails)
+
+        user.update(avatar: fixture_file_upload('spec/fixtures/dk.png'))
+      end
+    end
+
+    context "when :avatar_cache_for_email flag is disabled" do
+      before do
+        stub_feature_flags(avatar_cache_for_email: false)
+      end
+
+      it "doesn't attempt to clear the avatar cache" do
+        allow(user).to receive(:avatar_changed?).and_return(true)
+
+        expect(Gitlab::AvatarCache).not_to receive(:delete_by_email)
+
+        user.update(avatar: fixture_file_upload('spec/fixtures/dk.png'))
       end
     end
   end
@@ -3227,23 +3266,8 @@ RSpec.describe User do
         create(:group_group_link, shared_group: private_group, shared_with_group: other_group)
       end
 
-      context 'when shared_group_membership_auth is enabled' do
-        before do
-          stub_feature_flags(shared_group_membership_auth: user)
-        end
-
-        it { is_expected.to include shared_group }
-        it { is_expected.not_to include other_group }
-      end
-
-      context 'when shared_group_membership_auth is disabled' do
-        before do
-          stub_feature_flags(shared_group_membership_auth: false)
-        end
-
-        it { is_expected.not_to include shared_group }
-        it { is_expected.not_to include other_group }
-      end
+      it { is_expected.to include shared_group }
+      it { is_expected.not_to include other_group }
     end
   end
 
@@ -3932,6 +3956,37 @@ RSpec.describe User do
 
         it 'returns true' do
           expect(user.can_read_all_resources?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#can_admin_all_resources?', :request_store do
+    it 'returns false for regular user' do
+      user = build_stubbed(:user)
+
+      expect(user.can_admin_all_resources?).to be_falsy
+    end
+
+    context 'for admin user' do
+      include_context 'custom session'
+
+      let(:user) { build_stubbed(:user, :admin) }
+
+      context 'when admin mode is disabled' do
+        it 'returns false' do
+          expect(user.can_admin_all_resources?).to be_falsy
+        end
+      end
+
+      context 'when admin mode is enabled' do
+        before do
+          Gitlab::Auth::CurrentUserMode.new(user).request_admin_mode!
+          Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
+        end
+
+        it 'returns true' do
+          expect(user.can_admin_all_resources?).to be_truthy
         end
       end
     end
@@ -5370,6 +5425,40 @@ RSpec.describe User do
     end
   end
 
+  describe 'can_trigger_notifications?' do
+    context 'when user is not confirmed' do
+      let_it_be(:user) { create(:user, :unconfirmed) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is blocked' do
+      let_it_be(:user) { create(:user, :blocked) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is a ghost' do
+      let_it_be(:user) { create(:user, :ghost) }
+
+      it 'returns false' do
+        expect(user.can_trigger_notifications?).to be(false)
+      end
+    end
+
+    context 'when user is confirmed and neither blocked or a ghost' do
+      let_it_be(:user) { create(:user) }
+
+      it 'returns true' do
+        expect(user.can_trigger_notifications?).to be(true)
+      end
+    end
+  end
+
   context 'bot users' do
     shared_examples 'bot users' do |bot_type|
       it 'creates the user if it does not exist' do
@@ -5411,5 +5500,90 @@ RSpec.describe User do
     it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
     it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
     it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
+  end
+
+  describe '#confirmation_required_on_sign_in?' do
+    subject { user.confirmation_required_on_sign_in? }
+
+    context 'when user is confirmed' do
+      let(:user) { build_stubbed(:user) }
+
+      it 'is falsey' do
+        expect(user.confirmed?).to be_truthy
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'when user is not confirmed' do
+      let_it_be(:user) { build_stubbed(:user, :unconfirmed, confirmation_sent_at: Time.current) }
+
+      it 'is truthy when soft_email_confirmation feature is disabled' do
+        stub_feature_flags(soft_email_confirmation: false)
+        expect(subject).to be_truthy
+      end
+
+      context 'when soft_email_confirmation feature is enabled' do
+        before do
+          stub_feature_flags(soft_email_confirmation: true)
+        end
+
+        it 'is falsey when confirmation period is valid' do
+          expect(subject).to be_falsey
+        end
+
+        it 'is truthy when confirmation period is expired' do
+          travel_to(User.allow_unconfirmed_access_for.from_now + 1.day) do
+            expect(subject).to be_truthy
+          end
+        end
+
+        context 'when user has no confirmation email sent' do
+          let(:user) { build(:user, :unconfirmed, confirmation_sent_at: nil) }
+
+          it 'is truthy' do
+            expect(subject).to be_truthy
+          end
+        end
+      end
+    end
+  end
+
+  describe '#find_or_initialize_callout' do
+    subject(:find_or_initialize_callout) { user.find_or_initialize_callout(feature_name) }
+
+    let(:user) { create(:user) }
+    let(:feature_name) { UserCallout.feature_names.each_key.first }
+
+    context 'when callout exists' do
+      let!(:callout) { create(:user_callout, user: user, feature_name: feature_name) }
+
+      it 'returns existing callout' do
+        expect(find_or_initialize_callout).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is valid' do
+          expect(find_or_initialize_callout).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(find_or_initialize_callout).to be_a_new(UserCallout)
+        end
+
+        it 'is not valid' do
+          expect(find_or_initialize_callout).not_to be_valid
+        end
+      end
+    end
   end
 end

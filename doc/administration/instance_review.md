@@ -4,7 +4,7 @@ group: Conversion
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Instance Review
+# Instance Review **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6995) in [GitLab Free](https://about.gitlab.com/pricing/) 11.3.
 

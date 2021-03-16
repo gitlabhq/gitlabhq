@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 
-require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/timecop_freeze'
 
 RSpec.describe RuboCop::Cop::RSpec::TimecopFreeze do

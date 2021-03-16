@@ -1,5 +1,5 @@
+import * as Sentry from '@sentry/browser';
 import { sanitize } from '~/lib/dompurify';
-import * as Sentry from '~/sentry/wrapper';
 
 // We currently load + parse the data from the issue app and related merge request
 let cachedParsedData;

@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ProjectFeaturesCompatibility do
   let(:project) { create(:project) }
-  let(:features_enabled) { %w(issues wiki builds merge_requests snippets) }
-  let(:features) { features_enabled + %w(repository pages operations) }
+  let(:features_enabled) { %w(issues wiki builds merge_requests snippets security_and_compliance) }
+  let(:features) { features_enabled + %w(repository pages operations container_registry) }
 
   # We had issues_enabled, snippets_enabled, builds_enabled, merge_requests_enabled and issues_enabled fields on projects table
   # All those fields got moved to a new table called project_feature and are now integers instead of booleans

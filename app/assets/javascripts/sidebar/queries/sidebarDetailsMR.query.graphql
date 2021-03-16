@@ -1,0 +1,7 @@
+query mergeRequestSidebarDetails($fullPath: ID!, $iid: String!) {
+  project(fullPath: $fullPath) {
+    mergeRequest(iid: $iid) {
+      iid # currently unused.
+    }
+  }
+}

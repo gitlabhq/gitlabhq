@@ -166,6 +166,7 @@ export default {
         :title="$options.i18n.REMOVE_TAG_BUTTON_TITLE"
         :tooltip-title="$options.i18n.REMOVE_TAG_BUTTON_DISABLE_TOOLTIP"
         :tooltip-disabled="tag.canDelete"
+        data-qa-selector="tag_delete_button"
         data-testid="single-delete-button"
         @delete="$emit('delete')"
       />

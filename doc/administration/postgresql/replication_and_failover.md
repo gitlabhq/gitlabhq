@@ -900,7 +900,12 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
    ```
 
 1. Repeat the last two steps for all replica nodes. `gitlab.rb` should look the same on all nodes.
-1. Optional: You can remove `gitlab_repmgr` database and role on the primary.
+1. If present, remove the `gitlab_repmgr` database and role on the primary. If you don't delete the `gitlab_repmgr`
+   database, upgrading PostgreSQL 11 to 12 will fail with:
+
+   ```plaintext
+   could not load library "$libdir/repmgr_funcs": ERROR:  could not access file "$libdir/repmgr_funcs": No such file or directory
+   ```
 
 ### Upgrading PostgreSQL major version in a Patroni cluster
 

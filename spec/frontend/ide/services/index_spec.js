@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
 import Api from '~/api';
-import getUserPermissions from '~/ide/queries/getUserPermissions.query.graphql';
 import services from '~/ide/services';
 import { query } from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
@@ -228,7 +228,7 @@ describe('IDE services', () => {
         expect(response).toEqual({ data: { ...projectData, ...gqlProjectData } });
         expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
         expect(query).toHaveBeenCalledWith({
-          query: getUserPermissions,
+          query: getIdeProject,
           variables: {
             projectPath: TEST_PROJECT_ID,
           },

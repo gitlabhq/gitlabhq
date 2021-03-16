@@ -19,7 +19,7 @@ exports[`Design management upload button component renders inverted upload desig
    
   <input
     accept="image/*"
-    class="hide"
+    class="gl-display-none"
     multiple="multiple"
     name="design_file"
     type="file"
@@ -44,7 +44,7 @@ exports[`Design management upload button component renders upload design button 
    
   <input
     accept="image/*"
-    class="hide"
+    class="gl-display-none"
     multiple="multiple"
     name="design_file"
     type="file"

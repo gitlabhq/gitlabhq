@@ -3,7 +3,6 @@ import '~/behaviors/requires_input';
 
 describe('requiresInput', () => {
   let submitButton;
-  preloadFixtures('branches/new_branch.html');
 
   beforeEach(() => {
     loadFixtures('branches/new_branch.html');

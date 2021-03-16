@@ -995,6 +995,23 @@ RSpec.describe Gitlab::Auth::OAuth::User do
     end
   end
 
+  context 'when gl_user is nil' do
+    # We can't use `allow_next_instance_of` here because the stubbed method is called inside `initialize`.
+    # When the class calls `gl_user` during `initialize`, the `nil` value is overwritten and we do not see expected results from the spec.
+    # So we use `allow_any_instance_of` to preserve the `nil` value to test the behavior when `gl_user` is nil.
+
+    # rubocop:disable RSpec/AnyInstanceOf
+    before do
+      allow_any_instance_of(described_class).to receive(:gl_user) { nil }
+      allow_any_instance_of(described_class).to receive(:sync_profile_from_provider?) { true } # to make the code flow proceed until gl_user.build_user_synced_attributes_metadata is called
+    end
+    # rubocop:enable RSpec/AnyInstanceOf
+
+    it 'does not raise NoMethodError' do
+      expect { oauth_user }.not_to raise_error
+    end
+  end
+
   describe '._uid_and_provider' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 

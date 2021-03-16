@@ -41,7 +41,6 @@ const addNewVersionToStore = (store, query, version) => {
   const sourceData = store.readQuery(query);
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.issue.designCollection.versions.nodes = [
       version,
       ...draftData.project.issue.designCollection.versions.nodes,
@@ -168,7 +167,6 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
         nodes: newVersions,
       },
     };
-    // eslint-disable-next-line no-param-reassign
     draftData.project.issue.designCollection = updatedDesigns;
   });
 
@@ -182,7 +180,6 @@ const moveDesignInStore = (store, designManagementMove, query) => {
   const sourceData = store.readQuery(query);
 
   const data = produce(sourceData, (draftData) => {
-    // eslint-disable-next-line no-param-reassign
     draftData.project.issue.designCollection.designs =
       designManagementMove.designCollection.designs;
   });

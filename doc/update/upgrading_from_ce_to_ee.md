@@ -63,7 +63,9 @@ sudo -u git -H git checkout EE_BRANCH
 ```shell
 cd /home/git/gitlab
 
-sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
+sudo -u git -H bundle config set deployment 'true'
+sudo -u git -H bundle config set without 'development test mysql aws kerberos'
+sudo -u git -H bundle install
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean

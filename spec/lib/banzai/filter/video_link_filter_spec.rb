@@ -33,6 +33,7 @@ RSpec.describe Banzai::Filter::VideoLinkFilter do
       expect(video.name).to eq 'video'
       expect(video['src']).to eq src
       expect(video['width']).to eq "400"
+      expect(video['preload']).to eq 'metadata'
 
       expect(paragraph.name).to eq 'p'
 

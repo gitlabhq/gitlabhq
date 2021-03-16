@@ -162,7 +162,7 @@ export default {
           :href="profileAccountPath"
           :disabled="proceedButtonDisabled"
           :title="$options.i18n.proceedButton"
-          variant="success"
+          variant="confirm"
           data-qa-selector="proceed_button"
           data-track-event="click_button"
           :data-track-label="`${$options.trackingLabelPrefix}proceed_button`"

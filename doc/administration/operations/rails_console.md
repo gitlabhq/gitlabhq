@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# The Rails Console
+# Rails console **(FREE SELF)**
 
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 provides a way to interact with your GitLab instance from the command line.
@@ -147,4 +147,24 @@ A meaningful error should be generated if the directory can be accessed, but the
 Traceback (most recent call last):
       [traceback removed]
 /opt/gitlab/..../runner_command.rb:42:in `load': cannot load such file -- /tmp/helloworld.rb (LoadError)
+```
+
+In case you encouter a similar error to this:
+
+```plaintext
+[root ~]# sudo gitlab-rails runner helloworld.rb 
+Please specify a valid ruby command or the path of a script to run.
+Run 'rails runner -h' for help.
+
+undefined local variable or method `helloworld' for main:Object
+```
+
+You can either move the file to the `/tmp` directory or create a new directory onwed by the user `git` and save the script in that directory as illustrated below:
+
+```shell
+sudo mkdir /scripts
+sudo mv /script_path/helloworld.rb /scripts
+sudo chown -R git:git /scripts
+sudo chmod 700 /scripts
+sudo gitlab-rails runner /scripts/helloworld.rb
 ```

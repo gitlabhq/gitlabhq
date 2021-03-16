@@ -62,7 +62,7 @@ module Ci
     end
 
     def update_status_by!(pipeline)
-      retry_lock(self) do
+      retry_lock(self, name: 'ci_ref_update_status_by') do
         next unless last_finished_pipeline_id == pipeline.id
 
         case pipeline.status

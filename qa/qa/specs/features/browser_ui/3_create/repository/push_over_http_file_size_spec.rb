@@ -17,7 +17,7 @@ module QA
           p.initialize_with_readme = true
         end
 
-        @api_client = Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+        @api_client = Runtime::API::Client.as_admin
       end
 
       after(:context) do

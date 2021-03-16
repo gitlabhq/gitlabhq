@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: index, reference, howto
 ---
 
-# Search through GitLab
+# Search through GitLab **(FREE)**
 
 ## Issues and merge requests
 
@@ -298,34 +298,29 @@ redirected to the commit result and given the option to return to the search res
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
 
-[Learn how to use the Advanced Search.](advanced_global_search.md)
+[Learn how to use the Advanced Search.](advanced_search.md)
 
-## Advanced Search Syntax **(PREMIUM)**
-
-Use advanced queries for more targeted search results.
-
-[Learn how to use the Advanced Search Syntax.](advanced_search_syntax.md)
-
-## Search project settings
+## Search settings
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8.
+> - [Added to Group, Admin, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-project-settings). **(FREE SELF)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-settings). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can search inside the project’s settings sections by entering a search
-term in the search box located at the top of the page. The search results
+You can search inside a Project, Group, Admin, or User’s settings by entering
+a search term in the search box located at the top of the page. The search results
 appear highlighted in the sections that match the search term.
 
 ![Search project settings](img/project_search_general_settings_v13_8.png)
 
-### Enable or disable Search project settings **(FREE SELF)**
+### Enable or disable Search settings **(FREE SELF)**
 
-Search project settings is under development and not ready for production use. It is
+Search settings is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it.

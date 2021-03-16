@@ -13,7 +13,6 @@ RSpec.describe ExpireJobCacheWorker do
 
       include_examples 'an idempotent worker' do
         it 'invalidates Etag caching for the job path' do
-          pipeline_path = "/#{project.full_path}/-/pipelines/#{pipeline.id}.json"
           job_path = "/#{project.full_path}/builds/#{job.id}.json"
 
           spy_store = Gitlab::EtagCaching::Store.new
@@ -22,13 +21,12 @@ RSpec.describe ExpireJobCacheWorker do
 
           expect(spy_store).to receive(:touch)
             .exactly(worker_exec_times).times
-            .with(pipeline_path)
-            .and_call_original
-
-          expect(spy_store).to receive(:touch)
-            .exactly(worker_exec_times).times
             .with(job_path)
             .and_call_original
+
+          expect(ExpirePipelineCacheWorker).to receive(:perform_async)
+            .with(pipeline.id)
+            .exactly(worker_exec_times).times
 
           subject
         end

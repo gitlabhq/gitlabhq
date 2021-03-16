@@ -20,7 +20,7 @@ RSpec.describe Projects::BranchesByModeService do
 
         branches, prev_page, next_page = subject
 
-        expect(branches.size).to eq(10)
+        expect(branches.size).to eq(11)
         expect(next_page).to be_nil
         expect(prev_page).to eq("/#{project.full_path}/-/branches/all?offset=2&page=3")
       end
@@ -99,7 +99,7 @@ RSpec.describe Projects::BranchesByModeService do
         it 'returns branches after the specified branch' do
           branches, prev_page, next_page = subject
 
-          expect(branches.size).to eq(14)
+          expect(branches.size).to eq(15)
           expect(next_page).to be_nil
           expect(prev_page).to eq("/#{project.full_path}/-/branches/all?offset=3&page=4&sort=name_asc")
         end

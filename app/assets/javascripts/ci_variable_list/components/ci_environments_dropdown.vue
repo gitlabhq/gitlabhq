@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      searchTerm: this.value || '',
+      searchTerm: '',
     };
   },
   computed: {
@@ -38,11 +38,6 @@ export default {
       );
     },
   },
-  watch: {
-    value(newVal) {
-      this.searchTerm = newVal;
-    },
-  },
   methods: {
     selectEnvironment(selected) {
       this.$emit('selectEnvironment', selected);
@@ -55,11 +50,14 @@ export default {
     isSelected(env) {
       return this.value === env;
     },
+    clearSearch() {
+      this.searchTerm = '';
+    },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="value">
+  <gl-dropdown :text="value" @show="clearSearch">
     <gl-search-box-by-type v-model.trim="searchTerm" data-testid="ci-environment-search" />
     <gl-dropdown-item
       v-for="environment in filteredResults"

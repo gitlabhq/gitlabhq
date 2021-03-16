@@ -122,7 +122,9 @@ module Ci
     end
 
     def record_conversion_event
-      Experiments::RecordConversionEventWorker.perform_async(:ci_syntax_templates, current_user.id)
+      return unless project.namespace.recent?
+
+      Experiments::RecordConversionEventWorker.perform_async(:ci_syntax_templates_b, current_user.id)
     end
 
     def create_namespace_onboarding_action

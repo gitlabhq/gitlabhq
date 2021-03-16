@@ -575,7 +575,7 @@ const boardsStore = {
   },
 
   saveList(list) {
-    const entity = list.label || list.assignee || list.milestone;
+    const entity = list.label || list.assignee || list.milestone || list.iteration;
     let entityType = '';
     if (list.label) {
       entityType = 'label_id';
@@ -583,6 +583,8 @@ const boardsStore = {
       entityType = 'assignee_id';
     } else if (IS_EE && list.milestone) {
       entityType = 'milestone_id';
+    } else if (IS_EE && list.iteration) {
+      entityType = 'iteration_id';
     }
 
     return this.createList(entity.id, entityType)

@@ -1,8 +1,0 @@
----
-name: instance_statistics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40583
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241711
-milestone: '13.4'
-type: development
-group: group::optimize
-default_enabled: true

@@ -2,7 +2,6 @@ import $ from 'jquery';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
 
 describe('BlobFileDropzone', () => {
-  preloadFixtures('blob/show.html');
   let dropzone;
   let replaceFileButton;
 

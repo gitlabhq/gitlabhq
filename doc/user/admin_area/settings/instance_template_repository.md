@@ -5,9 +5,9 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Instance template repository **(PREMIUM SELF)** **(FREE)**
+# Instance template repository **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in GitLab Premium 11.3.
 
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
@@ -23,7 +23,7 @@ select the project to serve as the custom template repository.
 ![File templates in the Admin Area](img/file_template_admin_area.png)
 
 After that, you can add custom templates to the selected repository and use them for the entire instance.
-They will be available on the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
+They are available in the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
 and through the [API settings](../../../api/settings.md).
 
 Templates must be added to a specific subdirectory in the repository,
@@ -60,12 +60,12 @@ extension and not be empty. So, the hierarchy should look like this:
     |-- another_metrics-dashboard.yml
 ```
 
-Your custom templates will be displayed on the dropdown menu when a new file is added through the GitLab UI:
+Your custom templates are displayed on the dropdown menu when a new file is added through the GitLab UI:
 
 ![Custom template dropdown menu](img/file_template_user_dropdown.png)
 
-If this feature is disabled or no templates are present, there will be
-no "Custom" section in the selection dropdown.
+If this feature is disabled or no templates are present,
+no **Custom** section displays in the selection dropdown.
 
 <!-- ## Troubleshooting
 

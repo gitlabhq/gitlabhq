@@ -27,7 +27,10 @@ export default {
 <template>
   <div v-show="draftsCount > 0">
     <nav class="review-bar-component">
-      <div class="review-bar-content qa-review-bar d-flex gl-justify-content-end">
+      <div
+        class="review-bar-content d-flex gl-justify-content-end"
+        data-qa-selector="review_bar_content"
+      >
         <preview-dropdown />
         <publish-button class="gl-ml-3" show-count />
       </div>

@@ -20,7 +20,6 @@ const resolvers = {
       const sourceData = cache.readQuery({ query: activeDiscussionQuery });
 
       const data = produce(sourceData, (draftData) => {
-        // eslint-disable-next-line no-param-reassign
         draftData.activeDiscussion = {
           __typename: 'ActiveDiscussion',
           id,

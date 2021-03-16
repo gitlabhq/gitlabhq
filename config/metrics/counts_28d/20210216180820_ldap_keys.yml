@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage_monthly.manage.ldap_keys
+description:
+product_section: dev
+product_stage:
+product_group: group::manage
+product_category:
+value_type: number
+status: data_available
+time_frame: 28d
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

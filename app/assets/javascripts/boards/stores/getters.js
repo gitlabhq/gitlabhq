@@ -1,20 +1,22 @@
 import { find } from 'lodash';
-import { inactiveId } from '../constants';
+import { BoardType, inactiveId } from '../constants';
 
 export default {
+  isGroupBoard: (state) => state.boardType === BoardType.group,
+  isProjectBoard: (state) => state.boardType === BoardType.project,
   isSidebarOpen: (state) => state.activeId !== inactiveId,
   isSwimlanesOn: () => false,
-  getIssueById: (state) => (id) => {
-    return state.issues[id] || {};
+  getBoardItemById: (state) => (id) => {
+    return state.boardItems[id] || {};
   },
 
-  getIssuesByList: (state, getters) => (listId) => {
-    const listIssueIds = state.issuesByListId[listId] || [];
-    return listIssueIds.map((id) => getters.getIssueById(id));
+  getBoardItemsByList: (state, getters) => (listId) => {
+    const listItemsIds = state.boardItemsByListId[listId] || [];
+    return listItemsIds.map((id) => getters.getBoardItemById(id));
   },
 
   activeIssue: (state) => {
-    return state.issues[state.activeId] || {};
+    return state.boardItems[state.activeId] || {};
   },
 
   groupPathForActiveIssue: (_, getters) => {
@@ -27,6 +29,10 @@ export default {
     return referencePath.slice(0, referencePath.indexOf('#'));
   },
 
+  activeGroupProjects: (state) => {
+    return state.groupProjects.filter((p) => !p.archived);
+  },
+
   getListByLabelId: (state) => (labelId) => {
     if (!labelId) {
       return null;
@@ -36,6 +42,10 @@ export default {
 
   getListByTitle: (state) => (title) => {
     return find(state.boardLists, (l) => l.title === title);
+  },
+
+  isEpicBoard: () => {
+    return false;
   },
 
   shouldUseGraphQL: () => {

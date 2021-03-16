@@ -1,6 +1,6 @@
 import AccessibilityIssueBody from '../accessibility_report/components/accessibility_issue_body.vue';
 import CodequalityIssueBody from '../codequality_report/components/codequality_issue_body.vue';
-import TestIssueBody from './test_issue_body.vue';
+import TestIssueBody from '../grouped_test_report/components/test_issue_body.vue';
 
 export const components = {
   AccessibilityIssueBody,

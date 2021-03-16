@@ -150,5 +150,12 @@ describe('Edit feature flag form', () => {
         label: 'feature_flag_toggle',
       });
     });
+
+    it('should render the toggle with a visually hidden label', () => {
+      expect(wrapper.find(GlToggle).props()).toMatchObject({
+        label: 'Feature flag status',
+        labelPosition: 'hidden',
+      });
+    });
   });
 });

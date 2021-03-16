@@ -1,7 +1,9 @@
+import { GlDropdown, GlAlert } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as flash } from '~/flash';
@@ -9,7 +11,8 @@ import axios from '~/lib/utils/axios_utils';
 import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import eventHub from '~/notes/event_hub';
-import createStore from '~/notes/stores';
+import { COMMENT_FORM } from '~/notes/i18n';
+import notesModule from '~/notes/stores/modules';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -17,15 +20,45 @@ jest.mock('~/commons/nav/user_merge_requests');
 jest.mock('~/flash');
 jest.mock('~/gl_form');
 
+Vue.use(Vuex);
+
 describe('issue_comment_form component', () => {
   let store;
   let wrapper;
   let axiosMock;
 
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
-  const findCommentButton = () => wrapper.findByTestId('comment-button');
   const findTextArea = () => wrapper.findByTestId('comment-field');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('confidential-note-checkbox');
+  const findCommentGlDropdown = () => wrapper.find(GlDropdown);
+  const findCommentButton = () => findCommentGlDropdown().find('button');
+  const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
+
+  async function clickCommentButton({ waitForComponent = true, waitForNetwork = true } = {}) {
+    findCommentButton().trigger('click');
+
+    if (waitForComponent || waitForNetwork) {
+      // Wait for the click to bubble out and trigger the handler
+      await nextTick();
+
+      if (waitForNetwork) {
+        // Wait for the network request promise to resolve
+        await nextTick();
+      }
+    }
+  }
+
+  function createStore({ actions = {} } = {}) {
+    const baseModule = notesModule();
+
+    return new Vuex.Store({
+      ...baseModule,
+      actions: {
+        ...baseModule.actions,
+        ...actions,
+      },
+    });
+  }
 
   const createNotableDataMock = (data = {}) => {
     return {
@@ -99,6 +132,83 @@ describe('issue_comment_form component', () => {
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
         expect(wrapper.vm.stopPolling).toHaveBeenCalled();
         expect(wrapper.vm.resizeTextarea).toHaveBeenCalled();
+      });
+
+      it('does not report errors in the UI when the save succeeds', async () => {
+        mountComponent({ mountFunction: mount, initialData: { note: '/label ~sdfghj' } });
+
+        jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+
+        await clickCommentButton();
+
+        // findErrorAlerts().exists returns false if *any* wrapper is empty,
+        //   not necessarily that there aren't any at all.
+        // We want to check here that there are none found, so we use the
+        //   raw wrapper array length instead.
+        expect(findErrorAlerts().length).toBe(0);
+      });
+
+      it.each`
+        httpStatus | errors
+        ${400}     | ${[COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK]}
+        ${422}     | ${['error 1']}
+        ${422}     | ${['error 1', 'error 2']}
+        ${422}     | ${['error 1', 'error 2', 'error 3']}
+      `(
+        'displays the correct errors ($errors) for a $httpStatus network response',
+        async ({ errors, httpStatus }) => {
+          store = createStore({
+            actions: {
+              saveNote: jest.fn().mockRejectedValue({
+                response: { status: httpStatus, data: { errors: { commands_only: errors } } },
+              }),
+            },
+          });
+
+          mountComponent({ mountFunction: mount, initialData: { note: '/label ~sdfghj' } });
+
+          await clickCommentButton();
+
+          const errorAlerts = findErrorAlerts();
+
+          expect(errorAlerts.length).toBe(errors.length);
+          errors.forEach((msg, index) => {
+            const alert = errorAlerts[index];
+
+            expect(alert.text()).toBe(msg);
+          });
+        },
+      );
+
+      it('should remove the correct error from the list when it is dismissed', async () => {
+        const commandErrors = ['1', '2', '3'];
+        store = createStore({
+          actions: {
+            saveNote: jest.fn().mockRejectedValue({
+              response: { status: 422, data: { errors: { commands_only: [...commandErrors] } } },
+            }),
+          },
+        });
+
+        mountComponent({ mountFunction: mount, initialData: { note: '/label ~sdfghj' } });
+
+        await clickCommentButton();
+
+        let errorAlerts = findErrorAlerts();
+
+        expect(errorAlerts.length).toBe(commandErrors.length);
+
+        // dismiss the second error
+        extendedWrapper(errorAlerts[1]).findByTestId('close-icon').trigger('click');
+        // Wait for the dismissal to bubble out of the Alert component and be handled in this component
+        await nextTick();
+        // Refresh the list of alerts
+        errorAlerts = findErrorAlerts();
+
+        expect(errorAlerts.length).toBe(commandErrors.length - 1);
+        // We want to know that the *correct* error was dismissed, not just that any one is gone
+        expect(errorAlerts[0].text()).toBe(commandErrors[0]);
+        expect(errorAlerts[1].text()).toBe(commandErrors[2]);
       });
 
       it('should toggle issue state when no note', () => {
@@ -243,7 +353,7 @@ describe('issue_comment_form component', () => {
       it('should render comment button as disabled', () => {
         mountComponent();
 
-        expect(findCommentButton().props('disabled')).toBe(true);
+        expect(findCommentGlDropdown().props('disabled')).toBe(true);
       });
 
       it('should enable comment button if it has note', async () => {
@@ -251,7 +361,7 @@ describe('issue_comment_form component', () => {
 
         await wrapper.setData({ note: 'Foo' });
 
-        expect(findCommentButton().props('disabled')).toBe(false);
+        expect(findCommentGlDropdown().props('disabled')).toBe(false);
       });
 
       it('should update buttons texts when it has note', () => {
@@ -437,7 +547,7 @@ describe('issue_comment_form component', () => {
             await wrapper.vm.$nextTick();
 
             // submit comment
-            wrapper.findByTestId('comment-button').trigger('click');
+            findCommentButton().trigger('click');
 
             const [providedData] = wrapper.vm.saveNote.mock.calls[0];
             expect(providedData.data.note.confidential).toBe(shouldCheckboxBeChecked);
@@ -470,18 +580,6 @@ describe('issue_comment_form component', () => {
 
     it('should not render submission form', () => {
       expect(findTextArea().exists()).toBe(false);
-    });
-  });
-
-  describe('close/reopen button variants', () => {
-    it.each([
-      [constants.OPENED, 'warning'],
-      [constants.REOPENED, 'warning'],
-      [constants.CLOSED, 'default'],
-    ])('when %s, the variant of the btn is %s', (state, expected) => {
-      mountComponent({ noteableData: { ...noteableDataMock, state } });
-
-      expect(findCloseReopenButton().props('variant')).toBe(expected);
     });
   });
 });

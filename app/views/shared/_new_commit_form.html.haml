@@ -3,8 +3,11 @@
 
 = render 'shared/commit_message_container', placeholder: placeholder
 
-- if @project.empty_repo?
-  = hidden_field_tag 'branch_name', @ref
+- if project.empty_repo?
+  - ref = local_assigns[:ref] || @ref
+  - branch_name_class = project.empty_repo_upload_experiment? ? 'js-branch-name' : nil
+
+  = hidden_field_tag 'branch_name', ref, class: branch_name_class
 - else
   - if can?(current_user, :push_code, @project)
     .form-group.row.branch

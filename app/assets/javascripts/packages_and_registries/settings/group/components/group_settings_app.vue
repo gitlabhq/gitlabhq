@@ -111,7 +111,10 @@ export default {
       {{ alertMessage }}
     </gl-alert>
 
-    <settings-block :default-expanded="defaultExpanded">
+    <settings-block
+      :default-expanded="defaultExpanded"
+      data-qa-selector="package_registry_settings_content"
+    >
       <template #title> {{ $options.i18n.PACKAGE_SETTINGS_HEADER }}</template>
       <template #description>
         <span data-testid="description">

@@ -1,0 +1,16 @@
+---
+key_path: usage_activity_by_stage.secure.user_dast_jobs
+description: Count of DAST jobs
+product_section: sec
+product_stage: secure
+product_group: group::dynamic analysis
+product_category: dynamic_application_security_testing
+value_type: number
+status: data_available
+time_frame: all
+data_source:
+distribution:
+- ce
+tier:
+- free
+skip_validation: true

@@ -124,7 +124,7 @@ export default function initDiffsApp(store) {
           showSuggestPopover: this.showSuggestPopover,
           fileByFileUserPreference: this.viewDiffsFileByFile,
           defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
-          mrReviews: getReviewsForMergeRequest(mrPath),
+          rehydratedMrReviews: getReviewsForMergeRequest(mrPath),
         },
       });
     },

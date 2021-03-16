@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Requirements
+# Requirements **(FREE SELF)**
 
 This page includes useful information on the supported Operating Systems as well
 as the hardware requirements that are needed to install and use GitLab.
@@ -80,7 +80,7 @@ From GitLab 13.1:
 Beginning in GitLab 12.9, we only support Node.js 10.13.0 or higher, and we have dropped
 support for Node.js 8. (Node.js 6 support was dropped in GitLab 11.8)
 
-We recommend Node 12.x, as it's faster.
+We recommend Node 14.x, as it's faster.
 
 GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
 version of Node.js 10.13.0.
@@ -110,7 +110,8 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
 NOTE:
-Since file system performance may affect the overall performance of GitLab, [we don't recommend using AWS EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
+Since file system performance may affect the overall performance of GitLab,
+[we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 ### CPU
 
@@ -151,18 +152,24 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
 available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
 
-We highly recommend users to use the minimum PostgreSQL versions specified below as these are the versions used for development and testing.
+We highly recommend using the minimum PostgreSQL versions (as specified in
+the following table) as these were used for development and testing:
 
-GitLab version | Minimum PostgreSQL version
--|-
-10.0 | 9.6
-13.0 | 11
+| GitLab version | Minimum PostgreSQL version |
+|----------------|----------------------------|
+| 10.0           | 9.6                        |
+| 13.0           | 11                         |
 
-You must also ensure the `pg_trgm` and `btree_gist` extensions are [loaded into every
-GitLab database](postgresql_extensions.html).
+You must also ensure the following extensions are [loaded into every
+GitLab database](postgresql_extensions.html):
+
+| Extension    | Minimum GitLab version |
+| ------------ | ---------------------- |
+| `pg_trgm`    | 8.6                    |
+| `btree_gist` | 13.1                   |
 
 NOTE:
-Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
+Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
 
 #### Additional requirements for GitLab Geo
 

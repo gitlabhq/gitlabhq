@@ -35,9 +35,7 @@ The security dashboard and vulnerability report displays information about vulne
 - [Static Application Security Testing](../sast/index.md)
 - And [others](../index.md#security-scanning-tools)!
 
-## Requirements
-
-To use the security dashboards and vulnerability reports:
+## Prerequisites
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
@@ -52,7 +50,7 @@ To use the security dashboards and vulnerability reports:
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_3.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_10.png)
 
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.
@@ -63,13 +61,21 @@ job finishes but the DAST job fails, the security dashboard doesn't show SAST re
 the analyzer outputs an
 [exit code](../../../development/integrations/secure.md#exit-code).
 
+### Scan details
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+
+The **Scan details** section lists the scans run in the pipeline and the total number of
+vulnerabilities per scan. For the DAST scan, select **Download scanned resources** to download a
+CSV file containing details of the resources scanned.
+
 ## Project Security Dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
 
 At the project level, the Security Dashboard displays a chart with the number of vulnerabilities over time.
 Access it by navigating to **Security & Compliance > Security Dashboard**. We display historical
-data up to 365 days.
+data up to 365 days. The chart's data is updated daily.
 
 ![Project Security Dashboard](img/project_security_dashboard_chart_v13_6.png)
 
@@ -130,10 +136,6 @@ bar at the top of the page. Under **More**, select **Security**.
 
 ![Security Center navigation link](img/security_center_dashboard_link_v12_4.png)
 
-The dashboard and vulnerability report are empty before you add projects.
-
-![Uninitialized Security Center](img/security_center_dashboard_empty_v13_4.png)
-
 ### Adding projects to the Security Center
 
 To add projects to the Security Center:
@@ -175,7 +177,7 @@ lock files. Python projects can have lock files, but GitLab Secure tools don't s
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/customize.md#environment-variables)
+[special environment variables](../../../topics/autodevops/customize.md#cicd-variables)
 to configure daily security scans.
 
 <!-- ## Troubleshooting
@@ -190,4 +192,4 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+Read more on how to [address the vulnerabilities](../index.md#addressing-vulnerabilities).

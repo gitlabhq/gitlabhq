@@ -10,7 +10,7 @@ module Gitlab
         NOP_RELATION.new
       end
 
-      def perform(_scan_ids); end
+      def perform(*_scan_ids); end
     end
   end
 end

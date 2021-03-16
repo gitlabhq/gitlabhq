@@ -27,13 +27,13 @@ RSpec.describe 'OAuth tokens' do
 
     context 'when user does not have 2FA enabled' do
       context 'when no client credentials provided' do
-        it 'does not create an access token' do
+        it 'creates an access token' do
           user = create(:user)
 
           request_oauth_token(user)
 
-          expect(response).to have_gitlab_http_status(:unauthorized)
-          expect(json_response['access_token']).to be_nil
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['access_token']).to be_present
         end
       end
 
@@ -51,6 +51,8 @@ RSpec.describe 'OAuth tokens' do
 
         context 'with invalid credentials' do
           it 'does not create an access token' do
+            pending 'Enable this example after https://github.com/doorkeeper-gem/doorkeeper/pull/1488 is merged and released'
+
             user = create(:user)
 
             request_oauth_token(user, basic_auth_header(client.uid, 'invalid secret'))

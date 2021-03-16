@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rubocop'
 require_relative '../../../../rubocop/cop/migration/add_reference'
 
 RSpec.describe RuboCop::Cop::Migration::AddReference do
-  include CopHelper
-
   let(:cop) { described_class.new }
 
-  context 'outside of a migration' do
+  context 'when outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
         def up
@@ -19,12 +16,12 @@ RSpec.describe RuboCop::Cop::Migration::AddReference do
     end
   end
 
-  context 'in a migration' do
+  context 'when in a migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
-    let(:offense) { '`add_reference` requires downtime for existing tables, use `add_concurrent_foreign_key` instead. When used for new tables, `index: true` or `index: { options... } is required.`' }
+    let(:offense) { '`add_reference` requires downtime for existing tables, use `add_concurrent_foreign_key`[...]' }
 
     context 'when the table existed before' do
       it 'registers an offense when using add_reference' do

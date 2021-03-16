@@ -1,63 +1,38 @@
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import LearnGitlabA from '~/pages/projects/learn_gitlab/components/learn_gitlab_a.vue';
-
-const TEST_ACTIONS = {
-  gitWrite: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  userAdded: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  pipelineCreated: {
-    url: 'http://example.com/',
-    completed: true,
-  },
-  trialStarted: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  codeOwnersEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  requiredMrApprovalsEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  mergeRequestCreated: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-  securityScanEnabled: {
-    url: 'http://example.com/',
-    completed: false,
-  },
-};
+import { GlProgressBar } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import LearnGitlabB from '~/pages/projects/learn_gitlab/components/learn_gitlab_b.vue';
+import { testActions } from './mock_data';
 
 describe('Learn GitLab Design B', () => {
   let wrapper;
+
+  const createWrapper = () => {
+    wrapper = mount(LearnGitlabB, { propsData: { actions: testActions } });
+  };
+
+  beforeEach(() => {
+    createWrapper();
+  });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
   });
 
-  const createWrapper = () => {
-    wrapper = extendedWrapper(
-      shallowMount(LearnGitlabA, {
-        propsData: {
-          actions: TEST_ACTIONS,
-        },
-      }),
-    );
-  };
-
-  it('should render the loading state', () => {
-    createWrapper();
-
+  it('renders correctly', () => {
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('renders the progress percentage', () => {
+    const text = wrapper.find('[data-testid="completion-percentage"]').text();
+
+    expect(text).toEqual('25% completed');
+  });
+
+  it('renders the progress bar with correct values', () => {
+    const progressBar = wrapper.find(GlProgressBar);
+
+    expect(progressBar.attributes('value')).toBe('2');
+    expect(progressBar.attributes('max')).toBe('8');
   });
 });

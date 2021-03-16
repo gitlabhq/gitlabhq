@@ -30,7 +30,7 @@ RSpec.describe Mutations::CanMutateSpammable do
     end
 
     it 'merges in spam action fields from spammable' do
-      result = subject.send(:with_spam_action_fields, spammable) do
+      result = subject.send(:with_spam_action_response_fields, spammable) do
         { other_field: true }
       end
       expect(result)

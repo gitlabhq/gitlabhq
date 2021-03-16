@@ -146,7 +146,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.4
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml'
@@ -186,7 +186,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.4
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
@@ -218,4 +218,33 @@ run tests:
   artifacts:
     reports:
       cobertura: coverage.xml
+```
+
+### C/C++ example
+
+The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for C/C++ with
+`gcc` or `g++` as the compiler uses [`gcovr`](https://gcovr.com/en/stable/) to generate the coverage
+output file in Cobertura XML format.
+
+This example assumes:
+
+- That the `Makefile` is created by `cmake` in the `build` directory,
+  within another job in a previous stage.
+  (If you use `automake` to generate the `Makefile`,
+  then you need to call `make check` instead of `make test`.)
+- `cmake` (or `automake`) has set the compiler option `--coverage`.
+
+```yaml
+run tests:
+  stage: test
+  script:
+    - cd build
+    - make test
+    - gcovr --xml-pretty --exclude-unreachable-branches --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 2 days
+    reports:
+      cobertura: build/coverage.xml
 ```

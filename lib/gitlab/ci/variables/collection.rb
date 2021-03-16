@@ -6,14 +6,22 @@ module Gitlab
       class Collection
         include Enumerable
 
-        def initialize(variables = [])
+        attr_reader :errors
+
+        def initialize(variables = [], errors = nil)
           @variables = []
+          @variables_by_key = {}
+          @errors = errors
 
           variables.each { |variable| self.append(variable) }
         end
 
         def append(resource)
-          tap { @variables.append(Collection::Item.fabricate(resource)) }
+          item = Collection::Item.fabricate(resource)
+          @variables.append(item)
+          @variables_by_key[item[:key]] = item
+
+          self
         end
 
         def concat(resources)
@@ -33,15 +41,67 @@ module Gitlab
           end
         end
 
+        def [](key)
+          @variables_by_key[key]
+        end
+
+        def size
+          @variables.size
+        end
+
         def to_runner_variables
           self.map(&:to_runner_variable)
         end
 
         def to_hash
           self.to_runner_variables
-            .map { |env| [env.fetch(:key), env.fetch(:value)] }
-            .to_h.with_indifferent_access
+            .to_h { |env| [env.fetch(:key), env.fetch(:value)] }
+            .with_indifferent_access
         end
+
+        def reject(&block)
+          Collection.new(@variables.reject(&block))
+        end
+
+        def expand_value(value, keep_undefined: false)
+          value.gsub(ExpandVariables::VARIABLES_REGEXP) do
+            match = Regexp.last_match
+            result = @variables_by_key[match[1] || match[2]]&.value
+            result ||= match[0] if keep_undefined
+            result
+          end
+        end
+
+        def sort_and_expand_all(project, keep_undefined: false)
+          return self if Feature.disabled?(:variable_inside_variable, project)
+
+          sorted = Sort.new(self)
+          return self.class.new(self, sorted.errors) unless sorted.valid?
+
+          new_collection = self.class.new
+
+          sorted.tsort.each do |item|
+            unless item.depends_on
+              new_collection.append(item)
+              next
+            end
+
+            # expand variables as they are added
+            variable = item.to_runner_variable
+            variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined)
+            new_collection.append(variable)
+          end
+
+          new_collection
+        end
+
+        def to_s
+          "#{@variables_by_key.keys}, @errors='#{@errors}'"
+        end
+
+        protected
+
+        attr_reader :variables
       end
     end
   end

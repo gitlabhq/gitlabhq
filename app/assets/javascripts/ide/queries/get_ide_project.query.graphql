@@ -1,0 +1,7 @@
+#import "~/ide/queries/ide_project.fragment.graphql"
+
+query getIdeProject($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    ...IdeProject
+  }
+}

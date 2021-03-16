@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Types
-  # rubocop: disable Graphql/AuthorizeTypes
   class RangeInputType < BaseInputObject
     def self.[](type, closed = true)
       @subtypes ||= {}
@@ -25,5 +24,4 @@ module Types
       to_h
     end
   end
-  # rubocop: enable Graphql/AuthorizeTypes
 end

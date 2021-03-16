@@ -175,7 +175,7 @@ const mixins = {
         return __('Merged');
       }
 
-      return this.isOpen ? __('Opened') : __('Closed');
+      return this.isOpen ? __('Created') : __('Closed');
     },
     stateTimeInWords() {
       if (this.isMerged) {

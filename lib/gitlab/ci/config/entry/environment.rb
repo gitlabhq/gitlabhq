@@ -10,7 +10,7 @@ module Gitlab
         class Environment < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Configurable
 
-          ALLOWED_KEYS = %i[name url action on_stop auto_stop_in kubernetes].freeze
+          ALLOWED_KEYS = %i[name url action on_stop auto_stop_in kubernetes deployment_tier].freeze
 
           entry :kubernetes, Entry::Kubernetes, description: 'Kubernetes deployment configuration.'
 
@@ -45,6 +45,11 @@ module Gitlab
               validates :action,
                         type: String,
                         inclusion: { in: %w[start stop prepare], message: 'should be start, stop or prepare' },
+                        allow_nil: true
+
+              validates :deployment_tier,
+                        type: String,
+                        inclusion: { in: ::Environment.tiers.keys, message: "must be one of #{::Environment.tiers.keys.join(', ')}" },
                         allow_nil: true
 
               validates :on_stop, type: String, allow_nil: true
@@ -83,6 +88,10 @@ module Gitlab
 
           def auto_stop_in
             value[:auto_stop_in]
+          end
+
+          def deployment_tier
+            value[:deployment_tier]
           end
 
           def value
