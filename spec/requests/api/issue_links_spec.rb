@@ -82,7 +82,7 @@ RSpec.describe API::IssueLinks do
                params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('No Issue found for given params')
+          expect(json_response['message']).to eq('No matching issue found. Make sure that you are adding a valid issue URL.')
         end
       end
 

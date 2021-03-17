@@ -1353,6 +1353,24 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(subject.work_in_progress?).to eq false
     end
 
+    it 'does not detect Draft: in the middle of the title' do
+      subject.title = 'Something with Draft: in the middle'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it 'does not detect WIP at the end of the title' do
+      subject.title = 'Something ends with WIP'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it 'does not detect Draft at the end of the title' do
+      subject.title = 'Something ends with Draft'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
       expect(subject.work_in_progress?).to eq false
@@ -1360,6 +1378,11 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     it "doesn't detect WIP for words containing with WIP" do
       subject.title = "WupWipwap #{subject.title}"
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it "doesn't detect draft for words containing with draft" do
+      subject.title = "Drafting #{subject.title}"
       expect(subject.work_in_progress?).to eq false
     end
 
@@ -1392,6 +1415,42 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         expect(subject.work_in_progress?).to eq false
       end
+    end
+
+    it 'removes only WIP prefix from the MR title' do
+      subject.title = 'WIP: Implement feature called WIP'
+
+      expect(subject.wipless_title).to eq 'Implement feature called WIP'
+    end
+
+    it 'removes only draft prefix from the MR title' do
+      subject.title = 'Draft: Implement feature called draft'
+
+      expect(subject.wipless_title).to eq 'Implement feature called draft'
+    end
+
+    it 'does not remove WIP in the middle of the title' do
+      subject.title = 'Something with WIP in the middle'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove Draft in the middle of the title' do
+      subject.title = 'Something with Draft in the middle'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove WIP at the end of the title' do
+      subject.title = 'Something ends with WIP'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove Draft at the end of the title' do
+      subject.title = 'Something ends with Draft'
+
+      expect(subject.wipless_title).to eq subject.title
     end
   end
 

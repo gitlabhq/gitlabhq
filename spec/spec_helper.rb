@@ -104,9 +104,9 @@ RSpec.configure do |config|
         warn "=== uptime"
         warn `uptime`
         warn "=== Prometheus metrics:"
-        warn `curl -s http://localhost:9236/metrics`
+        warn `curl -s -o log/gitaly-metrics.log http://localhost:9236/metrics`
         warn "=== Taking goroutine dump in log/goroutines.log..."
-        warn `curl -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
+        warn `curl -s -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
       end
     end
   end

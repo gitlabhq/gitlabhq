@@ -107,11 +107,11 @@ module IssuableLinks
     end
 
     def issuables_assigned_message
-      'Issue(s) already assigned'
+      _("Issue(s) already assigned")
     end
 
     def issuables_not_found_message
-      'No Issue found for given params'
+      _("No matching issue found. Make sure that you are adding a valid issue URL.")
     end
   end
 end

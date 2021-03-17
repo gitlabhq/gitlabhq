@@ -314,7 +314,7 @@ export default {
             <h4>{{ s__('FeatureFlags|Strategies') }}</h4>
             <div class="flex align-items-baseline justify-content-between">
               <p class="mr-3">{{ $options.translations.newHelpText }}</p>
-              <gl-button variant="success" category="secondary" @click="addStrategy">
+              <gl-button variant="confirm" category="secondary" @click="addStrategy">
                 {{ s__('FeatureFlags|Add strategy') }}
               </gl-button>
             </div>
@@ -575,7 +575,7 @@ export default {
         ref="submitButton"
         :disabled="readOnly"
         type="button"
-        variant="success"
+        variant="confirm"
         class="js-ff-submit col-xs-12"
         @click="handleSubmit"
         >{{ submitText }}</gl-button

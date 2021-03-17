@@ -168,6 +168,10 @@ As the app is developed by OneLogin, please reach out to OneLogin if you encount
 
 ## User access and linking setup
 
+During the synchronization process, all of your users get GitLab accounts, welcoming them
+to their respective groups, with an invitation email. When implementing SCIM provisioning,
+you may want to warn your security-conscious employees about this email.
+
 The following diagram is a general outline on what happens when you add users to your SCIM app:
 
 ```mermaid
@@ -201,10 +205,6 @@ Upon the next sync, the user is deprovisioned, which means that the user is remo
 
 NOTE:
 Deprovisioning does not delete the user account.
-
-During the synchronization process, all of your users get GitLab accounts, welcoming them
-to their respective groups, with an invitation email. When implementing SCIM provisioning,
-you may want to warn your security-conscious employees about this email.
 
 ```mermaid
 graph TD

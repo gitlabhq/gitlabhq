@@ -13,6 +13,8 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
+- add_page_startup_api_call @endpoint_metadata_url
+
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
 
@@ -63,6 +65,7 @@
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request, Feature.enabled?(:paginated_notes, @project)).to_json,
+                endpoint_metadata: @endpoint_metadata_url,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
@@ -75,8 +78,6 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - if mr_action === "diffs"
-        - add_page_startup_api_call @endpoint_metadata_url
       - params = request.query_parameters
       - if Feature.enabled?(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
         - params = params.merge(diff_head: true)

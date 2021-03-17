@@ -5,7 +5,8 @@
 - placeholder = local_assigns[:placeholder] || _('Search or filter results...')
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
-- if board && board.to_type == "EpicBoard"
+- is_epic_board = board&.to_type == "EpicBoard"
+- if is_epic_board
   - user_can_admin_list = can?(current_user, :admin_epic_board_list, board.resource_parent)
 - elsif board
   - user_can_admin_list = can?(current_user, :admin_issue_board_list, board.resource_parent)
@@ -21,7 +22,7 @@
         - if @can_bulk_update
           .check-all-holder.d-none.d-sm-block.hidden
             = check_box_tag "check-all-issues", nil, false, class: "check-all-issues left"
-        - if Feature.enabled?(:boards_filtered_search, @group)
+        - if Feature.enabled?(:boards_filtered_search, @group) && is_epic_board
           #js-board-filtered-search
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row

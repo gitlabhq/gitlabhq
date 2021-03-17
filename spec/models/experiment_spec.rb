@@ -244,18 +244,27 @@ RSpec.describe Experiment do
 
     context 'when no existing experiment_subject record exists for the given group' do
       it 'creates an experiment_subject record' do
-        expect_next(ExperimentSubject).to receive(:update!).with(variant: variant).and_call_original
-
         expect { record_group_and_variant! }.to change(ExperimentSubject, :count).by(1)
+        expect(ExperimentSubject.last.variant).to eq(variant.to_s)
       end
     end
 
     context 'when an existing experiment_subject exists for the given group' do
-      context 'but it belonged to a different variant' do
-        let!(:experiment_subject) do
-          create(:experiment_subject, experiment: experiment, group: group, user: nil, variant: :experimental)
-        end
+      let_it_be(:experiment_subject) do
+        create(:experiment_subject, experiment: experiment, group: group, user: nil, variant: :experimental)
+      end
 
+      context 'when it belongs to the same variant' do
+        let(:variant) { :experimental }
+
+        it 'does not initiate a transaction' do
+          expect(ActiveRecord::Base.connection).not_to receive(:transaction)
+
+          subject
+        end
+      end
+
+      context 'but it belonged to a different variant' do
         it 'updates the variant value' do
           expect { record_group_and_variant! }.to change { experiment_subject.reload.variant }.to('control')
         end
@@ -297,6 +306,16 @@ RSpec.describe Experiment do
 
       it 'does not create a new experiment_user record' do
         expect { subject }.not_to change(ExperimentUser, :count)
+      end
+
+      context 'when group type or context did not change' do
+        let(:context) { {} }
+
+        it 'does not initiate a transaction' do
+          expect(ActiveRecord::Base.connection).not_to receive(:transaction)
+
+          subject
+        end
       end
 
       context 'but the group_type and context has changed' do

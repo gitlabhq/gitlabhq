@@ -28,7 +28,7 @@
       = link_to _('Manage two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-confirm'
     - else
       .gl-mb-3
-        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-success', data: { qa_selector: 'enable_2fa_button' }
+        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-confirm', data: { qa_selector: 'enable_2fa_button' }
   .col-lg-12
     %hr
 

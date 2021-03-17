@@ -17073,6 +17073,9 @@ msgstr ""
 msgid "Issue weight"
 msgstr ""
 
+msgid "Issue(s) already assigned"
+msgstr ""
+
 msgid "IssueAnalytics|Age"
 msgstr ""
 
@@ -20717,7 +20720,7 @@ msgstr ""
 msgid "No estimate or time spent"
 msgstr ""
 
-msgid "No file chosen"
+msgid "No file chosen."
 msgstr ""
 
 msgid "No file hooks found."
@@ -20766,6 +20769,9 @@ msgid "No license. All rights reserved"
 msgstr ""
 
 msgid "No matches found"
+msgstr ""
+
+msgid "No matching issue found. Make sure that you are adding a valid issue URL."
 msgstr ""
 
 msgid "No matching labels"
@@ -23380,7 +23386,7 @@ msgstr ""
 msgid "Profiles|Main settings"
 msgstr ""
 
-msgid "Profiles|No file chosen"
+msgid "Profiles|No file chosen."
 msgstr ""
 
 msgid "Profiles|Notification email"
@@ -27275,9 +27281,6 @@ msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select projects"
-msgstr ""
-
-msgid "Select required regulatory standard."
 msgstr ""
 
 msgid "Select reviewer(s)"

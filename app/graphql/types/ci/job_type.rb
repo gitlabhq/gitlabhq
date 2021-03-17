@@ -6,6 +6,8 @@ module Types
       graphql_name 'CiJob'
       authorize :read_commit_status
 
+      field :id, GraphQL::ID_TYPE, null: false,
+            description: 'ID of the job.'
       field :pipeline, Types::Ci::PipelineType, null: true,
             description: 'Pipeline the job belongs to.'
       field :name, GraphQL::STRING_TYPE, null: true,
@@ -22,6 +24,8 @@ module Types
             description: 'When a job has finished running.'
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the job in seconds.'
+      field :short_sha, type: GraphQL::STRING_TYPE, null: false,
+            description: 'Short SHA1 ID of the commit.'
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find

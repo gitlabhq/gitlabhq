@@ -45,7 +45,5 @@ export default class UserInternalRegexHandler {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // eslint-disable-next-line
-  new UserInternalRegexHandler();
-});
+// eslint-disable-next-line no-new
+new UserInternalRegexHandler();

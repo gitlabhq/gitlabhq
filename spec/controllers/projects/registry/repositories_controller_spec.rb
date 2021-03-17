@@ -16,19 +16,19 @@ RSpec.describe Projects::Registry::RepositoriesController do
       project.add_developer(user)
     end
 
-    shared_examples 'with name parameter' do
-      let_it_be(:repo) { create(:container_repository, project: project, name: 'my_searched_image') }
-      let_it_be(:another_repo) { create(:container_repository, project: project, name: 'bar') }
-
-      it 'returns the searched repo' do
-        go_to_index(format: :json, params: { name: 'my_searched_image' })
+    shared_examples 'renders 200 for html and 404 for json' do
+      it 'successfully renders container repositories', :snowplow do
+        go_to_index
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.length).to eq 1
-        expect(json_response.first).to include(
-          'id' => repo.id,
-          'name' => repo.name
-        )
+        # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
+        expect_no_snowplow_event
+      end
+
+      it 'returns 404 for request in json format' do
+        go_to_index(format: :json)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -50,33 +50,12 @@ RSpec.describe Projects::Registry::RepositoriesController do
                                          tags: %w[rc1 latest])
           end
 
-          it 'successfully renders container repositories', :snowplow do
-            go_to_index
-
-            expect_no_snowplow_event
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it 'tracks the event', :snowplow do
-            go_to_index(format: :json)
-
-            expect_snowplow_event(category: anything, action: 'list_repositories')
-          end
-
           it 'creates a root container repository' do
             expect { go_to_index }.to change { ContainerRepository.all.count }.by(1)
             expect(ContainerRepository.first).to be_root_repository
           end
 
-          it 'json has a list of projects' do
-            go_to_index(format: :json)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('registry/repositories')
-            expect(response).to include_pagination_headers
-          end
-
-          it_behaves_like 'with name parameter'
+          it_behaves_like 'renders 200 for html and 404 for json'
         end
 
         context 'when there are no tags for this repository' do
@@ -84,22 +63,11 @@ RSpec.describe Projects::Registry::RepositoriesController do
             stub_container_registry_tags(repository: :any, tags: [])
           end
 
-          it 'successfully renders container repositories' do
-            go_to_index
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
           it 'does not ensure root container repository' do
             expect { go_to_index }.not_to change { ContainerRepository.all.count }
           end
 
-          it 'responds with json if asked' do
-            go_to_index(format: :json)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to be_kind_of(Array)
-          end
+          it_behaves_like 'renders 200 for html and 404 for json'
         end
       end
     end

@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.9.4 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
+
+
 ## 13.9.3 (2021-03-08)
 
 ### Fixed (4 changes)
@@ -610,6 +617,13 @@ entry.
 - Apply new GitLab UI for buttons in pipeline schedules.
 
 
+## 13.8.6 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
+
+
 ## 13.8.5 (2021-03-04)
 
 ### Security (6 changes)
@@ -1020,6 +1034,13 @@ entry.
 - Remove unneeded group label index. !51676
 - Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
 - Add verbiage + link sast to show it's in core. !51935
+
+
+## 13.7.9 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
 
 
 ## 13.7.8 (2021-03-04)

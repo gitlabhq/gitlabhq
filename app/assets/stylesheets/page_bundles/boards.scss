@@ -40,8 +40,8 @@
 
 [data-page$='epic_boards:index'],
 [data-page$='epic_boards:show'] {
-  .filter-form {
-    display: none;
+  .filtered-search-wrapper {
+    display: none !important;
   }
 }
 

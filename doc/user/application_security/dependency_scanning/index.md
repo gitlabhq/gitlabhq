@@ -183,10 +183,11 @@ The following variables are used for configuring specific analyzers (used for a 
 | `BUNDLER_AUDIT_ADVISORY_DB_URL`      | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
 | `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME` | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
 | `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
+| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database (For usage see: [examples](#hosting-a-copy-of-the-gemnasium_db-advisory-database))|
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies. |
-| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle use the Java version specified by this value. |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`. Maven and Gradle use the Java version specified by this value. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
@@ -504,6 +505,50 @@ ensure that it can reach your private repository. Here is an example configurati
    import setuptools.ssl_support
    setuptools.ssl_support.cert_paths = ['internal.crt']
    ```
+
+## Hosting a copy of the gemnasium_db advisory database
+
+The [gemnasium_db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
+used by `gemnasium`, `gemnasium-maven`, and `gemnasium-python` as the source of vulnerability data.
+This repository updates at scan time to fetch the latest advisories. However, due to a restricted
+networking environment, running this update is sometimes not possible. In this case, a user can do
+one of the following:
+
+- [Host a copy of the advisory database](#host-a-copy-of-the-advisory-database)
+- [Use a local clone](#use-a-local-clone)
+
+### Host a copy of the advisory database
+
+If [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is not reachable
+from within the environment, the user can host their own Git copy. Then the analyzer can be
+instructed to update the database from the user's copy by using `GEMNASIUM_DB_REMOTE_URL`:
+
+```yaml
+variables:
+  GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db/.git
+
+...
+```
+
+### Use a local clone
+
+If a hosted copy is not possible, then the user can clone [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
+or create an archive before the scan and point the analyzer to the directory (using:
+`GEMNASIUM_DB_LOCAL_PATH`). Turn off the analyzer's self-update mechanism (using:
+`GEMNASIUM_DB_UPDATE_DISABLED`). In this example, the database directory is created in the
+`before_script`, before the `gemnasium` analyzer's scan job:
+
+```yaml
+...
+
+gemnasium-dependency_scanning:
+  variables:
+    GEMNASIUM_DB_LOCAL_PATH: ./gemnasium-db-local
+    GEMNASIUM_DB_UPDATE_DISABLED: "true"
+  before_script:
+    - mkdir $GEMNASIUM_DB_LOCAL_PATH
+    - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
+```
 
 ## Limitations
 
