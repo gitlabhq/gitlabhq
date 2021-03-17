@@ -1,5 +1,0 @@
----
-title: Fix Auto DevOps deploys that use a default branch that's not named 'master'
-merge_request: 53280
-author: Mitchell Cash @MitchellCash
-type: fixed

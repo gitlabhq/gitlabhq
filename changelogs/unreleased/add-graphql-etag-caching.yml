@@ -1,5 +1,0 @@
----
-title: Add support for ETag caching when using GraphQL
-merge_request: 53978
-author:
-type: changed

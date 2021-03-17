@@ -1,6 +1,0 @@
----
-title: Added composite index to epic_issues table and improved performance of loading
-  bigger epic roadmaps
-merge_request: 54677
-author:
-type: performance

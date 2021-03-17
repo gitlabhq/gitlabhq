@@ -1127,7 +1127,7 @@ POST /projects
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
-| `default_branch`                                            | string  | **{dotted-circle}** No | `master` by default. |
+| `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
@@ -1276,7 +1276,7 @@ PUT /projects/:id
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | Enable container registry for this project. |
-| `default_branch`                                            | string         | **{dotted-circle}** No | `master` by default. |
+| `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |

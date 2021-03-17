@@ -1,5 +1,0 @@
----
-title: Fix bug in wiki page destroy API endpoint when an error is raised
-merge_request: 56285
-author:
-type: fixed

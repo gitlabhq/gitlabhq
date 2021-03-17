@@ -1,5 +1,0 @@
----
-title: Fix upgrade banner for Jira issues showing on group / instance level integrations
-merge_request: 56628
-author:
-type: fixed

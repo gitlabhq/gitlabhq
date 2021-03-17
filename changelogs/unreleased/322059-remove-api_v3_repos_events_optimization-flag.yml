@@ -1,5 +1,0 @@
----
-title: Fix N+1 queries in api/v3/repos/:namespace/:project/events endpoint
-merge_request: 55442
-author:
-type: performance

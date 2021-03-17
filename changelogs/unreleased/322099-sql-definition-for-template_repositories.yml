@@ -1,5 +1,0 @@
----
-title: Hardened "add" arithmetic for usage data
-merge_request: 54794
-author:
-type: performance

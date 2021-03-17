@@ -1,5 +1,0 @@
----
-title: Fix bug when snippet blobs array contain a nil value
-merge_request: 54552
-author:
-type: fixed

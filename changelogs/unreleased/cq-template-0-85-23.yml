@@ -1,5 +1,0 @@
----
-title: Use CodeQuality packaged with CodeClimate 0.85.23 by default in CI template
-merge_request: 55508
-author:
-type: changed

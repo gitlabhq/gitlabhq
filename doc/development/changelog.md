@@ -53,8 +53,8 @@ the `author` field. GitLab team members **should not**.
   a changelog entry regardless of these guidelines if the contributor wants one.
   Example: "Fixed a typo on the search results page."
 - Any docs-only changes **should not** have a changelog entry.
-- Any change behind a disabled feature flag **should not** have a changelog entry.
-- Any change behind an enabled feature flag **should** have a changelog entry.
+- Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
+- Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
 - Any change that adds new usage data metrics and changes that needs to be documented in Product Intelligence [Event Dictionary](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary) **should** have a changelog entry.
 - A change that adds snowplow events **should** have a changelog entry -
 - A change that [removes a feature flag](feature_flags/index.md) **must** have a changelog entry.

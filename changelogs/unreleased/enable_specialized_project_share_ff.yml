@@ -1,5 +1,0 @@
----
-title: Project sharing to use specialized worker to calculate project authorizations
-merge_request: 56606
-author:
-type: performance

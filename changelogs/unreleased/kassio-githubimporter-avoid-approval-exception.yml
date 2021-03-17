@@ -1,5 +1,0 @@
----
-title: 'GithubImporter: Add Merge request approval only if it does not exists yet'
-merge_request: 55376
-author:
-type: fixed

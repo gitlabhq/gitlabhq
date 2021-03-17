@@ -29,6 +29,6 @@
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .form-text.text-muted Existing branch name, tag, or commit SHA
   .form-actions
-    = button_tag 'Create branch', class: 'gl-button btn btn-success'
-    = link_to 'Cancel', project_branches_path(@project), class: 'gl-button btn btn-cancel'
+    = button_tag 'Create branch', class: 'gl-button btn btn-confirm'
+    = link_to 'Cancel', project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

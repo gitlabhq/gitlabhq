@@ -51,18 +51,18 @@ module Gitlab
 
       def body
         @body ||= begin
-                    body = {
-                      user_identifier: @user.email,
-                      project_classification_label: @label,
-                      identities: @user.identities.map { |identity| { provider: identity.provider, extern_uid: identity.extern_uid } }
-                    }
+          body = {
+            user_identifier: @user.email,
+            project_classification_label: @label,
+            identities: @user.identities.map { |identity| { provider: identity.provider, extern_uid: identity.extern_uid } }
+          }
 
-                    if @user.ldap_identity
-                      body[:user_ldap_dn] = @user.ldap_identity.extern_uid
-                    end
+          if @user.ldap_identity
+            body[:user_ldap_dn] = @user.ldap_identity.extern_uid
+          end
 
-                    body
-                  end
+          body
+        end
       end
     end
   end

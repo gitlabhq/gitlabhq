@@ -1,5 +1,0 @@
----
-title: Expose container_registry_image_prefix to project API
-merge_request: 54090
-author: Mathieu Parent
-type: added

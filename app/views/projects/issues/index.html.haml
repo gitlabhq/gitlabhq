@@ -24,7 +24,8 @@
       full_path: @project.full_path,
       has_blocked_issues_feature: Gitlab.ee? && @project.feature_available?(:blocked_issues).to_s,
       has_issuable_health_status_feature: Gitlab.ee? && @project.feature_available?(:issuable_health_status).to_s,
-      has_issue_weights_feature: Gitlab.ee? && @project.feature_available?(:issue_weights).to_s } }
+      has_issue_weights_feature: Gitlab.ee? && @project.feature_available?(:issue_weights).to_s,
+      issues_path: project_issues_path(@project) } }
   - else
     = render 'shared/issuable/search_bar', type: :issues
 

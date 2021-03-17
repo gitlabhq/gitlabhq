@@ -1,5 +1,0 @@
----
-title: Fix Sidekiq system check for cluster mode
-merge_request: 55530
-author: Horst Prote
-type: other

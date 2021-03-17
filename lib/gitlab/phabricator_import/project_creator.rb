@@ -56,11 +56,11 @@ module Gitlab
 
       def project_feature_attributes
         @project_features_attributes ||= begin
-                                           # everything disabled except for issues
-                                           ProjectFeature::FEATURES.map do |feature|
-                                             [ProjectFeature.access_level_attribute(feature), ProjectFeature::DISABLED]
-                                           end.to_h.merge(ProjectFeature.access_level_attribute(:issues) => ProjectFeature::ENABLED)
-                                         end
+          # everything disabled except for issues
+          ProjectFeature::FEATURES.map do |feature|
+            [ProjectFeature.access_level_attribute(feature), ProjectFeature::DISABLED]
+          end.to_h.merge(ProjectFeature.access_level_attribute(:issues) => ProjectFeature::ENABLED)
+        end
       end
 
       def import_data

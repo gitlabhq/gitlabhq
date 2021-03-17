@@ -1,5 +1,0 @@
----
-title: Fix empty field in custom notification events modal
-merge_request: 55313
-author: Kev @KevSlashNull
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Remove unneeded transitions on MR for mark_as_unchecked event
-merge_request: 53537
-author:
-type: performance

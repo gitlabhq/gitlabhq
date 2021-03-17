@@ -1,5 +1,0 @@
----
-title: Fix status cache for upstream pipelines
-merge_request: 54937
-author:
-type: fixed

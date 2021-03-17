@@ -1,5 +1,0 @@
----
-title: Better error message when import fails due to backend validation
-merge_request: 54827
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix project import error occurring due to default visibility
-merge_request: 53827
-author: Jonas Wälter @wwwjon
-type: fixed

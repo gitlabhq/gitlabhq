@@ -52,20 +52,20 @@ module API
           actor.update_last_used_at!
 
           check_result = begin
-                           Gitlab::Auth::CurrentUserMode.bypass_session!(actor.user&.id) do
-                             access_check!(actor, params)
-                           end
-                         rescue Gitlab::GitAccess::ForbiddenError => e
-                           # The return code needs to be 401. If we return 403
-                           # the custom message we return won't be shown to the user
-                           # and, instead, the default message 'GitLab: API is not accessible'
-                           # will be displayed
-                           return response_with_status(code: 401, success: false, message: e.message)
-                         rescue Gitlab::GitAccess::TimeoutError => e
-                           return response_with_status(code: 503, success: false, message: e.message)
-                         rescue Gitlab::GitAccess::NotFoundError => e
-                           return response_with_status(code: 404, success: false, message: e.message)
-                         end
+            Gitlab::Auth::CurrentUserMode.bypass_session!(actor.user&.id) do
+              access_check!(actor, params)
+            end
+          rescue Gitlab::GitAccess::ForbiddenError => e
+            # The return code needs to be 401. If we return 403
+            # the custom message we return won't be shown to the user
+            # and, instead, the default message 'GitLab: API is not accessible'
+            # will be displayed
+            return response_with_status(code: 401, success: false, message: e.message)
+          rescue Gitlab::GitAccess::TimeoutError => e
+            return response_with_status(code: 503, success: false, message: e.message)
+          rescue Gitlab::GitAccess::NotFoundError => e
+            return response_with_status(code: 404, success: false, message: e.message)
+          end
 
           log_user_activity(actor.user)
 

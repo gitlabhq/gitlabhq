@@ -1,5 +1,0 @@
----
-title: Add CI_JOB_STARTED_AT and CI_PIPELINE_CREATED_AT variables
-merge_request: 54989
-author: Vincent Firmin @winkies
-type: added

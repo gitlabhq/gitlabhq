@@ -1,5 +1,0 @@
----
-title: Correct generated maven repository instruction for Gradle Groovy DSL
-merge_request: 56318
-author: Cromefire_ (@cromefire_)
-type: fixed

@@ -70,7 +70,7 @@ module AuthenticatesWithTwoFactor
     elsif !user.confirmed?
       I18n.t('devise.failure.unconfirmed')
     else
-      _('Invalid Login or password')
+      _('Invalid login or password')
     end
   end
 

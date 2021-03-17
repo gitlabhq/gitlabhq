@@ -629,3 +629,14 @@ Lint/RedundantSafeNavigation:
 
 Style/ClassEqualityComparison:
   Enabled: true
+
+# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/207950
+Cop/UserAdmin:
+  Enabled: true
+  Exclude:
+    - 'app/controllers/admin/sessions_controller.rb'
+    - 'app/controllers/concerns/enforces_admin_authentication.rb'
+    - 'app/policies/base_policy.rb'
+    - 'lib/gitlab/auth/current_user_mode.rb'
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

@@ -1,5 +1,0 @@
----
-title: 'GraphQL: Expose Label "created_at" and "updated_at"'
-merge_request: 54487
-author:
-type: changed

@@ -1,0 +1,8 @@
+# This data file drives the specs in
+# spec/frontend/fixtures/api_markdown.rb and
+# spec/frontend/rich_text_editor/extensions/markdown_processing_spec.js
+---
+- name: bold
+  markdown: '**bold**'
+- name: code
+  markdown: '`code`'

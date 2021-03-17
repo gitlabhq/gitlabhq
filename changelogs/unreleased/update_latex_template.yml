@@ -1,5 +1,0 @@
----
-title: Update LaTeX Docker image in CI Templates to TexLive 2020
-merge_request: 52043
-author: Michael Schmitt @schmitmd
-type: changed

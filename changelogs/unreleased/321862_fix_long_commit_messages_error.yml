@@ -1,5 +1,0 @@
----
-title: Fix 500 error for long commit messages
-merge_request: 55320
-author:
-type: fixed

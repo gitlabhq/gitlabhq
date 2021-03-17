@@ -1,5 +1,0 @@
----
-title: Fix the npm instance level API to exclude subgroups
-merge_request: 54554
-author:
-type: fixed

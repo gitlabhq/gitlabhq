@@ -1,7 +1,0 @@
----
-title: Mark `startDate` and `endDate` arguments as deprecated in the GraphQL schema for `Project.milestones` and `Group.milestones`
-       (FOSS and EE), and `Project.iterations`, `Project.milestones`, `Group.epic`, `Group.epics`, `Group.iterations`, `Group.milestones`,
-       `BoardEpic.children`, and `Epic.children` fields (EE-only). Previously these arguments were marked as deprecated only in their descriptions
-merge_request: 45229
-author:
-type: changed

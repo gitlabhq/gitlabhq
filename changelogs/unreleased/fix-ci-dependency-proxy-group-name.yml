@@ -1,5 +1,0 @@
----
-title: Fix the value of `$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` when used in group with a name containing uppercase letters
-merge_request: 54559
-author: Eric Engestrom @1ace
-type: fixed

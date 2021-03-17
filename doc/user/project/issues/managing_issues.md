@@ -199,7 +199,7 @@ can be closed automatically when the commit reaches the project's default branch
 
 If a commit message or merge request description contains text matching a [defined pattern](#default-closing-pattern),
 all issues referenced in the matched text are closed. This happens when the commit
-is pushed to a project's [**default** branch](../repository/branches/index.md#default-branch),
+is pushed to a project's [**default** branch](../repository/branches/default.md),
 or when a commit or merge request is merged into it.
 
 For example, if `Closes #4, #6, Related to #5` is included in a Merge Request

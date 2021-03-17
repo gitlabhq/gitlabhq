@@ -1,5 +1,0 @@
----
-title: Remove unique index and add composite key index to Security Orchestration
-merge_request: 55521
-author:
-type: other

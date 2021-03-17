@@ -1,5 +1,0 @@
----
-title: Prevent removal of the last group owner if the last group owner is a blocked user
-merge_request: 54587
-author: Jonas Wälter @wwwjon
-type: fixed

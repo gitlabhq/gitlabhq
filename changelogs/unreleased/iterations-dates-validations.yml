@@ -1,5 +1,0 @@
----
-title: Allow overlapping iteration dates with ancestor group iterations and restrict dates overlapping for iterations within same group
-merge_request: 52403
-author:
-type: changed

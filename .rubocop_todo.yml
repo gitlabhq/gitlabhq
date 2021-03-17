@@ -32,24 +32,6 @@ Graphql/IDType:
 Layout/ArgumentAlignment:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, Severity.
-# SupportedStylesAlignWith: start_of_line, begin
-Layout/BeginEndAlignment:
-  Exclude:
-    - 'app/controllers/groups/shared_projects_controller.rb'
-    - 'app/workers/concerns/reactive_cacheable_worker.rb'
-    - 'ee/app/services/security/token_revocation_service.rb'
-    - 'ee/lib/gitlab/analytics/cycle_analytics/summary/group/deploy.rb'
-    - 'ee/lib/gitlab/ci/config/entry/vault/secret.rb'
-    - 'lib/api/internal/base.rb'
-    - 'lib/atlassian/jira_connect/serializers/build_entity.rb'
-    - 'lib/gitlab/ci/jwt.rb'
-    - 'lib/gitlab/external_authorization/client.rb'
-    - 'lib/gitlab/phabricator_import/project_creator.rb'
-    - 'scripts/gitaly_test.rb'
-
 # Offense count: 54
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAliasSyntax, AllowedMethods.

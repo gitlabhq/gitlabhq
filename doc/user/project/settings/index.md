@@ -21,7 +21,7 @@ functionality of a project.
 
 ### General project settings
 
-Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and topics:
+Adjust your project's name, description, avatar, [default branch](../repository/branches/default.md), and topics:
 
 ![general project settings](img/general_settings.png)
 

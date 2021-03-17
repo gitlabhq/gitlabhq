@@ -387,16 +387,10 @@ because the project cannot be moved.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
-By default, when you create a new project in GitLab, the initial branch is called `master`.
-For groups, a group owner can customize the initial branch name to something
-else. This way, every new project created under that group from then on starts from the custom branch name rather than `master`.
-
-To use a custom name for the initial branch:
-
-1. Go to the group's **Settings > Repository** page.
-1. Expand the **Default initial branch name** section.
-1. Change the default initial branch to a custom name of your choice.
-1. Select **Save changes**.
+When you create a new project in GitLab, a default branch is created with the
+first push. The group owner can
+[customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
+for the group's projects to meet your group's needs.
 
 ## Remove a group
 
@@ -467,7 +461,7 @@ For more information, [see this issue](https://gitlab.com/gitlab-org/gitlab/-/is
 
 To ensure only people from your organization can access particular
 resources, you can restrict access to groups by IP address. This setting applies to all subgroups,
-projects, issues, and so on. 
+projects, issues, and so on.
 
 IP access restrictions can be configured at the group level only.
 

@@ -17,10 +17,10 @@ module ReactiveCacheableWorker
 
   def perform(class_name, id, *args)
     klass = begin
-              class_name.constantize
-            rescue NameError
-              nil
-            end
+      class_name.constantize
+    rescue NameError
+      nil
+    end
 
     return unless klass
 

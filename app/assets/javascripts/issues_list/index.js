@@ -78,6 +78,7 @@ export function initIssuesListApp() {
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
+    issuesPath,
   } = el.dataset;
 
   return new Vue({
@@ -91,6 +92,7 @@ export function initIssuesListApp() {
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      issuesPath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

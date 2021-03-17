@@ -1,5 +1,0 @@
----
-title: Preload certain data used in the updating of a merge request
-merge_request: 53802
-author:
-type: performance

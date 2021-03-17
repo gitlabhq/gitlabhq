@@ -4856,6 +4856,9 @@ msgstr[1] ""
 msgid "Blocked issue"
 msgstr ""
 
+msgid "Blocking"
+msgstr ""
+
 msgid "Blocking issues"
 msgstr ""
 
@@ -16650,9 +16653,6 @@ msgstr ""
 msgid "Invalid Insights config file detected"
 msgstr ""
 
-msgid "Invalid Login or password"
-msgstr ""
-
 msgid "Invalid OS"
 msgstr ""
 
@@ -17730,6 +17730,9 @@ msgstr ""
 msgid "Label lists show all issues with the selected label."
 msgstr ""
 
+msgid "Label priority"
+msgstr ""
+
 msgid "Label was created"
 msgstr ""
 
@@ -18617,6 +18620,9 @@ msgid "Manifest file import"
 msgstr ""
 
 msgid "Manifest import"
+msgstr ""
+
+msgid "Manual"
 msgstr ""
 
 msgid "ManualOrdering|Couldn't save the order of the issues"
@@ -19684,6 +19690,9 @@ msgid "Milestone"
 msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Milestone due date"
+msgstr ""
 
 msgid "Milestone lists not available with your current license"
 msgstr ""
@@ -22939,6 +22948,9 @@ msgstr ""
 msgid "Policy project doesn't exists"
 msgstr ""
 
+msgid "Popularity"
+msgstr ""
+
 msgid "Postman collection"
 msgstr ""
 
@@ -23126,6 +23138,9 @@ msgid "Prioritized Labels"
 msgstr ""
 
 msgid "Prioritized label"
+msgstr ""
+
+msgid "Priority"
 msgstr ""
 
 msgid "Private"

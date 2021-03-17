@@ -1,5 +1,0 @@
----
-title: Remove merge_request_rebase_nowait_lock flag
-merge_request: 56406
-author:
-type: other

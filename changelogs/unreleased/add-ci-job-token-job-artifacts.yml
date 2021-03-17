@@ -1,5 +1,0 @@
----
-title: Allow `$CI_JOB_TOKEN` to access the "Download a single artifact file" endpoints of the Jobs Artifacts API.
-merge_request: 55042
-author: Eric Engestrom @1ace
-type: changed

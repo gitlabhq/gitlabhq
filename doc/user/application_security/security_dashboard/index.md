@@ -152,7 +152,7 @@ found in those projects' default branches.
 ## Keeping the dashboards up to date
 
 The Security Dashboard displays information from the results of the most recent
-security scan on the [default branch](../../project/repository/branches/index.md#default-branch),
+security scan on the [default branch](../../project/repository/branches/default.md),
 which means that security scans are performed every time the branch is updated.
 
 If the default branch is updated infrequently, scans are run infrequently and the

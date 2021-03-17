@@ -1,5 +1,0 @@
----
-title: Fix rendering of projects when the last pipeline changes during rendering
-merge_request: 54651
-author:
-type: fixed

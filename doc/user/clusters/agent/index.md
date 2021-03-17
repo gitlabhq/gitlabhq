@@ -246,6 +246,10 @@ Replace the value of `agent-token` below with the token received from the previo
 docker run --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:latest generate --agent-token=your-agent-token --kas-address=wss://kas.gitlab.example.com --agent-version latest | kubectl apply -f -
 ```
 
+Set `agent-version` to the latest released patch version matching your
+GitLab installation's major and minor versions. For example, if you have
+GitLab v13.9.0, set `--agent-version=v13.9.1`.
+
 To find out the various options the above Docker container supports, run:
 
 ```shell

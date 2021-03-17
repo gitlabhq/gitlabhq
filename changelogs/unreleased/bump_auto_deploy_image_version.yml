@@ -1,4 +1,0 @@
-title: Bump auto-deploy-image tag in Deploy.latest.gitlab-ci.yml to v2.6.0, which includes changes to ciliumnetworkpolicies.
-merge_request: 54983
-author:
-type: added

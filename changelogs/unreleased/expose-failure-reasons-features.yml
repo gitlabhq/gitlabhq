@@ -1,5 +1,0 @@
----
-title: Expose `failure_reasons` in `Build#features`
-merge_request: 53964
-author:
-type: added

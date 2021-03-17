@@ -1,5 +1,0 @@
----
-title: Use gitlab_web_url (if it exists) for issue title links in Issue lists
-merge_request: 55021
-author:
-type: fixed

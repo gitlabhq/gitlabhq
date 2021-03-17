@@ -86,7 +86,7 @@ RSpec.describe SessionsController do
           post(:create, params: { user: { login: 'invalid', password: 'invalid' } })
 
           expect(response)
-            .to set_flash.now[:alert].to(/Invalid Login or password/)
+            .to set_flash.now[:alert].to(/Invalid login or password/)
         end
       end
 
@@ -348,7 +348,7 @@ RSpec.describe SessionsController do
             otp_user_id: user.id
           )
 
-          expect(response).to set_flash.now[:alert].to(/Invalid Login or password/)
+          expect(response).to set_flash.now[:alert].to(/Invalid login or password/)
         end
       end
 

@@ -1,5 +1,0 @@
----
-title: Fix not skipped manual and delayed DAG jobs
-merge_request: 54073
-author:
-type: fixed

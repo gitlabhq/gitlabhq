@@ -1,6 +1,0 @@
----
-title: Update spacing between Notifications dropdown, New Subgroup button, and New Project buttons while using the new confirm variant instead of the deprecated success variant for the New Project button. Better left alignment of Notifications dropdown at smaller breakpoints.
-  variant
-merge_request: 55819
-author:
-type: other

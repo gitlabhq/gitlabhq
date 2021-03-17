@@ -769,7 +769,7 @@ Parameters:
 
 ### Options for `default_branch_protection`
 
-The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable master branch, as described in the following table:
+The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
 
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|

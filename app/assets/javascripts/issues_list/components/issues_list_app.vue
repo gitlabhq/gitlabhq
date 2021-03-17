@@ -4,14 +4,26 @@ import { toNumber } from 'lodash';
 import createFlash from '~/flash';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableStatus } from '~/issue_show/constants';
-import { PAGE_SIZE } from '~/issues_list/constants';
+import {
+  CREATED_DESC,
+  PAGE_SIZE,
+  RELATIVE_POSITION_ASC,
+  sortOptions,
+  sortParams,
+} from '~/issues_list/constants';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
 export default {
+  CREATED_DESC,
   PAGE_SIZE,
+  sortOptions,
+  sortParams,
+  i18n: {
+    reorderError: __('An error occurred while reordering issues.'),
+  },
   components: {
     GlIcon,
     IssuableList,
@@ -28,12 +40,23 @@ export default {
     fullPath: {
       default: '',
     },
+    issuesPath: {
+      default: '',
+    },
   },
   data() {
+    const orderBy = getParameterByName('order_by');
+    const sort = getParameterByName('sort');
+    const sortKey = Object.keys(sortParams).find(
+      (key) => sortParams[key].order_by === orderBy && sortParams[key].sort === sort,
+    );
+
     return {
       currentPage: toNumber(getParameterByName('page')) || 1,
+      filters: sortParams[sortKey] || {},
       isLoading: false,
       issues: [],
+      sortKey: sortKey || CREATED_DESC,
       totalIssues: 0,
     };
   },
@@ -42,7 +65,11 @@ export default {
       return {
         page: this.currentPage,
         state: IssuableStatus.Open,
+        ...this.filters,
       };
+    },
+    isManualOrdering() {
+      return this.sortKey === RELATIVE_POSITION_ASC;
     },
   },
   mounted() {
@@ -59,6 +86,7 @@ export default {
             per_page: this.$options.PAGE_SIZE,
             state: IssuableStatus.Open,
             with_labels_details: true,
+            ...this.filters,
           },
         })
         .then(({ data, headers }) => {
@@ -76,6 +104,44 @@ export default {
     handlePageChange(page) {
       this.fetchIssues(page);
     },
+    handleReorder({ newIndex, oldIndex }) {
+      const issueToMove = this.issues[oldIndex];
+      const isDragDropDownwards = newIndex > oldIndex;
+      const isMovingToBeginning = newIndex === 0;
+      const isMovingToEnd = newIndex === this.issues.length - 1;
+
+      let moveBeforeId;
+      let moveAfterId;
+
+      if (isDragDropDownwards) {
+        const afterIndex = isMovingToEnd ? newIndex : newIndex + 1;
+        moveBeforeId = this.issues[newIndex].id;
+        moveAfterId = this.issues[afterIndex].id;
+      } else {
+        const beforeIndex = isMovingToBeginning ? newIndex : newIndex - 1;
+        moveBeforeId = this.issues[beforeIndex].id;
+        moveAfterId = this.issues[newIndex].id;
+      }
+
+      return axios
+        .put(`${this.issuesPath}/${issueToMove.iid}/reorder`, {
+          move_before_id: isMovingToBeginning ? null : moveBeforeId,
+          move_after_id: isMovingToEnd ? null : moveAfterId,
+        })
+        .then(() => {
+          // Move issue to new position in list
+          this.issues.splice(oldIndex, 1);
+          this.issues.splice(newIndex, 0, issueToMove);
+        })
+        .catch(() => {
+          createFlash({ message: this.$options.i18n.reorderError });
+        });
+    },
+    handleSort(value) {
+      this.sortKey = value;
+      this.filters = sortParams[value];
+      this.fetchIssues();
+    },
   },
 };
 </script>
@@ -86,11 +152,13 @@ export default {
     recent-searches-storage-key="issues"
     :search-input-placeholder="__('Search or filter results…')"
     :search-tokens="[]"
-    :sort-options="[]"
+    :sort-options="$options.sortOptions"
+    :initial-sort-by="sortKey"
     :issuables="issues"
     :tabs="[]"
     current-tab=""
     :issuables-loading="isLoading"
+    :is-manual-ordering="isManualOrdering"
     :show-pagination-controls="true"
     :total-items="totalIssues"
     :current-page="currentPage"
@@ -98,6 +166,8 @@ export default {
     :next-page="currentPage + 1"
     :url-params="urlParams"
     @page-change="handlePageChange"
+    @reorder="handleReorder"
+    @sort="handleSort"
   >
     <template #timeframe="{ issuable = {} }">
       <issue-card-time-info :issue="issuable" />

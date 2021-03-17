@@ -1,5 +1,0 @@
----
-title: Cleanup incorrect data in projects.has_external_issue_tracker
-merge_request: 53936
-author:
-type: fixed

@@ -40,7 +40,7 @@
         data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
           container: 'body' } do
         = s_('Branches|Delete merged branches')
-      = link_to new_project_branch_path(@project), class: 'gl-button btn btn-success' do
+      = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
         = s_('Branches|New branch')
 
 = render_if_exists 'projects/commits/mirror_status'

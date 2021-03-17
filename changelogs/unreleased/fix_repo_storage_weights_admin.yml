@@ -1,5 +1,0 @@
----
-title: Allow saving repository weights after a storage has been removed
-merge_request: 55689
-author:
-type: fixed

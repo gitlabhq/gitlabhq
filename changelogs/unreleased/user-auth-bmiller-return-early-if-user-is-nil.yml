@@ -1,5 +1,0 @@
----
-title: Fix a crash when logging in using SAML for the first time when sign-ups are disabled
-merge_request: 50216
-author:
-type: other

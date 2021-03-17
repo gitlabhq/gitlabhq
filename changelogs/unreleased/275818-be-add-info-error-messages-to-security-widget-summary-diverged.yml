@@ -1,6 +1,0 @@
----
-title: Add divergedFromTargetBranch field to MergeRequestType to indicate the target
-  branch has diverged from the source branch
-merge_request: 53759
-author:
-type: changed

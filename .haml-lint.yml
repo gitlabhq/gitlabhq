@@ -150,6 +150,9 @@ linters:
       - Style/WordArray
       - Style/ZeroLengthPredicate
 
+      # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/207950
+      - Cop/UserAdmin
+
   RubyComments:
     enabled: true
 

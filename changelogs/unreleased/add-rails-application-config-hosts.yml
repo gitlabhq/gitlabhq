@@ -1,5 +1,0 @@
----
-title: Add setting to control Rails.application.config.hosts
-merge_request: 55491
-author:
-type: added

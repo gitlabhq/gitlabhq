@@ -969,7 +969,9 @@ To edit an existing site profile:
 1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
 1. Edit the fields then select **Save profile**.
 
-The site profile is updated with the edited details.
+If a site profile is linked to a security policy, a user cannot edit the profile from this page. See
+[Scan Policies](../policies/index.md)
+for more information.
 
 #### Delete a site profile
 
@@ -981,7 +983,9 @@ To delete an existing site profile:
 1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
-The site profile is deleted.
+If a site profile is linked to a security policy, a user cannot delete the profile from this page.
+See [Scan Policies](../policies/index.md)
+for more information.
 
 #### Validate a site profile
 
@@ -1103,7 +1107,9 @@ To edit a scanner profile:
 1. Edit the form.
 1. Select **Save profile**.
 
-The scanner profile is updated with the edited details.
+If a scanner profile is linked to a security policy, a user cannot edit the profile from this page.
+See [Scan Policies](../policies/index.md)
+for more information.
 
 #### Delete a scanner profile
 
@@ -1115,7 +1121,9 @@ To delete a scanner profile:
 1. In the scanner's row select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
 1. Select **Delete**.
 
-The scanner profile is deleted.
+If a scanner profile is linked to a security policy, a user cannot delete the profile from this
+page. See [Scan Policies](../policies/index.md)
+for more information.
 
 ## Reports
 

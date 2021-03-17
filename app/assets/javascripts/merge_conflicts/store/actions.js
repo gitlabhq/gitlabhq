@@ -118,3 +118,8 @@ export const handleSelected = ({ commit, state, getters }, { file, line: { id, s
 
   commit(types.UPDATE_FILE, { file: updated, index });
 };
+
+export const updateFile = ({ commit, getters }, file) => {
+  const index = getters.getFileIndex(file);
+  commit(types.UPDATE_FILE, { file, index });
+};

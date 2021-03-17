@@ -1,6 +1,0 @@
----
-title: Change the default batch_class_name for batched_background_migrations to the
-  unqualified class name
-merge_request: 56036
-author:
-type: changed

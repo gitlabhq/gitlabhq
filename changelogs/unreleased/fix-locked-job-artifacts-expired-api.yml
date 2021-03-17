@@ -1,5 +1,0 @@
----
-title: Correct job artifacts API download for expired and locked files
-merge_request: 53567
-author: Fabio Huser
-type: fixed

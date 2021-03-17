@@ -58,7 +58,7 @@ export default {
       type: String,
       required: false,
       default: '',
-      validator: (value) => value === '' || /(_desc)|(_asc)/g.test(value),
+      validator: (value) => value === '' || /(_desc)|(_asc)/gi.test(value),
     },
     showCheckbox: {
       type: Boolean,
