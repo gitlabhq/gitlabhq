@@ -1,5 +1,0 @@
----
-title: Move branch deletion on merge to async worker
-merge_request: 55390
-author:
-type: performance

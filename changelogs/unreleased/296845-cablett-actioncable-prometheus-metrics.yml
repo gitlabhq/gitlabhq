@@ -1,5 +1,0 @@
----
-title: Add Prometheus metrics for ActionCable subscription events
-merge_request: 56157
-author:
-type: added

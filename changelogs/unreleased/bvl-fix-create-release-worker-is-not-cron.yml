@@ -1,5 +1,0 @@
----
-title: move create_release_evidence sidekiq queue out of the cronjob namespace
-merge_request: 54432
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Cache /search/count requests in the browser
-merge_request: 55036
-author:
-type: performance

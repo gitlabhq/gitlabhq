@@ -1,5 +1,0 @@
----
-title: Fixed diff notes GraphQL mutation not allowing comments on deleted lines
-merge_request: 54801
-author:
-type: fixed

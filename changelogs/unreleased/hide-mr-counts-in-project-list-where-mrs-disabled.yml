@@ -1,5 +1,0 @@
----
-title: Hide MR count and link in project list where MRs are disabled
-merge_request: !56432
-author: Simon Stieger @sim0
-type: fixed

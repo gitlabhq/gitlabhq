@@ -1,5 +1,0 @@
----
-title: Fix edited timestamp updated when transforming / resolving comments
-merge_request: 55671
-author: Mycroft Kang @TaehyeokKang
-type: fixed

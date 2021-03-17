@@ -1,5 +1,0 @@
----
-title: Forcibly load OpenSSL::X509::DEFAULT_CERT_FILE
-merge_request: 54569
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix `@` autocomplete selecting the loading icon
-merge_request: 54925
-author:
-type: fixed

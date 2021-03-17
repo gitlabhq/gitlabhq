@@ -1,5 +1,0 @@
----
-title: Move to btn-confirm in app/views/devise directory
-merge_request: 55200
-author: Yogi (@yo)
-type: changed

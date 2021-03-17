@@ -1,5 +1,0 @@
----
-title: Add API endpoint for fetching a single job by CI_JOB_TOKEN
-merge_request: 51727
-author: ahmet2mir
-type: added

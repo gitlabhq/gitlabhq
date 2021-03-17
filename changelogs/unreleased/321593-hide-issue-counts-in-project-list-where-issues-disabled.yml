@@ -1,5 +1,0 @@
----
-title: Hide issue count and link in project list for projects with disabled issues
-merge_request: 54275
-author: Simon Stieger @sim0
-type: fixed

@@ -1,6 +1,0 @@
----
-title: Limit Project Authorizations refresh for shared groups only to direct members
-  of the group being shared with
-merge_request: 51869
-author:
-type: performance

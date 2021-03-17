@@ -1,5 +1,0 @@
----
-title: Improve performance of manual pipeline form by limiting the refs loaded on page load.
-merge_request: 55394
-author:
-type: performance

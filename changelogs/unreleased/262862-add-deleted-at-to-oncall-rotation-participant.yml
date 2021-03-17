@@ -1,5 +1,0 @@
----
-title: Add is_removed column on Oncall Participant model
-merge_request: 54779
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Deprecate instanceStatisticsMeasurements in favor of usageTrendsMeasurements
-  GraphQL field
-merge_request: 54153
-author:
-type: changed

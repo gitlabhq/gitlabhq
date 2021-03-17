@@ -1,5 +1,0 @@
----
-title: Port essential database metrics to Sidekiq
-merge_request: 56005
-author:
-type: changed

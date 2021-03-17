@@ -1,5 +1,0 @@
----
-title: Allow anonymous access to public Conan packages
-merge_request: 54047
-author: Steve Mokris @smokris
-type: changed

@@ -1,5 +1,0 @@
----
-title: Support maven plugins packaging in the maven metadata sync worker
-merge_request: 56229
-author:
-type: fixed

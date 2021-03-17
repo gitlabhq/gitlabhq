@@ -1,5 +1,0 @@
----
-title: Move CI_CONFIG_PATH as project variable and deprecate CI_PROJECT_CONFIG_PATH
-merge_request: 54498
-author:
-type: changed

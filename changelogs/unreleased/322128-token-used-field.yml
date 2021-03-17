@@ -1,5 +1,0 @@
----
-title: Add last_used_at field to cluster agent token
-merge_request: 56023
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Enable `trace_memory_allocations` by default
-merge_request: 55369
-author:
-type: changed

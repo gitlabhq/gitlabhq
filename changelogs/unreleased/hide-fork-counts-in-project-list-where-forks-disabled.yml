@@ -1,5 +1,0 @@
----
-title: Hide fork count and link in project list where forks are disabled
-merge_request: 56520
-author: Simon Stieger @sim0
-type: fixed

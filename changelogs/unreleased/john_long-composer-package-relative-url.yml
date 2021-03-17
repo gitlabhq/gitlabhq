@@ -1,5 +1,0 @@
----
-title: Fix relative URL with composer package
-merge_request: 53918
-author:
-type: fixed

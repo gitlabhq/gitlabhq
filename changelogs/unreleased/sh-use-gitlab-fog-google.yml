@@ -1,5 +1,0 @@
----
-title: Use gitlab-fog-google instead of upstream fog-google gem
-merge_request: 56245
-author:
-type: fixed

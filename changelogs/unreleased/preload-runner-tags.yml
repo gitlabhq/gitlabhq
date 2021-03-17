@@ -1,5 +1,0 @@
----
-title: Preload runner tags for `UpdateBuildQueueService`
-merge_request: 55543
-author:
-type: performance

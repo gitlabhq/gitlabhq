@@ -1,6 +1,0 @@
----
-title: Consider only distinct user ids for project authorizations refresh jobs for
-  group members
-merge_request: 54697
-author:
-type: performance

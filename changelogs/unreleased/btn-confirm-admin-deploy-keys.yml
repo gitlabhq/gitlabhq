@@ -1,5 +1,0 @@
----
-title: Move to btn-confirm from btn-success in admin/deploy_keys directory
-merge_request: 55267
-author: Yogi (@yo)
-type: changed

@@ -1,5 +1,0 @@
----
-title: Handle commits without descriptions for changelogs
-merge_request: 56224
-author:
-type: fixed

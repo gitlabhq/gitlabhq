@@ -1,5 +1,0 @@
----
-title: Sync the maven metadata file upon package deletion through the UI
-merge_request: 55207
-author:
-type: fixed

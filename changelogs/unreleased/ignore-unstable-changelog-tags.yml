@@ -1,5 +1,0 @@
----
-title: Ignore prerelease tags when generating changelogs
-merge_request: 55065
-author:
-type: changed

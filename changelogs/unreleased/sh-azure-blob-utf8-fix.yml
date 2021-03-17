@@ -1,5 +1,0 @@
----
-title: Fix UTF-8 characters not working with Azure Blob storage
-merge_request: 54875
-author:
-type: fixed

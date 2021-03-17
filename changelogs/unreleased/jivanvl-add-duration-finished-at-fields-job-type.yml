@@ -1,5 +1,0 @@
----
-title: Add duration and finishedAt GraphQL fields to jobType in the CI namespace
-merge_request: 54358
-author:
-type: changed

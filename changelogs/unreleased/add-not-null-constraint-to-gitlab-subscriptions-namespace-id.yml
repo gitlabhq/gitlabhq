@@ -1,5 +1,0 @@
----
-title: Add NOT NULL constraint to gitlab_subscriptions namespace_id
-merge_request: 54319
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Remove latest_builds_report_results preloading in pipeline serializer
-merge_request: 56181
-author:
-type: performance

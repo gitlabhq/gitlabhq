@@ -1,5 +1,0 @@
----
-title: Move from btn-success to btn-confirm in shared/access_token directory
-merge_request: 55298
-author: Yogi (@yo)
-type: changed

@@ -1,5 +1,0 @@
----
-title: Add API endpoint /application/plan_limits for package file size limits
-merge_request: 54232
-author: Jonas Wälter @wwwjon
-type: added

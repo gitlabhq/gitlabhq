@@ -1,5 +1,0 @@
----
-title: Add pagination of file diffs when viewing a large commit
-merge_request: 54236
-author:
-type: added

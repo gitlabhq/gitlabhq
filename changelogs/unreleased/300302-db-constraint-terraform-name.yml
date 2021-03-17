@@ -1,5 +1,0 @@
----
-title: Added non-null constraint to terraform state name
-merge_request: 54940
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Don't close auto suggest select boxes on click if only the mouseup (but not the mousedown) event happened outside the box
-merge_request: 51139
-author: Simon Stieger @sim0
-type: fixed

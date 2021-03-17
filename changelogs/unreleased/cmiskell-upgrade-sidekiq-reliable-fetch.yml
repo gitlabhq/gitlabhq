@@ -1,6 +1,0 @@
----
-title: Upgrade gitlab-sidekiq-fetcher for correctly detecting interrupted jobs when
-  Sidekiq pods are restarted
-merge_request: 54881
-author:
-type: fixed

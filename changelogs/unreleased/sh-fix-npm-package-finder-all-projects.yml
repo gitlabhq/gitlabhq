@@ -1,5 +1,0 @@
----
-title: Use `Namespace#all_projects` for NPM package finder
-merge_request: 56415
-author:
-type: performance

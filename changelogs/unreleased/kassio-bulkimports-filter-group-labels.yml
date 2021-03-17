@@ -1,5 +1,0 @@
----
-title: 'BulkImports: Avoid import ProjectLabels in the Group import level'
-merge_request: 54580
-author:
-type: changed

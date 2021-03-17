@@ -1,5 +1,0 @@
----
-title: Move to btn-confirm in app/views/shared/empty_states directory
-merge_request: 55203
-author: Yogi (@yo)
-type: changed

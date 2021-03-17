@@ -1,5 +1,0 @@
----
-title: Fix N+1s related to per-build metadata lookups
-merge_request: 55053
-author:
-type: performance

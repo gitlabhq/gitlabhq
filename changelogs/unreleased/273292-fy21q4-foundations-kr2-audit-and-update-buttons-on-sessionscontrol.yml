@@ -1,6 +1,0 @@
----
-title: Update the Sign In button to use the new confirm button variant, migrate OAuth
-  buttons to use the default variant of GlButton.
-merge_request: 53254
-author:
-type: other

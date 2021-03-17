@@ -1,5 +1,0 @@
----
-title: Merge Sentry's contexts into Gitlab::ApplicationContext
-merge_request: 53691
-author:
-type: changed

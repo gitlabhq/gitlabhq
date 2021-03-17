@@ -1,5 +1,0 @@
----
-title: Update k8s version for EKS cluster
-merge_request: 54389
-author: Vincent Firmin @winkies
-type: fixed

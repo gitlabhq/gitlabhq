@@ -1,5 +1,0 @@
----
-title: 'API: include external users in user search for non-admins'
-merge_request: 53584
-author: Jonas Wälter @wwwjon
-type: changed
