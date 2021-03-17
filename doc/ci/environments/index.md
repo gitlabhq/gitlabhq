@@ -6,9 +6,7 @@ type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 ---
 
-# Environments and deployments
-
-> Introduced in GitLab 8.9.
+# Environments and deployments **(FREE)**
 
 Environments describe where code is deployed.
 
@@ -123,7 +121,7 @@ Some variables cannot be used as environment names or URLs.
 For more information about the `environment` keywords, see
 [the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
 
-## Deployment tier of environments (**FREE**)
+## Deployment tier of environments
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 

@@ -30,30 +30,60 @@ RSpec.describe 'GFM autocomplete', :js do
       wait_for_requests
     end
 
-    it 'updates issue description with GFM reference' do
-      click_button 'Edit title and description'
+    describe 'issue description' do
+      it 'updates with GFM reference' do
+        click_button 'Edit title and description'
 
-      wait_for_requests
+        wait_for_requests
 
-      fill_in 'Description', with: "@#{user.name[0...3]}"
+        fill_in 'Description', with: "@#{user.name[0...3]}"
 
-      wait_for_requests
+        wait_for_requests
 
-      find_highlighted_autocomplete_item.click
+        find_highlighted_autocomplete_item.click
 
-      click_button 'Save changes'
+        click_button 'Save changes'
 
-      wait_for_requests
+        wait_for_requests
 
-      expect(find('.description')).to have_text(user.to_reference)
+        expect(find('.description')).to have_text(user.to_reference)
+      end
+
+      it 'allows quick actions' do
+        click_button 'Edit title and description'
+
+        fill_in 'Description', with: '/'
+
+        expect(find_autocomplete_menu).to be_visible
+      end
     end
 
-    it 'opens quick action autocomplete when updating description' do
-      click_button 'Edit title and description'
+    describe 'triggering autocomplete' do
+      it 'only opens autocomplete menu when trigger character is after whitespace', :aggregate_failures do
+        fill_in 'Comment', with: 'testing@'
+        expect(page).not_to have_css('.atwho-view')
 
-      fill_in 'Description', with: '/'
+        fill_in 'Comment', with: '@@'
+        expect(page).not_to have_css('.atwho-view')
 
-      expect(find_autocomplete_menu).to be_visible
+        fill_in 'Comment', with: "@#{user.username[0..2]}!"
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: "hello:#{user.username[0..2]}"
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: '7:'
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: 'w:'
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: 'Ё:'
+        expect(page).not_to have_css('.atwho-view')
+
+        fill_in 'Comment', with: "test\n\n@"
+        expect(find_autocomplete_menu).to be_visible
+      end
     end
 
     it 'opens autocomplete menu when field starts with text' do
@@ -92,32 +122,12 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find_autocomplete_menu).to have_text('alert milestone')
     end
 
-    it 'doesnt open autocomplete menu character is prefixed with text' do
-      fill_in 'Comment', with: 'testing@'
-
-      expect(page).not_to have_css('.atwho-view')
-    end
-
     it 'doesnt select the first item for non-assignee dropdowns' do
       fill_in 'Comment', with: ':'
 
       wait_for_requests
 
       expect(find_autocomplete_menu).not_to have_css('.cur')
-    end
-
-    it 'does not open autocomplete menu when ":" is prefixed by a number and letters' do
-      # Number.
-      fill_in 'Comment', with: '7:'
-      expect(page).not_to have_css('.atwho-view')
-
-      # ASCII letter.
-      fill_in 'Comment', with: 'w:'
-      expect(page).not_to have_css('.atwho-view')
-
-      # Non-ASCII letter.
-      fill_in 'Comment', with: 'Ё:'
-      expect(page).not_to have_css('.atwho-view')
     end
 
     it 'selects the first item for assignee dropdowns' do
@@ -191,18 +201,6 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(find_field('Comment').value).to have_text("~\"#{label.title}\"")
       end
 
-      it "shows dropdown after a new line" do
-        fill_in 'Comment', with: "test\n\n@"
-
-        expect(find_autocomplete_menu).to be_visible
-      end
-
-      it "does not show dropdown when preceded with a special character" do
-        fill_in 'Comment', with: '@@'
-
-        expect(page).not_to have_css('.atwho-view')
-      end
-
       it 'doesn\'t wrap for assignee values' do
         fill_in 'Comment', with: "@#{user.username[0]}"
 
@@ -217,18 +215,6 @@ RSpec.describe 'GFM autocomplete', :js do
         find_highlighted_autocomplete_item.click
 
         expect(find_field('Comment').value).to have_text('thumbsdown')
-      end
-
-      it 'doesn\'t open autocomplete after non-word character' do
-        fill_in 'Comment', with: "@#{user.username[0..2]}!"
-
-        expect(page).not_to have_css('.atwho-view')
-      end
-
-      it 'doesn\'t open autocomplete if there is no space before' do
-        fill_in 'Comment', with: "hello:#{user.username[0..2]}"
-
-        expect(page).not_to have_css('.atwho-view')
       end
 
       it 'triggers autocomplete after selecting a quick action' do
@@ -449,22 +435,46 @@ RSpec.describe 'GFM autocomplete', :js do
       wait_for_requests
     end
 
-    it 'updates issue description with GFM reference' do
-      click_button 'Edit title and description'
+    describe 'issue description' do
+      it 'updates with GFM reference' do
+        click_button 'Edit title and description'
 
-      wait_for_requests
+        wait_for_requests
 
-      fill_in 'Description', with: "@#{user.name[0...3]}"
+        fill_in 'Description', with: "@#{user.name[0...3]}"
 
-      wait_for_requests
+        wait_for_requests
 
-      find_highlighted_tribute_autocomplete_menu.click
+        find_highlighted_tribute_autocomplete_menu.click
 
-      click_button 'Save changes'
+        click_button 'Save changes'
 
-      wait_for_requests
+        wait_for_requests
 
-      expect(find('.description')).to have_text(user.to_reference)
+        expect(find('.description')).to have_text(user.to_reference)
+      end
+    end
+
+    describe 'triggering autocomplete' do
+      it 'only opens autocomplete menu when trigger character is after whitespace', :aggregate_failures do
+        fill_in 'Comment', with: 'testing@'
+        expect(page).not_to have_css('.tribute-container')
+
+        fill_in 'Comment', with: "hello:#{user.username[0..2]}"
+        expect(page).not_to have_css('.tribute-container')
+
+        fill_in 'Comment', with: '7:'
+        expect(page).not_to have_css('.tribute-container')
+
+        fill_in 'Comment', with: 'w:'
+        expect(page).not_to have_css('.tribute-container')
+
+        fill_in 'Comment', with: 'Ё:'
+        expect(page).not_to have_css('.tribute-container')
+
+        fill_in 'Comment', with: "test\n\n@"
+        expect(find_tribute_autocomplete_menu).to be_visible
+      end
     end
 
     it 'opens autocomplete menu when field starts with text' do
@@ -501,26 +511,6 @@ RSpec.describe 'GFM autocomplete', :js do
       wait_for_requests
 
       expect(find_tribute_autocomplete_menu).to have_text('alert milestone')
-    end
-
-    it 'does not open autocomplete menu when trigger character is prefixed with text' do
-      fill_in 'Comment', with: 'testing@'
-
-      expect(page).not_to have_css('.tribute-container')
-    end
-
-    it 'does not open autocomplete menu when ":" is prefixed by a number and letters' do
-      # Number.
-      fill_in 'Comment', with: '7:'
-      expect(page).not_to have_css('.tribute-container')
-
-      # ASCII letter.
-      fill_in 'Comment', with: 'w:'
-      expect(page).not_to have_css('.tribute-container')
-
-      # Non-ASCII letter.
-      fill_in 'Comment', with: 'Ё:'
-      expect(page).not_to have_css('.tribute-container')
     end
 
     it 'selects the first item for assignee dropdowns' do
@@ -570,12 +560,6 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(find_field('Comment').value).to have_text("~\"#{label.title}\"")
       end
 
-      it "shows dropdown after a new line" do
-        fill_in 'Comment', with: "test\n\n@"
-
-        expect(find_tribute_autocomplete_menu).to be_visible
-      end
-
       it 'doesn\'t wrap for assignee values' do
         fill_in 'Comment', with: "@#{user.username[0..2]}"
 
@@ -590,12 +574,6 @@ RSpec.describe 'GFM autocomplete', :js do
         find_highlighted_tribute_autocomplete_menu.click
 
         expect(find_field('Comment').value).to have_text('cartwheel_tone1')
-      end
-
-      it 'does not open autocomplete if there is no space before' do
-        fill_in 'Comment', with: "hello:#{user.username[0..2]}"
-
-        expect(page).not_to have_css('.tribute-container')
       end
 
       it 'autocompletes for quick actions' do

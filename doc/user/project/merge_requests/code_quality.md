@@ -15,7 +15,7 @@ source code quality using GitLab Code Quality.
 
 Code Quality:
 
-- Uses [Code Climate Engines](https://codeclimate.com), which are
+- Uses [Engines](https://docs.codeclimate.com/docs/list-of-engines) supported by Code Climate, which are
   free and open source. Code Quality does not require a Code Climate
   subscription.
 - Runs in [pipelines](../../../ci/pipelines/index.md) using a Docker image built in the

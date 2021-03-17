@@ -31,7 +31,9 @@ export default {
 <template>
   <section class="settings no-animate">
     <div class="settings-header">
-      <h4 class="js-section-header">
+      <h4
+        class="js-section-header settings-title js-settings-toggle js-settings-toggle-trigger-only"
+      >
         {{ s__('MetricsSettings|Metrics dashboard') }}
       </h4>
       <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
