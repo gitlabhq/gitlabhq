@@ -157,16 +157,6 @@ module TodosHelper
     ]
   end
 
-  def todo_projects_options
-    projects = current_user.authorized_projects.sorted_by_activity.non_archived.with_route
-
-    projects = projects.map do |project|
-      { id: project.id, text: project.full_name }
-    end
-
-    projects.unshift({ id: '', text: 'Any Project' }).to_json
-  end
-
   def todo_types_options
     [
       { id: '', text: 'Any Type' },
@@ -239,14 +229,6 @@ module TodosHelper
     else
       false
     end
-  end
-
-  def todo_group_options
-    groups = current_user.authorized_groups.with_route.map do |group|
-      { id: group.id, text: group.full_name }
-    end
-
-    groups.unshift({ id: '', text: 'Any Group' }).to_json
   end
 end
 

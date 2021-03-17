@@ -3,42 +3,57 @@
 require 'spec_helper'
 
 RSpec.describe Ci::VariablesFinder do
-  let!(:project) { create(:project) }
-  let!(:params) { {} }
+  shared_examples 'scoped variables' do
+    describe '#initialize' do
+      subject { described_class.new(owner, params) }
 
-  let!(:var1) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'staging') }
-  let!(:var2) { create(:ci_variable, project: project, key: 'key2', environment_scope: 'staging') }
-  let!(:var3) { create(:ci_variable, project: project, key: 'key2', environment_scope: 'production') }
+      context 'without key filter' do
+        let!(:params) { {} }
 
-  describe '#initialize' do
-    subject { described_class.new(project, params) }
+        it 'raises an error' do
+          expect { subject }.to raise_error(ArgumentError, 'Please provide params[:key]')
+        end
+      end
+    end
 
-    context 'without key filter' do
-      let!(:params) { {} }
+    describe '#execute' do
+      subject { described_class.new(owner.reload, params).execute }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError, 'Please provide params[:key]')
+      context 'with key filter' do
+        let!(:params) { { key: 'key1' } }
+
+        it 'returns var1' do
+          expect(subject).to contain_exactly(var1)
+        end
+      end
+
+      context 'with key and environment_scope filter' do
+        let!(:params) { { key: 'key2', filter: { environment_scope: 'staging' } } }
+
+        it 'returns var2' do
+          expect(subject).to contain_exactly(var2)
+        end
       end
     end
   end
 
-  describe '#execute' do
-    subject { described_class.new(project.reload, params).execute }
+  context 'for a project' do
+    let(:owner) { create(:project) }
 
-    context 'with key filter' do
-      let!(:params) { { key: 'key1' } }
+    let!(:var1) { create(:ci_variable, project: owner, key: 'key1', environment_scope: 'staging') }
+    let!(:var2) { create(:ci_variable, project: owner, key: 'key2', environment_scope: 'staging') }
+    let!(:var3) { create(:ci_variable, project: owner, key: 'key2', environment_scope: 'production') }
 
-      it 'returns var1' do
-        expect(subject).to contain_exactly(var1)
-      end
-    end
+    include_examples 'scoped variables'
+  end
 
-    context 'with key and environment_scope filter' do
-      let!(:params) { { key: 'key2', filter: { environment_scope: 'staging' } } }
+  context 'for a group' do
+    let(:owner) { create(:group) }
 
-      it 'returns var2' do
-        expect(subject).to contain_exactly(var2)
-      end
-    end
+    let!(:var1) { create(:ci_group_variable, group: owner, key: 'key1', environment_scope: 'staging') }
+    let!(:var2) { create(:ci_group_variable, group: owner, key: 'key2', environment_scope: 'staging') }
+    let!(:var3) { create(:ci_group_variable, group: owner, key: 'key2', environment_scope: 'production') }
+
+    include_examples 'scoped variables'
   end
 end

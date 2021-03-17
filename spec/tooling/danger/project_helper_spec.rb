@@ -157,6 +157,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'qa/foo' | [:qa]
       'ee/qa/foo' | [:qa]
 
+      'workhorse/main.go' | [:workhorse]
+      'workhorse/internal/upload/upload.go' | [:workhorse]
+
       'changelogs/foo'    | [:none]
       'ee/changelogs/foo' | [:none]
       'locale/gitlab.pot' | [:none]

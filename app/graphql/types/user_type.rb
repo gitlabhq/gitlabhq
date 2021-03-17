@@ -3,6 +3,7 @@
 module Types
   class UserType < BaseObject
     graphql_name 'User'
+    description 'Representation of a GitLab user.'
 
     authorize :read_user
 

@@ -106,6 +106,8 @@ module Tooling
 
         %r{\A(ee/)?qa/} => :qa,
 
+        %r{\Aworkhorse/.*} => :workhorse,
+
         # Files that don't fit into any category are marked with :none
         %r{\A(ee/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,

@@ -1,5 +1,8 @@
 %tr
   %th
     = s_('Key')
+  - if Feature.enabled?(:scoped_group_variables, default_enabled: :yaml)
+    %th
+      = s_('Environments')
   %th
     = s_('Group')

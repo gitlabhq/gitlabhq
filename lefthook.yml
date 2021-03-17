@@ -38,3 +38,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
       run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi
+    docs-metadata:  # https://docs.gitlab.com/ee/development/documentation/#metadata
+      tags: documentation style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD | grep '.md'
+      run: if [[ $(head -n1 {files} | grep -v --count -- '---') -ge 1 ]]; then echo "$(tput setaf 1)Documentation metadata missing in changed Markdown files.$(tput sgr0) For more information, see https://docs.gitlab.com/ee/development/documentation/#metadata."; false; else echo "$(tput sgr0)Metadata found in {files}."; fi;

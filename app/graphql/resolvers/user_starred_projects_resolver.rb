@@ -2,7 +2,7 @@
 
 module Resolvers
   class UserStarredProjectsResolver < BaseResolver
-    type Types::ProjectType, null: true
+    type Types::ProjectType.connection_type, null: true
 
     argument :search, GraphQL::STRING_TYPE,
               required: false,

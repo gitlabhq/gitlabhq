@@ -6444,6 +6444,8 @@ An edge in a connection.
 
 ### `User`
 
+Representation of a GitLab user.
+
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `assignedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge Requests assigned to the user. |

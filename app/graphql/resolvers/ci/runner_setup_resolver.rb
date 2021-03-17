@@ -4,6 +4,7 @@ module Resolvers
   module Ci
     class RunnerSetupResolver < BaseResolver
       type Types::Ci::RunnerSetupType, null: true
+      description 'Runner setup instructions.'
 
       argument :platform, GraphQL::STRING_TYPE,
         required: true,
