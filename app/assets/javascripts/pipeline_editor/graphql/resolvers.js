@@ -11,29 +11,6 @@ export const resolvers = {
         }),
       };
     },
-
-    /* eslint-disable @gitlab/require-i18n-strings */
-    project() {
-      return {
-        __typename: 'Project',
-        pipeline: {
-          __typename: 'Pipeline',
-          commitPath: `/-/commit/aabbccdd`,
-          id: 'gid://gitlab/Ci::Pipeline/118',
-          iid: '28',
-          shortSha: 'aabbccdd',
-          status: 'SUCCESS',
-          detailedStatus: {
-            __typename: 'DetailedStatus',
-            detailsPath: '/root/sample-ci-project/-/pipelines/118"',
-            group: 'success',
-            icon: 'status_success',
-            text: 'passed',
-          },
-        },
-      };
-    },
-    /* eslint-enable @gitlab/require-i18n-strings */
   },
   Mutation: {
     lintCI: (_, { endpoint, content, dry_run }) => {

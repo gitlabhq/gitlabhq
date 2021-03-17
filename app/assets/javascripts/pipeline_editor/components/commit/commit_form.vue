@@ -124,7 +124,7 @@ export default {
           type="submit"
           class="js-no-auto-disable"
           category="primary"
-          variant="success"
+          variant="confirm"
           :disabled="submitDisabled"
           :loading="isSaving"
         >

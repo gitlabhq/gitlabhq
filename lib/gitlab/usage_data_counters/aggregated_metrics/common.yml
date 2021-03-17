@@ -21,52 +21,60 @@
   operator: OR
   source: redis
   time_frame: [7d, 28d]
-  events: ['g_compliance_audit_events', 'g_compliance_dashboard', 'i_compliance_audit_events', 'a_compliance_audit_events_api', 'i_compliance_credential_inventory']
+  events:
+    - 'g_compliance_audit_events'
+    - 'g_compliance_dashboard'
+    - 'i_compliance_audit_events'
+    - 'a_compliance_audit_events_api'
+    - 'i_compliance_credential_inventory'
 - name: product_analytics_test_metrics_union
   operator: OR
   source: redis
   time_frame: [7d, 28d]
-  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  events:
+    - 'i_search_total'
+    - 'i_search_advanced'
+    - 'i_search_paid'
 - name: product_analytics_test_metrics_intersection
   operator: AND
   source: redis
   time_frame: [7d, 28d]
-  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  events:
+    - 'i_search_total'
+    - 'i_search_advanced'
+    - 'i_search_paid'
 - name: incident_management_alerts_total_unique_counts
   operator: OR
   source: redis
   time_frame: [7d, 28d]
-  events: [
-    'incident_management_alert_status_changed',
-    'incident_management_alert_assigned',
-    'incident_management_alert_todo',
-    'incident_management_alert_create_incident'
-  ]
+  events:
+    - 'incident_management_alert_status_changed'
+    - 'incident_management_alert_assigned'
+    - 'incident_management_alert_todo'
+    - 'incident_management_alert_create_incident'
 - name: incident_management_incidents_total_unique_counts
   operator: OR
   source: redis
   time_frame: [7d, 28d]
-  events: [
-    'incident_management_incident_created',
-    'incident_management_incident_reopened',
-    'incident_management_incident_closed',
-    'incident_management_incident_assigned',
-    'incident_management_incident_todo',
-    'incident_management_incident_comment',
-    'incident_management_incident_zoom_meeting',
-    'incident_management_incident_published',
-    'incident_management_incident_relate',
-    'incident_management_incident_unrelate',
-    'incident_management_incident_change_confidential'
-  ]
+  events:
+    - 'incident_management_incident_created'
+    - 'incident_management_incident_reopened'
+    - 'incident_management_incident_closed'
+    - 'incident_management_incident_assigned'
+    - 'incident_management_incident_todo'
+    - 'incident_management_incident_comment'
+    - 'incident_management_incident_zoom_meeting'
+    - 'incident_management_incident_published'
+    - 'incident_management_incident_relate'
+    - 'incident_management_incident_unrelate'
+    - 'incident_management_incident_change_confidential'
 - name: i_testing_paid_monthly_active_user_total
   operator: OR
   source: redis
   time_frame: [7d, 28d]
-  events: [
-    'i_testing_web_performance_widget_total',
-    'i_testing_full_code_quality_report_total',
-    'i_testing_group_code_coverage_visit_total',
-    'i_testing_load_performance_widget_total',
-    'i_testing_metrics_report_widget_total'
-  ]
+  events:
+    - 'i_testing_web_performance_widget_total'
+    - 'i_testing_full_code_quality_report_total'
+    - 'i_testing_group_code_coverage_visit_total'
+    - 'i_testing_load_performance_widget_total'
+    - 'i_testing_metrics_report_widget_total'

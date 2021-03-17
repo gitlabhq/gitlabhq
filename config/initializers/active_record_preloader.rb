@@ -9,6 +9,7 @@ module ActiveRecord
         end
 
         def self.run
+          self
         end
 
         def self.preloaded_records

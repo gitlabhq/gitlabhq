@@ -32,7 +32,7 @@ function install_api_client_dependencies_with_apt() {
 
 function install_gitlab_gem() {
   gem install httparty --no-document --version 0.18.1
-  gem install gitlab --no-document --version 4.14.1
+  gem install gitlab --no-document --version 4.17.0
 }
 
 function install_tff_gem() {

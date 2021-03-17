@@ -387,11 +387,13 @@ To preview your changes to documentation locally, follow this
 The live preview is currently enabled for the following projects:
 
 - [`gitlab`](https://gitlab.com/gitlab-org/gitlab)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner)
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
-You need at least Maintainer permissions to be able to run it.
+As the job creates a pipeline in `gitlab-org/gitlab-docs`, you need at least Maintainer
+permission in the `gitlab-org/gitlab-docs` project in order to successfully run the job.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
@@ -399,11 +401,6 @@ You must push a branch to those repositories, as it doesn't work for forks.
 
 The `review-docs-deploy*` job:
 
-1. Creates a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
-   project named after the scheme: `docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID`,
-   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ee` for
-   EE, `omnibus` for Omnibus GitLab, etc, and `CI_MERGE_REQUEST_IID` is the ID
-   of the respective merge request.
 1. Triggers a cross project pipeline and build the docs site with your changes.
 
 In case the review app URL returns 404, this means that either the site is not
@@ -411,11 +408,6 @@ yet deployed, or something went wrong with the remote pipeline. Give it a few
 minutes and it should appear online, otherwise you can check the status of the
 remote pipeline from the link in the merge request's job output.
 If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
-
-Make sure that you always delete the branch of the merge request you were
-working on. If you don't, the remote docs branch isn't removed either,
-and the server where the Review Apps are hosted can eventually run out of
-disk space.
 
 NOTE:
 Someone with no merge rights to the GitLab projects (think of forks from

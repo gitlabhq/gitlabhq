@@ -6416,30 +6416,6 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
-### `g_project_management_epic_created_monthly`
-
-Count of MAU creating epics
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210305144719_g_product_planning_epic_created_monthly.yml)
-
-Group: `group::product planning`
-
-Status: `implemented`
-
-Tiers: `premium`, `ultimate`
-
-### `g_project_management_epic_created_weekly`
-
-Count of WAU creating epics
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210305145820_g_product_planning_epic_created_weekly.yml)
-
-Group: `group::product planning`
-
-Status: `implemented`
-
-Tiers: `premium`, `ultimate`
-
 ### `geo_enabled`
 
 Is Geo enabled?
@@ -9811,6 +9787,30 @@ Group: `group::ecosystem`
 Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_created_monthly`
+
+Count of MAU creating epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210305144719_g_product_planning_epic_created_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_created_weekly`
+
+Count of WAU creating epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210305145820_g_product_planning_epic_created_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`
 

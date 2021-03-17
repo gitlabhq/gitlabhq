@@ -46,24 +46,6 @@ describe('~/pipeline_editor/graphql/resolvers', () => {
         await expect(result.rawData).resolves.toBe(mockCiYml);
       });
     });
-
-    describe('pipeline', () => {
-      it('resolves pipeline data with type names', async () => {
-        const result = await resolvers.Query.project(null);
-
-        // eslint-disable-next-line no-underscore-dangle
-        expect(result.__typename).toBe('Project');
-      });
-
-      it('resolves pipeline data with necessary data', async () => {
-        const result = await resolvers.Query.project(null);
-        const pipelineKeys = Object.keys(result.pipeline);
-        const statusKeys = Object.keys(result.pipeline.detailedStatus);
-
-        expect(pipelineKeys).toContain('id', 'commitPath', 'detailedStatus', 'shortSha');
-        expect(statusKeys).toContain('detailsPath', 'text');
-      });
-    });
   });
 
   describe('Mutation', () => {

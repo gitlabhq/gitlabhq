@@ -957,7 +957,10 @@ Example aggregated metric entries:
 ```yaml
 - name: example_metrics_union
   operator: OR
-  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  events: 
+    - 'i_search_total'
+    - 'i_search_advanced'
+    - 'i_search_paid'
   source: redis
   time_frame:
     - 7d
@@ -968,7 +971,9 @@ Example aggregated metric entries:
   time_frame:
     - 28d
     - all
-  events: ['dependency_scanning_pipeline_all_time', 'container_scanning_pipeline_all_time']
+  events:
+    - 'dependency_scanning_pipeline_all_time'
+    - 'container_scanning_pipeline_all_time'
   feature_flag: example_aggregated_metric
 ```
 
@@ -1099,7 +1104,9 @@ Example definition:
 - name: example_metrics_intersection_database_sourced
   operator: AND
   source: database
-  events: ['dependency_scanning_pipeline', 'container_scanning_pipeline']
+  events:
+    - 'dependency_scanning_pipeline'
+    - 'container_scanning_pipeline'
   time_frame:
     - 28d
     - all
