@@ -1989,14 +1989,30 @@ Represents a DAST Site Profile.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `auth` | [`DastSiteProfileAuth`](#dastsiteprofileauth) | Target authentication details. Will always return `null` if `security_dast_site_profiles_additional_fields` feature flag is disabled. |
 | `editPath` | [`String`](#string) | Relative web path to the edit page of a site profile. |
+| `excludedUrls` | [`[String!]`](#string) | The URLs to skip during an authenticated scan. Will always return `null` if `security_dast_site_profiles_additional_fields` feature flag is disabled. |
 | `id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile. |
 | `normalizedTargetUrl` | [`String`](#string) | Normalized URL of the target to be scanned. |
 | `profileName` | [`String`](#string) | The name of the site profile. |
 | `referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
+| `requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. Will always return `null` if `security_dast_site_profiles_additional_fields` feature flag is disabled. |
 | `targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
 | `userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource |
 | `validationStatus` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status of the site profile. |
+
+### `DastSiteProfileAuth`
+
+Input type for DastSiteProfile authentication.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `enabled` | [`Boolean`](#boolean) | Indicates whether authentication is enabled. |
+| `password` | [`String`](#string) | Redacted password to authenticate with on the target website. |
+| `passwordField` | [`String`](#string) | The name of password field at the sign-in HTML form. |
+| `url` | [`String`](#string) | The URL of the page containing the sign-in HTML form on the target website. |
+| `username` | [`String`](#string) | The username to authenticate with on the target website. |
+| `usernameField` | [`String`](#string) | The name of username field at the sign-in HTML form. |
 
 ### `DastSiteProfileConnection`
 

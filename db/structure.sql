@@ -11840,7 +11840,17 @@ CREATE TABLE dast_site_profiles (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     name text NOT NULL,
-    CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255))
+    excluded_urls text[] DEFAULT '{}'::text[] NOT NULL,
+    auth_enabled boolean DEFAULT false NOT NULL,
+    auth_url text,
+    auth_username_field text,
+    auth_password_field text,
+    auth_username text,
+    CONSTRAINT check_5203110fee CHECK ((char_length(auth_username_field) <= 255)),
+    CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_c329dffdba CHECK ((char_length(auth_password_field) <= 255)),
+    CONSTRAINT check_d446f7047b CHECK ((char_length(auth_url) <= 1024)),
+    CONSTRAINT check_f22f18002a CHECK ((char_length(auth_username) <= 255))
 );
 
 CREATE SEQUENCE dast_site_profiles_id_seq
