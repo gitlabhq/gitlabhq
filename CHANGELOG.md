@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.9.4 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
+
+
 ## 13.9.3 (2021-03-08)
 
 ### Fixed (4 changes)
