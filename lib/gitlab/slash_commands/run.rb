@@ -5,7 +5,7 @@ module Gitlab
     # Slash command for triggering chatops jobs.
     class Run < BaseCommand
       def self.match(text)
-        /\Arun\s+(?<command>\S+)(\s+(?<arguments>.+))?\z/.match(text)
+        /\Arun\s+(?<command>\S+)(\s+(?<arguments>.+))?\z/m.match(text)
       end
 
       def self.help_message

@@ -8,7 +8,7 @@ let emojiMap = null;
 let validEmojiNames = null;
 export const FALLBACK_EMOJI_KEY = 'grey_question';
 
-export const EMOJI_VERSION = '2';
+export const EMOJI_VERSION = '1';
 
 const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
 

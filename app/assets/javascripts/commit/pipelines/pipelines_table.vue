@@ -1,7 +1,6 @@
 <script>
-import { GlButton, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
 import { getParameterByName } from '~/lib/utils/common_utils';
-import SvgBlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import eventHub from '~/pipelines/event_hub';
 import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
@@ -13,12 +12,12 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 export default {
   components: {
     GlButton,
+    GlEmptyState,
     GlLink,
     GlLoadingIcon,
     GlModal,
     PipelinesTableComponent,
     TablePagination,
-    SvgBlankState,
   },
   mixins: [PipelinesMixin, glFeatureFlagMixin()],
   props: {
@@ -183,12 +182,12 @@ export default {
       class="prepend-top-20"
     />
 
-    <svg-blank-state
+    <gl-empty-state
       v-else-if="shouldRenderErrorState"
       :svg-path="errorStateSvgPath"
-      :message="
+      :title="
         s__(`Pipelines|There was an error fetching the pipelines.
-      Try again in a few moments or contact your support team.`)
+        Try again in a few moments or contact your support team.`)
       "
     />
 

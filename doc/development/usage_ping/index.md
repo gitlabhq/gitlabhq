@@ -25,7 +25,7 @@ More links:
 ## What is Usage Ping?
 
 - GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
-- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
+- The usage data is primarily composed of row counts for different tables in the instance's database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
     that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
 - While usage ping is enabled, GitLab gathers data from the other instances and can show usage statistics of your instance to your users.
@@ -33,8 +33,8 @@ More links:
 ### Why should we enable Usage Ping?
 
 - The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
-- As a benefit of having the usage ping active, GitLab lets you analyze the users’ activities over time of your GitLab installation.
-- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
+- As a benefit of having the usage ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
+- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
 - You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
@@ -827,7 +827,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
 - `#database-lab` is a Slack channel which uses a production-sized environment to test your queries.
-- GitLab.com’s production database has a 15 second timeout.
+- GitLab.com's production database has a 15 second timeout.
 - Any single query must stay below [1 second execution time](../query_performance.md#timing-guidelines-for-queries) with cold caches.
 - Add a specialized index on columns involved to reduce the execution time.
 

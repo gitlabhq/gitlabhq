@@ -154,7 +154,7 @@ The following are PostgreSQL upgrade validation tests we performed.
 - Follow up issues:
   - [`replicate-geo-database` incorrectly tries to back up repositories](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5241).
   - [`pg-upgrade` fails to upgrade a standalone Geo tracking database](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5242).
-  - [`revert-pg-upgrade` fails to downgrade the PostgreSQL data of a Geo secondary’s standalone tracking database](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5243).
+  - [`revert-pg-upgrade` fails to downgrade the PostgreSQL data of a Geo secondary's standalone tracking database](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5243).
   - [Timeout error on Geo secondary read-replica near the end of `gitlab-ctl pg-upgrade`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5235).
 
 [Verify Geo installation with PostgreSQL 11](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4971):

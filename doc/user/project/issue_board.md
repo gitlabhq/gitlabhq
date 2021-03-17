@@ -574,7 +574,7 @@ worked on by the designers.
 
 Then, when they're done, all they have to do is
 drag it to the next list, **Backend**. Then, a backend developer can
-eventually pick it up. When they’re done, they move it to **Done**, to close the
+eventually pick it up. When they're done, they move it to **Done**, to close the
 issue.
 
 This process can be seen clearly when visiting an issue. With every move

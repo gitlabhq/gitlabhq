@@ -71,7 +71,7 @@ class Projects::ServicesController < Projects::ApplicationController
     end
 
     result[:data].presence || {}
-  rescue Gitlab::HTTP::BlockedUrlError => e
+  rescue *Gitlab::HTTP::HTTP_ERRORS => e
     { error: true, message: s_('Integrations|Connection failed. Please check your settings.'), service_response: e.message, test_failed: true }
   end
 

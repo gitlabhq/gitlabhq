@@ -210,11 +210,11 @@ RSpec.describe 'GFM autocomplete', :js do
       end
 
       it 'doesn\'t wrap for emoji values' do
-        fill_in 'Comment', with: ':thumb'
+        fill_in 'Comment', with: ':cartwheel_'
 
         find_highlighted_autocomplete_item.click
 
-        expect(find_field('Comment').value).to have_text('thumbsdown')
+        expect(find_field('Comment').value).to have_text('cartwheel_tone1')
       end
 
       it 'triggers autocomplete after selecting a quick action' do

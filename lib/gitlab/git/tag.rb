@@ -87,6 +87,10 @@ module Gitlab
         end
       end
 
+      def cache_key
+        "tag:" + Digest::SHA1.hexdigest([name, message, target, target_commit&.sha].join)
+      end
+
       private
 
       def message_from_gitaly_tag

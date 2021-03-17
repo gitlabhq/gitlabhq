@@ -28,7 +28,7 @@ so when in doubt don't use `aria-*`, `role`, and `tabindex`, and stick with sema
 To provide markup with accessible names, ensure every:
 
 - `input` has an associated `label`.
-- `button` and `a` have child text, or `aria-label` when text isn’t present.
+- `button` and `a` have child text, or `aria-label` when text isn't present.
   For example, an icon button with no visible text.
 - `img` has an `alt` attribute.
 - `fieldset` has `legend` as its first child.

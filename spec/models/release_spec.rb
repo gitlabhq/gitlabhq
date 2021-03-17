@@ -10,7 +10,7 @@ RSpec.describe Release do
   it { expect(release).to be_valid }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:project).touch(true) }
     it { is_expected.to belong_to(:author).class_name('User') }
     it { is_expected.to have_many(:links).class_name('Releases::Link') }
     it { is_expected.to have_many(:milestones) }

@@ -183,14 +183,14 @@ describe('User Popover Component', () => {
     it('should show message and emoji', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        status: { emoji: 'thumbsup', message_html: 'Hello World' },
+        status: { emoji: 'basketball_player', message_html: 'Hello World' },
       };
 
       createWrapper({ user });
 
       expect(findUserStatus().exists()).toBe(true);
       expect(wrapper.text()).toContain('Hello World');
-      expect(wrapper.html()).toContain('<gl-emoji data-name="thumbsup"');
+      expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
     });
 
     it('hides the div when status is null', () => {

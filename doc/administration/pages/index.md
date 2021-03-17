@@ -180,7 +180,7 @@ outside world.
    pages_nginx['redirect_http_to_https'] = true
    ```
 
-1. If you haven’t named your certificate and key `example.io.crt` and `example.io.key`
+1. If you haven't named your certificate and key `example.io.crt` and `example.io.key`
 then you'll need to also add the full paths as shown below:
 
    ```ruby

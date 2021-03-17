@@ -16,7 +16,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-Publish generic files, like release binaries, in your project’s Package Registry. Then, install the packages whenever you need to use them as a dependency.
+Publish generic files, like release binaries, in your project's Package Registry. Then, install the packages whenever you need to use them as a dependency.
 
 ## Authenticate to the Package Registry
 

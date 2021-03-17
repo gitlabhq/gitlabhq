@@ -312,7 +312,7 @@ GitLab instance.
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can search inside a Project, Group, Admin, or User’s settings by entering
+You can search inside a Project, Group, Admin, or User's settings by entering
 a search term in the search box located at the top of the page. The search results
 appear highlighted in the sections that match the search term.
 

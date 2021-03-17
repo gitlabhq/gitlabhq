@@ -403,7 +403,7 @@ production:
   environment: production
 ```
 
-Let’s examine the configuration file more closely:
+Let's examine the configuration file more closely:
 
 - `image` specifies the Docker image to use for this build. This is the latest Python
   image since the sample application is written in Python.

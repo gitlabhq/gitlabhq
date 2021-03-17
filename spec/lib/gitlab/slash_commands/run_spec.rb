@@ -3,6 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::Run do
+  describe '.match' do
+    it 'returns true for a run command' do
+      expect(described_class.match('run foo')).to be_an_instance_of(MatchData)
+    end
+
+    it 'returns true for a run command with arguments' do
+      expect(described_class.match('run foo bar baz'))
+        .to be_an_instance_of(MatchData)
+    end
+
+    it 'returns true for a command containing newlines' do
+      expect(described_class.match("run foo\nbar\nbaz"))
+        .to be_an_instance_of(MatchData)
+    end
+
+    it 'returns false for an unrelated command' do
+      expect(described_class.match('foo bar')).to be_nil
+    end
+  end
+
   describe '.available?' do
     it 'returns true when builds are enabled for the project' do
       project = double(:project, builds_enabled?: true)

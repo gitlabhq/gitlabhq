@@ -55,7 +55,7 @@ Configuring both the client and the server is unnecessary.
 
 **To configure SSH on the client side**:
 
-- On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
+- On UNIX, edit `~/.ssh/config` (create the file if it doesn't exist) and
   add or edit:
 
   ```plaintext

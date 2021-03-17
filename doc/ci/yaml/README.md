@@ -2614,7 +2614,7 @@ the GitLab UI to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
 `stop_review_app` job is [automatically triggered](../environments/index.md#stopping-an-environment),
-the runner won’t try to check out the code after the branch is deleted.
+the runner won't try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends
 on global variables, use [anchor variables](#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
@@ -4197,7 +4197,7 @@ job:
 
 #### `release:ref`
 
-If the `release: tag_name` doesn’t exist yet, the release is created from `ref`.
+If the `release: tag_name` doesn't exist yet, the release is created from `ref`.
 `ref` can be a commit SHA, another tag name, or a branch name.
 
 #### `release:milestones`

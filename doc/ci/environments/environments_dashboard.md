@@ -17,7 +17,7 @@ from development to staging, and then to production (or
 through any series of custom environment flows you can set up).
 With an at-a-glance view of multiple projects, you can instantly
 see which pipelines are green and which are red allowing you to
-diagnose if there is a block at a particular point, or if there’s
+diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
 You can access the dashboard from the top bar by clicking

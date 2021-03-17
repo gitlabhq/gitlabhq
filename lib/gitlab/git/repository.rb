@@ -1017,6 +1017,10 @@ module Gitlab
         gitaly_repository_client.search_files_by_name(ref, safe_query)
       end
 
+      def search_files_by_regexp(filter, ref = 'HEAD')
+        gitaly_repository_client.search_files_by_regexp(ref, filter)
+      end
+
       def find_commits_by_message(query, ref, path, limit, offset)
         wrapped_gitaly_errors do
           gitaly_commit_client

@@ -3,6 +3,7 @@
 module API
   module Helpers
     include Gitlab::Utils
+    include Helpers::Caching
     include Helpers::Pagination
     include Helpers::PaginationStrategies
 

@@ -481,7 +481,7 @@ Administrators and group owners are able to access the group regardless of the I
 
 To restrict group access by IP address:
 
-1. Go to the group’s **Settings > General** page.
+1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. In the **Allow access to the following IP addresses** field, enter IP address ranges in CIDR notation.
 1. Select **Save changes**.

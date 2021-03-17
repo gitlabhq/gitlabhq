@@ -106,7 +106,7 @@ and complete an integration with the Secure stage.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please
      [reach out](https://about.gitlab.com/partners/integrate/) to us. If you
-     skip this step you won’t be able to do supported marketing.
+     skip this step you won't be able to do supported marketing.
 1. Begin doing supported marketing of your GitLab integration.
    - Work with our [partner team](https://about.gitlab.com/partners/integrate/)
      to support your go-to-market as appropriate.

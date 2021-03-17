@@ -48,8 +48,16 @@ export default {
     legacyTableMobileClass() {
       return !this.glFeatures.newPipelinesTable ? 'table-mobile-content' : '';
     },
+    singleStagePipelineManual() {
+      return (
+        this.pipeline.details.manual_actions.length > 0 && this.pipeline.details.stages.length === 1
+      );
+    },
     showInProgress() {
-      return !this.duration && !this.finishedTime;
+      return !this.duration && !this.finishedTime && !this.singleStagePipelineManual;
+    },
+    showSkipped() {
+      return !this.duration && !this.finishedTime && this.singleStagePipelineManual;
     },
   },
 };
@@ -63,6 +71,11 @@ export default {
       <span v-if="showInProgress" data-testid="pipeline-in-progress">
         <gl-icon name="hourglass" class="gl-vertical-align-baseline! gl-mr-2" :size="12" />
         {{ s__('Pipeline|In progress') }}
+      </span>
+
+      <span v-if="showSkipped" data-testid="pipeline-skipped">
+        <gl-icon name="status_skipped_borderless" class="gl-mr-2" :size="16" />
+        {{ s__('Pipeline|Skipped') }}
       </span>
 
       <p v-if="duration" class="duration">

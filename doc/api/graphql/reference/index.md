@@ -8121,11 +8121,11 @@ The dismissal reason of the Vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACCEPTABLE_RISK` | The likelihood of the Vulnerability occurring and its impact are deemed acceptable |
-| `FALSE_POSITIVE` | The Vulnerability was incorrectly identified as being present |
-| `MITIGATING_CONTROL` | There is a mitigating control that eliminates the Vulnerability or makes its risk acceptable |
-| `NOT_APPLICABLE` | Other reasons for dismissal |
-| `USED_IN_TESTS` | The Vulnerability is used in tests and does not pose an actual risk |
+| `ACCEPTABLE_RISK` | The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk. |
+| `FALSE_POSITIVE` | An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present. |
+| `MITIGATING_CONTROL` | A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system. |
+| `NOT_APPLICABLE` | The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated. |
+| `USED_IN_TESTS` | The finding is not a vulnerability because it is part of a test or is test data. |
 
 ### `VulnerabilityExternalIssueLinkExternalTracker`
 

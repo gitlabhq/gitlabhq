@@ -246,6 +246,21 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#search_files_by_regexp' do
+    subject(:result) { client.search_files_by_regexp('master', '.*') }
+
+    before do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:search_files_by_name)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([double(files: ['file1.txt']), double(files: ['file2.txt'])])
+    end
+
+    it 'sends a search_files_by_name message and returns a flatten array' do
+      expect(result).to contain_exactly('file1.txt', 'file2.txt')
+    end
+  end
+
   describe '#disconnect_alternates' do
     let(:project) { create(:project, :repository) }
     let(:repository) { project.repository }

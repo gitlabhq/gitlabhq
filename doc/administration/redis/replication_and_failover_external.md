@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Redis replication and failover providing your own instance **(FREE SELF)**
 
-If you’re hosting GitLab on a cloud provider, you can optionally use a managed
+If you're hosting GitLab on a cloud provider, you can optionally use a managed
 service for Redis. For example, AWS offers ElastiCache that runs Redis.
 
 Alternatively, you may opt to manage your own Redis instance separate from the

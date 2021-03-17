@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab Premium 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
-Publish NuGet packages in your project’s Package Registry. Then, install the
+Publish NuGet packages in your project's Package Registry. Then, install the
 packages whenever you need to use them as a dependency.
 
 The Package Registry works with:
@@ -314,7 +314,7 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source gitlab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36424) in GitLab 13.3.
 
-If you’re using NuGet with GitLab CI/CD, a CI job token can be used instead of a
+If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
 user that generates the pipeline.
 

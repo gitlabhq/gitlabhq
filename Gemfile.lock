@@ -412,7 +412,7 @@ GEM
       ruby-progressbar (~> 1.4)
     fuzzyurl (0.9.0)
     gemoji (3.0.1)
-    gemojione (4.3.3)
+    gemojione (3.3.0)
       json
     get_process_mem (0.2.5)
       ffi (~> 1.0)
@@ -1414,7 +1414,7 @@ DEPENDENCIES
   fog-rackspace (~> 0.1.1)
   fugit (~> 1.2.1)
   fuubar (~> 2.2.0)
-  gemojione (~> 4.3.3)
+  gemojione (~> 3.3)
   gettext (~> 3.3)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.3)

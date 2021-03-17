@@ -525,7 +525,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `contexts`                 | **{dotted-circle}** |           |                                                                                                                                  |
 | `derived_contexts`         | **{dotted-circle}** |           | Contexts derived in the Enrich process                                                                                           |
 | `derived_tstamp`           | **{dotted-circle}** | timestamp | Timestamp making allowance for inaccurate device clock                                                                          |
-| `doc_charset`              | **{dotted-circle}** | string    | Web page’s character encoding                                                                                                    |
+| `doc_charset`              | **{dotted-circle}** | string    | Web page's character encoding                                                                                                    |
 | `doc_height`               | **{dotted-circle}** | string    | Web page height                                                                                                                  |
 | `doc_width`                | **{dotted-circle}** | string    | Web page width                                                                                                                   |
 | `domain_sessionid`         | **{dotted-circle}** | string    | Unique identifier (UUID) for this visit of this user_id to this domain                                                           |
@@ -554,10 +554,10 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `geo_region_name`          | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
 | `geo_timezone`             | **{dotted-circle}** | string    | Timezone of IP origin                                                                                                            |
 | `geo_zipcode`              | **{dotted-circle}** | string    | Zip (postal) code of IP origin                                                                                                   |
-| `ip_domain`                | **{dotted-circle}** | string    | Second level domain name associated with the visitor’s IP address                                                                |
-| `ip_isp`                   | **{dotted-circle}** | string    | Visitor’s ISP                                                                                                                    |
-| `ip_netspeed`              | **{dotted-circle}** | string    | Visitor’s connection type                                                                                                        |
-| `ip_organization`          | **{dotted-circle}** | string    | Organization associated with the visitor’s IP address – defaults to ISP name if none is found                                    |
+| `ip_domain`                | **{dotted-circle}** | string    | Second level domain name associated with the visitor's IP address                                                                |
+| `ip_isp`                   | **{dotted-circle}** | string    | Visitor's ISP                                                                                                                    |
+| `ip_netspeed`              | **{dotted-circle}** | string    | Visitor's connection type                                                                                                        |
+| `ip_organization`          | **{dotted-circle}** | string    | Organization associated with the visitor's IP address – defaults to ISP name if none is found                                    |
 | `mkt_campaign`             | **{dotted-circle}** | string    | The campaign ID                                                                                                                  |
 | `mkt_clickid`              | **{dotted-circle}** | string    | The click ID                                                                                                                     |
 | `mkt_content`              | **{dotted-circle}** | string    | The content or ID of the ad.                                                                   |
@@ -566,7 +566,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `mkt_source`               | **{dotted-circle}** | string    | The company / website where the traffic came from                                                                                |
 | `mkt_term`                 | **{dotted-circle}** | string    | Keywords associated with the referrer                                                                                        |
 | `name_tracker`             | **{dotted-circle}** | string    | The tracker namespace                                                                                                            |
-| `network_userid`           | **{dotted-circle}** | string    | Unique identifier for a user, based on a cookie from the collector (so set at a network level and shouldn’t be set by a tracker) |
+| `network_userid`           | **{dotted-circle}** | string    | Unique identifier for a user, based on a cookie from the collector (so set at a network level and shouldn't be set by a tracker) |
 | `os_family`                | **{dotted-circle}** | string    | Operating system family                                                                                                          |
 | `os_manufacturer`          | **{dotted-circle}** | string    | Manufacturers of operating system                                                                                                |
 | `os_name`                  | **{dotted-circle}** | string    | Name of operating system                                                                                                         |
@@ -598,7 +598,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `refr_urlscheme`           | **{dotted-circle}** | string    | Referer scheme                                                                                                                   |
 | `se_action`                | **{dotted-circle}** | string    | The action / event itself                                                                                                        |
 | `se_category`              | **{dotted-circle}** | string    | The category of event                                                                                                            |
-| `se_label`                 | **{dotted-circle}** | string    | A label often used to refer to the ‘object’ the action is performed on                                                           |
+| `se_label`                 | **{dotted-circle}** | string    | A label often used to refer to the 'object' the action is performed on                                                           |
 | `se_property`              | **{dotted-circle}** | string    | A property associated with either the action or the object                                                                       |
 | `se_value`                 | **{dotted-circle}** | decimal   | A value associated with the user action                                                                                          |
 | `ti_category`              | **{dotted-circle}** | string    | Item category                                                                                                                    |

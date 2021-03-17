@@ -838,7 +838,7 @@ addition to the GitLab nodes. Some requests handled by
 process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
 `git_data_dirs` setting to make this connection.
 
-We hope that if you’re managing fault-tolerant systems like GitLab, you have a load balancer
+We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 (open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),
 [AWS Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/), F5

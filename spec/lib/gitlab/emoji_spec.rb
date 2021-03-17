@@ -16,19 +16,6 @@ RSpec.describe Gitlab::Emoji do
     end
   end
 
-  describe '.emojis_by_category' do
-    it 'contains emojis with tones' do
-      emojis = described_class.emojis_by_category
-
-      angel_index = emojis.find_index { |e| e['name'] == 'angel' }
-      angel_tones = emojis[angel_index..angel_index + 5].map { |e| e['name'] }
-
-      expect(angel_tones).to eq(
-        %w[angel angel_tone1 angel_tone2 angel_tone3 angel_tone4 angel_tone5]
-      )
-    end
-  end
-
   describe '.emojis_by_moji' do
     it 'return emojis by moji' do
       current_emojis_by_moji = described_class.emojis_by_moji

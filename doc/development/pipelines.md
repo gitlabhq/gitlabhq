@@ -576,7 +576,7 @@ overwrites the Git configuration with the appropriate settings to fetch
 from the GitLab repository.
 
 `CI_REPO_CACHE_CREDENTIALS` contains the Google Cloud service account
-JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you’re a
+JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you're a
 GitLab Team Member, find credentials in the
 [GitLab shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 

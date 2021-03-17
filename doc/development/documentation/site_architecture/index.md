@@ -231,7 +231,7 @@ for its search function. This is how it works:
 
 ### Algolia notes for GitLab team members
 
-If you’re a GitLab team member, find credentials for the Algolia dashboard
+If you're a GitLab team member, find credentials for the Algolia dashboard
 in the shared [GitLab 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 To receive weekly reports of the search usage, search the Google doc with
 title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,

@@ -319,7 +319,7 @@ You can also use `workflow::ready for review` label. That means that your merge 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
 
 Sometimes, a maintainer may not be available for review. They could be out of the office or [at capacity](#review-response-slo).
-You can and should check the maintainer’s availability in their profile. If the maintainer recommended by
+You can and should check the maintainer's availability in their profile. If the maintainer recommended by
 the roulette is not available, choose someone else from that list.
 
 It is responsibility of the author of a merge request that the merge request is reviewed. If it stays in `ready for review` state too long it is recommended to assign it to a specific reviewer.

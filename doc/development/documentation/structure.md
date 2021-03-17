@@ -52,9 +52,9 @@ A concept should answer the questions:
 - What is this?
 - Why would I use it?
 
-Think of everything someone might want to know if they’ve never heard of this topic before.
+Think of everything someone might want to know if they've never heard of this topic before.
 
-Don’t tell them **how** to do this thing. Tell them **what it is**.
+Don't tell them **how** to do this thing. Tell them **what it is**.
 
 If you start describing another topic, start a new concept and link to it.
 

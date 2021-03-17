@@ -1,0 +1,5 @@
+---
+title: API JSON caching for tags endpoint
+merge_request: 54975
+author:
+type: performance

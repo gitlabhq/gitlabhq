@@ -39,7 +39,7 @@ Found errors in your .gitlab-ci.yml:
   jobs:test config key may not be used with `rules`: only
 ```
 
-This error appears when the included job’s rules configuration has been overridden with the `only` or `except` syntax.
+This error appears when the included job's rules configuration has been overridden with the `only` or `except` syntax.
 To fix this issue, you must either:
 
 - Transition your `only/except` syntax to rules.

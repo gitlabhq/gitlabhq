@@ -995,6 +995,12 @@ class Repository
     raw_repository.search_files_by_name(query, ref)
   end
 
+  def search_files_by_wildcard_path(path, ref = 'HEAD')
+    # We need to use RE2 to match Gitaly's regexp engine
+    regexp_string = RE2::Regexp.escape(path).gsub('\*', '.*?')
+    raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
+  end
+
   def copy_gitattributes(ref)
     actual_ref = ref || root_ref
     begin

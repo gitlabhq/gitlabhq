@@ -166,7 +166,7 @@ For examples of others who have implemented GitLab CI/CD, see:
 
 To see how you can integrate GitLab CI/CD with third-party systems, see:
 
-- [Streamline and shorten error remediation with Sentry’s new GitLab integration](https://about.gitlab.com/blog/2019/01/25/sentry-integration-blog-post/)
+- [Streamline and shorten error remediation with Sentry's new GitLab integration](https://about.gitlab.com/blog/2019/01/25/sentry-integration-blog-post/)
 - [How to simplify your smart home configuration with GitLab CI/CD](https://about.gitlab.com/blog/2018/08/02/using-the-gitlab-ci-slash-cd-for-smart-home-configuration-management/)
 - [Demo: GitLab + Jira + Jenkins](https://about.gitlab.com/blog/2018/07/30/gitlab-workflow-with-jira-jenkins/)
 - [Introducing Auto Breakfast from GitLab (sort of)](https://about.gitlab.com/blog/2018/06/29/introducing-auto-breakfast-from-gitlab/)

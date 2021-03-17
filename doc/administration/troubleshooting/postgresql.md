@@ -91,7 +91,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
   Command exceeded allowed execution time
 
-  PANIC: could not write to file ‘pg_xlog/xlogtemp.123’: No space left on device
+  PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device
   ```
 
 - [Checking Geo configuration](../geo/replication/troubleshooting.md), including:

@@ -153,7 +153,7 @@ and therefore it does not have any records yet.
 
 When using a single-transaction migration, a transaction holds a database connection
 for the duration of the migration, so you must make sure the actions in the migration
-do not take too much time: GitLab.com’s production database has a `15s` timeout, so
+do not take too much time: GitLab.com's production database has a `15s` timeout, so
 in general, the cumulative execution time in a migration should aim to fit comfortably
 in that limit. Singular query timings should fit within the [standard limit](query_performance.md#timing-guidelines-for-queries)
 

@@ -190,7 +190,7 @@ We recommend following these steps during renewal:
    NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
-1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
+1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. A license for the renewal term is available for download on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy license to clipboard** or **Download license** to get a copy.

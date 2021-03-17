@@ -242,7 +242,7 @@ Alternatively, you can select a very specific protected branch from the **Target
 
 ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 
-To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
+To enable this configuration, see [Code Owner's approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
 
 ### Adding or removing an approval
 

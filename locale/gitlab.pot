@@ -1368,6 +1368,9 @@ msgstr ""
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr ""
 
+msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
+msgstr ""
+
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
@@ -3260,6 +3263,9 @@ msgid "An empty index will be created if one does not already exist"
 msgstr ""
 
 msgid "An error has occurred"
+msgstr ""
+
+msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
 msgid "An error occurred adding a draft to the thread."
@@ -29992,6 +29998,9 @@ msgstr ""
 msgid "The file name should have a .yml extension"
 msgstr ""
 
+msgid "The finding is not a vulnerability because it is part of a test or is test data."
+msgstr ""
+
 msgid "The following %{user} can also merge into this branch: %{branch}"
 msgstr ""
 
@@ -30292,6 +30301,12 @@ msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr ""
 
 msgid "The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax."
+msgstr ""
+
+msgid "The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk."
+msgstr ""
+
+msgid "The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated."
 msgstr ""
 
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been fixed or removed before changing its status."

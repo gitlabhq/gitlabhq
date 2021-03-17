@@ -8,13 +8,6 @@ module Gitlab
       Gemojione.index.instance_variable_get(:@emoji_by_name)
     end
 
-    def emojis_by_category
-      Gemojione::Categories.all.values.flatten.flat_map do |emoji|
-        tone_emojis = (1..5).map { |i| Gemojione.index.find_by_name("#{emoji['name']}_tone#{i}") }
-        [emoji] + tone_emojis.compact
-      end
-    end
-
     def emojis_by_moji
       Gemojione.index.instance_variable_get(:@emoji_by_moji)
     end

@@ -413,7 +413,7 @@ If you do not want to maintain bastion hosts, you can set up [AWS Systems Manage
    1. Leave everything else as default and click **Add Storage**.
 1. For storage, we'll leave everything as default and only add an 8GB root volume. We won't store anything on this instance.
 1. Click **Add Tags** and on the next screen click **Add Tag**.
-   1. We’ll only set `Key: Name` and `Value: Bastion Host A`.
+   1. We'll only set `Key: Name` and `Value: Bastion Host A`.
 1. Click **Configure Security Group**.
    1. Select **Create a new security group**, enter a **Security group name** (we'll use `bastion-sec-group`), and add a description.
    1. We'll enable SSH access from anywhere (`0.0.0.0/0`). If you want stricter security, specify a single IP address or an IP address range in CIDR notation.
@@ -432,7 +432,7 @@ Confirm that you can SSH into the instance:
 
 1. Create an EC2 instance following the same steps as above with the following changes:
    1. For the **Subnet**, select the second public subnet we created earlier (`gitlab-public-10.0.2.0`).
-   1. Under the **Add Tags** section, we’ll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
+   1. Under the **Add Tags** section, we'll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
    1. For the security group, select the existing `bastion-sec-group` we created above.
 
 ### Use SSH Agent Forwarding
@@ -456,10 +456,10 @@ From the EC2 dashboard:
    1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
    1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
    1. Click **Add Storage**.
-   1. The root volume is 8GiB by default and should be enough given that we won’t store any data there.
+   1. The root volume is 8GiB by default and should be enough given that we won't store any data there.
 1. Click **Add Tags** and add any tags you may need. In our case, we'll only set `Key: Name` and `Value: GitLab`.
 1. Click **Configure Security Group**. Check **Select an existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
-1. Click **Review and launch** followed by **Launch** if you’re happy with your settings.
+1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
 ### Add custom configuration
@@ -683,7 +683,7 @@ From the EC2 dashboard:
 1. **Do not** check **Request Spot Instance**.
 1. From the **IAM Role** dropdown, pick the `GitLabAdmin` instance role we [created earlier](#create-an-iam-ec2-instance-role-and-profile).
 1. Leave the rest as defaults and click **Add Storage**.
-1. The root volume is 8GiB by default and should be enough given that we won’t store any data there. Click **Configure Security Group**.
+1. The root volume is 8GiB by default and should be enough given that we won't store any data there. Click **Configure Security Group**.
 1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. Click **Review**, review your changes, and click **Create launch configuration**.
 1. Acknowledge that you have access to the private key or create a new one. Click **Create launch configuration**.

@@ -374,7 +374,7 @@ comment - content which is not included in the output document
 
 ### Colors
 
-It’s possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
+It's possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
 Supported formats (named colors are not supported):
 
 - HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``

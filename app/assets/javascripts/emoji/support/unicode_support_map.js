@@ -1,6 +1,6 @@
 import AccessorUtilities from '../../lib/utils/accessor';
 
-const GL_EMOJI_VERSION = '0.3.0';
+const GL_EMOJI_VERSION = '0.2.0';
 
 const unicodeSupportTestMap = {
   // man, student (emojione does not have any of these yet), http://emojipedia.org/emoji-zwj-sequences/
@@ -25,8 +25,6 @@ const unicodeSupportTestMap = {
     // angel_tone5
     '\u{1F47C}\u{1F3FF}',
   ],
-  // star_struck, http://emojipedia.org/unicode-9.0/
-  '10.0': '\u{1F929}',
   // rofl, http://emojipedia.org/unicode-9.0/
   '9.0': '\u{1F923}',
   // metal, http://emojipedia.org/unicode-8.0/

@@ -26,7 +26,7 @@ pre-written code blocks or database queries against a given environment.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
 
 The JupyterHub app offered via the GitLab Kubernetes integration now ships
-with Nurtch’s Rubix library, providing a simple way to create DevOps
+with Nurtch's Rubix library, providing a simple way to create DevOps
 runbooks. A sample runbook is provided, showcasing common operations. While
 Rubix makes it simple to create common Kubernetes and AWS workflows, you can
 also create them manually without Rubix.

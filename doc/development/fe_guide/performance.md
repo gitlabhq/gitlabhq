@@ -35,7 +35,7 @@ performance.getEntriesByName('my-component-start')
 - The start of navigation and a mark
 - The start of navigation and the moment the measurement is taken
 
-It takes several arguments of which the measurement’s name is the only one required. Examples:
+It takes several arguments of which the measurement's name is the only one required. Examples:
 
 - Duration between the start and end marks:
 
@@ -185,16 +185,16 @@ To access stored measurements, you can use either:
 ### Naming convention
 
 All the marks and measures should be instantiated with the constants from
-`app/assets/javascripts/performance/constants.js`. When you’re ready to add a new mark’s or
-measurement’s label, you can follow the pattern.
+`app/assets/javascripts/performance/constants.js`. When you're ready to add a new mark's or
+measurement's label, you can follow the pattern.
 
 NOTE:
 This pattern is a recommendation and not a hard rule.
 
 ```javascript
-app-*-start // for a start ‘mark’
-app-*-end   // for an end ‘mark’
-app-*       // for ‘measure’
+app-*-start // for a start 'mark'
+app-*-end   // for an end 'mark'
+app-*       // for 'measure'
 ```
 
 For example, `'webide-init-editor-start`, `mr-diffs-mark-file-tree-end`, and so on. We do it to

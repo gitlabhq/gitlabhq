@@ -1,21 +1,12 @@
 # frozen_string_literal: true
 
-EMOJI_VERSION = "2"
-
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
 
   task aliases: ['yarn:check', 'environment'] do
     require 'json'
 
-    aliases = {
-      basketball_player: "man_bouncing_ball",
-      basketball_player_tone1: "man_bouncing_ball_tone1",
-      basketball_player_tone2: "man_bouncing_ball_tone2",
-      basketball_player_tone3: "man_bouncing_ball_tone3",
-      basketball_player_tone4: "man_bouncing_ball_tone4",
-      basketball_player_tone5: "man_bouncing_ball_tone5"
-    }
+    aliases = {}
 
     index_file = File.join(Rails.root, 'fixtures', 'emojis', 'index.json')
     index = Gitlab::Json.parse(File.read(index_file))
@@ -45,9 +36,7 @@ namespace :gemojione do
     resultant_emoji_map = {}
     resultant_emoji_map_new = {}
 
-    Gitlab::Emoji.emojis_by_category.each do |emoji_hash|
-      name = emoji_hash['name']
-
+    Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
       unless Gitlab::Emoji.emojis_aliases.key?(name)
         fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
@@ -85,7 +74,7 @@ namespace :gemojione do
       handle.write(Gitlab::Json.pretty_generate(resultant_emoji_map))
     end
 
-    out_new = File.join(Rails.root, 'public', '-', 'emojis', EMOJI_VERSION, 'emojis.json')
+    out_new = File.join(Rails.root, 'public', '-', 'emojis', '1', 'emojis.json')
     File.open(out_new, 'w') do |handle|
       handle.write(Gitlab::Json.pretty_generate(resultant_emoji_map_new))
     end
@@ -112,21 +101,22 @@ namespace :gemojione do
 
     # Update these values to the width and height of the spritesheet when
     # new emoji are added.
-    SPRITESHEET_WIDTH = 1080
-    SPRITESHEET_HEIGHT = 1060
+    SPRITESHEET_WIDTH = 860
+    SPRITESHEET_HEIGHT = 840
 
     # Set up a map to rename image files
     emoji_unicode_string_to_name_map = {}
     Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
       unless Gitlab::Emoji.emojis_aliases.key?(name)
-        emoji_unicode_string_to_name_map[emoji_hash['unicode'].downcase] = name
+        emoji_unicode_string_to_name_map[emoji_hash['unicode']] = name
       end
     end
 
     # Copy the Gemojione assets to the temporary folder for renaming
-    emoji_dir = "public/-/emojis/#{EMOJI_VERSION}"
+    emoji_dir = "app/assets/images/emoji"
     FileUtils.rm_rf(emoji_dir)
+    FileUtils.mkdir_p(emoji_dir, mode: 0700)
     FileUtils.cp_r(File.join(Gemojione.images_path, '.'), emoji_dir)
     Dir[File.join(emoji_dir, "**/*.png")].each do |png|
       image_path = png
@@ -143,7 +133,7 @@ namespace :gemojione do
         end
       end
 
-      style_path = Rails.root.join(*%w(app assets stylesheets emoji_sprites.scss))
+      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji_sprites.scss))
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.cssurl = "image-url('$IMAGE')"
@@ -175,17 +165,15 @@ namespace :gemojione do
           height: #{SIZE}px;
           width: #{SIZE}px;
 
-          /* stylelint-disable media-feature-name-no-vendor-prefix */
           @media only screen and (-webkit-min-device-pixel-ratio: 2),
-            only screen and (min--moz-device-pixel-ratio: 2),
-            only screen and (-o-min-device-pixel-ratio: 2/1),
-            only screen and (min-device-pixel-ratio: 2),
-            only screen and (min-resolution: 192dpi),
-            only screen and (min-resolution: 2dppx) {
+                 only screen and (min--moz-device-pixel-ratio: 2),
+                 only screen and (-o-min-device-pixel-ratio: 2/1),
+                 only screen and (min-device-pixel-ratio: 2),
+                 only screen and (min-resolution: 192dpi),
+                 only screen and (min-resolution: 2dppx) {
             background-image: image-url('emoji@2x.png');
             background-size: #{SPRITESHEET_WIDTH}px #{SPRITESHEET_HEIGHT}px;
           }
-          /* stylelint-enable media-feature-name-no-vendor-prefix */
         }
         CSS
       end

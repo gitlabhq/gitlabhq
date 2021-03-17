@@ -1,0 +1,8 @@
+---
+name: api_caching_tags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54975
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324391
+milestone: '13.10'
+type: development
+group: group::source code
+default_enabled: false

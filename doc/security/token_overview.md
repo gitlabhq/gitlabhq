@@ -22,7 +22,7 @@ they inherit permissions from the user who created them.
 
 ## OAuth2 tokens
 
-GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user’s behalf.
+GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user's behalf.
 
 You can limit the scope and lifetime of your OAuth2 tokens.
 
@@ -57,7 +57,7 @@ Deploy tokens can be managed by project maintainers and owners.
 
 [Deploy keys](../user/project/deploy_keys/index.md) allow read-only or read-write access to your repositories by importing an SSH public key into your GitLab instance. Deploy keys cannot be used with the GitLab API or the registry.
 
-This is useful, for example, for cloning repositories to your Continuous Integration (CI) server. By using deploy keys, you don’t have to set up a fake user account.
+This is useful, for example, for cloning repositories to your Continuous Integration (CI) server. By using deploy keys, you don't have to set up a fake user account.
 
 Project maintainers and owners can add or enable a deploy key for a project repository
 
@@ -65,7 +65,7 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 
 Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance admins can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
 
-You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project’s code, so be careful when assigning project and group-level permissions.
+You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project's code, so be careful when assigning project and group-level permissions.
 
 ## Runner authentication tokens (also called runner tokens)
 

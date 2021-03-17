@@ -105,7 +105,7 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ## Gitaly concurrency limit
 
-Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly’s configuration file.
+Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
 
 Read more on [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc-concurrency).
 
