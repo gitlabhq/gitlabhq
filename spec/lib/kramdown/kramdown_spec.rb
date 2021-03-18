@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Kramdown patch for syntax highlighting formatters' do
+RSpec.describe 'Ensure kramdown detects invalid syntax highlighting formatters' do
   subject { Kramdown::Document.new(options + "\n" + code).to_html }
 
   let(:code) do

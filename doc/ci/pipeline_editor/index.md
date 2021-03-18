@@ -11,7 +11,6 @@ type: reference
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/270059) in GitLab 13.10.
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
-The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
 the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **CI/CD > Editor**.
 
 From the pipeline editor page you can:
