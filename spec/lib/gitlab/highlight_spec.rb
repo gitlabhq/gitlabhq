@@ -79,6 +79,21 @@ RSpec.describe Gitlab::Highlight do
 
         expect(result).to eq(expected)
       end
+
+      context 'when start line number is set' do
+        let(:expected) do
+          %q(<span id="LC10" class="line" lang="diff"><span class="gi">+aaa</span></span>
+<span id="LC11" class="line" lang="diff"><span class="gi">+bbb</span></span>
+<span id="LC12" class="line" lang="diff"><span class="gd">- ccc</span></span>
+<span id="LC13" class="line" lang="diff"> ddd</span>)
+        end
+
+        it 'highlights each line properly' do
+          result = described_class.new(file_name, content).highlight(content, context: { line_number: 10 })
+
+          expect(result).to eq(expected)
+        end
+      end
     end
 
     describe 'with CRLF' do

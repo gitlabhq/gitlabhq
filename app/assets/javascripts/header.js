@@ -46,6 +46,7 @@ function initStatusTriggers() {
                 currentMessage,
                 currentAvailability,
                 canSetUserAvailability,
+                currentClearStatusAfter,
               } = setStatusModalWrapperEl.dataset;
 
               return {
@@ -54,6 +55,7 @@ function initStatusTriggers() {
                 currentMessage,
                 currentAvailability,
                 canSetUserAvailability,
+                currentClearStatusAfter,
               };
             },
             render(createElement) {
@@ -63,6 +65,7 @@ function initStatusTriggers() {
                 currentMessage,
                 currentAvailability,
                 canSetUserAvailability,
+                currentClearStatusAfter,
               } = this;
 
               return createElement(SetStatusModalWrapper, {
@@ -72,6 +75,7 @@ function initStatusTriggers() {
                   currentMessage,
                   currentAvailability,
                   canSetUserAvailability,
+                  currentClearStatusAfter,
                 },
               });
             },

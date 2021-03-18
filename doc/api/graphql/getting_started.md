@@ -34,7 +34,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
 
 ### GraphiQL
 
-GraphiQL (pronounced “graphical”) allows you to run queries directly against the server endpoint
+GraphiQL (pronounced "graphical") allows you to run queries directly against the server endpoint
 with syntax highlighting and autocomplete. It also allows you to explore the schema and types.
 
 The examples below:

@@ -6,7 +6,7 @@ module Resolvers
 
     type ::Types::MergeRequestType.connection_type, null: true
 
-    alias_method :project, :synchronized_object
+    alias_method :project, :object
 
     def self.accept_assignee
       argument :assignee_username, GraphQL::STRING_TYPE,

@@ -197,7 +197,7 @@ Check this [page](vuex.md) for more details.
 In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
 
 > The data object for the Vue instance. Vue recursively converts its properties into getter/setters
-to make it “reactive”. The object must be plain: native objects such as browser API objects and
+to make it "reactive". The object must be plain: native objects such as browser API objects and
 prototype properties are ignored. A rule of thumb is that data should just be data - it is not
 recommended to observe objects with their own stateful behavior.
 

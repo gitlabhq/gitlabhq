@@ -31,7 +31,6 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       id: pipeline.id,
       sha: pipeline.sha,
       ref: pipeline.ref,
-      git_commit_message: pipeline.git_commit_message,
       user: user_info,
       project: {
         name: pipeline.project.name,

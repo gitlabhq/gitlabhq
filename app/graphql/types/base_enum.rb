@@ -36,6 +36,18 @@ module Types
       def enum
         @enum_values ||= {}.with_indifferent_access
       end
+
+      def authorization
+        @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize)
+      end
+
+      def authorize(*abilities)
+        @abilities = abilities
+      end
+
+      def authorized?(object, context)
+        authorization.ok?(object, context[:current_user])
+      end
     end
   end
 end

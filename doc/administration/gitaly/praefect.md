@@ -8,24 +8,19 @@ type: reference
 # Gitaly Cluster **(FREE SELF)**
 
 [Gitaly](index.md), the service that provides storage for Git repositories, can
-be run in a clustered configuration to increase fault tolerance. In this
-configuration, every Git repository is stored on every Gitaly node in the
-cluster. Multiple clusters (or storage shards) can be configured.
-
-NOTE:
-Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
-customers.
-
-Praefect is a router and transaction manager for Gitaly, and a required
-component for running a Gitaly Cluster.
-
-![Architecture diagram](img/praefect_architecture_v12_10.png)
+be run in a clustered configuration to scale the Gitaly service and increase
+fault tolerance. In this configuration, every Git repository is stored on every
+Gitaly node in the cluster.
 
 Using a Gitaly Cluster increases fault tolerance by:
 
 - Replicating write operations to warm standby Gitaly nodes.
 - Detecting Gitaly node failures.
 - Automatically routing Git requests to an available Gitaly node.
+
+NOTE:
+Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
+customers.
 
 The availability objectives for Gitaly clusters are:
 
@@ -57,28 +52,48 @@ Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/14
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
-## Gitaly Cluster compared to Geo
+## Overview
 
-Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+Git storage is provided through the Gitaly service in GitLab, and is essential
+to correct proper operation of the GitLab application. When the number of
+users, repositories, and activity grows, it is important to scale Gitaly
+appropriately by:
 
-- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
-  not aware when Gitaly Cluster is used.
-- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
-  an entire instance of GitLab. Users know when they are using Geo for
-  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
-  including Git data.
+- Increasing the available CPU and memory resources available to Git before
+  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
+- Increase available storage before storage limits are reached causing write
+  operations to fail.
+- Improve fault tolerance by removing single points of failure. Git should be
+  considered mission critical if a service degradation would prevent you from
+  deploying changes to production.
 
-The following table outlines the major differences between Gitaly Cluster and Geo:
+### Moving beyond NFS
 
-| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                             | Consistency                   | Provides redundancy for |
-|:---------------|:---------|:----------|:-------------------|:-----------------------------------------------------|:------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](#automatic-failover-and-leader-election) | [Strong](#strong-consistency) | Data storage in Git     |
-| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)          | Eventual                      | Entire GitLab instance  |
+WARNING:
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+Gitaly Cluster as soon as possible.
 
-For more information, see:
+[Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
+is not well suited to Git workloads which are CPU and IOPS sensitive.
+Specifically:
 
-- [Gitaly architecture](index.md#architecture).
-- Geo [use cases](../geo/index.md#use-cases) and [architecture](../geo/index.md#architecture).
+- Git is sensitive to file system latency. Even simple operations require many
+  read operations. Operations that are fast on block storage can become an order of
+  magnitude slower. This significantly impacts GitLab application performance.
+- NFS performance optimizations that prevent the performance gap between
+  block storage and NFS being even wider are vulnerable to race conditions. We have observed
+  [data inconsistencies](https://gitlab.com/gitlab-org/gitaly/-/issues/2589)
+  in production environments caused by simultaneous writes to different NFS
+  clients. Data corruption is not an acceptable risk.
+
+Gitaly Cluster is purpose built to provide reliable, high performance, fault
+tolerant Git storage.
+
+Further reading:
+
+- Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
+- Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
 ## Where Gitaly Cluster fits
 
@@ -154,6 +169,38 @@ A hybrid approach can be used in these instances, where each shard is configured
 cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
 to provide greater flexibility for extremely large GitLab instances.
 
+### Gitaly Cluster compared to Geo
+
+Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+
+- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster is used.
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+  an entire instance of GitLab. Users know when they are using Geo for
+  [replication](../geo/index.md). Geo [replicates multiple datatypes](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  including Git data.
+
+The following table outlines the major differences between Gitaly Cluster and Geo:
+
+| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                             | Consistency                   | Provides redundancy for |
+|:---------------|:---------|:----------|:-------------------|:-----------------------------------------------------|:------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](#automatic-failover-and-leader-election) | [Strong](#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)          | Eventual                      | Entire GitLab instance  |
+
+For more information, see:
+
+- [Gitaly architecture](index.md#architecture).
+- Geo [use cases](../geo/index.md#use-cases) and [architecture](../geo/index.md#architecture).
+
+## Architecture
+
+Praefect is a router and transaction manager for Gitaly, and a required
+component for running a Gitaly Cluster.
+
+![Architecture diagram](img/praefect_architecture_v12_10.png)
+
+For more information, see [Gitaly HA Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
+
 ## Requirements for configuring a Gitaly Cluster
 
 The minimum recommended configuration for a Gitaly Cluster requires:
@@ -204,7 +251,7 @@ You need the IP/host address for each node.
 
 If you are using a cloud provider, you can look up the addresses for each server through your cloud provider's management console.
 
-If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to “internal address” for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
+If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to "internal address" for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
 
 #### Secrets
 

@@ -56,7 +56,7 @@ module Resolvers
     end
 
     def parent
-      synchronized_object
+      object
     end
 
     def parent_id_parameters(args)

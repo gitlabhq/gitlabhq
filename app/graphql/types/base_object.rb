@@ -19,6 +19,14 @@ module Types
       GitlabSchema.id_from_object(object)
     end
 
+    def self.authorization
+      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize)
+    end
+
+    def self.authorized?(object, context)
+      authorization.ok?(object, context[:current_user])
+    end
+
     def current_user
       context[:current_user]
     end

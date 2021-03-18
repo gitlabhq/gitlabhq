@@ -13,7 +13,7 @@ module Resolvers
           description: 'The global ID of the project the authored merge requests should be in. Incompatible with projectPath.'
 
     attr_reader :project
-    alias_method :user, :synchronized_object
+    alias_method :user, :object
 
     def ready?(project_id: nil, project_path: nil, **args)
       return early_return unless can_read_profile?

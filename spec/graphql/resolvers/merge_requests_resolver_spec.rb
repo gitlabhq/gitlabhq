@@ -41,7 +41,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
     #   AND "merge_requests"."iid" = 1 ORDER BY "merge_requests"."id" DESC
     # SELECT "projects".* FROM "projects" WHERE "projects"."id" = 2
     # SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = 2
-    let(:queries_per_project) { 3 }
+    let(:queries_per_project) { 4 }
 
     context 'no arguments' do
       it 'returns all merge requests' do

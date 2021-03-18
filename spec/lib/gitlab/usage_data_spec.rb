@@ -1358,7 +1358,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
     let(:ineligible_total_categories) do
-      %w[source_code ci_secrets_management incident_management_alerts snippets terraform epics_usage]
+      %w[source_code ci_secrets_management incident_management_alerts snippets terraform]
     end
 
     it 'has all known_events' do

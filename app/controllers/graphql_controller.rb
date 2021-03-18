@@ -35,7 +35,6 @@ class GraphqlController < ApplicationController
 
   def execute
     result = multiplex? ? execute_multiplex : execute_query
-
     render json: result
   end
 

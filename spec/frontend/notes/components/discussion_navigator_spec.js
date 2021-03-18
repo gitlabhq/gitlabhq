@@ -2,6 +2,11 @@
 import 'mousetrap';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vue from 'vue';
+import {
+  keysFor,
+  MR_NEXT_UNRESOLVED_DISCUSSION,
+  MR_PREVIOUS_UNRESOLVED_DISCUSSION,
+} from '~/behaviors/shortcuts/keybindings';
 import DiscussionNavigator from '~/notes/components/discussion_navigator.vue';
 import eventHub from '~/notes/event_hub';
 
@@ -60,13 +65,13 @@ describe('notes/components/discussion_navigator', () => {
     });
 
     it('calls jumpToNextDiscussion when pressing `n`', () => {
-      Mousetrap.trigger('n');
+      Mousetrap.trigger(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION));
 
       expect(jumpToNextDiscussion).toHaveBeenCalled();
     });
 
     it('calls jumpToPreviousDiscussion when pressing `p`', () => {
-      Mousetrap.trigger('p');
+      Mousetrap.trigger(keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION));
 
       expect(jumpToPreviousDiscussion).toHaveBeenCalled();
     });
@@ -87,8 +92,8 @@ describe('notes/components/discussion_navigator', () => {
     });
 
     it('unbinds keys', () => {
-      expect(Mousetrap.unbind).toHaveBeenCalledWith('n');
-      expect(Mousetrap.unbind).toHaveBeenCalledWith('p');
+      expect(Mousetrap.unbind).toHaveBeenCalledWith(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION));
+      expect(Mousetrap.unbind).toHaveBeenCalledWith(keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION));
     });
 
     it('unbinds event hub listeners', () => {

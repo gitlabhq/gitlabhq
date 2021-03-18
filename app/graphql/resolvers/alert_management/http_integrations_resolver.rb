@@ -3,7 +3,7 @@
 module Resolvers
   module AlertManagement
     class HttpIntegrationsResolver < BaseResolver
-      alias_method :project, :synchronized_object
+      alias_method :project, :object
 
       type Types::AlertManagement::HttpIntegrationType.connection_type, null: true
 

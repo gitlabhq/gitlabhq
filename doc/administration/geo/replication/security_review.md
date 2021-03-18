@@ -34,7 +34,7 @@ from [owasp.org](https://owasp.org/).
 ### How can the data be classified into categories according to its sensitivity?
 
 - The GitLab model of sensitivity is centered around public vs. internal vs.
-  private projects. Geo replicates them all indiscriminately. “Selective sync”
+  private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.
 - See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html).
@@ -165,7 +165,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What aspects of the product may or may not be hosted via the cloud computing model?
 
-- GitLab is “cloud native” and this applies to Geo as much as to the rest of the
+- GitLab is "cloud native" and this applies to Geo as much as to the rest of the
   product. Deployment in clouds is a common and supported scenario.
 
 ## If applicable, what approach(es) to cloud computing will be taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?

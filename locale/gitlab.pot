@@ -4995,6 +4995,9 @@ msgstr ""
 msgid "Board|Load more issues"
 msgstr ""
 
+msgid "Bold text"
+msgstr ""
+
 msgid "Both project and dashboard_path are required"
 msgstr ""
 
@@ -6345,6 +6348,9 @@ msgid "Close %{issueType}"
 msgstr ""
 
 msgid "Close %{tabname}"
+msgstr ""
+
+msgid "Close design"
 msgstr ""
 
 msgid "Close epic"
@@ -12508,6 +12514,9 @@ msgstr ""
 msgid "Expand milestones"
 msgstr ""
 
+msgid "Expand panel"
+msgstr ""
+
 msgid "Expand sidebar"
 msgstr ""
 
@@ -13411,6 +13420,9 @@ msgid "FlowdockService|Flowdock Git source token"
 msgstr ""
 
 msgid "FlowdockService|Flowdock is a collaboration web app for technical teams."
+msgstr ""
+
+msgid "Focus filter bar"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -17229,6 +17241,9 @@ msgstr ""
 msgid "It's you"
 msgstr ""
 
+msgid "Italic text"
+msgstr ""
+
 msgid "Iteration"
 msgstr ""
 
@@ -17626,21 +17641,6 @@ msgid "Keyboard shortcuts"
 msgstr ""
 
 msgid "KeyboardKey|Ctrl+"
-msgstr ""
-
-msgid "KeyboardShortcuts|Commit (when editing commit message)"
-msgstr ""
-
-msgid "KeyboardShortcuts|Global Shortcuts"
-msgstr ""
-
-msgid "KeyboardShortcuts|Toggle GitLab Next"
-msgstr ""
-
-msgid "KeyboardShortcuts|Toggle the Performance Bar"
-msgstr ""
-
-msgid "KeyboardShortcuts|Web IDE"
 msgstr ""
 
 msgid "Keys"
@@ -18335,6 +18335,9 @@ msgid "Link Prometheus monitoring to GitLab."
 msgstr ""
 
 msgid "Link copied"
+msgstr ""
+
+msgid "Link text"
 msgstr ""
 
 msgid "Link title"
@@ -19889,6 +19892,9 @@ msgstr ""
 msgid "Mirroring will only be available if the feature is included in the plan of the selected group or user."
 msgstr ""
 
+msgid "Miscellaneous"
+msgstr ""
+
 msgid "Missing"
 msgstr ""
 
@@ -20625,6 +20631,9 @@ msgid "Next"
 msgstr ""
 
 msgid "Next commit"
+msgstr ""
+
+msgid "Next design"
 msgstr ""
 
 msgid "Next file in diff"
@@ -23126,6 +23135,9 @@ msgid "Previous Artifacts"
 msgstr ""
 
 msgid "Previous commit"
+msgstr ""
+
+msgid "Previous design"
 msgstr ""
 
 msgid "Previous file in diff"
@@ -27739,7 +27751,7 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
-msgid "SetStatusModal|\"Busy\" will be shown next to your name"
+msgid "SetStatusModal|A busy indicator is shown next to your name and avatar."
 msgstr ""
 
 msgid "SetStatusModal|Add status emoji"
@@ -27749,6 +27761,9 @@ msgid "SetStatusModal|Busy"
 msgstr ""
 
 msgid "SetStatusModal|Clear status"
+msgstr ""
+
+msgid "SetStatusModal|Clear status after"
 msgstr ""
 
 msgid "SetStatusModal|Edit status"
@@ -27770,6 +27785,9 @@ msgid "SetStatusModal|Status updated"
 msgstr ""
 
 msgid "SetStatusModal|What's your status?"
+msgstr ""
+
+msgid "SetStatusModal|Your status resets on %{date}."
 msgstr ""
 
 msgid "Sets %{epic_ref} as parent epic."
@@ -31768,6 +31786,9 @@ msgstr ""
 msgid "Toggle focus mode"
 msgstr ""
 
+msgid "Toggle keyboard shortcuts help dialog"
+msgstr ""
+
 msgid "Toggle navigation"
 msgstr ""
 
@@ -33413,6 +33434,9 @@ msgid "View labels"
 msgstr ""
 
 msgid "View log"
+msgstr ""
+
+msgid "View logs"
 msgstr ""
 
 msgid "View merge request"

@@ -106,7 +106,8 @@ To show private contributions:
 
 ## Set your current status
 
-> Introduced in GitLab 11.2.
+> - Introduced in GitLab 11.2.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -119,6 +120,7 @@ To set your current status:
 1. Select **Set status** or, if you have already set a status, **Edit status**.
 1. Set the desired emoji and status message. Status messages must be plain text and 100 characters or less.
    They can also contain emoji codes like, `I'm on vacation :palm_tree:`.
+1. Select a value from the **Clear status after** dropdown.
 1. Select **Set status**. Alternatively, you can select **Remove status** to remove your user status entirely.
 
 You can also set your current status by [using the API](../../api/users.md#user-status).

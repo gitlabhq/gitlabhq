@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Boards::Issues::IssueMoveList do
+  include GraphqlHelpers
+
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:board) { create(:board, group: group) }
@@ -16,9 +18,8 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
   let_it_be(:existing_issue1) { create(:labeled_issue, project: project, labels: [testing], relative_position: 10) }
   let_it_be(:existing_issue2) { create(:labeled_issue, project: project, labels: [testing], relative_position: 50) }
 
-  let(:current_user) { user }
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
-  let(:params) { { board: board, project_path: project.full_path, iid: issue1.iid } }
+  let(:current_ctx) { { current_user: user } }
+  let(:params) { { board_id: global_id_of(board), project_path: project.full_path, iid: issue1.iid } }
   let(:move_params) do
     {
       from_list_id: list1.id,
@@ -33,26 +34,45 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
     group.add_guest(guest)
   end
 
-  subject do
-    mutation.resolve(**params.merge(move_params))
-  end
-
-  describe '#ready?' do
-    it 'raises an error if required arguments are missing' do
-      expect { mutation.ready?(**params) }
-        .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "At least one of the arguments " \
-        "fromListId, toListId, afterId or beforeId is required")
-    end
-
-    it 'raises an error if only one of fromListId and toListId is present' do
-      expect { mutation.ready?(**params.merge(from_list_id: list1.id)) }
-        .to raise_error(Gitlab::Graphql::Errors::ArgumentError,
-          'Both fromListId and toListId must be present'
-        )
-    end
-  end
-
   describe '#resolve' do
+    subject do
+      sync(resolve(described_class, args: params.merge(move_params), ctx: current_ctx))
+    end
+
+    %i[from_list_id to_list_id].each do |arg_name|
+      context "when we only pass #{arg_name}" do
+        let(:move_params) { { arg_name => list1.id } }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(
+            Gitlab::Graphql::Errors::ArgumentError,
+            'Both fromListId and toListId must be present'
+          )
+        end
+      end
+    end
+
+    context 'when required arguments are missing' do
+      let(:move_params) { {} }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(
+          Gitlab::Graphql::Errors::ArgumentError,
+          "At least one of the arguments fromListId, toListId, afterId or beforeId is required"
+        )
+      end
+    end
+
+    context 'when the board ID is wrong' do
+      before do
+        params[:board_id] = global_id_of(project)
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(::GraphQL::LoadApplicationObjectFailedError)
+      end
+    end
+
     context 'when user have access to resources' do
       it 'moves and repositions issue' do
         subject
@@ -63,15 +83,11 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
       end
     end
 
-    context 'when user have no access to resources' do
-      shared_examples 'raises a resource not available error' do
-        it { expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable) }
-      end
+    context 'when user cannot update issue' do
+      let(:current_ctx) { { current_user: guest } }
 
-      context 'when user cannot update issue' do
-        let(:current_user) { guest }
-
-        it_behaves_like 'raises a resource not available error'
+      specify do
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
   end

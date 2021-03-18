@@ -45,6 +45,29 @@ RSpec.describe Gitlab::Diff::Line do
     end
   end
 
+  describe '#text' do
+    let(:line) { described_class.new(raw_diff, 'new', 0, 0, 0) }
+    let(:raw_diff) { '+Hello' }
+
+    it 'returns raw diff text' do
+      expect(line.text).to eq('+Hello')
+    end
+
+    context 'when prefix is disabled' do
+      it 'returns raw diff text without prefix' do
+        expect(line.text(prefix: false)).to eq('Hello')
+      end
+
+      context 'when diff is empty' do
+        let(:raw_diff) { '' }
+
+        it 'returns an empty raw diff' do
+          expect(line.text(prefix: false)).to eq('')
+        end
+      end
+    end
+  end
+
   context "when setting rich text" do
     it 'escapes any HTML special characters in the diff chunk header' do
       subject = described_class.new("<input>", "", 0, 0, 0)

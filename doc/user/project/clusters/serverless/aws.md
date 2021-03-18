@@ -432,7 +432,7 @@ deploys your application. If your:
 
 To test the application you deployed, please go to the build log and follow the following steps:
 
-1. Click on “Show complete raw” on the upper right-hand corner:
+1. Click on "Show complete raw" on the upper right-hand corner:
 
    ![sam-complete-raw](img/sam-complete-raw.png)
 

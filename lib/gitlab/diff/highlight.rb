@@ -86,6 +86,41 @@ module Gitlab
       def highlight_line(diff_line)
         return unless diff_file && diff_file.diff_refs
 
+        if Feature.enabled?(:diff_line_syntax_highlighting, project, default_enabled: :yaml)
+          diff_line_highlighting(diff_line)
+        else
+          blob_highlighting(diff_line)
+        end
+      end
+
+      def diff_line_highlighting(diff_line)
+        rich_line = syntax_highlighter(diff_line).highlight(
+          diff_line.text(prefix: false),
+          context: { line_number: diff_line.line }
+        )&.html_safe
+
+        # Only update text if line is found. This will prevent
+        # issues with submodules given the line only exists in diff content.
+        if rich_line
+          line_prefix = diff_line.text =~ /\A(.)/ ? Regexp.last_match(1) : ' '
+          rich_line.prepend(line_prefix).concat("\n")
+        end
+      end
+
+      def syntax_highlighter(diff_line)
+        path = diff_line.removed? ? diff_file.old_path : diff_file.new_path
+
+        @syntax_highlighter ||= {}
+        @syntax_highlighter[path] ||= Gitlab::Highlight.new(
+          path,
+          @raw_lines,
+          language: repository&.gitattribute(path, 'gitlab-language')
+        )
+      end
+
+      # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/324159
+      # ------------------------------------------------------------------------
+      def blob_highlighting(diff_line)
         rich_line =
           if diff_line.unchanged? || diff_line.added?
             new_lines[diff_line.new_pos - 1]&.html_safe
@@ -102,6 +137,7 @@ module Gitlab
       end
 
       # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/324638
+      # ------------------------------------------------------------------------
       def inline_diffs
         @inline_diffs ||= InlineDiff.for_lines(@raw_lines)
       end

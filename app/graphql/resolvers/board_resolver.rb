@@ -2,7 +2,7 @@
 
 module Resolvers
   class BoardResolver < BaseResolver.single
-    alias_method :parent, :synchronized_object
+    alias_method :parent, :object
 
     type Types::BoardType, null: true
 

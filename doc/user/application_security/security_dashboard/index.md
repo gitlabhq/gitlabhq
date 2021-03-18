@@ -71,16 +71,21 @@ CSV file containing details of the resources scanned.
 
 ## Project Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285476) in GitLab 13.10, options to zoom in on a date range, and download the vulnerabilities chart.
 
 At the project level, the Security Dashboard displays a chart with the number of vulnerabilities over time.
 Access it by navigating to **Security & Compliance > Security Dashboard**. We display historical
 data up to 365 days. The chart's data is updated daily.
 
-![Project Security Dashboard](img/project_security_dashboard_chart_v13_6.png)
+![Project Security Dashboard](img/project_security_dashboard_chart_v13_10.png)
 
 Filter the historical data by clicking on the corresponding legend name. The image above, for example, shows
 only the graph for vulnerabilities with **high** severity.
+
+To zoom in, select the left-most icon, then select the desired rangeby dragging across the chart. Select **Remove Selection** (**{{redo}}**) to reset to the original date range.
+
+To download an SVG image of the chart, select **Save chart to an image** (**{download}**).
 
 ## Group Security Dashboard
 

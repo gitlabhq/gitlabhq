@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Gitlab::Graphql::Authorize' do
+RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
   include GraphqlHelpers
   include Graphql::ResolverFactories
 
@@ -10,10 +10,14 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }
+  let(:authorizing_object) { test_object }
+  # to override when combining permissions
+  let(:permission_object_one) { authorizing_object }
+  let(:permission_object_two) { authorizing_object }
+
   let(:query_string) { '{ item { name } }' }
   let(:result) do
     schema = empty_schema
-    schema.use(Gitlab::Graphql::Authorize)
     execute_query(query_type, schema: schema)
   end
 
@@ -33,18 +37,25 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
 
   shared_examples 'authorization with a collection of permissions' do
     it 'returns the protected field when user has all permissions' do
-      permit(*permission_collection)
+      permit_on(permission_object_one, permission_collection.first)
+      permit_on(permission_object_two, permission_collection.second)
 
       expect(subject).to eq('name' => test_object.name)
     end
 
     it 'returns nil when user only has one of the permissions' do
-      permit(permission_collection.first)
+      permit_on(permission_object_one, permission_collection.first)
 
       expect(subject).to be_nil
     end
 
-    it 'returns nil when user only has none of the permissions' do
+    it 'returns nil when user only has the other of the permissions' do
+      permit_on(permission_object_two, permission_collection.second)
+
+      expect(subject).to be_nil
+    end
+
+    it 'returns nil when user has neither of the required permissions' do
       expect(subject).to be_nil
     end
   end
@@ -56,6 +67,7 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
 
   describe 'Field authorizations' do
     let(:type) { type_factory }
+    let(:authorizing_object) { nil }
 
     describe 'with a single permission' do
       let(:query_type) do
@@ -71,9 +83,10 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
       let(:query_type) do
         permissions = permission_collection
         query_factory do |qt|
-          qt.field :item, type, null: true, resolver: new_resolver(test_object) do
-            authorize permissions
-          end
+          qt.field :item, type,
+            null: true,
+            resolver: new_resolver(test_object),
+            authorize: permissions
         end
       end
 
@@ -110,9 +123,8 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
       let(:type) do
         permissions = permission_collection
         type_factory do |type|
-          type.field :name, GraphQL::STRING_TYPE, null: true do
-            authorize permissions
-          end
+          type.field :name, GraphQL::STRING_TYPE, null: true,
+            authorize: permissions
         end
       end
 
@@ -163,6 +175,7 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
   end
 
   describe 'type and field authorizations together' do
+    let(:authorizing_object) { anything }
     let(:permission_1) { permission_collection.first }
     let(:permission_2) { permission_collection.last }
 
@@ -181,7 +194,62 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
     include_examples 'authorization with a collection of permissions'
   end
 
-  describe 'type authorizations when applied to a relay connection' do
+  describe 'resolver and field authorizations together' do
+    let(:permission_1) { permission_collection.first }
+    let(:permission_2) { permission_collection.last }
+    let(:type) { type_factory }
+
+    let(:query_type) do
+      query_factory do |query|
+        query.field :item, type, null: true,
+          resolver: resolver,
+          authorize: permission_2
+      end
+    end
+
+    context 'when the resolver authorizes the object' do
+      let(:permission_object_one) { be_nil }
+      let(:permission_object_two) { be_nil }
+      let(:resolver) do
+        resolver = simple_resolver(test_object)
+        resolver.include(::Gitlab::Graphql::Authorize::AuthorizeResource)
+        resolver.authorize permission_1
+        resolver.authorizes_object!
+        resolver
+      end
+
+      include_examples 'authorization with a collection of permissions'
+    end
+
+    context 'when the resolver does not authorize the object, but instead calls authorized_find!' do
+      let(:permission_object_one) { test_object }
+      let(:permission_object_two) { be_nil }
+      let(:resolver) do
+        resolver = new_resolver(test_object, method: :find_object)
+        resolver.authorize permission_1
+        resolver
+      end
+
+      include_examples 'authorization with a collection of permissions'
+    end
+
+    context 'when the resolver calls authorized_find!, but does not list any permissions' do
+      let(:permission_object_two) { be_nil }
+      let(:resolver) do
+        resolver = new_resolver(test_object, method: :find_object)
+        resolver
+      end
+
+      it 'raises a configuration error' do
+        permit_on(permission_object_two, permission_collection.second)
+
+        expect { execute_query(query_type) }
+          .to raise_error(::Gitlab::Graphql::Authorize::AuthorizeResource::ConfigurationError)
+      end
+    end
+  end
+
+  describe 'when type authorizations when applied to a relay connection' do
     let(:query_string) { '{ item { edges { node { name } } } }' }
     let(:second_test_object) { double(name: 'Second thing') }
 
@@ -303,8 +371,12 @@ RSpec.describe 'Gitlab::Graphql::Authorize' do
   private
 
   def permit(*permissions)
+    permit_on(authorizing_object, *permissions)
+  end
+
+  def permit_on(object, *permissions)
     permissions.each do |permission|
-      allow(Ability).to receive(:allowed?).with(user, permission, test_object).and_return(true)
+      allow(Ability).to receive(:allowed?).with(user, permission, object).and_return(true)
     end
   end
 end
