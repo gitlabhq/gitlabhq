@@ -16,6 +16,15 @@ RSpec.describe Groups::BoardsController do
       expect { list_boards }.to change(group.boards, :count).by(1)
     end
 
+    it 'pushes swimlanes_buffered_rendering feature flag' do
+      allow(controller).to receive(:push_frontend_feature_flag).and_call_original
+
+      expect(controller).to receive(:push_frontend_feature_flag)
+        .with(:swimlanes_buffered_rendering, group, default_enabled: :yaml)
+
+      list_boards
+    end
+
     context 'when format is HTML' do
       it 'renders template' do
         list_boards
@@ -97,6 +106,15 @@ RSpec.describe Groups::BoardsController do
 
   describe 'GET show' do
     let!(:board) { create(:board, group: group) }
+
+    it 'pushes swimlanes_buffered_rendering feature flag' do
+      allow(controller).to receive(:push_frontend_feature_flag).and_call_original
+
+      expect(controller).to receive(:push_frontend_feature_flag)
+        .with(:swimlanes_buffered_rendering, group, default_enabled: :yaml)
+
+      read_board board: board
+    end
 
     context 'when format is HTML' do
       it 'renders template' do

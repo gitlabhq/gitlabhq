@@ -31,6 +31,13 @@ module QA
         end
       end
 
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = package_name
+          package.project = project
+        end
+      end
+
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"

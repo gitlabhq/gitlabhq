@@ -5,8 +5,7 @@ module QA
     describe 'npm registry' do
       include Runtime::Fixtures
 
-      let(:registry_scope) { project.group.sandbox.path }
-      let(:package_name) { "@#{registry_scope}/#{project.name}" }
+      let!(:registry_scope) { project.group.sandbox.path }
       let(:auth_token) do
         unless Page::Main::Menu.perform(&:signed_in?)
           Flow::Login.sign_in
@@ -15,10 +14,21 @@ module QA
         Resource::PersonalAccessToken.fabricate!.token
       end
 
-      let(:project) do
+      let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'npm-registry-project'
         end
+      end
+
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = "@#{registry_scope}/#{project.name}"
+          package.project = project
+        end
+      end
+
+      after do
+        package.remove_via_api!
       end
 
       it 'publishes an npm package and then deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/944' do
@@ -29,7 +39,7 @@ module QA
           file_path: 'package.json',
           content: <<~JSON
             {
-              "name": "#{package_name}",
+              "name": "#{package.name}",
               "version": "1.0.0",
               "description": "Example package for GitLab npm registry",
               "publishConfig": {
@@ -56,20 +66,20 @@ module QA
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package_name)
+          expect(index).to have_package(package.name)
 
-          index.click_package(package_name)
+          index.click_package(package.name)
         end
 
         Page::Project::Packages::Show.perform do |show|
-          expect(show).to have_package_info(package_name, "1.0.0")
+          expect(show).to have_package_info(package.name, "1.0.0")
 
           show.click_delete
         end
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_content("Package deleted successfully")
-          expect(index).not_to have_package(package_name)
+          expect(index).not_to have_package(package.name)
         end
       end
     end

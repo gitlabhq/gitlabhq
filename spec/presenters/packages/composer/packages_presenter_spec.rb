@@ -9,8 +9,8 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
   let_it_be(:json) { { 'name' => package_name } }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json }, group: group) }
-  let_it_be(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
-  let_it_be(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
+  let!(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
+  let!(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
 
   let(:branch) { project.repository.find_branch('master') }
 
@@ -27,6 +27,11 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
           'shasum' => '',
           'type' => 'zip',
           'url' => "http://localhost/api/v4/projects/#{project.id}/packages/composer/archives/#{package.name}.zip?sha=#{branch.target}"
+        },
+        'source' => {
+          'reference' => branch.target,
+          'type' => 'git',
+          'url' => "http://localhost/#{group.path}/#{project.path}.git"
         },
         'name' => package.name,
         'uid' => package.id,

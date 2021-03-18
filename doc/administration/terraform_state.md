@@ -97,6 +97,39 @@ The following settings are:
 | `remote_directory` | The bucket name where Terraform state files are stored | |
 | `connection` | Various connection options described below | |
 
+### Migrate to object storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247042) in GitLab 13.9.
+
+To migrate Terraform state files to object storage, follow the instructions below.
+
+- For Omnibus package installations:
+
+  ```shell
+  gitlab-rake gitlab:terraform_states:migrate
+  ```
+
+- For source installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:terraform_states:migrate RAILS_ENV=production
+  ```
+
+For GitLab 13.8 and earlier versions, you can use a workaround for the Rake task:
+
+1. Open the GitLab [Rails console](operations/rails_console.md).
+1. Run the following commands:
+
+   ```ruby
+   Terraform::StateUploader.alias_method(:upload, :model)
+
+   Terraform::StateVersion.where(file_store: ::ObjectStorage::Store::LOCAL).   find_each(batch_size: 10) do |terraform_state_version|
+     puts "Migrating: #{terraform_state_version.inspect}"
+
+     terraform_state_version.file.migrate!(::ObjectStorage::Store::REMOTE)
+   end
+   ```
+
 ### S3-compatible connection settings
 
 See [the available connection settings for different providers](object_storage.md#connection-settings).

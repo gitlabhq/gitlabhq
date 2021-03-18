@@ -3210,7 +3210,8 @@ test:
 ```
 
 With this configuration, GitLab adds a link **artifact 1** to the relevant merge request
-that points to `file1.txt`.
+that points to `file1.txt`. To access the link, select **View exposed artifact**
+below the pipeline graph in the merge request overview.
 
 An example that matches an entire directory:
 

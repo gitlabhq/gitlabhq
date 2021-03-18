@@ -121,7 +121,7 @@ NOTE:
 
 ## IP range
 
-GitLab.com is using the IP range `34.74.90.64/28` for traffic from its Web/API
+GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
 fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
 from those IPs and allow them.
 

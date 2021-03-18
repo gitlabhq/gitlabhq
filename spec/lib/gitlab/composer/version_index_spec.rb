@@ -27,6 +27,11 @@ RSpec.describe Gitlab::Composer::VersionIndex do
           'type' => 'zip',
           'url' => "http://localhost/api/v4/projects/#{project.id}/packages/composer/archives/#{package.name}.zip?sha=#{branch.target}"
         },
+        'source' => {
+          'reference' => branch.target,
+          'type' => 'git',
+          'url' => project.http_url_to_repo
+        },
         'name' => package.name,
         'uid' => package.id,
         'version' => package.version

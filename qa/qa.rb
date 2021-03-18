@@ -96,6 +96,7 @@ module QA
     autoload :ProjectSnippet, 'qa/resource/project_snippet'
     autoload :Design, 'qa/resource/design'
     autoload :RegistryRepository, 'qa/resource/registry_repository'
+    autoload :Package, 'qa/resource/package'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'

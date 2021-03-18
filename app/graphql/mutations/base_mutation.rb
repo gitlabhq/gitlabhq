@@ -9,6 +9,7 @@ module Mutations
     ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
     field_class ::Types::BaseField
+    argument_class ::Types::BaseArgument
 
     field :errors, [GraphQL::STRING_TYPE],
           null: false,

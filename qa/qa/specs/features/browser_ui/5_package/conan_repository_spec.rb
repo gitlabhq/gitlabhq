@@ -5,11 +5,16 @@ module QA
     describe 'Conan Repository' do
       include Runtime::Fixtures
 
-      let(:package_name) { 'conantest' }
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'conan-package-project'
+        end
+      end
+
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = 'conantest'
+          package.project = project
         end
       end
 
@@ -29,6 +34,7 @@ module QA
 
       after do
         runner.remove_via_api!
+        package.remove_via_api!
       end
 
       it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1077' do
@@ -47,10 +53,10 @@ module QA
                                         stage: deploy
                                         script:
                                           - "conan remote add gitlab #{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/conan"
-                                          - "conan new #{package_name}/0.1 -t"
+                                          - "conan new #{package.name}/0.1 -t"
                                           - "conan create . mycompany/stable"
-                                          - "CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload #{package_name}/0.1@mycompany/stable --all --remote=gitlab"
-                                          - "conan install conantest/0.1@mycompany/stable --remote=gitlab"
+                                          - "CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload #{package.name}/0.1@mycompany/stable --all --remote=gitlab"
+                                          - "conan install #{package.name}/0.1@mycompany/stable --remote=gitlab"
                                         tags:
                                            - "runner-for-#{project.name}"
                                     YAML
@@ -71,15 +77,15 @@ module QA
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package_name)
-          index.click_package(package_name)
+          expect(index).to have_package(package.name)
+          index.click_package(package.name)
         end
 
         Page::Project::Packages::Show.perform(&:click_delete)
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_content("Package deleted successfully")
-          expect(index).not_to have_package(package_name)
+          expect(index).not_to have_package(package.name)
         end
       end
     end

@@ -91,6 +91,14 @@ Since Elasticsearch can read and use indices created in the previous major versi
 
 The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which will implicitly create an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you'll be able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
 
+If you are unsure when your current index was created, 
+you can check whether it was created after GitLab 13.0 by using the 
+[Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html). 
+If the list of aliases returned contains an entry for `gitlab-production` that points to an index 
+named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0. 
+If the `gitlab-production` alias is missing, you'll need to reindex from scratch to use 
+features such as Zero-downtime reindexing.
+
 ## Elasticsearch repository indexer
 
 For indexing Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
@@ -936,3 +944,10 @@ sudo gitlab-rake gitlab:elastic:index
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:index
 ```
+
+### How does Advanced Search handle private projects?
+
+Advanced Search will store all the projects in the same Elasticsearch indexes,
+however searches will only surface results that can be viewed by the user.
+Advanced Search will honor all permission checks in the application by
+filtering out projects that a user does not have access to at search time.

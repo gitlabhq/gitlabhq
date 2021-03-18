@@ -29,6 +29,7 @@ class Packages::Package < ApplicationRecord
 
   delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan
   delegate :codename, :suite, to: :debian_distribution, prefix: :debian_distribution
+  delegate :target_sha, to: :composer_metadatum, prefix: :composer
 
   validates :project, presence: true
   validates :name, presence: true

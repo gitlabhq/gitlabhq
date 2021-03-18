@@ -8,6 +8,8 @@ module Types
 
     DEFAULT_COMPLEXITY = 1
 
+    attr_reader :deprecation
+
     def initialize(**kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       @constant_complexity = kwargs[:complexity].is_a?(Integer) && kwargs[:complexity] > 0
@@ -16,7 +18,7 @@ module Types
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
-      kwargs = gitlab_deprecation(kwargs)
+      @deprecation = gitlab_deprecation(kwargs)
 
       super(**kwargs, &block)
 

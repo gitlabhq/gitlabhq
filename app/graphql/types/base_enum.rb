@@ -26,7 +26,7 @@ module Types
 
       def value(*args, **kwargs, &block)
         enum[args[0].downcase] = kwargs[:value] || args[0]
-        kwargs = gitlab_deprecation(kwargs)
+        gitlab_deprecation(kwargs)
 
         super(*args, **kwargs, &block)
       end
