@@ -27,7 +27,7 @@ module SessionlessAuthentication
   end
 
   def sessionless_bypass_admin_mode!(&block)
-    return yield unless Feature.enabled?(:user_mode_in_session)
+    return yield unless Gitlab::CurrentSettings.admin_mode
 
     Gitlab::Auth::CurrentUserMode.bypass_session!(current_user.id, &block)
   end

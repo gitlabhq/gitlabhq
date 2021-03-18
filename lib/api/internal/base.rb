@@ -52,7 +52,7 @@ module API
           actor.update_last_used_at!
 
           check_result = begin
-            Gitlab::Auth::CurrentUserMode.bypass_session!(actor.user&.id) do
+            with_admin_mode_bypass!(actor.user&.id) do
               access_check!(actor, params)
             end
           rescue Gitlab::GitAccess::ForbiddenError => e
@@ -119,6 +119,14 @@ module API
 
         def two_factor_otp_check
           { success: false, message: 'Feature is not available' }
+        end
+
+        def with_admin_mode_bypass!(actor_id)
+          return yield unless Gitlab::CurrentSettings.admin_mode
+
+          Gitlab::Auth::CurrentUserMode.bypass_session!(actor_id) do
+            yield
+          end
         end
       end
 

@@ -50,7 +50,7 @@
             = nav_link(controller: 'admin/dashboard') do
               = link_to admin_root_path, class: 'admin-icon qa-admin-area-link d-xl-none' do
                 = _('Admin Area')
-          - if Feature.enabled?(:user_mode_in_session)
+          - if Gitlab::CurrentSettings.admin_mode
             - if header_link?(:admin_mode)
               = nav_link(controller: 'admin/sessions') do
                 = link_to destroy_admin_session_path, method: :post, class: 'd-lg-none lock-open-icon' do
@@ -69,7 +69,7 @@
       = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin Area'), aria: { label: _('Admin Area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('admin', size: 18)
 
-  - if Feature.enabled?(:user_mode_in_session)
+  - if Gitlab::CurrentSettings.admin_mode
     - if header_link?(:admin_mode)
       = nav_link(controller: 'admin/sessions', html_options: { class: "d-none d-lg-block"}) do
         = link_to destroy_admin_session_path, method: :post, title: _('Leave Admin Mode'), aria: { label: _('Leave Admin Mode') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do

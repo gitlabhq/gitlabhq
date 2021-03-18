@@ -347,7 +347,7 @@ RSpec.describe Clusters::ClusterPresenter do
 
       before do
         project.add_maintainer(user)
-        stub_feature_flags(user_mode_in_session: false)
+        stub_application_setting(admin_mode: false)
       end
 
       context 'user can read logs' do
@@ -363,7 +363,7 @@ RSpec.describe Clusters::ClusterPresenter do
 
       before do
         project.add_developer(user)
-        stub_feature_flags(user_mode_in_session: false)
+        stub_application_setting(admin_mode: false)
       end
 
       it 'returns nil' do

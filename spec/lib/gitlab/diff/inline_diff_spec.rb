@@ -3,68 +3,30 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Diff::InlineDiff do
-  describe '.for_lines' do
-    let(:diff) do
-      <<-EOF.strip_heredoc
-         class Test
-        -  def initialize(test = true)
-        +  def initialize(test = false)
-             @test = test
-        -    if true
-        -      @foo = "bar"
-        +    unless false
-        +      @foo = "baz"
-             end
-           end
-         end
-      EOF
-    end
+  describe '#inline_diffs' do
+    subject { described_class.new(old_line, new_line, offset: offset).inline_diffs }
 
-    let(:subject) { described_class.for_lines(diff.lines) }
+    let(:old_line) { 'XXX def initialize(test = true)' }
+    let(:new_line) { 'YYY def initialize(test = false)' }
+    let(:offset) { 3 }
 
-    it 'finds all inline diffs' do
-      expect(subject[0]).to be_nil
-      expect(subject[1]).to eq([25..27])
-      expect(subject[2]).to eq([25..28])
-      expect(subject[3]).to be_nil
-      expect(subject[4]).to eq([5..10])
-      expect(subject[5]).to eq([17..17])
-      expect(subject[6]).to eq([5..15])
-      expect(subject[7]).to eq([17..17])
-      expect(subject[8]).to be_nil
-    end
-
-    it 'can handle unchanged empty lines' do
-      expect { described_class.for_lines(['- bar', '+ baz', '']) }.not_to raise_error
+    it 'finds the inline diff', :aggregate_failures do
+      expect(subject[0]).to eq([Gitlab::MarkerRange.new(26, 28, mode: :deletion)])
+      expect(subject[1]).to eq([Gitlab::MarkerRange.new(26, 29, mode: :addition)])
     end
 
     context 'when lines have multiple changes' do
-      let(:diff) do
-        <<~EOF
-        - Hello, how are you?
-        + Hi, how are you doing?
-        EOF
+      let(:old_line) { '- Hello, how are you?' }
+      let(:new_line) { '+ Hi, how are you doing?' }
+      let(:offset) { 1 }
+
+      it 'finds all inline diffs', :aggregate_failures do
+        expect(subject[0]).to eq([Gitlab::MarkerRange.new(3, 6, mode: :deletion)])
+        expect(subject[1]).to eq([
+                                   Gitlab::MarkerRange.new(3, 3, mode: :addition),
+                                   Gitlab::MarkerRange.new(17, 22, mode: :addition)
+                                 ])
       end
-
-      let(:subject) { described_class.for_lines(diff.lines) }
-
-      it 'finds all inline diffs' do
-        expect(subject[0]).to eq([3..6])
-        expect(subject[1]).to eq([3..3, 17..22])
-      end
-    end
-  end
-
-  describe "#inline_diffs" do
-    let(:old_line) { "XXX def initialize(test = true)" }
-    let(:new_line) { "YYY def initialize(test = false)" }
-    let(:subject) { described_class.new(old_line, new_line, offset: 3).inline_diffs }
-
-    it "finds the inline diff" do
-      old_diffs, new_diffs = subject
-
-      expect(old_diffs).to eq([26..28])
-      expect(new_diffs).to eq([26..29])
     end
   end
 end

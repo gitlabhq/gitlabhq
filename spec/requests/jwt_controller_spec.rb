@@ -180,10 +180,11 @@ RSpec.describe JwtController do
         end
 
         context 'when internal auth is disabled' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_git: false)
+          end
+
           it 'rejects the authorization attempt with personal access token message' do
-            allow_next_instance_of(ApplicationSetting) do |instance|
-              allow(instance).to receive(:password_authentication_enabled_for_git?) { false }
-            end
             get '/jwt/auth', params: parameters, headers: headers
 
             expect(response).to have_gitlab_http_status(:unauthorized)

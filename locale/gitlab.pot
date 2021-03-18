@@ -2096,6 +2096,9 @@ msgstr ""
 msgid "Admin Area"
 msgstr ""
 
+msgid "Admin Mode"
+msgstr ""
+
 msgid "Admin Note"
 msgstr ""
 
@@ -20403,6 +20406,12 @@ msgstr ""
 msgid "NetworkPolicies|ports/protocols"
 msgstr ""
 
+msgid "NetworkPolicy|Policy"
+msgstr ""
+
+msgid "NetworkPolicy|Search by policy name"
+msgstr ""
+
 msgid "Never"
 msgstr ""
 
@@ -21572,6 +21581,9 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
 msgid "Opens in a new window"
+msgstr ""
+
+msgid "Operation completed"
 msgstr ""
 
 msgid "Operation failed. Check pod logs for %{pod_name} for more details."
@@ -22945,7 +22957,7 @@ msgstr ""
 msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed."
 msgstr ""
 
-msgid "Policy project doesn't exists"
+msgid "Policy project doesn't exist"
 msgstr ""
 
 msgid "Popularity"
@@ -25889,6 +25901,9 @@ msgid "Requests Profiles"
 msgstr ""
 
 msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
+msgstr ""
+
+msgid "Require additional authentication for administrative tasks"
 msgstr ""
 
 msgid "Require admin approval for new sign-ups"
@@ -29208,9 +29223,6 @@ msgid "Succeeded"
 msgstr ""
 
 msgid "Successful purchase image"
-msgstr ""
-
-msgid "Successfull"
 msgstr ""
 
 msgid "Successfully activated"

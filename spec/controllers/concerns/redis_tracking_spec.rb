@@ -9,8 +9,8 @@ RSpec.describe RedisTracking do
     include RedisTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_redis_hll_event :index, :show, name: 'g_compliance_approval_rules',
-      if: [:custom_condition_one?, :custom_condition_two?]
+    track_redis_hll_event(:index, :show, name: 'g_compliance_approval_rules',
+      if: [:custom_condition_one?, :custom_condition_two?]) { |controller| controller.get_custom_id }
 
     def index
       render html: 'index'
@@ -22,6 +22,10 @@ RSpec.describe RedisTracking do
 
     def show
       render html: 'show'
+    end
+
+    def get_custom_id
+      'some_custom_id'
     end
 
     private
@@ -92,19 +96,15 @@ RSpec.describe RedisTracking do
     end
   end
 
-  context 'when user is not logged in and there is a visitor_id' do
+  context 'when user is not logged in' do
     let(:visitor_id) { SecureRandom.uuid }
 
-    before do
-      routes.draw { get 'show' => 'anonymous#show' }
-    end
-
-    it 'tracks the event' do
+    it 'tracks the event when there is a visitor id' do
       cookies[:visitor_id] = { value: visitor_id, expires: 24.months }
 
       expect_tracking
 
-      get :show
+      get :show, params: { id: 1 }
     end
   end
 
@@ -113,6 +113,20 @@ RSpec.describe RedisTracking do
       expect_no_tracking
 
       get :index
+    end
+
+    it 'tracks the event when there is custom id' do
+      expect_tracking
+
+      get :show, params: { id: 1 }
+    end
+
+    it 'does not track the event when there is no custom id' do
+      expect(controller).to receive(:get_custom_id).and_return(nil)
+
+      expect_no_tracking
+
+      get :show, params: { id: 2 }
     end
   end
 end

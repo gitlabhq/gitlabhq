@@ -502,13 +502,14 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
 Use one of the following methods to track events:
 
-1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil)`.
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil, &block)`.
 
    Arguments:
 
    - `controller_actions`: controller actions we want to track.
    - `name`: event name.
    - `if`: optional custom conditions, using the same format as with Rails callbacks.
+   - `&block`: optional block that computes and returns the `custom_id` that we want to track. This will override the `visitor_id`.
 
    Example usage:
 

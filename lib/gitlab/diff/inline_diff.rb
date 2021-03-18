@@ -18,6 +18,7 @@ module Gitlab
         CharDiff.new(old_line, new_line).changed_ranges(offset: offset)
       end
 
+      # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/324638
       class << self
         def for_lines(lines)
           pair_selector = Gitlab::Diff::PairSelector.new(lines)

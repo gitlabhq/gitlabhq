@@ -316,9 +316,7 @@ RSpec.describe ApplicationHelper do
       let(:user) { create(:user, static_object_token: 'hunter1') }
 
       before do
-        allow_next_instance_of(ApplicationSetting) do |instance|
-          allow(instance).to receive(:static_objects_external_storage_url).and_return('https://cdn.gitlab.com')
-        end
+        stub_application_setting(static_objects_external_storage_url: 'https://cdn.gitlab.com')
         allow(helper).to receive(:current_user).and_return(user)
       end
 

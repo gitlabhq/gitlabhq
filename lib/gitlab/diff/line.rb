@@ -8,7 +8,7 @@ module Gitlab
       #
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
-      attr_reader :line_code
+      attr_reader :line_code, :marker_ranges
       attr_writer :rich_text
       attr_accessor :text, :index, :type, :old_pos, :new_pos
 
@@ -21,6 +21,8 @@ module Gitlab
         # When line code is not provided from cache store we build it
         # using the parent_file(Diff::File or Conflict::File).
         @line_code = line_code || calculate_line_code
+
+        @marker_ranges = []
       end
 
       def self.init_from_hash(hash)
@@ -46,6 +48,10 @@ module Gitlab
         hash = {}
         SERIALIZE_KEYS.each { |key| hash[key] = send(key) } # rubocop:disable GitlabSecurity/PublicSend
         hash
+      end
+
+      def set_marker_ranges(marker_ranges)
+        @marker_ranges = marker_ranges
       end
 
       def old_line

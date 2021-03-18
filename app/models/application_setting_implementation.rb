@@ -35,6 +35,7 @@ module ApplicationSettingImplementation
   class_methods do
     def defaults
       {
+        admin_mode: false,
         after_sign_up_text: nil,
         akismet_enabled: false,
         allow_local_requests_from_system_hooks: true,

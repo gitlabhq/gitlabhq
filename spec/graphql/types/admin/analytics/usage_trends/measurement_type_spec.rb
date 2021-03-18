@@ -44,7 +44,7 @@ RSpec.describe GitlabSchema.types['UsageTrendsMeasurement'] do
       let(:user) { create(:user, :admin) }
 
       before do
-        stub_feature_flags(user_mode_in_session: false)
+        stub_application_setting(admin_mode: false)
       end
 
       it 'returns data' do

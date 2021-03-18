@@ -32,6 +32,15 @@
         = f.label :require_two_factor_authentication, class: 'form-check-label' do
           Require all users to set up Two-factor authentication
     .form-group
+      = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
+      = sprite_icon('lock', css_class: 'gl-icon')
+      .form-check
+        = f.check_box :admin_mode, class: 'form-check-input'
+        = f.label :admin_mode, class: 'form-check-label' do
+          = _('Require additional authentication for administrative tasks')
+        .form-text.text-muted
+          = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions', anchor: 'admin-mode')
+    .form-group
       = f.label :unknown_sign_in, _('Email notification for unknown sign-ins'), class: 'label-bold'
       .form-check
         = f.check_box :notify_on_unknown_sign_in, class: 'form-check-input'

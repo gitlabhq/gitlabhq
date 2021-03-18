@@ -7,9 +7,7 @@ RSpec.describe 'IDE Clientside Preview CSP' do
 
   shared_context 'disable feature' do
     before do
-      allow_next_instance_of(ApplicationSetting) do |instance|
-        allow(instance).to receive(:web_ide_clientside_preview_enabled?).and_return(false)
-      end
+      stub_application_setting(web_ide_clientside_preview_enabled: false)
     end
   end
 
@@ -24,10 +22,8 @@ RSpec.describe 'IDE Clientside Preview CSP' do
     end
 
     before do
-      allow_next_instance_of(ApplicationSetting) do |instance|
-        allow(instance).to receive(:web_ide_clientside_preview_enabled?).and_return(true)
-        allow(instance).to receive(:web_ide_clientside_preview_bundler_url).and_return(whitelisted_url)
-      end
+      stub_application_setting(web_ide_clientside_preview_enabled: true)
+      stub_application_setting(web_ide_clientside_preview_bundler_url: whitelisted_url)
 
       sign_in(user)
     end

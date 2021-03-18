@@ -179,6 +179,7 @@ module ApplicationSettingsHelper
   def visible_attributes
     [
       :abuse_notification_email,
+      :admin_mode,
       :after_sign_out_path,
       :after_sign_up_text,
       :akismet_api_key,

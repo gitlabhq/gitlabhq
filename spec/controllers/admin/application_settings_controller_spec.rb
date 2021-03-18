@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ApplicationSettingsController do
+RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_setting do
   include StubENV
   include UsageDataHelpers
 
@@ -162,6 +162,13 @@ RSpec.describe Admin::ApplicationSettingsController do
 
       expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.default_branch_name).to eq("example_branch_name")
+    end
+
+    it "updates admin_mode setting" do
+      put :update, params: { application_setting: { admin_mode: true } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.admin_mode).to be(true)
     end
 
     context "personal access token prefix settings" do

@@ -16,7 +16,7 @@ RSpec.describe Constraints::AdminConstrainer do
   end
 
   describe '#matches' do
-    context 'feature flag :user_mode_in_session is enabled' do
+    context 'application setting :admin_mode is enabled' do
       context 'when user is a regular user' do
         it 'forbids access' do
           expect(subject.matches?(request)).to be(false)
@@ -46,9 +46,9 @@ RSpec.describe Constraints::AdminConstrainer do
       end
     end
 
-    context 'feature flag :user_mode_in_session is disabled' do
+    context 'application setting :admin_mode is disabled' do
       before do
-        stub_feature_flags(user_mode_in_session: false)
+        stub_application_setting(admin_mode: false)
       end
 
       context 'when user is a regular user' do

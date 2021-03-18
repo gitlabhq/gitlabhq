@@ -9,7 +9,7 @@ RSpec.describe 'Admin updates settings' do
 
   let(:admin) { create(:admin) }
 
-  context 'feature flag :user_mode_in_session is enabled', :request_store do
+  context 'application setting :admin_mode is enabled', :request_store do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
@@ -615,9 +615,9 @@ RSpec.describe 'Admin updates settings' do
     end
   end
 
-  context 'feature flag :user_mode_in_session is disabled' do
+  context 'application setting :admin_mode is disabled' do
     before do
-      stub_feature_flags(user_mode_in_session: false)
+      stub_application_setting(admin_mode: false)
 
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 

@@ -17,6 +17,8 @@ RSpec.describe Gitlab::Diff::Line do
                         rich_text: rich_text)
   end
 
+  let(:rich_text) { nil }
+
   describe '.init_from_hash' do
     let(:rich_text) { '&lt;input&gt;' }
 
@@ -49,6 +51,16 @@ RSpec.describe Gitlab::Diff::Line do
       line = subject.as_json
 
       expect(line[:rich_text]).to eq("&lt;input&gt;")
+    end
+  end
+
+  describe '#set_marker_ranges' do
+    let(:marker_ranges) { [Gitlab::MarkerRange.new(1, 10, mode: :deletion)] }
+
+    it 'stores MarkerRanges in Diff::Line object' do
+      line.set_marker_ranges(marker_ranges)
+
+      expect(line.marker_ranges).to eq(marker_ranges)
     end
   end
 end

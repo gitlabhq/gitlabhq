@@ -465,6 +465,9 @@ class ApplicationSetting < ApplicationRecord
             length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
             allow_nil: false
 
+  validates :admin_mode,
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

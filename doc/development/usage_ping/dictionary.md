@@ -5940,7 +5940,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of users who set personal preference to see Details on Group overview page
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216182203_user_preferences_group_overview_details.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182203_user_preferences_group_overview_details.yml)
 
 Group: `group::threat insights`
 
@@ -5952,7 +5952,7 @@ Tiers: `ultimate`
 
 Count of users who set personal preference to see Security Dashboard on Group overview page
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216182205_user_preferences_group_overview_security_dashboard.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182205_user_preferences_group_overview_security_dashboard.yml)
 
 Group: `group::threat insights`
 
@@ -15408,7 +15408,7 @@ Tiers: `ultimate`
 
 Users who set personal preference to see Details on Group overview page
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216182207_user_preferences_group_overview_security_dashboard.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182207_user_preferences_group_overview_security_dashboard.yml)
 
 Group: `group::threat insights`
 
@@ -17412,7 +17412,7 @@ Tiers: `ultimate`
 
 Users who set personal preference to see Security Dashboard on Group overview page
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216182209_user_preferences_group_overview_security_dashboard.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182209_user_preferences_group_overview_security_dashboard.yml)
 
 Group: `group::threat insights`
 

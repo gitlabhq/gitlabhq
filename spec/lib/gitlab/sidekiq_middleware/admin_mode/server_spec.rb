@@ -52,9 +52,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::AdminMode::Server, :request_store do
     end
   end
 
-  context 'admin mode feature disabled' do
+  context 'admin mode setting disabled' do
     before do
-      stub_feature_flags(user_mode_in_session: false)
+      stub_application_setting(admin_mode: false)
     end
 
     it 'yields block' do

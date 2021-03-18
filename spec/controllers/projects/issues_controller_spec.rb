@@ -1446,9 +1446,7 @@ RSpec.describe Projects::IssuesController do
         expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(submit_spam: true)
         end
-        expect_next_instance_of(ApplicationSetting) do |setting|
-          expect(setting).to receive_messages(akismet_enabled: true)
-        end
+        stub_application_setting(akismet_enabled: true)
       end
 
       def post_spam

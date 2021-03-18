@@ -1115,7 +1115,7 @@ RSpec.describe API::Internal::Base do
         end
       end
 
-      context 'feature flag :user_mode_in_session is enabled' do
+      context 'application setting :admin_mode is enabled' do
         context 'with an admin user' do
           let(:user) { create(:admin) }
 
@@ -1147,9 +1147,9 @@ RSpec.describe API::Internal::Base do
         end
       end
 
-      context 'feature flag :user_mode_in_session is disabled' do
+      context 'application setting :admin_mode is disabled' do
         before do
-          stub_feature_flags(user_mode_in_session: false)
+          stub_application_setting(admin_mode: false)
         end
 
         context 'with an admin user' do

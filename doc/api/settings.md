@@ -86,7 +86,8 @@ Example response:
   "require_admin_approval_after_user_signup": false,
   "personal_access_token_prefix": "GL-",
   "rate_limiting_response_text": null,
-  "keep_latest_artifact": true
+  "keep_latest_artifact": true,
+  "admin_mode": false
 }
 ```
 
@@ -181,7 +182,8 @@ Example response:
   "require_admin_approval_after_user_signup": false,
   "personal_access_token_prefix": "GL-",
   "rate_limiting_response_text": null,
-  "keep_latest_artifact": true
+  "keep_latest_artifact": true,
+  "admin_mode": false
 }
 ```
 
@@ -208,6 +210,7 @@ listed in the descriptions of the relevant settings.
 
 | Attribute                                | Type             | Required                             | Description |
 |------------------------------------------|------------------|:------------------------------------:|-------------|
+| `admin_mode`                             | boolean          | no                                   | Require admins to enable Admin Mode by re-authenticating for administrative tasks. |
 | `admin_notification_email`               | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area.  |
 | `abuse_notification_email`               | string           | no                                   | If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
 | `after_sign_out_path`                    | string           | no                                   | Where to redirect users after logout. |

@@ -482,7 +482,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_admin(&block)
-    return yield unless Feature.enabled?(:user_mode_in_session)
+    return yield unless Gitlab::CurrentSettings.admin_mode
     return yield unless current_user
 
     Gitlab::Auth::CurrentUserMode.with_current_admin(current_user, &block)
