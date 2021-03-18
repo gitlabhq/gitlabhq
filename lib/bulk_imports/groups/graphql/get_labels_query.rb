@@ -31,7 +31,7 @@ module BulkImports
         def variables(context)
           {
             full_path: context.entity.source_full_path,
-            cursor: context.entity.next_page_for(:labels)
+            cursor: context.tracker.next_page
           }
         end
 

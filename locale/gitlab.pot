@@ -24052,9 +24052,6 @@ msgstr ""
 msgid "ProjectSettings|Pages for project documentation."
 msgstr ""
 
-msgid "ProjectSettings|Pipelines"
-msgstr ""
-
 msgid "ProjectSettings|Pipelines must succeed"
 msgstr ""
 

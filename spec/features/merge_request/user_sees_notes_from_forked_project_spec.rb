@@ -28,8 +28,8 @@ RSpec.describe 'Merge request > User sees notes from forked project', :js do
 
     page.within('.discussion-notes') do
       find_field('Reply…').click
-      scroll_to(page.find('#note_note', visible: false))
-      find('#note_note').send_keys('A reply comment')
+      scroll_to(find_field('note[note]', visible: false))
+      fill_in 'note[note]', with: 'A reply comment'
       find('.js-comment-button').click
     end
 

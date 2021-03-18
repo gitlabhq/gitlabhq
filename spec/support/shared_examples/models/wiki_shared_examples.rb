@@ -481,28 +481,53 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#delete_page' do
-    let(:page) { create(:wiki_page, wiki: wiki) }
+    shared_examples 'delete_page operations' do
+      let(:page) { create(:wiki_page, wiki: wiki) }
 
-    it 'deletes the page' do
-      subject.delete_page(page)
+      it 'deletes the page' do
+        subject.delete_page(page)
 
-      expect(subject.list_pages.count).to eq(0)
+        expect(subject.list_pages.count).to eq(0)
+      end
+
+      it 'sets the correct commit email' do
+        subject.delete_page(page)
+
+        expect(user.commit_email).not_to eq(user.email)
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
+      end
+
+      it 'runs after_wiki_activity callbacks' do
+        page
+
+        expect(subject).to receive(:after_wiki_activity)
+
+        subject.delete_page(page)
+      end
     end
 
-    it 'sets the correct commit email' do
-      subject.delete_page(page)
+    it_behaves_like 'delete_page operations'
 
-      expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(user.commit_email)
-      expect(commit.committer_email).to eq(user.commit_email)
+    context 'when an error is raised' do
+      it 'logs the error and returns false' do
+        page = build(:wiki_page, wiki: wiki)
+        exception = Gitlab::Git::Index::IndexError.new('foo')
+
+        allow(subject.repository).to receive(:delete_file).and_raise(exception)
+
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(exception, action: :deleted, wiki_id: wiki.id)
+
+        expect(subject.delete_page(page)).to be_falsey
+      end
     end
 
-    it 'runs after_wiki_activity callbacks' do
-      page
+    context 'when feature flag :gitaly_replace_wiki_delete_page is disabled' do
+      before do
+        stub_feature_flags(gitaly_replace_wiki_delete_page: false)
+      end
 
-      expect(subject).to receive(:after_wiki_activity)
-
-      subject.delete_page(page)
+      it_behaves_like 'delete_page operations'
     end
   end
 

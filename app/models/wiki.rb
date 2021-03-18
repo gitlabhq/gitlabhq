@@ -196,10 +196,20 @@ class Wiki
   def delete_page(page, message = nil)
     return unless page
 
-    wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
-    after_wiki_activity
+    if Feature.enabled?(:gitaly_replace_wiki_delete_page, user, default_enabled: :yaml)
+      capture_git_error(:deleted) do
+        repository.delete_file(user, page.path, **multi_commit_options(:deleted, message, page.title))
 
-    true
+        after_wiki_activity
+
+        true
+      end
+    else
+      wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
+      after_wiki_activity
+
+      true
+    end
   end
 
   def page_title_and_dir(title)
@@ -276,8 +286,20 @@ class Wiki
 
   private
 
+  def multi_commit_options(action, message = nil, title = nil)
+    commit_message = build_commit_message(action, message, title)
+    git_user = Gitlab::Git::User.from_gitlab(user)
+
+    {
+      branch_name: repository.root_ref,
+      message: commit_message,
+      author_email: git_user.email,
+      author_name: git_user.name
+    }
+  end
+
   def commit_details(action, message = nil, title = nil)
-    commit_message = message.presence || default_message(action, title)
+    commit_message = build_commit_message(action, message, title)
     git_user = Gitlab::Git::User.from_gitlab(user)
 
     Gitlab::Git::Wiki::CommitDetails.new(user.id,
@@ -287,8 +309,25 @@ class Wiki
                                          commit_message)
   end
 
+  def build_commit_message(action, message, title)
+    message.presence || default_message(action, title)
+  end
+
   def default_message(action, title)
     "#{user.username} #{action} page: #{title}"
+  end
+
+  def capture_git_error(action, &block)
+    yield block
+  rescue Gitlab::Git::Index::IndexError,
+         Gitlab::Git::CommitError,
+         Gitlab::Git::PreReceiveError,
+         Gitlab::Git::CommandError,
+         ArgumentError => error
+
+    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
+
+    false
   end
 end
 

@@ -1,0 +1,5 @@
+---
+title: Remove CI lint button from Jobs page nav
+merge_request: 56854
+author:
+type: removed

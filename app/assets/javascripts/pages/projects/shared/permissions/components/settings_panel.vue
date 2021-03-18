@@ -482,18 +482,6 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          ref="pipeline-settings"
-          :label="s__('ProjectSettings|Pipelines')"
-          :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
-        >
-          <project-feature-setting
-            v-model="buildsAccessLevel"
-            :options="repoFeatureAccessLevelOptions"
-            :disabled-input="!repositoryEnabled"
-            name="project[project_feature_attributes][builds_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
           v-if="registryAvailable"
           ref="container-registry-settings"
           :help-path="registryHelpPath"
@@ -566,6 +554,18 @@ export default {
           />
         </project-setting-row>
       </div>
+      <project-setting-row
+        ref="pipeline-settings"
+        :label="__('CI/CD')"
+        :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+      >
+        <project-feature-setting
+          v-model="buildsAccessLevel"
+          :options="repoFeatureAccessLevelOptions"
+          :disabled-input="!repositoryEnabled"
+          name="project[project_feature_attributes][builds_access_level]"
+        />
+      </project-setting-row>
       <project-setting-row
         ref="analytics-settings"
         :label="s__('ProjectSettings|Analytics')"

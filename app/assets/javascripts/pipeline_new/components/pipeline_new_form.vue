@@ -447,7 +447,7 @@ export default {
       <gl-button
         type="submit"
         category="primary"
-        variant="success"
+        variant="confirm"
         class="js-no-auto-disable"
         data-qa-selector="run_pipeline_button"
         data-testid="run_pipeline_button"

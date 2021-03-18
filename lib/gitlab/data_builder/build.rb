@@ -26,6 +26,7 @@ module Gitlab
           build_name: build.name,
           build_stage: build.stage,
           build_status: build.status,
+          build_created_at: build.created_at,
           build_started_at: build.started_at,
           build_finished_at: build.finished_at,
           build_duration: build.duration,

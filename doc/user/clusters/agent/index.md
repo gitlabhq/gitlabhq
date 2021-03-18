@@ -176,23 +176,9 @@ documentation on the [Kubernetes Agent configuration repository](repository.md).
 
 ### Create an Agent record in GitLab
 
-Next, create an GitLab Rails Agent record so the Agent can associate itself with
+Next, create a GitLab Rails Agent record to associate it with
 the configuration repository project. Creating this record also creates a Secret needed to configure
-the Agent in subsequent steps. You can create an Agent record either:
-
-- Through the Rails console:
-
-  ```ruby
-  project = ::Project.find_by_full_path("path-to/your-configuration-project")
-  # agent-name should be the same as specified above in the config.yaml
-  agent = ::Clusters::Agent.create(name: "<agent-name>", project: project)
-  token = ::Clusters::AgentToken.create(agent: agent)
-  token.token # this will print out the token you need to use on the next step
-  ```
-
-   For full details, read [Starting a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
-- Through GraphQL: **(PREMIUM SELF)**
+the Agent in subsequent steps. You can create an Agent record with GraphQL:
 
   ```graphql
   mutation createAgent {

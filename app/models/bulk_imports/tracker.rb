@@ -3,6 +3,8 @@
 class BulkImports::Tracker < ApplicationRecord
   self.table_name = 'bulk_import_trackers'
 
+  alias_attribute :pipeline_name, :relation
+
   belongs_to :entity,
     class_name: 'BulkImports::Entity',
     foreign_key: :bulk_import_entity_id,
@@ -28,6 +30,10 @@ class BulkImports::Tracker < ApplicationRecord
     end
 
     event :finish do
+      # When applying the concurrent model,
+      # remove the created => finished transaction
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/323384
+      transition created: :finished
       transition started: :finished
       transition failed: :failed
       transition skipped: :skipped

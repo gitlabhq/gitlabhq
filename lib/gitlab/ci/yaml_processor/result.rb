@@ -101,7 +101,7 @@ module Gitlab
         end
 
         def merged_yaml
-          @ci_config&.to_hash&.to_yaml
+          @ci_config&.to_hash&.deep_stringify_keys&.to_yaml
         end
 
         def variables_with_data

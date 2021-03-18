@@ -17,6 +17,7 @@ class NotesFinder
   #     target_id: integer
   #     last_fetched_at: time
   #     search: string
+  #     sort: string
   #
   def initialize(current_user, params = {})
     @project = params[:project]
@@ -29,8 +30,7 @@ class NotesFinder
     notes = init_collection
     notes = since_fetch_at(notes)
     notes = notes.with_notes_filter(@params[:notes_filter]) if notes_filter?
-
-    notes.fresh
+    sort(notes)
   end
 
   def target
@@ -172,6 +172,14 @@ class NotesFinder
 
   def notes_filter?
     @params[:notes_filter].present?
+  end
+
+  def sort(notes)
+    sort = @params[:sort].presence
+
+    return notes.fresh unless sort
+
+    notes.order_by(sort)
   end
 end
 

@@ -166,7 +166,7 @@ RSpec.describe API::Lint do
 
         included_config = YAML.safe_load(included_content, [Symbol])
         root_config = YAML.safe_load(yaml_content, [Symbol])
-        expected_yaml = included_config.merge(root_config).except(:include).to_yaml
+        expected_yaml = included_config.merge(root_config).except(:include).deep_stringify_keys.to_yaml
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
@@ -246,7 +246,7 @@ RSpec.describe API::Lint do
           let(:dry_run) { false }
 
           let(:included_content) do
-            { another_test: { stage: 'test', script: 'echo 1' } }.to_yaml
+            { another_test: { stage: 'test', script: 'echo 1' } }.deep_stringify_keys.to_yaml
           end
 
           before do
@@ -299,7 +299,7 @@ RSpec.describe API::Lint do
         end
 
         let(:included_content) do
-          { another_test: { stage: 'test', script: 'echo 1' } }.to_yaml
+          { another_test: { stage: 'test', script: 'echo 1' } }.deep_stringify_keys.to_yaml
         end
 
         before do
@@ -341,7 +341,7 @@ RSpec.describe API::Lint do
 
       context 'with invalid .gitlab-ci.yml content' do
         let(:yaml_content) do
-          { image: 'ruby:2.7', services: ['postgres'] }.to_yaml
+          { image: 'ruby:2.7', services: ['postgres'] }.deep_stringify_keys.to_yaml
         end
 
         before do
@@ -385,7 +385,7 @@ RSpec.describe API::Lint do
 
         included_config = YAML.safe_load(included_content, [Symbol])
         root_config = YAML.safe_load(yaml_content, [Symbol])
-        expected_yaml = included_config.merge(root_config).except(:include).to_yaml
+        expected_yaml = included_config.merge(root_config).except(:include).deep_stringify_keys.to_yaml
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
@@ -539,7 +539,7 @@ RSpec.describe API::Lint do
 
       context 'with invalid .gitlab-ci.yml content' do
         let(:yaml_content) do
-          { image: 'ruby:2.7', services: ['postgres'] }.to_yaml
+          { image: 'ruby:2.7', services: ['postgres'] }.deep_stringify_keys.to_yaml
         end
 
         context 'when running as dry run' do

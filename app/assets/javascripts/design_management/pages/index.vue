@@ -485,9 +485,7 @@ export default {
               <template #upload-text="{ openFileUpload }">
                 <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
                   <template #link="{ content }">
-                    <gl-link @click.stop="openFileUpload">
-                      {{ content }}
-                    </gl-link>
+                    <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
                   </template>
                 </gl-sprintf>
               </template>

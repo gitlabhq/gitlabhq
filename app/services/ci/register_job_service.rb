@@ -24,7 +24,7 @@ module Ci
     def execute(params = {})
       @metrics.increment_queue_operation(:queue_attempt)
 
-      @metrics.observe_queue_time do
+      @metrics.observe_queue_time(:process) do
         process_queue(params)
       end
     end
@@ -110,7 +110,7 @@ module Ci
       end
 
       if Feature.enabled?(:ci_register_job_service_one_by_one, runner, default_enabled: true)
-        build_ids = builds.pluck(:id)
+        build_ids = retrieve_queue(-> { builds.pluck(:id) })
 
         @metrics.observe_queue_size(-> { build_ids.size })
 
@@ -118,12 +118,20 @@ module Ci
           yield Ci::Build.find(build_id)
         end
       else
-        @metrics.observe_queue_size(-> { builds.to_a.size })
+        builds_array = retrieve_queue(-> { builds.to_a })
 
-        builds.each(&blk)
+        @metrics.observe_queue_size(-> { builds_array.size })
+
+        builds_array.each(&blk)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def retrieve_queue(queue_query_proc)
+      @metrics.observe_queue_time(:retrieve) do
+        queue_query_proc.call
+      end
+    end
 
     def process_build(build, params)
       unless build.pending?

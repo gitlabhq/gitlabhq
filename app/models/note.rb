@@ -19,6 +19,7 @@ class Note < ApplicationRecord
   include Gitlab::SQL::Pattern
   include ThrottledTouch
   include FromUnion
+  include Sortable
 
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
@@ -103,10 +104,9 @@ class Note < ApplicationRecord
   scope :system, -> { where(system: true) }
   scope :user, -> { where(system: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }
-  scope :fresh, -> { order(created_at: :asc, id: :asc) }
+  scope :fresh, -> { order_created_asc.with_order_id_asc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
   scope :with_updated_at, ->(time) { where(updated_at: time) }
-  scope :by_updated_at, -> { reorder(:updated_at, :id) }
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
@@ -148,6 +148,8 @@ class Note < ApplicationRecord
   after_commit :notify_after_destroy, on: :destroy
 
   class << self
+    extend Gitlab::Utils::Override
+
     def model_name
       ActiveModel::Name.new(self, nil, 'note')
     end
@@ -203,6 +205,13 @@ class Note < ApplicationRecord
 
     def search(query)
       fuzzy_search(query, [:note])
+    end
+
+    # Override the `Sortable` module's `.simple_sorts` to remove name sorting,
+    # as a `Note` does not have any property that correlates to a "name".
+    override :simple_sorts
+    def simple_sorts
+      super.except('name_asc', 'name_desc')
     end
   end
 

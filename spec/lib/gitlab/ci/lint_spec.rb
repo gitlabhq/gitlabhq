@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Ci::Lint do
       it 'sets merged_config' do
         root_config = YAML.safe_load(content, [Symbol])
         included_config = YAML.safe_load(included_content, [Symbol])
-        expected_config = included_config.merge(root_config).except(:include)
+        expected_config = included_config.merge(root_config).except(:include).deep_stringify_keys
 
         expect(subject.merged_yaml).to eq(expected_config.to_yaml)
       end

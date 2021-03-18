@@ -142,10 +142,8 @@ RSpec.describe "Issues > User edits issue", :js do
 
         it 'can remove label without removing label added via quick action', :aggregate_failures do
           # Add `syzygy` label with a quick action
-          note = find('#note-body')
-          page.within '.timeline-content-form' do
-            note.native.send_keys('/label ~syzygy')
-          end
+          fill_in 'Comment', with: '/label ~syzygy'
+
           click_button 'Comment'
 
           wait_for_requests

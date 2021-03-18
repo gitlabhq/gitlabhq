@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
   describe '#run' do
-    let(:user) { create(:user) }
-    let(:parent) { create(:group) }
-    let(:bulk_import) { create(:bulk_import, user: user) }
-    let(:entity) do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+
+    let_it_be(:entity) do
       create(
         :bulk_import_entity,
         bulk_import: bulk_import,
@@ -17,7 +18,8 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
       )
     end
 
-    let(:context) { BulkImports::Pipeline::Context.new(entity) }
+    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:group_data) do
       {
@@ -37,7 +39,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
 
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-        allow(extractor).to receive(:extract).and_return([group_data])
+        allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: group_data))
       end
 
       parent.add_owner(user)

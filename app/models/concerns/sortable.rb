@@ -9,6 +9,7 @@ module Sortable
 
   included do
     scope :with_order_id_desc, -> { order(self.arel_table['id'].desc) }
+    scope :with_order_id_asc, -> { order(self.arel_table['id'].asc) }
     scope :order_id_desc, -> { reorder(self.arel_table['id'].desc) }
     scope :order_id_asc, -> { reorder(self.arel_table['id'].asc) }
     scope :order_created_desc, -> { reorder(self.arel_table['created_at'].desc) }

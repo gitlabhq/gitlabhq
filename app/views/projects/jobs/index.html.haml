@@ -5,11 +5,5 @@
   - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
   = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
-  .nav-controls
-    - if can?(current_user, :update_build, @project)
-      = link_to project_ci_lint_path(@project), class: 'btn gl-button btn-default' do
-        %span
-          = _('CI Lint')
-
 .content-list.builds-content-list
   = render "table", builds: @builds, project: @project

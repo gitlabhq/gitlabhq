@@ -228,7 +228,7 @@ describe('Settings Panel', () => {
     });
   });
 
-  describe('Pipelines', () => {
+  describe('CI/CD', () => {
     it('should enable the builds access level input when the repository is enabled', () => {
       wrapper = mountComponent({
         currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },

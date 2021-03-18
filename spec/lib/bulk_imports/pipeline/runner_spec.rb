@@ -45,8 +45,9 @@ RSpec.describe BulkImports::Pipeline::Runner do
     stub_const('BulkImports::MyPipeline', pipeline)
   end
 
-  let_it_be_with_refind(:entity) { create(:bulk_import_entity) }
-  let(:context) { BulkImports::Pipeline::Context.new(entity, extra: :data) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
 
   subject { BulkImports::MyPipeline.new(context) }
 
@@ -170,12 +171,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
             BulkImports::MyPipeline.abort_on_failure!
           end
 
-          it 'marks entity as failed' do
-            expect { subject.run }
-              .to change(entity, :status_name).to(:failed)
-          end
-
-          it 'logs warn message' do
+          it 'logs a warn message and marks entity as failed' do
             expect_next_instance_of(Gitlab::Import::Logger) do |logger|
               expect(logger).to receive(:warn)
                 .with(
@@ -188,6 +184,9 @@ RSpec.describe BulkImports::Pipeline::Runner do
             end
 
             subject.run
+
+            expect(entity.status_name).to eq(:failed)
+            expect(tracker.status_name).to eq(:failed)
           end
         end
 
@@ -206,11 +205,11 @@ RSpec.describe BulkImports::Pipeline::Runner do
         entity.fail_op!
 
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger).to receive(:info)
+          expect(logger).to receive(:warn)
             .with(
               log_params(
                 context,
-                message: 'Skipping due to failed pipeline status',
+                message: 'Skipping pipeline due to failed entity',
                 pipeline_class: 'BulkImports::MyPipeline'
               )
             )

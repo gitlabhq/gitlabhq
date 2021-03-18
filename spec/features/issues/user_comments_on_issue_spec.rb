@@ -57,17 +57,9 @@ RSpec.describe "User comments on issue", :js do
       project.add_maintainer(user)
       create(:label, project: project, title: 'label')
 
-      page.within '.timeline-content-form' do
-        find('#note-body').native.send_keys('/l')
-      end
+      fill_in 'Comment', with: '/l'
 
-      wait_for_requests
-
-      expect(page).to have_selector('.atwho-container')
-
-      page.within '.atwho-container #at-view-commands' do
-        expect(find('li', match: :first)).to have_content('/label')
-      end
+      expect(find_highlighted_autocomplete_item).to have_content('/label')
     end
   end
 
@@ -109,5 +101,11 @@ RSpec.describe "User comments on issue", :js do
         expect(page).to have_content(comment)
       end
     end
+  end
+
+  private
+
+  def find_highlighted_autocomplete_item
+    find('.atwho-view li.cur', visible: true)
   end
 end

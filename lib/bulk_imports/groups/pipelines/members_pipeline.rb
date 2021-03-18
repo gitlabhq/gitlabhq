@@ -19,8 +19,7 @@ module BulkImports
         end
 
         def after_run(extracted_data)
-          context.entity.update_tracker_for(
-            relation: :group_members,
+          tracker.update(
             has_next_page: extracted_data.has_next_page?,
             next_page: extracted_data.next_page
           )

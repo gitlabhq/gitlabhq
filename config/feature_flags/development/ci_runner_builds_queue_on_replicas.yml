@@ -1,0 +1,8 @@
+---
+name: ci_runner_builds_queue_on_replicas
+introduced_by_url: 
+rollout_issue_url: 
+milestone: '13.10'
+type: development
+group: group::continuous integration
+default_enabled: false
