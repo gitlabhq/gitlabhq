@@ -43,3 +43,15 @@ export const validateHexColor = (color = '') => {
 
   return /^#([0-9A-F]{3}){1,2}$/i.test(color);
 };
+
+export function darkModeEnabled() {
+  const ideDarkThemes = ['dark', 'solarized-dark', 'monokai'];
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  const isWebIde = document.body.dataset.page.startsWith('ide:');
+
+  if (isWebIde) {
+    return ideDarkThemes.includes(window.gon?.user_color_scheme);
+  }
+  return document.body.classList.contains('gl-dark');
+}

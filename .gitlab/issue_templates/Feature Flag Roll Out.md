@@ -37,7 +37,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops run feature set --project=gitlab-org/gitlab feature_name true`)
 - [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
   - In `#production` mention `@sre-oncall` and `@release-managers`. Once an SRE on call and Release Manager on call confirm, you can proceed with the rollout
-- [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
+- [ ] Announce on the issue an estimated time this will be enabled on GitLab.com. **Note**: Once a feature rollout has started, it is not necessary to inform `@sre-oncall`/`@release-managers` at each stage of the gradual rollout.
 - [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set feature_name true`)
 - [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled

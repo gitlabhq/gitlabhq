@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migration to Vue 3
 
+Preparations for a Vue 3 migration are tracked in epic [&3174](https://gitlab.com/groups/gitlab-org/-/epics/3174)
+
 In order to prepare for the eventual migration to Vue 3.x, we should be wary about adding the following features to the codebase:
 
 ## Vue filters

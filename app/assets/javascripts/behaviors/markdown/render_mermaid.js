@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { once } from 'lodash';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __, sprintf } from '~/locale';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
@@ -27,37 +28,34 @@ let renderedMermaidBlocks = 0;
 
 let mermaidModule = {};
 
+export function initMermaid(mermaid) {
+  let theme = 'neutral';
+
+  if (darkModeEnabled()) {
+    theme = 'dark';
+  }
+
+  mermaid.initialize({
+    // mermaid core options
+    mermaid: {
+      startOnLoad: false,
+    },
+    // mermaidAPI options
+    theme,
+    flowchart: {
+      useMaxWidth: true,
+      htmlLabels: false,
+    },
+    securityLevel: 'strict',
+  });
+
+  return mermaid;
+}
+
 function importMermaidModule() {
   return import(/* webpackChunkName: 'mermaid' */ 'mermaid')
     .then((mermaid) => {
-      let theme = 'neutral';
-      const ideDarkThemes = ['dark', 'solarized-dark', 'monokai'];
-
-      if (
-        ideDarkThemes.includes(window.gon?.user_color_scheme) &&
-        // if on the Web IDE page
-        document.querySelector('.ide')
-      ) {
-        theme = 'dark';
-      }
-
-      mermaid.initialize({
-        // mermaid core options
-        mermaid: {
-          startOnLoad: false,
-        },
-        // mermaidAPI options
-        theme,
-        flowchart: {
-          useMaxWidth: true,
-          htmlLabels: false,
-        },
-        securityLevel: 'strict',
-      });
-
-      mermaidModule = mermaid;
-
-      return mermaid;
+      mermaidModule = initMermaid(mermaid);
     })
     .catch((err) => {
       flash(sprintf(__("Can't load mermaid module: %{err}"), { err }));

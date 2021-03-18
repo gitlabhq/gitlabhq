@@ -1,4 +1,9 @@
-import { textColorForBackground, hexToRgb, validateHexColor } from '~/lib/utils/color_utils';
+import {
+  textColorForBackground,
+  hexToRgb,
+  validateHexColor,
+  darkModeEnabled,
+} from '~/lib/utils/color_utils';
 
 describe('Color utils', () => {
   describe('Converting hex code to rgb', () => {
@@ -46,5 +51,25 @@ describe('Color utils', () => {
     `('returns $output when $color is given', ({ color, output }) => {
       expect(validateHexColor(color)).toEqual(output);
     });
+  });
+
+  describe('darkModeEnabled', () => {
+    it.each`
+      page                     | bodyClass     | ideTheme           | expected
+      ${'ide:index'}           | ${'gl-dark'}  | ${'monokai-light'} | ${false}
+      ${'ide:index'}           | ${'ui-light'} | ${'monokai'}       | ${true}
+      ${'groups:issues:index'} | ${'ui-light'} | ${'monokai'}       | ${false}
+      ${'groups:issues:index'} | ${'gl-dark'}  | ${'monokai-light'} | ${true}
+    `(
+      'is $expected on $page with $bodyClass body class and $ideTheme IDE theme',
+      async ({ page, bodyClass, ideTheme, expected }) => {
+        document.body.outerHTML = `<body class="${bodyClass}" data-page="${page}"></body>`;
+        window.gon = {
+          user_color_scheme: ideTheme,
+        };
+
+        expect(darkModeEnabled()).toBe(expected);
+      },
+    );
   });
 });

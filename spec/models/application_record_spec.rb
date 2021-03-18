@@ -93,13 +93,6 @@ RSpec.describe ApplicationRecord do
     end
   end
 
-  describe '.at_most' do
-    it 'limits the number of records returned' do
-      create_list(:user, 3)
-      expect(User.at_most(2).count).to eq(2)
-    end
-  end
-
   describe '.where_exists' do
     it 'produces a WHERE EXISTS query' do
       user = create(:user)

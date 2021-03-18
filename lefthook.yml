@@ -32,7 +32,7 @@ pre-push:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.rb'
-      run: bundle exec rubocop --parallel --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
     vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/#install-linters
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
