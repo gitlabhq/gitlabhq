@@ -184,21 +184,6 @@ Lint/MixedRegexpCaptureTypes:
 Lint/RedundantCopDisableDirective:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: instance_of?, kind_of?, is_a?, eql?, respond_to?, equal?
-Lint/RedundantSafeNavigation:
-  Exclude:
-    - 'app/controllers/concerns/labels_as_hash.rb'
-    - 'app/policies/note_policy.rb'
-    - 'app/services/users/update_canonical_email_service.rb'
-    - 'ee/app/presenters/iteration_presenter.rb'
-    - 'ee/app/services/ee/members/destroy_service.rb'
-    - 'ee/lib/ee/gitlab/email/handler/reply_processing.rb'
-    - 'qa/qa/specs/helpers/quarantine.rb'
-    - 'spec/controllers/boards/issues_controller_spec.rb'
-
 # Offense count: 1
 Lint/SelfAssignment:
   Exclude:

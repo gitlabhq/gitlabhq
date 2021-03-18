@@ -52,7 +52,7 @@ module QA
             if example.metadata.key?(:quarantine)
               quarantine_tag = example.metadata[:quarantine]
 
-              if quarantine_tag&.is_a?(Hash) && quarantine_tag&.key?(:only)
+              if quarantine_tag.is_a?(Hash) && quarantine_tag&.key?(:only)
                 # If the :quarantine hash contains :only, we respect that.
                 # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
                 return unless Runtime::Env.context_matches?(quarantine_tag[:only])
