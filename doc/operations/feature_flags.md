@@ -62,11 +62,11 @@ next to any feature flag in the list.
 The maximum number of feature flags per project on self-managed GitLab instances
 is 200. For GitLab SaaS, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
 
-| Tier     | Number of feature flags per project |
-|----------|-------------------------------------|
-| Free     | 50                                  |
-| Premium  | 150                                 |
-| Ultimate | 200                                 |
+| Tier     | Feature flags per project (SaaS) | Feature flags per project (self-managed) |
+|----------|----------------------------------|------------------------------------------|
+| Free     | 50                               | 200                                      |
+| Premium  | 150                              | 200                                      |
+| Ultimate | 200                              | 200                                      |
 
 ## Feature flag strategies
 

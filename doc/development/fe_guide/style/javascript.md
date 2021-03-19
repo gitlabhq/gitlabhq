@@ -297,7 +297,7 @@ Strive to write many small pure functions and minimize where mutations occur
 
 ## Export constants as primitives
 
-Prefer exporting constant primitives with a common namespace over exporting objects. This allows for better compile-time reference checks and helps to avoid accidential `undefined`s at runtime. In addition, it helps in reducing bundle sizes.
+Prefer exporting constant primitives with a common namespace over exporting objects. This allows for better compile-time reference checks and helps to avoid accidental `undefined`s at runtime. In addition, it helps in reducing bundle sizes.
 
 Only export the constants as a collection (array, or object) when there is a need to iterate over them, for instance, for a prop validator.
 
