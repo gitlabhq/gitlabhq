@@ -176,13 +176,12 @@ module MergeRequestsHelper
 
   def reviewers_label(merge_request, include_value: true)
     reviewers = merge_request.reviewers
-    reviewer_label = 'Reviewer'.pluralize(reviewers.count)
 
     if include_value
       sanitized_list = sanitize_name(reviewers.map(&:name).to_sentence)
-      "#{reviewer_label}: #{sanitized_list}"
+      ns_('NotificationEmail|Reviewer: %{users}', 'NotificationEmail|Reviewers: %{users}', reviewers.count) % { users: sanitized_list }
     else
-      reviewer_label
+      ns_('NotificationEmail|Reviewer', 'NotificationEmail|Reviewers', reviewers.count)
     end
   end
 

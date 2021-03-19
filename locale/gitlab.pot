@@ -21074,6 +21074,26 @@ msgstr ""
 msgid "Notification settings saved"
 msgstr ""
 
+msgid "NotificationEmail|Assignee"
+msgid_plural "NotificationEmail|Assignees"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "NotificationEmail|Assignee: %{users}"
+msgid_plural "NotificationEmail|Assignees: %{users}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "NotificationEmail|Reviewer"
+msgid_plural "NotificationEmail|Reviewers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "NotificationEmail|Reviewer: %{users}"
+msgid_plural "NotificationEmail|Reviewers: %{users}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "NotificationEvent|Change reviewer merge request"
 msgstr ""
 
