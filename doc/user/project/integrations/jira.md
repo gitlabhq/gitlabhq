@@ -74,13 +74,13 @@ The process for configuring Jira depends on whether you host Jira on your own se
 
 Jira Server supports basic authentication. When connecting, a **username and password** are
 required. Connecting to Jira Server via CAS is not possible. For more information, see
-[set up a user in Jira Server](jira_server_configuration.md).
+[set up a user in Jira Server](../../../integration/jira/jira_server_configuration.md).
 
 #### Jira on Atlassian cloud
 
 Jira on Atlassian cloud supports authentication through an API token. When connecting to Jira on
 Atlassian cloud, an **email and API token** are required. For more information, see
-[set up a user in Jira on Atlassian cloud](jira_cloud_configuration.md).
+[set up a user in Jira on Atlassian cloud](../../../integration/jira/jira_cloud_configuration.md).
 
 ### Configure GitLab
 

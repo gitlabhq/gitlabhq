@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": ["packages", "metadata-url"],
+  "properties": {
+    "packages": {
+      "type": "array",
+      "items": { "type": "integer" }
+    },
+    "metadata-url": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

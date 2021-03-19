@@ -109,8 +109,10 @@
   release: 13.9
 - title: "Allow Deploy Keys to push to protected branches"
   body: |
-    When viewing a roadmap, there used to be no way to hide confidential epics from the main view. This could be frustrating if you wanted to share your roadmap with a public audience. We've updated the search bar filter to include confidentiality so you now have another layer in which you can refine your roadmap.
-  stage: Plan
+    Prior to GitLab 12.0, deploy keys with write access could push commits to protected branches. Support for this was removed due to security concerns, but many users still requested it, as they used deploy keys to ensure that only users with deploy keys could push to their repositories. Removing deploy keys also eliminates the need to use a service user or machine user, which ties up a license for any team that wants to allow deploy keys to push to protected branches just for this use case.
+
+    We are excited to announce that we resolved this issue and now deploy keys can push to protected branches once more while abiding by security best practices. By moving towards an isolated permission model for deploy keys, users can now select deploy keys to link to protected branches directly from the **Settings** page on protected branches.
+  stage: Release
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
