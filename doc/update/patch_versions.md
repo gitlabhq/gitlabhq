@@ -43,7 +43,12 @@ sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```shell
 cd /home/git/gitlab
 
-sudo -u git -H bundle install --without development test mysql --deployment
+# If you haven't done so during installation or a previous upgrade already
+sudo -u git -H bundle config set --local deployment 'true'
+sudo -u git -H bundle config set --local without 'development test mysql aws kerberos'
+
+# Update gems
+sudo -u git -H bundle install
 
 # Optional: clean up old gems
 sudo -u git -H bundle clean
