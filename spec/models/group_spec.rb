@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Group do
+  include ReloadHelpers
+
   let!(:group) { create(:group) }
 
   describe 'associations' do
@@ -281,7 +283,7 @@ RSpec.describe Group do
     end
 
     describe '#two_factor_authentication_allowed' do
-      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
 
       context 'for a parent group' do
         it 'is valid' do
@@ -307,6 +309,120 @@ RSpec.describe Group do
           expect(sub_group).to be_invalid
           expect(sub_group.errors[:require_two_factor_authentication]).to include('is forbidden by a top-level group')
         end
+      end
+    end
+  end
+
+  context 'traversal_ids on create' do
+    context 'default traversal_ids' do
+      let(:group) { build(:group) }
+
+      before do
+        group.save!
+        group.reload
+      end
+
+      it { expect(group.traversal_ids).to eq [group.id] }
+    end
+
+    context 'has a parent' do
+      let(:parent) { create(:group) }
+      let(:group) { build(:group, parent: parent) }
+
+      before do
+        group.save!
+        reload_models(parent, group)
+      end
+
+      it { expect(parent.traversal_ids).to eq [parent.id] }
+      it { expect(group.traversal_ids).to eq [parent.id, group.id] }
+    end
+
+    context 'has a parent update before save' do
+      let(:parent) { create(:group) }
+      let(:group) { build(:group, parent: parent) }
+      let!(:new_grandparent) { create(:group) }
+
+      before do
+        parent.update!(parent: new_grandparent)
+        group.save!
+        reload_models(parent, group)
+      end
+
+      it 'avoid traversal_ids race condition' do
+        expect(parent.traversal_ids).to eq [new_grandparent.id, parent.id]
+        expect(group.traversal_ids).to eq [new_grandparent.id, parent.id, group.id]
+      end
+    end
+  end
+
+  context 'traversal_ids on update' do
+    context 'parent is updated' do
+      let(:new_parent) { create(:group) }
+
+      subject {group.update!(parent: new_parent, name: 'new name') }
+
+      it_behaves_like 'update on column', :traversal_ids
+    end
+
+    context 'parent is not updated' do
+      subject { group.update!(name: 'new name') }
+
+      it_behaves_like 'no update on column', :traversal_ids
+    end
+  end
+
+  context 'traversal_ids on ancestral update' do
+    context 'update multiple ancestors before save' do
+      let(:parent) { create(:group) }
+      let(:group) { create(:group, parent: parent) }
+      let!(:new_grandparent) { create(:group) }
+      let!(:new_parent) { create(:group) }
+
+      before do
+        group.parent = new_parent
+        new_parent.update!(parent: new_grandparent)
+
+        group.save!
+        reload_models(parent, group, new_grandparent, new_parent)
+      end
+
+      it 'avoids traversal_ids race condition' do
+        expect(parent.traversal_ids).to eq [parent.id]
+        expect(group.traversal_ids).to eq [new_grandparent.id, new_parent.id, group.id]
+        expect(new_grandparent.traversal_ids).to eq [new_grandparent.id]
+        expect(new_parent.traversal_ids).to eq [new_grandparent.id, new_parent.id]
+      end
+    end
+
+    context 'assigning a new parent' do
+      let!(:old_parent) { create(:group) }
+      let!(:new_parent) { create(:group) }
+      let!(:group) { create(:group, parent: old_parent) }
+
+      before do
+        group.update(parent: new_parent)
+        reload_models(old_parent, new_parent, group)
+      end
+
+      it 'updates traversal_ids' do
+        expect(group.traversal_ids).to eq [new_parent.id, group.id]
+      end
+    end
+
+    context 'assigning a new grandparent' do
+      let!(:old_grandparent) { create(:group) }
+      let!(:new_grandparent) { create(:group) }
+      let!(:parent_group) { create(:group, parent: old_grandparent) }
+      let!(:group) { create(:group, parent: parent_group) }
+
+      before do
+        parent_group.update(parent: new_grandparent)
+      end
+
+      it 'updates traversal_ids for all descendants' do
+        expect(parent_group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id]
+        expect(group.reload.traversal_ids).to eq [new_grandparent.id, parent_group.id, group.id]
       end
     end
   end
@@ -1838,24 +1954,28 @@ RSpec.describe Group do
     end
   end
 
-  def subject_and_reload(*models)
-    subject
-    models.map(&:reload)
-  end
-
   describe '#update_shared_runners_setting!' do
     context 'enabled' do
       subject { group.update_shared_runners_setting!('enabled') }
 
       context 'group that its ancestors have shared runners disabled' do
-        let_it_be(:parent) { create(:group, :shared_runners_disabled) }
-        let_it_be(:group) { create(:group, :shared_runners_disabled, parent: parent) }
-        let_it_be(:project) { create(:project, shared_runners_enabled: false, group: group) }
+        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled) }
+        let_it_be(:group, reload: true) { create(:group, :shared_runners_disabled, parent: parent) }
+        let_it_be(:project, reload: true) { create(:project, shared_runners_enabled: false, group: group) }
 
-        it 'raises error and does not enable shared Runners' do
-          expect { subject_and_reload(parent, group, project) }
+        it 'raises exception' do
+          expect { subject }
             .to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Shared runners enabled cannot be enabled because parent group has shared Runners disabled')
-            .and not_change { parent.shared_runners_enabled }
+        end
+
+        it 'does not enable shared runners' do
+          expect do
+            subject rescue nil
+
+            parent.reload
+            group.reload
+            project.reload
+          end.to not_change { parent.shared_runners_enabled }
             .and not_change { group.shared_runners_enabled }
             .and not_change { project.shared_runners_enabled }
         end
@@ -1941,13 +2061,21 @@ RSpec.describe Group do
       end
 
       context 'when parent does not allow' do
-        let_it_be(:parent) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false ) }
-        let_it_be(:group) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
+        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false ) }
+        let_it_be(:group, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
 
-        it 'raises error and does not allow descendants to override' do
-          expect { subject_and_reload(parent, group) }
+        it 'raises exception' do
+          expect { subject }
             .to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Allow descendants override disabled shared runners cannot be enabled because parent group does not allow it')
-            .and not_change { parent.allow_descendants_override_disabled_shared_runners }
+        end
+
+        it 'does not allow descendants to override' do
+          expect do
+            subject rescue nil
+
+            parent.reload
+            group.reload
+          end.to not_change { parent.allow_descendants_override_disabled_shared_runners }
             .and not_change { parent.shared_runners_enabled }
             .and not_change { group.allow_descendants_override_disabled_shared_runners }
             .and not_change { group.shared_runners_enabled }

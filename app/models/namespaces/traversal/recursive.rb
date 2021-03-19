@@ -6,10 +6,14 @@ module Namespaces
       extend ActiveSupport::Concern
 
       def root_ancestor
-        return self if persisted? && parent_id.nil?
+        return self if parent.nil?
 
-        strong_memoize(:root_ancestor) do
-          self_and_ancestors.reorder(nil).find_by(parent_id: nil)
+        if persisted?
+          strong_memoize(:root_ancestor) do
+            self_and_ancestors.reorder(nil).find_by(parent_id: nil)
+          end
+        else
+          parent.root_ancestor
         end
       end
 

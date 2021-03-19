@@ -168,6 +168,20 @@ RSpec.describe Namespace do
   describe 'inclusions' do
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
     it { is_expected.to include_module(Namespaces::Traversal::Recursive) }
+    it { is_expected.to include_module(Namespaces::Traversal::Linear) }
+  end
+
+  context 'traversal_ids on create' do
+    context 'default traversal_ids' do
+      let(:namespace) { build(:namespace) }
+
+      before do
+        namespace.save!
+        namespace.reload
+      end
+
+      it { expect(namespace.traversal_ids).to eq [namespace.id] }
+    end
   end
 
   describe 'callbacks' do
@@ -1085,21 +1099,42 @@ RSpec.describe Namespace do
   end
 
   describe '#root_ancestor' do
-    let!(:root_group) { create(:group) }
+    context 'with persisted root group' do
+      let!(:root_group) { create(:group) }
 
-    it 'returns root_ancestor for root group without a query' do
-      expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
+      it 'returns root_ancestor for root group without a query' do
+        expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
+      end
+
+      it 'returns the top most ancestor' do
+        nested_group = create(:group, parent: root_group)
+        deep_nested_group = create(:group, parent: nested_group)
+        very_deep_nested_group = create(:group, parent: deep_nested_group)
+
+        expect(root_group.root_ancestor).to eq(root_group)
+        expect(nested_group.root_ancestor).to eq(root_group)
+        expect(deep_nested_group.root_ancestor).to eq(root_group)
+        expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+      end
     end
 
-    it 'returns the top most ancestor' do
-      nested_group = create(:group, parent: root_group)
-      deep_nested_group = create(:group, parent: nested_group)
-      very_deep_nested_group = create(:group, parent: deep_nested_group)
+    context 'with not persisted root group' do
+      let!(:root_group) { build(:group) }
 
-      expect(root_group.root_ancestor).to eq(root_group)
-      expect(nested_group.root_ancestor).to eq(root_group)
-      expect(deep_nested_group.root_ancestor).to eq(root_group)
-      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+      it 'returns root_ancestor for root group without a query' do
+        expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
+      end
+
+      it 'returns the top most ancestor' do
+        nested_group = build(:group, parent: root_group)
+        deep_nested_group = build(:group, parent: nested_group)
+        very_deep_nested_group = build(:group, parent: deep_nested_group)
+
+        expect(root_group.root_ancestor).to eq(root_group)
+        expect(nested_group.root_ancestor).to eq(root_group)
+        expect(deep_nested_group.root_ancestor).to eq(root_group)
+        expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+      end
     end
   end
 

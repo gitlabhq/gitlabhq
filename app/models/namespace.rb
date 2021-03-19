@@ -13,6 +13,7 @@ class Namespace < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include IgnorableColumns
   include Namespaces::Traversal::Recursive
+  include Namespaces::Traversal::Linear
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
