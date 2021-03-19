@@ -1662,7 +1662,7 @@ RSpec.describe NotificationService, :mailer do
         notification.issue_due(issue)
         email = find_email_for(@subscriber)
 
-        expect(email.header[:from].display_names).to eq([issue.author.name])
+        expect(email.header[:from].display_names).to eq(["#{issue.author.name} (@#{issue.author.username})"])
       end
 
       it_behaves_like 'participating notifications' do

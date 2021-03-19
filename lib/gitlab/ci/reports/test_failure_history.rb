@@ -6,32 +6,32 @@ module Gitlab
       class TestFailureHistory
         include Gitlab::Utils::StrongMemoize
 
-        def initialize(failed_test_cases, project)
-          @failed_test_cases = build_map(failed_test_cases)
+        def initialize(failed_junit_tests, project)
+          @failed_junit_tests = build_map(failed_junit_tests)
           @project = project
         end
 
         def load!
           recent_failures_count.each do |key_hash, count|
-            failed_test_cases[key_hash].set_recent_failures(count, project.default_branch_or_master)
+            failed_junit_tests[key_hash].set_recent_failures(count, project.default_branch_or_master)
           end
         end
 
         private
 
-        attr_reader :report, :project, :failed_test_cases
+        attr_reader :report, :project, :failed_junit_tests
 
         def recent_failures_count
-          ::Ci::TestCaseFailure.recent_failures_count(
+          ::Ci::UnitTestFailure.recent_failures_count(
             project: project,
-            test_case_keys: failed_test_cases.keys
+            unit_test_keys: failed_junit_tests.keys
           )
         end
 
-        def build_map(test_cases)
+        def build_map(junit_tests)
           {}.tap do |hash|
-            test_cases.each do |test_case|
-              hash[test_case.key] = test_case
+            junit_tests.each do |test|
+              hash[test.key] = test
             end
           end
         end

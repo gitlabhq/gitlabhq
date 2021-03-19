@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :ci_test_case_failure, class: 'Ci::TestCaseFailure' do
+  factory :ci_unit_test_failure, class: 'Ci::UnitTestFailure' do
     build factory: :ci_build
-    test_case factory: :ci_test_case
+    unit_test factory: :ci_unit_test
     failed_at { Time.current }
   end
 end

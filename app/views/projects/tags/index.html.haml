@@ -24,7 +24,7 @@
             %li
               = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
       - if can?(current_user, :admin_tag, @project)
-        = link_to new_project_tag_path(@project), class: 'btn gl-button btn-success', data: { qa_selector: "new_tag_button" } do
+        = link_to new_project_tag_path(@project), class: 'btn gl-button btn-confirm', data: { qa_selector: "new_tag_button" } do
           = s_('TagsPage|New tag')
       = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-block has-tooltip' do
         = sprite_icon('rss', css_class: 'qa-rss-icon')

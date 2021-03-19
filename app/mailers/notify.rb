@@ -70,7 +70,7 @@ class Notify < ApplicationMailer
     return unless sender = User.find(sender_id)
 
     address = default_sender_address
-    address.display_name = sender_name.presence || sender.name
+    address.display_name = sender_name.presence || "#{sender.name} (#{sender.to_reference})"
 
     if send_from_user_email && can_send_from_user_email?(sender)
       address.address = sender.email

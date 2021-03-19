@@ -13,9 +13,9 @@ RSpec.describe Gitlab::Ci::Reports::TestFailureHistory, :aggregate_failures do
     subject(:load_history) { described_class.new([failed_rspec, failed_java], project).load! }
 
     before do
-      allow(Ci::TestCaseFailure)
+      allow(Ci::UnitTestFailure)
         .to receive(:recent_failures_count)
-        .with(project: project, test_case_keys: [failed_rspec.key, failed_java.key])
+        .with(project: project, unit_test_keys: [failed_rspec.key, failed_java.key])
         .and_return(
           failed_rspec.key => 2,
           failed_java.key => 1
