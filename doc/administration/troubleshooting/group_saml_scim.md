@@ -20,6 +20,7 @@ They may then set up a test configuration of the desired identity provider. We i
 This section includes relevant screenshots of the following example configurations of [Group SAML](../../user/group/saml_sso/index.md) and [Group SCIM](../../user/group/saml_sso/scim_setup.md):
 
 - [Azure Active Directory](#azure-active-directory)
+- [Okta](#okta)
 - [OneLogin](#onelogin)
 
 WARNING:
@@ -58,6 +59,14 @@ Advanced SAML app settings (defaults):
 IdP Links and Certificate:
 
 ![Okta Links and Certificate](img/Okta-linkscert.png)
+
+Sign on settings:
+
+![Okta SAML settings](img/okta_saml_settings.png)
+
+Self-managed instance example:
+
+![Okta admin panel view](img/okta_admin_panel_v13_9.png)
 
 ## OneLogin
 

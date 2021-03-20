@@ -23,13 +23,11 @@ providers:
 - [GitHub](../../integration/github.md)
 - [GitLab.com](../../integration/gitlab.md)
 - [Google OAuth](../../integration/google.md)
-- [Google Workspace SSO](../../integration/google_workspace_saml.md)
 - [JWT](jwt.md)
 - [Kerberos](../../integration/kerberos.md)
 - [LDAP](ldap/index.md): Includes Active Directory, Apple Open Directory, Open LDAP,
   and 389 Server.
   - [Google Secure LDAP](ldap/google_secure_ldap.md)
-- [Okta](okta.md)
 - [Salesforce](../../integration/salesforce.md)
 - [SAML](../../integration/saml.md)
 - [SAML for GitLab.com groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
