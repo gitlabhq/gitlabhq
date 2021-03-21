@@ -225,6 +225,26 @@ module Ci
             end
           end
 
+          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is enabled' do
+            before do
+              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: true)
+            end
+
+            it 'calls DISTINCT' do
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).to include("DISTINCT")
+            end
+          end
+
+          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is disabled' do
+            before do
+              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: false)
+            end
+
+            it 'does not call DISTINCT' do
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).not_to include("DISTINCT")
+            end
+          end
+
           context 'group runner' do
             let(:build) { execute(group_runner) }
 
