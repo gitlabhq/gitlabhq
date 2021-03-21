@@ -44,8 +44,8 @@ module Prometheus
     def self.from_cache(proxyable_class_name, proxyable_id, method, path, params)
       proxyable_class = begin
         proxyable_class_name.constantize
-                        rescue NameError
-                          nil
+      rescue NameError
+        nil
       end
       return unless proxyable_class
 

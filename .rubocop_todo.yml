@@ -76,20 +76,6 @@ Layout/LineLength:
 Layout/MultilineOperationIndentation:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'app/models/blob_viewer/dependency_manager.rb'
-    - 'app/models/project.rb'
-    - 'app/services/prometheus/proxy_service.rb'
-    - 'app/workers/concerns/reactive_cacheable_worker.rb'
-    - 'app/workers/delete_stored_files_worker.rb'
-    - 'config/initializers/1_settings.rb'
-    - 'config/initializers/trusted_proxies.rb'
-    - 'lib/api/internal/base.rb'
-    - 'lib/gitlab/highlight.rb'
-
 # Offense count: 53
 # Cop supports --auto-correct.
 Layout/SpaceAroundMethodCallOperator:

@@ -1,0 +1,5 @@
+---
+title: Fix offense Layout/RescueEnsureAlignment
+merge_request: 56870
+author: Shubham Kumar (@imskr)
+type: fixed
