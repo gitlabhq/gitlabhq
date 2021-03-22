@@ -107,7 +107,7 @@ RSpec.describe API::API do
       allow_any_instance_of(Gitlab::GrapeLogging::Loggers::ContextLogger).to receive(:parameters) do
         Gitlab::ApplicationContext.current.tap do |log_context|
           expect(log_context).to match('correlation_id' => an_instance_of(String),
-                                       'meta.caller_id' => '/api/:version/projects/:id/issues',
+                                       'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
                                        'meta.remote_ip' => an_instance_of(String),
                                        'meta.project' => project.full_path,
                                        'meta.root_namespace' => project.namespace.full_path,
@@ -124,7 +124,7 @@ RSpec.describe API::API do
       allow_any_instance_of(Gitlab::GrapeLogging::Loggers::ContextLogger).to receive(:parameters) do
         Gitlab::ApplicationContext.current.tap do |log_context|
           expect(log_context).to match('correlation_id' => an_instance_of(String),
-                                       'meta.caller_id' => '/api/:version/users',
+                                       'meta.caller_id' => 'GET /api/:version/users',
                                        'meta.remote_ip' => an_instance_of(String),
                                        'meta.client_id' => an_instance_of(String),
                                        'meta.feature_category' => 'users')
@@ -141,7 +141,7 @@ RSpec.describe API::API do
       let(:component_map) do
         {
           "application" => "test",
-          "endpoint_id" => "/api/:version/users/:id"
+          "endpoint_id" => "GET /api/:version/users/:id"
         }
       end
 

@@ -36,7 +36,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         job.run!
       end
 
-      it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id' do
+      it_behaves_like 'API::CI::Runner application context metadata', 'PUT /api/:version/jobs/:id' do
         let(:send_request) { update_job(state: 'success') }
       end
 

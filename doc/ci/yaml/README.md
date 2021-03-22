@@ -1069,8 +1069,8 @@ job:
     - when: on_success
 ```
 
-- If the pipeline is for a merge request, the job is **not** be added to the pipeline.
-- If the pipeline is a scheduled pipeline, the job is **not** be added to the pipeline.
+- If the pipeline is for a merge request, the job is **not** added to the pipeline.
+- If the pipeline is a scheduled pipeline, the job is **not** added to the pipeline.
 - In **all other cases**, the job is added to the pipeline, with `when: on_success`.
 
 WARNING:

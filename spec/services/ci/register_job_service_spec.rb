@@ -228,6 +228,7 @@ module Ci
           context 'when the use_distinct_in_register_job_object_hierarchy feature flag is enabled' do
             before do
               stub_feature_flags(use_distinct_in_register_job_object_hierarchy: true)
+              stub_feature_flags(use_distinct_for_all_object_hierarchy: true)
             end
 
             it 'calls DISTINCT' do
@@ -238,6 +239,7 @@ module Ci
           context 'when the use_distinct_in_register_job_object_hierarchy feature flag is disabled' do
             before do
               stub_feature_flags(use_distinct_in_register_job_object_hierarchy: false)
+              stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
             end
 
             it 'does not call DISTINCT' do

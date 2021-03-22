@@ -274,6 +274,9 @@ with secure tokens as you complete the setup process.
 
 We note in the instructions below where these secrets are required.
 
+NOTE:
+Omnibus GitLab installations can use `gitlab-secrets.json`.
+
 ### PostgreSQL
 
 NOTE:
@@ -283,10 +286,11 @@ database on the same PostgreSQL server if using
 of GitLab and should not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. For greater fault tolerance, the following options are available:
+failure. The following options are available:
 
-- For non-Geo installations, use one of the fault-tolerant
-  [PostgreSQL setups](../postgresql/index.md).
+- For non-Geo installations, either:
+  - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
+  - Use your own third-party database setup, if fault tolerance is required.
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
@@ -802,14 +806,26 @@ documentation](configure_gitaly.md#configure-gitaly-servers).
    gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
    ```
 
-1. Configure the GitLab Shell `secret_token`, and `internal_api_url` which are
-   needed for `git push` operations.
+1. Configure the GitLab Shell secret token, which is needed for `git push` operations. Either:
 
-   If you have already configured [Gitaly on its own server](index.md)
+   - Method 1:
+
+     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
+        servers and any other Gitaly clients.
+     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+
+   - Method 2:
+
+     1. Edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
+
+        ```ruby
+        gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+        ```
+
+1. Configure and `internal_api_url`, which is also needed for `git push` operations:
 
    ```ruby
-   gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
    # fail. This can be your front door GitLab URL or an internal load balancer.
    # Examples: 'https://gitlab.example.com', 'http://1.2.3.4'
@@ -961,15 +977,23 @@ Particular attention should be shown to:
    })
    ```
 
-1. Configure the `gitlab_shell['secret_token']` so that callbacks from Gitaly
-   nodes during a `git push` are properly authenticated by editing
-   `/etc/gitlab/gitlab.rb`:
+1. Configure the GitLab Shell secret token so that callbacks from Gitaly nodes during a `git push`
+   are properly authenticated. Either:
 
-   You need to replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
+   - Method 1:
 
-   ```ruby
-   gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-   ```
+     1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
+        servers and any other Gitaly clients.
+     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+
+   - Method 2:
+
+     1. Edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
+
+        ```ruby
+        gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+        ```
 
 1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`. If Prometheus
    is enabled on a different node, make edits on that node instead.

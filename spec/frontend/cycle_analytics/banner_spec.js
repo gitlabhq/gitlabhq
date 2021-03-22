@@ -1,45 +1,47 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import banner from '~/cycle_analytics/components/banner.vue';
+import { shallowMount } from '@vue/test-utils';
+import Banner from '~/cycle_analytics/components/banner.vue';
 
 describe('Value Stream Analytics banner', () => {
-  let vm;
+  let wrapper;
+
+  const createComponent = () => {
+    wrapper = shallowMount(Banner, {
+      propsData: {
+        documentationLink: 'path',
+      },
+    });
+  };
 
   beforeEach(() => {
-    const Component = Vue.extend(banner);
-    vm = mountComponent(Component, {
-      documentationLink: 'path',
-    });
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render value stream analytics information', () => {
-    expect(vm.$el.querySelector('h4').textContent.trim()).toEqual(
-      'Introducing Value Stream Analytics',
-    );
+    expect(wrapper.find('h4').text().trim()).toBe('Introducing Value Stream Analytics');
 
     expect(
-      vm.$el
-        .querySelector('p')
-        .textContent.trim()
+      wrapper
+        .find('p')
+        .text()
+        .trim()
         .replace(/[\r\n]+/g, ' '),
     ).toContain(
       'Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project.',
     );
 
-    expect(vm.$el.querySelector('a').textContent.trim()).toEqual('Read more');
-
-    expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('path');
+    expect(wrapper.find('a').text().trim()).toBe('Read more');
+    expect(wrapper.find('a').attributes('href')).toBe('path');
   });
 
-  it('should emit an event when close button is clicked', () => {
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
+  it('should emit an event when close button is clicked', async () => {
+    jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
 
-    vm.$el.querySelector('.js-ca-dismiss-button').click();
+    await wrapper.find('.js-ca-dismiss-button').trigger('click');
 
-    expect(vm.$emit).toHaveBeenCalled();
+    expect(wrapper.vm.$emit).toHaveBeenCalled();
   });
 });

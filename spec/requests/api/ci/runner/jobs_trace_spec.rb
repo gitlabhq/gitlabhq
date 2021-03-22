@@ -41,7 +41,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         initial_patch_the_trace
       end
 
-      it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id/trace' do
+      it_behaves_like 'API::CI::Runner application context metadata', 'PATCH /api/:version/jobs/:id/trace' do
         let(:send_request) { patch_the_trace }
       end
 

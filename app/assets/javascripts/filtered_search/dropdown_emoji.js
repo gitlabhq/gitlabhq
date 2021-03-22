@@ -1,7 +1,7 @@
 import { __ } from '~/locale';
 import Ajax from '../droplab/plugins/ajax';
 import Filter from '../droplab/plugins/filter';
-import { deprecatedCreateFlash as Flash } from '../flash';
+import createFlash from '../flash';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 
@@ -14,9 +14,9 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
         method: 'setData',
         loadingTemplate: this.loadingTemplate,
         onError() {
-          /* eslint-disable no-new */
-          new Flash(__('An error occurred fetching the dropdown data.'));
-          /* eslint-enable no-new */
+          createFlash({
+            message: __('An error occurred fetching the dropdown data.'),
+          });
         },
       },
       Filter: {

@@ -523,7 +523,7 @@ msgid "%{completedCount} completed weight"
 msgstr ""
 
 msgid "%{completedWeight} of %{totalWeight} weight completed"
-msgstr "Завершено %{completedWeight} из %{totalWeight} приоритета"
+msgstr "Завершено %{completedWeight} из %{totalWeight} единиц веса"
 
 msgid "%{containerScanningLinkStart}Container Scanning%{containerScanningLinkEnd} and/or %{dependencyScanningLinkStart}Dependency Scanning%{dependencyScanningLinkEnd} must be enabled. %{securityBotLinkStart}GitLab-Security-Bot%{securityBotLinkEnd} will be the author of the auto-created merge request. %{moreInfoLinkStart}More information%{moreInfoLinkEnd}."
 msgstr ""
@@ -859,7 +859,7 @@ msgid "%{openedIssues} open, %{closedIssues} closed"
 msgstr "%{openedIssues} открыто, %{closedIssues} закрыто"
 
 msgid "%{percentage}%% weight completed"
-msgstr "%{percentage}%% приоритета завершено"
+msgstr "%{percentage}%% веса завершено"
 
 msgid "%{percent}%% complete"
 msgstr "%{percent}%% выполнено"
@@ -1068,13 +1068,13 @@ msgid "%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr ""
 
 msgid "%{totalWeight} total weight"
-msgstr "общий приоритет %{totalWeight}"
+msgstr "общий вес %{totalWeight}"
 
 msgid "%{total_warnings} warning(s) found:"
 msgstr ""
 
 msgid "%{total} open issue weight"
-msgstr "приоритет открытого обсуждения %{total}"
+msgstr "вес открытого обсуждения %{total}"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
@@ -1258,7 +1258,7 @@ msgstr[2] "- Пользователи"
 msgstr[3] "- Пользователи"
 
 msgid "- of - weight completed"
-msgstr "- из - приоритета завершено"
+msgstr "- из - единиц веса завершено"
 
 msgid "- show less"
 msgstr "- свернуть"
@@ -3448,7 +3448,7 @@ msgid "An error occurred when updating the issue title"
 msgstr ""
 
 msgid "An error occurred when updating the issue weight"
-msgstr "Произошла ошибка при обновлении приоритета обсуждения"
+msgstr "Произошла ошибка при обновлении весa обсуждения"
 
 msgid "An error occurred while acknowledging the notification. Refresh the page and try again."
 msgstr ""
@@ -5352,7 +5352,7 @@ msgid "Burndown charts are now fixed. This means that removing issues from a mil
 msgstr "Диаграммы сгорания задач стали фиксированными. Это означает, что если убрать обсуждения из этапа, ставшего просроченным, диаграмма не изменится. Прежний вариант диаграммы можно увидеть, нажав на кнопку %{strongStart}Старый вид диаграммы сгорания%{strongEnd}."
 
 msgid "BurndownChartLabel|Open issue weight"
-msgstr "Открыть приоритет задачи"
+msgstr "Bес открытых обсуждений"
 
 msgid "BurndownChartLabel|Open issues"
 msgstr "Открыть обсуждения"
@@ -6346,13 +6346,13 @@ msgid "Clear templates search input"
 msgstr "Очистить шаблоны ввода данных для поиска"
 
 msgid "Clear weight"
-msgstr "Очистить приоритет"
+msgstr "Удалить вес"
 
 msgid "Cleared weight."
-msgstr "Приоритет очищен."
+msgstr "Вес удалён."
 
 msgid "Clears weight."
-msgstr "Очищает приоритет."
+msgstr "Удаляет вес."
 
 msgid "Click %{link_start}here%{link_end} to view the request."
 msgstr ""
@@ -11728,7 +11728,7 @@ msgid "Enter the number of seconds, or other human-readable input, like \"1 hour
 msgstr ""
 
 msgid "Enter weights for storages for new repositories."
-msgstr ""
+msgstr "Введите веса хранилищ для новых репозиториев."
 
 msgid "Enter your password to approve"
 msgstr "Для продолжения введите свой пароль"
@@ -12244,7 +12244,7 @@ msgid "Error occurred while updating the issue status"
 msgstr "Произошла ошибка при обновлении статуса обсуждения"
 
 msgid "Error occurred while updating the issue weight"
-msgstr "Произошла ошибка при изменении приоритета задачи"
+msgstr "Произошла ошибка при изменении весa обсуждения"
 
 msgid "Error occurred. A blocked user cannot be deactivated"
 msgstr "Произошла ошибка. Заблокированный пользователь не может быть деактивирован"
@@ -17099,7 +17099,7 @@ msgid "Issue was closed by %{name} %{reason}"
 msgstr "Обсуждение было закрыто %{name} %{reason}"
 
 msgid "Issue weight"
-msgstr "Приоритет обсуждения"
+msgstr "Вес обсуждения"
 
 msgid "IssueAnalytics|Age"
 msgstr ""
@@ -24622,10 +24622,10 @@ msgid "Promotions|Weight"
 msgstr ""
 
 msgid "Promotions|Weighting your issue"
-msgstr "Обозначить приоритет обсуждения"
+msgstr "Установка веса обсуждения"
 
 msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
-msgstr "При большом количестве обсуждений сложно оценить общую картину. Добавив приоритет к вашим обсуждениям, вы можете получить лучшее представление о затрачиваемых усилиях, времени, стоимости или значимости каждого из них и, таким образом, лучше ими управлять."
+msgstr "При большом количестве обсуждений сложно оценить общую картину. Добавив вес к вашим обсуждениям, вы можете получить лучшее представление о затрачиваемых усилиях, времени, стоимости или значимости каждого из них и, таким образом, лучше ими управлять."
 
 msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
 msgstr ""
@@ -27685,10 +27685,10 @@ msgid "Set verification limit and frequency."
 msgstr ""
 
 msgid "Set weight"
-msgstr "Установить приоритет"
+msgstr "Установить вес"
 
 msgid "Set weight to %{weight}."
-msgstr "Установить приоритет на %{weight}."
+msgstr "Установить вес в следующее количество единиц: %{weight}."
 
 msgid "Set what should be replicated by this secondary node."
 msgstr ""
@@ -27748,7 +27748,7 @@ msgid "Sets time estimate to %{time_estimate}."
 msgstr "Задаёт оценку времени в %{time_estimate}."
 
 msgid "Sets weight to %{weight}."
-msgstr "Устанавливает приоритет на %{weight}."
+msgstr "Устанавливает вес в следующее количество единиц: %{weight}."
 
 msgid "Setting this to 0 means using the system default timeout value."
 msgstr ""
@@ -27975,7 +27975,7 @@ msgid "Sidebar|Only numeral characters allowed"
 msgstr ""
 
 msgid "Sidebar|Weight"
-msgstr "Приоритет"
+msgstr "Вес"
 
 msgid "Sign in"
 msgstr "Вход"
@@ -28458,7 +28458,7 @@ msgid "SortOptions|Least popular"
 msgstr "Наименее популярный"
 
 msgid "SortOptions|Less weight"
-msgstr "Сначала с меньшим приоритетом"
+msgstr "Сначала с меньшим весом"
 
 msgid "SortOptions|Manual"
 msgstr "Ручная"
@@ -28473,7 +28473,7 @@ msgid "SortOptions|Milestone due soon"
 msgstr "Веха, наступающая раньше"
 
 msgid "SortOptions|More weight"
-msgstr "Сначала с большим приоритетом"
+msgstr "Сначала с большим весом"
 
 msgid "SortOptions|Most popular"
 msgstr "Наиболее популярный"
@@ -28554,7 +28554,7 @@ msgid "SortOptions|Version"
 msgstr "По версии"
 
 msgid "SortOptions|Weight"
-msgstr "Приоритет"
+msgstr "Вес"
 
 msgid "Source"
 msgstr "Источник"
@@ -31798,7 +31798,7 @@ msgid "Total users"
 msgstr ""
 
 msgid "Total weight"
-msgstr "Итоговый приоритет"
+msgstr "Общий вес"
 
 msgid "Total: %{total}"
 msgstr "Всего: %{total}"
@@ -33976,10 +33976,10 @@ msgid "Weeks"
 msgstr "Недели"
 
 msgid "Weight"
-msgstr "Приоритет"
+msgstr "Вес"
 
 msgid "Weight %{weight}"
-msgstr "Приоритет %{weight}"
+msgstr "Вес %{weight}"
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr "Добро пожаловать! Ваша учётная запись была деактивирована из-за неактивности, но сейчас восстановлена."
@@ -36507,7 +36507,7 @@ msgid "remove due date"
 msgstr "удалить дату завершения"
 
 msgid "remove weight"
-msgstr "удалить приоритет"
+msgstr "удалить вес"
 
 msgid "removed a Zoom call from this issue"
 msgstr ""

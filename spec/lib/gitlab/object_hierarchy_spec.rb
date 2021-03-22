@@ -187,6 +187,21 @@ RSpec.describe Gitlab::ObjectHierarchy do
   context 'when the use_distinct_in_object_hierarchy feature flag is enabled' do
     before do
       stub_feature_flags(use_distinct_in_object_hierarchy: true)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
+    end
+
+    it_behaves_like 'Gitlab::ObjectHierarchy test cases'
+
+    it 'calls DISTINCT' do
+      expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
+      expect(child2.self_and_ancestors.to_sql).to include("DISTINCT")
+    end
+  end
+
+  context 'when the use_distinct_for_all_object_hierarchy feature flag is enabled' do
+    before do
+      stub_feature_flags(use_distinct_in_object_hierarchy: false)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: true)
     end
 
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'
@@ -200,6 +215,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
   context 'when the use_distinct_in_object_hierarchy feature flag is disabled' do
     before do
       stub_feature_flags(use_distinct_in_object_hierarchy: false)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
     end
 
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'

@@ -9,7 +9,7 @@ RUN bundle config --global frozen 1
 
 WORKDIR /usr/src/app
 
-COPY Gemfile Gemfile.lock .
+COPY Gemfile Gemfile.lock /usr/src/app/
 # Install build dependencies - required for gems with native dependencies
 RUN apk add --no-cache --virtual build-deps build-base postgresql-dev && \
   bundle install && \

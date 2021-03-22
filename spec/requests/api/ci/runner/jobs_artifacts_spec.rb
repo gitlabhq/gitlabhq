@@ -127,7 +127,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               authorize_artifacts_with_token_in_params
             end
 
-            it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id/artifacts/authorize' do
+            it_behaves_like 'API::CI::Runner application context metadata', 'POST /api/:version/jobs/:id/artifacts/authorize' do
               let(:send_request) { subject }
             end
 
@@ -262,7 +262,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       end
 
       describe 'POST /api/v4/jobs/:id/artifacts' do
-        it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id/artifacts' do
+        it_behaves_like 'API::CI::Runner application context metadata', 'POST /api/:version/jobs/:id/artifacts' do
           let(:send_request) do
             upload_artifacts(file_upload, headers_with_token)
           end
@@ -784,7 +784,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
 
-        it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id/artifacts' do
+        it_behaves_like 'API::CI::Runner application context metadata', 'GET /api/:version/jobs/:id/artifacts' do
           let(:send_request) { download_artifact }
         end
 

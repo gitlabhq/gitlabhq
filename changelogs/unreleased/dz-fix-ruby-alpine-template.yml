@@ -1,0 +1,5 @@
+---
+title: Fix ruby alpine CI template
+merge_request: 57109
+author:
+type: fixed

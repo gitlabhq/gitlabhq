@@ -22,7 +22,7 @@ import syntaxHighlight from '~/syntax_highlight';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
 import CommentTypeToggle from './comment_type_toggle';
-import { deprecatedCreateFlash as Flash } from './flash';
+import createFlash from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import GLForm from './gl_form';
 import axios from './lib/utils/axios_utils';
@@ -399,7 +399,11 @@ export default class Notes {
         if (noteEntity.commands_changes && Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline.get(0));
+        this.addFlash({
+          message: noteEntity.errors.commands_only,
+          type: 'notice',
+          parent: this.parentTimeline.get(0),
+        });
         this.refresh();
       }
       return;
@@ -620,20 +624,21 @@ export default class Notes {
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
-    return this.addFlash(
-      __(
+    return this.addFlash({
+      message: __(
         'Your comment could not be submitted! Please check your network connection and try again.',
       ),
-      'alert',
-      formParentTimeline.get(0),
-    );
+      type: 'alert',
+      parent: formParentTimeline.get(0),
+    });
   }
 
   updateNoteError() {
-    // eslint-disable-next-line no-new
-    new Flash(
-      __('Your comment could not be updated! Please check your network connection and try again.'),
-    );
+    createFlash({
+      message: __(
+        'Your comment could not be updated! Please check your network connection and try again.',
+      ),
+    });
   }
 
   /**
@@ -1289,7 +1294,7 @@ export default class Notes {
   }
 
   addFlash(...flashParams) {
-    this.flashContainer = new Flash(...flashParams);
+    this.flashContainer = createFlash(...flashParams);
   }
 
   clearFlash() {

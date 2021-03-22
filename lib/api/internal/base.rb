@@ -15,7 +15,7 @@ module API
         Gitlab::ApplicationContext.push(
           user: -> { actor&.user },
           project: -> { project },
-          caller_id: route.origin,
+          caller_id: api_endpoint.endpoint_id,
           remote_ip: request.ip,
           feature_category: feature_category
         )

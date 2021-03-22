@@ -25,7 +25,7 @@ RSpec.shared_examples 'can highlight results' do |search_term|
   end
 
   it 'highlights the search terms' do
-    selector = '.gl-bg-orange-50'
+    selector = '.gl-bg-orange-100'
     fill_in SearchHelpers::INPUT_PLACEHOLDER, with: search_term
 
     expect(page).to have_css(selector)

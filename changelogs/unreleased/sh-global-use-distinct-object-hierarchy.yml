@@ -1,0 +1,5 @@
+---
+title: Enable DISTINCT optimization for ObjectHierarchy globally
+merge_request: 57052
+author:
+type: changed
