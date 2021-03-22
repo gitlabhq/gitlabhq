@@ -161,7 +161,7 @@ review-qa-smoke:
 review-qa-all:
   extends:
     - .review-qa-base
-    - .review:rules:mr-only-manual
+    - .review:rules:review-qa-all
   parallel: 5
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
@@ -198,7 +198,7 @@ review-performance:
 
 parallel-spec-reports:
   extends:
-    - .review:rules:mr-only-manual
+    - .review:rules:review-qa-all
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: post-qa
   dependencies: ["review-qa-all"]

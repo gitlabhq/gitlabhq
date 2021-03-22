@@ -30,4 +30,4 @@
             - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }
             - link_end_tag = "#{sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')}</a>".html_safe
             = _("For more information, please review %{link_start_tag}Jaeger's configuration doc%{link_end_tag}").html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
-      = f.submit _('Save changes'), class: 'btn btn-success'
+      = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'
