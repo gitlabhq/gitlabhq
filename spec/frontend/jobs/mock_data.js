@@ -911,6 +911,9 @@ export const stages = [
 
 export default {
   id: 4757,
+  artifact: {
+    locked: false,
+  },
   name: 'test',
   build_path: '/root/ci-mock/-/jobs/4757',
   retry_path: '/root/ci-mock/-/jobs/4757/retry',

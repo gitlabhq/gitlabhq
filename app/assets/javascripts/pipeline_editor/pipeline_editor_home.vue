@@ -19,10 +19,6 @@ export default {
       type: String,
       required: true,
     },
-    isCiConfigDataLoading: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {
@@ -44,15 +40,10 @@ export default {
 
 <template>
   <div>
-    <pipeline-editor-header
-      :ci-file-content="ciFileContent"
-      :ci-config-data="ciConfigData"
-      :is-ci-config-data-loading="isCiConfigDataLoading"
-    />
+    <pipeline-editor-header :ci-config-data="ciConfigData" />
     <pipeline-editor-tabs
       :ci-config-data="ciConfigData"
       :ci-file-content="ciFileContent"
-      :is-ci-config-data-loading="isCiConfigDataLoading"
       v-on="$listeners"
       @set-current-tab="setCurrentTab"
     />

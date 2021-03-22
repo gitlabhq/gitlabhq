@@ -7,7 +7,7 @@ import { mockJobs, mockErrors, mockWarnings } from '../../mock_data';
 describe('CI Lint Results', () => {
   let wrapper;
   const defaultProps = {
-    valid: true,
+    isValid: true,
     jobs: mockJobs,
     errors: [],
     warnings: [],
@@ -42,7 +42,6 @@ describe('CI Lint Results', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('Empty results', () => {
@@ -72,7 +71,7 @@ describe('CI Lint Results', () => {
 
   describe('Invalid results', () => {
     beforeEach(() => {
-      createComponent({ valid: false, errors: mockErrors, warnings: mockWarnings }, mount);
+      createComponent({ isValid: false, errors: mockErrors, warnings: mockWarnings }, mount);
     });
 
     it('does not display the table', () => {

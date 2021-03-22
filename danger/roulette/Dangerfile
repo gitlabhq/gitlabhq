@@ -73,6 +73,10 @@ changes = project_helper.changes_by_category
 changes.delete(:none)
 # To reinstate roulette for documentation, remove this line.
 changes.delete(:docs)
+# No special review for changelog needed and changelog was never a label.
+changes.delete(:changelog)
+# No special review for feature flags needed.
+changes.delete(:feature_flag)
 categories = changes.keys - [:unknown]
 
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)

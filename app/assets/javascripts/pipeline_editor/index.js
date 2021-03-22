@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
+import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
 import PipelineEditorApp from './pipeline_editor_app.vue';
@@ -45,6 +46,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     data: {
       currentBranch: initialBranchName || defaultBranch,
       commitSha,
+      status: EDITOR_APP_STATUS_LOADING,
     },
   });
 

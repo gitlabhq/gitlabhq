@@ -59,7 +59,10 @@ describe('pipeline graph component', () => {
   describe('with `VALID` status', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        pipelineData: { status: CI_CONFIG_STATUS_VALID, stages: [{ name: 'hello', groups: [] }] },
+        pipelineData: {
+          status: CI_CONFIG_STATUS_VALID,
+          stages: [{ name: 'hello', groups: [] }],
+        },
       });
     });
 

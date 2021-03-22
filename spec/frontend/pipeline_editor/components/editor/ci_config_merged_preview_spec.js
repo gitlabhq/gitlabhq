@@ -3,7 +3,6 @@ import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { INVALID_CI_CONFIG } from '~/pipelines/constants';
 import { mockLintResponse, mockCiConfigPath } from '../../mock_data';
 
@@ -39,12 +38,11 @@ describe('Text editor component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('when status is invalid', () => {
     beforeEach(() => {
-      createComponent({ props: { ciConfigData: { status: CI_CONFIG_STATUS_INVALID } } });
+      createComponent({ props: { isValid: false } });
     });
 
     it('show an error message', () => {
@@ -59,7 +57,7 @@ describe('Text editor component', () => {
 
   describe('when status is valid', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ props: { isValid: true } });
     });
 
     it('shows an information message that the section is not editable', () => {

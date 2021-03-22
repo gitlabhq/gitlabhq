@@ -72,7 +72,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = ({ props = {}, provide = {} } = {}) => {
+  const createComponentWithApollo = async ({ props = {}, provide = {} } = {}) => {
     const handlers = [[getCiConfigData, mockCiConfigData]];
     const resolvers = {
       Query: {
@@ -94,6 +94,8 @@ describe('Pipeline editor app component', () => {
     };
 
     createComponent({ props, provide, options });
+
+    return waitForPromises();
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -116,11 +118,13 @@ describe('Pipeline editor app component', () => {
     wrapper.destroy();
   });
 
-  it('displays a loading icon if the blob query is loading', () => {
-    createComponent({ blobLoading: true });
+  describe('loading state', () => {
+    it('displays a loading icon if the blob query is loading', () => {
+      createComponent({ blobLoading: true });
 
-    expect(findLoadingIcon().exists()).toBe(true);
-    expect(findTextEditor().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findTextEditor().exists()).toBe(false);
+    });
   });
 
   describe('when queries are called', () => {
@@ -131,9 +135,7 @@ describe('Pipeline editor app component', () => {
 
     describe('when file exists', () => {
       beforeEach(async () => {
-        createComponentWithApollo();
-
-        await waitForPromises();
+        await createComponentWithApollo();
       });
 
       it('shows pipeline editor home component', () => {
@@ -145,10 +147,6 @@ describe('Pipeline editor app component', () => {
       });
 
       it('ci config query is called with correct variables', async () => {
-        createComponentWithApollo();
-
-        await waitForPromises();
-
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
@@ -164,9 +162,7 @@ describe('Pipeline editor app component', () => {
               status: httpStatusCodes.BAD_REQUEST,
             },
           });
-          createComponentWithApollo();
-
-          await waitForPromises();
+          await createComponentWithApollo();
 
           expect(findEmptyState().exists()).toBe(true);
           expect(findAlert().exists()).toBe(false);
@@ -181,9 +177,7 @@ describe('Pipeline editor app component', () => {
               status: httpStatusCodes.NOT_FOUND,
             },
           });
-          createComponentWithApollo();
-
-          await waitForPromises();
+          await createComponentWithApollo();
 
           expect(findEmptyState().exists()).toBe(true);
           expect(findAlert().exists()).toBe(false);
@@ -194,8 +188,7 @@ describe('Pipeline editor app component', () => {
       describe('because of a fetching error', () => {
         it('shows a unkown error message', async () => {
           mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
-          createComponentWithApollo();
-          await waitForPromises();
+          await createComponentWithApollo();
 
           expect(findEmptyState().exists()).toBe(false);
           expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[LOAD_FAILURE_UNKNOWN]);
@@ -212,15 +205,13 @@ describe('Pipeline editor app component', () => {
           },
         });
 
-        createComponentWithApollo({
+        await createComponentWithApollo({
           provide: {
             glFeatures: {
               pipelineEditorEmptyStateAction: true,
             },
           },
         });
-
-        await waitForPromises();
 
         expect(findEmptyState().exists()).toBe(true);
         expect(findTextEditor().exists()).toBe(false);
@@ -254,9 +245,9 @@ describe('Pipeline editor app component', () => {
       describe('and the commit mutation fails', () => {
         const commitFailedReasons = ['Commit failed'];
 
-        beforeEach(() => {
+        beforeEach(async () => {
           window.scrollTo = jest.fn();
-          createComponent();
+          await createComponentWithApollo();
 
           findEditorHome().vm.$emit('showError', {
             type: COMMIT_FAILURE,
@@ -278,9 +269,9 @@ describe('Pipeline editor app component', () => {
       describe('when an unknown error occurs', () => {
         const unknownReasons = ['Commit failed'];
 
-        beforeEach(() => {
+        beforeEach(async () => {
           window.scrollTo = jest.fn();
-          createComponent();
+          await createComponentWithApollo();
 
           findEditorHome().vm.$emit('showError', {
             type: COMMIT_FAILURE,

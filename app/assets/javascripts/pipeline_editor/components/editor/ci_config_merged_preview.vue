@@ -2,7 +2,6 @@
 import { GlAlert, GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __, s__ } from '~/locale';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { DEFAULT, INVALID_CI_CONFIG } from '~/pipelines/constants';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
@@ -21,6 +20,10 @@ export default {
   },
   inject: ['ciConfigPath'],
   props: {
+    isValid: {
+      type: Boolean,
+      required: true,
+    },
     ciConfigData: {
       type: Object,
       required: true,
@@ -46,9 +49,6 @@ export default {
     hasError() {
       return this.failureType;
     },
-    isInvalidConfiguration() {
-      return this.ciConfigData.status === CI_CONFIG_STATUS_INVALID;
-    },
     mergedYaml() {
       return this.ciConfigData.mergedYaml;
     },
@@ -57,7 +57,7 @@ export default {
     ciConfigData: {
       immediate: true,
       handler() {
-        if (this.isInvalidConfiguration) {
+        if (!this.isValid) {
           this.reportFailure(INVALID_CI_CONFIG);
         } else if (this.hasError) {
           this.resetFailure();

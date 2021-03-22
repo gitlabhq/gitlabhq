@@ -4,12 +4,15 @@ import { s__ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  CI_CONFIG_STATUS_INVALID,
   CREATE_TAB,
+  EDITOR_APP_STATUS_ERROR,
+  EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_VALID,
   LINT_TAB,
   MERGED_TAB,
   VISUALIZE_TAB,
 } from '../constants';
+import getAppStatus from '../graphql/queries/client/app_status.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
 import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
@@ -52,17 +55,22 @@ export default {
       type: String,
       required: true,
     },
-    isCiConfigDataLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  apollo: {
+    appStatus: {
+      query: getAppStatus,
     },
   },
   computed: {
-    hasMergedYamlLoadError() {
-      return (
-        !this.ciConfigData?.mergedYaml && this.ciConfigData.status !== CI_CONFIG_STATUS_INVALID
-      );
+    hasAppError() {
+      // Not an invalid config and with `mergedYaml` data missing
+      return this.appStatus === EDITOR_APP_STATUS_ERROR;
+    },
+    isValid() {
+      return this.appStatus === EDITOR_APP_STATUS_VALID;
+    },
+    isLoading() {
+      return this.appStatus === EDITOR_APP_STATUS_LOADING;
     },
   },
   methods: {
@@ -91,7 +99,7 @@ export default {
       data-testid="visualization-tab"
       @click="setCurrentTab($options.tabConstants.VISUALIZE_TAB)"
     >
-      <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
+      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
       <pipeline-graph v-else :pipeline-data="ciConfigData" />
     </gl-tab>
     <editor-tab
@@ -100,8 +108,8 @@ export default {
       data-testid="lint-tab"
       @click="setCurrentTab($options.tabConstants.LINT_TAB)"
     >
-      <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
-      <ci-lint v-else :ci-config="ciConfigData" />
+      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
+      <ci-lint v-else :is-valid="isValid" :ci-config="ciConfigData" />
     </editor-tab>
     <gl-tab
       v-if="glFeatures.ciConfigMergedTab"
@@ -111,11 +119,16 @@ export default {
       data-testid="merged-tab"
       @click="setCurrentTab($options.tabConstants.MERGED_TAB)"
     >
-      <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
-      <gl-alert v-else-if="hasMergedYamlLoadError" variant="danger" :dismissible="false">
+      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
+      <gl-alert v-else-if="hasAppError" variant="danger" :dismissible="false">
         {{ $options.errorTexts.loadMergedYaml }}
       </gl-alert>
-      <ci-config-merged-preview v-else :ci-config-data="ciConfigData" v-on="$listeners" />
+      <ci-config-merged-preview
+        v-else
+        :is-valid="isValid"
+        :ci-config-data="ciConfigData"
+        v-on="$listeners"
+      />
     </gl-tab>
   </gl-tabs>
 </template>

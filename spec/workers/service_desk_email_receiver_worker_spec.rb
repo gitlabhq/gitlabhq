@@ -18,7 +18,7 @@ RSpec.describe ServiceDeskEmailReceiverWorker, :mailer do
         worker.perform(email)
       end
 
-      context 'when service desk receiver raises an exception' do
+      context 'when service desk receiver raises an exception', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325579' do
         before do
           allow_next_instance_of(Gitlab::Email::ServiceDeskReceiver) do |receiver|
             allow(receiver).to receive(:find_handler).and_return(nil)

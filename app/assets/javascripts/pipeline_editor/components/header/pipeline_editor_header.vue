@@ -31,16 +31,8 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    ciFileContent: {
-      type: String,
-      required: true,
-    },
     ciConfigData: {
       type: Object,
-      required: true,
-    },
-    isCiConfigDataLoading: {
-      type: Boolean,
       required: true,
     },
   },
@@ -61,11 +53,6 @@ export default {
 <template>
   <div class="gl-mb-5">
     <pipeline-status v-if="showPipelineStatus" :class="$options.pipelineStatusClasses" />
-    <validation-segment
-      :class="validationStyling"
-      :loading="isCiConfigDataLoading"
-      :ci-file-content="ciFileContent"
-      :ci-config="ciConfigData"
-    />
+    <validation-segment :class="validationStyling" :ci-config="ciConfigData" />
   </div>
 </template>

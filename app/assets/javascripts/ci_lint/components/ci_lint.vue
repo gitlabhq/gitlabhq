@@ -32,7 +32,7 @@ export default {
     return {
       content: '',
       loading: false,
-      valid: false,
+      isValid: false,
       errors: null,
       warnings: null,
       jobs: [],
@@ -61,7 +61,7 @@ export default {
         });
 
         this.showingResults = true;
-        this.valid = valid;
+        this.isValid = valid;
         this.errors = errors;
         this.warnings = warnings;
         this.jobs = jobs;
@@ -120,7 +120,7 @@ export default {
     <ci-lint-results
       v-if="showingResults"
       class="col-sm-12 gl-mt-5"
-      :valid="valid"
+      :is-valid="isValid"
       :jobs="jobs"
       :errors="errors"
       :warnings="warnings"

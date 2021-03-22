@@ -1,3 +1,4 @@
+import { DEFAULT_VARIANT } from '~/experimentation/constants';
 import * as experimentUtils from '~/experimentation/utils';
 
 const TEST_KEY = 'abc';
@@ -33,6 +34,19 @@ describe('experiment Utilities', () => {
       window.gon = gon;
 
       expect(experimentUtils.isExperimentVariant(...input)).toEqual(output);
+    });
+  });
+
+  describe('getExperimentVariant', () => {
+    it.each`
+      gon                                                         | input         | output
+      ${{ experiment: { [TEST_KEY]: { variant: 'control' } } }}   | ${[TEST_KEY]} | ${'control'}
+      ${{ experiment: { [TEST_KEY]: { variant: 'candidate' } } }} | ${[TEST_KEY]} | ${'candidate'}
+      ${{}}                                                       | ${[TEST_KEY]} | ${DEFAULT_VARIANT}
+    `('with input=$input and gon=$gon, returns $output', ({ gon, input, output }) => {
+      window.gon = gon;
+
+      expect(experimentUtils.getExperimentVariant(...input)).toEqual(output);
     });
   });
 });

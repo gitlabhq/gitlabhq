@@ -17,8 +17,8 @@ You're strongly encouraged to read and understand the
 [Feature flags in development of GitLab](../feature_flags/index.md) portion of the
 documentation before considering running experiments. Experiments add additional
 concepts which may seem confusing or advanced without understanding the underpinnings
-of how GitLab uses feature flags in development. One concept: GLEX supports multivariate
-experiments, which are sometimes referred to as A/B/n tests.
+of how GitLab uses feature flags in development. One concept: GLEX supports
+experiments with multiple variants, which are sometimes referred to as A/B/n tests.
 
 The [`gitlab-experiment` project](https://gitlab.com/gitlab-org/gitlab-experiment)
 exists in a separate repository, so it can be shared across any GitLab property that uses
@@ -500,6 +500,67 @@ This is in flux as of GitLab 13.10, and can't be documented just yet.
 Any experiment that's been run in the request lifecycle surfaces in `window.gon.experiment`,
 and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0)
 so you can use it when resolving some concepts around experimentation in the client layer.
+
+### Use experiments in Vue
+
+With the `experiment` component, you can define slots that match the name of the
+variants pushed to `window.gon.experiment`. For example, an experiment with the
+default variants `control` and `candidate` could be implemented like this:
+
+```ruby
+def show
+  experiment(:button_color) do |e|
+    e.use { } # control
+    e.try { } # candidate
+  end.run
+end
+```
+
+```vue
+<script>
+import Experiment from '~/experimentation/components/experiment.vue';
+
+export default {
+  components: { Experiment }
+}
+</script>
+
+<template>
+  <experiment name="button_name">
+    <template #control>
+      <button>Click me</button>
+    </template>
+
+    <template #candidate>
+      <button>You will not believe what happens when you click this button</button>
+    </template>
+  </experiment>
+</template>
+```
+
+When you use a multivariate experiment, you can use the variant names. For example,
+the Vue component for the `pill_color` experiment would look like this:
+
+```vue
+<template>
+  <experiment name="pill_color">
+    <template #control>
+      <button class="bg-default">Click default button</button>
+    </template>
+
+    <template #red>
+      <button class="bg-red">Click red button</button>
+    </template>
+
+    <template #blue>
+      <button class="bg-blue">Click blue button</button>
+    </template>
+  </experiment>
+</template>
+```
+
+NOTE:
+When there is no experiment defined in the frontend via `experiment(:experiment_name)`, then `control` will be rendered if it exists.
 
 ## Notes on feature flags
 

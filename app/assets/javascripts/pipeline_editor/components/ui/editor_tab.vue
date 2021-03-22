@@ -62,7 +62,7 @@ export default {
 </script>
 <template>
   <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="$listeners">
-    <slot v-for="slot in Object.keys($slots)" :slot="slot" :name="slot"></slot>
+    <slot v-for="slot in Object.keys($slots)" :name="slot"></slot>
     <mount-spy @hook:mounted="onContentMounted" />
   </gl-tab>
 </template>
