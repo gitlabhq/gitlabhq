@@ -55,6 +55,11 @@ NOTE:
 A limit of 100 `<source>` nodes for Cobertura format XML files applies. If your Cobertura report exceeds
 100 nodes, there can be mismatches or no matches in the Merge Request diff view.
 
+### Artifact expiration
+
+By default, the [pipeline artifact](../../../ci/pipelines/pipeline_artifacts.md#storage) used
+to draw the visualization on the Merge Request expires **one week** after creation.
+
 ### Automatic class path correction
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.
