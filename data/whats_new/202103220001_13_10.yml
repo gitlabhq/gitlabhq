@@ -1,0 +1,102 @@
+- title: "Admin Mode: Re-authenticate for GitLab administration"
+  body: |
+    GitLab now includes Admin Mode, which helps admins work safely from one account. When Admin Mode is not active, admins have the same privileges as a regular user. Before running administrative commands, admin users must reverify their credentials. Admin mode increases instance security by protecting sensitive operations and data. 
+  stage: Manage
+  self-managed: true
+  gitlab-com: false
+  packages: [Free, Premium, Ultimate]
+  url:  https://docs.gitlab.com/ee/user/admin_area/settings/sign_in_restrictions.html#admin-mode
+  image_url:  https://about.gitlab.com/images/13_10/manage_reauth_admin.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "GitLab Runner for Red Hat OpenShift GA"
+  body: |
+    The GitLab Runner Operator is generally available in the [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform). To install GitLab Runner on OpenShift, you can use the [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator), which is available from the stable channel in the OperatorHub. The Container Platform is a web console for OpenShift cluster administrators to discover and select Operators to install on their cluster. We are also developing an [Operator](https://gitlab.com/groups/gitlab-org/-/epics/3444) for GitLab, so stay tuned to future release posts for those announcements.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url:  https://docs.gitlab.com/runner/install/openshift.html
+  image_url:  https://img.youtube.com/vi/ZNBc_QnDUu4/hqdefault.jpg
+  published_at: 2021-03-22
+  release: 13.10
+- title: "View epics on a board (MVC)"
+  body: |
+    If you work on epics in GitLab, it can be tough to visualize your epics' workflow status. Often, when drafting or writing epics, you might want to use labels (like `Open`, `Doing`, or `Done`) to keep tabs on the next steps when creating your project plan.
+      
+      In this release, we took our awesome [Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html) feature and optimized it for viewing epics. You can now visualize the workflow status of your epics on an epic board by applying [labels](https://docs.gitlab.com/ee/user/project/labels.html#label-management) or [scoped labels](https://docs.gitlab.com/ee/user/project/labels.html#scoped-labels) to them.
+
+      We are releasing this early version of Epic Boards in 13.10, so we can start [gathering customer feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/324677). We will follow it up with [MVC 2](https://gitlab.com/groups/gitlab-org/-/epics/5069) and [MVC 3](https://gitlab.com/groups/gitlab-org/-/epics/5079), which will achieve parity with Issue Boards. Please leave feedback about your experience in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324677).
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/group/epics/epic_boards.html 
+  image_url:  https://about.gitlab.com/images/13_10/view-epics-on-a-board-mvc-1.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "View Jira issue details in GitLab"
+  body: |
+    Users of our Jira issue list feature can now view the details of an issue directly inside of GitLab! This MVC enables developers to see the details, labels, and comments on an issue, giving them the ability to stay in GitLab while working on Jira issues.
+
+    Our goal is to empower developers to _stay inside of GitLab_ during the majority of their day, and this is now one less trip to Jira you'll have to make.
+
+    In GitLab 13.10, this feature is available if you [enable a feature flag](https://docs.gitlab.com/ee/user/project/integrations/jira.html#enable-or-disable-jira-issue-detail-view). This feature will be [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/299832) in GitLab 13.11.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url:  https://docs.gitlab.com/ee/user/project/integrations/jira.html#view-a-jira-issue
+  image_url:  https://about.gitlab.com/images/13_10/jira-detail-view.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "DORA4-based lead time for changes"
+  body: |
+    Measuring the efficiency of your software development lifecycle is an important step to grow DevOps adoption for any organization. In the previous milestone, we added support for [DORA4-based Deployment Frequency](https://docs.gitlab.com/ee/api/dora4_project_analytics.html). In this release, we are excited to announce the support of a new API for lead time for changes (via merge requests) on the project level. The lead time for changes gives you an indication of how long it takes for code to be committed and deployed to your production environment. Understanding and tracking this data is a great starting point in your journey to continuous improvement in your DevOps process. 
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url:  https://docs.gitlab.com/ee/api/dora4_project_analytics.html#list-project-merge-request-lead-times
+  image_url:  https://about.gitlab.com/images/13_10/api.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "Create a release from an existing tag"
+  body: |
+    Previously, creating a release was supported only for new tags. In GitLab 13.10, you can now create a release by selecting an existing tag, something that will give you more flexibility when planning releases.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url:  https://docs.gitlab.com/ee/user/project/releases/#create-a-release
+  image_url:  https://about.gitlab.com/images/13_10/exiting_tags.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "Integrate any IT alerting tool with GitLab"
+  body: |
+    Alert integrations are a critical part of your Incident Management workflows. It's difficult to manage integrations between tools, especially when several monitoring tools like Nagios, Solarwinds, etc. alert on your services. These integrations notify you and your team of incidents, so it's critical for them to be easy to set up and maintain.
+
+    In this version of GitLab, you can create multiple HTTP endpoints with unique auth tokens for each integrated monitoring tool. When you set up an HTTP endpoint with a unique auth token for each monitoring tool, your team can manage each tool separately without affecting alerts from other tools nor take down all of your alerting by resetting a single auth token!
+  stage: Monitor
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url:  https://docs.gitlab.com/ee/operations/incident_management/integrations.html#http-endpoints
+  image_url:  https://about.gitlab.com/images/13_10/integrate_alerts.png
+  published_at: 2021-03-22
+  release: 13.10
+- title: "Merge Request test summary usability improvements"
+  body: |
+    Increasing the number of tests or custom metrics in a pipeline gives you additional confidence and information. However, increasing these to a large number has also come with a degraded visual experience of the Merge Request page. The Merge Request test summary widget has been improved so you can better differentiate between the different test jobs in the widget, making it easier to identify which job contains failed tests.
+
+    It has also been challenging to understand why a `junit.xml` file was not parsed without errors being presented. Now you can see parsing errors in the Test Summary widget, as well as the Unit Test report, to identify and resolve structural issues and see test results in GitLab.
+        
+    The [Metrics Reports](https://docs.gitlab.com/ee/ci/metrics_reports.html) widget [(Premium and Ultimate)](https://about.gitlab.com/pricing/) is now sorted so new, changed, and unchanged metrics are all together, making the experience of finding metrics that have changed as part of the Merge Request more intuitive.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url:  https://docs.gitlab.com/ee/ci/unit_test_reports.html
+  image_url:  https://about.gitlab.com/images/13_10/test_summary_ux_improvements.png
+  published_at: 2021-03-22
+  release: 13.10

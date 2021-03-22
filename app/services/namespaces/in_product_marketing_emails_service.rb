@@ -23,20 +23,25 @@ module Namespaces
     def initialize(track, interval)
       @track = track
       @interval = interval
-      @sent_email_user_ids = []
+      @current_batch_user_ids = []
+      @in_product_marketing_email_records = []
     end
 
     def execute
+      raise NotImplementedError, "Track #{track} not defined" unless TRACKS.key?(track)
+
       groups_for_track.each_batch do |groups|
         groups.each do |group|
           send_email_for_group(group)
         end
       end
+
+      record_sent_emails
     end
 
     private
 
-    attr_reader :track, :interval, :sent_email_user_ids
+    attr_reader :track, :interval, :current_batch_user_ids, :in_product_marketing_email_records
 
     def send_email_for_group(group)
       experiment_enabled_for_group = experiment_enabled_for_group?(group)
@@ -71,7 +76,12 @@ module Namespaces
 
     def users_for_group(group)
       group.users.where(email_opted_in: true)
-        .where.not(id: sent_email_user_ids)
+        .where.not(id: current_batch_user_ids)
+        .left_outer_joins(:in_product_marketing_emails)
+        .merge(
+          Users::InProductMarketingEmail.without_track_or_series(track, series)
+            .or(Users::InProductMarketingEmail.where(id: nil))
+        )
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -85,14 +95,13 @@ module Namespaces
         user.can?(:start_trial, group)
       when :team
         user.can?(:admin_group_member, group)
-      else
-        raise NotImplementedError, "No ability defined for track #{track}"
       end
     end
 
     def send_email(user, group)
       NotificationService.new.in_product_marketing(user.id, group.id, track, series)
-      sent_email_user_ids << user.id
+
+      track_sent_email(user, group, track, series)
     end
 
     def completed_actions
@@ -110,6 +119,22 @@ module Namespaces
 
     def series
       INTERVAL_DAYS.index(interval)
+    end
+
+    def record_sent_emails
+      Users::InProductMarketingEmail.bulk_insert!(in_product_marketing_email_records)
+    end
+
+    def track_sent_email(user, group, track, series)
+      current_batch_user_ids << user.id
+
+      in_product_marketing_email_records << Users::InProductMarketingEmail.new(
+        user: user,
+        track: track,
+        series: series,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
     end
   end
 end

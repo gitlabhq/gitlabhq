@@ -77,7 +77,7 @@ The following assumes you already have Vault installed and running.
    This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we show how you can access this role through the Vault CLI.
 
    WARNING:
-   If you're using a public GitLab instance (GitLab.com or any other instance publicly 
+   If you're using a public GitLab instance (GitLab.com or any other instance publicly
    accessible), it's paramount to specify the `bound_claims` to allow access only to
    members of your group/project. Otherwise, anyone with a public account can access
    your Vault instance.

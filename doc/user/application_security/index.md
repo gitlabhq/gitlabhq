@@ -311,7 +311,7 @@ request created to automatically solve the issue.
 If this action is available:
 
 1. Select the **Resolve with merge request** dropdown, then select **Resolve with merge request**.
-   
+
    ![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
 
 A merge request is created. It that applies the solution to the source branch.

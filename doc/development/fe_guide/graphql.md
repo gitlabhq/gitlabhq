@@ -808,7 +808,7 @@ apollo: {
 },
 ```
 
-Then, becasue Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our defaut Apollo client know to use a different library. 
+Then, becasue Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our defaut Apollo client know to use a different library.
 
 ```javascript
 /* componentMountIndex.js */
@@ -825,7 +825,7 @@ const apolloProvider = new VueApollo({
 
 Keep in mind, this means your app will not batch queries.
 
-Once subscriptions are mature, this process can be replaced by using them and we can remove the separate link library and return to batching queries. 
+Once subscriptions are mature, this process can be replaced by using them and we can remove the separate link library and return to batching queries.
 
 ### Testing
 

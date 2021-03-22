@@ -536,21 +536,23 @@ The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
 The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 
 ```shell
-echo "Downloading archived master..."
-wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-
-if [ ! -f /tmp/gitlab.tar.gz ]; then
-    echo "Repository cache not available, cloning a new directory..."
-    exit
-fi
-
-rm -rf $CI_PROJECT_DIR
-echo "Extracting tarball into $CI_PROJECT_DIR..."
-mkdir -p $CI_PROJECT_DIR
-cd $CI_PROJECT_DIR
-tar xzf /tmp/gitlab.tar.gz
-rm -f /tmp/gitlab.tar.gz
-chmod a+w $CI_PROJECT_DIR
+(
+  echo "Downloading archived master..."
+  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
+  
+  if [ ! -f /tmp/gitlab.tar.gz ]; then
+      echo "Repository cache not available, cloning a new directory..."
+      exit
+  fi
+  
+  rm -rf $CI_PROJECT_DIR
+  echo "Extracting tarball into $CI_PROJECT_DIR..."
+  mkdir -p $CI_PROJECT_DIR
+  cd $CI_PROJECT_DIR
+  tar xzf /tmp/gitlab.tar.gz
+  rm -f /tmp/gitlab.tar.gz
+  chmod a+w $CI_PROJECT_DIR
+)
 ```
 
 The first step of the script downloads `gitlab-master.tar.gz` from

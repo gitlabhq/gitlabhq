@@ -309,7 +309,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
       end
 
       context 'when the user is not allowed to upload designs' do
-        let(:user) { build_stubbed(:user) }
+        let(:user) { build_stubbed(:user, id: non_existing_record_id) }
 
         it_behaves_like 'a service error'
       end

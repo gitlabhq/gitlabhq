@@ -52,7 +52,7 @@ verification methods:
 | Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                          | _Not implemented_      |
 | Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed (*2*)            | _Not implemented_      |
 
-- (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo nodes.
+- (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
 - (*2*): Object storage replication can be performed by Geo or by your object storage provider/appliance
          native replication feature.
 
@@ -68,7 +68,7 @@ performance limitations when using a remote file system).
 
 Communication is done via Gitaly's own gRPC API. There are three possible ways of synchronization:
 
-- Using regular Git clone/fetch from one Geo node to another (with special authentication).
+- Using regular Git clone/fetch from one Geo site to another (with special authentication).
 - Using repository snapshots (for when the first method fails or repository is corrupt).
 - Manual trigger from the Admin Area (a combination of both of the above).
 
@@ -82,7 +82,7 @@ They all live in the same shard and share the same base name with a `-wiki` and 
 for Wiki and Design Repository cases.
 
 Besides that, there are snippet repositories. They can be connected to a project or to some specific user.
-Both types will be synced to a secondary node.
+Both types will be synced to a secondary site.
 
 ### Blobs
 
@@ -95,7 +95,7 @@ GitLab stores files and blobs such as Issue attachments or LFS objects into eith
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 When using the file system store instead of Object Storage, you need to use network mounted file systems
-to run GitLab when using more than one server.
+to run GitLab when using more than one node.
 
 With respect to replication and verification:
 
@@ -113,10 +113,10 @@ as well as permissions and credentials.
 PostgreSQL can also hold some level of cached data like HTML rendered Markdown, cached merge-requests diff (this can
 also be configured to be offloaded to object storage).
 
-We use PostgreSQL's own replication functionality to replicate data from the **primary** to **secondary** nodes.
+We use PostgreSQL's own replication functionality to replicate data from the **primary** to **secondary** sites.
 
 We use Redis both as a cache store and to hold persistent data for our background jobs system. Because both
-use-cases has data that are exclusive to the same Geo node, we don't replicate it between nodes.
+use-cases have data that are exclusive to the same Geo site, we don't replicate it between sites.
 
 Elasticsearch is an optional database, that can enable advanced searching capabilities, like improved Advanced Search
 in both source-code level and user generated content in Issues / Merge-Requests and discussions. Currently it's not
@@ -125,7 +125,7 @@ supported in Geo.
 ## Limitations on replication/verification
 
 The following table lists the GitLab features along with their replication
-and verification status on a **secondary** node.
+and verification status on a **secondary** site.
 
 You can keep track of the progress to implement the missing items in
 these epics/issues:
@@ -165,9 +165,9 @@ Feature.enable(:geo_package_file_replication)
 
 WARNING:
 Features not on this list, or with **No** in the **Replicated** column,
-are not replicated on the **secondary** node. Failing over without manually
+are not replicated to a **secondary** site. Failing over without manually
 replicating data from those features will cause the data to be **lost**.
-If you wish to use those features on a **secondary** node, or to execute a failover
+If you wish to use those features on a **secondary** site, or to execute a failover
 successfully, you must replicate their data using some other means.
 
 | Feature                                                                                                        | Replicated (added in GitLab version)                                               | Verified (added in GitLab version)                        | Object Storage replication (see [Geo with Object Storage](object_storage.md)) | Notes                                                                                                                                                                                                                                                                                                                      |
@@ -176,12 +176,12 @@ successfully, you must replicate their data using some other means.
 | [Project repository](../../../user/project/repository/)                                                       | **Yes** (10.2)                                                                     | **Yes** (10.7)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Project wiki repository](../../../user/project/wiki/)                                                         | **Yes** (10.2)                                                                     | **Yes** (10.7)                                            | No                                                                                   |
 | [Group wiki repository](../../../user/group/index.md#group-wikis)     | [**Yes** (13.10)](https://gitlab.com/gitlab-org/gitlab/-/issues/208147)                                                                  | No           | No                                                                                   | Behind feature flag `geo_group_wiki_repository_replication`, enabled by default                                                                                                                                                                                                                                                                                                                                |
-| [Uploads](../../uploads.md)                                                                                    | **Yes** (10.2)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | No                                                                                   | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them.                                                                                                                                                                     |
-| [LFS objects](../../lfs/index.md)                                                                              | **Yes** (10.2)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8922)  | Via Object Storage provider if supported. Native Geo support (Beta).                 | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them. GitLab versions 11.11.x and 12.0.x are affected by [a bug that prevents any new LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/-/issues/32696). |
+| [Uploads](../../uploads.md)                                                                                    | **Yes** (10.2)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | No                                                                                   | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them.                                                                                                                                                                     |
+| [LFS objects](../../lfs/index.md)                                                                              | **Yes** (10.2)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8922)  | Via Object Storage provider if supported. Native Geo support (Beta).                 | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them. GitLab versions 11.11.x and 12.0.x are affected by [a bug that prevents any new LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/-/issues/32696). |
 | [Personal snippets](../../../user/snippets.md)                                               | **Yes** (10.2)                                                                     | **Yes** (10.2)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Project snippets](../../../user/snippets.md)                                                 | **Yes** (10.2)                                                                     | **Yes** (10.2)                                            | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
-| [CI job artifacts (other than Job Logs)](../../../ci/pipelines/job_artifacts.md)                               | **Yes** (10.4)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Via Object Storage provider if supported. Native Geo support (Beta) .                | Verified only manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them                                                                                                                                                                                     |
-| [Job logs](../../job_logs.md)                                                                                  | **Yes** (10.4)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Via Object Storage provider if supported. Native Geo support (Beta).                 | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them                                                                                                                                                                      |
+| [CI job artifacts (other than Job Logs)](../../../ci/pipelines/job_artifacts.md)                               | **Yes** (10.4)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Via Object Storage provider if supported. Native Geo support (Beta) .                | Verified only manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them                                                                                                                                                                                     |
+| [Job logs](../../job_logs.md)                                                                                  | **Yes** (10.4)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Via Object Storage provider if supported. Native Geo support (Beta).                 | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them                                                                                                                                                                      |
 | [Object pools for forked project deduplication](../../../development/git_object_deduplication.md)              | **Yes**                                                                            | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Container Registry](../../packages/container_registry.md)                                                     | **Yes** (12.3)                                                                     | No                                                        | No                                                                                | Disabled by default. See [instructions](docker_registry.md) to enable.                                                                                                                                                                                                                                                                                                                             |
 | [Content in object storage (beta)](object_storage.md)                                                          | **Yes** (12.4)                                                                     | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |

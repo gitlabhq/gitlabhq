@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlPopover } from '@gitlab/ui';
+import { GlButton, GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
 
 /**
  * Render a button with a question mark icon
@@ -10,6 +10,9 @@ export default {
   components: {
     GlButton,
     GlPopover,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     options: {
@@ -24,13 +27,11 @@ export default {
   <span>
     <gl-button ref="popoverTrigger" variant="link" icon="question" tabindex="0" />
     <gl-popover triggers="hover focus" :target="() => $refs.popoverTrigger.$el" v-bind="options">
-      <template #title>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <span v-html="options.title"></span>
+      <template v-if="options.title" #title>
+        <span v-safe-html="options.title"></span>
       </template>
       <template #default>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div v-html="options.content"></div>
+        <div v-safe-html="options.content"></div>
       </template>
     </gl-popover>
   </span>

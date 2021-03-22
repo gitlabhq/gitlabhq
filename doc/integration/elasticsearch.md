@@ -91,12 +91,12 @@ Since Elasticsearch can read and use indices created in the previous major versi
 
 The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which will implicitly create an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you'll be able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
 
-If you are unsure when your current index was created, 
-you can check whether it was created after GitLab 13.0 by using the 
-[Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html). 
-If the list of aliases returned contains an entry for `gitlab-production` that points to an index 
-named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0. 
-If the `gitlab-production` alias is missing, you'll need to reindex from scratch to use 
+If you are unsure when your current index was created,
+you can check whether it was created after GitLab 13.0 by using the
+[Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
+If the list of aliases returned contains an entry for `gitlab-production` that points to an index
+named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0.
+If the `gitlab-production` alias is missing, you'll need to reindex from scratch to use
 features such as Zero-downtime reindexing.
 
 ## Elasticsearch repository indexer

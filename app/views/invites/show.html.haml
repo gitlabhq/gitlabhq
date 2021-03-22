@@ -25,5 +25,5 @@
 
 - if !member?
   .actions
-    = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn gl-button btn-success"
+    = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn gl-button btn-confirm"
     = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn gl-button btn-danger gl-ml-3"

@@ -219,9 +219,21 @@ To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
 When the purchase has been processed, you receive confirmation of your new subscription tier.
 
-## See your billable users list
+## See your subscription and billable users in GitLab.com
 
-To see a list of your billable users on your GitLab group page go to **Settings > Billing**. This page provides information about your subscription and occupied seats for your group which is the list of billable users for your particular group.
+To view information about your subscription and occupied seats:
+
+1. Go to your group's **Settings > Billing** page.
+1. In the **Seats currently in use** area, select **See usage**.
+
+### Remove billable user
+
+To remove a billable user:
+
+1. Go to your group's **Settings > Billing** page.
+1. In the **Seats currently in use** area, select **See usage**.
+1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
+1. Re-type the username and select **Remove user**.
 
 ## Subscription expiry
 

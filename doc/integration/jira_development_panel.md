@@ -4,24 +4,17 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira Development Panel integration **(FREE)**
+# GitLab Jira Development panel integration **(FREE)**
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to GitLab Free in 13.4.
 
-The Jira Development Panel integration allows you to reference Jira issues in GitLab, displaying
+The Jira Development panel integration allows you to reference Jira issues in GitLab, displaying
 activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
 in the issue.
 
 It complements the [GitLab Jira integration](../user/project/integrations/jira.md). You may choose
 to configure both integrations to take advantage of both sets of features. See a
-[feature comparison](../user/project/integrations/jira_integrations.md#feature-comparison).
-
-Depending on your environment, you can enable this integration by either:
-
-- Configuring [the Jira DVCS connector](#jira-dvcs-configuration).
-- Using the [GitLab for Jira app](#gitlab-for-jira-app) in the Atlassian Marketplace.
-
-See the [Configuration](#configuration) section for details.
+[feature comparison](../user/project/integrations/jira_integrations.md).
 
 ## Features
 
@@ -46,18 +39,15 @@ This differs from the [Jira integration](../user/project/integrations/jira.md), 
 ## Configuration
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Agile Management - GitLab-Jira Development Panel Integration](https://www.youtube.com/watch?v=VjVTOmMl85M&feature=youtu.be).
-
-If you're using:
-
-- GitLab.com and Jira Cloud, we recommend you enable this integration by installing the
-  [GitLab for Jira app](#gitlab-for-jira-app) from the Atlassian Marketplace, which offers a real-time
-  sync between GitLab and Jira.
-- Self-managed GitLab, self-managed Jira, or both, configure the integration using
-  [Jira's DVCS Connector](#jira-dvcs-configuration), which syncs data hourly.
+For an overview of how to configure Jira Development panel integration, see [Agile Management - GitLab Jira Development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M&feature=youtu.be).
 
 We recommend that a GitLab group maintainer or group owner, or instance administrator (in the case of
 self-managed GitLab) set up the integration to simplify administration.
+
+| If you use Jira on: | GitLab.com customers need: | GitLab self-managed customers need: |
+|-|-|-|
+| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) application installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab and Jira. | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See a [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/268278) for more information. |
+| Your own server | The Jira DVCS (distributed version control system) connector. This syncs data hourly. | The Jira DVCS connector. |
 
 ### Jira DVCS configuration
 
@@ -169,7 +159,7 @@ If there was an issue with SSL/TLS, this error message is generated.
   TLS issues that arise from a private certificate authority or self-signed
   certificate [are resolved on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#other-certificate-authorities),
   as GitLab is the TLS client.
-- The Jira Development Panel integration requires Jira to connect to GitLab, which
+- The Jira Development panel integration requires Jira to connect to GitLab, which
   causes Jira to be the TLS client. If your GitLab server's certificate is not
   issued by a public certificate authority, the Java Truststore on Jira's server
   needs to have the appropriate certificate added to it (such as your organization's

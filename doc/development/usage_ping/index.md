@@ -930,7 +930,7 @@ WARNING:
 This feature is intended solely for internal GitLab use.
 
 To add data for aggregated metrics into Usage Ping payload you should add corresponding definition at [`lib/gitlab/usage_data_counters/aggregated_metrics/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/) for metrics available at Community Edition and at [`ee/lib/gitlab/usage_data_counters/aggregated_metrics/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/usage_data_counters/aggregated_metrics/) for Enterprise Edition ones.
- 
+
 Each aggregate definition includes following parts:
 
 - `name`: Unique name under which the aggregate metric is added to the Usage Ping payload.
@@ -999,7 +999,7 @@ Aggregated metrics collected in `7d` and `28d` time frames are added into Usage 
 }
 ```
 
-Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name. 
+Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name.
 
 For example:
 
@@ -1007,7 +1007,7 @@ For example:
 
 Becomes:
 
-`counts.aggregate_example_metrics_intersection` 
+`counts.aggregate_example_metrics_intersection`
 
 ```ruby
 {
