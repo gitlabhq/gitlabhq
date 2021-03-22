@@ -121,13 +121,7 @@ export default {
           :title="user.email"
           class="js-user-link commit-committer-link"
         >
-          <user-avatar-image
-            :img-src="avatarUrl"
-            :img-alt="userAvatarAltText"
-            :tooltip-text="user.name"
-            :img-size="24"
-          />
-
+          <user-avatar-image :img-src="avatarUrl" :img-alt="userAvatarAltText" :size="24" />
           {{ user.name }}
         </gl-link>
         <gl-tooltip v-if="message" :target="() => $refs[$options.EMOJI_REF]">
