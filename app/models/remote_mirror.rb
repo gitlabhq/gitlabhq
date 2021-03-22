@@ -207,7 +207,7 @@ class RemoteMirror < ApplicationRecord
   end
 
   def safe_url
-    super(usernames_whitelist: %w[git])
+    super(allowed_usernames: %w[git])
   end
 
   def bare_url

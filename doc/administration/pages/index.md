@@ -600,8 +600,9 @@ the below steps to do a no downtime transfer to a new storage location.
 
 ## Configure listener for reverse proxy requests
 
-Follow the steps below to configure the proxy listener of GitLab Pages. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
-Omnibus GitLab 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in Omnibus GitLab 11.1.
+
+Follow the steps below to configure the proxy listener of GitLab Pages.
 
 1. By default the listener is configured to listen for requests on `localhost:8090`.
 

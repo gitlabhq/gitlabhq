@@ -6,11 +6,11 @@
   .card-footer.footer-block.clearfix
     - if can?(current_user, :accept_terms, @term)
       .float-right
-        = button_to accept_term_path(@term, redirect_params), class: 'gl-button btn btn-success gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
+        = button_to accept_term_path(@term, redirect_params), class: 'gl-button btn btn-confirm gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
           = _('Accept terms')
     - else
       .float-right
-        = link_to root_path, class: 'gl-button btn btn-success gl-ml-3' do
+        = link_to root_path, class: 'gl-button btn btn-confirm gl-ml-3' do
           = _('Continue')
     - if can?(current_user, :decline_terms, @term)
       .float-right
