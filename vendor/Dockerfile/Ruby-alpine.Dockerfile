@@ -24,4 +24,4 @@ COPY . .
 # For Rails
 ENV PORT 3000
 EXPOSE 3000
-CMD ["bundle", "exec", "rails", "server"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
