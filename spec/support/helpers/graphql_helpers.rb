@@ -222,9 +222,12 @@ module GraphqlHelpers
     lazy_vals.is_a?(Array) ? lazy_vals.map { |val| sync(val) } : sync(lazy_vals)
   end
 
-  def graphql_query_for(name, args = {}, selection = nil)
+  def graphql_query_for(name, args = {}, selection = nil, operation_name = nil)
     type = GitlabSchema.types['Query'].fields[GraphqlHelpers.fieldnamerize(name)]&.type
-    wrap_query(query_graphql_field(name, args, selection, type))
+    query = wrap_query(query_graphql_field(name, args, selection, type))
+    query = "query #{operation_name}#{query}" if operation_name
+
+    query
   end
 
   def wrap_query(query)

@@ -9,7 +9,7 @@ const unwrapGroups = (stages) => {
 
 const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
   return jobArray.map((job) => {
-    return { ...job, [prop]: job[prop].nodes.map((item) => item[field]) };
+    return { ...job, [prop]: job[prop].nodes.map((item) => item[field] || '') };
   });
 };
 

@@ -38,18 +38,21 @@ Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL and enable
     "project",
     "user",
     "pipeline",
-    "builds"
+    "builds",
+    "namespace"
   ],
   "properties" : {
     "project": {
       "type": "object",
       "required": [
         "id",
-        "path"
+        "path",
+        "created_at"
       ],
       "properties": {
         "id": { "type": "integer" },
-        "path": { "type": "string" }
+        "path": { "type": "string" },
+        "created_at": { "type": ["string", "null"], "format": "date-time" }
       }
     },
     "user": {
@@ -57,12 +60,14 @@ Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL and enable
       "required": [
         "id",
         "username",
-        "email"
+        "email",
+        "created_at"
       ],
       "properties": {
         "id": { "type": "integer" },
         "username": { "type": "string" },
-        "email": { "type": "string" }
+        "email": { "type": "string" },
+        "created_at": { "type": ["string", "null"], "format": "date-time" }
       }
     },
     "pipeline": {
@@ -103,8 +108,18 @@ Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL and enable
           }
         }
       }
+    },
+    "namespace": {
+      "type": "object",
+      "required": [
+        "plan",
+        "trial"
+      ],
+      "properties": {
+        "plan": { "type": "string" },
+        "trial": { "type": "boolean" }
+      }
     }
-  },
-  "additionalProperties": false
+  }
 }
 ```

@@ -23,7 +23,7 @@ class ForkNamespaceEntity < Grape::Entity
   end
 
   expose :relative_path do |namespace|
-    polymorphic_path(namespace)
+    group_path(namespace)
   end
 
   expose :markdown_description do |namespace|

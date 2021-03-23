@@ -38,8 +38,6 @@ RSpec.describe BulkImports::Pipeline::Runner do
       extractor BulkImports::Extractor
       transformer BulkImports::Transformer
       loader BulkImports::Loader
-
-      def after_run(_); end
     end
 
     stub_const('BulkImports::MyPipeline', pipeline)
@@ -54,8 +52,6 @@ RSpec.describe BulkImports::Pipeline::Runner do
   describe 'pipeline runner' do
     context 'when entity is not marked as failed' do
       it 'runs pipeline extractor, transformer, loader' do
-        extracted_data = BulkImports::Pipeline::ExtractedData.new(data: { foo: :bar })
-
         expect_next_instance_of(BulkImports::Extractor) do |extractor|
           expect(extractor)
             .to receive(:extract)
@@ -131,6 +127,22 @@ RSpec.describe BulkImports::Pipeline::Runner do
         end
 
         subject.run
+      end
+
+      context 'when extracted data has multiple pages' do
+        it 'updates tracker information and runs pipeline again' do
+          first_page = extracted_data(has_next_page: true)
+          last_page = extracted_data
+
+          expect_next_instance_of(BulkImports::Extractor) do |extractor|
+            expect(extractor)
+              .to receive(:extract)
+              .with(context)
+              .and_return(first_page, last_page)
+          end
+
+          subject.run
+        end
       end
 
       context 'when exception is raised' do
@@ -218,14 +230,24 @@ RSpec.describe BulkImports::Pipeline::Runner do
         subject.run
       end
     end
-  end
 
-  def log_params(context, extra = {})
-    {
-      bulk_import_id: context.bulk_import.id,
-      bulk_import_entity_id: context.entity.id,
-      bulk_import_entity_type: context.entity.source_type,
-      context_extra: context.extra
-    }.merge(extra)
+    def log_params(context, extra = {})
+      {
+        bulk_import_id: context.bulk_import.id,
+        bulk_import_entity_id: context.entity.id,
+        bulk_import_entity_type: context.entity.source_type,
+        context_extra: context.extra
+      }.merge(extra)
+    end
+
+    def extracted_data(has_next_page: false)
+      BulkImports::Pipeline::ExtractedData.new(
+        data: { foo: :bar },
+        page_info: {
+          'has_next_page' => has_next_page,
+          'end_cursor' => has_next_page ? 'cursor' : nil
+        }
+      )
+    end
   end
 end

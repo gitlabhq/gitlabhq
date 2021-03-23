@@ -21,13 +21,13 @@ module Gitlab
               pipeline_authorized = validate_external
 
               log_message = pipeline_authorized ? 'authorized' : 'not authorized'
-              Gitlab::AppLogger.info(message: "Pipeline #{log_message}", project_id: @pipeline.project.id, user_id: @pipeline.user.id)
+              Gitlab::AppLogger.info(message: "Pipeline #{log_message}", project_id: project.id, user_id: current_user.id)
 
               error('External validation failed', drop_reason: :external_validation_failure) unless pipeline_authorized
             end
 
             def break?
-              @pipeline.errors.any?
+              pipeline.errors.any?
             end
 
             private
@@ -71,7 +71,7 @@ module Gitlab
             def validate_service_request
               Gitlab::HTTP.post(
                 validation_service_url, timeout: VALIDATION_REQUEST_TIMEOUT,
-                body: validation_service_payload(@pipeline, @command.yaml_processor_result.stages_attributes)
+                body: validation_service_payload.to_json
               )
             end
 
@@ -79,28 +79,30 @@ module Gitlab
               ENV['EXTERNAL_VALIDATION_SERVICE_URL']
             end
 
-            def validation_service_payload(pipeline, stages_attributes)
+            def validation_service_payload
               {
                 project: {
-                  id: pipeline.project.id,
-                  path: pipeline.project.full_path
+                  id: project.id,
+                  path: project.full_path,
+                  created_at: project.created_at&.iso8601
                 },
                 user: {
-                  id: pipeline.user.id,
-                  username: pipeline.user.username,
-                  email: pipeline.user.email
+                  id: current_user.id,
+                  username: current_user.username,
+                  email: current_user.email,
+                  created_at: current_user.created_at&.iso8601
                 },
                 pipeline: {
                   sha: pipeline.sha,
                   ref: pipeline.ref,
                   type: pipeline.source
                 },
-                builds: builds_validation_payload(stages_attributes)
-              }.to_json
+                builds: builds_validation_payload
+              }
             end
 
-            def builds_validation_payload(stages_attributes)
-              stages_attributes.map { |stage| stage[:builds] }.flatten
+            def builds_validation_payload
+              stages_attributes.flat_map { |stage| stage[:builds] }
                 .map(&method(:build_validation_payload))
             end
 
@@ -117,9 +119,15 @@ module Gitlab
                 ].flatten.compact
               }
             end
+
+            def stages_attributes
+              command.yaml_processor_result.stages_attributes
+            end
           end
         end
       end
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::Validate::External.prepend_if_ee('EE::Gitlab::Ci::Pipeline::Chain::Validate::External')

@@ -43,7 +43,7 @@ export const fetchRelease = ({ commit, state, rootState }) => {
       })
       .catch((error) => {
         commit(types.RECEIVE_RELEASE_ERROR, error);
-        createFlash(s__('Release|Something went wrong while getting the release details'));
+        createFlash(s__('Release|Something went wrong while getting the release details.'));
       });
   }
 
@@ -54,7 +54,7 @@ export const fetchRelease = ({ commit, state, rootState }) => {
     })
     .catch((error) => {
       commit(types.RECEIVE_RELEASE_ERROR, error);
-      createFlash(s__('Release|Something went wrong while getting the release details'));
+      createFlash(s__('Release|Something went wrong while getting the release details.'));
     });
 };
 

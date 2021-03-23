@@ -323,6 +323,10 @@ Performance/Detect:
 Performance/MethodObjectAsBlock:
   Enabled: false
 
+# Offense count: 42
+Performance/OpenStruct:
+  Enabled: false
+
 # Offense count: 18
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect.
@@ -375,6 +379,11 @@ RSpec/EmptyExampleGroup:
   Exclude:
     - 'ee/spec/services/personal_access_tokens/revoke_invalid_tokens_spec.rb'
     - 'spec/services/projects/prometheus/alerts/notify_service_spec.rb'
+
+# Offense count: 1162
+# Cop supports --auto-correct.
+RSpec/EmptyLineAfterFinalLetItBe:
+  Enabled: false
 
 # Offense count: 1428
 # Cop supports --auto-correct.

@@ -14,19 +14,24 @@ module BulkImports
 
         extracted_data = extracted_data_from
 
-        extracted_data&.each do |entry|
-          transformers.each do |transformer|
-            entry = run_pipeline_step(:transformer, transformer.class.name) do
-              transformer.transform(context, entry)
+        if extracted_data
+          extracted_data.each do |entry|
+            transformers.each do |transformer|
+              entry = run_pipeline_step(:transformer, transformer.class.name) do
+                transformer.transform(context, entry)
+              end
+            end
+
+            run_pipeline_step(:loader, loader.class.name) do
+              loader.load(context, entry)
             end
           end
 
-          run_pipeline_step(:loader, loader.class.name) do
-            loader.load(context, entry)
-          end
-        end
+          tracker.update!(
+            has_next_page: extracted_data.has_next_page?,
+            next_page: extracted_data.next_page
+          )
 
-        if extracted_data && respond_to?(:after_run)
           run_pipeline_step(:after_run) do
             after_run(extracted_data)
           end
@@ -63,6 +68,10 @@ module BulkImports
         run_pipeline_step(:extractor, extractor.class.name) do
           extractor.extract(context)
         end
+      end
+
+      def after_run(extracted_data)
+        run if extracted_data.has_next_page?
       end
 
       def mark_as_failed

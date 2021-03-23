@@ -191,6 +191,7 @@ RSpec.describe 'GitlabSchema configurations' do
         complexity: 181,
         depth: 13,
         duration_s: 7,
+        operation_name: 'IntrospectionQuery',
         used_fields: an_instance_of(Array),
         used_deprecated_fields: an_instance_of(Array)
       }

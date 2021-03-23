@@ -377,7 +377,7 @@ group :development, :test do
   gem 'spring', '~> 2.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 6.1.0', require: false
+  gem 'gitlab-styles', '~> 6.2.0', require: false
 
   gem 'haml_lint', '~> 0.36.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false
@@ -414,6 +414,7 @@ group :development, :test, :omnibus do
 end
 
 group :test do
+  gem 'json-schema', '~> 2.8.0'
   gem 'fuubar', '~> 2.2.0'
   gem 'rspec-retry', '~> 0.6.1'
   gem 'rspec_profiling', '~> 0.0.6'
@@ -488,7 +489,7 @@ gem 'flipper', '~> 0.17.1'
 gem 'flipper-active_record', '~> 0.17.1'
 gem 'flipper-active_support_cache_store', '~> 0.17.1'
 gem 'unleash', '~> 0.1.5'
-gem 'gitlab-experiment', '~> 0.5.0'
+gem 'gitlab-experiment', '~> 0.5.1'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
@@ -520,7 +521,6 @@ gem 'valid_email', '~> 0.1'
 
 # JSON
 gem 'json', '~> 2.3.0'
-gem 'json-schema', '~> 2.8.0'
 gem 'json_schemer', '~> 0.2.12'
 gem 'oj', '~> 3.10.6'
 gem 'multi_json', '~> 1.14.1'

@@ -15,6 +15,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: :yaml)
     push_frontend_feature_flag(:pipeline_graph_layers_view, project, type: :development, default_enabled: :yaml)
+    push_frontend_feature_flag(:pipeline_filter_jobs, project, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details_users, current_user, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:jira_for_vulnerabilities, project, type: :development, default_enabled: :yaml)

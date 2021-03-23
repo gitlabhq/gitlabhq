@@ -13,6 +13,7 @@ RSpec.describe 'GraphQL' do
           query_string: query,
           variables: variables.to_s,
           duration_s: anything,
+          operation_name: nil,
           depth: 1,
           complexity: 1,
           used_fields: ['Query.echo'],

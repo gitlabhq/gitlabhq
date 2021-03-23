@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
   let(:pipeline) { build(:ci_empty_pipeline, user: user, project: project) }
   let!(:step) { described_class.new(pipeline, command) }
 
@@ -57,6 +57,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
     before do
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
       allow(Gitlab).to receive(:com?).and_return(dot_com)
+    end
+
+    it 'respects the defined payload schema' do
+      expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+        expect(params[:body]).to match_schema('/external_validation')
+      end
+
+      perform!
     end
 
     shared_examples 'successful external authorization' do
@@ -222,18 +230,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
           perform!
         end
       end
-    end
-  end
-
-  describe '#validation_service_payload' do
-    subject(:validation_service_payload) { step.send(:validation_service_payload, pipeline, command.yaml_processor_result.stages_attributes) }
-
-    it 'respects the defined schema' do
-      expect(validation_service_payload).to match_schema('/external_validation')
-    end
-
-    it 'does not fire sql queries' do
-      expect { validation_service_payload }.not_to exceed_query_limit(1)
     end
   end
 end

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:cursor) { 'cursor' }
   let_it_be(:timestamp) { Time.new(2020, 01, 01).utc }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
@@ -25,35 +24,14 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
 
   subject { described_class.new(context) }
 
-  def milestone_data(title)
-    {
-      'title' => title,
-      'description' => 'desc',
-      'state' => 'closed',
-      'start_date' => '2020-10-21',
-      'due_date' => '2020-10-22',
-      'created_at' => timestamp.to_s,
-      'updated_at' => timestamp.to_s
-    }
-  end
-
-  def extracted_data(title:, has_next_page:, cursor: nil)
-    page_info = {
-      'end_cursor' => cursor,
-      'has_next_page' => has_next_page
-    }
-
-    BulkImports::Pipeline::ExtractedData.new(data: [milestone_data(title)], page_info: page_info)
-  end
-
   before do
     group.add_owner(user)
   end
 
   describe '#run' do
     it 'imports group milestones' do
-      first_page = extracted_data(title: 'milestone1', has_next_page: true, cursor: cursor)
-      last_page = extracted_data(title: 'milestone2', has_next_page: false)
+      first_page = extracted_data(title: 'milestone1', has_next_page: true)
+      last_page = extracted_data(title: 'milestone2')
 
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor)
@@ -76,34 +54,6 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
     end
   end
 
-  describe '#after_run' do
-    context 'when extracted data has next page' do
-      it 'updates tracker information and runs pipeline again' do
-        data = extracted_data(title: 'milestone', has_next_page: true, cursor: cursor)
-
-        expect(subject).to receive(:run)
-
-        subject.after_run(data)
-
-        expect(tracker.has_next_page).to eq(true)
-        expect(tracker.next_page).to eq(cursor)
-      end
-    end
-
-    context 'when extracted data has no next page' do
-      it 'updates tracker information and does not run pipeline' do
-        data = extracted_data(title: 'milestone', has_next_page: false)
-
-        expect(subject).not_to receive(:run)
-
-        subject.after_run(data)
-
-        expect(tracker.has_next_page).to eq(false)
-        expect(tracker.next_page).to be_nil
-      end
-    end
-  end
-
   describe '#load' do
     it 'creates the milestone' do
       data = milestone_data('milestone')
@@ -117,7 +67,7 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
       end
 
       it 'raises NotAllowedError' do
-        data = extracted_data(title: 'milestone', has_next_page: false)
+        data = extracted_data(title: 'milestone')
 
         expect { subject.load(context, data) }.to raise_error(::BulkImports::Pipeline::NotAllowedError)
       end
@@ -144,5 +94,29 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
           { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil }
         )
     end
+  end
+
+  def milestone_data(title)
+    {
+      'title' => title,
+      'description' => 'desc',
+      'state' => 'closed',
+      'start_date' => '2020-10-21',
+      'due_date' => '2020-10-22',
+      'created_at' => timestamp.to_s,
+      'updated_at' => timestamp.to_s
+    }
+  end
+
+  def extracted_data(title:, has_next_page: false)
+    page_info = {
+      'has_next_page' => has_next_page,
+      'end_cursor' => has_next_page ? 'cursor' : nil
+    }
+
+    BulkImports::Pipeline::ExtractedData.new(
+      data: milestone_data(title),
+      page_info: page_info
+    )
   end
 end

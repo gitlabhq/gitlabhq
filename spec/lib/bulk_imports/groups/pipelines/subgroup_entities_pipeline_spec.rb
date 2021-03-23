@@ -12,19 +12,17 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
   subject { described_class.new(context) }
 
-  describe '#run' do
-    let(:subgroup_data) do
-      [
-        {
-          "name" => "subgroup",
-          "full_path" => "parent/subgroup"
-        }
-      ]
-    end
+  let(:extracted_data) do
+    BulkImports::Pipeline::ExtractedData.new(data: {
+      'name' => 'subgroup',
+      'full_path' => 'parent/subgroup'
+    })
+  end
 
+  describe '#run' do
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
-        allow(extractor).to receive(:extract).and_return(subgroup_data)
+        allow(extractor).to receive(:extract).and_return(extracted_data)
       end
 
       parent.add_owner(user)

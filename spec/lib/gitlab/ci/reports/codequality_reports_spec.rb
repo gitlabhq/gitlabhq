@@ -34,8 +34,6 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
 
       it 'sets location as an error' do
         codequality_report.add_degradation(invalid_degradation)
-
-        expect(codequality_report.error_message).to eq("Invalid degradation format: The property '#/' did not contain a required property of 'location'")
       end
     end
   end

@@ -23,14 +23,10 @@ module Gitlab
     def aes256_gcm_decrypt(value)
       return unless value
 
-      nonce = Feature.enabled?(:dynamic_nonce_creation) ? dynamic_nonce(value) : AES256_GCM_IV_STATIC
+      nonce = AES256_GCM_IV_STATIC
       encrypted_token = Base64.decode64(value)
       decrypted_token = Encryptor.decrypt(AES256_GCM_OPTIONS.merge(value: encrypted_token, iv: nonce))
       decrypted_token
-    end
-
-    def dynamic_nonce(value)
-      TokenWithIv.find_nonce_by_hashed_token(value) || AES256_GCM_IV_STATIC
     end
 
     def aes256_gcm_encrypt_using_static_nonce(value)

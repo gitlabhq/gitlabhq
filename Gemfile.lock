@@ -438,9 +438,9 @@ GEM
       numerizer (~> 0.2)
     gitlab-dangerfiles (0.8.0)
       danger
-    gitlab-experiment (0.5.0)
+    gitlab-experiment (0.5.1)
       activesupport (>= 3.0)
-      scientist (~> 1.5, >= 1.5.0)
+      scientist (~> 1.6, >= 1.6.0)
     gitlab-fog-azure-rm (1.0.1)
       azure-storage-blob (~> 2.0)
       azure-storage-common (~> 2.0)
@@ -472,7 +472,7 @@ GEM
       pry (~> 0.13.0)
     gitlab-sidekiq-fetcher (0.5.5)
       sidekiq (~> 5)
-    gitlab-styles (6.1.0)
+    gitlab-styles (6.2.0)
       rubocop (~> 0.91, >= 0.91.1)
       rubocop-gitlab-security (~> 0.1.1)
       rubocop-performance (~> 1.9.2)
@@ -643,7 +643,7 @@ GEM
       activesupport (>= 4.2)
       aes_key_wrap
       bindata
-    json-schema (2.8.0)
+    json-schema (2.8.1)
       addressable (>= 2.4)
     json_schemer (0.2.12)
       ecma-re-validator (~> 0.2)
@@ -1422,7 +1422,7 @@ DEPENDENCIES
   github-markup (~> 1.7.0)
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 0.8.0)
-  gitlab-experiment (~> 0.5.0)
+  gitlab-experiment (~> 0.5.1)
   gitlab-fog-azure-rm (~> 1.0.1)
   gitlab-fog-google (~> 1.13)
   gitlab-labkit (~> 0.16.2)
@@ -1432,7 +1432,7 @@ DEPENDENCIES
   gitlab-net-dns (~> 0.9.1)
   gitlab-pry-byebug
   gitlab-sidekiq-fetcher (= 0.5.5)
-  gitlab-styles (~> 6.1.0)
+  gitlab-styles (~> 6.2.0)
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.1.1)
   gon (~> 6.2)

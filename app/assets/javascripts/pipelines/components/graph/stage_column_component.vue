@@ -1,5 +1,6 @@
 <script>
 import { capitalize, escape, isEmpty } from 'lodash';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MainGraphWrapper from '../graph_shared/main_graph_wrapper.vue';
 import { accessValue } from './accessors';
 import ActionComponent from './action_component.vue';
@@ -15,6 +16,7 @@ export default {
     JobItem,
     MainGraphWrapper,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     groups: {
       type: Array,
@@ -57,6 +59,21 @@ export default {
     'gl-pl-3',
   ],
   computed: {
+    /*
+      currentGroups and filteredGroups are part of
+      a test to hunt down a bug
+      (see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57142).
+
+      They should be removed when the bug is rectified.
+    */
+    currentGroups() {
+      return this.glFeatures.pipelineFilterJobs ? this.filteredGroups : this.groups;
+    },
+    filteredGroups() {
+      return this.groups.map((group) => {
+        return { ...group, jobs: group.jobs.filter(Boolean) };
+      });
+    },
     formattedTitle() {
       return capitalize(escape(this.title));
     },
@@ -104,7 +121,7 @@ export default {
     </template>
     <template #jobs>
       <div
-        v-for="group in groups"
+        v-for="group in currentGroups"
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"

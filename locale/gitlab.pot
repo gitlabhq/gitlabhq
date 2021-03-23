@@ -25348,7 +25348,7 @@ msgstr ""
 msgid "Release|Something went wrong while creating a new release"
 msgstr ""
 
-msgid "Release|Something went wrong while getting the release details"
+msgid "Release|Something went wrong while getting the release details."
 msgstr ""
 
 msgid "Release|Something went wrong while saving the release details"

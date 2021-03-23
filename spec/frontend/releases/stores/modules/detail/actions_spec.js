@@ -163,7 +163,7 @@ describe('Release detail actions', () => {
           return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
             expect(createFlash).toHaveBeenCalledTimes(1);
             expect(createFlash).toHaveBeenCalledWith(
-              'Something went wrong while getting the release details',
+              'Something went wrong while getting the release details.',
             );
           });
         });

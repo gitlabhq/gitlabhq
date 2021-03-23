@@ -17,17 +17,6 @@ module BulkImports
 
           context.group.members.create!(data)
         end
-
-        def after_run(extracted_data)
-          tracker.update(
-            has_next_page: extracted_data.has_next_page?,
-            next_page: extracted_data.next_page
-          )
-
-          if extracted_data.has_next_page?
-            run
-          end
-        end
       end
     end
   end
