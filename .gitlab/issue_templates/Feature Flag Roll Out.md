@@ -35,6 +35,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated
 - [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops run feature set --project=gitlab-org/gitlab feature_name true`)
+- [ ] If it is possible to perform an incremental rollout, this should be preferred. Proposed increments are: `10%`, `50%`, `100%`. Proposed minimum time between increments is 15 minutes.
 - [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
   - In `#production` mention `@sre-oncall` and `@release-managers`. Once an SRE on call and Release Manager on call confirm, you can proceed with the rollout
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com. **Note**: Once a feature rollout has started, it is not necessary to inform `@sre-oncall`/`@release-managers` at each stage of the gradual rollout.

@@ -29,6 +29,9 @@ import EnvironmentsDropdown from './environments_dropdown.vue';
 import Strategy from './strategy.vue';
 
 export default {
+  i18n: {
+    statusLabel: s__('FeatureFlags|Status'),
+  },
   components: {
     GlButton,
     GlBadge,
@@ -396,12 +399,14 @@ export default {
 
               <div class="table-section section-20 text-center" role="gridcell">
                 <div class="table-mobile-header" role="rowheader">
-                  {{ s__('FeatureFlags|Status') }}
+                  {{ $options.i18n.statusLabel }}
                 </div>
                 <div class="table-mobile-content gl-display-flex gl-justify-content-center">
                   <gl-toggle
                     :value="scope.active"
                     :disabled="!active || !canUpdateScope(scope)"
+                    :label="$options.i18n.statusLabel"
+                    label-position="hidden"
                     @change="(status) => (scope.active = status)"
                   />
                 </div>
@@ -529,11 +534,13 @@ export default {
 
               <div class="table-section section-20 text-center" role="gridcell">
                 <div class="table-mobile-header" role="rowheader">
-                  {{ s__('FeatureFlags|Status') }}
+                  {{ $options.i18n.statusLabel }}
                 </div>
                 <div class="table-mobile-content gl-display-flex gl-justify-content-center">
                   <gl-toggle
                     :disabled="!active"
+                    :label="$options.i18n.statusLabel"
+                    label-position="hidden"
                     :value="false"
                     @change="createNewScope({ active: true })"
                   />

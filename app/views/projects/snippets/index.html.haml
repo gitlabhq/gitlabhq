@@ -9,7 +9,7 @@
 
       - if new_project_snippet_link.present?
         .nav-controls
-          = link_to _("New snippet"), new_project_snippet_link, class: "btn btn-success", title: _("New snippet")
+          = link_to _("New snippet"), new_project_snippet_link, class: "gl-button btn btn-confirm", title: _("New snippet")
 
   = render 'shared/snippets/list'
 - else

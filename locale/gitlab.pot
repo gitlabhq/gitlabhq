@@ -1820,6 +1820,9 @@ msgstr ""
 msgid "Add a Grafana button in the admin sidebar, monitoring section, to access a variety of statistics on the health and performance of GitLab."
 msgstr ""
 
+msgid "Add a Jaeger URL to replace this page with a link to your Jaeger server. You first need to %{link_start_tag}install Jaeger%{link_end_tag}."
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -13488,9 +13491,6 @@ msgstr ""
 msgid "For more information, go to the "
 msgstr ""
 
-msgid "For more information, please review %{link_start_tag}Jaeger's configuration doc%{link_end_tag}"
-msgstr ""
-
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
@@ -17951,6 +17951,9 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
+msgid "Learn more about %{link_start_tag}Jaeger configuration%{link_end_tag}."
+msgstr ""
+
 msgid "Learn more about %{username}"
 msgstr ""
 
@@ -21793,6 +21796,9 @@ msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
 msgid "PackageRegistry|Add composer registry"
+msgstr ""
+
+msgid "PackageRegistry|Allow duplicates"
 msgstr ""
 
 msgid "PackageRegistry|An error occurred while saving the settings"
@@ -31680,9 +31686,6 @@ msgstr ""
 msgid "To get started, click the link below to confirm your account."
 msgstr ""
 
-msgid "To get started, link this page to your Jaeger server, or find out how to %{link_start_tag}install Jaeger%{link_end_tag}"
-msgstr ""
-
 msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
 msgstr ""
 
@@ -31710,7 +31713,7 @@ msgstr ""
 msgid "To only use CI/CD features for an external repository, choose %{strong_open}CI/CD for external repo%{strong_close}."
 msgstr ""
 
-msgid "To open Jaeger and easily view tracing from GitLab, link the %{link} page to your server"
+msgid "To open Jaeger from GitLab to view tracing from the %{link} page, add a URL to your Jaeger server."
 msgstr ""
 
 msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."

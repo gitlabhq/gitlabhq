@@ -125,14 +125,14 @@ class IssuableFinder
   end
 
   def filter_items(items)
+    # Selection by group is already covered by `by_project` and `projects` for project-based issuables
+    # Group-based issuables have their own group filter methods
     items = by_project(items)
-    items = by_group(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
     items = by_closed_at(items)
     items = by_state(items)
-    items = by_group(items)
     items = by_assignee(items)
     items = by_author(items)
     items = by_non_archived(items)
@@ -318,11 +318,6 @@ class IssuableFinder
     else
       items
     end
-  end
-
-  def by_group(items)
-    # Selection by group is already covered by `by_project` and `projects`
-    items
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

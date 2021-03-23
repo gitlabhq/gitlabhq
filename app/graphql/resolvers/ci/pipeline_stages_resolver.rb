@@ -16,7 +16,7 @@ module Resolvers
 
       def preloads
         {
-          statuses: [:needs]
+          jobs: { latest_statuses: [:needs] }
         }
       end
     end

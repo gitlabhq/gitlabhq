@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { config as vueConfig } from 'vue';
+import Vue from 'vue';
 import IssueTimeEstimate from '~/boards/components/issue_time_estimate.vue';
 
 describe('Issue Time Estimate component', () => {
@@ -34,10 +34,10 @@ describe('Issue Time Estimate component', () => {
 
       try {
         // This will raise props validating warning by Vue, silencing it
-        vueConfig.silent = true;
+        Vue.config.silent = true;
         await wrapper.setProps({ estimate: 'Foo <script>alert("XSS")</script>' });
       } finally {
-        vueConfig.silent = false;
+        Vue.config.silent = false;
       }
 
       expect(alertSpy).not.toHaveBeenCalled();

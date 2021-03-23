@@ -12,6 +12,11 @@ export default {
     event: 'change',
   },
   props: {
+    label: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: false,
@@ -82,6 +87,8 @@ export default {
       class="gl-mr-3"
       :value="featureEnabled"
       :disabled="disabledInput"
+      :label="label"
+      label-position="hidden"
       @change="toggleFeature"
     />
     <div class="select-wrapper gl-flex-fill-1">

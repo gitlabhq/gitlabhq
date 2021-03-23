@@ -12,10 +12,13 @@ module Types
         extras: [:lookahead],
         description: 'Group of jobs for the stage.'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
-            description: 'Detailed status of the stage.'
+        description: 'Detailed status of the stage.'
+      field :jobs, Ci::JobType.connection_type, null: true,
+        description: 'Jobs for the stage.',
+        method: 'latest_statuses'
 
       def detailed_status
-        object.detailed_status(context[:current_user])
+        object.detailed_status(current_user)
       end
 
       # Issues one query per pipeline

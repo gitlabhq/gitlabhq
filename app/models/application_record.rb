@@ -52,9 +52,9 @@ class ApplicationRecord < ActiveRecord::Base
 
   # Start a new transaction with a shorter-than-usual statement timeout. This is
   # currently one third of the default 15-second timeout
-  def self.with_fast_statement_timeout
+  def self.with_fast_read_statement_timeout(timeout_ms = 5000)
     transaction(requires_new: true) do
-      connection.exec_query("SET LOCAL statement_timeout = 5000")
+      connection.exec_query("SET LOCAL statement_timeout = #{timeout_ms}")
 
       yield
     end
@@ -79,3 +79,5 @@ class ApplicationRecord < ActiveRecord::Base
     enum(enum_mod.key => values)
   end
 end
+
+ApplicationRecord.prepend_if_ee('EE::ApplicationRecordHelpers')

@@ -78,7 +78,7 @@ module Gitlab
       # to perform the calculation more efficiently. Until then, use a shorter
       # timeout and return -1 as a sentinel value if it is triggered
       begin
-        ApplicationRecord.with_fast_statement_timeout do
+        ApplicationRecord.with_fast_read_statement_timeout do
           finder.count_by_state
         end
       rescue ActiveRecord::QueryCanceled => err

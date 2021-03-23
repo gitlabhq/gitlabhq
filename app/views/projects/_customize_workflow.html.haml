@@ -5,4 +5,4 @@
     %p
       Get started with GitLab by enabling features that work best for your project. From issues and wikis, to merge requests and pipelines, GitLab can help manage your workflow from idea to production!
     - if can?(current_user, :admin_project, @project)
-      = link_to "Get started", edit_project_path(@project), class: "gl-button btn btn-success"
+      = link_to "Get started", edit_project_path(@project), class: "gl-button btn btn-confirm"

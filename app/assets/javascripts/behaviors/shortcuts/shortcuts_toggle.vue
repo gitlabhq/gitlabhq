@@ -1,9 +1,13 @@
 <script>
 import { GlToggle } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { __ } from '~/locale';
 import { disableShortcuts, enableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
 export default {
+  i18n: {
+    toggleLabel: __('Keyboard shortcuts'),
+  },
   components: {
     GlToggle,
   },
@@ -31,7 +35,7 @@ export default {
     <gl-toggle
       v-model="shortcutsEnabled"
       aria-describedby="shortcutsToggle"
-      label="Keyboard shortcuts"
+      :label="$options.i18n.toggleLabel"
       label-position="left"
       @change="onChange"
     />

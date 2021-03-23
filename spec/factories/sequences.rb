@@ -19,4 +19,5 @@ FactoryBot.define do
   sequence(:wip_title) { |n| "WIP: #{n}" }
   sequence(:jira_title) { |n| "[PROJ-#{n}]: fix bug" }
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }
+  sequence(:job_name) { |n| "job #{n}" }
 end

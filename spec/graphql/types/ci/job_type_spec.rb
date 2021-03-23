@@ -8,16 +8,23 @@ RSpec.describe Types::Ci::JobType do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
+      allow_failure
+      artifacts
+      created_at
+      detailedStatus
+      duration
+      finished_at
       id
-      shortSha
-      pipeline
       name
       needs
-      detailedStatus
+      pipeline
+      queued_at
       scheduledAt
-      artifacts
-      finished_at
-      duration
+      scheduledAt
+      shortSha
+      stage
+      started_at
+      status
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
