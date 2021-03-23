@@ -2461,6 +2461,7 @@ RSpec.describe Ci::Build do
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
           { key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp, public: true, masked: false },
+          { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
           { key: 'CI_BUILD_REF', value: build.sha, public: true, masked: false },
           { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
           { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true, masked: false },

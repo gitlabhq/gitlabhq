@@ -510,6 +510,12 @@ module Ci
       end
     end
 
+    def git_author_full_text
+      strong_memoize(:git_author_full_text) do
+        commit.try(:author_full_text)
+      end
+    end
+
     def git_commit_message
       strong_memoize(:git_commit_message) do
         commit.try(:message)
@@ -822,6 +828,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
         variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
         variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
+        variables.append(key: 'CI_COMMIT_AUTHOR', value: git_author_full_text.to_s)
 
         # legacy variables
         variables.append(key: 'CI_BUILD_REF', value: sha)

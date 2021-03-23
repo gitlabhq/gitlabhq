@@ -37,7 +37,8 @@ RSpec.describe Gitlab::Changelog::Config do
         project,
         'date_format' => 'foo',
         'template' => 'bar',
-        'categories' => { 'foo' => 'bar' }
+        'categories' => { 'foo' => 'bar' },
+        'tag_regex' => 'foo'
       )
 
       expect(config.date_format).to eq('foo')
@@ -45,6 +46,7 @@ RSpec.describe Gitlab::Changelog::Config do
         .to be_instance_of(Gitlab::Changelog::AST::Expressions)
 
       expect(config.categories).to eq({ 'foo' => 'bar' })
+      expect(config.tag_regex).to eq('foo')
     end
 
     it 'raises Error when the categories are not a Hash' do

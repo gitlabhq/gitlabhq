@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Cop that prevents manually setting a queue in Sidekiq workers.
     class SidekiqOptionsQueue < RuboCop::Cop::Cop
-      MSG = 'Do not manually set a queue; `ApplicationWorker` sets one automatically.'.freeze
+      MSG = 'Do not manually set a queue; `ApplicationWorker` sets one automatically.'
 
       def_node_matcher :sidekiq_options?, <<~PATTERN
         (send nil? :sidekiq_options $...)

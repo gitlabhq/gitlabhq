@@ -40,6 +40,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
+  it { is_expected.to respond_to :git_author_full_text }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
@@ -819,6 +820,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         CI_COMMIT_DESCRIPTION
         CI_COMMIT_REF_PROTECTED
         CI_COMMIT_TIMESTAMP
+        CI_COMMIT_AUTHOR
         CI_BUILD_REF
         CI_BUILD_BEFORE_SHA
         CI_BUILD_REF_NAME

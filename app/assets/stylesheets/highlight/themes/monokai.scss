@@ -91,6 +91,10 @@ $monokai-gh: #75715e;
 
 .code.monokai {
   // Line numbers
+  .file-line-num {
+    @include line-number-link($monokai-line-num-color);
+  }
+
   .line-numbers,
   .diff-line-num {
     background-color: $monokai-bg;

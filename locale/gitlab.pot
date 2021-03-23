@@ -29191,9 +29191,6 @@ msgstr ""
 msgid "SubscriptionTable|Add seats"
 msgstr ""
 
-msgid "SubscriptionTable|An error occurred while loading billable members list"
-msgstr ""
-
 msgid "SubscriptionTable|An error occurred while loading the subscription details."
 msgstr ""
 

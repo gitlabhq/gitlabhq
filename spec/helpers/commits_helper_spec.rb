@@ -5,58 +5,6 @@ require 'spec_helper'
 RSpec.describe CommitsHelper do
   include ProjectForksHelper
 
-  describe '#revert_commit_link' do
-    context 'when current_user exists' do
-      before do
-        allow(helper).to receive(:current_user).and_return(double('User'))
-      end
-
-      it 'renders a div for Vue' do
-        result = helper.revert_commit_link
-
-        expect(result).to include('js-revert-commit-trigger')
-      end
-    end
-
-    context 'when current_user does not exist' do
-      before do
-        allow(helper).to receive(:current_user).and_return(nil)
-      end
-
-      it 'does not render anything' do
-        result = helper.revert_commit_link
-
-        expect(result).to be_nil
-      end
-    end
-  end
-
-  describe '#cherry_pick_commit_link' do
-    context 'when current_user exists' do
-      before do
-        allow(helper).to receive(:current_user).and_return(double('User'))
-      end
-
-      it 'renders a div for Vue' do
-        result = helper.cherry_pick_commit_link
-
-        expect(result).to include('js-cherry-pick-commit-trigger')
-      end
-    end
-
-    context 'when current_user does not exist' do
-      before do
-        allow(helper).to receive(:current_user).and_return(nil)
-      end
-
-      it 'does not render anything' do
-        result = helper.cherry_pick_commit_link
-
-        expect(result).to be_nil
-      end
-    end
-  end
-
   describe 'commit_author_link' do
     it 'escapes the author email' do
       commit = double(
@@ -266,6 +214,79 @@ RSpec.describe CommitsHelper do
       it 'does not calculate target projects' do
         expect(helper.cherry_pick_projects_data(project)).to eq([])
       end
+    end
+  end
+
+  describe "#commit_options_dropdown_data" do
+    let(:project) { build(:project, :repository) }
+    let(:commit) { build(:commit) }
+    let(:user) { build(:user) }
+
+    subject { helper.commit_options_dropdown_data(project, commit) }
+
+    context "when user is logged in" do
+      before do
+        allow(helper).to receive(:can?).with(user, :push_code, project).and_return(true)
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it "returns data as expected" do
+        is_expected.to eq standard_expected_data
+      end
+
+      context "when can not collaborate on project" do
+        before do
+          allow(helper).to receive(:can_collaborate_with_project?).with(project).and_return(false)
+        end
+
+        it "returns data as expected" do
+          no_collaboration_values = {
+            can_revert: 'false',
+            can_cherry_pick: 'false'
+          }
+
+          is_expected.to eq standard_expected_data.merge(no_collaboration_values)
+        end
+      end
+
+      context "when commit has already been reverted" do
+        before do
+          allow(commit).to receive(:has_been_reverted?).with(user).and_return(true)
+        end
+
+        it "returns data as expected" do
+          is_expected.to eq standard_expected_data.merge({ can_revert: 'false' })
+        end
+      end
+    end
+
+    context "when user is not logged in" do
+      before do
+        allow(helper).to receive(:can?).with(nil, :push_code, project).and_return(false)
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it "returns data as expected" do
+        logged_out_values = {
+          can_revert: '',
+          can_cherry_pick: '',
+          can_tag: 'false'
+        }
+
+        is_expected.to eq standard_expected_data.merge(logged_out_values)
+      end
+    end
+
+    def standard_expected_data
+      {
+        new_project_tag_path: new_project_tag_path(project, ref: commit),
+        email_patches_path: project_commit_path(project, commit, format: :patch),
+        plain_diff_path: project_commit_path(project, commit, format: :diff),
+        can_revert: 'true',
+        can_cherry_pick: 'true',
+        can_tag: 'true',
+        can_email_patches: 'true'
+      }
     end
   end
 end

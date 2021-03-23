@@ -112,7 +112,7 @@ module Ci
       if Feature.enabled?(:ci_register_job_service_one_by_one, runner, default_enabled: true)
         build_ids = retrieve_queue(-> { builds.pluck(:id) })
 
-        @metrics.observe_queue_size(-> { build_ids.size })
+        @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
 
         build_ids.each do |build_id|
           yield Ci::Build.find(build_id)
@@ -120,7 +120,7 @@ module Ci
       else
         builds_array = retrieve_queue(-> { builds.to_a })
 
-        @metrics.observe_queue_size(-> { builds_array.size })
+        @metrics.observe_queue_size(-> { builds_array.size }, @runner.runner_type)
 
         builds_array.each(&blk)
       end

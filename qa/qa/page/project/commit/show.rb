@@ -6,10 +6,13 @@ module QA
       module Commit
         class Show < Page::Base
           view 'app/views/projects/commit/_commit_box.html.haml' do
+            element :commit_sha_content
+          end
+
+          view 'app/assets/javascripts/projects/commit/components/commit_options_dropdown.vue' do
             element :options_button
             element :email_patches
             element :plain_diff
-            element :commit_sha_content
           end
 
           def select_email_patches

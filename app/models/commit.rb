@@ -222,6 +222,14 @@ class Commit
       end
   end
 
+  def author_full_text
+    return unless author_name && author_email
+
+    strong_memoize(:author_full_text) do
+      "#{author_name} <#{author_email}>"
+    end
+  end
+
   # Returns full commit message if title is truncated (greater than 99 characters)
   # otherwise returns commit message without first line
   def description

@@ -32,7 +32,9 @@ export default {
     <status-filter />
     <confidentiality-filter />
     <div class="gl-display-flex gl-align-items-center gl-mt-3">
-      <gl-button variant="success" type="submit">{{ __('Apply') }}</gl-button>
+      <gl-button category="primary" variant="confirm" size="small" type="submit">
+        {{ __('Apply') }}
+      </gl-button>
       <gl-link v-if="showReset" class="gl-ml-auto" @click="resetQuery">{{
         __('Reset filters')
       }}</gl-link>

@@ -5,6 +5,11 @@ require 'rails/generators'
 module Gitlab
   class UsageMetricDefinitionGenerator < Rails::Generators::Base
     Directory = Struct.new(:name, :time_frame, :value_type) do
+      def initialize(...)
+        super
+        freeze
+      end
+
       def match?(str)
         (name == str || time_frame == str) && str != 'none'
       end

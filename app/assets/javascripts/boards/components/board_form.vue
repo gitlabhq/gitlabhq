@@ -107,7 +107,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isEpicBoard', 'isGroupBoard', 'isProjectBoard']),
+    ...mapGetters(['isIssueBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },
@@ -182,7 +182,7 @@ export default {
             groupPath: this.isGroupBoard ? this.fullPath : undefined,
           };
     },
-    boardScopeMutationVariables() {
+    issueBoardScopeMutationVariables() {
       /* eslint-disable @gitlab/require-i18n-strings */
       return {
         weight: this.board.weight,
@@ -193,12 +193,17 @@ export default {
           this.board.milestone?.id || this.board.milestone?.id === 0
             ? convertToGraphQLId('Milestone', this.board.milestone.id)
             : null,
-        labelIds: this.board.labels.map(fullLabelId),
         iterationId: this.board.iteration_id
           ? convertToGraphQLId('Iteration', this.board.iteration_id)
           : null,
       };
       /* eslint-enable @gitlab/require-i18n-strings */
+    },
+    boardScopeMutationVariables() {
+      return {
+        labelIds: this.board.labels.map(fullLabelId),
+        ...(this.isIssueBoard && this.issueBoardScopeMutationVariables),
+      };
     },
     mutationVariables() {
       return {
@@ -324,7 +329,7 @@ export default {
       />
 
       <board-scope
-        v-if="scopedIssueBoardFeatureEnabled && !isEpicBoard"
+        v-if="scopedIssueBoardFeatureEnabled"
         :collapse-scope="isNewForm"
         :board="board"
         :can-admin-board="canAdminBoard"

@@ -130,13 +130,14 @@ RSpec.describe Repositories::ChangelogService do
   describe '#start_of_commit_range' do
     let(:project) { build_stubbed(:project) }
     let(:user) { build_stubbed(:user) }
+    let(:config) { Gitlab::Changelog::Config.new(project) }
 
     context 'when the "from" argument is specified' do
       it 'returns the value of the argument' do
         service = described_class
           .new(project, user, version: '1.0.0', from: 'foo', to: 'bar')
 
-        expect(service.start_of_commit_range).to eq('foo')
+        expect(service.start_of_commit_range(config)).to eq('foo')
       end
     end
 
@@ -145,12 +146,12 @@ RSpec.describe Repositories::ChangelogService do
         service = described_class
           .new(project, user, version: '1.0.0', to: 'bar')
 
-        finder_spy = instance_spy(Repositories::PreviousTagFinder)
+        finder_spy = instance_spy(Repositories::ChangelogTagFinder)
         tag = double(:tag, target_commit: double(:commit, id: '123'))
 
-        allow(Repositories::PreviousTagFinder)
+        allow(Repositories::ChangelogTagFinder)
           .to receive(:new)
-          .with(project)
+          .with(project, regex: an_instance_of(String))
           .and_return(finder_spy)
 
         allow(finder_spy)
@@ -158,18 +159,18 @@ RSpec.describe Repositories::ChangelogService do
           .with('1.0.0')
           .and_return(tag)
 
-        expect(service.start_of_commit_range).to eq('123')
+        expect(service.start_of_commit_range(config)).to eq('123')
       end
 
       it 'raises an error when no tag is found' do
         service = described_class
           .new(project, user, version: '1.0.0', to: 'bar')
 
-        finder_spy = instance_spy(Repositories::PreviousTagFinder)
+        finder_spy = instance_spy(Repositories::ChangelogTagFinder)
 
-        allow(Repositories::PreviousTagFinder)
+        allow(Repositories::ChangelogTagFinder)
           .to receive(:new)
-          .with(project)
+          .with(project, regex: an_instance_of(String))
           .and_return(finder_spy)
 
         allow(finder_spy)
@@ -177,7 +178,7 @@ RSpec.describe Repositories::ChangelogService do
           .with('1.0.0')
           .and_return(nil)
 
-        expect { service.start_of_commit_range }
+        expect { service.start_of_commit_range(config) }
           .to raise_error(Gitlab::Changelog::Error)
       end
     end

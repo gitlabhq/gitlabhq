@@ -313,7 +313,11 @@ export default class LabelsSelect {
             return;
           }
 
-          if ($('html').hasClass('issue-boards-page')) {
+          if (
+            $('html')
+              .attr('class')
+              .match(/issue-boards-page|epic-boards-page/)
+          ) {
             return;
           }
           if ($dropdown.hasClass('js-multiselect')) {

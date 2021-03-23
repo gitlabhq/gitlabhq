@@ -497,19 +497,17 @@ To delete a stopped environment in the GitLab UI:
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
 
-### Prepare an environment
+### Prepare an environment without creating a deployment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
-By default, GitLab creates a deployment every time a
-build with the specified environment runs. Newer deployments can also
-[cancel older ones](deployment_safety.md#skip-outdated-deployment-jobs).
+By default, whenever GitLab CI/CD runs a job for a specific environment, it
+triggers a deployment and [(optionally) cancels outdated
+deployments](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
 
-You may want to specify an environment keyword to
-[protect builds from unauthorized access](protected_environments.md), or to get
-access to [environment-scoped variables](#scoping-environments-with-specs). In these cases,
-you can use the `action: prepare` keyword to ensure deployments aren't created,
-and no builds are canceled:
+To use an environment without creating a new deployment, and without
+cancelling outdated deployments, append the keyword `action: prepare` to your
+job:
 
 ```yaml
 build:
@@ -521,6 +519,9 @@ build:
     action: prepare
     url: https://staging.example.com
 ```
+
+This gives you access to [environment-scoped variables](#scoping-environments-with-specs),
+and can be used to [protect builds from unauthorized access](protected_environments.md).
 
 ### Group similar environments
 

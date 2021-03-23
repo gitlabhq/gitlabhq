@@ -94,6 +94,10 @@ $solarized-dark-il: #2aa198;
 
 .code.solarized-dark {
   // Line numbers
+  .file-line-num {
+    @include line-number-link($solarized-dark-line-color);
+  }
+
   .line-numbers,
   .diff-line-num {
     background-color: $solarized-dark-line-bg;

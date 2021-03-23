@@ -10,7 +10,7 @@ module RuboCop
       # 1. Downloading the complete set of deprecations/ files from a CI
       # pipeline (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47720)
       class LastKeywordArgument < Cop
-        MSG = 'Using the last argument as keyword parameters is deprecated'.freeze
+        MSG = 'Using the last argument as keyword parameters is deprecated'
 
         DEPRECATIONS_GLOB = File.expand_path('../../../deprecations/**/*.yml', __dir__)
         KEYWORD_DEPRECATION_STR = 'maybe ** should be added to the call'

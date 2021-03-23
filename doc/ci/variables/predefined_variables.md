@@ -35,6 +35,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_COMMIT_TAG`                          | 9.0    | 0.5    | The commit tag name. Available only in pipelines for tags. |
 | `CI_COMMIT_TIMESTAMP`                    | 13.4   | all    | The timestamp of the commit in the ISO 8601 format. |
 | `CI_COMMIT_TITLE`                        | 10.8   | all    | The title of the commit. The full first line of the message. |
+| `CI_COMMIT_AUTHOR`                       | 13.10  | all    | The author of the commit in `Name <email>` format. |
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |

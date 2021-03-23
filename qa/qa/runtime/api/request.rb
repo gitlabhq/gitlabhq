@@ -4,7 +4,7 @@ module QA
   module Runtime
     module API
       class Request
-        API_VERSION = 'v4'.freeze
+        API_VERSION = 'v4'
 
         def initialize(api_client, path, **query_string)
           query_string[:private_token] ||= api_client.personal_access_token unless query_string[:oauth_access_token]

@@ -2,7 +2,7 @@
 
 module Gitlab::UsageDataCounters
   class CiTemplateUniqueCounter
-    REDIS_SLOT = 'ci_templates'.freeze
+    REDIS_SLOT = 'ci_templates'
 
     # NOTE: Events originating from implicit Auto DevOps pipelines get prefixed with `implicit_`
     TEMPLATE_TO_EVENT = {

@@ -90,6 +90,10 @@ $dark-il: #de935f;
 
 .code.dark {
   // Line numbers
+  .file-line-num {
+    @include line-number-link($dark-line-num-color);
+  }
+  
   .line-numbers,
   .diff-line-num {
     background-color: $dark-main-bg;

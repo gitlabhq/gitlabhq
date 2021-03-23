@@ -35,6 +35,7 @@ export default class CreateMergeRequestDropdown {
     this.branchInput = this.wrapperEl.querySelector('.js-branch-name');
     this.branchMessage = this.wrapperEl.querySelector('.js-branch-message');
     this.createMergeRequestButton = this.wrapperEl.querySelector('.js-create-merge-request');
+    this.createMergeRequestLoading = this.createMergeRequestButton.querySelector('.js-spinner');
     this.createTargetButton = this.wrapperEl.querySelector('.js-create-target');
     this.dropdownList = this.wrapperEl.querySelector('.dropdown-menu');
     this.dropdownToggle = this.wrapperEl.querySelector('.js-dropdown-toggle');
@@ -177,6 +178,10 @@ export default class CreateMergeRequestDropdown {
 
   disable() {
     this.disableCreateAction();
+  }
+
+  setLoading(loading) {
+    this.createMergeRequestLoading.classList.toggle('gl-display-none', !loading);
   }
 
   disableCreateAction() {
@@ -387,8 +392,10 @@ export default class CreateMergeRequestDropdown {
       this.isCreatingBranch = false;
 
       this.enable();
+      this.setLoading(false);
     });
 
+    this.setLoading(true);
     this.disable();
   }
 

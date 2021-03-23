@@ -9,7 +9,7 @@ module RuboCop
       class Datetime < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = 'Do not use the `%s` data type, use `datetime_with_timezone` instead'.freeze
+        MSG = 'Do not use the `%s` data type, use `datetime_with_timezone` instead'
 
         # Check methods in table creation.
         def on_def(node)

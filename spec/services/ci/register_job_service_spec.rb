@@ -617,7 +617,8 @@ module Ci
 
           it "observes queue size of only matching jobs" do
             # pending_job + 2 x matching ones
-            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe).with({}, 3)
+            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, 3)
 
             expect(execute(specific_runner)).to eq(pending_job)
           end

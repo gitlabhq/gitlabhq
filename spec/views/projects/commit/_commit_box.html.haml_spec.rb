@@ -74,30 +74,4 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
       end
     end
   end
-
-  context 'viewing a commit' do
-    context 'as a developer' do
-      before do
-        allow(view).to receive(:can_collaborate_with_project?).and_return(true)
-      end
-
-      it 'has a link to create a new tag' do
-        render
-
-        expect(rendered).to have_link('Tag')
-      end
-    end
-
-    context 'as a non-developer' do
-      before do
-        project.add_guest(user)
-      end
-
-      it 'does not have a link to create a new tag' do
-        render
-
-        expect(rendered).not_to have_link('Tag')
-      end
-    end
-  end
 end

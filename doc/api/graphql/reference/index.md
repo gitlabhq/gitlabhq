@@ -7842,15 +7842,15 @@ Rotation length unit of an on-call rotation.
 
 | Value | Description |
 | ----- | ----------- |
-| `AUTO_DEVOPS_SOURCE` |  |
-| `BRIDGE_SOURCE` |  |
-| `COMPLIANCE_SOURCE` |  |
-| `EXTERNAL_PROJECT_SOURCE` |  |
-| `PARAMETER_SOURCE` |  |
-| `REMOTE_SOURCE` |  |
-| `REPOSITORY_SOURCE` |  |
-| `UNKNOWN_SOURCE` |  |
-| `WEBIDE_SOURCE` |  |
+| `AUTO_DEVOPS_SOURCE` | Auto DevOps source. |
+| `BRIDGE_SOURCE` | Bridge source. |
+| `COMPLIANCE_SOURCE` | Compliance source. |
+| `EXTERNAL_PROJECT_SOURCE` | External project source. |
+| `PARAMETER_SOURCE` | Parameter source. |
+| `REMOTE_SOURCE` | Remote source. |
+| `REPOSITORY_SOURCE` | Repository source. |
+| `UNKNOWN_SOURCE` | Unknown source. |
+| `WEBIDE_SOURCE` | Webide source. |
 
 ### `PipelineStatusEnum`
 

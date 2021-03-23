@@ -13,9 +13,9 @@ module Members
     end
 
     def execute(source)
+      @source = source
       validate_emails!
 
-      @source = source
       emails.each(&method(:process_email))
       result
     rescue BlankEmailsError, TooManyEmailsError => e
@@ -96,3 +96,5 @@ module Members
     end
   end
 end
+
+Members::InviteService.prepend_if_ee('EE::Members::InviteService')

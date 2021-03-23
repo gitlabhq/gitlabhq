@@ -9,7 +9,7 @@ module Gitlab
         QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
         QUEUE_ACTIVE_RUNNERS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
         QUEUE_DEPTH_TOTAL_BUCKETS = [1, 2, 3, 5, 8, 16, 32, 50, 100, 250, 500, 1000, 2000, 5000].freeze
-        QUEUE_SIZE_TOTAL_BUCKETS = [1, 5, 10, 50, 100, 500, 1000, 2000, 5000].freeze
+        QUEUE_SIZE_TOTAL_BUCKETS = [1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 7500, 10000, 15000, 20000].freeze
         QUEUE_PROCESSING_DURATION_SECONDS_BUCKETS = [0.01, 0.05, 0.1, 0.3, 0.5, 1, 5, 10, 30, 60, 180, 300].freeze
 
         METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'
@@ -94,10 +94,10 @@ module Gitlab
           self.class.queue_depth_total.observe({ queue: queue }, size.to_f)
         end
 
-        def observe_queue_size(size_proc)
+        def observe_queue_size(size_proc, runner_type)
           return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
 
-          self.class.queue_size_total.observe({}, size_proc.call.to_f)
+          self.class.queue_size_total.observe({ runner_type: runner_type }, size_proc.call.to_f)
         end
 
         def observe_queue_time(metric)

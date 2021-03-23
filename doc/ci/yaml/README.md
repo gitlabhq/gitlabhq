@@ -2579,9 +2579,9 @@ Use the `action` keyword to specify jobs that prepare, start, or stop environmen
 
 | **Value** | **Description**                                                                                                                                               |
 |-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| start     | Default value. Indicates that job starts the environment. The deployment is created after the job starts.                                                          |
-| prepare   | Indicates that job is only preparing the environment. Does not affect deployments. [Read more about environments](../environments/index.md#prepare-an-environment) |
-| stop      | Indicates that job stops deployment. See the example below.                                                                                                   |
+| `start`     | Default value. Indicates that job starts the environment. The deployment is created after the job starts.                                                          |
+| `prepare`   | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#prepare-an-environment-without-creating-a-deployment). |
+| `stop`      | Indicates that job stops deployment. See the example below.                                                                                                   |
 
 Take for instance:
 

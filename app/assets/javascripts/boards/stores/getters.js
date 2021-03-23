@@ -1,5 +1,5 @@
 import { find } from 'lodash';
-import { BoardType, inactiveId } from '../constants';
+import { BoardType, inactiveId, issuableTypes } from '../constants';
 
 export default {
   isGroupBoard: (state) => state.boardType === BoardType.group,
@@ -42,6 +42,10 @@ export default {
 
   getListByTitle: (state) => (title) => {
     return find(state.boardLists, (l) => l.title === title);
+  },
+
+  isIssueBoard: (state) => {
+    return state.issuableType === issuableTypes.issue;
   },
 
   isEpicBoard: () => {

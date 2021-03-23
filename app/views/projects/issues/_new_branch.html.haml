@@ -18,7 +18,8 @@
           Checking branch availability…
 
     .btn-group.btn-group-sm.available.hidden
-      %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
+      %button.gl-button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
+        .spinner.js-spinner.gl-mr-2.gl-display-none
         = value
 
       %button.btn.gl-button.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle.gl-flex-grow-0.gl-h-7{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
