@@ -586,7 +586,7 @@ Conditional means that it returns `true` in some situations, but not all situati
 
 When a feature flag is disabled (meaning the state is `off`), the experiment is
 considered _inactive_. You can visualize this in the [decision tree diagram](#how-it-works)
-as reaching the first [Running?] node, and traversing the negative path.
+as reaching the first `Running?` node, and traversing the negative path.
 
 When a feature flag is rolled out to a `percentage_of_actors` or similar (meaning the
 state is `conditional`) the experiment is considered to be _running_

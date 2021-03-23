@@ -1239,7 +1239,7 @@ of a WAF are:
 
 By default, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/),
 which is a toolkit for real-time web application monitoring, logging, and access
-control. GitLab applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
+control. GitLab applies the [OWASP's Core Rule Set](https://coreruleset.org/),
 which provides generic attack detection capabilities.
 
 This feature:
@@ -1314,7 +1314,7 @@ tracked over time:
 
 - The total amount of traffic to your application.
 - The proportion of traffic that's considered anomalous by the Web Application
-  Firewall's default [OWASP ruleset](https://www.modsecurity.org/CRS/Documentation/).
+  Firewall's default [OWASP ruleset](https://coreruleset.org/).
 
 If a significant percentage of traffic is anomalous, investigate it for potential threats
 by [examining the Web Application Firewall logs](#web-application-firewall-modsecurity).

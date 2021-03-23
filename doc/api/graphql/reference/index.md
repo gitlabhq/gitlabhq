@@ -1328,6 +1328,7 @@ An edge in a connection.
 | `createdByUser` | [`User`](#user) | The user who created the token. |
 | `description` | [`String`](#string) | Description of the token. |
 | `id` | [`ClustersAgentTokenID!`](#clustersagenttokenid) | Global ID of the token. |
+| `lastUsedAt` | [`Time`](#time) | Timestamp the token was last used. |
 | `name` | [`String`](#string) | Name given to the token. |
 
 ### `ClusterAgentTokenConnection`

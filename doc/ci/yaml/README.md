@@ -2759,7 +2759,7 @@ patterns and:
 - In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620) and later,
 [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
 - In GitLab Runner 12.10 and earlier,
-[`filepath.Match`](https://pkg.go.dev/path/filepath/#Match).
+[`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -3086,7 +3086,7 @@ patterns and:
 - In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620) and later,
 [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
 - In GitLab Runner 12.10 and earlier,
-[`filepath.Match`](https://pkg.go.dev/path/filepath/#Match).
+[`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
 To restrict which jobs a specific job fetches artifacts from, see [dependencies](#dependencies).
 

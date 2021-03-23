@@ -19,6 +19,7 @@ module Ci
     has_many :bridges, foreign_key: :stage_id
 
     scope :ordered, -> { order(position: :asc) }
+    scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
 
     with_options unless: :importing? do
       validates :project, presence: true

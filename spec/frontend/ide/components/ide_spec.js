@@ -1,10 +1,10 @@
-import { GlAlert } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import CannotPushCodeAlert from '~/ide/components/cannot_push_code_alert.vue';
 import ErrorMessage from '~/ide/components/error_message.vue';
 import Ide from '~/ide/components/ide.vue';
-import { MSG_CANNOT_PUSH_CODE } from '~/ide/messages';
+import { MSG_CANNOT_PUSH_CODE_GO_TO_FORK, MSG_GO_TO_FORK } from '~/ide/messages';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
@@ -12,14 +12,15 @@ import { projectData } from '../mock_data';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+const TEST_FORK_IDE_PATH = '/test/ide/path';
+
 describe('WebIDE', () => {
   const emptyProjData = { ...projectData, empty_repo: true, branches: {} };
 
+  let store;
   let wrapper;
 
   const createComponent = ({ projData = emptyProjData, state = {} } = {}) => {
-    const store = createStore();
-
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = projData && { ...projData };
@@ -37,7 +38,11 @@ describe('WebIDE', () => {
     });
   };
 
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(CannotPushCodeAlert);
+
+  beforeEach(() => {
+    store = createStore();
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -148,6 +153,12 @@ describe('WebIDE', () => {
   });
 
   it('when user cannot push code, shows alert', () => {
+    store.state.links = {
+      forkInfo: {
+        ide_path: TEST_FORK_IDE_PATH,
+      },
+    };
+
     createComponent({
       projData: {
         userPermissions: {
@@ -157,9 +168,12 @@ describe('WebIDE', () => {
     });
 
     expect(findAlert().props()).toMatchObject({
-      dismissible: false,
+      message: MSG_CANNOT_PUSH_CODE_GO_TO_FORK,
+      action: {
+        href: TEST_FORK_IDE_PATH,
+        text: MSG_GO_TO_FORK,
+      },
     });
-    expect(findAlert().text()).toBe(MSG_CANNOT_PUSH_CODE);
   });
 
   it.each`

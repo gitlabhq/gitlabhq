@@ -9,6 +9,19 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  #
+  DAST_API_PROFILE: Full
+  DAST_API_VERSION: latest
+  DAST_API_CONFIG: .gitlab-dast-api.yml
+  DAST_API_TIMEOUT: 30
+  DAST_API_REPORT: gl-dast-api-report.json
+  DAST_API_REPORT_ASSET_PATH: assets
+  #
+  # Wait up to 5 minutes for API Security and target url to become
+  # available (non 500 response to HTTP(s))
+  DAST_API_SERVICE_START_TIMEOUT: "300"
+  #
+  DAST_API_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${DAST_API_VERSION}-engine
 
 dast:
   stage: dast
@@ -25,6 +38,11 @@ dast:
     reports:
       dast: gl-dast-report.json
   rules:
+    - if: $DAST_API_BETA && ( $DAST_API_SPECIFICATION ||
+          $DAST_API_OPENAPI ||
+          $DAST_API_POSTMAN_COLLECTION ||
+          $DAST_API_HAR )
+      when: never
     - if: $DAST_DISABLED
       when: never
     - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
@@ -40,4 +58,72 @@ dast:
     - if: $CI_COMMIT_BRANCH &&
           $DAST_WEBSITE
     - if: $CI_COMMIT_BRANCH &&
+          $DAST_API_BETA == null &&
           $DAST_API_SPECIFICATION
+
+dast_api:
+  stage: dast
+  image:
+    name: $DAST_API_IMAGE
+    entrypoint: ["/bin/bash", "-l", "-c"]
+  variables:
+    API_SECURITY_MODE: DAST
+    DAST_API_NEW_REPORT: 1
+    DAST_API_PROJECT: $CI_PROJECT_PATH
+    DAST_API_API: http://127.0.0.1:5000
+    DAST_API_LOG_SCANNER: gl-dast-api-scanner.log
+    TZ: America/Los_Angeles
+  allow_failure: true
+  rules:
+    - if: $DAST_API_BETA == null
+      when: never
+    - if: $DAST_DISABLED
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED &&
+          $DAST_API_SPECIFICATION == null &&
+          $DAST_API_OPENAPI == null &&
+          $DAST_API_POSTMAN_COLLECTION == null &&
+          $DAST_API_HAR == null
+      when: never
+    - if: $DAST_API_SPECIFICATION == null &&
+          $DAST_API_OPENAPI == null &&
+          $DAST_API_POSTMAN_COLLECTION == null &&
+          $DAST_API_HAR == null
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+  script:
+    #
+    # Run user provided pre-script
+    - sh -c "$DAST_API_PRE_SCRIPT"
+    #
+    # Make sure asset path exists
+    - mkdir -p $DAST_API_REPORT_ASSET_PATH
+    #
+    # Start API Security background process
+    - dotnet /peach/Peach.Web.dll &> $DAST_API_LOG_SCANNER &
+    - APISEC_PID=$!
+    #
+    # Start scanning
+    - worker-entry
+    #
+    # Run user provided post-script
+    - sh -c "$DAST_API_POST_SCRIPT"
+    #
+    # Shutdown API Security
+    - kill $APISEC_PID
+    - wait $APISEC_PID
+    #
+  artifacts:
+    when: always
+    paths:
+      - $DAST_API_REPORT_ASSET_PATH
+      - $DAST_API_REPORT
+      - $DAST_API_LOG_SCANNER
+      - gl-*.log
+    reports:
+      dast: $DAST_API_REPORT

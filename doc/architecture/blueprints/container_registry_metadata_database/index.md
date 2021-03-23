@@ -187,7 +187,7 @@ During the discussion of the [initial database schema](https://gitlab.com/gitlab
 PostgreSQL introduced significant improvements for partitioning in [version 12](https://www.postgresql.org/docs/12/release-12.html#id-1.11.6.9.5), among which we highlight:
 
 - It's now possible for foreign keys to reference partitioned tables. This is a hard requirement for this project not only to guarantee consistency and integrity but also to enable cascading deletes at the database level;
-- Major performance improvements for inserts, selects, and updates with less locking and consistent performance for a large number of partitions ([benchmarks](https://www.2ndquadrant.com/en/blog/postgresql-12-partitioning));
+- Major performance improvements for inserts, selects, and updates with less locking and consistent performance for a large number of partitions ([benchmarks](https://www.2ndquadrant.com/en/blog/postgresql-12-partitioning/));
 - Major improvements to the planning algorithm for tables with a large number of partitions, with some tests finding speedups of up to 10,000 times ([source](https://aws.amazon.com/blogs/database/postgresql-12-a-deep-dive-into-some-new-functionality/));
 - Attaching new partitions to an existing table no longer requires locking the entire table;
 - Bulk load (`COPY`) now uses bulk inserts instead of inserting one row at a time;

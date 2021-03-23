@@ -489,7 +489,16 @@ RSpec.describe BlobHelper do
 
       expect(uri.path).to eq("/#{project.namespace.path}/#{project.path}/-/forks")
       expect(params).to include("continue[to]=/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
+      expect(params).to include("continue[notice]=#{edit_in_new_fork_notice}")
+      expect(params).to include("continue[notice_now]=#{edit_in_new_fork_notice_now}")
       expect(params).to include("namespace_key=#{current_user.namespace.id}")
+    end
+
+    it 'does not include notice params with_notice: false' do
+      uri = URI(helper.ide_fork_and_edit_path(project, "master", "", with_notice: false))
+
+      expect(uri.path).to eq("/#{project.namespace.path}/#{project.path}/-/forks")
+      expect(CGI.unescape(uri.query)).to eq("continue[to]=/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master&namespace_key=#{current_user.namespace.id}")
     end
 
     context 'when user is not logged in' do

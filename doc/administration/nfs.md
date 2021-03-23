@@ -14,16 +14,18 @@ Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 For data objects such as LFS, Uploads, Artifacts, etc., an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
 
-WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated.
-From GitLab 14.0, technical support for NFS for Git repositories
-will no longer be provided. Upgrade to [Gitaly Cluster](gitaly/praefect.md)
-as soon as possible.
-
 File system performance can impact overall GitLab performance, especially for
 actions that read or write to Git repositories. For steps you can use to test
 file system performance, see
 [File system Performance Benchmarking](operations/filesystem_benchmarking.md).
+
+## Gitaly and NFS deprecation
+
+WARNING:
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
+considered and customer technical support will be considered out of scope.
+[Read more about Gitaly and NFS](gitaly/index.md#nfs-deprecation-notice) and
+[the correct mount options to use](#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Known kernel version incompatibilities
 
@@ -346,12 +348,18 @@ sudo ufw allow from <client_ip_address> to any port nfs
 ### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
 
 WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
-support for NFS for Git repositories is scheduled to be removed. Upgrade to
-[Gitaly Cluster](gitaly/praefect.md) as soon as possible.
+From GitLab 13.0, using NFS for Git repositories is deprecated.
+As of GitLab 14.0, NFS-related issues with Gitaly will no longer be addressed. Read
+more about [Gitaly and NFS deprecation](gitaly/index.md#nfs-deprecation-notice).
 
 Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
-For example, we have seen [inconsistent updates after a push](https://gitlab.com/gitlab-org/gitaly/-/issues/2589). The problem may be partially mitigated by adjusting caching using the following NFS client mount options:
+For example, we have seen:
+
+- [Inconsistent updates after a push](https://gitlab.com/gitlab-org/gitaly/-/issues/2589).
+- `git ls-remote` [returning the wrong (or no branches)](https://gitlab.com/gitlab-org/gitaly/-/issues/3083)
+causing Jenkins to intermittently re-run all pipelines for a repository.
+
+The problem may be partially mitigated by adjusting caching using the following NFS client mount options:
 
 | Setting | Description |
 | ------- | ----------- |
@@ -362,7 +370,7 @@ For example, we have seen [inconsistent updates after a push](https://gitlab.com
 WARNING:
 The `actimeo=0` and `noac` options both result in a significant reduction in performance, possibly leading to timeouts.
 You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcache=positive` _without_ `noac`, however
-we expect the performance reduction will still be significant. As noted above, we strongly recommend upgrading to
+we expect the performance reduction will still be significant. Upgrade to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
 
 ### Avoid using cloud-based file systems

@@ -428,7 +428,7 @@ To prevent a project from being shared with other groups:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
-1. Select **Prevent sharing a project within <group_name> with other groups**.
+1. Select **Prevent sharing a project within `<group_name>` with other groups**.
 1. Select **Save changes**.
 
 ## Prevent members from being added to a group **(PREMIUM)**

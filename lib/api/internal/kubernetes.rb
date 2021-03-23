@@ -54,6 +54,8 @@ module API
           forbidden! unless agent_token
 
           forbidden! unless Gitlab::Kas.included_in_gitlab_com_rollout?(agent.project)
+
+          agent_token.track_usage
         end
       end
 

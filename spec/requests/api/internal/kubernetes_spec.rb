@@ -51,6 +51,12 @@ RSpec.describe API::Internal::Kubernetes do
     end
   end
 
+  shared_examples 'agent token tracking' do
+    it 'tracks token usage' do
+      expect { response }.to change { agent_token.reload.read_attribute(:last_used_at) }
+    end
+  end
+
   describe 'POST /internal/kubernetes/usage_metrics' do
     def send_request(headers: {}, params: {})
       post api('/internal/kubernetes/usage_metrics'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
@@ -100,6 +106,8 @@ RSpec.describe API::Internal::Kubernetes do
 
       let(:agent) { agent_token.agent }
       let(:project) { agent.project }
+
+      shared_examples 'agent token tracking'
 
       it 'returns expected data', :aggregate_failures do
         send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
@@ -168,6 +176,8 @@ RSpec.describe API::Internal::Kubernetes do
 
     context 'an agent is found' do
       let_it_be(:agent_token) { create(:cluster_agent_token) }
+
+      shared_examples 'agent token tracking'
 
       context 'project is public' do
         let(:project) { create(:project, :public) }

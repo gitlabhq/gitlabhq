@@ -8,6 +8,7 @@ RSpec.describe IdeController do
   let_it_be(:other_user) { create(:user) }
 
   let(:user) { creator }
+  let(:branch) { '' }
 
   before do
     sign_in(user)
@@ -28,24 +29,33 @@ RSpec.describe IdeController do
       let(:user) { other_user }
 
       context 'when user does not have fork' do
-        it 'does not instantiate forked_project instance var and return 200' do
+        it 'instantiates fork_info instance var with fork_path and return 200' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:project)).to eq project
-          expect(assigns(:forked_project)).to be_nil
+          expect(assigns(:fork_info)).to eq({ fork_path: controller.helpers.ide_fork_and_edit_path(project, branch, '', with_notice: false) })
+        end
+
+        it 'has nil fork_info if user cannot fork' do
+          project.project_feature.update!(forking_access_level: ProjectFeature::DISABLED)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:fork_info)).to be_nil
         end
       end
 
-      context 'when user has have fork' do
-        let!(:fork) { fork_project(project, user, repository: true) }
+      context 'when user has fork' do
+        let!(:fork) { fork_project(project, user, repository: true, namespace: user.namespace) }
 
-        it 'instantiates forked_project instance var and return 200' do
+        it 'instantiates fork_info instance var with ide_path and return 200' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:project)).to eq project
-          expect(assigns(:forked_project)).to eq fork
+          expect(assigns(:fork_info)).to eq({ ide_path: controller.helpers.ide_edit_path(fork, branch, '') })
         end
       end
     end
@@ -61,7 +71,7 @@ RSpec.describe IdeController do
         expect(assigns(:branch)).to be_nil
         expect(assigns(:path)).to be_nil
         expect(assigns(:merge_request)).to be_nil
-        expect(assigns(:forked_project)).to be_nil
+        expect(assigns(:fork_info)).to be_nil
       end
     end
 
@@ -76,7 +86,7 @@ RSpec.describe IdeController do
         expect(assigns(:branch)).to be_nil
         expect(assigns(:path)).to be_nil
         expect(assigns(:merge_request)).to be_nil
-        expect(assigns(:forked_project)).to be_nil
+        expect(assigns(:fork_info)).to be_nil
       end
     end
 
@@ -91,7 +101,7 @@ RSpec.describe IdeController do
         expect(assigns(:branch)).to be_nil
         expect(assigns(:path)).to be_nil
         expect(assigns(:merge_request)).to be_nil
-        expect(assigns(:forked_project)).to be_nil
+        expect(assigns(:fork_info)).to be_nil
       end
 
       it_behaves_like 'user cannot push code'
@@ -108,55 +118,58 @@ RSpec.describe IdeController do
             expect(assigns(:branch)).to be_nil
             expect(assigns(:path)).to be_nil
             expect(assigns(:merge_request)).to be_nil
-            expect(assigns(:forked_project)).to be_nil
+            expect(assigns(:fork_info)).to be_nil
           end
 
           it_behaves_like 'user cannot push code'
 
           context "/-/ide/project/:project/#{action}/:branch" do
-            let(:route) { "/-/ide/project/#{project.full_path}/#{action}/master" }
+            let(:branch) { 'master' }
+            let(:route) { "/-/ide/project/#{project.full_path}/#{action}/#{branch}" }
 
             it 'instantiates project and branch instance vars and return 200' do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(assigns(:project)).to eq project
-              expect(assigns(:branch)).to eq 'master'
+              expect(assigns(:branch)).to eq branch
               expect(assigns(:path)).to be_nil
               expect(assigns(:merge_request)).to be_nil
-              expect(assigns(:forked_project)).to be_nil
+              expect(assigns(:fork_info)).to be_nil
             end
 
             it_behaves_like 'user cannot push code'
 
             context "/-/ide/project/:project/#{action}/:branch/-" do
-              let(:route) { "/-/ide/project/#{project.full_path}/#{action}/branch/slash/-" }
+              let(:branch) { 'branch/slash' }
+              let(:route) { "/-/ide/project/#{project.full_path}/#{action}/#{branch}/-" }
 
               it 'instantiates project and branch instance vars and return 200' do
                 subject
 
                 expect(response).to have_gitlab_http_status(:ok)
                 expect(assigns(:project)).to eq project
-                expect(assigns(:branch)).to eq 'branch/slash'
+                expect(assigns(:branch)).to eq branch
                 expect(assigns(:path)).to be_nil
                 expect(assigns(:merge_request)).to be_nil
-                expect(assigns(:forked_project)).to be_nil
+                expect(assigns(:fork_info)).to be_nil
               end
 
               it_behaves_like 'user cannot push code'
 
               context "/-/ide/project/:project/#{action}/:branch/-/:path" do
-                let(:route) { "/-/ide/project/#{project.full_path}/#{action}/master/-/foo/.bar" }
+                let(:branch) { 'master' }
+                let(:route) { "/-/ide/project/#{project.full_path}/#{action}/#{branch}/-/foo/.bar" }
 
                 it 'instantiates project, branch, and path instance vars and return 200' do
                   subject
 
                   expect(response).to have_gitlab_http_status(:ok)
                   expect(assigns(:project)).to eq project
-                  expect(assigns(:branch)).to eq 'master'
+                  expect(assigns(:branch)).to eq branch
                   expect(assigns(:path)).to eq 'foo/.bar'
                   expect(assigns(:merge_request)).to be_nil
-                  expect(assigns(:forked_project)).to be_nil
+                  expect(assigns(:fork_info)).to be_nil
                 end
 
                 it_behaves_like 'user cannot push code'
@@ -179,7 +192,7 @@ RSpec.describe IdeController do
           expect(assigns(:branch)).to be_nil
           expect(assigns(:path)).to be_nil
           expect(assigns(:merge_request)).to eq merge_request.id.to_s
-          expect(assigns(:forked_project)).to be_nil
+          expect(assigns(:fork_info)).to be_nil
         end
 
         it_behaves_like 'user cannot push code'

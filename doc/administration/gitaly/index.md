@@ -25,10 +25,9 @@ repository access for GitLab. Other types of GitLab data aren't accessed using G
 <!-- vale gitlab.FutureTense = NO -->
 
 WARNING:
-From GitLab 13.0, Gitaly support for NFS is deprecated. As of GitLab 14.0, NFS-related issues
-with Gitaly will no longer be addressed. Upgrade to [Gitaly Cluster](praefect.md) as soon as
-possible. Tools to [enable bulk moves](https://gitlab.com/groups/gitlab-org/-/epics/4916)
-of projects to Gitaly Cluster are planned.
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
+considered and customer technical support will be considered out of scope.
+[Read more about Gitaly and NFS](#nfs-deprecation-notice).
 
 <!-- vale gitlab.FutureTense = YES -->
 
@@ -155,6 +154,28 @@ There are two facets to our efforts to remove direct Git access in GitLab:
 
 The second facet presents the only real solution. For this, we developed
 [Gitaly Cluster](praefect.md).
+
+## NFS deprecation notice
+
+<!-- vale gitlab.FutureTense = NO -->
+
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
+considered and customer technical support will be considered out of scope.
+
+Additional information:
+
+- [Recommended NFS mount options and known issues with Gitaly and NFS](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+- [GitLab statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs).
+
+<!-- vale gitlab.FutureTense = YES -->
+
+GitLab recommends:
+
+- Creating a [Gitaly Cluster](praefect.md) as soon as possible.
+- [Moving your projects](praefect.md#migrate-existing-repositories-to-gitaly-cluster) from NFS-based
+storage to the Gitaly Cluster.
+
+We welcome your feedback on this process: raise a support ticket, or [comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
 
 ## Troubleshooting Gitaly
 

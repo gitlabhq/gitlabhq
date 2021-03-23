@@ -33912,6 +33912,12 @@ msgstr ""
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "WebIDE|Fork project"
+msgstr ""
+
+msgid "WebIDE|Go to fork"
+msgstr ""
+
 msgid "WebIDE|Merge request"
 msgstr ""
 
@@ -33925,6 +33931,9 @@ msgid "WebIDE|You need permission to edit files directly in this project."
 msgstr ""
 
 msgid "WebIDE|You need permission to edit files directly in this project. Fork this project to make your changes and submit a merge request."
+msgstr ""
+
+msgid "WebIDE|You need permission to edit files directly in this project. Go to your fork to make changes and submit a merge request."
 msgstr ""
 
 msgid "Webhook"

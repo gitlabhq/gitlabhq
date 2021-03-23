@@ -41,20 +41,20 @@ module BlobHelper
     result
   end
 
-  def ide_fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    fork_path_for_current_user(project, ide_edit_path(project, ref, path))
+  def ide_fork_and_edit_path(project = @project, ref = @ref, path = @path, with_notice: true)
+    fork_path_for_current_user(project, ide_edit_path(project, ref, path), with_notice: with_notice)
   end
 
   def fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
     fork_path_for_current_user(project, edit_blob_path(project, ref, path, options))
   end
 
-  def fork_path_for_current_user(project, path)
+  def fork_path_for_current_user(project, path, with_notice: true)
     return unless current_user
 
     project_forks_path(project,
                       namespace_key: current_user.namespace&.id,
-                      continue: edit_blob_fork_params(path))
+                      continue: edit_blob_fork_params(path, with_notice: with_notice))
   end
 
   def encode_ide_path(path)
@@ -330,12 +330,12 @@ module BlobHelper
     blob if blob&.readable_text?
   end
 
-  def edit_blob_fork_params(path)
+  def edit_blob_fork_params(path, with_notice: true)
     {
       to: path,
-      notice: edit_in_new_fork_notice,
-      notice_now: edit_in_new_fork_notice_now
-    }
+      notice: (edit_in_new_fork_notice if with_notice),
+      notice_now: (edit_in_new_fork_notice_now if with_notice)
+    }.compact
   end
 
   def edit_modify_file_fork_params(action)

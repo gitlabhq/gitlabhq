@@ -19,7 +19,7 @@ You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.ht
 Your Grafana instance must:
 
 - Be available to the target user, either as a public dashboard or on the same network.
-- Have [Grafana Image Renderer](https://grafana.com/grafana/plugins/grafana-image-renderer) installed.
+- Have [Grafana Image Renderer](https://grafana.com/grafana/plugins/grafana-image-renderer/) installed.
 
 To use Grafana-rendered images:
 
