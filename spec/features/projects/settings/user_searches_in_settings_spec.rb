@@ -11,9 +11,11 @@ RSpec.describe 'User searches project settings', :js do
   end
 
   context 'in general settings page' do
-    let(:visit_path) { edit_project_path(project) }
+    before do
+      visit edit_project_path(project)
+    end
 
-    it_behaves_like 'can search settings with feature flag check', 'Naming', 'Visibility'
+    it_behaves_like 'can search settings', 'Naming', 'Visibility'
   end
 
   context 'in Integrations page' do

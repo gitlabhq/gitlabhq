@@ -11,10 +11,12 @@ RSpec.describe 'User searches group settings', :js do
     sign_in(user)
   end
 
-  context 'in General settings page' do
-    let(:visit_path) { edit_group_path(group) }
+  context 'in general settings page' do
+    before do
+      visit edit_group_path(group)
+    end
 
-    it_behaves_like 'can search settings with feature flag check', 'Naming', 'Permissions'
+    it_behaves_like 'can search settings', 'Naming', 'Permissions'
   end
 
   context 'in Integrations page' do

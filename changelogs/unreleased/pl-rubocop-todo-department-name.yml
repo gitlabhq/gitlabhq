@@ -1,0 +1,5 @@
+---
+title: Fixes rubocop offense Migration/DepartmentName
+merge_request: 56997
+author: Shubham Kumar (@imskr)
+type: fixed

@@ -424,6 +424,20 @@ class IssuableBaseService < BaseService
     associations
   end
 
+  def handle_move_between_ids(issuable_position)
+    return unless params[:move_between_ids]
+
+    after_id, before_id = params.delete(:move_between_ids)
+    positioning_scope_id = params.delete(positioning_scope_key)
+
+    issuable_before = issuable_for_positioning(before_id, positioning_scope_id)
+    issuable_after = issuable_for_positioning(after_id, positioning_scope_id)
+
+    raise ActiveRecord::RecordNotFound unless issuable_before || issuable_after
+
+    issuable_position.move_between(issuable_before, issuable_after)
+  end
+
   def has_changes?(issuable, old_labels: [], old_assignees: [], old_reviewers: [])
     valid_attrs = [:title, :description, :assignee_ids, :reviewer_ids, :milestone_id, :target_branch]
 

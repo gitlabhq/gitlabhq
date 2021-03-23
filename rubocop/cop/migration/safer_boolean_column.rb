@@ -21,9 +21,9 @@ module RuboCop
       class SaferBooleanColumn < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        DEFAULT_OFFENSE = 'Boolean columns on the `%s` table should have a default. You may wish to use `add_column_with_default`.'.freeze
-        NULL_OFFENSE = 'Boolean columns on the `%s` table should disallow nulls.'.freeze
-        DEFAULT_AND_NULL_OFFENSE = 'Boolean columns on the `%s` table should have a default and should disallow nulls. You may wish to use `add_column_with_default`.'.freeze
+        DEFAULT_OFFENSE = 'Boolean columns on the `%s` table should have a default. You may wish to use `add_column_with_default`.'
+        NULL_OFFENSE = 'Boolean columns on the `%s` table should disallow nulls.'
+        DEFAULT_AND_NULL_OFFENSE = 'Boolean columns on the `%s` table should have a default and should disallow nulls. You may wish to use `add_column_with_default`.'
 
         def_node_matcher :add_column?, <<~PATTERN
           (send nil? :add_column $...)

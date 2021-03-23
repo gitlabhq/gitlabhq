@@ -292,11 +292,6 @@ img.emoji {
   }
 }
 
-.search_box {
-  @extend .card.card-body;
-  text-align: center;
-}
-
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 

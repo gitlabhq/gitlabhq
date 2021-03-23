@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards', :js do
+RSpec.describe 'Project issue boards sidebar assignee', :js do
   include BoardHelpers
 
-  let(:user)         { create(:user) }
-  let(:project)      { create(:project, :public) }
-  let!(:development) { create(:label, project: project, name: 'Development') }
-  let!(:regression)  { create(:label, project: project, name: 'Regression') }
-  let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
-  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], labels: [development], relative_position: 2) }
-  let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
-  let(:board)        { create(:board, project: project) }
-  let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card)         { find('.board:nth-child(2)').first('.board-card') }
+  let_it_be(:user)        { create(:user) }
+  let_it_be(:project)     { create(:project, :public) }
+  let_it_be(:development) { create(:label, project: project, name: 'Development') }
+  let_it_be(:regression)  { create(:label, project: project, name: 'Regression') }
+  let_it_be(:stretch)     { create(:label, project: project, name: 'Stretch') }
+  let!(:issue1)           { create(:labeled_issue, project: project, assignees: [user], labels: [development], relative_position: 2) }
+  let!(:issue2)           { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
+  let(:board)             { create(:board, project: project) }
+  let!(:list)             { create(:list, board: board, label: development, position: 0) }
+  let(:card)              { find('.board:nth-child(2)').first('.board-card') }
 
   before do
     project.add_maintainer(user)

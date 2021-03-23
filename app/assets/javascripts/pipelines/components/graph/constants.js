@@ -10,3 +10,6 @@ export const ONE_COL_WIDTH = 180;
 
 export const REST = 'rest';
 export const GRAPHQL = 'graphql';
+
+export const STAGE_VIEW = 'stage';
+export const LAYER_VIEW = 'layer';

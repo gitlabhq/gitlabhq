@@ -94,14 +94,6 @@ body.modal-open {
   padding-right: 0 !important;
 }
 
-.modal-no-backdrop {
-  @extend .modal-dialog;
-
-  .modal-content {
-    box-shadow: none;
-  }
-}
-
 .modal {
   background-color: $black-transparent;
 

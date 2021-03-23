@@ -24,6 +24,7 @@ describe('RemoveMemberButton', () => {
       store: createStore(state),
       propsData: {
         memberId: 1,
+        memberType: 'GroupMember',
         message: 'Are you sure you want to remove John Smith?',
         title: 'Remove member',
         isAccessRequest: true,
@@ -44,6 +45,7 @@ describe('RemoveMemberButton', () => {
 
     expect(wrapper.attributes()).toMatchObject({
       'data-member-path': '/groups/foo-bar/-/group_members/1',
+      'data-member-type': 'GroupMember',
       'data-message': 'Are you sure you want to remove John Smith?',
       'data-is-access-request': 'true',
       'aria-label': 'Remove member',

@@ -22,6 +22,12 @@ module Boards
         )
       end
 
+      reposition_ids = move_between_ids(params)
+      if reposition_ids
+        attrs[:move_between_ids] = reposition_ids
+        attrs.merge!(reposition_parent)
+      end
+
       attrs
     end
 
@@ -67,6 +73,14 @@ module Boards
         end
 
       Array(label_ids).compact
+    end
+
+    def move_between_ids(move_params)
+      ids = [move_params[:move_after_id], move_params[:move_before_id]]
+              .map(&:to_i)
+              .map { |m| m > 0 ? m : nil }
+
+      ids.any? ? ids : nil
     end
   end
 end

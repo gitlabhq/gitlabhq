@@ -204,10 +204,6 @@
     margin-bottom: 10px;
   }
 
-  &:hover {
-    @extend .form-control:hover;
-  }
-
   &.focus,
   &.focus:hover {
     border-color: $blue-300;

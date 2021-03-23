@@ -210,11 +210,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when build trace is not being watched' do
-          it 'returns X-GitLab-Trace-Update-Interval as 30' do
+          it 'returns the interval in X-GitLab-Trace-Update-Interval' do
             patch_the_trace
 
             expect(response).to have_gitlab_http_status(:accepted)
-            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
+            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('60')
+          end
+
+          context 'when ci_lower_frequency_trace_update feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_lower_frequency_trace_update: false)
+            end
+
+            it 'returns the legacy interval in X-GitLab-Trace-Update-Interval' do
+              patch_the_trace
+
+              expect(response).to have_gitlab_http_status(:accepted)
+              expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
+            end
           end
         end
       end

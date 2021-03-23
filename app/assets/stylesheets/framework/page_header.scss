@@ -32,8 +32,10 @@
   }
 
   .avatar {
-    @extend .avatar-inline;
-    margin-left: 0;
+    float: none;
+    display: inline-block;
+    margin-left: 2px;
+    flex-shrink: 0;
 
     @include media-breakpoint-up(sm) {
       margin-left: 4px;

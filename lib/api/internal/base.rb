@@ -23,7 +23,7 @@ module API
 
       helpers ::API::Helpers::InternalHelpers
 
-      UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'.freeze
+      UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'
 
       VALID_PAT_SCOPES = Set.new(
         Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth::REGISTRY_SCOPES

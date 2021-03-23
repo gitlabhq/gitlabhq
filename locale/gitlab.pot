@@ -402,6 +402,9 @@ msgstr ""
 msgid "%{board_target} not found"
 msgstr ""
 
+msgid "%{codeStart}needs:%{codeEnd} relationships"
+msgstr ""
+
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -3209,6 +3212,9 @@ msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
 msgstr ""
 
 msgid "Also called \"Relying party service URL\" or \"Reply URL\""
+msgstr ""
+
+msgid "Also remove direct user membership from subgroups and projects"
 msgstr ""
 
 msgid "Also unassign this user from related issues and merge requests"
@@ -21681,6 +21687,9 @@ msgstr ""
 msgid "Or you can choose one of the suggested colors below"
 msgstr ""
 
+msgid "Order jobs by"
+msgstr ""
+
 msgid "Orphaned member"
 msgstr ""
 
@@ -33014,7 +33023,10 @@ msgstr ""
 msgid "User was successfully created."
 msgstr ""
 
-msgid "User was successfully removed from group and any subresources."
+msgid "User was successfully removed from group and any subgroups and projects."
+msgstr ""
+
+msgid "User was successfully removed from group."
 msgstr ""
 
 msgid "User was successfully removed from project."
@@ -33501,6 +33513,9 @@ msgstr ""
 msgid "View the documentation"
 msgstr ""
 
+msgid "View the jobs grouped into stages"
+msgstr ""
+
 msgid "View the latest successful deployment to this environment"
 msgstr ""
 
@@ -33508,6 +33523,9 @@ msgid "View the performance dashboard at"
 msgstr ""
 
 msgid "View users statistics"
+msgstr ""
+
+msgid "View what jobs are needed for a job to run"
 msgstr ""
 
 msgid "Viewed"

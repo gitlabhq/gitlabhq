@@ -11,6 +11,7 @@ export const member = {
     fullName: 'Foo Bar',
     webUrl: 'https://gitlab.com/groups/foo-bar',
   },
+  type: 'GroupMember',
   user: {
     id: 123,
     name: 'Administrator',

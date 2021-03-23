@@ -555,6 +555,34 @@ RSpec.describe API::Members do
     end
   end
 
+  describe 'DELETE /groups/:id/members/:user_id' do
+    let(:other_user) { create(:user) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    before do
+      nested_group.add_developer(developer)
+      nested_group.add_developer(other_user)
+    end
+
+    it 'deletes only the member with skip_subresources=true' do
+      expect do
+        delete api("/groups/#{group.id}/members/#{developer.id}", maintainer), params: { skip_subresources: true }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end.to change { group.members.count }.by(-1)
+          .and change { nested_group.members.count }.by(0)
+    end
+
+    it 'deletes member and its sub memberships with skip_subresources=false' do
+      expect do
+        delete api("/groups/#{group.id}/members/#{developer.id}", maintainer), params: { skip_subresources: false }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end.to change { group.members.count }.by(-1)
+          .and change { nested_group.members.count }.by(-1)
+    end
+  end
+
   [false, true].each do |all|
     it_behaves_like 'GET /:source_type/:id/members/(all)', 'project', all do
       let(:source) { project }

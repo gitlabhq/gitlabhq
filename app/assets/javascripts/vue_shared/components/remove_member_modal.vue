@@ -22,6 +22,9 @@ export default {
     isAccessRequest() {
       return parseBoolean(this.modalData.isAccessRequest);
     },
+    isGroupMember() {
+      return this.modalData.memberType === 'GroupMember';
+    },
     actionText() {
       return this.isAccessRequest ? __('Deny access request') : __('Remove member');
     },
@@ -70,6 +73,9 @@ export default {
 
       <input ref="method" type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
+      <gl-form-checkbox v-if="isGroupMember" name="remove_sub_memberships">
+        {{ __('Also remove direct user membership from subgroups and projects') }}
+      </gl-form-checkbox>
       <gl-form-checkbox v-if="!isAccessRequest" name="unassign_issuables">
         {{ __('Also unassign this user from related issues and merge requests') }}
       </gl-form-checkbox>

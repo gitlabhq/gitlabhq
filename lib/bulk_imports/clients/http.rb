@@ -3,7 +3,7 @@
 module BulkImports
   module Clients
     class Http
-      API_VERSION = 'v4'.freeze
+      API_VERSION = 'v4'
       DEFAULT_PAGE = 1.freeze
       DEFAULT_PER_PAGE = 30.freeze
 

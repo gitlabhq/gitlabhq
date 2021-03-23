@@ -18,7 +18,7 @@ module API
       # Used to differentiate Jira Cloud requests from Jira Server requests
       # Jira Cloud user agent format: Jira DVCS Connector Vertigo/version
       # Jira Server user agent format: Jira DVCS Connector/version
-      JIRA_DVCS_CLOUD_USER_AGENT = 'Jira DVCS Connector Vertigo'.freeze
+      JIRA_DVCS_CLOUD_USER_AGENT = 'Jira DVCS Connector Vertigo'
 
       include PaginationParams
 

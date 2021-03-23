@@ -4,7 +4,7 @@ module Emails
   module InProductMarketing
     include InProductMarketingHelper
 
-    FROM_ADDRESS = 'GitLab <team@gitlab.com>'.freeze
+    FROM_ADDRESS = 'GitLab <team@gitlab.com>'
     CUSTOM_HEADERS = {
       'X-Mailgun-Track' => 'yes',
       'X-Mailgun-Track-Clicks' => 'yes',

@@ -1437,6 +1437,34 @@ describe('My Index test with `createMockApollo`', () => {
 });
 ```
 
+When you need to configure the mocked apollo client's caching behavior,
+provide additional cache options when creating a mocked client instance and the provided options will merge with the default cache option:
+
+```javascript
+const defaultCacheOptions = {
+  fragmentMatcher: { match: () => true },
+  addTypename: false,
+};
+```
+
+```javascript
+function createMockApolloProvider({ props = {}, requestHandlers } = {}) {
+  Vue.use(VueApollo);
+
+  const mockApollo = createMockApollo(
+    requestHandlers,
+    {},
+    {
+      dataIdFromObject: (object) =>
+        // eslint-disable-next-line no-underscore-dangle
+        object.__typename === 'Requirement' ? object.iid : defaultDataIdFromObject(object),
+    },
+  );
+
+  return mockApollo;
+}
+```
+
 ## Handling errors
 
 The GitLab GraphQL mutations have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).

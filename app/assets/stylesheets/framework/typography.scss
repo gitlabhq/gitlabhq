@@ -1,6 +1,3 @@
-// Custom Fontawesome icons
-@import 'fontawesome_custom';
-
 /**
  * Apply Markup (Markdown/AsciiDoc) typography
  *
@@ -435,7 +432,9 @@
     }
   }
 
-  a.with-attachment-icon {
+  a.with-attachment-icon,
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
 
@@ -449,8 +448,6 @@
 
   a[href*='/uploads/'],
   a[href*='storage.googleapis.com/google-code-attachments/'] {
-    @extend .with-attachment-icon;
-
     &.no-attachment-icon {
       &::before {
         display: none;
@@ -507,32 +504,56 @@
     text-decoration: line-through;
   }
 
+  // Custom Font Awesome styles that render emojis in asciidoc
+  .fa {
+    display: inline-block;
+    font-style: normal;
+    font-size: 14px;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .fa-2x,
+  .admonitionblock td.icon [class^='fa icon-'] {
+    font-size: 2em;
+  }
+
+  .fa-exclamation-triangle::before,
+  .admonitionblock td.icon .icon-warning::before {
+    content: '⚠';
+  }
+
+  .fa-exclamation-circle::before,
+  .admonitionblock td.icon .icon-important::before {
+    content: '❗';
+  }
+
+  .fa-lightbulb-o::before,
+  .admonitionblock td.icon .icon-tip::before {
+    content: '💡';
+  }
+
+  .fa-thumb-tack::before,
+  .admonitionblock td.icon .icon-note::before {
+    content: '📌';
+  }
+
+  .fa-fire::before,
+  .admonitionblock td.icon .icon-caution::before {
+    content: '🔥';
+  }
+
+  .fa-square-o::before {
+    content: '\2610';
+  }
+
+  .fa-check-square-o::before {
+    content: '\2611';
+  }
+
   .admonitionblock td.icon {
     width: 1%;
-
-    [class^='fa icon-'] {
-      @extend .fa-2x;
-    }
-
-    .icon-note {
-      @extend .fa-thumb-tack;
-    }
-
-    .icon-tip {
-      @extend .fa-lightbulb-o;
-    }
-
-    .icon-warning {
-      @extend .fa-exclamation-triangle;
-    }
-
-    .icon-caution {
-      @extend .fa-fire;
-    }
-
-    .icon-important {
-      @extend .fa-exclamation-circle;
-    }
   }
 
   .metrics-embed {
@@ -640,12 +661,13 @@ code {
 .commit-sha,
 .ref-name,
 .pipeline-number {
-  @extend .monospace;
+  font-family: $monospace-font;
   font-size: 95%;
 }
 
 .git-revision-dropdown .dropdown-content ul li a {
-  @extend .ref-name;
+  font-family: $monospace-font;
+  font-size: 95%;
   word-break: break-all;
 }
 

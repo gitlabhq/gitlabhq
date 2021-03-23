@@ -59,6 +59,7 @@ export default {
       <remove-member-button
         v-else
         :member-id="member.id"
+        :member-type="member.type"
         :message="message"
         :title="s__('Member|Remove member')"
       />

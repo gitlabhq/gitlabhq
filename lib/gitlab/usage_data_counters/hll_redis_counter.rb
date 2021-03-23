@@ -157,7 +157,7 @@ module Gitlab
         def feature_enabled?(event)
           return true if event[:feature_flag].blank?
 
-          Feature.enabled?(event[:feature_flag], default_enabled: :yaml)
+          Feature.enabled?(event[:feature_flag], default_enabled: :yaml) && Feature.enabled?(:redis_hll_tracking, type: :ops, default_enabled: :yaml)
         end
 
         # Allow to add totals for events that are in the same redis slot, category and have the same aggregation level

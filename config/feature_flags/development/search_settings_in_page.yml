@@ -1,8 +1,0 @@
----
-name: search_settings_in_page
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50207
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/294025
-milestone: '13.7'
-type: development
-group: group::editor
-default_enabled: false

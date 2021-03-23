@@ -93,7 +93,25 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.track_event' do
-      context 'with feature flag set' do
+      context 'with redis_hll_tracking' do
+        it 'tracks the event when feature enabled' do
+          stub_feature_flags(redis_hll_tracking: true)
+
+          expect(Gitlab::Redis::HLL).to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+
+        it 'does not track the event with feature flag disabled' do
+          stub_feature_flags(redis_hll_tracking: false)
+
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+      end
+
+      context 'with event feature flag set' do
         it 'tracks the event when feature enabled' do
           stub_feature_flags(feature => true)
 
@@ -111,7 +129,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
       end
 
-      context 'with no feature flag set' do
+      context 'with no event feature flag set' do
         it 'tracks the event' do
           expect(Gitlab::Redis::HLL).to receive(:add)
 

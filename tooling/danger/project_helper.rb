@@ -30,7 +30,7 @@ module Tooling
         specs
       ].freeze
 
-      MESSAGE_PREFIX = '==>'.freeze
+      MESSAGE_PREFIX = '==>'
 
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {

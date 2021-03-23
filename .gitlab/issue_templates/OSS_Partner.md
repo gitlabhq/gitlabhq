@@ -1,10 +1,9 @@
-# Project Name | Migration Tracker
-<!-- Please edit this header with your project / organization's name. -->
+<!-- Please title your issue with the following format: "Project Name | Issue Tracker". -->
 
 ## Background
 
 <!-- 
-Please add information here about why you're planning on migrating. Include any initial announcements that have been made about the decision or status.
+Please add information here about why your project is considering a migration to GitLab, or why it decided to do so. Include any initial announcements that have been / were made about the decision or status.
 -->
 
 ### Goals
@@ -16,7 +15,7 @@ Please add information here about why you're planning on migrating. Include any 
 <!-- Please complete as many items in this list as possible. If you're not sure yet, add "TBD" (To be Decided) or "Unknown" -->
 
  * **Timeline.** - 
- * **Product.** - GitLab Gold/Ultimate or Community Edition
+ * **Product.** - SaaS-Ultimate/Self-Managed-Ultimate or Community Edition
  * **Project's License.** What kind of OSI-approved license does your project use? 
 
 ## Current Tooling and Replacements
@@ -30,6 +29,8 @@ Please fill in the table to give an overview of your current tooling. Here's a d
 - GitLab edition: in which GitLab edition (CE or EE) is this feature available? 
 
 Here's an example of a replacements overview from one of the projects which migrated to GitLab:  https://gitlab.com/gitlab-org/gitlab/-/issues/25657#gitlab-replacements
+
+Consider deleting the table below if you are unable to expand upon your current tooling.
 
 -->
 
@@ -63,5 +64,5 @@ Here is an example of what this list might look like once populated: https://git
  
 ------
 
-/label ~"Open Source" ~movingtogitlab
-/cc @nuritzi 
+/label ~"Open Source Partners"
+/cc @nuritzi @greg

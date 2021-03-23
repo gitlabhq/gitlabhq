@@ -22,12 +22,12 @@ invalidated.
 Response Code Legend:
 
 - `200` - Accepted
-- `4xx` - Not Accepted
+- `406` - Not Accepted
 - Other Codes - Accepted and Logged
 
 ## Configuration
 
-Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL.
+Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL and enable `ci_external_validation_service` feature flag.
 
 ## Payload Schema
 

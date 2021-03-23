@@ -42,6 +42,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   end
 
   let(:save_incompleted) { true }
+  let(:dot_com) { true }
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project, current_user: user, yaml_processor_result: yaml_processor_result, save_incompleted: save_incompleted
@@ -51,11 +52,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   describe '#perform!' do
     subject(:perform!) { step.perform! }
 
-    context 'when validation returns true' do
-      before do
-        allow(step).to receive(:validate_external).and_return(true)
-      end
+    let(:validation_service_url) { 'https://validation-service.external/' }
 
+    before do
+      stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
+      allow(Gitlab).to receive(:com?).and_return(dot_com)
+    end
+
+    shared_examples 'successful external authorization' do
       it 'does not drop the pipeline' do
         perform!
 
@@ -76,9 +80,103 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       end
     end
 
-    context 'when validation return false' do
+    context 'when validation returns 200 OK' do
       before do
-        allow(step).to receive(:validate_external).and_return(false)
+        stub_request(:post, validation_service_url).to_return(status: 200, body: "{}")
+      end
+
+      it_behaves_like 'successful external authorization'
+    end
+
+    context 'when validation returns 404 Not Found' do
+      before do
+        stub_request(:post, validation_service_url).to_return(status: 404, body: "{}")
+      end
+
+      it_behaves_like 'successful external authorization'
+    end
+
+    context 'when validation returns 500 Internal Server Error' do
+      before do
+        stub_request(:post, validation_service_url).to_return(status: 500, body: "{}")
+      end
+
+      it_behaves_like 'successful external authorization'
+    end
+
+    context 'when validation raises exceptions' do
+      before do
+        stub_request(:post, validation_service_url).to_raise(Net::OpenTimeout)
+      end
+
+      it_behaves_like 'successful external authorization'
+
+      it 'logs exceptions' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(Net::OpenTimeout), { project_id: project.id })
+
+        perform!
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_external_validation_service: false)
+        stub_request(:post, validation_service_url)
+      end
+
+      it 'does not drop the pipeline' do
+        perform!
+
+        expect(pipeline.status).not_to eq('failed')
+        expect(pipeline.errors).to be_empty
+      end
+
+      it 'does not break the chain' do
+        perform!
+
+        expect(step.break?).to be false
+      end
+
+      it 'does not make requests' do
+        perform!
+
+        expect(WebMock).not_to have_requested(:post, validation_service_url)
+      end
+    end
+
+    context 'when not on .com' do
+      let(:dot_com) { false }
+
+      before do
+        stub_feature_flags(ci_external_validation_service: false)
+        stub_request(:post, validation_service_url).to_return(status: 404, body: "{}")
+      end
+
+      it 'drops the pipeline' do
+        perform!
+
+        expect(pipeline.status).to eq('failed')
+        expect(pipeline).to be_persisted
+        expect(pipeline.errors.to_a).to include('External validation failed')
+      end
+
+      it 'breaks the chain' do
+        perform!
+
+        expect(step.break?).to be true
+      end
+
+      it 'logs the authorization' do
+        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
+
+        perform!
+      end
+    end
+
+    context 'when validation returns 406 Not Acceptable' do
+      before do
+        stub_request(:post, validation_service_url).to_return(status: 406, body: "{}")
       end
 
       it 'drops the pipeline' do

@@ -9,7 +9,7 @@ module RuboCop
       class RemoveIndex < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = '`remove_index` requires downtime, use `remove_concurrent_index` instead'.freeze
+        MSG = '`remove_index` requires downtime, use `remove_concurrent_index` instead'
 
         def on_def(node)
           return unless in_migration?(node)

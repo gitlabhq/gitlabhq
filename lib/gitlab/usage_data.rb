@@ -711,6 +711,8 @@ module Gitlab
       end
 
       def redis_hll_counters
+        return {} unless Feature.enabled?(:redis_hll_tracking, type: :ops, default_enabled: :yaml)
+
         { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
