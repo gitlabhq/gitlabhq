@@ -49,15 +49,15 @@ RSpec.describe Gitlab::Diff::CharDiff do
         old_diffs, new_diffs = subject
 
         expect(old_diffs).to eq([])
-        expect(new_diffs).to eq([0..12])
+        expect(new_diffs).to eq([Gitlab::MarkerRange.new(0, 12, mode: :addition)])
       end
     end
 
     it 'returns ranges of changes' do
       old_diffs, new_diffs = subject
 
-      expect(old_diffs).to eq([11..11])
-      expect(new_diffs).to eq([3..3])
+      expect(old_diffs).to eq([Gitlab::MarkerRange.new(11, 11, mode: :deletion)])
+      expect(new_diffs).to eq([Gitlab::MarkerRange.new(3, 3, mode: :addition)])
     end
   end
 

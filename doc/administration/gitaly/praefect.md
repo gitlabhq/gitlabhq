@@ -189,7 +189,7 @@ The following table outlines the major differences between Gitaly Cluster and Ge
 
 For more information, see:
 
-- [Gitaly architecture](index.md#architecture).
+- [Gitaly](index.md).
 - Geo [use cases](../geo/index.md#use-cases) and [architecture](../geo/index.md#architecture).
 
 ## Architecture

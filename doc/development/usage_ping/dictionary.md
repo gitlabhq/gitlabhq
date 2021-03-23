@@ -9788,6 +9788,30 @@ Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.epics_usage_total_unique_counts_monthly`
+
+Total monthly users count for epics_usage
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210318183733_epics_usage_total_unique_counts_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.epics_usage_total_unique_counts_weekly`
+
+Total weekly users count for epics_usage
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210318183220_epics_usage_total_unique_counts_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_epic_created_monthly`
 
 Count of MAU creating epics

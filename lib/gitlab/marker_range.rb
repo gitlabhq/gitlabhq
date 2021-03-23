@@ -24,6 +24,12 @@ module Gitlab
       Range.new(self.begin, self.end, self.exclude_end?)
     end
 
+    def ==(other)
+      return false unless other.is_a?(self.class)
+
+      self.mode == other.mode && super
+    end
+
     attr_reader :mode
   end
 end

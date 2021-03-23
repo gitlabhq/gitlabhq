@@ -95,14 +95,13 @@ RSpec.describe 'Marginalia spec' do
       # have to do some extra steps to make this happen:
       # https://github.com/rails/rails/issues/37270#issuecomment-553927324
       around do |example|
-        original_queue_adapter = ActiveJob::Base.queue_adapter
         descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
-
-        ActiveJob::Base.queue_adapter = :sidekiq
         descendants.each(&:disable_test_adapter)
+        ActiveJob::Base.queue_adapter = :sidekiq
+
         example.run
-        descendants.each { |a| a.enable_test_adapter(ActiveJob::QueueAdapters::TestAdapter.new) }
-        ActiveJob::Base.queue_adapter = original_queue_adapter
+
+        descendants.each { |a| a.queue_adapter = :test }
       end
 
       let(:delivery_job) { MarginaliaTestMailer.first_user.deliver_later }

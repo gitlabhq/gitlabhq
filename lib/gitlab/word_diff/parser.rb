@@ -31,7 +31,7 @@ module Gitlab
               @chunks.add(segment)
 
             when Segments::Newline
-              yielder << build_line(@chunks.content, nil, parent_file: diff_file)
+              yielder << build_line(@chunks.content, nil, parent_file: diff_file).tap { |line| line.set_marker_ranges(@chunks.marker_ranges) }
 
               @chunks.reset
               counter.increase_pos_num

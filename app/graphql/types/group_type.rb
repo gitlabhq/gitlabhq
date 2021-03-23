@@ -114,6 +114,12 @@ module Types
           description: 'Labels available on this group.',
           resolver: Resolvers::GroupLabelsResolver
 
+    field :timelogs, ::Types::TimelogType.connection_type, null: false,
+          description: 'Time logged on issues in the group and its subgroups.',
+          extras: [:lookahead],
+          complexity: 5,
+          resolver: ::Resolvers::TimelogResolver
+
     def avatar_url
       object.avatar_url(only_path: false)
     end

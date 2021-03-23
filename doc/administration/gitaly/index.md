@@ -7,20 +7,45 @@ type: reference
 
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that provides high-level RPC access to
-Git repositories. Without it, no GitLab components can read or write Git data.
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
+It is used by GitLab to read and write Git data.
 
-In the Gitaly documentation:
+Gitaly implements a client-server architecture:
 
-- **Gitaly server** refers to any node that runs Gitaly itself.
-- **Gitaly client** refers to any node that runs a process that makes requests of the
-  Gitaly server. Processes include, but are not limited to:
+- A Gitaly server is any node that runs Gitaly itself.
+- A Gitaly client is any node that runs a process that makes requests of the Gitaly server. These
+  include, but are not limited to:
   - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab).
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
-GitLab end users do not have direct access to Gitaly. Gitaly manages only Git
-repository access for GitLab. Other types of GitLab data aren't accessed using Gitaly.
+The following illustrates the Gitaly client-server architecture:
+
+```mermaid
+flowchart TD
+  subgraph Gitaly clients
+    A[GitLab Rails]
+    B[GitLab Workhorse]
+    C[GitLab Shell]
+    D[...]
+  end
+
+  subgraph Gitaly
+    E[Git integration]
+  end
+
+F[Local filesystem]
+
+A -- gRPC --> Gitaly
+B -- gRPC--> Gitaly
+C -- gRPC --> Gitaly
+D -- gRPC --> Gitaly
+
+E --> F
+```
+
+End users do not have direct access to Gitaly. Gitaly manages only Git repository access for GitLab.
+Other types of GitLab data aren't accessed using Gitaly.
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -31,45 +56,47 @@ considered and customer technical support will be considered out of scope.
 
 <!-- vale gitlab.FutureTense = YES -->
 
-## Architecture
-
-The following is a high-level architecture overview of how Gitaly is used.
-
-![Gitaly architecture diagram](img/architecture_v12_4.png)
-
 ## Configure Gitaly
 
-Gitaly comes pre-configured with Omnibus GitLab. For more information on customizing your
-Gitaly installation, see [Configure Gitaly](configure_gitaly.md).
+Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
+[suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
 
-## Direct Git access bypassing Gitaly
+- Omnibus GitLab installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
+- Source installations or custom Gitaly installations, see [Configure Gitaly](#configure-gitaly).
 
-GitLab doesn't advise directly accessing Gitaly repositories stored on disk with
-a Git client, because Gitaly is being continuously improved and changed. These
-improvements may invalidate assumptions, resulting in performance degradation, instability, and even data loss.
+GitLab installations for more than 2000 users should use Gitaly Cluster.
 
-Gitaly has optimizations, such as the
-[`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
-that rely on Gitaly controlling and monitoring access to repositories by using the
-official gRPC interface. Likewise, Praefect has optimizations, such as fault
-tolerance and distributed reads, that depend on the gRPC interface and
-database to determine repository state.
+## Gitaly Cluster
 
-For these reasons, **accessing repositories directly is done at your own risk
-and is not supported**.
+Gitaly can run in a clustered configuration to scale Gitaly and increase fault tolerance. For more
+information, see [Gitaly Cluster](praefect.md).
+
+## Do not bypass Gitaly
+
+GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client,
+because Gitaly is being continuously improved and changed. These improvements may invalidate
+your assumptions, resulting in performance degradation, instability, and even data loss. For example:
+
+- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
+  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
+  interface.
+- [Gitaly Cluster](praefect.md) has optimizations, such as fault tolerance and
+  [distributed reads](praefect.md#distributed-reads), that depend on the gRPC interface and database
+  to determine repository state.
+
+WARNING:
+Accessing Git repositories directly is done at your own risk and is not supported.
 
 ## Direct access to Git in GitLab
 
 Direct access to Git uses code in GitLab known as the "Rugged patches".
 
-### History
+Before Gitaly existed, what are now Gitaly clients accessed Git repositories directly, either:
 
-Before Gitaly existed, what are now Gitaly clients used to access Git repositories directly, either:
-
-- On a local disk in the case of a single-machine Omnibus GitLab installation
+- On a local disk in the case of a single-machine Omnibus GitLab installation.
 - Using NFS in the case of a horizontally-scaled GitLab installation.
 
-Besides running plain `git` commands, GitLab used to use a Ruby library called
+In addition to running plain `git` commands, GitLab used a Ruby library called
 [Rugged](https://github.com/libgit2/rugged). Rugged is a wrapper around
 [libgit2](https://libgit2.org/), a stand-alone implementation of Git in the form of a C library.
 
@@ -80,9 +107,9 @@ not an external process, there was very little overhead between:
 - GitLab application code that tried to look up data in Git repositories.
 - The Git implementation itself.
 
-Because the combination of Rugged and Unicorn was so efficient, the GitLab application code ended up with lots of
-duplicate Git object lookups. For example, looking up the `master` commit a dozen times in one
-request. We could write inefficient code without poor performance.
+Because the combination of Rugged and Unicorn was so efficient, the GitLab application code ended up
+with lots of duplicate Git object lookups. For example, looking up the default branch commit a dozen
+times in one request. We could write inefficient code without poor performance.
 
 When we migrated these Git lookups to Gitaly calls, we suddenly had a much higher fixed cost per Git
 lookup. Even when Gitaly is able to re-use an already-running `git` process (for example, to look up
@@ -93,8 +120,8 @@ a commit), you still have:
 
 Using GitLab.com to measure, we reduced the number of Gitaly calls per request until the loss of
 Rugged's efficiency was no longer felt. It also helped that we run Gitaly itself directly on the Git
-file severs, rather than by using NFS mounts. This gave us a speed boost that counteracted the negative
-effect of not using Rugged anymore.
+file servers, rather than by using NFS mounts. This gave us a speed boost that counteracted the
+negative effect of not using Rugged anymore.
 
 Unfortunately, other deployments of GitLab could not remove NFS like we did on GitLab.com, and they
 got the worst of both worlds:
@@ -261,9 +288,9 @@ so, there's not that much visibility into what goes on inside
 If you have Prometheus set up to scrape your Gitaly process, you can see
 request rates and error codes for individual RPCs in `gitaly-ruby` by
 querying `grpc_client_handled_total`. Strictly speaking, this metric does
-not differentiate between `gitaly-ruby` and other RPCs, but in practice
-(as of GitLab 11.9), all gRPC calls made by Gitaly itself are internal
-calls from the main Gitaly process to one of its `gitaly-ruby` sidecars.
+not differentiate between `gitaly-ruby` and other RPCs. However from GitLab 11.9,
+all gRPC calls made by Gitaly itself are internal calls from the main Gitaly process to one of its
+`gitaly-ruby` sidecars.
 
 Assuming your `grpc_client_handled_total` counter observes only Gitaly,
 the following query shows you RPCs are (most likely) internally
@@ -370,9 +397,10 @@ update the secrets file on the Gitaly server to match the Gitaly client, then
 
 ### Command line tools cannot connect to Gitaly
 
-If you can't connect to a Gitaly server with command line (CLI) tools,
-and certain actions result in a `14: Connect Failed` error message,
-gRPC cannot reach your Gitaly server.
+gRPC cannot reach your Gitaly server if:
+
+- You can't connect to a Gitaly server with command-line tools.
+- Certain actions result in a `14: Connect Failed` error message.
 
 Verify you can reach Gitaly by using TCP:
 
@@ -412,8 +440,3 @@ the Gitaly server is experiencing
 
 Ensure the Gitaly clients and servers are synchronized, and use an NTP time
 server to keep them synchronized, if possible.
-
-### Praefect
-
-Praefect is a router and transaction manager for Gitaly, and a required
-component for running a Gitaly Cluster. For more information see [Gitaly Cluster](praefect.md).

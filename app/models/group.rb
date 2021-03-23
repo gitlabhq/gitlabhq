@@ -16,6 +16,7 @@ class Group < Namespace
   include Gitlab::Utils::StrongMemoize
   include GroupAPICompatibility
   include EachBatch
+  include HasTimelogsReport
 
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
