@@ -10,7 +10,6 @@ RSpec.describe 'User views pipeline editor button on root ci config file', :js d
 
   context "when the ci config is the root file" do
     before do
-      stub_feature_flags(consolidated_edit_button: false)
       project.add_developer(user)
       sign_in(user)
     end
@@ -33,7 +32,6 @@ RSpec.describe 'User views pipeline editor button on root ci config file', :js d
 
   context "when user cannot collaborate" do
     before do
-      stub_feature_flags(consolidated_edit_button: false)
       sign_in(user)
     end
     it 'does not shows the Pipeline Editor button' do

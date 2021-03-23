@@ -3,12 +3,15 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
 import apolloProvider from './graphql';
+import getCurrentIntegrationQuery from './graphql/queries/get_current_integration.query.graphql';
 
-apolloProvider.clients.defaultClient.cache.writeData({
+apolloProvider.clients.defaultClient.cache.writeQuery({
+  query: getCurrentIntegrationQuery,
   data: {
     currentIntegration: null,
   },
 });
+
 Vue.use(GlToast);
 
 export default (el) => {

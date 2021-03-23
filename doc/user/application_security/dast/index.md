@@ -718,6 +718,22 @@ variables:
   DAST_ZAP_CLI_OPTIONS: "-config replacer.full_list(0).description=auth -config replacer.full_list(0).enabled=true -config replacer.full_list(0).matchtype=REQ_HEADER -config replacer.full_list(0).matchstr=Authorization -config replacer.full_list(0).regex=false -config replacer.full_list(0).replacement=TOKEN"
 ```
 
+### Bleeding-edge vulnerability definitions
+
+ZAP first creates rules in the `alpha` class. After a testing period with
+the community, they are promoted to `beta`. DAST uses `beta` definitions by
+default. To request `alpha` definitions, use the
+`DAST_INCLUDE_ALPHA_VULNERABILITIES` CI/CD variable as shown in the
+following configuration:
+
+```yaml
+include:
+  template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_INCLUDE_ALPHA_VULNERABILITIES: "true"
+```
+
 ### Cloning the project's repository
 
 The DAST job does not require the project's repository to be present when running, so by default
@@ -1171,38 +1187,6 @@ dast:
       - $DAST_XML_REPORT
       - gl-dast-report.json
 ```
-
-## Security Dashboard
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Bleeding-edge vulnerability definitions
-
-ZAP first creates rules in the `alpha` class. After a testing period with
-the community, they are promoted to `beta`. DAST uses `beta` definitions by
-default. To request `alpha` definitions, use the
-`DAST_INCLUDE_ALPHA_VULNERABILITIES` CI/CD variable as shown in the
-following configuration:
-
-```yaml
-include:
-  template: DAST.gitlab-ci.yml
-
-variables:
-  DAST_INCLUDE_ALPHA_VULNERABILITIES: "true"
-```
-
-## Interacting with the vulnerabilities
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[address the vulnerabilities](../index.md#addressing-vulnerabilities).
-
-## Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
 ## Optimizing DAST
 

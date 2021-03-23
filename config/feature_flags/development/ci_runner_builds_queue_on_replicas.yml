@@ -1,7 +1,7 @@
 ---
 name: ci_runner_builds_queue_on_replicas
-introduced_by_url: 
-rollout_issue_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325723
 milestone: '13.10'
 type: development
 group: group::continuous integration

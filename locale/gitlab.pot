@@ -13833,6 +13833,9 @@ msgstr ""
 msgid "Geo|%{name} is scheduled for re-verify"
 msgstr ""
 
+msgid "Geo|%{title} checksum progress"
+msgstr ""
+
 msgid "Geo|Add site"
 msgstr ""
 
@@ -13947,13 +13950,13 @@ msgstr ""
 msgid "Geo|Please refer to Geo Troubleshooting."
 msgstr ""
 
-msgid "Geo|Primary Details"
-msgstr ""
-
 msgid "Geo|Primary node"
 msgstr ""
 
 msgid "Geo|Primary site"
+msgstr ""
+
+msgid "Geo|Progress Bar Placeholder"
 msgstr ""
 
 msgid "Geo|Project"
@@ -13978,6 +13981,15 @@ msgid "Geo|Remove entry"
 msgstr ""
 
 msgid "Geo|Remove tracking database entry"
+msgstr ""
+
+msgid "Geo|Replicated data is verified with the secondary node(s) using checksums."
+msgstr ""
+
+msgid "Geo|Replication slot WAL"
+msgstr ""
+
+msgid "Geo|Replication slots"
 msgstr ""
 
 msgid "Geo|Resync"
@@ -14053,6 +14065,9 @@ msgid "Geo|Unknown state"
 msgstr ""
 
 msgid "Geo|Verification failed - %{error}"
+msgstr ""
+
+msgid "Geo|Verificaton information"
 msgstr ""
 
 msgid "Geo|Waiting for scheduler"
@@ -23860,6 +23875,9 @@ msgid "ProjectOverview|You have reached your project limit"
 msgstr ""
 
 msgid "ProjectOverview|You must sign in to star a project"
+msgstr ""
+
+msgid "ProjectPage|Copy project ID"
 msgstr ""
 
 msgid "ProjectPage|Project ID: %{project_id}"
