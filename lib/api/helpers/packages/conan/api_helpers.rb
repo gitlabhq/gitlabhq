@@ -14,7 +14,8 @@ module API
               package,
               current_user,
               project,
-              conan_package_reference: params[:conan_package_reference]
+              conan_package_reference: params[:conan_package_reference],
+              id: params[:id]
             )
 
             render_api_error!("No recipe manifest found", 404) if yield(presenter).empty?

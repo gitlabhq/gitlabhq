@@ -205,6 +205,14 @@ RSpec.shared_examples 'empty recipe for not found package' do
       'aa/bb/%{project}/ccc' % { project: ::Packages::Conan::Metadatum.package_username_from(full_path: project.full_path) }
     end
 
+    let(:presenter) { double('::Packages::Conan::PackagePresenter') }
+
+    before do
+      allow(::Packages::Conan::PackagePresenter).to receive(:new)
+        .with(package, user, package.project, any_args)
+        .and_return(presenter)
+    end
+
     it 'returns not found' do
       allow(::Packages::Conan::PackagePresenter).to receive(:new)
         .with(
@@ -248,8 +256,6 @@ RSpec.shared_examples 'recipe download_urls' do
       'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
     }
 
-    allow(presenter).to receive(:recipe_urls) { expected_response }
-
     subject
 
     expect(json_response).to eq(expected_response)
@@ -267,8 +273,6 @@ RSpec.shared_examples 'package download_urls' do
       'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conanmanifest.txt",
       'conan_package.tgz' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conan_package.tgz"
     }
-
-    allow(presenter).to receive(:package_urls) { expected_response }
 
     subject
 
@@ -309,12 +313,13 @@ RSpec.shared_examples 'recipe snapshot endpoint' do
 
   context 'with existing package' do
     it 'returns a hash of files with their md5 hashes' do
-      expected_response = {
-        'conanfile.py'      => 'md5hash1',
-        'conanmanifest.txt' => 'md5hash2'
-      }
+      conan_file_file = package.package_files.find_by(file_name: 'conanfile.py')
+      conan_manifest_file = package.package_files.find_by(file_name: 'conanmanifest.txt')
 
-      allow(presenter).to receive(:recipe_snapshot) { expected_response }
+      expected_response = {
+        'conanfile.py'      => conan_file_file.file_md5,
+        'conanmanifest.txt' => conan_manifest_file.file_md5
+      }
 
       subject
 
@@ -333,12 +338,10 @@ RSpec.shared_examples 'package snapshot endpoint' do
   context 'with existing package' do
     it 'returns a hash of md5 values for the files' do
       expected_response = {
-        'conaninfo.txt'     => "md5hash1",
-        'conanmanifest.txt' => "md5hash2",
-        'conan_package.tgz' => "md5hash3"
+        'conaninfo.txt'     => "12345abcde",
+        'conanmanifest.txt' => "12345abcde",
+        'conan_package.tgz' => "12345abcde"
       }
-
-      allow(presenter).to receive(:package_snapshot) { expected_response }
 
       subject
 

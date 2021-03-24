@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # On-call Schedule Management **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.11.
 
 Use on-call schedule management to create schedules for responders to rotate on-call
 responsibilities. Maintain the availability of your software services by putting your teams on-call.

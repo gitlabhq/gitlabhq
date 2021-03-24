@@ -110,7 +110,8 @@ module Namespaces
     end
 
     def range
-      (interval + 1).days.ago.beginning_of_day..(interval + 1).days.ago.end_of_day
+      date = (interval + 1).days.ago
+      date.beginning_of_day..date.end_of_day
     end
 
     def incomplete_action

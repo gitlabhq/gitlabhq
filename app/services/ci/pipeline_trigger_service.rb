@@ -73,11 +73,7 @@ module Ci
     end
 
     def variables
-      if ::Feature.enabled?(:ci_trigger_payload_into_pipeline, project, default_enabled: :yaml)
-        param_variables + [payload_variable]
-      else
-        param_variables
-      end
+      param_variables + [payload_variable]
     end
 
     def param_variables

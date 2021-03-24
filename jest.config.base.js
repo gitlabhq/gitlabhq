@@ -50,6 +50,7 @@ module.exports = (path, options = {}) => {
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
+    '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
     ...extModuleNameMapper,
   };
 

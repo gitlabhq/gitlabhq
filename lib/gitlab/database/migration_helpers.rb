@@ -4,6 +4,7 @@ module Gitlab
   module Database
     module MigrationHelpers
       include Migrations::BackgroundMigrationHelpers
+      include DynamicModelHelpers
 
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
@@ -927,52 +928,19 @@ module Gitlab
       #   This is crucial for Primary Key conversions, because setting a column
       #    as the PK converts even check constraints to NOT NULL constraints
       #    and forces an inline re-verification of the whole table.
-      # - It backfills the new column with the values of the existing primary key
-      #    by scheduling background jobs.
-      # - It tracks the scheduled background jobs through the use of
-      #    Gitlab::Database::BackgroundMigrationJob
-      #   which allows a more thorough check that all jobs succeeded in the
-      #   cleanup migration and is way faster for very large tables.
-      # - It sets up a trigger to keep the two columns in sync
-      # - It does not schedule a cleanup job: we have to do that with followup
-      #    post deployment migrations in the next release.
+      # - It sets up a trigger to keep the two columns in sync.
       #
-      #   This needs to be done manually by using the
-      #    `cleanup_initialize_conversion_of_integer_to_bigint`
-      #   (not yet implemented - check #288005)
+      #   Note: this helper is intended to be used in a regular (pre-deployment) migration.
+      #
+      #   This helper is part 1 of a multi-step migration process:
+      #   1. initialize_conversion_of_integer_to_bigint to create the new column and database triggers
+      #   2. backfill_conversion_of_integer_to_bigint to copy historic data using background migrations
+      #   3. remaining steps TBD, see #288005
       #
       # table - The name of the database table containing the column
       # column - The name of the column that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
-      # batch_size - The number of rows to schedule in a single background migration
-      # sub_batch_size - The smaller batches that will be used by each scheduled job
-      #   to update the table. Useful to keep each update at ~100ms while executing
-      #   more updates per interval (2.minutes)
-      #   Note that each execution of a sub-batch adds a constant 100ms sleep
-      #    time in between the updates, which must be taken into account
-      #    while calculating the batch, sub_batch and interval values.
-      # interval - The time interval between every background migration
-      #
-      # example:
-      # Assume that we have figured out that updating 200 records of the events
-      #  table takes ~100ms on average.
-      # We can set the sub_batch_size to 200, leave the interval to the default
-      #  and set the batch_size to 50_000 which will require
-      #  ~50s = (50000 / 200) * (0.1 + 0.1) to complete and leaves breathing space
-      #  between the scheduled jobs
-      def initialize_conversion_of_integer_to_bigint(
-        table,
-        column,
-        primary_key: :id,
-        batch_size: 20_000,
-        sub_batch_size: 1000,
-        interval: 2.minutes
-      )
-
-        if transaction_open?
-          raise 'initialize_conversion_of_integer_to_bigint can not be run inside a transaction'
-        end
-
+      def initialize_conversion_of_integer_to_bigint(table, column, primary_key: :id)
         unless table_exists?(table)
           raise "Table #{table} does not exist"
         end
@@ -1003,28 +971,85 @@ module Gitlab
 
           install_rename_triggers(table, column, tmp_column)
         end
+      end
 
-        source_model = Class.new(ActiveRecord::Base) do
-          include EachBatch
+      # Backfills the new column used in the conversion of an integer column to bigint using background migrations.
+      #
+      # - This helper should be called from a post-deployment migration.
+      # - In order for this helper to work properly,  the new column must be first initialized with
+      #   the `initialize_conversion_of_integer_to_bigint` helper.
+      # - It tracks the scheduled background jobs through Gitlab::Database::BackgroundMigration::BatchedMigration,
+      #   which allows a more thorough check that all jobs succeeded in the
+      #   cleanup migration and is way faster for very large tables.
+      #
+      #   Note: this helper is intended to be used in a post-deployment migration, to ensure any new code is
+      #   deployed (including background job changes) before we begin processing the background migration.
+      #
+      #   This helper is part 2 of a multi-step migration process:
+      #   1. initialize_conversion_of_integer_to_bigint to create the new column and database triggers
+      #   2. backfill_conversion_of_integer_to_bigint to copy historic data using background migrations
+      #   3. remaining steps TBD, see #288005
+      #
+      # table - The name of the database table containing the column
+      # column - The name of the column that we want to convert to bigint.
+      # primary_key - The name of the primary key column (most often :id)
+      # batch_size - The number of rows to schedule in a single background migration
+      # sub_batch_size - The smaller batches that will be used by each scheduled job
+      #   to update the table. Useful to keep each update at ~100ms while executing
+      #   more updates per interval (2.minutes)
+      #   Note that each execution of a sub-batch adds a constant 100ms sleep
+      #    time in between the updates, which must be taken into account
+      #    while calculating the batch, sub_batch and interval values.
+      # interval - The time interval between every background migration
+      #
+      # example:
+      # Assume that we have figured out that updating 200 records of the events
+      #  table takes ~100ms on average.
+      # We can set the sub_batch_size to 200, leave the interval to the default
+      #  and set the batch_size to 50_000 which will require
+      #  ~50s = (50000 / 200) * (0.1 + 0.1) to complete and leaves breathing space
+      #  between the scheduled jobs
+      def backfill_conversion_of_integer_to_bigint(
+        table,
+        column,
+        primary_key: :id,
+        batch_size: 20_000,
+        sub_batch_size: 1000,
+        interval: 2.minutes
+      )
 
-          self.table_name = table
-          self.inheritance_column = :_type_disabled
+        unless table_exists?(table)
+          raise "Table #{table} does not exist"
         end
 
-        queue_background_migration_jobs_by_range_at_intervals(
-          source_model,
+        unless column_exists?(table, primary_key)
+          raise "Column #{primary_key} does not exist on #{table}"
+        end
+
+        unless column_exists?(table, column)
+          raise "Column #{column} does not exist on #{table}"
+        end
+
+        tmp_column = "#{column}_convert_to_bigint"
+
+        unless column_exists?(table, tmp_column)
+          raise 'The temporary column does not exist, initialize it with `initialize_conversion_of_integer_to_bigint`'
+        end
+
+        batched_migration = queue_batched_background_migration(
           'CopyColumnUsingBackgroundMigrationJob',
-          interval,
+          table,
+          primary_key,
+          column,
+          tmp_column,
+          job_interval: interval,
           batch_size: batch_size,
-          other_job_arguments: [table, primary_key, sub_batch_size, column, tmp_column],
-          track_jobs: true,
-          primary_column_name: primary_key
-        )
+          sub_batch_size: sub_batch_size)
 
         if perform_background_migration_inline?
           # To ensure the schema is up to date immediately we perform the
           # migration inline in dev / test environments.
-          Gitlab::BackgroundMigration.steal('CopyColumnUsingBackgroundMigrationJob')
+          Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(batched_migration)
         end
       end
 

@@ -7,7 +7,7 @@ module Gitlab
         module Gitlab
           # Extract possible GFM references from an arbitrary String for further processing.
           class IsolatedReferenceExtractor < ::Gitlab::ReferenceExtractor
-            REFERABLES = %i(isolated_mentioned_group).freeze
+            REFERABLES = %i(isolated_mentioned_group isolated_mentioned_user isolated_mentioned_project).freeze
 
             REFERABLES.each do |type|
               define_method("#{type}s") do

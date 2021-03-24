@@ -3,12 +3,12 @@
 module Gitlab
   module Database
     module BackgroundMigration
-      class Scheduler
-        def perform(migration_wrapper: BatchedMigrationWrapper.new)
-          active_migration = BatchedMigration.active.queue_order.first
+      class BatchedMigrationRunner
+        def initialize(migration_wrapper = BatchedMigrationWrapper.new)
+          @migration_wrapper = migration_wrapper
+        end
 
-          return unless active_migration&.interval_elapsed?
-
+        def run_migration_job(active_migration)
           if next_batched_job = create_next_batched_job!(active_migration)
             migration_wrapper.perform(next_batched_job)
           else
@@ -16,7 +16,17 @@ module Gitlab
           end
         end
 
+        def run_entire_migration(migration)
+          while migration.active?
+            run_migration_job(migration)
+
+            migration.reload_last_job
+          end
+        end
+
         private
+
+        attr_reader :migration_wrapper
 
         def create_next_batched_job!(active_migration)
           next_batch_range = find_next_batch_range(active_migration)

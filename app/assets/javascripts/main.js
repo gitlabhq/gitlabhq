@@ -16,21 +16,16 @@ import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
 import initAlertHandler from './alert_handler';
-import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
+import { removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
-import {
-  handleLocationHash,
-  addSelectOnFocusBehaviour,
-  getCspNonceValue,
-} from './lib/utils/common_utils';
+import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
 import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
-import { __ } from './locale';
 import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
@@ -49,29 +44,8 @@ applyGitLabUIConfig();
 window.jQuery = jQuery;
 window.$ = jQuery;
 
-// Add nonce to jQuery script handler
-jQuery.ajaxSetup({
-  converters: {
-    // eslint-disable-next-line @gitlab/require-i18n-strings, func-names
-    'text script': function (text) {
-      jQuery.globalEval(text, { nonce: getCspNonceValue() });
-      return text;
-    },
-  },
-});
-
-function disableJQueryAnimations() {
-  $.fx.off = true;
-}
-
-// Disable jQuery animations
-if (gon?.disable_animations) {
-  disableJQueryAnimations();
-}
-
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
-  disableJQueryAnimations();
   import(/* webpackMode: "eager" */ './test_utils/');
 }
 
@@ -236,17 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return $buttons.disable();
       default:
         return $buttons.enable();
-    }
-  });
-
-  // eslint-disable-next-line no-jquery/no-ajax-events
-  $(document).ajaxError((e, xhrObj) => {
-    const ref = xhrObj.status;
-
-    if (ref === 401) {
-      Flash(__('You need to be logged in.'));
-    } else if (ref === 404 || ref === 500) {
-      Flash(__('Something went wrong on our end.'));
     }
   });
 

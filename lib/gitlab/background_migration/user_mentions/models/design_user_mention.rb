@@ -7,6 +7,7 @@ module Gitlab
       module Models
         class DesignUserMention < ActiveRecord::Base
           self.table_name = 'design_user_mentions'
+          self.inheritance_column = :_type_disabled
 
           def self.resource_foreign_key
             :design_id

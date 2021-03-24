@@ -5,9 +5,11 @@ module Gitlab
     module UserMentions
       module Models
         # isolated Namespace model
-        class Namespace < ApplicationRecord
-          include FeatureGate
-          include ::Gitlab::VisibilityLevel
+        class Namespace < ActiveRecord::Base
+          self.inheritance_column = :_type_disabled
+
+          include Concerns::IsolatedFeatureGate
+          include Gitlab::BackgroundMigration::UserMentions::Lib::Gitlab::IsolatedVisibilityLevel
           include ::Gitlab::Utils::StrongMemoize
           include Gitlab::BackgroundMigration::UserMentions::Models::Concerns::Namespace::RecursiveTraversal
 

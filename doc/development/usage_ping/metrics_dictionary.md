@@ -33,7 +33,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
-| `status`            | yes      | `string`; status of the metric, may be set to `data_available`, `planned`, `in_progress`, `implemented`, `not_used`, `deprecated` |
+| `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `data_available`, `implemented`, `not_used`, `deprecated`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `ruby`. |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
@@ -42,6 +42,16 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
+
+### Metric statuses
+
+Metric definitions can have one of the following statuses:
+
+- `data_available`: Metric data is available and used in a Sisense dashboard.
+- `implemented`: Metric is implemented but data is not yet available. This is a temporary
+  status for newly added metrics awaiting inclusion in a new release.
+- `not_used`: Metric is not used in any dashboard.
+- `deprecated`: Metric is deprecated and possibly planned to be removed.
 
 ### Example YAML metric definition
 

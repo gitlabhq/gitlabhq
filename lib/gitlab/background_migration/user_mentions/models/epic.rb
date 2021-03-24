@@ -17,10 +17,10 @@ module Gitlab
           cache_markdown_field :description, issuable_state_filter_enabled: true
 
           self.table_name = 'epics'
+          self.inheritance_column = :_type_disabled
 
-          belongs_to :author, class_name: "User"
-          belongs_to :project
-          belongs_to :group
+          belongs_to :author, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::User"
+          belongs_to :group, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::Group"
 
           def self.user_mention_model
             Gitlab::BackgroundMigration::UserMentions::Models::EpicUserMention

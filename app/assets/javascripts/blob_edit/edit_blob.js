@@ -82,7 +82,7 @@ export default class EditBlob {
 
     this.$editModePanes.hide();
 
-    currentPane.fadeIn(200);
+    currentPane.show();
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();

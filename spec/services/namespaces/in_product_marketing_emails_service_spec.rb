@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
-  subject(:execute_service) do
-    travel_to(frozen_time) { described_class.new(track, interval).execute }
-  end
+  subject(:execute_service) { described_class.new(track, interval).execute }
 
   let(:track) { :create }
   let(:interval) { 1 }
 
-  let(:frozen_time) { Time.current }
+  let(:frozen_time) { Time.zone.parse('23 Mar 2021 10:14:40 UTC') }
   let(:previous_action_completed_at) { frozen_time - 2.days }
   let(:current_action_completed_at) { nil }
   let(:experiment_enabled) { true }
@@ -21,6 +19,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   let_it_be(:user) { create(:user, email_opted_in: true) }
 
   before do
+    travel_to(frozen_time)
     create(:onboarding_progress, namespace: group, **actions_completed)
     group.add_developer(user)
     stub_experiment_for_subject(in_product_marketing_emails: experiment_enabled)

@@ -47,7 +47,7 @@ export default class FileTemplateSelector {
   }
 
   isHidden() {
-    return this.$wrapper.hasClass('hidden');
+    return !this.$wrapper || this.$wrapper.hasClass('hidden');
   }
 
   getToggleText() {

@@ -6,7 +6,7 @@ module Gitlab
       module Models
         module Concerns
           module Namespace
-            # extracted methods for recursive traversing of namespace hierarchy
+            # isolate recursive traversal code for namespace hierarchy
             module RecursiveTraversal
               extend ActiveSupport::Concern
 

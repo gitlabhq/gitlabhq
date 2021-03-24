@@ -55,17 +55,6 @@ RSpec.describe Ci::PipelineTriggerService do
             expect(var.variable_type).to eq('file')
           end
 
-          context 'when FF ci_trigger_payload_into_pipeline is disabled' do
-            before do
-              stub_feature_flags(ci_trigger_payload_into_pipeline: false)
-            end
-
-            it 'does not store the payload as a variable' do
-              expect { result }.not_to change { Ci::PipelineVariable.count }
-              expect(result[:pipeline].variables).to be_empty
-            end
-          end
-
           context 'when commit message has [ci skip]' do
             before do
               allow_next(Ci::Pipeline).to receive(:git_commit_message) { '[ci skip]' }
