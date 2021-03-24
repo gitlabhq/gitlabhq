@@ -124,7 +124,7 @@ npm config set @foo:registry https://gitlab.example.com/api/v4/projects/<your_pr
 
 # Add the token for the scoped packages URL. Replace <your_project_id>
 # with the project where your package is located.
-npm config set '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
+npm config set -- '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
 ```
 
 - `<your_project_id>` is your project ID, found on the project's home page.
@@ -147,7 +147,7 @@ npm config set @foo:registry https://gitlab.example.com/api/v4/packages/npm/
 
 # Add the token for the scoped packages URL. This will allow you to download
 # `@foo/` packages from private projects.
-npm config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' "<your_token>"
+npm config set -- '//gitlab.example.com/api/v4/packages/npm/:_authToken' "<your_token>"
 ```
 
 - `<your_token>` is your personal access token or deploy token.
@@ -189,8 +189,8 @@ To use the [instance-level](#use-the-gitlab-endpoint-for-npm-packages) npm endpo
 To avoid hard-coding the `authToken` value, you may use a variable in its place:
 
 ```shell
-npm config set '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "${NPM_TOKEN}"
-npm config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' "${NPM_TOKEN}"
+npm config set -- '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "${NPM_TOKEN}"
+npm config set -- '//gitlab.example.com/api/v4/packages/npm/:_authToken' "${NPM_TOKEN}"
 ```
 
 Then, you can run `npm publish` either locally or by using GitLab CI/CD.
@@ -482,7 +482,6 @@ NPM_TOKEN=<your_token> npm install
 If you get this error, ensure that:
 
 - Your token is not expired and has appropriate permissions.
-- [Your token does not begin with `-`](https://gitlab.com/gitlab-org/gitlab/-/issues/235473).
 - A package with the same name or version doesn't already exist within the given scope.
 - Your NPM package name does not contain a dot `.`. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/10248)
   in GitLab 11.9 and earlier.

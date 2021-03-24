@@ -1365,9 +1365,6 @@ msgstr ""
 msgid "A job artifact is an archive of files and directories saved by a job when it finishes."
 msgstr ""
 
-msgid "A label list displays issues with the selected label."
-msgstr ""
-
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr ""
 
@@ -1384,9 +1381,6 @@ msgid "A merge request approval is required when the license compliance report c
 msgstr ""
 
 msgid "A merge request hasn't yet been merged"
-msgstr ""
-
-msgid "A milestone list displays issues in the selected milestone."
 msgstr ""
 
 msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
@@ -3262,9 +3256,6 @@ msgstr ""
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
-msgid "An assignee list displays issues assigned to the selected user"
-msgstr ""
-
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
 msgstr ""
 
@@ -3650,9 +3641,6 @@ msgid "An issue can be a bug, a todo or a feature request that needs to be discu
 msgstr ""
 
 msgid "An issue title is required"
-msgstr ""
-
-msgid "An iteration list displays issues in the selected iteration."
 msgstr ""
 
 msgid "An unauthenticated user"
@@ -6446,9 +6434,6 @@ msgstr ""
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
-msgid "ClusterAgents|Connect your cluster with the GitLab Agent"
-msgstr ""
-
 msgid "ClusterAgents|Created by"
 msgstr ""
 
@@ -6468,6 +6453,9 @@ msgid "ClusterAgents|Integrate with the GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to create an agent access token"
+msgstr ""
+
+msgid "ClusterAgents|Learn more about installing the GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Name"
@@ -17203,6 +17191,9 @@ msgstr ""
 msgid "Issues closed"
 msgstr ""
 
+msgid "Issues must match this scope to appear in this list."
+msgstr ""
+
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
 msgstr ""
 
@@ -18417,9 +18408,6 @@ msgid "List settings"
 msgstr ""
 
 msgid "List the merge requests that must be merged before this one."
-msgstr ""
-
-msgid "List type"
 msgstr ""
 
 msgid "List view"
@@ -22327,10 +22315,19 @@ msgstr ""
 msgid "PerformanceBar|SQL queries"
 msgstr ""
 
+msgid "PerformanceBar|Sort by duration"
+msgstr ""
+
+msgid "PerformanceBar|Sort chronologically"
+msgstr ""
+
 msgid "PerformanceBar|Stats"
 msgstr ""
 
-msgid "PerformanceBar|trace"
+msgid "PerformanceBar|Total duration"
+msgstr ""
+
+msgid "PerformanceBar|Trace"
 msgstr ""
 
 msgid "Permissions"
@@ -27301,6 +27298,9 @@ msgstr ""
 msgid "Select a label"
 msgstr ""
 
+msgid "Select a milestone"
+msgstr ""
+
 msgid "Select a new namespace"
 msgstr ""
 
@@ -27328,7 +27328,13 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+msgid "Select an assignee"
+msgstr ""
+
 msgid "Select an existing Kubernetes cluster or create a new one."
+msgstr ""
+
+msgid "Select an iteration"
 msgstr ""
 
 msgid "Select assignee"

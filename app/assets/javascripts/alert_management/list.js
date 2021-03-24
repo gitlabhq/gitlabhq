@@ -5,6 +5,7 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 import AlertManagementList from './components/alert_management_list_wrapper.vue';
+import alertsHelpUrlQuery from './graphql/queries/alert_help_url.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -41,7 +42,8 @@ export default () => {
     ),
   });
 
-  apolloProvider.clients.defaultClient.cache.writeData({
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: alertsHelpUrlQuery,
     data: {
       alertsHelpUrl,
     },

@@ -1,5 +1,8 @@
 <script>
-import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlSegmentedControl } from '@gitlab/ui';
+
+import { s__ } from '~/locale';
+import { sortOrders, sortOrderOptions } from '../constants';
 import RequestWarning from './request_warning.vue';
 
 export default {
@@ -7,6 +10,7 @@ export default {
     RequestWarning,
     GlButton,
     GlModal,
+    GlSegmentedControl,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -39,6 +43,7 @@ export default {
   data() {
     return {
       openedBacktraces: [],
+      sortOrder: sortOrders.DURATION,
     };
   },
   computed: {
@@ -48,13 +53,37 @@ export default {
     metricDetails() {
       return this.currentRequest.details[this.metric];
     },
+    metricDetailsSummary() {
+      return {
+        [s__('Total')]: this.metricDetails.calls,
+        [s__('PerformanceBar|Total duration')]: this.metricDetails.duration,
+        ...(this.metricDetails.summary || {}),
+      };
+    },
     metricDetailsLabel() {
-      return this.metricDetails.duration
-        ? `${this.metricDetails.duration} / ${this.metricDetails.calls}`
-        : this.metricDetails.calls;
+      if (this.metricDetails.duration && this.metricDetails.calls) {
+        return `${this.metricDetails.duration} / ${this.metricDetails.calls}`;
+      } else if (this.metricDetails.calls) {
+        return this.metricDetails.calls;
+      }
+
+      return '0';
+    },
+    displaySortOrder() {
+      return (
+        this.metricDetails.details.length !== 0 &&
+        this.metricDetails.details.every((item) => item.start)
+      );
     },
     detailsList() {
-      return this.metricDetails.details;
+      return this.metricDetails.details.map((item, index) => ({ ...item, id: index }));
+    },
+    sortedList() {
+      if (this.sortOrder === sortOrders.CHRONOLOGICAL) {
+        return this.detailsList.slice().sort(this.sortDetailChronologically);
+      }
+
+      return this.detailsList.slice().sort(this.sortDetailByDuration);
     },
     warnings() {
       return this.metricDetails.warnings || [];
@@ -82,7 +111,17 @@ export default {
     itemHasOpenedBacktrace(toggledIndex) {
       return this.openedBacktraces.find((openedIndex) => openedIndex === toggledIndex) >= 0;
     },
+    changeSortOrder(order) {
+      this.sortOrder = order;
+    },
+    sortDetailByDuration(a, b) {
+      return a.duration < b.duration ? 1 : -1;
+    },
+    sortDetailChronologically(a, b) {
+      return a.start < b.start ? -1 : 1;
+    },
   },
+  sortOrderOptions,
 };
 </script>
 <template>
@@ -93,18 +132,41 @@ export default {
     data-qa-selector="detailed_metric_content"
   >
     <gl-button v-gl-modal="modalId" class="gl-mr-2" type="button" variant="link">
-      <span class="gl-text-blue-300 gl-font-weight-bold">{{ metricDetailsLabel }}</span>
+      <span
+        class="gl-text-blue-300 gl-font-weight-bold"
+        data-testid="performance-bar-details-label"
+      >
+        {{ metricDetailsLabel }}
+      </span>
     </gl-button>
     <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
+      <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+        <div class="gl-display-flex gl-align-items-center" data-testid="performance-bar-summary">
+          <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">
+            <div v-if="value" data-testid="performance-bar-summary-item">
+              <div>{{ name }}</div>
+              <div class="gl-font-size-h1 gl-font-weight-bold">{{ value }}</div>
+            </div>
+          </div>
+        </div>
+        <gl-segmented-control
+          v-if="displaySortOrder"
+          data-testid="performance-bar-sort-order"
+          :options="$options.sortOrderOptions"
+          :checked="sortOrder"
+          @input="changeSortOrder"
+        />
+      </div>
+      <hr />
       <table class="table gl-table">
-        <template v-if="detailsList.length">
-          <tr v-for="(item, index) in detailsList" :key="index">
-            <td>
+        <template v-if="sortedList.length">
+          <tr v-for="item in sortedList" :key="item.id">
+            <td data-testid="performance-item-duration">
               <span v-if="item.duration">{{
                 sprintf(__('%{duration}ms'), { duration: item.duration })
               }}</span>
             </td>
-            <td>
+            <td data-testid="performance-item-content">
               <div>
                 <div
                   v-for="(key, keyIndex) in keys"
@@ -121,12 +183,12 @@ export default {
                     variant="default"
                     icon="ellipsis_h"
                     size="small"
-                    :selected="itemHasOpenedBacktrace(index)"
+                    :selected="itemHasOpenedBacktrace(item.id)"
                     :aria-label="__('Toggle backtrace')"
-                    @click="toggleBacktrace(index)"
+                    @click="toggleBacktrace(item.id)"
                   />
                 </div>
-                <pre v-if="itemHasOpenedBacktrace(index)" class="backtrace-row mt-2">{{
+                <pre v-if="itemHasOpenedBacktrace(item.id)" class="backtrace-row gl-mt-3">{{
                   item.backtrace
                 }}</pre>
               </div>
@@ -135,7 +197,7 @@ export default {
         </template>
         <template v-else>
           <tr>
-            <td>
+            <td data-testid="performance-bar-empty-detail-notice">
               {{ sprintf(__('No %{header} for this request.'), { header: header.toLowerCase() }) }}
             </td>
           </tr>

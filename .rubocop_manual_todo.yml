@@ -3577,3 +3577,19 @@ Performance/OpenStruct:
     - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'
     - 'lib/mattermost/session.rb'
+
+# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/324629
+Gitlab/DelegatePredicateMethods:
+  Exclude:
+    - 'app/models/clusters/cluster.rb'
+    - 'app/models/clusters/platforms/kubernetes.rb'
+    - 'app/models/concerns/ci/metadatable.rb'
+    - 'app/models/concerns/diff_positionable_note.rb'
+    - 'app/models/concerns/resolvable_discussion.rb'
+    - 'app/models/concerns/services/data_fields.rb'
+    - 'app/models/project.rb'
+    - 'ee/app/models/concerns/ee/ci/metadatable.rb'
+    - 'ee/app/models/ee/group.rb'
+    - 'ee/app/models/ee/namespace.rb'
+    - 'ee/app/models/license.rb'
+    - 'lib/gitlab/ci/trace/stream.rb'

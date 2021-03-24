@@ -293,7 +293,8 @@ class CommitStatus < ApplicationRecord
   end
 
   def update_older_statuses_retried!
-    self.class
+    pipeline
+      .statuses
       .latest
       .where(name: name)
       .where.not(id: id)
