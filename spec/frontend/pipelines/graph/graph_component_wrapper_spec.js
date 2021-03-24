@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import { IID_FAILURE } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
@@ -119,6 +120,31 @@ describe('Pipeline graph wrapper', () => {
 
     it('displays the alert', () => {
       expect(getAlert().exists()).toBe(true);
+    });
+
+    it('does not display the graph', () => {
+      expect(getGraph().exists()).toBe(false);
+    });
+  });
+
+  describe('when there is no pipeline iid available', () => {
+    beforeEach(async () => {
+      createComponentWithApollo({
+        provide: {
+          pipelineIid: '',
+        },
+      });
+      jest.runOnlyPendingTimers();
+      await wrapper.vm.$nextTick();
+    });
+
+    it('does not display the loading icon', () => {
+      expect(getLoadingIcon().exists()).toBe(false);
+    });
+
+    it('displays the no iid alert', () => {
+      expect(getAlert().exists()).toBe(true);
+      expect(getAlert().text()).toBe(wrapper.vm.$options.errorTexts[IID_FAILURE]);
     });
 
     it('does not display the graph', () => {

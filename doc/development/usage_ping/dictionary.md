@@ -10004,6 +10004,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_epic_descriptions_monthly`
+
+Counts of MAU changing epic descriptions
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210312102051_g_project_management_users_updating_epic_descriptions_monthly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_epic_descriptions_weekly`
+
+Counts of WAU changing epic descriptions
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312101753_g_project_management_users_updating_epic_descriptions_weekly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_users_updating_epic_notes_monthly`
 
 Counts of MAU updating epic notes
@@ -10021,6 +10045,30 @@ Tiers: `premium`, `ultimate`
 Counts of WAU updating epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210314234041_g_project_management_users_updating_epic_notes_weekly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_epic_titles_monthly`
+
+Counts of MAU changing epic titles
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210312101935_g_project_management_users_updating_epic_titles_monthly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_epic_titles_weekly`
+
+Counts of WAU changing epic titles
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312101826_g_project_management_users_updating_epic_titles_weekly.yml)
 
 Group: `group:product planning`
 

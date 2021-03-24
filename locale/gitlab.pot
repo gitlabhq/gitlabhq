@@ -30072,6 +30072,9 @@ msgstr ""
 msgid "The current user is not authorized to access the job log."
 msgstr ""
 
+msgid "The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data."
+msgstr ""
+
 msgid "The data source is connected, but there is no data to display. %{documentationLink}"
 msgstr ""
 

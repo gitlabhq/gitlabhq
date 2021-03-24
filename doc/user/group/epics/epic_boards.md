@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Epic Boards **(ULTIMATE)**
+# Epic Boards **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2864) in GitLab 13.10.
 > - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
@@ -24,7 +24,7 @@ labels.
 
 To view an epic board, in a group, select **Epics > Boards**.
 
-![GitLab epic board - Ultimate](img/epic_board_v13_10.png)
+![GitLab epic board - Premium](img/epic_board_v13_10.png)
 
 ## Create an epic board
 

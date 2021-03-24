@@ -167,7 +167,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:key, user: user)
         create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
         create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
-        create(:remote_mirror, project: project)
+        create(:remote_mirror, project: project, enabled: true)
+        another_user = create(:user)
+        another_project = create(:project, :repository, creator: another_user)
+        create(:remote_mirror, project: another_project, enabled: false)
         create(:snippet, author: user)
       end
 
@@ -176,7 +179,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys: 2,
         merge_requests: 2,
         projects_with_disable_overriding_approvers_per_merge_request: 2,
-        projects_without_disable_overriding_approvers_per_merge_request: 4,
+        projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
         snippets: 2
       )
@@ -185,7 +188,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys: 1,
         merge_requests: 1,
         projects_with_disable_overriding_approvers_per_merge_request: 1,
-        projects_without_disable_overriding_approvers_per_merge_request: 2,
+        projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,
         snippets: 1
       )

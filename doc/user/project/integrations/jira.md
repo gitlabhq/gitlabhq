@@ -12,7 +12,7 @@ process of working across these systems more efficient.
 The GitLab Jira integration, available in every GitLab project by default, allows you to connect
 to any Jira instance, whether on Atlassian cloud or self-managed.
 
-You can also install the [Jira Development Panel integration](../../../integration/jira_development_panel.md).
+You can also install the [Jira Development Panel integration](../../../integration/jira/index.md).
 For more information about the differences between the two integrations, see
 [Jira integrations](jira_integrations.md).
 

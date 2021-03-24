@@ -23,7 +23,7 @@ GitLab activity and Jira issues, with additional features:
 - [Jira integration](jira.md), built in to GitLab. In a given GitLab project, it can be configured
   to connect to any Jira instance, either hosted by you or hosted in
   [Atlassian cloud](https://www.atlassian.com/cloud).
-- [Jira development panel integration](../../../integration/jira_development_panel.md). Connects all
+- [Jira development panel integration](../../../integration/jira/index.md). Connects all
   GitLab projects under a specified group or personal namespace.
 
 Jira development panel integration configuration depends on whether you are
@@ -38,7 +38,7 @@ using Jira on [Atlassian cloud](https://www.atlassian.com/cloud) or on your own 
     [this workaround process](#install-the-gitlab-jira-cloud-application-for-self-managed-instances). Read the
     [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/268278) for more information.
 - *If your Jira instance is hosted on your own server:*
-  Use the [Jira DVCS connector](../../../integration/jira_development_panel.md).
+  Use the [Jira DVCS connector](../../../integration/jira/index.md).
 
 ### Install the GitLab Jira Cloud application for self-managed instances **(FREE SELF)**
 

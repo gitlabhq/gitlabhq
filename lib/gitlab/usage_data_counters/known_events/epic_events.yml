@@ -9,6 +9,18 @@
   aggregation: daily
   feature_flag: track_epics_activity
 
+- name: g_project_management_users_updating_epic_titles
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: g_project_management_users_updating_epic_descriptions
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
 - name: g_project_management_users_creating_epic_notes
   category: epics_usage
   redis_slot: project_management
@@ -50,7 +62,7 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_epics_activity
-  
+
 - name: g_project_management_epic_reopened
   category: epics_usage
   redis_slot: project_management

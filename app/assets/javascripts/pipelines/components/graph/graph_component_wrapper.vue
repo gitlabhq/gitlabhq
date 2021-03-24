@@ -4,7 +4,7 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
-import { STAGE_VIEW } from './constants';
+import { IID_FAILURE, STAGE_VIEW } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
@@ -48,6 +48,9 @@ export default {
   },
   errorTexts: {
     [DRAW_FAILURE]: __('An error occurred while drawing job relationship links.'),
+    [IID_FAILURE]: __(
+      'The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data.',
+    ),
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this pipeline.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
@@ -63,6 +66,9 @@ export default {
           projectPath: this.pipelineProjectPath,
           iid: this.pipelineIid,
         };
+      },
+      skip() {
+        return !(this.pipelineProjectPath && this.pipelineIid);
       },
       update(data) {
         /*
@@ -104,6 +110,11 @@ export default {
             text: this.$options.errorTexts[DRAW_FAILURE],
             variant: 'danger',
           };
+        case IID_FAILURE:
+          return {
+            text: this.$options.errorTexts[IID_FAILURE],
+            variant: 'info',
+          };
         case LOAD_FAILURE:
           return {
             text: this.$options.errorTexts[LOAD_FAILURE],
@@ -129,8 +140,15 @@ export default {
       */
       return this.$apollo.queries.pipeline.loading && !this.pipeline;
     },
+    showGraphViewSelector() {
+      return Boolean(this.glFeatures.pipelineGraphLayersView && this.pipeline);
+    },
   },
   mounted() {
+    if (!this.pipelineIid) {
+      this.reportFailure({ type: IID_FAILURE, skipSentry: true });
+    }
+
     toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
   },
   errorCaptured(err, _vm, info) {
@@ -165,7 +183,7 @@ export default {
       {{ alert.text }}
     </gl-alert>
     <graph-view-selector
-      v-if="glFeatures.pipelineGraphLayersView"
+      v-if="showGraphViewSelector"
       :type="currentViewType"
       @updateViewType="updateViewType"
     />

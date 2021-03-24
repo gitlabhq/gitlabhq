@@ -9,7 +9,7 @@ type: reference, howto
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a
-support ticket.
+support ticket. For more details, see the [GitLab Support](https://about.gitlab.com/support/) page.
 
 ## Running out of memory
 

@@ -13,3 +13,5 @@ export const GRAPHQL = 'graphql';
 
 export const STAGE_VIEW = 'stage';
 export const LAYER_VIEW = 'layer';
+
+export const IID_FAILURE = 'missing_iid';
