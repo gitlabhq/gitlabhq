@@ -83,7 +83,7 @@ data up to 365 days. The chart's data is updated daily.
 Filter the historical data by clicking on the corresponding legend name. The image above, for example, shows
 only the graph for vulnerabilities with **high** severity.
 
-To zoom in, select the left-most icon, then select the desired rangeby dragging across the chart. Select **Remove Selection** (**{{redo}}**) to reset to the original date range.
+To zoom in, select the left-most icon, then select the desired rangeby dragging across the chart. Select **Remove Selection** (**{redo}**) to reset to the original date range.
 
 To download an SVG image of the chart, select **Save chart to an image** (**{download}**).
 

@@ -740,3 +740,5 @@ status_page_published_incident:
 - issue
 issuable_sla:
   - issue
+push_rule:
+  - group

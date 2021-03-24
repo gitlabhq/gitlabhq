@@ -60,21 +60,24 @@ class DropLab {
 
   addEvents() {
     this.eventWrapper.documentClicked = this.documentClicked.bind(this);
-    document.addEventListener('mousedown', this.eventWrapper.documentClicked);
+    document.addEventListener('click', this.eventWrapper.documentClicked);
   }
 
   documentClicked(e) {
-    let thisTag = e.target;
+    if (e.defaultPrevented) return;
 
-    if (thisTag.tagName !== 'UL') thisTag = utils.closest(thisTag, 'UL');
-    if (utils.isDropDownParts(thisTag, this.hooks)) return;
-    if (utils.isDropDownParts(e.target, this.hooks)) return;
+    if (utils.isDropDownParts(e.target)) return;
+
+    if (e.target.tagName !== 'UL') {
+      const closestUl = utils.closest(e.target, 'UL');
+      if (utils.isDropDownParts(closestUl)) return;
+    }
 
     this.hooks.forEach((hook) => hook.list.hide());
   }
 
   removeEvents() {
-    document.removeEventListener('mousedown', this.eventWrapper.documentClicked);
+    document.removeEventListener('click', this.eventWrapper.documentClicked);
   }
 
   changeHookList(trigger, list, plugins, config) {

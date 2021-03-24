@@ -49,8 +49,8 @@ module UserCalloutsHelper
     !user_dismissed?(WEBHOOKS_MOVED)
   end
 
-  def show_customize_homepage_banner?(customize_homepage)
-    customize_homepage && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
+  def show_customize_homepage_banner?
+    !user_dismissed?(CUSTOMIZE_HOMEPAGE)
   end
 
   def show_feature_flags_new_version?

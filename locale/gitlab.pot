@@ -14704,9 +14704,6 @@ msgstr ""
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr ""
 
-msgid "Group push rule exists, try updating"
-msgstr ""
-
 msgid "Group requires separate account"
 msgstr ""
 

@@ -102,24 +102,14 @@ RSpec.describe UserCalloutsHelper do
   end
 
   describe '.show_customize_homepage_banner?' do
-    let(:customize_homepage) { true }
-
-    subject { helper.show_customize_homepage_banner?(customize_homepage) }
+    subject { helper.show_customize_homepage_banner? }
 
     context 'when user has not dismissed' do
       before do
         allow(helper).to receive(:user_dismissed?).with(described_class::CUSTOMIZE_HOMEPAGE) { false }
       end
 
-      context 'when customize_homepage is set' do
-        it { is_expected.to be true }
-      end
-
-      context 'when customize_homepage is false' do
-        let(:customize_homepage) { false }
-
-        it { is_expected.to be false }
-      end
+      it { is_expected.to be true }
     end
 
     context 'when user dismissed' do

@@ -134,26 +134,6 @@ RSpec.describe RootController do
 
           expect(response).to render_template 'dashboard/projects/index'
         end
-
-        context 'when customize_homepage is enabled' do
-          it 'renders the default dashboard' do
-            get :index
-
-            expect(assigns[:customize_homepage]).to be true
-          end
-        end
-
-        context 'when customize_homepage is not enabled' do
-          before do
-            stub_feature_flags(customize_homepage: false)
-          end
-
-          it 'renders the default dashboard' do
-            get :index
-
-            expect(assigns[:customize_homepage]).to be false
-          end
-        end
       end
     end
   end
