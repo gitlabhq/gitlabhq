@@ -1,0 +1,5 @@
+---
+title: Deduplicate issue_metrics table
+merge_request: 55285
+author:
+type: other

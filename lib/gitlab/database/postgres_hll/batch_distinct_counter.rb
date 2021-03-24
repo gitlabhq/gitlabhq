@@ -41,19 +41,6 @@ module Gitlab
         BUCKET_ID_MASK = (Buckets::TOTAL_BUCKETS - ZERO_OFFSET).to_s(2)
         BIT_31_MASK = "B'0#{'1' * 31}'"
         BIT_32_NORMALIZED_BUCKET_ID_MASK = "B'#{'0' * (32 - BUCKET_ID_MASK.size)}#{BUCKET_ID_MASK}'"
-        # @example source_query
-        #   SELECT CAST(('X' || md5(CAST(%{column} as text))) as bit(32)) attr_hash_32_bits
-        #   FROM %{relation}
-        #   WHERE %{pkey} >= %{batch_start}
-        #   AND %{pkey} < %{batch_end}
-        #   AND %{column} IS NOT NULL
-        BUCKETED_DATA_SQL = <<~SQL
-          WITH hashed_attributes AS (%{source_query})
-          SELECT (attr_hash_32_bits & #{BIT_32_NORMALIZED_BUCKET_ID_MASK})::int AS bucket_num,
-            (31 - floor(log(2, min((attr_hash_32_bits & #{BIT_31_MASK})::int))))::int as bucket_hash
-          FROM hashed_attributes
-          GROUP BY 1
-        SQL
 
         WRONG_CONFIGURATION_ERROR = Class.new(ActiveRecord::StatementInvalid)
 
@@ -103,7 +90,7 @@ module Gitlab
         def hll_buckets_for_batch(start, finish)
           @relation
             .connection
-            .execute(BUCKETED_DATA_SQL % { source_query: source_query(start, finish) })
+            .execute(bucketed_data_sql % { source_query: source_query(start, finish) })
             .map(&:values)
             .to_h
         end
@@ -138,6 +125,22 @@ module Gitlab
 
         def actual_finish(finish)
           finish || @relation.unscope(:group, :having).maximum(@relation.primary_key) || 0
+        end
+
+        # @example source_query
+        #   SELECT CAST(('X' || md5(CAST(%{column} as text))) as bit(32)) attr_hash_32_bits
+        #   FROM %{relation}
+        #   WHERE %{pkey} >= %{batch_start}
+        #   AND %{pkey} < %{batch_end}
+        #   AND %{column} IS NOT NULL
+        def bucketed_data_sql
+          <<~SQL
+            WITH hashed_attributes AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (%{source_query})
+            SELECT (attr_hash_32_bits & #{BIT_32_NORMALIZED_BUCKET_ID_MASK})::int AS bucket_num,
+              (31 - floor(log(2, min((attr_hash_32_bits & #{BIT_31_MASK})::int))))::int as bucket_hash
+            FROM hashed_attributes
+            GROUP BY 1
+          SQL
         end
       end
     end

@@ -22816,8 +22816,6 @@ CREATE UNIQUE INDEX index_issue_links_on_source_id_and_target_id ON issue_links 
 
 CREATE INDEX index_issue_links_on_target_id ON issue_links USING btree (target_id);
 
-CREATE INDEX index_issue_metrics ON issue_metrics USING btree (issue_id);
-
 CREATE INDEX index_issue_metrics_on_issue_id_and_timestamps ON issue_metrics USING btree (issue_id, first_mentioned_in_commit_at, first_associated_with_milestone_at, first_added_to_board_at);
 
 CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON issues USING btree (project_id, state_id, blocking_issues_count);
@@ -23295,6 +23293,8 @@ CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_ma
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 7);
+
+CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_golang ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 8);
 
 CREATE INDEX index_packages_package_file_build_infos_on_package_file_id ON packages_package_file_build_infos USING btree (package_file_id);
 
@@ -23965,6 +23965,8 @@ CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects U
 CREATE INDEX index_u2f_registrations_on_key_handle ON u2f_registrations USING btree (key_handle);
 
 CREATE INDEX index_u2f_registrations_on_user_id ON u2f_registrations USING btree (user_id);
+
+CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
 
 CREATE INDEX index_unit_test_failures_failed_at ON ci_unit_test_failures USING btree (failed_at DESC);
 

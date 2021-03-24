@@ -9908,6 +9908,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_creating_epic_notes_monthly`
+
+Counts of MAU adding epic notes
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210314215451_g_project_management_users_creating_epic_notes_monthly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_creating_epic_notes_weekly`
+
+Counts of WAU adding epic notes
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210314231518_g_project_management_users_creating_epic_notes_weekly.yml)
+
+Group: `group:product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_users_destroying_epic_notes_monthly`
 
 Counts of MAU destroying epic notes
@@ -15538,7 +15562,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.secure.user_container_scanning_jobs`
 
-no idea, Count of Container Scanning jobs run, it implies user but AFAIK we don't track per user
+Distinct count per user of Container Scanning jobs run
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175501_user_container_scanning_jobs.yml)
 
@@ -17374,7 +17398,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.secure.container_scanning_pipeline`
 
-no idea, what is this when did it get added? guess pipelines containing a CS job
+Pipelines containing a Container Scanning job
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175507_container_scanning_pipeline.yml)
 
@@ -17542,7 +17566,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.secure.user_container_scanning_jobs`
 
-no idea, Count of Container Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+Distinct count per user of Container Scanning jobs run monthly
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175505_user_container_scanning_jobs.yml)
 

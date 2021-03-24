@@ -7485,10 +7485,14 @@ Roadmap sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| `end_date_asc` | End date at ascending order. |
-| `end_date_desc` | End date at descending order. |
-| `start_date_asc` | Start date at ascending order. |
-| `start_date_desc` | Start date at descending order. |
+| `END_DATE_ASC` | Sort by end date in ascending order. |
+| `END_DATE_DESC` | Sort by end date in descending order. |
+| `START_DATE_ASC` | Sort by start date in ascending order. |
+| `START_DATE_DESC` | Sort by start date in descending order. |
+| `end_date_asc` **{warning-solid}** | **Deprecated:** Use END_DATE_ASC. Deprecated in 13.11. |
+| `end_date_desc` **{warning-solid}** | **Deprecated:** Use END_DATE_DESC. Deprecated in 13.11. |
+| `start_date_asc` **{warning-solid}** | **Deprecated:** Use START_DATE_ASC. Deprecated in 13.11. |
+| `start_date_desc` **{warning-solid}** | **Deprecated:** Use START_DATE_DESC. Deprecated in 13.11. |
 
 ### `EpicState`
 

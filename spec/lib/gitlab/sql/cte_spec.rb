@@ -41,4 +41,15 @@ RSpec.describe Gitlab::SQL::CTE do
       expect(relation.to_a).to eq(User.where(id: user.id).to_a)
     end
   end
+
+  it_behaves_like 'CTE with MATERIALIZED keyword examples' do
+    let(:expected_query_block_with_materialized) { 'WITH "some_cte" AS MATERIALIZED (' }
+    let(:expected_query_block_without_materialized) { 'WITH "some_cte" AS (' }
+
+    let(:query) do
+      cte = described_class.new(:some_cte, User.active, **options)
+
+      User.with(cte.to_arel).to_sql
+    end
+  end
 end

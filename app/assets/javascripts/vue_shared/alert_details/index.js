@@ -42,7 +42,8 @@ export default (selector) => {
     }),
   });
 
-  apolloProvider.clients.defaultClient.cache.writeData({
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: sidebarStatusQuery,
     data: {
       sidebarStatus: false,
     },

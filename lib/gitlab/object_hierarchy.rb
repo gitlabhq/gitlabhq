@@ -74,9 +74,16 @@ module Gitlab
           read_only(model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: hierarchy_order))
         else
           recursive_query = base_and_ancestors_cte(upto).apply_to(model.all)
-          recursive_query = recursive_query.reselect(*recursive_query.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-          recursive_query = model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table))
-          read_only(remove_depth_and_maintain_order(recursive_query, hierarchy_order: hierarchy_order))
+
+          if skip_ordering?
+            recursive_query = recursive_query.distinct
+          else
+            recursive_query = recursive_query.reselect(*recursive_query.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
+            recursive_query = model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table))
+            recursive_query = remove_depth_and_maintain_order(recursive_query, hierarchy_order: hierarchy_order)
+          end
+
+          read_only(recursive_query)
         end
       else
         recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all)
@@ -100,9 +107,16 @@ module Gitlab
           read_only(model.from(Arel::Nodes::As.new(base_cte.arel, objects_table)).order(depth: :asc))
         else
           base_cte = base_and_descendants_cte.apply_to(model.all)
-          base_cte = base_cte.reselect(*base_cte.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-          base_cte = model.from(Arel::Nodes::As.new(base_cte.arel, objects_table))
-          read_only(remove_depth_and_maintain_order(base_cte, hierarchy_order: :asc))
+
+          if skip_ordering?
+            base_cte = base_cte.distinct
+          else
+            base_cte = base_cte.reselect(*base_cte.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
+            base_cte = model.from(Arel::Nodes::As.new(base_cte.arel, objects_table))
+            base_cte = remove_depth_and_maintain_order(base_cte, hierarchy_order: :asc)
+          end
+
+          read_only(base_cte)
         end
       else
         read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
@@ -169,6 +183,13 @@ module Gitlab
       # Global use_distinct_for_all_object_hierarchy takes precedence over use_distinct_in_object_hierarchy
       return true if Feature.enabled?(:use_distinct_for_all_object_hierarchy)
       return options[:use_distinct] if options.key?(:use_distinct)
+
+      false
+    end
+
+    # Skips the extra ordering when using distinct on the namespace queries
+    def skip_ordering?
+      return options[:skip_ordering] if options.key?(:skip_ordering)
 
       false
     end

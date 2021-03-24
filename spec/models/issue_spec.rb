@@ -85,18 +85,14 @@ RSpec.describe Issue do
   describe 'callbacks' do
     describe '#ensure_metrics' do
       it 'creates metrics after saving' do
-        issue = create(:issue, project: reusable_project)
-
-        expect(issue.metrics).to be_persisted
+        expect(subject.metrics).to be_persisted
         expect(Issue::Metrics.count).to eq(1)
       end
 
       it 'does not create duplicate metrics for an issue' do
-        issue = create(:issue, project: reusable_project)
+        subject.close!
 
-        issue.close!
-
-        expect(issue.metrics).to be_persisted
+        expect(subject.metrics).to be_persisted
         expect(Issue::Metrics.count).to eq(1)
       end
 
@@ -104,6 +100,20 @@ RSpec.describe Issue do
         expect_any_instance_of(Issue::Metrics).to receive(:record!)
 
         create(:issue, project: reusable_project)
+      end
+
+      context 'when metrics record is missing' do
+        before do
+          subject.metrics.delete
+          subject.reload
+          subject.metrics # make sure metrics association is cached (currently nil)
+        end
+
+        it 'creates the metrics record' do
+          subject.update!(title: 'title')
+
+          expect(subject.metrics).to be_present
+        end
       end
     end
 

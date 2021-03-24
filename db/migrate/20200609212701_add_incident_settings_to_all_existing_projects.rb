@@ -8,7 +8,7 @@ class AddIncidentSettingsToAllExistingProjects < ActiveRecord::Migration[6.0]
     # to preserve behavior for existing projects that
     # are using the create issue functionality with the default setting of true
     query = <<-SQL
-      WITH project_ids AS (
+      WITH project_ids AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}(
         SELECT DISTINCT issues.project_id AS id
         FROM issues
         LEFT OUTER JOIN project_incident_management_settings

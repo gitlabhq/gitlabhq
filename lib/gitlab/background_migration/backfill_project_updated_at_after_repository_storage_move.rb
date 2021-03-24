@@ -8,7 +8,7 @@ module Gitlab
         updated_repository_storages = Projects::RepositoryStorageMove.select("project_id, MAX(updated_at) as updated_at").where(project_id: project_ids).group(:project_id)
 
         Project.connection.execute <<-SQL
-          WITH repository_storage_cte as (
+          WITH repository_storage_cte as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             #{updated_repository_storages.to_sql}
           )
           UPDATE projects

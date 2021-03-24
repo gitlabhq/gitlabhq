@@ -12,4 +12,16 @@ describe('MR Notes Mutations', () => {
       expect(state.endpoints).toEqual(endpoints);
     });
   });
+
+  describe(mutationTypes.SET_MR_METADATA, () => {
+    it('store the provided MR Metadata in the state', () => {
+      const state = {};
+      const metadata = { propA: 'A', propB: 'B' };
+
+      mutations[mutationTypes.SET_MR_METADATA](state, metadata);
+
+      expect(state.mrMetadata.propA).toBe('A');
+      expect(state.mrMetadata.propB).toBe('B');
+    });
+  });
 });

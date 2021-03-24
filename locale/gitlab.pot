@@ -12320,19 +12320,19 @@ msgstr ""
 msgid "ErrorTracking|Active"
 msgstr ""
 
-msgid "ErrorTracking|After adding your Auth Token, use the 'Connect' button to load projects"
+msgid "ErrorTracking|After adding your Auth Token, select the Connect button to load projects."
 msgstr ""
 
 msgid "ErrorTracking|Auth Token"
 msgstr ""
 
-msgid "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown."
+msgid "ErrorTracking|Click Connect to reestablish the connection to Sentry and activate the dropdown."
 msgstr ""
 
-msgid "ErrorTracking|Connection has failed. Re-check Auth Token and try again."
+msgid "ErrorTracking|Connection failed. Check Auth Token and try again."
 msgstr ""
 
-msgid "ErrorTracking|If you self-host Sentry, enter the full URL of your Sentry instance. If you're using Sentry's hosted solution, enter https://sentry.io"
+msgid "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io"
 msgstr ""
 
 msgid "ErrorTracking|No projects available"
@@ -12341,7 +12341,7 @@ msgstr ""
 msgid "ErrorTracking|Select project"
 msgstr ""
 
-msgid "ErrorTracking|To enable project selection, enter a valid Auth Token"
+msgid "ErrorTracking|To enable project selection, enter a valid Auth Token."
 msgstr ""
 
 msgid "Errors"

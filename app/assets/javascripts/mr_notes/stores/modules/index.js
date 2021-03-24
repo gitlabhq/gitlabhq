@@ -6,6 +6,7 @@ export default () => ({
   state: {
     endpoints: {},
     activeTab: null,
+    mrMetadata: {},
   },
   actions,
   getters,

@@ -8,7 +8,7 @@ module Gitlab
 
       def perform(start_id, stop_id)
         ActiveRecord::Base.connection.execute <<~SQL
-          WITH merge_requests_batch AS (
+          WITH merge_requests_batch AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             SELECT id, target_project_id
             FROM merge_requests WHERE id BETWEEN #{Integer(start_id)} AND #{Integer(stop_id)}
           )

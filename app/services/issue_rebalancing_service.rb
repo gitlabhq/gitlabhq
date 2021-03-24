@@ -62,7 +62,7 @@ class IssueRebalancingService
 
   def run_update_query(values, query_name)
     Issue.connection.exec_query(<<~SQL, query_name)
-      WITH cte(cte_id, new_pos) AS (
+      WITH cte(cte_id, new_pos) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
        SELECT *
        FROM (VALUES #{values}) as t (id, pos)
       )

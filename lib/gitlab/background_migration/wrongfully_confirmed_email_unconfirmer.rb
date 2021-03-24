@@ -57,7 +57,7 @@ module Gitlab
 
       def update_email_records(start_id, stop_id)
         EmailModel.connection.execute <<-SQL
-          WITH md5_strings as (
+          WITH md5_strings as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             #{email_query_for_update(start_id, stop_id).to_sql}
           )
           UPDATE #{EmailModel.connection.quote_table_name(EmailModel.table_name)}

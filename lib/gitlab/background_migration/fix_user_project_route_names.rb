@@ -8,7 +8,7 @@ module Gitlab
     class FixUserProjectRouteNames
       def perform(from_id, to_id)
         ActiveRecord::Base.connection.execute <<~ROUTES_UPDATE
-          WITH routes_to_update AS (
+          WITH routes_to_update AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             SELECT
                 routes.id,
                 users.name || ' / ' || projects.name AS correct_name

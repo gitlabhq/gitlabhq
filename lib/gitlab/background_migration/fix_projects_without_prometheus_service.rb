@@ -136,7 +136,7 @@ module Gitlab
       # there is no uniq constraint on project_id and type pair, which prevents us from using ON CONFLICT
       def create_sql(from_id, to_id)
         <<~SQL
-          WITH created_records AS (
+          WITH created_records AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             INSERT INTO services (project_id, #{DEFAULTS.keys.map { |key| %("#{key}")}.join(',')}, created_at, updated_at)
             #{select_insert_values_sql(from_id, to_id)}
             RETURNING *
@@ -149,7 +149,7 @@ module Gitlab
       # there is no uniq constraint on project_id and type pair, which prevents us from using ON CONFLICT
       def update_sql(from_id, to_id)
         <<~SQL
-          WITH updated_records AS (
+          WITH updated_records AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
             UPDATE services SET active = TRUE
             WHERE services.project_id BETWEEN #{Integer(from_id)} AND #{Integer(to_id)} AND services.properties = '{}' AND services.type = '#{Migratable::PrometheusService.type}'
             AND #{group_cluster_condition(from_id, to_id)} AND services.active = FALSE

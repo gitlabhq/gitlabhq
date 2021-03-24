@@ -21,7 +21,7 @@ def check_changelog_yaml(path)
   fail "`type` should be set, in #{helper.html_link(path)}! #{SEE_DOC}" if yaml["type"].nil?
 
   return if helper.security_mr?
-  return if helper.mr_iid.empty?
+  return if helper.mr_iid.to_s.empty?
 
   cherry_pick_against_stable_branch = helper.cherry_pick_mr? && helper.stable_branch?
 

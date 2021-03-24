@@ -58,6 +58,8 @@ export default () => {
     created() {
       this.setActiveTab(window.mrTabs.getCurrentAction());
       this.setEndpoints(this.endpoints);
+
+      this.fetchMrMetadata();
     },
     mounted() {
       this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
@@ -69,7 +71,7 @@ export default () => {
       window.mrTabs.eventHub.$off('MergeRequestTabChange', this.setActiveTab);
     },
     methods: {
-      ...mapActions(['setActiveTab', 'setEndpoints']),
+      ...mapActions(['setActiveTab', 'setEndpoints', 'fetchMrMetadata']),
       updateDiscussionTabCounter() {
         this.notesCountBadge.text(this.discussionTabCounter);
       },

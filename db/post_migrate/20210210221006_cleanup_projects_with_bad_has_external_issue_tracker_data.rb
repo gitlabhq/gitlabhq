@@ -44,7 +44,7 @@ class CleanupProjectsWithBadHasExternalIssueTrackerData < ActiveRecord::Migratio
         .merge(Project.where(has_external_issue_tracker: false).where(pending_delete: false))
 
       execute(<<~SQL)
-      WITH project_ids_to_update (id) AS (
+      WITH project_ids_to_update (id) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
         #{scope_with_projects.to_sql}
       )
       UPDATE projects SET has_external_issue_tracker = true WHERE id IN (SELECT id FROM project_ids_to_update)
@@ -71,7 +71,7 @@ class CleanupProjectsWithBadHasExternalIssueTrackerData < ActiveRecord::Migratio
     Project.where(index_where).each_batch(of: BATCH_SIZE) do |relation|
       relation_with_exists_query = relation.where('NOT EXISTS (?)', services_sub_query)
       execute(<<~SQL)
-      WITH project_ids_to_update (id) AS (
+      WITH project_ids_to_update (id) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
         #{relation_with_exists_query.select(:id).to_sql}
       )
       UPDATE projects SET has_external_issue_tracker = false WHERE id IN (SELECT id FROM project_ids_to_update)
