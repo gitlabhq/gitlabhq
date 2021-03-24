@@ -14,7 +14,7 @@ It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development))
 It pairs issue tracking and project management, keeping everything together,
 so that you don't need to jump between different platforms to organize your workflow.
 
-Issue boards build on the existing [issue tracking functionality](issues/index.md#issues-list) and
+Issue boards build on the existing [issue tracking functionality](issues/index.md) and
 [labels](labels.md). Your issues appear as cards in vertical lists, organized by their assigned
 labels, [milestones](#milestone-lists), or [assignees](#assignee-lists).
 
@@ -88,7 +88,7 @@ You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
 
 For examples of using issue boards along with [epics](../group/epics/index.md),
-[issue health status](issues/index.md#health-status), and
+[issue health status](issues/managing_issues.md#health-status), and
 [scoped labels](labels.md#scoped-labels) for various Agile frameworks, check:
 
 - The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)

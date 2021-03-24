@@ -331,9 +331,3 @@
     :why: https://github.com/xijo/reverse_markdown/blob/master/LICENSE
     :versions: []
     :when: 2021-02-03 08:47:28.792907000 Z
-- - :approve
-  - net-protocol
-  - :who: Stan Hu
-    :why: "This license is the same as the Ruby license (BSD): https://github.com/ruby/net-protocol/blob/master/LICENSE.txt"
-    :versions: []
-    :when: 2021-03-18 00:00:46.124036000 Z

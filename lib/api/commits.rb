@@ -372,7 +372,7 @@ module API
           current_user,
           project_id: user_project.id,
           commit_sha: commit.sha
-        ).execute
+        ).execute.with_api_entity_associations
 
         present paginate(commit_merge_requests), with: Entities::MergeRequestBasic
       end

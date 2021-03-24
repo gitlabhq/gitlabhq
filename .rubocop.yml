@@ -640,3 +640,7 @@ Cop/UserAdmin:
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+
+Performance/OpenStruct:
+  Exclude:
+    - 'ee/spec/**/*.rb'

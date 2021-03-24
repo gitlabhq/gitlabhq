@@ -160,7 +160,7 @@ To edit the custom email display name:
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 
-### Using custom email address
+### Using custom email address **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab Premium 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.

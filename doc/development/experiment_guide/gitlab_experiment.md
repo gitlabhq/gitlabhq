@@ -504,17 +504,19 @@ so you can use it when resolving some concepts around experimentation in the cli
 ### Use experiments in Vue
 
 With the `experiment` component, you can define slots that match the name of the
-variants pushed to `window.gon.experiment`. For example, an experiment with the
-default variants `control` and `candidate` could be implemented like this:
+variants pushed to `window.gon.experiment`. For example, if we alter the `pill_color`
+experiment to just use the default variants of `control` and `candidate` like so:
 
 ```ruby
 def show
-  experiment(:button_color) do |e|
+  experiment(:pill_color) do |e|
     e.use { } # control
     e.try { } # candidate
   end.run
 end
 ```
+
+We can make use of the named slots `control` and `candidate` in the Vue component:
 
 ```vue
 <script>
@@ -526,20 +528,20 @@ export default {
 </script>
 
 <template>
-  <experiment name="button_name">
+  <experiment name="pill_color">
     <template #control>
-      <button>Click me</button>
+      <button class="bg-default">Click default button</button>
     </template>
 
     <template #candidate>
-      <button>You will not believe what happens when you click this button</button>
+      <button class="bg-red">Click red button</button>
     </template>
   </experiment>
 </template>
 ```
 
-When you use a multivariate experiment, you can use the variant names. For example,
-the Vue component for the `pill_color` experiment would look like this:
+When you're coding for an experiment with multiple variants, you can use the variant names.
+For example, the Vue component for the previously-defined `pill_color` experiment with `red` and `blue` variants would look like this:
 
 ```vue
 <template>
@@ -560,7 +562,7 @@ the Vue component for the `pill_color` experiment would look like this:
 ```
 
 NOTE:
-When there is no experiment defined in the frontend via `experiment(:experiment_name)`, then `control` will be rendered if it exists.
+When there is no experiment data in the `window.gon.experiment` object for the given experiment name, the `control` slot will be used, if it exists.
 
 ## Notes on feature flags
 

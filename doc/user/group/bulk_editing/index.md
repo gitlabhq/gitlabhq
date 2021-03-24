@@ -31,7 +31,7 @@ When bulk editing issues in a group, you can edit the following attributes:
 - [Epic](../epics/index.md)
 - [Milestone](../../project/milestones/index.md)
 - [Labels](../../project/labels.md)
-- [Health status](../../project/issues/index.md#health-status)
+- [Health status](../../project/issues/managing_issues.md#health-status)
 - [Iteration](../iterations/index.md)
 
 To update multiple project issues at the same time:

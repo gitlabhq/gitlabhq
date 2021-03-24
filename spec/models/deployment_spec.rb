@@ -574,7 +574,7 @@ RSpec.describe Deployment do
 
   describe '#previous_deployment' do
     it 'returns the previous deployment' do
-      deploy1 = create(:deployment)
+      deploy1 = create(:deployment, :success)
       deploy2 = create(
         :deployment,
         project: deploy1.project,
@@ -582,6 +582,18 @@ RSpec.describe Deployment do
       )
 
       expect(deploy2.previous_deployment).to eq(deploy1)
+    end
+
+    it 'returns nothing if the refs do not match' do
+      deploy1 = create(:deployment, :success)
+      deploy2 = create(
+        :deployment,
+        :review_app,
+        project: deploy1.project,
+        environment: deploy1.environment
+      )
+
+      expect(deploy2.previous_deployment).to be_nil
     end
   end
 

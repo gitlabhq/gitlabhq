@@ -144,7 +144,7 @@ Follow these examples to form your new issue URL with prefilled fields.
 - For a new issue in the GitLab Community Edition project with a pre-filled title,
   a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
-## Moving Issues
+## Moving issues
 
 Moving an issue copies it to the target project, and closes it in the originating project.
 The original issue is not deleted. A system note, which indicates
@@ -154,7 +154,7 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 ![move issue - button](img/sidebar_move_issue.png)
 
-### Moving Issues in Bulk
+### Moving issues in bulk **(FREE SELF)**
 
 If you have advanced technical skills you can also bulk move all the issues from
 one project to another in the rails console. The below script moves all issues
@@ -315,3 +315,79 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)
 in a comment or description field.
+
+## Real-time sidebar **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
+
+Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
+To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+
+## Cached issue count **(FREE SELF)**
+
+> - [Introduced]([link-to-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/243753)) in GitLab 13.9.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use this feature in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cached-issue-count) **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In a group, the sidebar displays the total count of open issues and this value is cached if higher
+than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+
+## Similar issues
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22866) in GitLab 11.6.
+
+To prevent duplication of issues for the same topic, GitLab searches for similar issues
+when new issues are being created.
+
+As you type in the title field of the **New Issue** page, GitLab searches titles and descriptions
+across all issues to in the current project. Only issues you have access to are returned.
+Up to five similar issues, sorted by most recently updated, are displayed below the title box.
+[GraphQL](../../../api/graphql/index.md) must be enabled to use this feature.
+
+![Similar issues](img/similar_issues.png)
+
+## Health status **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab Ultimate 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab Ultimate 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab Ultimate 13.6.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
+
+To help you track issue statuses, you can assign a status to each issue.
+This marks issues as progressing as planned or needs attention to keep on schedule:
+
+- **On track** (green)
+- **Needs attention** (amber)
+- On track (green)
+- Needs attention (amber)
+- At risk (red)
+
+After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
+until the issue is reopened.
+
+You can then see issue statuses in the issues list and the
+[epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).
+
+## Enable or disable cached issue count **(FREE SELF)**
+
+Cached issue count in the left sidebar is under development and not ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable it.
+
+To disable it:
+
+```ruby
+Feature.disable(:cached_sidebar_open_issues_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_open_issues_count)
+```
