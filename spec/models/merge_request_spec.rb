@@ -420,6 +420,19 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.by_merge_or_squash_commit_sha' do
+    subject { described_class.by_merge_or_squash_commit_sha([sha1, sha2]) }
+
+    let(:sha1) { '123abc' }
+    let(:sha2) { '456abc' }
+    let(:mr1) { create(:merge_request, :merged, squash_commit_sha: sha1) }
+    let(:mr2) { create(:merge_request, :merged, merge_commit_sha: sha2) }
+
+    it 'returns merge requests that match the given squash and merge commits' do
+      is_expected.to include(mr1, mr2)
+    end
+  end
+
   describe '.by_related_commit_sha' do
     subject { described_class.by_related_commit_sha(sha) }
 

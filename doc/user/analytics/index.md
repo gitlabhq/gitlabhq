@@ -48,9 +48,10 @@ The following analytics features are available at the group level:
 - [Contribution](../group/contribution_analytics/index.md). **(PREMIUM)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
-- [Productivity](productivity_analytics.md) **(PREMIUM)**
-- [Repositories](../group/repositories_analytics/index.md) **(PREMIUM)**
+- [Productivity](productivity_analytics.md). **(PREMIUM)**
+- [Repositories](../group/repositories_analytics/index.md). **(PREMIUM)**
 - [Value Stream](../group/value_stream_analytics/index.md). **(PREMIUM)**
+- [Application Security](../application_security/security_dashboard/#group-security-dashboard). **(ULTIMATE)**
 
 ## Project-level analytics
 
@@ -64,3 +65,10 @@ The following analytics features are available at the project level:
   [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 - [Repository](repository_analytics.md). **(FREE)**
 - [Value Stream](value_stream_analytics.md). **(FREE)**
+- [Application Security](../application_security/security_dashboard/#project-security-dashboard). **(ULTIMATE)**
+
+## User-configurable analytics
+
+The following analytics features are available for users to create personalized views:
+
+- [Application Security](../application_security/security_dashboard/#security-center). **(ULTIMATE)**

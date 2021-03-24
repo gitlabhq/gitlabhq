@@ -222,9 +222,9 @@ export default {
   },
   labels: {
     members: {
-      modalTitle: s__('InviteMembersModal|Invite team members'),
-      searchField: s__('InviteMembersModal|GitLab member or Email address'),
-      placeHolder: s__('InviteMembersModal|Search for members to invite'),
+      modalTitle: s__('InviteMembersModal|Invite members'),
+      searchField: s__('InviteMembersModal|GitLab member or email address'),
+      placeHolder: s__('InviteMembersModal|Select members or type email addresses'),
       toGroup: {
         introText: s__(
           "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",

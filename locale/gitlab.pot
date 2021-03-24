@@ -16888,7 +16888,7 @@ msgstr ""
 msgid "InviteMembersModal|Close invite team members"
 msgstr ""
 
-msgid "InviteMembersModal|GitLab member or Email address"
+msgid "InviteMembersModal|GitLab member or email address"
 msgstr ""
 
 msgid "InviteMembersModal|Invite"
@@ -16897,7 +16897,7 @@ msgstr ""
 msgid "InviteMembersModal|Invite a group"
 msgstr ""
 
-msgid "InviteMembersModal|Invite team members"
+msgid "InviteMembersModal|Invite members"
 msgstr ""
 
 msgid "InviteMembersModal|Members were successfully added"
@@ -16906,10 +16906,10 @@ msgstr ""
 msgid "InviteMembersModal|Search for a group to invite"
 msgstr ""
 
-msgid "InviteMembersModal|Search for members to invite"
+msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
-msgid "InviteMembersModal|Select a group to invite"
+msgid "InviteMembersModal|Select members or type email addresses"
 msgstr ""
 
 msgid "InviteMembersModal|Some of the members could not be added"

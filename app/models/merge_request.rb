@@ -276,6 +276,9 @@ class MergeRequest < ApplicationRecord
   scope :by_squash_commit_sha, -> (sha) do
     where(squash_commit_sha: sha)
   end
+  scope :by_merge_or_squash_commit_sha, -> (sha) do
+    from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha)])
+  end
   scope :by_related_commit_sha, -> (sha) do
     from_union(
       [

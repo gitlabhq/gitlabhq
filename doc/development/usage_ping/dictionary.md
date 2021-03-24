@@ -9812,6 +9812,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_epic_closed_monthly`
+
+Counts of MAU closing epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210310163213_g_project_management_epic_closed_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_closed_weekly`
+
+Counts of WAU closing epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210310162703_g_project_management_epic_closed_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_epic_created_monthly`
 
 Count of MAU creating epics
@@ -9853,6 +9877,30 @@ Tiers: `premium`, `ultimate`
 Count of WAU adding issues to epics
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312181918_g_product_planning_epic_issue_added_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_reopened_monthly`
+
+Counts of MAU closing epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210310164247_g_project_management_epic_reopened_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_reopened_weekly`
+
+Counts of WAU re-opening epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210310164112_g_project_management_epic_reopened_weekly.yml)
 
 Group: `group::product planning`
 

@@ -93,7 +93,7 @@ describe('InviteMembersModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite team members');
+      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite members');
     });
 
     it('renders the Cancel button text correctly', () => {

@@ -42,6 +42,15 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
     end
   end
 
+  it 'renders an error if the remote url scheme starts with javascript' do
+    visit new_import_manifest_path
+
+    attach_file('manifest', Rails.root.join('spec/fixtures/unsafe_javascript.xml'))
+    click_on 'List available repositories'
+
+    expect(page).to have_content 'Make sure the url does not start with javascript'
+  end
+
   it 'renders an error if invalid file was provided' do
     visit new_import_manifest_path
 
