@@ -12,7 +12,8 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
       authorize :read_the_thing
 
       def initialize(user, found_object)
-        @user, @found_object = user, found_object
+        @user = user
+        @found_object = found_object
       end
 
       def find_object
@@ -40,16 +41,12 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
 
   before do
     # don't allow anything by default
-    allow(Ability).to receive(:allowed?) do
-      false
-    end
+    allow(Ability).to receive(:allowed?).and_return(false)
   end
 
   context 'when the user is allowed to perform the action' do
     before do
-      allow(Ability).to receive(:allowed?).with(user, :read_the_thing, project) do
-        true
-      end
+      allow(Ability).to receive(:allowed?).with(user, :read_the_thing, project).and_return(true)
     end
 
     describe '#authorized_find!' do

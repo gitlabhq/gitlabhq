@@ -56,10 +56,10 @@ RSpec.describe Mutations::DesignManagement::Upload do
            .map { |f| RenameableUpload.unique_file(f) }
         end
 
-        def creates_designs
+        def creates_designs(&block)
           prior_count = DesignManagement::Design.count
 
-          expect { yield }.not_to raise_error
+          expect(&block).not_to raise_error
 
           expect(DesignManagement::Design.count).to eq(prior_count + files.size)
         end

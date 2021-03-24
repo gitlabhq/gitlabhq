@@ -22993,9 +22993,6 @@ msgstr ""
 msgid "Please solve the captcha"
 msgstr ""
 
-msgid "Please solve the reCAPTCHA"
-msgstr ""
-
 msgid "Please try again"
 msgstr ""
 

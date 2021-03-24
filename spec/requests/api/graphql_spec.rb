@@ -3,10 +3,11 @@ require 'spec_helper'
 
 RSpec.describe 'GraphQL' do
   include GraphqlHelpers
+  include AfterNextHelpers
 
-  let(:query) { graphql_query_for('echo', text: 'Hello world' ) }
+  let(:query) { graphql_query_for('echo', text: 'Hello world') }
 
-  context 'logging' do
+  describe 'logging' do
     shared_examples 'logging a graphql query' do
       let(:expected_params) do
         {
@@ -51,19 +52,25 @@ RSpec.describe 'GraphQL' do
 
     context 'when there is an error in the logger' do
       before do
-        allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer).to receive(:process_variables).and_raise(StandardError.new("oh noes!"))
+        logger_analyzer = GitlabSchema.query_analyzers.find do |qa|
+          qa.is_a? Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer
+        end
+        allow(logger_analyzer).to receive(:process_variables)
+          .and_raise(StandardError.new("oh noes!"))
       end
 
       it 'logs the exception in Sentry and continues with the request' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once)
-        expect(Gitlab::GraphqlLogger).to receive(:info)
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_and_raise_for_dev_exception).at_least(:once)
+        expect(Gitlab::GraphqlLogger)
+          .to receive(:info)
 
         post_graphql(query, variables: {})
       end
     end
   end
 
-  context 'invalid variables' do
+  context 'with invalid variables' do
     it 'returns an error' do
       post_graphql(query, variables: "This is not JSON")
 
@@ -72,7 +79,7 @@ RSpec.describe 'GraphQL' do
     end
   end
 
-  context 'authentication', :allow_forgery_protection do
+  describe 'authentication', :allow_forgery_protection do
     let(:user) { create(:user) }
 
     it 'allows access to public data without authentication' do
@@ -99,7 +106,7 @@ RSpec.describe 'GraphQL' do
       expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
     end
 
-    context 'token authentication' do
+    context 'with token authentication' do
       let(:token) { create(:personal_access_token) }
 
       before do
@@ -119,7 +126,7 @@ RSpec.describe 'GraphQL' do
 
       context 'when the personal access token has no api scope' do
         it 'does not log the user in' do
-          token.update(scopes: [:read_user])
+          token.update!(scopes: [:read_user])
 
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
@@ -136,7 +143,11 @@ RSpec.describe 'GraphQL' do
     let(:user) { create(:user) }
 
     let(:query) do
-      graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id))
+      graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        'id'
+      )
     end
 
     before do
@@ -202,8 +213,8 @@ RSpec.describe 'GraphQL' do
     let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: Time.now.change(usec: 200)) }
 
     let(:page_size) { 6 }
-    let(:issues_edges) { %w(data project issues edges) }
-    let(:end_cursor) { %w(data project issues pageInfo endCursor) }
+    let(:issues_edges) { %w[project issues edges] }
+    let(:end_cursor) { %w[project issues pageInfo endCursor] }
     let(:query) do
       <<~GRAPHQL
         query project($fullPath: ID!, $first: Int, $after: String) {
@@ -217,16 +228,10 @@ RSpec.describe 'GraphQL' do
       GRAPHQL
     end
 
-    # TODO: Switch this to use `post_graphql`
-    # This is not performing an actual GraphQL request because the
-    # variables end up being strings when passed through the `post_graphql`
-    # helper.
-    #
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/222432
     def execute_query(after: nil)
-      GitlabSchema.execute(
+      post_graphql(
         query,
-        context: { current_user: nil },
+        current_user: nil,
         variables: {
           fullPath: project.full_path,
           first: page_size,
@@ -240,14 +245,16 @@ RSpec.describe 'GraphQL' do
       expect(Gitlab::Graphql::Pagination::Keyset::QueryBuilder)
         .to receive(:new).with(anything, anything, hash_including('created_at'), anything).and_call_original
 
-      first_page = execute_query
+      execute_query
+      first_page = graphql_data
       edges = first_page.dig(*issues_edges)
       cursor = first_page.dig(*end_cursor)
 
       expect(edges.count).to eq(6)
       expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
 
-      second_page = execute_query(after: cursor)
+      execute_query(after: cursor)
+      second_page = graphql_data
       edges = second_page.dig(*issues_edges)
 
       expect(edges.count).to eq(4)

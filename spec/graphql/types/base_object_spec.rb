@@ -196,20 +196,20 @@ RSpec.describe Types::BaseObject do
     end
 
     # For example a batchloaded association
-    context 'a lazy list' do
+    describe 'a lazy list' do
       it_behaves_like 'array member redaction', %w[lazyListOfYs]
     end
 
     # For example using a batchloader to map over a set of IDs
-    context 'a list of lazy items' do
+    describe 'a list of lazy items' do
       it_behaves_like 'array member redaction', %w[listOfLazyYs]
     end
 
-    context 'an array connection of items' do
+    describe 'an array connection of items' do
       it_behaves_like 'array member redaction', %w[arrayYsConn nodes]
     end
 
-    context 'an array connection of items, selecting edges' do
+    describe 'an array connection of items, selecting edges' do
       it_behaves_like 'array member redaction', %w[arrayYsConn edges node]
     end
 
@@ -222,7 +222,7 @@ RSpec.describe Types::BaseObject do
         }
       }
 
-      doc = ->(after) do
+      doc = lambda do |after|
         GraphQL.parse(<<~GQL)
         query {
           x {
@@ -238,9 +238,7 @@ RSpec.describe Types::BaseObject do
         }
         GQL
       end
-      returned_items = ->(ids) do
-        ids.to_a.map { |id| eq({ 'id' => id }) }
-      end
+      returned_items = ->(ids) { ids.to_a.map { |id| eq({ 'id' => id }) } }
 
       query = GraphQL::Query.new(test_schema, document: doc[nil], context: data)
       result = query.result.to_h

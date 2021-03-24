@@ -39,9 +39,7 @@ module Resolvers
       as_single << block
 
       # Have we been called after defining the single version of this resolver?
-      if @single.present?
-        @single.instance_exec(&block)
-      end
+      @single.instance_exec(&block) if @single.present?
     end
 
     def self.as_single
@@ -90,7 +88,7 @@ module Resolvers
 
     def self.last
       parent = self
-      @last ||= Class.new(self.single) do
+      @last ||= Class.new(single) do
         type parent.singular_type, null: true
 
         def select_result(results)

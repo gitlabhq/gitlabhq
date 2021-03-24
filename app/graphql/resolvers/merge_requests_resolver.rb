@@ -10,35 +10,41 @@ module Resolvers
 
     def self.accept_assignee
       argument :assignee_username, GraphQL::STRING_TYPE,
-             required: false,
-             description: 'Username of the assignee.'
+               required: false,
+               description: 'Username of the assignee.'
     end
 
     def self.accept_author
       argument :author_username, GraphQL::STRING_TYPE,
-             required: false,
-             description: 'Username of the author.'
+               required: false,
+               description: 'Username of the author.'
     end
 
     def self.accept_reviewer
       argument :reviewer_username, GraphQL::STRING_TYPE,
-             required: false,
-             description: 'Username of the reviewer.'
+               required: false,
+               description: 'Username of the reviewer.'
     end
 
     argument :iids, [GraphQL::STRING_TYPE],
-              required: false,
-              description: 'Array of IIDs of merge requests, for example `[1, 2]`.'
+             required: false,
+             description: 'Array of IIDs of merge requests, for example `[1, 2]`.'
 
     argument :source_branches, [GraphQL::STRING_TYPE],
              required: false,
              as: :source_branch,
-             description: 'Array of source branch names. All resolved merge requests will have one of these branches as their source.'
+             description: <<~DESC
+               Array of source branch names.
+               All resolved merge requests will have one of these branches as their source.
+             DESC
 
     argument :target_branches, [GraphQL::STRING_TYPE],
              required: false,
              as: :target_branch,
-             description: 'Array of target branch names. All resolved merge requests will have one of these branches as their target.'
+             description: <<~DESC
+               Array of target branch names.
+               All resolved merge requests will have one of these branches as their target.
+             DESC
 
     argument :state, ::Types::MergeRequestStateEnum,
              required: false,

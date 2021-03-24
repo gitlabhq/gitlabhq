@@ -48,14 +48,14 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
       end
     end
 
-    context 'group integration' do
+    describe 'a group integration' do
       let_it_be(:group) { create(:group) }
       let_it_be(:integration) { create(:prometheus_service, project: nil, group: group) }
 
       # Since it is impossible to authorize the parent here, given that the
       # project is nil, all fields should be redacted:
 
-      described_class.fields.keys.each do |field_name|
+      described_class.fields.each_key do |field_name|
         context "field: #{field_name}" do
           it 'is redacted' do
             expect do

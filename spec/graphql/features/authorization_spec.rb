@@ -84,9 +84,9 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
         permissions = permission_collection
         query_factory do |qt|
           qt.field :item, type,
-            null: true,
-            resolver: new_resolver(test_object),
-            authorize: permissions
+                   null: true,
+                   resolver: new_resolver(test_object),
+                   authorize: permissions
         end
       end
 
@@ -123,8 +123,9 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       let(:type) do
         permissions = permission_collection
         type_factory do |type|
-          type.field :name, GraphQL::STRING_TYPE, null: true,
-            authorize: permissions
+          type.field :name, GraphQL::STRING_TYPE,
+                     null: true,
+                     authorize: permissions
         end
       end
 
@@ -201,9 +202,10 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true,
-          resolver: resolver,
-          authorize: permission_2
+        query.field :item, type,
+                    null: true,
+                    resolver: resolver,
+                    authorize: permission_2
       end
     end
 
@@ -288,8 +290,12 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       let(:query_string) { '{ item(first: 1) { edges { node { name } } } }' }
 
       it 'only checks permissions for the first object' do
-        expect(Ability).to receive(:allowed?).with(user, permission_single, test_object) { true }
-        expect(Ability).not_to receive(:allowed?).with(user, permission_single, second_test_object)
+        expect(Ability)
+          .to receive(:allowed?)
+          .with(user, permission_single, test_object)
+          .and_return(true)
+        expect(Ability)
+          .not_to receive(:allowed?).with(user, permission_single, second_test_object)
 
         expect(subject.size).to eq(1)
       end
@@ -330,10 +336,12 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
     end
 
     let(:project_type) do |type|
+      issues = Issue.where(project: [visible_project, other_project]).order(id: :asc)
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
-        type.field :test_issues, issue_type.connection_type, null: false,
-                   resolver: new_resolver(Issue.where(project: [visible_project, other_project]).order(id: :asc))
+        type.field :test_issues, issue_type.connection_type,
+                   null: false,
+                   resolver: new_resolver(issues)
       end
     end
 

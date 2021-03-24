@@ -11,6 +11,7 @@ module QA
 
           view 'app/assets/javascripts/boards/components/board_form.vue' do
             element :board_name_field
+            element :save_changes_button
           end
 
           view 'app/assets/javascripts/boards/components/board_list.vue' do
@@ -21,10 +22,6 @@ module QA
             element :boards_dropdown
             element :boards_dropdown_content
             element :create_new_board_button
-          end
-
-          view 'app/assets/javascripts/vue_shared/components/deprecated_modal.vue' do
-            element :save_changes_button
           end
 
           view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select/base.vue' do
