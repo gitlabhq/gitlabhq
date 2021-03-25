@@ -227,6 +227,9 @@ job1:
     - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
 
+Depending on the shell that your runner uses, for example if it is using ZSH, you may need to
+escape the special characters like so: `\\e` and `\\r`.
+
 In the example above:
 
 - `date +%s`: The Unix timestamp (for example `1560896352`).

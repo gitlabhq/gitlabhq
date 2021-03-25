@@ -707,7 +707,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     locale (2.1.3)
-    lockbox (0.3.3)
+    lockbox (0.6.2)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -1478,7 +1478,7 @@ DEPENDENCIES
   letter_opener_web (~> 1.3.4)
   license_finder (~> 6.0)
   licensee (~> 9.14.1)
-  lockbox (~> 0.3.3)
+  lockbox (~> 0.6.2)
   lograge (~> 0.5)
   loofah (~> 2.2)
   lru_redux

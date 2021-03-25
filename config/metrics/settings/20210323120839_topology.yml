@@ -1,0 +1,21 @@
+---
+key_path: topology
+description: Topology data
+product_section: enablement
+product_stage: enablement
+product_group: group::memory
+product_category:
+value_type: object
+status: data_available
+milestone: "13.11"
+introduced_by_url: https://gitlab.com/groups/gitlab-org/-/epics/3209
+time_frame: none
+data_source: prometheus
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+object_json_schema: 'config/metrics/objects_schemas/topology_schema.json'

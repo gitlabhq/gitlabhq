@@ -89,10 +89,7 @@ is active until the end of the license period. When that period ends, the
 instance will [fall back](#what-happens-when-your-license-expires) to Free-only
 functionality.
 
-You can review the license details at any time in the **License** section of the
-**Admin Area**.
-
-![License details](img/license_details_v13_8.png)
+You can review the license details at any time by going to **Admin Area > License**.
 
 ## Notification before the license expires
 

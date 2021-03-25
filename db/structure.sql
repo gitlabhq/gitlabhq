@@ -23082,6 +23082,8 @@ CREATE INDEX index_milestones_on_title ON milestones USING btree (title);
 
 CREATE INDEX index_milestones_on_title_trigram ON milestones USING gin (title gin_trgm_ops);
 
+CREATE INDEX index_mirror_data_non_scheduled_or_started ON project_mirror_data USING btree (next_execution_timestamp, retry_count) WHERE ((status)::text <> ALL ('{scheduled,started}'::text[]));
+
 CREATE INDEX index_mirror_data_on_next_execution_and_retry_count ON project_mirror_data USING btree (next_execution_timestamp, retry_count);
 
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);

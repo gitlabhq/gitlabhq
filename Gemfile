@@ -514,7 +514,7 @@ gem 'erubi', '~> 1.9.0'
 gem 'mail', '= 2.7.1'
 
 # File encryption
-gem 'lockbox', '~> 0.3.3'
+gem 'lockbox', '~> 0.6.2'
 
 # Email validation
 gem 'valid_email', '~> 0.1'

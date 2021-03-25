@@ -314,6 +314,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
 
@@ -394,8 +395,8 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - <<: *if-default-refs
-      changes: *code-qa-patterns
+    - <<: *if-auto-deploy-branches
+    - changes: *code-qa-patterns
 
 .frontend:rules:compile-test-assets:
   rules:

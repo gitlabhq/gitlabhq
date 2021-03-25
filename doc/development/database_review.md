@@ -67,8 +67,8 @@ A database **reviewer**'s role is to:
 - Ensure the [required](#required) artifacts are provided and in the proper format. If they are not, reassign the merge request back to the author.
 - Perform a first-pass review on the MR and suggest improvements to the author.
 - Once satisfied, relabel the MR with ~"database::reviewed", approve it, and
-  reassign MR to the database **maintainer** suggested by Reviewer
-  Roulette.
+  request a review from the database **maintainer** suggested by Reviewer
+  Roulette. Remove yourself as a reviewer once this has been done.
 
 A database **maintainer**'s role is to:
 
@@ -78,12 +78,13 @@ A database **maintainer**'s role is to:
 - Finally approve the MR and relabel the MR with ~"database::approved"
 - Merge the MR if no other approvals are pending or pass it on to
   other maintainers as required (frontend, backend, docs).
+  - If not merging, remove yourself as a reviewer.
 
 ### Distributing review workload
 
 Review workload is distributed using [reviewer roulette](code_review.md#reviewer-roulette)
 ([example](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25181#note_147551725)).
-The MR author should then co-assign the suggested database
+The MR author should request a review from the suggested database
 **reviewer**. When they give their sign-off, they will hand over to
 the suggested database **maintainer**.
 

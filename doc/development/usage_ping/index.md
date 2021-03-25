@@ -785,6 +785,16 @@ end
 Please refer to [the `PrometheusClient` definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/prometheus_client.rb)
 for how to use its API to query for data.
 
+### Fallback values for UsagePing
+
+We return fallback values in these cases:
+
+| Case                        | Value |
+|-----------------------------|-------|
+| Deprecated Metric           | -1000 |
+| Timeouts, general failures  | -1    |
+| Standard errors in counters | -2    |
+
 ## Developing and testing Usage Ping
 
 ### 1. Naming and placing the metrics

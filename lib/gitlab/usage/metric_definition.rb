@@ -22,6 +22,16 @@ module Gitlab
         attributes
       end
 
+      def json_schema_path
+        return '' unless has_json_schema?
+
+        "#{BASE_REPO_PATH}/#{attributes[:object_json_schema]}"
+      end
+
+      def has_json_schema?
+        attributes[:value_type] == 'object' && attributes[:object_json_schema].present?
+      end
+
       def yaml_path
         "#{BASE_REPO_PATH}#{path.delete_prefix(Rails.root.to_s)}"
       end

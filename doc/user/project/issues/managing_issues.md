@@ -361,8 +361,6 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 To help you track issue statuses, you can assign a status to each issue.
 This marks issues as progressing as planned or needs attention to keep on schedule:
 
-- **On track** (green)
-- **Needs attention** (amber)
 - On track (green)
 - Needs attention (amber)
 - At risk (red)

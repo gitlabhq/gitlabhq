@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "required": ["duration", "failures"],
+  "properties": {
+    "duration": { "type": "number", "description": "The time it took to collect topology data" },
+    "failures": { "type": "array", "description": "The information about failed queries" },
+    "application_requests_per_hour": { "type": "number", "description": "The number of requests to the web application per hour" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "node_cpus":               { "type": "number", "description": "The number of CPU cores of this node" },
+          "node_cpu_utilization":    { "type": "number", "description": "The CPU utilization ratio of this node" },
+          "node_memory_total_bytes": { "type": "number", "description": "The total available memory of this node" },
+          "node_memory_utilization": { "type": "number", "description": "The memory utilization ratio of this node" },
+          "node_services": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name":               { "type": "string", "description": "The name of the GitLab service running on this node" },
+                "server":             { "type": "string", "description": "The type of web server used (Unicorn or Puma)" },
+                "process_count":      { "type": "number", "description": "The number of processes running for this service" },
+                "process_memory_rss": { "type": "number", "description": "The average Resident Set Size of a service process" },
+                "process_memory_uss": { "type": "number", "description": "The average Unique Set Size of a service process" },
+                "process_memory_pss": { "type": "number", "description": "The average Proportional Set Size of a service proces" }
+              }
+            }
+          },
+          "node_uname_info": {
+            "type": "object",
+            "properties": {
+              "machine": { "type": "string", "description": "The machine hardware name of this node" },
+              "release": { "type": "string", "description": "The operating system release of this node" },
+              "sysname": { "type": "string", "description": "The operating system name of this node" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

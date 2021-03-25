@@ -33,7 +33,7 @@ module Packages
       end
 
       def packages_with_path
-        matching_packages = base.only_maven_packages_with_path(path)
+        matching_packages = base.only_maven_packages_with_path(path, use_cte: group.present?)
         matching_packages = matching_packages.order_by_package_file if versionless_package?(matching_packages)
 
         matching_packages

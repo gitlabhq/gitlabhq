@@ -23,7 +23,7 @@ functionality of a project.
 
 Adjust your project's name, description, avatar, [default branch](../repository/branches/default.md), and topics:
 
-![general project settings](img/general_settings.png)
+![general project settings](img/general_settings_v13_11.png)
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
@@ -145,8 +145,6 @@ Set up your project's merge request settings:
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch)
 - Configure [suggested changes commit messages](../../discussions/index.md#configure-the-commit-message-for-applied-suggestions)
-
-![project's merge request settings](img/merge_requests_settings.png)
 
 ### Service Desk
 

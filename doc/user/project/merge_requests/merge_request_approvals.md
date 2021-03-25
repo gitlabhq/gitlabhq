@@ -23,6 +23,39 @@ This provides a consistent mechanism for reviewers to approve merge requests, an
 maintainers know a change is ready to merge. Approvals in Free are optional, and do
 not prevent a merge request from being merged when there is no approval.
 
+## External approvals **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab Ultimate 13.10.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../../api/merge_request_approvals.md#enable-or-disable-external-project-level-mr-approvals). **(ULTIMATE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+When you create an external approval rule, the following merge request actions sends information
+about a merge request to a third party service:
+
+- Create
+- Change
+- Close
+
+This action enables use-cases such as:
+
+- Integration with 3rd party workflow tools, such as [ServiceNow](https://www.servicenow.co.uk/).
+- Integration with custom tools designed to approve merge requests from outside of GitLab.
+
+You can find more information about use-cases, development timelines and the feature discovery in
+the [External API approval rules epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).
+
+The intention for this feature is to allow those 3rd party tools to approve a merge request similarly to how users current do.
+
+NOTE:
+The lack of an external approval does not block the merging of a merge request.
+
+You can modify external approval rules through the [REST API](../../../api/merge_request_approvals.md#external-project-level-mr-approvals).
+
 ## Required Approvals **(PREMIUM)**
 
 > - [Introduced](https://about.gitlab.com/releases/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only) in GitLab Enterprise Edition 7.12.

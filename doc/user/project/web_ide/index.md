@@ -190,7 +190,7 @@ To discard a change in a particular file, click the **Discard changes** button o
 file in the changes tab. To discard all the changes, click the trash icon on the
 top-right corner of the changes sidebar.
 
-![Commit changes](img/commit_changes_v12_9.png)
+![Commit changes](img/commit_changes_v13_11.png)
 
 ## Reviewing changes
 

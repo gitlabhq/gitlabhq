@@ -12,9 +12,14 @@ type: index, reference, howto
 To search through issues and merge requests in multiple projects, use the **Issues** or **Merge Requests** links
 in the top-right part of your screen. These instructions are valid for both.
 
-The number displayed on their right represents the number of issues and merge requests assigned to you:
+The numbers in the right-hand side of the top menu indicate how many issues, merge requests,
+and to-do items are assigned to you:
 
-![issues and MRs dashboard links](img/dashboard_links.png)
+![issues and MRs dashboard links](img/dashboard_links_v13_11.png)
+
+- **(issues)** **Issues**: The open issues assigned to you.
+- **(merge-request-open)** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
+- **(todo-done)** **To-do items**: The [to-do items](../todos.md) assigned to you.
 
 When you click **Issues**, GitLab shows the opened issues assigned to you:
 
@@ -282,7 +287,6 @@ search, or choose a specific group or project.
 To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
 
-![code search dropdown](img/project_search_dropdown.png)
 ![code search results](img/project_code_search.png)
 
 ### SHA search

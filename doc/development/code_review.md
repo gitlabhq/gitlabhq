@@ -38,14 +38,15 @@ Depending on the areas your merge request touches, it must be **approved** by on
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
 For approvals, we use the approval functionality found in the merge request
-widget. Reviewers can add their approval by [approving additionally](../user/project/merge_requests/merge_request_approvals.md#adding-or-removing-an-approval).
+widget. For reviewers, we use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar. 
+Reviewers can add their approval by [approving additionally](../user/project/merge_requests/merge_request_approvals.md#adding-or-removing-an-approval).
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve merges it.
 
 ### Domain experts
 
-Domain experts are team members who have substantial experience with a specific technology, product feature or area of the codebase. Team members are encouraged to self-identify as domain experts and add it to their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml)
+Domain experts are team members who have substantial experience with a specific technology, product feature or area of the codebase. Team members are encouraged to self-identify as domain experts and add it to their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml).
 
 When self-identifying as a domain expert, it is recommended to assign the MR changing the `team.yml` to be merged by an already established Domain Expert or a corresponding Engineering Manager.
 
@@ -137,9 +138,11 @@ View the updated documentation regarding [internal application security reviews]
 ### The responsibility of the merge request author
 
 The responsibility to find the best solution and implement it lies with the
-merge request author.
+merge request author. The author or [directly responsible individual](https://about.gitlab.com/handbook/people-group/directly-responsible-individuals/)
+will stay assigned to the merge request as the assignee throughout
+the code review lifecycle. If you are unable to set yourself as an assignee, ask a [reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) to do this for you.
 
-Before assigning a merge request to a maintainer for approval and merge, they
+Before requesting a review from a maintainer to approve and merge, they
 should be confident that:
 
 - It actually solves the problem it was meant to solve.
@@ -184,9 +187,9 @@ Avoid:
   [include a link to the relevant issue](code_comments.md).
 - Adding comments which only explain what the code is doing. If non-TODO comments are added, they should
   [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
-- Assigning merge requests with failed tests to maintainers. If the tests are failing and you have to assign, ensure you leave a comment with an explanation.
+- Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-through Slack). If you can't assign a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases assigning the merge request is sufficient.
+through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -196,9 +199,10 @@ This saves reviewers time and helps authors catch mistakes earlier.
 that it meets all requirements, you should:
 
 - Click the Approve button.
-- Advise the author their merge request has been reviewed and approved.
-- Assign the merge request to a maintainer. Default to assigning it to a maintainer with [domain expertise](#domain-experts),
+- `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
+- Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
 however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
+- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -226,7 +230,7 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers.
+required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the Merge Request
@@ -243,6 +247,19 @@ without duly verifying them.
 Note that certain Merge Requests may target a stable branch. These are rare
 events. These types of Merge Requests cannot be merged by the Maintainer.
 Instead these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
+
+After merging, a maintainer should stay as the reviewer listed on the merge request.
+
+### Dogfooding the Reviewers feature
+
+In March 18th 2021, an updated process was put in place aimed at efficiently and consistently dogfooding the Reviewers feature.
+
+Here is a summary of the changes, also reflected in this section above.
+
+- Merge request authors and DRIs stay as Assignees
+- Authors request a review from Reviewers when they are expected to review
+- Reviewers remove themselves after they're done reviewing/approving
+- The last approver stays as Reviewer upon merging
 
 ## Best practices
 
@@ -303,11 +320,11 @@ first time.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be
   able to read individual updates based on their earlier feedback.
-- Assign the merge request back to the reviewer once you are ready for another round of
-  review. If you do not have the ability to assign merge requests, `@`
+- Request a new review from the reviewer once you are ready for another round of
+  review. If you do not have the ability to request a review, `@`
   mention the reviewer instead.
 
-### Assigning a merge request for a review
+### Requesting a review
 
 When you are ready to have your merge request reviewed,
 you should request an initial review by assigning it to a reviewer from your group or team.
@@ -321,11 +338,11 @@ Sometimes, a maintainer may not be available for review. They could be out of th
 You can and should check the maintainer's availability in their profile. If the maintainer recommended by
 the roulette is not available, choose someone else from that list.
 
-It is responsibility of the author of a merge request that the merge request is reviewed. If it stays in `ready for review` state too long it is recommended to assign it to a specific reviewer.
+It is the responsibility of the author for the merge request to be reviewed. If it stays in the `ready for review` state too long it is recommended to request a review from a specific reviewer.
 
 #### List of merge requests ready for review
 
-Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?state=opened&label_name%5B%5D=workflow%3A%3Aready%20for%20review) and assign any merge request they want to review.
+Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?state=opened&label_name%5B%5D=workflow%3A%3Aready%20for%20review) and add themselves as a reviewer for any merge request they want to review.
 
 ### Reviewing a merge request
 
@@ -350,8 +367,7 @@ experience, refactors the existing code). Then:
 if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
-- Assign the merge request to the author if changes are required following your
-  review.
+- Let the author know if changes are required following your review.
 
 ### Merging a merge request
 
@@ -370,8 +386,7 @@ those changes directly without going back to the author. You can do this by
 using the [suggest changes](../user/discussions/index.md#suggest-changes) feature to apply
 your own suggestions to the merge request. Note that:
 
-- If the changes are not straightforward, please prefer assigning the merge request back
-  to the author.
+- If the changes are not straightforward, please prefer allowing the author to make the change.
 - **Before applying suggestions**, edit the merge request to make sure
   [squash and
   merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
@@ -499,7 +514,7 @@ Enterprise Edition instance. This has some implications:
 ### Review turnaround time
 
 Because [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
-reviewers are expected to review assigned merge requests in a timely manner,
+reviewers are expected to review merge requests in a timely manner,
 even when this may negatively impact their other tasks and priorities.
 
 Doing so allows everyone involved in the merge request to iterate faster as the
@@ -514,7 +529,7 @@ To ensure swift feedback to ready-to-review code, we maintain a `Review-response
 If you don't think you can review a merge request in the `Review-response` SLO
 time frame, let the author know as soon as possible and try to help them find
 another reviewer or maintainer who is able to, so that they can be unblocked
-and get on with their work quickly.
+and get on with their work quickly. Remove yourself as a reviewer.
 
 If you think you are at capacity and are unable to accept any more reviews until
 some have been completed, communicate this through your GitLab status by setting
@@ -528,7 +543,7 @@ this through your GitLab.com Status, authors are expected to realize this and
 find a different reviewer themselves.
 
 When a merge request author has been blocked for longer than
-the `Review-response` SLO, they are free to remind the reviewer through Slack or assign
+the `Review-response` SLO, they are free to remind the reviewer through Slack or add
 another reviewer.
 
 ### Customer critical merge requests
@@ -538,7 +553,7 @@ A merge request may benefit from being considered a customer critical priority b
 Properties of customer critical merge requests:
 
 - The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request is customer critical.
-- The DRI assigns the `customer-critical-merge-request` label to the merge request.
+- The DRI applies the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.

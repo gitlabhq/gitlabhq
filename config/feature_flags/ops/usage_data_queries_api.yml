@@ -1,0 +1,8 @@
+---
+name: usage_data_queries_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016
+rollout_issue_url: 
+milestone: '13.11'
+type: ops
+group: group::product intelligence
+default_enabled: false

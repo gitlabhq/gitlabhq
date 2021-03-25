@@ -293,6 +293,7 @@ module API
       mount ::API::Triggers
       mount ::API::Unleash
       mount ::API::UsageData
+      mount ::API::UsageDataQueries
       mount ::API::UserCounts
       mount ::API::Users
       mount ::API::Variables

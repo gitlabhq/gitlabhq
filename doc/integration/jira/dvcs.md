@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Jira DVCS connector
 
 If you're using GitLab.com and Jira Cloud, use the
-[GitLab for Jira app](index.md#gitlab-for-jira-app) unless you have a specific need for the DVCS Connector.
+[GitLab for Jira app](connect-app.md) unless you have a specific need for the DVCS Connector.
 
 When configuring Jira DVCS Connector:
 
@@ -46,7 +46,7 @@ create and use a single-purpose `jira` user in GitLab.
 ## Jira DVCS Connector setup
 
 If you're using GitLab.com and Jira Cloud, use the
-[GitLab for Jira app](index.md#gitlab-for-jira-app) unless you have a specific need for the DVCS Connector.
+[GitLab for Jira app](connect-app.md) unless you have a specific need for the DVCS Connector.
 
 1. Ensure you have completed the [GitLab configuration](#gitlab-account-configuration-for-dvcs).
 1. If you're using Jira Server, go to **Settings (gear) > Applications > DVCS accounts**.
