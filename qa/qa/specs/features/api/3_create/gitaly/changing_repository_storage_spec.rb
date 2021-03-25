@@ -9,7 +9,7 @@ module QA
         it 'confirms a `finished` status after moving project repository storage' do
           expect(project).to have_file('README.md')
           expect { project.change_repository_storage(destination_storage[:name]) }.not_to raise_error
-          expect { praefect_manager.verify_storage_move(source_storage, destination_storage) }.not_to raise_error
+          expect { praefect_manager.verify_storage_move(source_storage, destination_storage, repo_type: :project) }.not_to raise_error
 
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project

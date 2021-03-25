@@ -89,6 +89,19 @@ module QA
           raise ResourceUpdateFailedError, "Could not update require_two_factor_authentication to #{value}. Request returned (#{response.code}): `#{response}`."
         end
       end
+
+      def change_repository_storage(new_storage)
+        post_body = { destination_storage_name: new_storage }
+        response = post Runtime::API::Request.new(api_client, "/groups/#{id}/repository_storage_moves").url, post_body
+
+        unless response.code.between?(200, 300)
+          raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+        end
+
+        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
+      rescue Support::Repeater::RepeaterConditionExceededError
+        raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the group repository storage move to finish'
+      end
     end
   end
 end

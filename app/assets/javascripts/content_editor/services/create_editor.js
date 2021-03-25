@@ -1,7 +1,7 @@
-const createEditor = async ({ content }) => {
-  const { Editor } = await import(/* webpackChunkName: 'tiptap' */ 'tiptap');
-  const { Bold, Code } = await import(/* webpackChunkName: 'tiptap' */ 'tiptap-extensions');
+import { Editor } from 'tiptap';
+import { Bold, Code } from 'tiptap-extensions';
 
+const createEditor = ({ content } = {}) => {
   return new Editor({
     extensions: [new Bold(), new Code()],
     content,

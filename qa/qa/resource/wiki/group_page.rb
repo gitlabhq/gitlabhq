@@ -16,6 +16,14 @@ module QA
           end
         end
 
+        attribute :repository_http_location do
+          EE::Page::Group::Wiki::Show.perform do |show|
+            show.click_clone_repository
+            show.choose_repository_clone_http
+            show.repository_location
+          end
+        end
+
         def initialize
           @title = 'Home'
           @content = 'This wiki page is created via API'
@@ -41,6 +49,20 @@ module QA
             content: content,
             title: title
           }
+        end
+
+        def api_list_wiki_pages_path
+          "/groups/#{group.id}/wikis"
+        end
+
+        def has_page_content?(page_title, page_content)
+          response = get Runtime::API::Request.new(api_client, "#{api_list_wiki_pages_path}?with_content=1").url
+
+          unless response.code == HTTP_STATUS_OK
+            raise ResourceQueryError, "Could not get a list of all wiki pages for a given group. Request returned (#{response.code}): `#{response}`."
+          end
+
+          parse_body(response).any? { |page| page[:title] == page_title && page[:content] == page_content }
         end
       end
     end

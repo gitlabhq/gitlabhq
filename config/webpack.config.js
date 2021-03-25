@@ -307,6 +307,14 @@ module.exports = {
           chunks: 'initial',
           minChunks: autoEntriesCount * 0.9,
         }),
+        tiptap: {
+          priority: 17,
+          name: 'tiptap',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](tiptap|prosemirror)-?\w*[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
         graphql: {
           priority: 16,
           name: 'graphql',

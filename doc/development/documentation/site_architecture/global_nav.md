@@ -93,11 +93,13 @@ mechanics of what is required is [documented below](#data-file) but, in principl
 
 ## How it works
 
-The global nav has 3 components:
+The global nav has five levels:
 
 - **Section**
   - Category
     - Doc
+      - Doc
+        - Doc
 
 The available sections are described on the table below:
 
@@ -203,10 +205,10 @@ add the attribute `external_url: true` below the category title. Example:
 
 #### Docs
 
-Each doc represents the third level of nav links. They must be always
+Each doc represents the third, fourth, and fifth level of nav links. They must be always
 added within a category.
 
-Example with one doc link:
+Example with three doc links, one at each level:
 
 ```yaml
 - category_title: Category title
@@ -214,10 +216,16 @@ Example with one doc link:
   docs:
     - doc_title: Document title
       doc_url: 'doc-link'
+      docs:
+      - doc_title: Document title
+        doc_url: 'doc-link'
+        docs:
+        - doc_title: Document title
+          doc_url: 'doc-link'
 ```
 
 A category supports as many docs as necessary, but, for clarity, try to not
-overpopulate a category.
+overpopulate a category. Also, do not use more than three levels of docs.
 
 Example with multiple docs:
 
