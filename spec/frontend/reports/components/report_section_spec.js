@@ -1,12 +1,14 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import reportSection from '~/reports/components/report_section.vue';
 
 describe('Report section', () => {
   let vm;
   let wrapper;
   const ReportSection = Vue.extend(reportSection);
+  const findCollapseButton = () => wrapper.findByTestId('report-section-expand-button');
 
   const resolvedIssues = [
     {
@@ -30,12 +32,14 @@ describe('Report section', () => {
   };
 
   const createComponent = (props) => {
-    wrapper = shallowMount(reportSection, {
-      propsData: {
-        ...defaultProps,
-        ...props,
-      },
-    });
+    wrapper = extendedWrapper(
+      mount(reportSection, {
+        propsData: {
+          ...defaultProps,
+          ...props,
+        },
+      }),
+    );
     return wrapper;
   };
 
@@ -182,7 +186,7 @@ describe('Report section', () => {
 
       expect(wrapper.emitted().toggleEvent).toBeUndefined();
 
-      wrapper.vm.$el.querySelector('button').click();
+      findCollapseButton().trigger('click');
       return wrapper.vm
         .$nextTick()
         .then(() => {
@@ -197,7 +201,7 @@ describe('Report section', () => {
 
       expect(wrapper.emitted().toggleEvent).toBeUndefined();
 
-      wrapper.vm.$el.querySelector('button').click();
+      findCollapseButton().trigger('click');
       return wrapper.vm
         .$nextTick()
         .then(() => {

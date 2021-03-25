@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import Popover from '~/vue_shared/components/help_popover.vue';
@@ -8,9 +9,10 @@ import IssuesList from './issues_list.vue';
 export default {
   name: 'ReportSection',
   components: {
+    GlButton,
     IssuesList,
-    StatusIcon,
     Popover,
+    StatusIcon,
   },
   props: {
     alwaysOpen: {
@@ -186,16 +188,15 @@ export default {
 
         <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
-        <button
+        <gl-button
           v-if="isCollapsible"
-          type="button"
+          class="js-collapse-btn"
           data-testid="report-section-expand-button"
-          class="js-collapse-btn btn float-right btn-sm align-self-center"
           data-qa-selector="expand_report_button"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
-        </button>
+        </gl-button>
       </div>
     </div>
 
