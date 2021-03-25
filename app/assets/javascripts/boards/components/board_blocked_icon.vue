@@ -158,7 +158,7 @@ export default {
       data-testid="issue-blocked-icon"
       @mouseenter="handleMouseEnter"
     />
-    <gl-popover :target="glIconId" placement="top" triggers="hover">
+    <gl-popover :target="glIconId" placement="top">
       <template #title
         ><span data-testid="popover-title">{{ blockedLabel }}</span></template
       >

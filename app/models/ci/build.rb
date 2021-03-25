@@ -14,8 +14,6 @@ module Ci
 
     BuildArchivedError = Class.new(StandardError)
 
-    ignore_columns :artifacts_file, :artifacts_file_store, :artifacts_metadata, :artifacts_metadata_store, :artifacts_size, :commands, remove_after: '2019-12-15', remove_with: '12.7'
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request

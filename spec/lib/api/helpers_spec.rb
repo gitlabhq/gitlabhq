@@ -175,20 +175,6 @@ RSpec.describe API::Helpers do
     end
   end
 
-  describe '#track_event' do
-    it "creates a gitlab tracking event", :snowplow do
-      subject.track_event('my_event', category: 'foo')
-
-      expect_snowplow_event(category: 'foo', action: 'my_event')
-    end
-
-    it "logs an exception" do
-      expect(Gitlab::AppLogger).to receive(:warn).with(/Tracking event failed/)
-
-      subject.track_event('my_event', category: nil)
-    end
-  end
-
   describe '#increment_unique_values' do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
     let(:event_name) { 'g_compliance_dashboard' }

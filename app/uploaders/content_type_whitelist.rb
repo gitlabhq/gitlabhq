@@ -43,7 +43,7 @@ module ContentTypeWhitelist
     def mime_magic_content_type(path)
       if path
         File.open(path) do |file|
-          MimeMagic.by_magic(file).try(:type) || 'invalid/invalid'
+          Gitlab::Utils::MimeType.from_io(file) || 'invalid/invalid'
         end
       end
     rescue Errno::ENOENT

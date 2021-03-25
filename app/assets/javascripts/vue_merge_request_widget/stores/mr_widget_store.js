@@ -163,7 +163,7 @@ export default class MergeRequestStore {
 
   setGraphqlData(project) {
     const { mergeRequest } = project;
-    const pipeline = mergeRequest.pipelines?.nodes?.[0];
+    const pipeline = mergeRequest.headPipeline;
 
     this.projectArchived = project.archived;
     this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SQL::CTE do
   describe '#to_arel' do
-    it 'generates an Arel relation for the CTE body' do
+    it 'generates an Arel relation for the CTE body', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325916' do
       relation = User.where(id: 1)
       cte = described_class.new(:cte_name, relation)
       sql = cte.to_arel.to_sql

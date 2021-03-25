@@ -41,10 +41,6 @@ describe('HelpPopover', () => {
     expect(findPopover().props().target()).toBe(findQuestionButton().vm.$el);
   });
 
-  it('triggers popover on hover and focus', () => {
-    expect(findPopover().props().triggers).toBe('hover focus');
-  });
-
   it('allows rendering title with HTML tags', () => {
     expect(findPopover().find('strong').exists()).toBe(true);
   });

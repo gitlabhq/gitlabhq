@@ -333,6 +333,31 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
     end
 
+    context 'when the latest pipeline is running in the parent project' do
+      before do
+        Ci::CreatePipelineService.new(project, user, ref: 'feature')
+          .execute(:merge_request_event, merge_request: merge_request)
+      end
+
+      context 'when the previous pipeline failed in the fork project' do
+        before do
+          detached_merge_request_pipeline.drop!
+        end
+
+        context 'when the parent project enables pipeline must succeed' do
+          before do
+            project.update!(only_allow_merge_if_pipeline_succeeds: true)
+          end
+
+          it 'shows MWPS button' do
+            visit project_merge_request_path(project, merge_request)
+
+            expect(page).to have_button('Merge when pipeline succeeds')
+          end
+        end
+      end
+    end
+
     context 'when a user merges a merge request from a forked project to the parent project' do
       before do
         click_link("Overview")

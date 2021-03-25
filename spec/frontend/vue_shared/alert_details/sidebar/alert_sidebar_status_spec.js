@@ -1,7 +1,9 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import updateAlertStatusMutation from '~/graphql_shared/mutations/alert_status_update.mutation.graphql';
+import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
+import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
@@ -12,8 +14,16 @@ describe('Alert Details Sidebar Status', () => {
   const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findStatusDropdownHeader = () => wrapper.find('[data-testid="dropdown-header"]');
+  const findAlertStatus = () => wrapper.findComponent(AlertStatus);
+  const findStatus = () => wrapper.find('[data-testid="status"]');
 
-  function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {
+  function mountComponent({
+    data,
+    sidebarCollapsed = true,
+    loading = false,
+    stubs = {},
+    provide = {},
+  } = {}) {
     wrapper = mount(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
@@ -32,6 +42,7 @@ describe('Alert Details Sidebar Status', () => {
         },
       },
       stubs,
+      provide,
     });
   }
 
@@ -96,8 +107,24 @@ describe('Alert Details Sidebar Status', () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
         findStatusDropdownItem().vm.$emit('click');
         expect(findStatusLoadingIcon().exists()).toBe(false);
-        expect(wrapper.find('[data-testid="status"]').text()).toBe('Triggered');
+        expect(findStatus().text()).toBe('Triggered');
       });
+    });
+  });
+
+  describe('Statuses', () => {
+    it('renders default translated statuses', () => {
+      mountComponent({});
+      expect(findAlertStatus().props('statuses')).toBe(PAGE_CONFIG.OPERATIONS.STATUSES);
+      expect(findStatus().text()).toBe('Triggered');
+    });
+
+    it('renders translated statuses', () => {
+      const status = 'TEST';
+      const statuses = { [status]: 'Test' };
+      mountComponent({ data: { alert: { ...mockAlert, status } }, provide: { statuses } });
+      expect(findAlertStatus().props('statuses')).toBe(statuses);
+      expect(findStatus().text()).toBe(statuses.TEST);
     });
   });
 });

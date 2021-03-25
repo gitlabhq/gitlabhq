@@ -37,6 +37,6 @@ export default {
 <template>
   <span v-if="hasWarnings">
     <span :id="htmlId" v-html="glEmojiTag('warning')"></span>
-    <gl-popover :target="htmlId" :content="warningMessage" triggers="hover focus" />
+    <gl-popover :target="htmlId" :content="warningMessage" />
   </span>
 </template>

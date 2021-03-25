@@ -55,6 +55,7 @@ export default (selector) => {
     page,
     projectIssuesPath,
     projectId,
+    statuses: PAGE_CONFIG[page].STATUSES,
   };
 
   if (page === PAGE_CONFIG.OPERATIONS.TITLE) {

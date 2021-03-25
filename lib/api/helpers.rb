@@ -544,17 +544,6 @@ module API
       end
     end
 
-    def track_event(action = action_name, **args)
-      category = args.delete(:category) || self.options[:for].name
-      raise "invalid category" unless category
-
-      ::Gitlab::Tracking.event(category, action.to_s, **args)
-    rescue => error
-      Gitlab::AppLogger.warn(
-        "Tracking event failed for action: #{action}, category: #{category}, message: #{error.message}"
-      )
-    end
-
     def increment_counter(event_name)
       feature_name = "usage_data_#{event_name}"
       return unless Feature.enabled?(feature_name)

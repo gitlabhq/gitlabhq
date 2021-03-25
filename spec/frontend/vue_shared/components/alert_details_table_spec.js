@@ -75,45 +75,62 @@ describe('AlertDetails', () => {
     });
 
     describe('with table data', () => {
-      beforeEach(mountComponent);
+      describe('default', () => {
+        beforeEach(mountComponent);
 
-      it('renders a table', () => {
-        expect(findTableComponent().exists()).toBe(true);
+        it('renders a table', () => {
+          expect(findTableComponent().exists()).toBe(true);
+        });
+
+        it('renders a cell based on alert data', () => {
+          expect(findTableComponent().text()).toContain('SyntaxError: Invalid or unexpected token');
+        });
+
+        it('should show allowed alert fields', () => {
+          const fields = findTableKeys();
+          ['Iid', 'Title', 'Severity', 'Status', 'Hosts', 'Environment'].forEach((field) => {
+            expect(findTableField(fields, field).exists()).toBe(true);
+          });
+        });
+
+        it('should not show disallowed alert fields', () => {
+          const fields = findTableKeys();
+          ['Typename', 'Todos', 'Notes', 'Assignees'].forEach((field) => {
+            expect(findTableField(fields, field).exists()).toBe(false);
+          });
+        });
       });
 
-      it('renders a cell based on alert data', () => {
-        expect(findTableComponent().text()).toContain('SyntaxError: Invalid or unexpected token');
+      describe('environment', () => {
+        it('should display only the name for the environment', () => {
+          mountComponent();
+          expect(findTableFieldValueByKey('Environment').text()).toBe(environmentName);
+        });
+
+        it('should not display the environment row if there is not data', () => {
+          environmentData = { name: null, path: null };
+          mountComponent();
+
+          expect(findTableFieldValueByKey('Environment').text()).toBeFalsy();
+        });
       });
 
-      it('should show allowed alert fields', () => {
-        const fields = findTableKeys();
+      describe('status', () => {
+        it('should show the translated status for the default statuses', () => {
+          mountComponent();
+          expect(findTableFieldValueByKey('Status').text()).toBe('Triggered');
+        });
 
-        expect(findTableField(fields, 'Iid').exists()).toBe(true);
-        expect(findTableField(fields, 'Title').exists()).toBe(true);
-        expect(findTableField(fields, 'Severity').exists()).toBe(true);
-        expect(findTableField(fields, 'Status').exists()).toBe(true);
-        expect(findTableField(fields, 'Hosts').exists()).toBe(true);
-        expect(findTableField(fields, 'Environment').exists()).toBe(true);
-      });
+        it('should show the translated status for provided statuses', () => {
+          const translatedStatus = 'Test';
+          mountComponent({ statuses: { TRIGGERED: translatedStatus } });
+          expect(findTableFieldValueByKey('Status').text()).toBe(translatedStatus);
+        });
 
-      it('should not show disallowed alert fields', () => {
-        const fields = findTableKeys();
-
-        expect(findTableField(fields, 'Typename').exists()).toBe(false);
-        expect(findTableField(fields, 'Todos').exists()).toBe(false);
-        expect(findTableField(fields, 'Notes').exists()).toBe(false);
-        expect(findTableField(fields, 'Assignees').exists()).toBe(false);
-      });
-
-      it('should display only the name for the environment', () => {
-        expect(findTableFieldValueByKey('Environment').text()).toBe(environmentName);
-      });
-
-      it('should not display the environment row if there is not data', () => {
-        environmentData = { name: null, path: null };
-        mountComponent();
-
-        expect(findTableFieldValueByKey('Environment').text()).toBeFalsy();
+        it('should show the provided status if value is not defined in statuses', () => {
+          mountComponent({ statuses: {} });
+          expect(findTableFieldValueByKey('Status').text()).toBe('TRIGGERED');
+        });
       });
     });
   });

@@ -124,7 +124,7 @@ export default {
     },
     pipeline() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.pipelines?.nodes?.[0];
+        return this.state.headPipeline;
       }
 
       return this.mr.pipeline;

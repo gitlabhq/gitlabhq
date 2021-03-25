@@ -34,7 +34,7 @@ export default {
 
     <gl-icon name="status_warning" :size="24" class="gl-p-2" />
 
-    <gl-popover :container="popoverId" :target="popoverId" placement="top" triggers="hover focus">
+    <gl-popover :container="popoverId" :target="popoverId" placement="top">
       <template #title>
         <span class="gl-display-block gl-text-left">{{ errorContent.title }}</span>
       </template>

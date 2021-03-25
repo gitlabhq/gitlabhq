@@ -85,7 +85,6 @@ module Gitlab
           id: runner.id,
           description: runner.description,
           active: runner.active?,
-          is_shared: runner.instance_type?,
           tags: runner.tags&.map(&:name)
         }
       end

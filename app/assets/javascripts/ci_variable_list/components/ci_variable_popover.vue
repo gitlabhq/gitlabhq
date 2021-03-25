@@ -37,7 +37,7 @@ export default {
 
 <template>
   <div id="popover-container">
-    <gl-popover :target="target" triggers="hover" placement="top" container="popover-container">
+    <gl-popover :target="target" placement="top" container="popover-container">
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-word-break-all"
       >

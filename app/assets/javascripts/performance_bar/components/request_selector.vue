@@ -60,11 +60,7 @@ export default {
     </select>
     <span v-if="requestsWithWarnings.length">
       <span id="performance-bar-request-selector-warning" v-html="glEmojiTag('warning')"></span>
-      <gl-popover
-        target="performance-bar-request-selector-warning"
-        :content="warningMessage"
-        triggers="hover focus"
-      />
+      <gl-popover target="performance-bar-request-selector-warning" :content="warningMessage" />
     </span>
   </div>
 </template>
