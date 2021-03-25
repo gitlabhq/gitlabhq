@@ -42,7 +42,7 @@ module Mutations
                description: 'Squash commits on the source branch before merge.'
 
       def resolve(project_path:, iid:, **args)
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42317')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/4796')
 
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         project = merge_request.target_project

@@ -470,8 +470,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def disable_query_limiting
-    # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42441
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42438')
+    # Also see https://gitlab.com/gitlab-org/gitlab/-/issues/20827
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20824')
   end
 
   def reports_response(report_comparison, pipeline = nil)

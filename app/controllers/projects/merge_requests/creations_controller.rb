@@ -134,7 +134,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   # rubocop: enable CodeReuse/ActiveRecord
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42384')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20801')
   end
 
   def incr_count_webide_merge_request

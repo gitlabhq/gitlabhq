@@ -272,8 +272,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def disable_query_limiting
-    # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42343
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42339')
+    # Also see https://gitlab.com/gitlab-org/gitlab/-/issues/20785
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20784')
   end
 
   def authorize_update_pipeline!

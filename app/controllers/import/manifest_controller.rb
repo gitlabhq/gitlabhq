@@ -116,6 +116,6 @@ class Import::ManifestController < Import::BaseController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/48939')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/23147')
   end
 end

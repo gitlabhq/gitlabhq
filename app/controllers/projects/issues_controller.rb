@@ -356,10 +356,10 @@ class Projects::IssuesController < Projects::ApplicationController
   def disable_query_limiting
     # Also see the following issues:
     #
-    # 1. https://gitlab.com/gitlab-org/gitlab-foss/issues/42423
-    # 2. https://gitlab.com/gitlab-org/gitlab-foss/issues/42424
-    # 3. https://gitlab.com/gitlab-org/gitlab-foss/issues/42426
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42422')
+    # 1. https://gitlab.com/gitlab-org/gitlab/-/issues/20815
+    # 2. https://gitlab.com/gitlab-org/gitlab/-/issues/20816
+    # 3. https://gitlab.com/gitlab-org/gitlab/-/issues/21068
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20814')
   end
 
   private

@@ -62,6 +62,11 @@ export default {
       required: false,
       default: true,
     },
+    uploadsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     enableAutocomplete: {
       type: Boolean,
       required: false,
@@ -229,6 +234,7 @@ export default {
     ref="gl-form"
     :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
     class="js-vue-markdown-field md-area position-relative gfm-form"
+    :data-uploads-path="uploadsPath"
   >
     <markdown-header
       :preview-markdown="previewMarkdown"

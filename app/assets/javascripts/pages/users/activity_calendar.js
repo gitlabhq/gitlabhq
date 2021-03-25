@@ -39,7 +39,7 @@ function formatTooltipText({ date, count }) {
   if (count > 0) {
     contribText = n__('%d contribution', '%d contributions', count);
   }
-  return `${contribText}<br />${dateDayName} ${dateText}`;
+  return `${contribText}<br /><span class="gl-text-gray-300">${dateDayName} ${dateText}</span>`;
 }
 
 const initColorKey = () => d3.scaleLinear().range(['#acd5f2', '#254e77']).domain([0, 3]);

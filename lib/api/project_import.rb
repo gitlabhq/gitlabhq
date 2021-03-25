@@ -67,7 +67,7 @@ module API
 
         check_rate_limit! :project_import, [current_user, :project_import]
 
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20823')
 
         validate_file!
 

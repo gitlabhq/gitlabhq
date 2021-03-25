@@ -310,7 +310,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
       end
       post ':id/fork', feature_category: :source_code_management do
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')
 
         not_found! unless can?(current_user, :fork_project, user_project)
 

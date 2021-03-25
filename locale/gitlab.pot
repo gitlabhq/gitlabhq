@@ -19977,6 +19977,9 @@ msgstr ""
 msgid "More Information"
 msgstr ""
 
+msgid "More Information."
+msgstr ""
+
 msgid "More Slack commands"
 msgstr ""
 
@@ -34256,9 +34259,6 @@ msgstr ""
 msgid "WikiClone|Start Gollum and edit locally"
 msgstr ""
 
-msgid "WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title."
-msgstr ""
-
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
@@ -34331,18 +34331,6 @@ msgstr ""
 msgid "WikiHistoricalPage|most recent version"
 msgstr ""
 
-msgid "WikiMarkdownDocs|More examples are in the %{docs_link}"
-msgstr ""
-
-msgid "WikiMarkdownDocs|documentation"
-msgstr ""
-
-msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
-msgstr ""
-
-msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
-msgstr ""
-
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
 msgstr ""
 
@@ -34355,10 +34343,37 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
-msgid "WikiPageCreate|Create %{pageTitle}"
+msgid "WikiPage|Commit message"
 msgstr ""
 
-msgid "WikiPageEdit|Update %{pageTitle}"
+msgid "WikiPage|Content"
+msgstr ""
+
+msgid "WikiPage|Create %{pageTitle}"
+msgstr ""
+
+msgid "WikiPage|Create page"
+msgstr ""
+
+msgid "WikiPage|Format"
+msgstr ""
+
+msgid "WikiPage|Page title"
+msgstr ""
+
+msgid "WikiPage|Tip: You can move this page by adding the path to the beginning of the title."
+msgstr ""
+
+msgid "WikiPage|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
+msgstr ""
+
+msgid "WikiPage|Title"
+msgstr ""
+
+msgid "WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}."
+msgstr ""
+
+msgid "WikiPage|Update %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
@@ -34368,9 +34383,6 @@ msgid "Wikis"
 msgstr ""
 
 msgid "Wiki|Create New Page"
-msgstr ""
-
-msgid "Wiki|Create page"
 msgstr ""
 
 msgid "Wiki|Created date"
@@ -34383,9 +34395,6 @@ msgid "Wiki|New page"
 msgstr ""
 
 msgid "Wiki|Page history"
-msgstr ""
-
-msgid "Wiki|Page title"
 msgstr ""
 
 msgid "Wiki|Page version"

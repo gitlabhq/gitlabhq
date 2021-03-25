@@ -163,7 +163,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42380')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20798')
   end
 
   def load_recaptcha

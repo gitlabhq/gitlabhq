@@ -20,7 +20,7 @@ module QA
           edit.set_message('changing the path of the home page')
         end
 
-        Page::Project::Wiki::Edit.perform(&:click_save_changes)
+        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_directory('a')

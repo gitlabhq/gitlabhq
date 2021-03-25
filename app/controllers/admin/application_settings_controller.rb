@@ -191,7 +191,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/63107')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/29418')
   end
 
   def application_setting_params

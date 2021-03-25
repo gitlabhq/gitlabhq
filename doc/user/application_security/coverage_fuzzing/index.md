@@ -141,7 +141,7 @@ The `gitlab-cov-fuzz` tool emits a JSON report file. For more information, see t
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).
 
 You can download the JSON report file from the CI pipelines page. For more information, see
-[Downloading artifacts](../../../ci/pipelines/job_artifacts.md#downloading-artifacts).
+[Downloading artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
 Here's an example coverage fuzzing report:
 

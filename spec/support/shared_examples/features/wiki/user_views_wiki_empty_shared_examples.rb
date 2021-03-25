@@ -24,7 +24,7 @@ RSpec.shared_examples 'User views empty wiki' do
     # This mirrors the logic in:
     # - app/views/shared/empty_states/_wikis.html.haml
     # - WikiHelper#wiki_empty_state_messages
-    it 'shows the empty state message with the expected elements' do
+    it 'shows the empty state message with the expected elements', :js do
       visit wiki_path(wiki)
 
       if writable

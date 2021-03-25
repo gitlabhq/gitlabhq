@@ -119,7 +119,7 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20783')
   end
 
   def load_namespaces_with_associations
