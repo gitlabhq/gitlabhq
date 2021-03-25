@@ -1,0 +1,5 @@
+---
+title: Show skipped duration state for all skipped pipelines
+merge_request: 57242
+author:
+type: changed

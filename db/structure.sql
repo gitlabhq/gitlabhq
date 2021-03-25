@@ -12270,6 +12270,25 @@ CREATE SEQUENCE draft_notes_id_seq
 
 ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
 
+CREATE TABLE elastic_index_settings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    number_of_replicas smallint DEFAULT 1 NOT NULL,
+    number_of_shards smallint DEFAULT 5 NOT NULL,
+    alias_name text NOT NULL,
+    CONSTRAINT check_c30005c325 CHECK ((char_length(alias_name) <= 255))
+);
+
+CREATE SEQUENCE elastic_index_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE elastic_index_settings_id_seq OWNED BY elastic_index_settings.id;
+
 CREATE TABLE elastic_reindexing_subtasks (
     id bigint NOT NULL,
     elastic_reindexing_task_id bigint NOT NULL,
@@ -16913,7 +16932,8 @@ CREATE TABLE raw_usage_data (
     updated_at timestamp with time zone NOT NULL,
     recorded_at timestamp with time zone NOT NULL,
     sent_at timestamp with time zone,
-    payload jsonb NOT NULL
+    payload jsonb NOT NULL,
+    version_usage_data_id_value bigint
 );
 
 CREATE SEQUENCE raw_usage_data_id_seq
@@ -19276,6 +19296,8 @@ ALTER TABLE ONLY dora_daily_metrics ALTER COLUMN id SET DEFAULT nextval('dora_da
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
 
+ALTER TABLE ONLY elastic_index_settings ALTER COLUMN id SET DEFAULT nextval('elastic_index_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY elastic_reindexing_subtasks ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_subtasks_id_seq'::regclass);
 
 ALTER TABLE ONLY elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_tasks_id_seq'::regclass);
@@ -20510,6 +20532,9 @@ ALTER TABLE ONLY dora_daily_metrics
 
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY elastic_index_settings
+    ADD CONSTRAINT elastic_index_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY elastic_reindexing_subtasks
     ADD CONSTRAINT elastic_reindexing_subtasks_pkey PRIMARY KEY (id);
@@ -22469,6 +22494,8 @@ CREATE INDEX index_draft_notes_on_author_id ON draft_notes USING btree (author_i
 CREATE INDEX index_draft_notes_on_discussion_id ON draft_notes USING btree (discussion_id);
 
 CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX index_elastic_index_settings_on_alias_name ON elastic_index_settings USING btree (alias_name);
 
 CREATE INDEX index_elastic_reindexing_subtasks_on_elastic_reindexing_task_id ON elastic_reindexing_subtasks USING btree (elastic_reindexing_task_id);
 

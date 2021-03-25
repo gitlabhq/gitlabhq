@@ -18,6 +18,9 @@ remote and authenticate with it.
 Then you can run `conan` commands and publish your package to the
 Package Registry.
 
+For documentation of the specific API endpoints that the Conan package manager
+client uses, see the [Conan API documentation](../../../api/packages/conan.md).
+
 ## Build a Conan package
 
 This section explains how to install Conan and build a package for your C/C++

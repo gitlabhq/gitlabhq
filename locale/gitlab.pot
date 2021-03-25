@@ -2731,6 +2731,9 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Alert integrations"
+msgstr ""
+
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -2893,6 +2896,12 @@ msgstr ""
 msgid "AlertMappingBuilder|Title is a required field for alerts in GitLab. Should the payload field you specified not be available, specifiy which field we should use instead. "
 msgstr ""
 
+msgid "AlertSettings|A URL and authorization key  have been created for your integration. You will need them to setup a webhook and authorize your endpoint to send alerts to GitLab."
+msgstr ""
+
+msgid "AlertSettings|A webhook URL and authorization key will be generated for the integration. Both will be visible after saving the integration in the “View credentials” tab."
+msgstr ""
+
 msgid "AlertSettings|Add new integration"
 msgstr ""
 
@@ -2911,10 +2920,10 @@ msgstr ""
 msgid "AlertSettings|Edit payload"
 msgstr ""
 
-msgid "AlertSettings|Enter integration name"
+msgid "AlertSettings|Enable integration"
 msgstr ""
 
-msgid "AlertSettings|External Prometheus"
+msgid "AlertSettings|Enter integration name"
 msgstr ""
 
 msgid "AlertSettings|HTTP Endpoint"
@@ -2923,25 +2932,28 @@ msgstr ""
 msgid "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields."
 msgstr ""
 
-msgid "AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click \"parse payload fields\" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration."
+msgid "AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click the \"parse payload fields\" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration."
 msgstr ""
 
 msgid "AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations."
 msgstr ""
 
+msgid "AlertSettings|Integration successfully saved"
+msgstr ""
+
 msgid "AlertSettings|Name integration"
 msgstr ""
 
-msgid "AlertSettings|Parse payload for custom mapping"
+msgid "AlertSettings|Parse payload fields"
 msgstr ""
 
 msgid "AlertSettings|Proceed with editing"
 msgstr ""
 
-msgid "AlertSettings|Prometheus API base URL"
+msgid "AlertSettings|Prometheus"
 msgstr ""
 
-msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to create a custom mapping (optional)."
+msgid "AlertSettings|Prometheus API base URL"
 msgstr ""
 
 msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This will allow you to send an alert to an active GitLab alerting point."
@@ -2956,31 +2968,49 @@ msgstr ""
 msgid "AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in."
 msgstr ""
 
-msgid "AlertSettings|Sample alert payload (optional)"
+msgid "AlertSettings|Sample payload has been parsed. You can now map the fields."
 msgstr ""
 
-msgid "AlertSettings|Sample payload has been parsed. You can now map the fields."
+msgid "AlertSettings|Save & create test alert"
 msgstr ""
 
 msgid "AlertSettings|Save integration"
 msgstr ""
 
-msgid "AlertSettings|Select integration type"
+msgid "AlertSettings|Save integration & send"
 msgstr ""
 
-msgid "AlertSettings|Send"
+msgid "AlertSettings|Select integration type"
 msgstr ""
 
 msgid "AlertSettings|Send test alert"
 msgstr ""
 
+msgid "AlertSettings|Send without saving"
+msgstr ""
+
+msgid "AlertSettings|The default GitLab alert fields are listed below. If you choose to map your payload keys to GitLab's, please make a selection in the dropdowns below. You may also opt to leave the fields unmapped and move straight to saving your integration."
+msgstr ""
+
+msgid "AlertSettings|The form has unsaved changes"
+msgstr ""
+
+msgid "AlertSettings|The form has unsaved changes. How would you like to proceed?"
+msgstr ""
+
 msgid "AlertSettings|URL cannot be blank and must start with http or https"
+msgstr ""
+
+msgid "AlertSettings|URL is invalid."
 msgstr ""
 
 msgid "AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
 msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|View URL and authorization key"
 msgstr ""
 
 msgid "AlertSettings|View credentials"
@@ -2990,9 +3020,6 @@ msgid "AlertSettings|Webhook URL"
 msgstr ""
 
 msgid "AlertSettings|You can now set up alert endpoints for manually configured Prometheus instances in the Alerts section on the Operations settings page. Alert endpoint fields on this page have been deprecated."
-msgstr ""
-
-msgid "AlertSettings|Your integration was successfully updated."
 msgstr ""
 
 msgid "AlertSettings|{ \"events\": [{ \"application\": \"Name of application\" }] }"
@@ -3031,7 +3058,10 @@ msgstr ""
 msgid "AlertsIntegrations|The integration has been successfully removed."
 msgstr ""
 
-msgid "AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list."
+msgid "AlertsIntegrations|The integration has been successfully saved."
+msgstr ""
+
+msgid "AlertsIntegrations|The integration is currently inactive. Enable the integration to send the test alert."
 msgstr ""
 
 msgid "AlertsIntegrations|The integration token could not be reset. Please try again."
@@ -13930,6 +13960,12 @@ msgstr ""
 msgid "Geo|Not synced yet"
 msgstr ""
 
+msgid "Geo|Nothing to synchronize"
+msgstr ""
+
+msgid "Geo|Number of %{title}"
+msgstr ""
+
 msgid "Geo|Pending synchronization"
 msgstr ""
 
@@ -13945,9 +13981,6 @@ msgstr ""
 msgid "Geo|Primary site"
 msgstr ""
 
-msgid "Geo|Progress Bar Placeholder"
-msgstr ""
-
 msgid "Geo|Project"
 msgstr ""
 
@@ -13958,6 +13991,9 @@ msgid "Geo|Projects in certain groups"
 msgstr ""
 
 msgid "Geo|Projects in certain storage shards"
+msgstr ""
+
+msgid "Geo|Queued"
 msgstr ""
 
 msgid "Geo|Redownload"
@@ -20125,6 +20161,9 @@ msgid "N/A"
 msgstr ""
 
 msgid "Name"
+msgstr ""
+
+msgid "Name can't be blank"
 msgstr ""
 
 msgid "Name has already been taken"
@@ -27529,6 +27568,9 @@ msgstr ""
 msgid "SelfMonitoring|Self monitoring project has been successfully deleted."
 msgstr ""
 
+msgid "Send"
+msgstr ""
+
 msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr ""
 
@@ -32799,6 +32841,9 @@ msgid "UsageQuota|Learn more about excess storage usage"
 msgstr ""
 
 msgid "UsageQuota|Learn more about usage quotas"
+msgstr ""
+
+msgid "UsageQuota|Other Storage"
 msgstr ""
 
 msgid "UsageQuota|Packages"

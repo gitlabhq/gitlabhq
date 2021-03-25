@@ -3,7 +3,7 @@ import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import TagFieldExisting from '~/releases/components/tag_field_existing.vue';
 import createStore from '~/releases/stores';
-import createDetailModule from '~/releases/stores/modules/detail';
+import createEditNewModule from '~/releases/stores/modules/edit_new';
 
 const TEST_TAG_NAME = 'test-tag-name';
 
@@ -27,13 +27,13 @@ describe('releases/components/tag_field_existing', () => {
   beforeEach(() => {
     store = createStore({
       modules: {
-        detail: createDetailModule({
+        editNew: createEditNewModule({
           tagName: TEST_TAG_NAME,
         }),
       },
     });
 
-    store.state.detail.release = {
+    store.state.editNew.release = {
       tagName: TEST_TAG_NAME,
     };
   });

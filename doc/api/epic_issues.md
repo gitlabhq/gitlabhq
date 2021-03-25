@@ -14,6 +14,11 @@ results in a `404` status code.
 Epics are available only in GitLab [Premium and higher](https://about.gitlab.com/pricing/).
 If the Epics feature is not available, a `403` status code is returned.
 
+## Epic Issues pagination
+
+API results [are paginated](README.md#pagination). Requests that return
+multiple issues default to returning 20 results at a time.
+
 ## List issues for an epic
 
 Gets all issues that are assigned to an epic and the authenticated user has access to.

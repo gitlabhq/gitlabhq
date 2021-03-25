@@ -8,7 +8,7 @@ class NamespaceSetting < ApplicationRecord
 
   before_validation :normalize_default_branch_name
 
-  NAMESPACE_SETTINGS_PARAMS = [:default_branch_name].freeze
+  NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal].freeze
 
   self.primary_key = :namespace_id
 

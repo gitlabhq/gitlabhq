@@ -8,7 +8,7 @@ export default {
   name: 'TagFieldExisting',
   components: { GlFormGroup, GlFormInput, FormFieldContainer },
   computed: {
-    ...mapState('detail', ['release']),
+    ...mapState('editNew', ['release']),
     inputId() {
       return uniqueId('tag-name-input-');
     },

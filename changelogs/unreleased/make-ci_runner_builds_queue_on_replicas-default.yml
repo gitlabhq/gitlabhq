@@ -1,0 +1,5 @@
+---
+title: Make `ci_runner_builds_queue_on_replicas` default
+merge_request: 57484
+author:
+type: performance

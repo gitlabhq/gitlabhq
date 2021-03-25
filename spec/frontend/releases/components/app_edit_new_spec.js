@@ -50,7 +50,7 @@ describe('Release edit/new component', () => {
       merge(
         {
           modules: {
-            detail: {
+            editNew: {
               namespaced: true,
               actions,
               state,
@@ -168,7 +168,7 @@ describe('Release edit/new component', () => {
       await factory({
         store: {
           modules: {
-            detail: {
+            editNew: {
               getters: {
                 isExistingRelease: () => false,
               },
@@ -207,7 +207,7 @@ describe('Release edit/new component', () => {
         await factory({
           store: {
             modules: {
-              detail: {
+              editNew: {
                 getters: {
                   isValid: () => true,
                 },
@@ -227,7 +227,7 @@ describe('Release edit/new component', () => {
         await factory({
           store: {
             modules: {
-              detail: {
+              editNew: {
                 getters: {
                   isValid: () => false,
                 },

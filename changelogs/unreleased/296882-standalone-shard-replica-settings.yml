@@ -1,0 +1,5 @@
+---
+title: Allow setting the shard/replica separately for standalone indexes
+merge_request: 56344
+author:
+type: changed

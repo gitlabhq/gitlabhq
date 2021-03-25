@@ -15,9 +15,9 @@ import {
   fetchReleasesRest,
   receiveReleasesError,
   setSorting,
-} from '~/releases/stores/modules/list/actions';
-import * as types from '~/releases/stores/modules/list/mutation_types';
-import createState from '~/releases/stores/modules/list/state';
+} from '~/releases/stores/modules/index/actions';
+import * as types from '~/releases/stores/modules/index/mutation_types';
+import createState from '~/releases/stores/modules/index/state';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 

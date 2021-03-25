@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -23,9 +22,9 @@ export default {
 </script>
 <template>
   <div>
-    <span class="font-weight-bold">{{ __('Commit') }}</span>
+    <span class="gl-font-weight-bold">{{ __('Commit') }}</span>
 
-    <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">
+    <gl-link :href="commit.commit_path" class="gl-text-blue-600!" data-testid="commit-sha">
       {{ commit.short_id }}
     </gl-link>
 
@@ -37,8 +36,8 @@ export default {
     />
 
     <span v-if="mergeRequest">
-      in
-      <gl-link :href="mergeRequest.path" class="js-link-commit link-commit"
+      {{ __('in') }}
+      <gl-link :href="mergeRequest.path" class="gl-text-blue-600!" data-testid="link-commit"
         >!{{ mergeRequest.iid }}</gl-link
       >
     </span>

@@ -118,17 +118,17 @@ export default {
 <template>
   <div class="gl-display-table gl-w-full gl-mt-5">
     <div class="gl-display-table-row">
-      <h5 id="gitlabFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5 id="gitlabFieldsHeader" class="gl-display-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.gitlabKeyTitle }}
       </h5>
-      <h5 class="gl-display-table-cell gl-py-3 gl-pr-3">&nbsp;</h5>
-      <h5 id="parsedFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5 class="gl-display-table-cell gl-pb-3 gl-pr-3">&nbsp;</h5>
+      <h5 id="parsedFieldsHeader" class="gl-display-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.payloadKeyTitle }}
       </h5>
       <h5
         v-if="hasFallbackColumn"
         id="fallbackFieldsHeader"
-        class="gl-display-table-cell gl-py-3 gl-pr-3"
+        class="gl-display-table-cell gl-pb-3 gl-pr-3"
       >
         {{ $options.i18n.columns.fallbackKeyTitle }}
         <gl-icon
@@ -140,11 +140,7 @@ export default {
       </h5>
     </div>
 
-    <div
-      v-for="(gitlabField, index) in mappingData"
-      :key="gitlabField.name"
-      class="gl-display-table-row"
-    >
+    <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
       <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-30p gl-vertical-align-middle">
         <gl-form-input
           aria-labelledby="gitlabFieldsHeader"
@@ -153,8 +149,8 @@ export default {
         />
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3">
-        <div class="right-arrow" :class="{ 'gl-vertical-align-middle': index === 0 }">
+      <div class="gl-display-table-cell gl-pr-3 gl-vertical-align-middle">
+        <div class="right-arrow">
           <i class="right-arrow-head"></i>
         </div>
       </div>

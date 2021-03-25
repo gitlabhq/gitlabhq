@@ -184,28 +184,6 @@ RSpec.describe Namespace do
     end
   end
 
-  describe 'callbacks' do
-    describe 'before_save :ensure_delayed_project_removal_assigned_to_namespace_settings' do
-      it 'sets the matching value in namespace_settings' do
-        expect { namespace.update!(delayed_project_removal: true) }.to change {
-          namespace.namespace_settings.delayed_project_removal
-        }.from(false).to(true)
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(migrate_delayed_project_removal: false)
-        end
-
-        it 'does not set the matching value in namespace_settings' do
-          expect { namespace.update!(delayed_project_removal: true) }.not_to change {
-            namespace.namespace_settings.delayed_project_removal
-          }
-        end
-      end
-    end
-  end
-
   describe '#visibility_level_field' do
     it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end

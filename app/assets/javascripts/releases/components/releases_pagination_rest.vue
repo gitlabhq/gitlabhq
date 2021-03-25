@@ -7,10 +7,10 @@ export default {
   name: 'ReleasesPaginationRest',
   components: { TablePagination },
   computed: {
-    ...mapState('list', ['restPageInfo']),
+    ...mapState('index', ['restPageInfo']),
   },
   methods: {
-    ...mapActions('list', ['fetchReleases']),
+    ...mapActions('index', ['fetchReleases']),
     onChangePage(page) {
       historyPushState(buildUrlWithCurrentLocation(`?page=${page}`));
       this.fetchReleases({ page });

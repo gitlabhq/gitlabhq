@@ -6,11 +6,11 @@
 %section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Alerts')
+      = _('Alert integrations')
     %button.btn.js-settings-toggle{ type: 'button' }
       = _('Expand')
     %p
       = _('Display alerts from all your monitoring tools directly within GitLab.')
-      = link_to _('More information'), help_page_path('operations/incident_management/index.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('More information'), help_page_path('operations/incident_management/integrations.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     .js-alerts-settings{ data: alerts_settings_data }

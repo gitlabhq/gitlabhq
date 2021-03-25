@@ -1,4 +1,7 @@
+const checkEnvironment = require('./config/helpers/check_frontend_integration_env');
 const baseConfig = require('./jest.config.base');
+
+checkEnvironment();
 
 module.exports = {
   ...baseConfig('spec/frontend_integration', {

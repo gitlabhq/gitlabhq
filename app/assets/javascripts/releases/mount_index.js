@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ReleaseListApp from './components/app_index.vue';
+import ReleaseIndexApp from './components/app_index.vue';
 import createStore from './stores';
-import createListModule from './stores/modules/list';
+import createIndexModule from './stores/modules/index';
 
 Vue.use(Vuex);
 
@@ -13,7 +13,7 @@ export default () => {
     el,
     store: createStore({
       modules: {
-        list: createListModule(el.dataset),
+        index: createIndexModule(el.dataset),
       },
       featureFlags: {
         graphqlReleaseData: Boolean(gon.features?.graphqlReleaseData),
@@ -21,6 +21,6 @@ export default () => {
         graphqlMilestoneStats: Boolean(gon.features?.graphqlMilestoneStats),
       },
     }),
-    render: (h) => h(ReleaseListApp),
+    render: (h) => h(ReleaseIndexApp),
   });
 };

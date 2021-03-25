@@ -647,6 +647,9 @@ The default is 100MB.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
 
+NOTE:
+Only GitLab admin users will be able to view and override the **Maximum size of Pages** setting.
+
 To override the global maximum pages size for a specific project:
 
 1. Go to your project's **Settings > Pages** page.

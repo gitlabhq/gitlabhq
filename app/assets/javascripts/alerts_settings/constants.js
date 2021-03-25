@@ -17,6 +17,13 @@ export const i18n = {
       label: s__('AlertSettings|Name integration'),
       placeholder: s__('AlertSettings|Enter integration name'),
       activeToggle: __('Active'),
+      error: __("Name can't be blank"),
+    },
+    enableIntegration: {
+      label: s__('AlertSettings|Enable integration'),
+      help: s__(
+        'AlertSettings|A webhook URL and authorization key will be generated for the integration. Both will be visible after saving the integration in the “View credentials” tab.',
+      ),
     },
     setupCredentials: {
       help: s__(
@@ -29,35 +36,41 @@ export const i18n = {
       authorizationKey: s__('AlertSettings|Authorization key'),
       reset: s__('AlertSettings|Reset Key'),
     },
-    setSamplePayload: {
-      label: s__('AlertSettings|Sample alert payload (optional)'),
-      testPayloadHelpHttp: s__(
-        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to create a custom mapping (optional).',
-      ),
-      testPayloadHelp: s__(
-        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This will allow you to send an alert to an active GitLab alerting point.',
+    mapFields: {
+      label: s__('AlertSettings|Customize alert payload mapping (optional)'),
+      help: s__(
+        'AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click the "parse payload fields" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration.',
       ),
       placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
+      editPayload: s__('AlertSettings|Edit payload'),
+      parsePayload: s__('AlertSettings|Parse payload fields'),
+      payloadParsedSucessMsg: s__(
+        'AlertSettings|Sample payload has been parsed. You can now map the fields.',
+      ),
       resetHeader: s__('AlertSettings|Reset the mapping'),
       resetBody: s__(
         "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields.",
       ),
       resetOk: s__('AlertSettings|Proceed with editing'),
-      editPayload: s__('AlertSettings|Edit payload'),
-      parsePayload: s__('AlertSettings|Parse payload for custom mapping'),
-      payloadParsedSucessMsg: s__(
-        'AlertSettings|Sample payload has been parsed. You can now map the fields.',
+      mapIntro: s__(
+        "AlertSettings|The default GitLab alert fields are listed below. If you choose to map your payload keys to GitLab's, please make a selection in the dropdowns below. You may also opt to leave the fields unmapped and move straight to saving your integration.",
       ),
     },
-    mapFields: {
-      label: s__('AlertSettings|Customize alert payload mapping (optional)'),
-      intro: s__(
-        'AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click "parse payload fields" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration.',
+    testPayload: {
+      help: s__(
+        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This will allow you to send an alert to an active GitLab alerting point.',
       ),
+      placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
+      modalTitle: s__('AlertSettings|The form has unsaved changes'),
+      modalBody: s__('AlertSettings|The form has unsaved changes. How would you like to proceed?'),
+      savedAndTest: s__('AlertSettings|Save integration & send'),
+      proceedWithoutSave: s__('AlertSettings|Send without saving'),
+      cancel: __('Cancel'),
     },
     prometheusFormUrl: {
       label: s__('AlertSettings|Prometheus API base URL'),
       help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
+      error: s__('AlertSettings|URL is invalid.'),
     },
     restKeyInfo: {
       label: s__(
@@ -66,40 +79,52 @@ export const i18n = {
     },
   },
   saveIntegration: s__('AlertSettings|Save integration'),
-  changesSaved: s__('AlertSettings|Your integration was successfully updated.'),
+  saveAndTestIntegration: s__('AlertSettings|Save & create test alert'),
   cancelAndClose: __('Cancel and close'),
-  send: s__('AlertSettings|Send'),
+  send: __('Send'),
   copy: __('Copy'),
+  integrationCreated: {
+    title: s__('AlertSettings|Integration successfully saved'),
+    successMsg: s__(
+      'AlertSettings|A URL and authorization key  have been created for your integration. You will need them to setup a webhook and authorize your endpoint to send alerts to GitLab.',
+    ),
+    btnCaption: s__('AlertSettings|View URL and authorization key'),
+  },
+  changesSaved: s__('AlertsIntegrations|The integration has been successfully saved.'),
+  integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
+  alertSent: s__(
+    'AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list.',
+  ),
+  addNewIntegration: s__('AlertSettings|Add new integration'),
 };
 
 export const integrationSteps = {
   selectType: 'SELECT_TYPE',
   nameIntegration: 'NAME_INTEGRATION',
-  setPrometheusApiUrl: 'SET_PROMETHEUS_API_URL',
-  setSamplePayload: 'SET_SAMPLE_PAYLOAD',
+  enableHttpIntegration: 'ENABLE_HTTP_INTEGRATION',
+  enablePrometheusIntegration: 'ENABLE_PROMETHEUS_INTEGRATION',
   customizeMapping: 'CUSTOMIZE_MAPPING',
 };
 
 export const createStepNumbers = {
   [integrationSteps.selectType]: 1,
   [integrationSteps.nameIntegration]: 2,
-  [integrationSteps.setPrometheusApiUrl]: 2,
-  [integrationSteps.setSamplePayload]: 3,
+  [integrationSteps.enableHttpIntegration]: 3,
+  [integrationSteps.enablePrometheusIntegration]: 2,
   [integrationSteps.customizeMapping]: 4,
 };
 
 export const editStepNumbers = {
-  [integrationSteps.selectType]: 1,
   [integrationSteps.nameIntegration]: 1,
-  [integrationSteps.setPrometheusApiUrl]: null,
-  [integrationSteps.setSamplePayload]: 2,
+  [integrationSteps.enableHttpIntegration]: 2,
+  [integrationSteps.enablePrometheusIntegration]: null,
   [integrationSteps.customizeMapping]: 3,
 };
 
 export const integrationTypes = {
   none: { value: '', text: s__('AlertSettings|Select integration type') },
   http: { value: 'HTTP', text: s__('AlertSettings|HTTP Endpoint') },
-  prometheus: { value: 'PROMETHEUS', text: s__('AlertSettings|External Prometheus') },
+  prometheus: { value: 'PROMETHEUS', text: s__('AlertSettings|Prometheus') },
 };
 
 export const typeSet = {
@@ -127,4 +152,10 @@ export const mappingFields = {
   fallback: 'fallback',
 };
 
-export const viewCredentialsTabIndex = 1;
+export const tabIndices = {
+  configureDetails: 0,
+  viewCredentials: 1,
+  sendTestAlert: 2,
+};
+
+export const testAlertModalId = 'confirmSendTestAlert';

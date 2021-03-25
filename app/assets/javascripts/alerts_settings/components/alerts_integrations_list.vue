@@ -139,7 +139,7 @@ export default {
 
 <template>
   <div class="incident-management-list">
-    <h5 class="gl-font-lg">{{ $options.i18n.title }}</h5>
+    <h5 class="gl-font-lg gl-mt-5">{{ $options.i18n.title }}</h5>
     <gl-table
       class="integration-list"
       :items="integrations"

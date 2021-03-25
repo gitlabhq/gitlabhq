@@ -1,13 +1,11 @@
 import { buildSchema, graphql } from 'graphql';
+import { memoize } from 'lodash';
 
-/* eslint-disable import/no-unresolved */
-// This rule is disabled for the following line.
 // The graphql schema is dynamically generated in CI
 // during the `graphql-schema-dump` job.
-import gitlabSchemaStr from '../../../../tmp/tests/graphql/gitlab_schema.graphql';
-/* eslint-enable import/no-unresolved */
+// eslint-disable-next-line global-require, import/no-unresolved
+const getGraphqlSchema = () => require('../../../../tmp/tests/graphql/gitlab_schema.graphql');
 
-const graphqlSchema = buildSchema(gitlabSchemaStr.loc.source.body);
 const graphqlResolvers = {
   project({ fullPath }, schema) {
     const result = schema.projects.findBy({ path_with_namespace: fullPath });
@@ -21,6 +19,7 @@ const graphqlResolvers = {
     };
   },
 };
+const buildGraphqlSchema = memoize(() => buildSchema(getGraphqlSchema().loc.source.body));
 
 export const graphqlQuery = (query, variables, schema) =>
-  graphql(graphqlSchema, query, graphqlResolvers, schema, variables);
+  graphql(buildGraphqlSchema(), query, graphqlResolvers, schema, variables);

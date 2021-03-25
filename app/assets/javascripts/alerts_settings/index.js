@@ -19,23 +19,7 @@ export default (el) => {
     return null;
   }
 
-  const {
-    prometheusActivated,
-    prometheusUrl,
-    prometheusAuthorizationKey,
-    prometheusFormPath,
-    prometheusResetKeyPath,
-    prometheusApiUrl,
-    activated: activatedStr,
-    alertsSetupUrl,
-    alertsUsageUrl,
-    formPath,
-    authorizationKey,
-    url,
-    projectPath,
-    multiIntegrations,
-    alertFields,
-  } = el.dataset;
+  const { alertsUsageUrl, projectPath, multiIntegrations, alertFields } = el.dataset;
 
   return new Vue({
     el,
@@ -43,22 +27,7 @@ export default (el) => {
       AlertSettingsWrapper,
     },
     provide: {
-      prometheus: {
-        active: parseBoolean(prometheusActivated),
-        url: prometheusUrl,
-        token: prometheusAuthorizationKey,
-        prometheusFormPath,
-        prometheusResetKeyPath,
-        prometheusApiUrl,
-      },
-      generic: {
-        alertsSetupUrl,
-        alertsUsageUrl,
-        active: parseBoolean(activatedStr),
-        formPath,
-        token: authorizationKey,
-        url,
-      },
+      alertsUsageUrl,
       projectPath,
       multiIntegrations: parseBoolean(multiIntegrations),
     },
