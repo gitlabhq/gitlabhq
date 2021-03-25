@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'recursive namespace traversal' do
+RSpec.shared_examples 'namespace traversal' do
   describe '#self_and_hierarchy' do
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }

@@ -1461,12 +1461,73 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe "POST /projects/:id/uploads/authorize" do
+    include WorkhorseHelpers
+
+    let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
+
+    context 'with authorized user' do
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
+      end
+    end
+
+    context 'with unauthorized user' do
+      it "returns 404" do
+        post api("/projects/#{project.id}/uploads/authorize", user2), headers: headers
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with exempted project' do
+      before do
+        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
+      end
+
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(1.gigabyte)
+      end
+    end
+
+    context 'with upload size enforcement disabled' do
+      before do
+        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
+      end
+
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(1.gigabyte)
+      end
+    end
+
+    context 'with no Workhorse headers' do
+      it "returns 403" do
+        post api("/projects/#{project.id}/uploads/authorize", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe "POST /projects/:id/uploads" do
     before do
       project
     end
 
     it "uploads the file and returns its info" do
+      expect_next_instance_of(UploadService) do |instance|
+        expect(instance).to receive(:override_max_attachment_size=).with(project.max_attachment_size).and_call_original
+      end
+
       post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -1475,6 +1536,34 @@ RSpec.describe API::Projects do
       expect(json_response['url']).to end_with("/dk.png")
 
       expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
+    end
+
+    shared_examples 'capped upload attachments' do
+      it "limits the upload to 1 GB" do
+        expect_next_instance_of(UploadService) do |instance|
+          expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
+        end
+
+        post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'with exempted project' do
+      before do
+        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
+      end
+
+      it_behaves_like 'capped upload attachments'
+    end
+
+    context 'with upload size enforcement disabled' do
+      before do
+        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
+      end
+
+      it_behaves_like 'capped upload attachments'
     end
   end
 

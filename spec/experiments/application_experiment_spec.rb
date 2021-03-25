@@ -114,7 +114,7 @@ RSpec.describe ApplicationExperiment, :experiment do
             data: { data: '_data_' }
           },
           {
-            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
+            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
             data: { experiment: 'namespaced/stub', key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
           }
         ]

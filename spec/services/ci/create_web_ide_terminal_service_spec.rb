@@ -66,6 +66,25 @@ RSpec.describe Ci::CreateWebIdeTerminalService do
 
           it_behaves_like 'be successful'
         end
+
+        context 'for configuration with variables' do
+          let(:config_content) do
+            <<-EOS
+              terminal:
+                script: rspec
+                variables:
+                  KEY1: VAL1
+            EOS
+          end
+
+          it_behaves_like 'be successful'
+
+          it 'saves the variables' do
+            expect(subject[:pipeline].builds[0].variables).to include(
+              key: 'KEY1', value: 'VAL1', public: true, masked: false
+            )
+          end
+        end
       end
     end
 

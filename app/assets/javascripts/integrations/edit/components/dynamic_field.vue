@@ -3,7 +3,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
-import { __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
@@ -77,14 +76,6 @@ export default {
     isNonEmptyPassword() {
       return this.isPassword && !isEmpty(this.value);
     },
-    label() {
-      if (this.isNonEmptyPassword) {
-        return sprintf(__('Enter new %{field_title}'), {
-          field_title: this.humanizedTitle,
-        });
-      }
-      return this.humanizedTitle;
-    },
     humanizedTitle() {
       return this.title || capitalize(lowerCase(this.name));
     },
@@ -136,7 +127,7 @@ export default {
 
 <template>
   <gl-form-group
-    :label="label"
+    :label="humanizedTitle"
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"

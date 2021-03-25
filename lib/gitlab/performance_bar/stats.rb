@@ -8,6 +8,7 @@ module Gitlab
       IGNORED_BACKTRACE_LOCATIONS = %w[
         ee/lib/ee/peek
         lib/peek
+        lib/gitlab/database
       ].freeze
 
       def initialize(redis)

@@ -65,13 +65,30 @@ class TeamcityService < CiService
 
   def fields
     [
-      { type: 'text', name: 'teamcity_url',
-        placeholder: 'TeamCity root URL like https://teamcity.example.com', required: true },
-      { type: 'text', name: 'build_type',
-        placeholder: 'Build configuration ID', required: true },
-      { type: 'text', name: 'username',
-        placeholder: 'A user with permissions to trigger a manual build' },
-      { type: 'password', name: 'password' }
+      {
+        type: 'text',
+        name: 'teamcity_url',
+        title: s_('ProjectService|TeamCity URL'),
+        placeholder: 'TeamCity root URL like https://teamcity.example.com',
+        required: true
+      },
+      {
+        type: 'text',
+        name: 'build_type',
+        placeholder: 'Build configuration ID',
+        required: true
+      },
+      {
+        type: 'text',
+        name: 'username',
+        placeholder: 'A user with permissions to trigger a manual build'
+      },
+      {
+        type: 'password',
+        name: 'password',
+        non_empty_password_title: s_('ProjectService|Enter new password'),
+        non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
+      }
     ]
   end
 

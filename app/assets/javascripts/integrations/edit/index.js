@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+
 import IntegrationForm from './components/integration_form.vue';
 import { createStore } from './store';
 
@@ -73,7 +74,7 @@ function parseDatasetToProps(data) {
     },
     learnMorePath,
     triggerEvents: JSON.parse(triggerEvents),
-    fields: JSON.parse(fields),
+    fields: convertObjectPropsToCamelCase(JSON.parse(fields), { deep: true }),
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
     id: parseInt(id, 10),

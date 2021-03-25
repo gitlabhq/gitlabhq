@@ -1461,6 +1461,12 @@ msgstr ""
 msgid "API Token"
 msgstr ""
 
+msgid "API key"
+msgstr ""
+
+msgid "API version"
+msgstr ""
+
 msgid "APIFuzzing|API Fuzzing Configuration"
 msgstr ""
 
@@ -4678,6 +4684,9 @@ msgid "BambooService|A user with API access, if applicable"
 msgstr ""
 
 msgid "BambooService|Atlassian Bamboo CI"
+msgstr ""
+
+msgid "BambooService|Bamboo URL"
 msgstr ""
 
 msgid "BambooService|Bamboo build plan key like KEY"
@@ -11678,9 +11687,6 @@ msgstr ""
 msgid "Enter merge request URLs"
 msgstr ""
 
-msgid "Enter new %{field_title}"
-msgstr ""
-
 msgid "Enter new AWS Secret Access Key"
 msgstr ""
 
@@ -12623,9 +12629,6 @@ msgstr ""
 msgid "External URL"
 msgstr ""
 
-msgid "External Wiki"
-msgstr ""
-
 msgid "External authentication"
 msgstr ""
 
@@ -12647,13 +12650,16 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
-msgid "ExternalWikiService|External Wiki"
+msgid "ExternalWikiService|External wiki"
+msgstr ""
+
+msgid "ExternalWikiService|External wiki URL"
 msgstr ""
 
 msgid "ExternalWikiService|Replaces the link to the internal wiki with a link to an external wiki."
 msgstr ""
 
-msgid "ExternalWikiService|The URL of the external Wiki"
+msgid "ExternalWikiService|The URL of the external wiki"
 msgstr ""
 
 msgid "Facebook"
@@ -17359,6 +17365,9 @@ msgstr ""
 msgid "JiraService|Enable Jira issues creation from vulnerabilities"
 msgstr ""
 
+msgid "JiraService|Enter new password or API token"
+msgstr ""
+
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
@@ -17405,6 +17414,9 @@ msgid "JiraService|Jira project key"
 msgstr ""
 
 msgid "JiraService|Jira workflow transition IDs"
+msgstr ""
+
+msgid "JiraService|Leave blank to use your current password or API token"
 msgstr ""
 
 msgid "JiraService|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}Jira%{linkEnd}."
@@ -23893,6 +23905,15 @@ msgstr ""
 msgid "ProjectService|%{service_title}: status on"
 msgstr ""
 
+msgid "ProjectService|Drone URL"
+msgstr ""
+
+msgid "ProjectService|Enter new API key"
+msgstr ""
+
+msgid "ProjectService|Enter new password"
+msgstr ""
+
 msgid "ProjectService|Event will be triggered by a push to the repository"
 msgstr ""
 
@@ -23929,7 +23950,28 @@ msgstr ""
 msgid "ProjectService|Event will be triggered when someone adds a comment on a confidential issue"
 msgstr ""
 
+msgid "ProjectService|Issue URL"
+msgstr ""
+
+msgid "ProjectService|Jenkins URL"
+msgstr ""
+
+msgid "ProjectService|Leave blank to use your current API key"
+msgstr ""
+
+msgid "ProjectService|Leave blank to use your current password"
+msgstr ""
+
+msgid "ProjectService|Mock service URL"
+msgstr ""
+
+msgid "ProjectService|New issue URL"
+msgstr ""
+
 msgid "ProjectService|Perform common operations on GitLab project: %{project_name}"
+msgstr ""
+
+msgid "ProjectService|TeamCity URL"
 msgstr ""
 
 msgid "ProjectService|To set up this service:"

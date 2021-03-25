@@ -35,6 +35,7 @@ describe('IssuableListRoot', () => {
 
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
+  const findIssuableItem = () => wrapper.findComponent(IssuableItem);
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
 
@@ -351,6 +352,18 @@ describe('IssuableListRoot', () => {
       });
     });
 
+    it('emits `update-legacy-bulk-edit` when filtered-search-bar checkbox is checked', () => {
+      findFilteredSearchBar().vm.$emit('checked-input');
+
+      expect(wrapper.emitted('update-legacy-bulk-edit')).toEqual([[]]);
+    });
+
+    it('emits `update-legacy-bulk-edit` when issuable-item checkbox is checked', () => {
+      findIssuableItem().vm.$emit('checked-input');
+
+      expect(wrapper.emitted('update-legacy-bulk-edit')).toEqual([[]]);
+    });
+
     it('gl-pagination component emits `page-change` event on `input` event', async () => {
       wrapper.setProps({
         showPaginationControls: true,
@@ -379,7 +392,7 @@ describe('IssuableListRoot', () => {
       });
 
       it('IssuableItem has grab cursor', () => {
-        expect(wrapper.findComponent(IssuableItem).classes()).toContain('gl-cursor-grab');
+        expect(findIssuableItem().classes()).toContain('gl-cursor-grab');
       });
 
       it('emits a "reorder" event when user updates the issue order', () => {

@@ -64,6 +64,24 @@ RSpec.describe API::GroupMilestones do
     end
   end
 
+  describe 'GET /groups/:id/milestones/:milestone_id/issues' do
+    let!(:issue) { create(:issue, project: project, milestone: milestone) }
+
+    def perform_request
+      get api("/groups/#{group.id}/milestones/#{milestone.id}/issues", user)
+    end
+
+    it 'returns multiple issues without performing N + 1' do
+      perform_request
+
+      control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+      create(:issue, project: project, milestone: milestone)
+
+      expect { perform_request }.not_to exceed_query_limit(control_count)
+    end
+  end
+
   def setup_for_group
     context_group.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
     context_group.add_developer(user)

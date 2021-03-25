@@ -36,6 +36,7 @@ https://app.asana.com/0/developer-console'
       {
         type: 'text',
         name: 'api_key',
+        title: _('API key'),
         placeholder: s_('AsanaService|User Personal Access Token. User must have access to task, all comments will be attributed to this user.'),
         required: true
       },

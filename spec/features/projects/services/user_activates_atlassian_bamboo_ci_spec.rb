@@ -11,7 +11,7 @@ RSpec.describe 'User activates Atlassian Bamboo CI' do
 
   it 'activates service', :js do
     visit_project_integration('Atlassian Bamboo CI')
-    fill_in('Bamboo url', with: 'http://bamboo.example.com')
+    fill_in('Bamboo URL', with: 'http://bamboo.example.com')
     fill_in('Build key', with: 'KEY')
     fill_in('Username', with: 'user')
     fill_in('Password', with: 'verySecret')
@@ -23,6 +23,7 @@ RSpec.describe 'User activates Atlassian Bamboo CI' do
     # Password field should not be filled in.
     click_link('Atlassian Bamboo CI')
 
-    expect(find_field('Enter new Password').value).to be_blank
+    expect(find_field('Enter new password').value).to be_blank
+    expect(page).to have_content('Leave blank to use your current password')
   end
 end

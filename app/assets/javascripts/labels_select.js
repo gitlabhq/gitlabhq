@@ -526,11 +526,15 @@ export default class LabelsSelect {
   }
 
   bindEvents() {
-    return $('body').on('change', '.selected-issuable', this.onSelectCheckboxIssue);
+    return $('body').on(
+      'change',
+      '.issuable-list input[type="checkbox"]',
+      this.onSelectCheckboxIssue,
+    );
   }
   // eslint-disable-next-line class-methods-use-this
   onSelectCheckboxIssue() {
-    if ($('.selected-issuable:checked').length) {
+    if ($('.issuable-list input[type="checkbox"]:checked').length) {
       return;
     }
     return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text(__('Label'));

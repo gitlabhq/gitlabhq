@@ -80,7 +80,7 @@ module API
 
           params = build_finder_params(milestone, parent)
 
-          issuables = finder_klass.new(current_user, params).execute
+          issuables = finder_klass.new(current_user, params).execute.with_api_entity_associations
           present paginate(issuables), with: entity, current_user: current_user
         end
 

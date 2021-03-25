@@ -34,7 +34,7 @@ export default class IssuableBulkUpdateSidebar {
     this.$otherFilters = $('.issues-other-filters');
     this.$checkAllContainer = $('.check-all-holder');
     this.$issueChecks = $('.issue-check');
-    this.$issuesList = $('.selected-issuable');
+    this.$issuesList = $('.issuable-list input[type="checkbox"]');
     this.$issuableIdsInput = $('#update_issuable_ids');
   }
 
@@ -46,16 +46,14 @@ export default class IssuableBulkUpdateSidebar {
     this.$bulkEditSubmitBtn.on('click', () => this.prepForSubmit());
     this.$checkAllContainer.on('click', () => this.updateFormState());
 
-    if (this.vueIssuablesListFeature) {
-      issueableEventHub.$on('issuables:updateBulkEdit', () => {
-        // Danger! Strong coupling ahead!
-        // The bulk update sidebar and its dropdowns look for .selected-issuable checkboxes, and get data on which issue
-        // is selected by inspecting the DOM. Ideally, we would pass the selected issuable IDs and their properties
-        // explicitly, but this component is used in too many places right now to refactor straight away.
+    issueableEventHub.$on('issuables:updateBulkEdit', () => {
+      // Danger! Strong coupling ahead!
+      // The bulk update sidebar and its dropdowns look for checkboxes, and get data on which issue
+      // is selected by inspecting the DOM. Ideally, we would pass the selected issuable IDs and their properties
+      // explicitly, but this component is used in too many places right now to refactor straight away.
 
-        this.updateFormState();
-      });
-    }
+      this.updateFormState();
+    });
   }
 
   initDropdowns() {
@@ -96,7 +94,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   updateFormState() {
-    const noCheckedIssues = !$('.selected-issuable:checked').length;
+    const noCheckedIssues = !$('.issuable-list input[type="checkbox"]:checked').length;
 
     this.toggleSubmitButtonDisabled(noCheckedIssues);
     this.updateSelectedIssuableIds();
@@ -166,7 +164,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   static getCheckedIssueIds() {
-    const $checkedIssues = $('.selected-issuable:checked');
+    const $checkedIssues = $('.issuable-list input[type="checkbox"]:checked');
 
     if ($checkedIssues.length > 0) {
       return $.map($checkedIssues, (value) => $(value).data('id'));

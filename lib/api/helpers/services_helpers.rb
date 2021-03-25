@@ -394,7 +394,7 @@ module API
               required: true,
               name: :external_wiki_url,
               type: String,
-              desc: 'The URL of the external Wiki'
+              desc: 'The URL of the external wiki'
             }
           ],
           'flowdock' => [

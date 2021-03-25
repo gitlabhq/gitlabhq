@@ -346,12 +346,12 @@
             .nav-icon-container
               = sprite_icon('external-link')
             %span.nav-item-name
-              = _('External Wiki')
+              = s_('ExternalWikiService|External wiki')
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(html_options: { class: "fly-out-top-item" } ) do
               = link_to external_wiki_url do
                 %strong.fly-out-top-item-name
-                  = _('External Wiki')
+                  = s_('ExternalWikiService|External wiki')
 
       - if project_nav_tab? :snippets
         = nav_link(controller: :snippets) do

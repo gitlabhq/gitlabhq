@@ -21706,6 +21706,8 @@ CREATE UNIQUE INDEX idx_metrics_users_starred_dashboard_on_user_project_dashboar
 
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
 
+CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests USING btree (target_project_id, state_id, created_at, id);
+
 CREATE UNIQUE INDEX idx_on_compliance_management_frameworks_namespace_id_name ON compliance_management_frameworks USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_external_url ON external_approval_rules USING btree (project_id, external_url);

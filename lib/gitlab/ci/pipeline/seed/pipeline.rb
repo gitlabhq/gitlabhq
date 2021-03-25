@@ -7,8 +7,8 @@ module Gitlab
         class Pipeline
           include Gitlab::Utils::StrongMemoize
 
-          def initialize(pipeline, stages_attributes)
-            @pipeline = pipeline
+          def initialize(context, stages_attributes)
+            @context = context
             @stages_attributes = stages_attributes
           end
 
@@ -37,7 +37,7 @@ module Gitlab
           def stage_seeds
             strong_memoize(:stage_seeds) do
               seeds = @stages_attributes.inject([]) do |previous_stages, attributes|
-                seed = Gitlab::Ci::Pipeline::Seed::Stage.new(@pipeline, attributes, previous_stages)
+                seed = Gitlab::Ci::Pipeline::Seed::Stage.new(@context, attributes, previous_stages)
                 previous_stages + [seed]
               end
 

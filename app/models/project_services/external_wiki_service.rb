@@ -6,7 +6,7 @@ class ExternalWikiService < Service
   validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
   def title
-    s_('ExternalWikiService|External Wiki')
+    s_('ExternalWikiService|External wiki')
   end
 
   def description
@@ -22,7 +22,8 @@ class ExternalWikiService < Service
       {
         type: 'text',
         name: 'external_wiki_url',
-        placeholder: s_('ExternalWikiService|The URL of the external Wiki'),
+        title: s_('ExternalWikiService|External wiki URL'),
+        placeholder: s_('ExternalWikiService|The URL of the external wiki'),
         required: true
       }
     ]

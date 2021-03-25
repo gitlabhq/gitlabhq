@@ -6,10 +6,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
+  let(:root_variables) { [] }
+  let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
   let(:previous_stages) { [] }
 
-  let(:seed_build) { described_class.new(pipeline, attributes, previous_stages) }
+  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages) }
 
   describe '#attributes' do
     subject { seed_build.attributes }
@@ -301,6 +303,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
       end
     end
+
+    context 'when the job rule depends on variables' do
+      let(:attributes) do
+        { name: 'rspec',
+          ref: 'master',
+          yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true }],
+          rules: rules }
+      end
+
+      context 'when the rules use job variables' do
+        let(:rules) do
+          [{ if: '$VAR1 == "var 1"', variables: { VAR1: 'overridden var 1', VAR2: 'new var 2' } }]
+        end
+
+        it 'recalculates the variables' do
+          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1', public: true },
+                                                              { key: 'VAR2', value: 'new var 2', public: true })
+        end
+      end
+    end
   end
 
   describe '#bridge?' do
@@ -377,7 +399,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it 'does not have environment' do
           expect(subject).not_to be_has_environment
           expect(subject.environment).to be_nil
-          expect(subject.metadata).to be_nil
+          expect(subject.metadata&.expanded_environment_name).to be_nil
           expect(Environment.exists?(name: expected_environment_name)).to eq(false)
         end
       end
@@ -1080,7 +1102,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
 
       let(:stage_seed) do
-        Gitlab::Ci::Pipeline::Seed::Stage.new(pipeline, stage_attributes, [])
+        Gitlab::Ci::Pipeline::Seed::Stage.new(seed_context, stage_attributes, [])
       end
 
       let(:previous_stages) { [stage_seed] }

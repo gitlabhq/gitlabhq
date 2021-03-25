@@ -106,7 +106,7 @@ module Gitlab
     end
 
     def metric_definitions
-      @definitions ||= Gitlab::Usage::MetricDefinition.definitions
+      @definitions ||= Gitlab::Usage::MetricDefinition.definitions(skip_validation: true)
     end
 
     def metric_definition_exists?

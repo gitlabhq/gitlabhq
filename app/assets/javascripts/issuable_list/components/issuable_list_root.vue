@@ -218,11 +218,13 @@ export default {
     },
     handleIssuableCheckedInput(issuable, value) {
       this.checkedIssuables[this.issuableId(issuable)].checked = value;
+      this.$emit('update-legacy-bulk-edit');
     },
     handleAllIssuablesCheckedInput(value) {
       Object.keys(this.checkedIssuables).forEach((issuableId) => {
         this.checkedIssuables[issuableId].checked = value;
       });
+      this.$emit('update-legacy-bulk-edit');
     },
     handleVueDraggableUpdate({ newIndex, oldIndex }) {
       this.$emit('reorder', { newIndex, oldIndex });

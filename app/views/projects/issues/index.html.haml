@@ -26,6 +26,8 @@
       has_issuable_health_status_feature: Gitlab.ee? && @project.feature_available?(:issuable_health_status).to_s,
       has_issue_weights_feature: Gitlab.ee? && @project.feature_available?(:issue_weights).to_s,
       issues_path: project_issues_path(@project) } }
+    - if @can_bulk_update
+      = render 'shared/issuable/bulk_update_sidebar', type: :issues
   - else
     = render 'shared/issuable/search_bar', type: :issues
 

@@ -57,6 +57,10 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js do
       first(dropdown_selector)
     end
 
+    before do
+      wait_for_requests
+    end
+
     # Status icon button styles should update as described in
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/42769
     it 'has unique styles for default, :hover, :active, and :focus states' do

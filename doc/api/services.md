@@ -536,13 +536,13 @@ Get Confluence service settings for a project.
 GET /projects/:id/services/confluence
 ```
 
-## External Wiki
+## External wiki
 
 Replaces the link to the internal wiki with a link to an external wiki.
 
-### Create/Edit External Wiki service
+### Create/Edit External wiki service
 
-Set External Wiki service for a project.
+Set External wiki service for a project.
 
 ```plaintext
 PUT /projects/:id/services/external-wiki
@@ -552,19 +552,19 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `external_wiki_url` | string | true | The URL of the external Wiki |
+| `external_wiki_url` | string | true | The URL of the external wiki |
 
-### Delete External Wiki service
+### Delete External wiki service
 
-Delete External Wiki service for a project.
+Delete External wiki service for a project.
 
 ```plaintext
 DELETE /projects/:id/services/external-wiki
 ```
 
-### Get External Wiki service settings
+### Get External wiki service settings
 
-Get External Wiki service settings for a project.
+Get External wiki service settings for a project.
 
 ```plaintext
 GET /projects/:id/services/external-wiki

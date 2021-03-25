@@ -6,6 +6,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
+  let(:seed_context) { double(pipeline: pipeline, root_variables: []) }
+
   let(:stages_attributes) do
     [
       {
@@ -29,7 +31,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
   end
 
   subject(:seed) do
-    described_class.new(pipeline, stages_attributes)
+    described_class.new(seed_context, stages_attributes)
   end
 
   describe '#stages' do

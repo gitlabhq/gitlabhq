@@ -20,7 +20,7 @@ class PushoverService < Service
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: s_('PushoverService|Your application key'), required: true },
+      { type: 'text', name: 'api_key', title: _('API key'), placeholder: s_('PushoverService|Your application key'), required: true },
       { type: 'text', name: 'user_key', placeholder: s_('PushoverService|Your user key'), required: true },
       { type: 'text', name: 'device', placeholder: s_('PushoverService|Leave blank for all active devices') },
       { type: 'select', name: 'priority', required: true, choices:

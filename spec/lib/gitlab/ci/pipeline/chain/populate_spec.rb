@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
     [
       Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
+      Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::SeedBlock.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Seed.new(pipeline, command)
     ]

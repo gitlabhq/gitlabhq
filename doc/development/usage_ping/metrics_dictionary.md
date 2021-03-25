@@ -109,4 +109,12 @@ create  ee/config/metrics/counts_7d/issues.yml
 
 The [Redis HLL metrics](index.md#known-events-are-added-automatically-in-usage-data-payload) are added automatically to Usage Ping payload.
 
-A YAML metric definition is required for each metric.
+A YAML metric definition is required for each metric. A dedicated generator is provided to create metric definitions for Redis HLL events.
+
+The generator takes `category` and `event` arguments, as the root key will be `redis_hll_counters`, and creates two metric definitions for weekly and monthly timeframes:
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues i_closed
+create  config/metrics/counts_7d/i_closed_weekly.yml
+create  config/metrics/counts_28d/i_closed_monthly.yml
+```

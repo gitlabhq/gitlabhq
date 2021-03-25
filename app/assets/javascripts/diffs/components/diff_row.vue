@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -17,7 +17,6 @@ import * as utils from './diff_row_utils';
 
 export default {
   components: {
-    GlIcon,
     DiffGutterAvatars,
   },
   directives: {
@@ -203,14 +202,12 @@ export default {
               <button
                 :draggable="glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.left.commentsDisabled"
                 @click="handleCommentButton(line.left)"
                 @dragstart="onDragStart({ ...line.left, index })"
-              >
-                <gl-icon :size="12" name="comment" />
-              </button>
+              ></button>
             </span>
           </template>
           <a
@@ -305,14 +302,12 @@ export default {
               <button
                 :draggable="glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.right.commentsDisabled"
                 @click="handleCommentButton(line.right)"
                 @dragstart="onDragStart({ ...line.right, index })"
-              >
-                <gl-icon :size="12" name="comment" />
-              </button>
+              ></button>
             </span>
           </template>
           <a

@@ -274,7 +274,10 @@ gem 'licensee', '~> 9.14.1'
 gem 'charlock_holmes', '~> 0.7.7'
 
 # Detect mime content type from content
-gem 'ruby-magic-static'
+gem 'ruby-magic', '~> 0.3'
+
+# Fake version of the gem to trick bundler
+gem 'mimemagic', '0.3.7', path: 'vendor/shims/mimemagic', require: false
 
 # Faster blank
 gem 'fast_blank'
@@ -477,7 +480,7 @@ gem 'gitaly', '~> 13.9.0.pre.rc1'
 
 gem 'grpc', '~> 1.30.2'
 
-gem 'google-protobuf', '~> 3.12'
+gem 'google-protobuf', '~> 3.14.0'
 
 gem 'toml-rb', '~> 1.0.0'
 

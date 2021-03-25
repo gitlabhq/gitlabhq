@@ -81,7 +81,6 @@ Rails/SaveBang:
     - 'ee/spec/models/geo_node_spec.rb'
     - 'ee/spec/models/geo_node_status_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
-    - 'ee/spec/models/group_spec.rb'
     - 'ee/spec/models/issue_spec.rb'
     - 'ee/spec/models/label_note_spec.rb'
     - 'ee/spec/models/lfs_object_spec.rb'
@@ -711,7 +710,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/models/geo/lfs_object_registry_spec.rb
     - ee/spec/models/gitlab_subscription_spec.rb
     - ee/spec/models/group_member_spec.rb
-    - ee/spec/models/group_spec.rb
     - ee/spec/models/instance_security_dashboard_spec.rb
     - ee/spec/models/issue_spec.rb
     - ee/spec/models/label_note_spec.rb
@@ -1733,7 +1731,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/migrations/update_vulnerability_severity_column_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/geo_node_status_spec.rb'
-    - 'ee/spec/models/group_spec.rb'
     - 'ee/spec/models/issue_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'
     - 'ee/spec/models/project_import_state_spec.rb'

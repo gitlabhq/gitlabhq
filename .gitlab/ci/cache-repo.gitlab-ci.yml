@@ -41,6 +41,7 @@ cache-repo:
         cd $CI_PROJECT_NAME;
         time git repack -d;
         echo "Archiving $CI_PROJECT_NAME into /tmp/$SHALLOW_CLONE_TAR_FILENAME.";
+        time git remote rm origin
         time tar cf /tmp/$SHALLOW_CLONE_TAR_FILENAME .;
         echo "GZipping /tmp/$SHALLOW_CLONE_TAR_FILENAME.";
         time gzip /tmp/$SHALLOW_CLONE_TAR_FILENAME;
@@ -53,6 +54,7 @@ cache-repo:
         time git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME;
         cd $CI_PROJECT_NAME;
         echo "Archiving $CI_PROJECT_NAME into /tmp/$FULL_CLONE_TAR_FILENAME.";
+        time git remote rm origin
         time tar cf /tmp/$FULL_CLONE_TAR_FILENAME .;
         echo "GZipping /tmp/$FULL_CLONE_TAR_FILENAME.";
         time gzip /tmp/$FULL_CLONE_TAR_FILENAME;

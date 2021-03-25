@@ -48,13 +48,30 @@ class BambooService < CiService
 
   def fields
     [
-        { type: 'text', name: 'bamboo_url',
-          placeholder: s_('BambooService|Bamboo root URL like https://bamboo.example.com'), required: true },
-        { type: 'text', name: 'build_key',
-          placeholder: s_('BambooService|Bamboo build plan key like KEY'), required: true },
-        { type: 'text', name: 'username',
-          placeholder: s_('BambooService|A user with API access, if applicable') },
-        { type: 'password', name: 'password' }
+        {
+          type: 'text',
+          name: 'bamboo_url',
+          title: s_('BambooService|Bamboo URL'),
+          placeholder: s_('BambooService|Bamboo root URL like https://bamboo.example.com'),
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'build_key',
+          placeholder: s_('BambooService|Bamboo build plan key like KEY'),
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'username',
+          placeholder: s_('BambooService|A user with API access, if applicable')
+        },
+        {
+          type: 'password',
+          name: 'password',
+          non_empty_password_title: s_('ProjectService|Enter new password'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
+        }
     ]
   end
 

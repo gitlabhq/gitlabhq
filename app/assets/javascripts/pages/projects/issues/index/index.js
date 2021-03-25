@@ -20,7 +20,12 @@ initFilteredSearch({
   useDefaultState: true,
 });
 
-new IssuableIndex(ISSUABLE_INDEX.ISSUE);
+if (gon.features?.vueIssuesList) {
+  new IssuableIndex();
+} else {
+  new IssuableIndex(ISSUABLE_INDEX.ISSUE);
+}
+
 new ShortcutsNavigation();
 new UsersSelect();
 

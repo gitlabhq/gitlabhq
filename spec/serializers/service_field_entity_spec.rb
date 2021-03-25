@@ -41,11 +41,11 @@ RSpec.describe ServiceFieldEntity do
           expected_hash = {
             type: 'password',
             name: 'password',
-            title: 'Password or API token',
+            title: 'Enter new password or API token',
             placeholder: 'Use a password for server version and an API token for cloud version',
             required: true,
             choices: nil,
-            help: nil,
+            help: 'Leave blank to use your current password or API token',
             value: 'true'
           }
 

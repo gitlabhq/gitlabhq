@@ -623,7 +623,7 @@ class Project < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:project_feature, :route, :creator, :group, namespace: [:route, :owner])
+    preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner])
   end
 
   def self.eager_load_namespace_and_owner

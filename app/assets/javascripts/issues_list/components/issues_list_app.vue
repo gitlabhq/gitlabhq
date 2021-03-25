@@ -14,6 +14,7 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import eventHub from '../eventhub';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
 export default {
@@ -56,6 +57,7 @@ export default {
       filters: sortParams[sortKey] || {},
       isLoading: false,
       issues: [],
+      showBulkEditSidebar: false,
       sortKey: sortKey || CREATED_DESC,
       totalIssues: 0,
     };
@@ -73,7 +75,14 @@ export default {
     },
   },
   mounted() {
+    eventHub.$on('issuables:toggleBulkEdit', (showBulkEditSidebar) => {
+      this.showBulkEditSidebar = showBulkEditSidebar;
+    });
     this.fetchIssues();
+  },
+  beforeDestroy() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
+    eventHub.$off('issuables:toggleBulkEdit');
   },
   methods: {
     fetchIssues(pageToFetch) {
@@ -100,6 +109,13 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+    handleUpdateLegacyBulkEdit() {
+      // If "select all" checkbox was checked, wait for all checkboxes
+      // to be checked before updating IssuableBulkUpdateSidebar class
+      this.$nextTick(() => {
+        eventHub.$emit('issuables:updateBulkEdit');
+      });
     },
     handlePageChange(page) {
       this.fetchIssues(page);
@@ -159,6 +175,7 @@ export default {
     current-tab=""
     :issuables-loading="isLoading"
     :is-manual-ordering="isManualOrdering"
+    :show-bulk-edit-sidebar="showBulkEditSidebar"
     :show-pagination-controls="true"
     :total-items="totalIssues"
     :current-page="currentPage"
@@ -168,6 +185,7 @@ export default {
     @page-change="handlePageChange"
     @reorder="handleReorder"
     @sort="handleSort"
+    @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
   >
     <template #timeframe="{ issuable = {} }">
       <issue-card-time-info :issue="issuable" />

@@ -13,6 +13,7 @@ import {
   sortOptions,
   sortParams,
 } from '~/issues_list/constants';
+import eventHub from '~/issues_list/eventhub';
 import axios from '~/lib/utils/axios_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 
@@ -101,6 +102,23 @@ describe('IssuesListApp component', () => {
     });
   });
 
+  describe('bulk edit', () => {
+    describe.each([true, false])(
+      'when "issuables:toggleBulkEdit" event is received with payload `%s`',
+      (isBulkEdit) => {
+        beforeEach(() => {
+          wrapper = mountComponent();
+
+          eventHub.$emit('issuables:toggleBulkEdit', isBulkEdit);
+        });
+
+        it(`${isBulkEdit ? 'enables' : 'disables'} bulk edit`, () => {
+          expect(findIssuableList().props('showBulkEditSidebar')).toBe(isBulkEdit);
+        });
+      },
+    );
+  });
+
   describe('when "page-change" event is emitted by IssuableList', () => {
     const data = [{ id: 10, title: 'title', state }];
     const page = 2;
@@ -119,7 +137,7 @@ describe('IssuesListApp component', () => {
       await waitForPromises();
     });
 
-    it('fetches issues with expected params', async () => {
+    it('fetches issues with expected params', () => {
       expect(axiosMock.history.get[1].params).toEqual({
         page,
         per_page: PAGE_SIZE,
@@ -192,7 +210,7 @@ describe('IssuesListApp component', () => {
 
   describe('when "sort" event is emitted by IssuableList', () => {
     it.each(Object.keys(sortParams))(
-      'fetches issues with correct params for "sort" payload %s',
+      'fetches issues with correct params for "sort" payload `%s`',
       async (sortKey) => {
         wrapper = mountComponent();
 
@@ -209,5 +227,20 @@ describe('IssuesListApp component', () => {
         });
       },
     );
+  });
+
+  describe('when "update-legacy-bulk-edit" event is emitted by IssuableList', () => {
+    beforeEach(() => {
+      wrapper = mountComponent();
+      jest.spyOn(eventHub, '$emit');
+    });
+
+    it('emits an "issuables:updateBulkEdit" event to the legacy bulk edit class', async () => {
+      findIssuableList().vm.$emit('update-legacy-bulk-edit');
+
+      await waitForPromises();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
+    });
   });
 });

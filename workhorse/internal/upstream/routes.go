@@ -302,6 +302,9 @@ func configureRoutes(u *upstream) {
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 
+		// Uploads via API
+		u.route("POST", apiProjectPattern+`uploads\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
 		u.route("", ciAPIPattern, proxy),

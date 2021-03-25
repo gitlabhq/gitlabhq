@@ -195,8 +195,23 @@ RSpec.describe Gitlab::ObjectHierarchy do
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'
 
     it 'calls DISTINCT' do
-      expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
       expect(child2.self_and_ancestors.to_sql).to include("DISTINCT")
+    end
+
+    context 'when use_traversal_ids feature flag is enabled' do
+      it 'does not call DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).not_to include("DISTINCT")
+      end
+    end
+
+    context 'when use_traversal_ids feature flag is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it 'calls DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
+      end
     end
   end
 
@@ -209,20 +224,35 @@ RSpec.describe Gitlab::ObjectHierarchy do
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'
 
     it 'calls DISTINCT' do
-      expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
       expect(child2.self_and_ancestors.to_sql).to include("DISTINCT")
     end
 
-    context 'when the skip_ordering option is set' do
-      let(:options) { { skip_ordering: true } }
+    context 'when use_traversal_ids feature flag is enabled' do
+      it 'does not call DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).not_to include("DISTINCT")
+      end
+    end
 
-      it_behaves_like 'Gitlab::ObjectHierarchy test cases'
+    context 'when use_traversal_ids feature flag is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
 
-      it 'does not include ROW_NUMBER()' do
-        query = described_class.new(Group.where(id: parent.id), options: options).base_and_descendants.to_sql
+      it 'calls DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
+      end
 
-        expect(query).to include("DISTINCT")
-        expect(query).not_to include("ROW_NUMBER()")
+      context 'when the skip_ordering option is set' do
+        let(:options) { { skip_ordering: true } }
+
+        it_behaves_like 'Gitlab::ObjectHierarchy test cases'
+
+        it 'does not include ROW_NUMBER()' do
+          query = described_class.new(Group.where(id: parent.id), options: options).base_and_descendants.to_sql
+
+          expect(query).to include("DISTINCT")
+          expect(query).not_to include("ROW_NUMBER()")
+        end
       end
     end
   end

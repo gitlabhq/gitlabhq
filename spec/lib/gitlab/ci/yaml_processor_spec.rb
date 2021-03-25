@@ -372,7 +372,7 @@ module Gitlab
         end
       end
 
-      describe '#workflow_attributes' do
+      describe 'workflow attributes' do
         context 'with disallowed workflow:variables' do
           let(:config) do
             <<-EOYML
@@ -403,11 +403,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+            expect(subject.workflow_rules).to contain_exactly({ if: '$VAR == "value"' })
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables)
               .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
           end
         end
@@ -425,11 +425,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+            expect(subject.workflow_rules).to contain_exactly({ if: '$VAR == "value"' })
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables).to eq([])
           end
         end
 
@@ -445,11 +445,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to be_nil
+            expect(subject.workflow_rules).to be_nil
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables)
               .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
           end
         end
@@ -463,11 +463,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to be_nil
+            expect(subject.workflow_rules).to be_nil
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables).to eq([])
           end
         end
       end

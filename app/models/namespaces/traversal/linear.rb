@@ -38,13 +38,29 @@ module Namespaces
     module Linear
       extend ActiveSupport::Concern
 
+      UnboundedSearch = Class.new(StandardError)
+
       included do
         after_create :sync_traversal_ids, if: -> { sync_traversal_ids? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
+
+        scope :traversal_ids_contains, ->(ids) { where("traversal_ids @> (?)", ids) }
       end
 
       def sync_traversal_ids?
         Feature.enabled?(:sync_traversal_ids, root_ancestor, default_enabled: :yaml)
+      end
+
+      def use_traversal_ids?
+        Feature.enabled?(:use_traversal_ids, root_ancestor, default_enabled: :yaml)
+      end
+
+      def self_and_descendants
+        if use_traversal_ids?
+          lineage(self)
+        else
+          super
+        end
       end
 
       private
@@ -57,6 +73,38 @@ module Namespaces
         clear_memoization(:root_ancestor)
 
         Namespace::TraversalHierarchy.for_namespace(root_ancestor).sync_traversal_ids!
+      end
+
+      # Make sure we drop the STI `type = 'Group'` condition for better performance.
+      # Logically equivalent so long as hierarchies remain homogeneous.
+      def without_sti_condition
+        self.class.unscope(where: :type)
+      end
+
+      # Search this namespace's lineage. Bound inclusively by top node.
+      def lineage(top)
+        raise UnboundedSearch.new('Must bound search by a top') unless top
+
+        without_sti_condition
+          .traversal_ids_contains(latest_traversal_ids(top))
+      end
+
+      # traversal_ids are a cached value.
+      #
+      # The traversal_ids value in a loaded object can become stale when compared
+      # to the database value. For example, if you load a hierarchy and then move
+      # a group, any previously loaded descendant objects will have out of date
+      # traversal_ids.
+      #
+      # To solve this problem, we never depend on the object's traversal_ids
+      # value. We always query the database first with a sub-select for the
+      # latest traversal_ids.
+      #
+      # Note that ActiveRecord will cache query results. You can avoid this by
+      # using `Model.uncached { ... }`
+      def latest_traversal_ids(namespace = self)
+        without_sti_condition.where('id = (?)', namespace)
+                .select('traversal_ids as latest_traversal_ids')
       end
     end
   end

@@ -13,6 +13,8 @@ module API
 
     feature_category :projects, ['/projects/:id/custom_attributes', '/projects/:id/custom_attributes/:key']
 
+    PROJECT_ATTACHMENT_SIZE_EXEMPT = 1.gigabyte
+
     helpers do
       # EE::API::Projects would override this method
       def apply_filters(projects)
@@ -51,6 +53,19 @@ module API
         end
 
         accepted!
+      end
+
+      def exempt_from_global_attachment_size?(user_project)
+        list = ::Gitlab::RackAttack::UserAllowlist.new(ENV['GITLAB_UPLOAD_API_ALLOWLIST'])
+        list.include?(user_project.id)
+      end
+
+      # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
+      def project_attachment_size(user_project)
+        return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
+        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project)
+
+        PROJECT_ATTACHMENT_SIZE_EXEMPT
       end
     end
 
@@ -545,13 +560,25 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Workhorse authorize the file upload' do
+        detail 'This feature was introduced in GitLab 13.11'
+      end
+      post ':id/uploads/authorize', feature_category: :not_owned do
+        require_gitlab_workhorse!
+
+        status 200
+        content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+        FileUploader.workhorse_authorize(has_length: false, maximum_size: project_attachment_size(user_project))
+      end
+
       desc 'Upload a file'
       params do
-        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-        requires :file, type: File, desc: 'The file to be uploaded' # rubocop:disable Scalability/FileUploads
+        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
       end
       post ":id/uploads", feature_category: :not_owned do
-        upload = UploadService.new(user_project, params[:file]).execute
+        service = UploadService.new(user_project, params[:file])
+        service.override_max_attachment_size = project_attachment_size(user_project)
+        upload = service.execute
 
         present upload, with: Entities::ProjectUpload
       end

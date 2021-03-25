@@ -11,8 +11,9 @@ module Gitlab
 
           delegate :dig, to: :@seed_attributes
 
-          def initialize(pipeline, attributes, previous_stages)
-            @pipeline = pipeline
+          def initialize(context, attributes, previous_stages)
+            @context = context
+            @pipeline = context.pipeline
             @seed_attributes = attributes
             @previous_stages = previous_stages
             @needs_attributes = dig(:needs_attributes)
@@ -29,7 +30,7 @@ module Gitlab
             @rules = Gitlab::Ci::Build::Rules
               .new(attributes.delete(:rules), default_when: 'on_success')
             @cache = Gitlab::Ci::Build::Cache
-              .new(attributes.delete(:cache), pipeline)
+              .new(attributes.delete(:cache), @pipeline)
           end
 
           def name

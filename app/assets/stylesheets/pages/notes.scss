@@ -771,6 +771,26 @@ $system-note-svg-size: 16px;
   }
 }
 
+.unified-diff-components-diff-note-button {
+  &::before {
+    background-color: $blue-500;
+    mask-image: asset_url('icons-stacked.svg#comment');
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    mask-position: center;
+    content: '';
+    width: 12px;
+    height: 12px;
+  }
+
+  &:hover,
+  &.inverted {
+    &::before {
+      background-color: $white;
+    }
+  }
+}
+
 .disabled-comment {
   background-color: $gray-light;
   border-radius: $border-radius-base;

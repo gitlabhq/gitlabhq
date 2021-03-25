@@ -38,11 +38,12 @@ module Gitlab
             .map { |job| build_attributes(job[:name]) }
         end
 
-        def workflow_attributes
-          {
-            rules: hash_config.dig(:workflow, :rules),
-            yaml_variables: transform_to_yaml_variables(variables)
-          }
+        def workflow_rules
+          @workflow_rules ||= hash_config.dig(:workflow, :rules)
+        end
+
+        def root_variables
+          @root_variables ||= transform_to_yaml_variables(variables)
         end
 
         def jobs

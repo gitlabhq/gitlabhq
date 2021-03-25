@@ -102,7 +102,10 @@ RSpec.describe PostReceive do
 
         perform
 
-        expect_snowplow_event(category: 'empty_repo_upload', action: 'initial_write', context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', data: anything }])
+        expect_snowplow_event(category: 'empty_repo_upload', action: 'initial_write', context: [{
+          schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+          data: anything
+        }])
       end
 
       it 'does not track an event for the empty_repo_upload experiment when project is not empty', :snowplow do

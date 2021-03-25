@@ -77,15 +77,30 @@ class JenkinsService < CiService
   def fields
     [
       {
-        type: 'text', name: 'jenkins_url',
+        type: 'text',
+        name: 'jenkins_url',
+        title: s_('ProjectService|Jenkins URL'),
+        required: true,
         placeholder: 'Jenkins URL like http://jenkins.example.com'
       },
       {
-        type: 'text', name: 'project_name', placeholder: 'Project Name',
+        type: 'text',
+        name: 'project_name',
+        required: true,
+        placeholder: 'Project Name',
         help: 'The URL-friendly project name. Example: my_project_name'
       },
-      { type: 'text', name: 'username' },
-      { type: 'password', name: 'password' }
+      {
+        type: 'text',
+        name: 'username',
+        required: true
+      },
+      {
+        type: 'password',
+        name: 'password',
+        non_empty_password_title: s_('ProjectService|Enter new password'),
+        non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
+      }
     ]
   end
 end

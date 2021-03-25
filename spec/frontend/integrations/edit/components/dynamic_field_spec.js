@@ -192,17 +192,6 @@ describe('DynamicField', () => {
 
         expect(findGlFormGroup().find('label').text()).toBe(defaultProps.title);
       });
-
-      describe('for password field with some value (hidden by backend)', () => {
-        it('renders label with new password title', () => {
-          createComponent({
-            type: 'password',
-            value: 'true',
-          });
-
-          expect(findGlFormGroup().find('label').text()).toBe(`Enter new ${defaultProps.title}`);
-        });
-      });
     });
 
     describe('validations', () => {

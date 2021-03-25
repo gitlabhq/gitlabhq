@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class UploadService
+  # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
+  attr_accessor :override_max_attachment_size
+
   def initialize(model, file, uploader_class = FileUploader, **uploader_context)
     @model, @file, @uploader_class, @uploader_context = model, file, uploader_class, uploader_context
   end
@@ -19,6 +22,6 @@ class UploadService
   attr_reader :model, :file, :uploader_class, :uploader_context
 
   def max_attachment_size
-    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
+    override_max_attachment_size || Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 end
