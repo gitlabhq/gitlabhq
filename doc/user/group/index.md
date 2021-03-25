@@ -467,7 +467,7 @@ You should consider these security implications before configuring IP address re
   they cause SSH requests, including Git operations over SSH, to fail. For more information,
   read [issue 271673](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
 - **Administrators and group owners**: Users with these permission levels can always
-  access the group settings, regardless of IP restriction, but the can't access projects
+  access the group settings, regardless of IP restriction, but they cannot access projects
   belonging to the group when accessing from a disallowed IP address.
 
 To restrict group access by IP address:

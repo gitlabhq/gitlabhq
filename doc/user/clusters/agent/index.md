@@ -304,7 +304,7 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
     `kas-address`, where `GitLab.host.tld` is your GitLab hostname.
   - When using the sub-chart, specify the `ws` scheme (such as `ws://kas.host.tld:80`)
     to use an unencrypted WebSockets connection.
-    When using the Omnibus GitLab, specify the `ws` scheme (such as `ws://GitLab.host.tld:80/-/kubernetes-agent`).
+    When using the Omnibus GitLab, specify the `ws` scheme (such as `ws://GitLab.host.tld:80/-/kubernetes-agent/`).
   - Specify the `grpc` scheme if both Agent and Server are installed in one cluster.
     In this case, you may specify `kas-address` value as
     `grpc://gitlab-kas.<your-namespace>:5005`) to use gRPC directly, where `gitlab-kas`
@@ -316,7 +316,7 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
   - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the `kas-address` for `wss` and `ws` schemes to whatever you need.
     Check the [chart's KAS Ingress documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#ingress)
     to learn more about it.
-  - In the near future, Omnibus GitLab intends to provision `gitlab-kas` under a sub-domain by default, instead of the `/-/kubernetes-agent` path. Please follow [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5784) for details.
+  - In the near future, Omnibus GitLab intends to provision `gitlab-kas` under a sub-domain by default, instead of the `/-/kubernetes-agent/` path. Please follow [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5784) for details.
 - If you defined your own secret name, replace `gitlab-agent-token` with your
   secret name in the `secretName:` section.
 
@@ -652,7 +652,7 @@ Then in `resources.yml`:
         - --token-file=/config/token
         - --kas-address
         - wss://kas.host.tld:443 # change this line for the one below if using Omnibus GitLab
-        # - wss://gitlab.host.tld:443/-/kubernetes-agent
+        # - wss://gitlab.host.tld:443/-/kubernetes-agent/
         volumeMounts:
         - name: token-volume
           mountPath: /config
@@ -683,7 +683,7 @@ Alternatively, you can mount the certificate file at a different location and in
         - --token-file=/config/token
         - --kas-address
         - wss://kas.host.tld:443 # change this line for the one below if using Omnibus GitLab
-        # - wss://gitlab.host.tld:443/-/kubernetes-agent
+        # - wss://gitlab.host.tld:443/-/kubernetes-agent/
         volumeMounts:
         - name: token-volume
           mountPath: /config

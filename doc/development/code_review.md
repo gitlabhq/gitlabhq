@@ -188,8 +188,7 @@ Avoid:
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
 through Slack). If you can't assign a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases assigning the merge request is sufficient.
 
-This
-[saves reviewers time and helps authors catch mistakes earlier](https://www.ibm.com/developerworks/rational/library/11-proven-practices-for-peer-review/index.html#__RefHeading__97_174136755).
+This saves reviewers time and helps authors catch mistakes earlier.
 
 ### The responsibility of the reviewer
 

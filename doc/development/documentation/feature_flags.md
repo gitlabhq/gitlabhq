@@ -20,7 +20,7 @@ must be documented. For context, see the
 
 ## Criteria
 
-According to the process of [deploying GitLab features behind feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle):
+According to the process of [deploying GitLab features behind feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/):
 
 > - _By default, feature flags should be off._
 > - _Feature flags should remain in the codebase for a short period as possible to reduce the need for feature flag accounting._

@@ -71,12 +71,12 @@ best place to integrate your own product and its results into GitLab.
 This section describes the steps you need to complete to onboard as a partner
 and complete an integration with the Secure stage.
 
-1. Read about our [partnerships](https://about.gitlab.com/partners/integrate/).
+1. Read about our [partnerships](https://about.gitlab.com/partners/technology-partners/integrate/).
 1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)
    using our new partner issue template to begin the discussion.
 1. Get a test account to begin developing your integration. You can
-   request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/integrate/#gitlabcom-subscription-sandbox-request)
-   or an [EE Developer License](https://about.gitlab.com/partners/integrate/#requesting-ee-dev-license-for-rd).
+   request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/technology-partners/integrate/#gitlabcom-subscription-sandbox-request)
+   or an [EE Developer License](https://about.gitlab.com/partners/technology-partners/integrate/#requesting-ultimate-dev-license-for-rd).
 1. Provide a [pipeline job](../../development/pipelines.md)
    template that users could integrate into their own GitLab pipelines.
 1. Create a report artifact with your pipeline jobs.
@@ -105,10 +105,10 @@ and complete an integration with the Secure stage.
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please
-     [reach out](https://about.gitlab.com/partners/integrate/) to us. If you
+     [reach out](https://about.gitlab.com/partners/technology-partners/integrate/) to us. If you
      skip this step you won't be able to do supported marketing.
 1. Begin doing supported marketing of your GitLab integration.
-   - Work with our [partner team](https://about.gitlab.com/partners/integrate/)
+   - Work with our [partner team](https://about.gitlab.com/partners/technology-partners/integrate/)
      to support your go-to-market as appropriate.
    - Examples of supported marketing could include being listed on our [Security Partner page](https://about.gitlab.com/partners/#security),
      doing an [Unfiltered blog post](https://about.gitlab.com/handbook/marketing/blog/unfiltered/),

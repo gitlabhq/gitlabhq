@@ -43,12 +43,8 @@ can help you learn how to integrate Vue Apollo.
 
 For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
 
-<!-- vale gitlab.Spelling = NO -->
-
-We use [Immer](https://immerjs.github.io/immer/docs/introduction) for immutable cache updates;
+We use [Immer](https://immerjs.github.io/immer/) for immutable cache updates;
 see [Immutability and cache updates](#immutability-and-cache-updates) for more information.
-
-<!-- vale gitlab.Spelling = YES -->
 
 ### Tooling
 
@@ -173,13 +169,9 @@ const primaryKeyId = getIdFromGraphQLId(data.id);
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
 with a **new and updated** object.
 
-<!-- vale gitlab.Spelling = NO -->
-
 To facilitate the process of updating the cache and returning the new object we
-use the library [Immer](https://immerjs.github.io/immer/docs/introduction).
+use the library [Immer](https://immerjs.github.io/immer/).
 When possible, follow these conventions:
-
-<!-- vale gitlab.Spelling = YES -->
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
