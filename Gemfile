@@ -233,9 +233,6 @@ gem 'redis-rails', '~> 5.0.2'
 # Discord integration
 gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
 
-# HipChat integration
-gem 'hipchat', '~> 1.5.0'
-
 # Jira integration
 gem 'jira-ruby', '~> 2.1.4'
 gem 'atlassian-jwt', '~> 0.2.0'
@@ -272,7 +269,10 @@ gem 'licensee', '~> 8.9'
 gem 'charlock_holmes', '~> 0.7.7'
 
 # Detect mime content type from content
-gem 'mimemagic', '~> 0.3.2'
+gem 'ruby-magic-static', '~> 0.3.4'
+
+# Fake version of the gem to trick bundler
+gem 'mimemagic', '0.3.7', path: 'vendor/shims/mimemagic', require: false
 
 # Faster blank
 gem 'fast_blank'

@@ -13,7 +13,6 @@ end
 # @param mime_type [String] mime type to forcibly detect.
 RSpec.shared_context 'force content type detection to mime_type' do
   before do
-    magic_mime_obj = MimeMagic.new(mime_type)
-    allow(MimeMagic).to receive(:by_magic).with(anything).and_return(magic_mime_obj)
+    allow(Gitlab::Utils::MimeType).to receive(:from_io).and_return(mime_type)
   end
 end

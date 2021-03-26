@@ -4,7 +4,12 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Atlassian HipChat
+# Atlassian HipChat (Deprecated) **(FREE)**
+
+As of [GitLab
+13.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57434), the
+HipChat integration will not send any notifications to HipChat. This
+integration is also deprecated.
 
 GitLab provides a way to send HipChat notifications upon a number of events,
 such as when a user pushes code, creates a branch or tag, adds a comment, and
