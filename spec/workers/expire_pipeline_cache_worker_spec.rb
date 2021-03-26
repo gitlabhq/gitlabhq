@@ -18,6 +18,23 @@ RSpec.describe ExpirePipelineCacheWorker do
       subject.perform(pipeline.id)
     end
 
+    it 'does not perform extra queries', :aggregate_failures do
+      recorder = ActiveRecord::QueryRecorder.new { subject.perform(pipeline.id) }
+
+      project_queries = recorder.data.values.flat_map {|v| v[:occurrences]}.select {|s| s.include?('FROM "projects"')}
+      namespace_queries = recorder.data.values.flat_map {|v| v[:occurrences]}.select {|s| s.include?('FROM "namespaces"')}
+      route_queries = recorder.data.values.flat_map {|v| v[:occurrences]}.select {|s| s.include?('FROM "routes"')}
+
+      # This worker is run 1 million times an hour, so we need to save as much
+      # queries as possible.
+      expect(recorder.count).to be <= 6
+
+      # These arises from #update_etag_cache
+      expect(project_queries.size).to eq(1)
+      expect(namespace_queries.size).to eq(1)
+      expect(route_queries.size).to eq(1)
+    end
+
     it "doesn't do anything if the pipeline not exist" do
       expect_any_instance_of(Ci::ExpirePipelineCacheService).not_to receive(:execute)
       expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)

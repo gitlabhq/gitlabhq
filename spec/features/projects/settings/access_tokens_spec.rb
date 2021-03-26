@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Project > Settings > Access Tokens', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
 
   before_all do
     project.add_maintainer(user)
@@ -56,6 +57,18 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       expect(active_project_access_tokens).to have_text('api')
       expect(active_project_access_tokens).to have_text('read_api')
       expect(created_project_access_token).not_to be_empty
+    end
+
+    context 'when token creation is not allowed' do
+      before do
+        group.namespace_settings.update_column(:resource_access_token_creation_allowed, false)
+      end
+
+      it 'does not show project access token creation form' do
+        visit project_settings_access_tokens_path(project)
+
+        expect(page).not_to have_selector('.new_project_access_token')
+      end
     end
   end
 

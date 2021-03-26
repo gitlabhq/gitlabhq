@@ -13,6 +13,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Publish [Composer](https://getcomposer.org/) packages in your project's Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
 
+For documentation of the specific API endpoints that the Composer
+client uses, see the [Composer API documentation](../../../api/packages/composer.md).
+
 ## Create a Composer package
 
 If you do not have a Composer package, create one and check it in to

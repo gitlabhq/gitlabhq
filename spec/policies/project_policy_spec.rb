@@ -511,7 +511,7 @@ RSpec.describe ProjectPolicy do
         project.add_maintainer(project_bot)
       end
 
-      it { is_expected.not_to be_allowed(:admin_resource_access_tokens)}
+      it { is_expected.not_to be_allowed(:create_resource_access_tokens)}
     end
   end
 

@@ -14681,6 +14681,7 @@ CREATE TABLE namespace_settings (
     default_branch_name text,
     repository_read_only boolean DEFAULT false NOT NULL,
     delayed_project_removal boolean DEFAULT false NOT NULL,
+    resource_access_token_creation_allowed boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 

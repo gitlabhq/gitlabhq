@@ -407,7 +407,7 @@
                 = link_to project_hooks_path(@project), title: _('Webhooks'), data: { qa_selector: 'webhooks_settings_link' } do
                   %span
                     = _('Webhooks')
-              - if project_access_token_available?(@project)
+              - if can?(current_user, :read_resource_access_tokens, @project)
                 = nav_link(controller: [:access_tokens]) do
                   = link_to project_settings_access_tokens_path(@project), title: _('Access Tokens'), data: { qa_selector: 'access_tokens_settings_link' } do
                     %span

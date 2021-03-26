@@ -18,6 +18,9 @@ The Package Registry works with:
 - [.NET Core CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/)
 - [Visual Studio](https://visualstudio.microsoft.com/vs/)
 
+For documentation of the specific API endpoints that these
+clients use, see the [NuGet API documentation](../../../api/packages/nuget.md).
+
 ## Install NuGet
 
 The required minimum versions are:

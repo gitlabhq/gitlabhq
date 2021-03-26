@@ -20,12 +20,13 @@
           type: type,
           new_token_value: @new_project_access_token
 
-    = render 'shared/access_tokens/form',
-        type: type,
-        path: project_settings_access_tokens_path(@project),
-        token: @project_access_token,
-        scopes: @scopes,
-        prefix: :project_access_token
+    - if current_user.can?(:create_resource_access_tokens, @project)
+      = render 'shared/access_tokens/form',
+          type: type,
+          path: project_settings_access_tokens_path(@project),
+          token: @project_access_token,
+          scopes: @scopes,
+          prefix: :project_access_token
 
     = render 'shared/access_tokens/table',
         active_tokens: @active_project_access_tokens,

@@ -809,10 +809,6 @@ module ProjectsHelper
       can?(current_user, :destroy_container_image, project)
   end
 
-  def project_access_token_available?(project)
-    can?(current_user, :admin_resource_access_tokens, project)
-  end
-
   def build_project_breadcrumb_link(project)
     project_name = simple_sanitize(project.name)
 
