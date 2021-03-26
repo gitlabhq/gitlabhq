@@ -328,6 +328,7 @@ export default {
 
       <div
         class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag gl-text-gray-500"
+        data-testid="issue-count-badge"
         :class="{
           'gl-display-none!': list.collapsed && isSwimlanesHeader,
           'gl-p-0': list.collapsed,

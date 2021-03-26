@@ -14,6 +14,7 @@ RSpec.describe 'Issue Boards add issue modal', :js do
   let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
+    stub_feature_flags(graphql_board_lists: false)
     project.add_maintainer(user)
 
     sign_in(user)

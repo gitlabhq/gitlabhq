@@ -327,8 +327,8 @@ export default {
     commit(types.RESET_ISSUES);
   },
 
-  moveItem: ({ dispatch }) => {
-    dispatch('moveIssue');
+  moveItem: ({ dispatch }, payload) => {
+    dispatch('moveIssue', payload);
   },
 
   moveIssue: (

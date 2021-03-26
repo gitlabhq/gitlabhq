@@ -21,7 +21,8 @@ RSpec.describe 'Sub-group project issue boards', :js do
     wait_for_requests
   end
 
-  it 'creates new label from sidebar' do
+  # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/324290
+  xit 'creates new label from sidebar' do
     find('.board-card').click
 
     page.within '.labels' do

@@ -15,6 +15,8 @@ RSpec.describe 'Project issue boards sidebar time tracking', :js do
   let(:application_settings) { {} }
 
   before do
+    stub_feature_flags(graphql_board_lists: false)
+
     project.add_maintainer(user)
 
     sign_in(user)

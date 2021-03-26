@@ -12,6 +12,8 @@ RSpec.describe 'Issue Boards add issue modal filtering', :js do
   let!(:issue1) { create(:issue, project: project) }
 
   before do
+    stub_feature_flags(graphql_board_lists: false)
+    stub_feature_flags(add_issues_button: true)
     project.add_maintainer(user)
 
     sign_in(user)

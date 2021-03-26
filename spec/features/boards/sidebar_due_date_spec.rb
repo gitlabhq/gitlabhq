@@ -17,6 +17,8 @@ RSpec.describe 'Project issue boards sidebar due date', :js do
   end
 
   before do
+    stub_feature_flags(graphql_board_lists: false)
+
     project.add_maintainer(user)
 
     sign_in(user)

@@ -9914,7 +9914,7 @@ Counts of MAU adding epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210314215451_g_project_management_users_creating_epic_notes_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9926,7 +9926,7 @@ Counts of WAU adding epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210314231518_g_project_management_users_creating_epic_notes_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9938,7 +9938,7 @@ Counts of MAU destroying epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210315034808_g_project_management_users_destroying_epic_notes_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9950,7 +9950,7 @@ Counts of WAU destroying epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210315034846_g_project_management_users_destroying_epic_notes_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9962,7 +9962,7 @@ Counts of MAU setting epic start date as fixed
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210315055624_g_project_management_users_setting_epic_start_date_as_fixed_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9974,7 +9974,7 @@ Counts of WAU setting epic start date as fixed
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210315054905_g_project_management_users_setting_epic_start_date_as_fixed_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9986,7 +9986,7 @@ Counts of MAU setting epic start date as inherited
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210315055439_g_project_management_users_setting_epic_start_date_as_inherited_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -9998,7 +9998,7 @@ Counts of WAU setting epic start date as inherited
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210315055342_g_project_management_users_setting_epic_start_date_as_inherited_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10010,7 +10010,7 @@ Counts of MAU changing epic descriptions
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210312102051_g_project_management_users_updating_epic_descriptions_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10022,7 +10022,7 @@ Counts of WAU changing epic descriptions
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312101753_g_project_management_users_updating_epic_descriptions_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10034,7 +10034,7 @@ Counts of MAU updating epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210314234202_g_project_management_users_updating_epic_notes_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10046,7 +10046,7 @@ Counts of WAU updating epic notes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210314234041_g_project_management_users_updating_epic_notes_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10058,7 +10058,7 @@ Counts of MAU changing epic titles
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210312101935_g_project_management_users_updating_epic_titles_monthly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 
@@ -10070,7 +10070,7 @@ Counts of WAU changing epic titles
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312101826_g_project_management_users_updating_epic_titles_weekly.yml)
 
-Group: `group:product planning`
+Group: `group::product planning`
 
 Status: `implemented`
 

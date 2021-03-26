@@ -16,6 +16,8 @@ RSpec.describe 'Project issue boards sidebar subscription', :js do
   let(:card2)              { find('.board:nth-child(1) .board-card:nth-of-type(2)') }
 
   before do
+    stub_feature_flags(graphql_board_lists: false)
+
     project.add_maintainer(user)
 
     sign_in(user)

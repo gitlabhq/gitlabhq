@@ -41,6 +41,10 @@ RSpec.describe 'Multi Select Issue', :js do
   before do
     project.add_maintainer(user)
 
+    # multi-drag disabled with feature flag for now
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/289797
+    stub_feature_flags(graphql_board_lists: false)
+
     sign_in(user)
   end
 

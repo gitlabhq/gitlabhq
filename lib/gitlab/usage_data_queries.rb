@@ -5,11 +5,11 @@ module Gitlab
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41091
   class UsageDataQueries < UsageData
     class << self
-      def count(relation, column = nil, *rest)
+      def count(relation, column = nil, *args, **kwargs)
         raw_sql(relation, column)
       end
 
-      def distinct_count(relation, column = nil, *rest)
+      def distinct_count(relation, column = nil, *args, **kwargs)
         raw_sql(relation, column, :distinct)
       end
 
@@ -21,14 +21,14 @@ module Gitlab
         end
       end
 
-      def sum(relation, column, *rest)
+      def sum(relation, column, *args, **kwargs)
         relation.select(relation.all.table[column].sum).to_sql
       end
 
       # For estimated distinct count use exact query instead of hll
       # buckets query, because it can't be used to obtain estimations without
       # supplementary ruby code present in Gitlab::Database::PostgresHll::BatchDistinctCounter
-      def estimate_batch_distinct_count(relation, column = nil, *rest)
+      def estimate_batch_distinct_count(relation, column = nil, *args, **kwargs)
         raw_sql(relation, column, :distinct)
       end
 

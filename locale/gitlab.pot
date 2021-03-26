@@ -8707,6 +8707,9 @@ msgstr ""
 msgid "Could not find iteration"
 msgstr ""
 
+msgid "Could not get the data properly"
+msgstr ""
+
 msgid "Could not load the user chart. Please refresh the page to try again."
 msgstr ""
 
@@ -23054,6 +23057,9 @@ msgid "Please solve the captcha"
 msgstr ""
 
 msgid "Please try again"
+msgstr ""
+
+msgid "Please try and refresh the page. If the problem persists please contact support."
 msgstr ""
 
 msgid "Please type %{phrase_code} to proceed or close this modal to cancel."

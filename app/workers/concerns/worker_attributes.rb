@@ -11,6 +11,8 @@ module WorkerAttributes
   # Urgencies that workers can declare through the `urgencies` attribute
   VALID_URGENCIES = [:high, :low, :throttled].freeze
 
+  VALID_DATA_CONSISTENCIES = [:always, :sticky, :delayed].freeze
+
   NAMESPACE_WEIGHTS = {
     auto_devops: 2,
     auto_merge: 3,
@@ -69,6 +71,35 @@ module WorkerAttributes
       class_attributes[:urgency] || :low
     end
 
+    def data_consistency(data_consistency, feature_flag: nil)
+      raise ArgumentError, "Invalid data consistency: #{data_consistency}" unless VALID_DATA_CONSISTENCIES.include?(data_consistency)
+      raise ArgumentError, 'Data consistency is already set' if class_attributes[:data_consistency]
+
+      class_attributes[:data_consistency_feature_flag] = feature_flag if feature_flag
+      class_attributes[:data_consistency] = data_consistency
+
+      validate_worker_attributes!
+    end
+
+    def validate_worker_attributes!
+      # Since the deduplication should always take into account the latest binary replication pointer into account,
+      # not the first one, the deduplication will not work with sticky or delayed.
+      # Follow up issue to improve this: https://gitlab.com/gitlab-org/gitlab/-/issues/325291
+      if idempotent? && get_data_consistency != :always
+        raise ArgumentError, "Class can't be marked as idempotent if data_consistency is not set to :always"
+      end
+    end
+
+    def get_data_consistency
+      class_attributes[:data_consistency] || :always
+    end
+
+    def get_data_consistency_feature_flag_enabled?
+      return true unless class_attributes[:data_consistency_feature_flag]
+
+      Feature.enabled?(class_attributes[:data_consistency_feature_flag], default_enabled: :yaml)
+    end
+
     # Set this attribute on a job when it will call to services outside of the
     # application, such as 3rd party applications, other k8s clusters etc See
     # doc/development/sidekiq_style_guide.md#jobs-with-external-dependencies for
@@ -96,6 +127,8 @@ module WorkerAttributes
 
     def idempotent!
       class_attributes[:idempotent] = true
+
+      validate_worker_attributes!
     end
 
     def idempotent?

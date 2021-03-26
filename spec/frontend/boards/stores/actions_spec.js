@@ -639,10 +639,13 @@ describe('resetIssues', () => {
 });
 
 describe('moveItem', () => {
-  it('should dispatch moveIssue action', () => {
+  it('should dispatch moveIssue action with payload', () => {
+    const payload = { mock: 'payload' };
+
     testAction({
       action: actions.moveItem,
-      expectedActions: [{ type: 'moveIssue' }],
+      payload,
+      expectedActions: [{ type: 'moveIssue', payload }],
     });
   });
 });

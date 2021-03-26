@@ -43,7 +43,7 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js do
         issue = project.issues.find_by_title('issue should be shown')
 
         expect(page).to have_content(issue.to_reference)
-        expect(page).to have_link(issue.title, href: issue_path(issue))
+        expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)
       end
     end
   end
