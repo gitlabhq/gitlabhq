@@ -226,10 +226,10 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw_trace_content_disposition(raw_data)
-    mime_type = MimeMagic.by_magic(raw_data)
+    mime_type = Gitlab::Utils::MimeType.from_string(raw_data)
 
     # if mime_type is nil can also represent 'text/plain'
-    return 'inline' if mime_type.nil? || mime_type.type == 'text/plain'
+    return 'inline' if mime_type.nil? || mime_type == 'text/plain'
 
     'attachment'
   end
