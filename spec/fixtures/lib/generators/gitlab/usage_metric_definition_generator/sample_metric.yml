@@ -1,0 +1,21 @@
+---
+# See Usage Ping metrics dictionary docs https://docs.gitlab.com/ee/development/usage_ping/metrics_dictionary.html
+key_path: counts_weekly.test_metric
+description:
+product_section:
+product_stage:
+product_group:
+product_category:
+value_type: number
+status: implemented
+milestone: "13.9"
+introduced_by_url:
+time_frame: 7d
+data_source:
+distribution:
+- ce
+# Add here corresponding tiers
+# tier:
+# - free
+# - premium
+# - ultimate

@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import ActionComponent from '~/pipelines/components/graph/action_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
 
 const mockJob = {
   id: 4250,
@@ -24,7 +24,7 @@ const mockJob = {
 const mockGroups = Array(4)
   .fill(0)
   .map((item, idx) => {
-    return { ...mockJob, id: idx, name: `fish-${idx}` };
+    return { ...mockJob, jobs: [mockJob], id: idx, name: `fish-${idx}` };
   });
 
 const defaultProps = {
@@ -104,13 +104,19 @@ describe('stage column component', () => {
           props: {
             groups: [
               {
-                id: 4259,
+                ...mockJob,
                 name: '<img src=x onerror=alert(document.domain)>',
-                status: {
-                  icon: 'status_success',
-                  label: 'success',
-                  tooltip: '<img src=x onerror=alert(document.domain)>',
-                },
+                jobs: [
+                  {
+                    id: 4259,
+                    name: '<img src=x onerror=alert(document.domain)>',
+                    status: {
+                      icon: 'status_success',
+                      label: 'success',
+                      tooltip: '<img src=x onerror=alert(document.domain)>',
+                    },
+                  },
+                ],
               },
             ],
             title: 'test <img src=x onerror=alert(document.domain)>',
@@ -159,6 +165,7 @@ describe('stage column component', () => {
                 label: 'success',
                 tooltip: '<img src=x onerror=alert(document.domain)>',
               },
+              jobs: [mockJob],
             },
           ],
           title: 'test',
@@ -191,6 +198,7 @@ describe('stage column component', () => {
                 label: 'success',
                 tooltip: '<img src=x onerror=alert(document.domain)>',
               },
+              jobs: [mockJob],
             },
           ],
           title: 'test',

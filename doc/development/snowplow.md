@@ -126,17 +126,17 @@ GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tra
 
 ### Tracking in HAML (or Vue Templates)
 
-When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-event` attribute automatically have event tracking bound on clicks.
+When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-action` attribute automatically have event tracking bound on clicks.
 
 Below is an example of `data-track-*` attributes assigned to a button:
 
 ```haml
-%button.btn{ data: { track: { event: "click_button", label: "template_preview", property: "my-template" } } }
+%button.btn{ data: { track: { action: "click_button", label: "template_preview", property: "my-template" } } }
 ```
 
 ```html
 <button class="btn"
-  data-track-event="click_button"
+  data-track-action="click_button"
   data-track-label="template_preview"
   data-track-property="my-template"
 />
@@ -148,7 +148,7 @@ Below is a list of supported `data-track-*` attributes:
 
 | attribute             | required | description |
 |:----------------------|:---------|:------------|
-| `data-track-event`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. |
+| `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
 | `data-track-label`    | false    | The `label` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 | `data-track-property` | false    | The `property` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 | `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
@@ -159,11 +159,11 @@ Below is a list of supported `data-track-*` attributes:
 When using the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/898b286de322e5df6a38d257b10c94974d580df8/app/helpers/tab_helper.rb#L69) be sure to wrap `html_options` under the `html_options` keyword argument.
 Be careful, as this behavior can be confused with the `ActionView` helper method [`link_to`](https://api.rubyonrails.org/v5.2.3/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to) that does not require additional wrapping of `html_options`
 
-`nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { data: { track_label: "groups_dropdown", track_event: "click_dropdown" } })`
+`nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { data: { track_label: "groups_dropdown", track_action: "click_dropdown" } })`
 
 vs
 
-`link_to assigned_issues_dashboard_path, title: _('Issues'), data: { track_label: 'main_navigation', track_event: 'click_issues_link' }`
+`link_to assigned_issues_dashboard_path, title: _('Issues'), data: { track_label: 'main_navigation', track_action: 'click_issues_link' }`
 
 ### Tracking within Vue components
 

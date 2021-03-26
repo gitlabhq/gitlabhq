@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
-import { reportToSentry } from './utils';
+import { reportToSentry } from '../../utils';
 
 /**
  * Renders either a cancel, retry or play icon button and handles the post request

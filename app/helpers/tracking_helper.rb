@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module TrackingHelper
-  def tracking_attrs(label, event, property)
+  def tracking_attrs(label, action, property)
     return {} unless tracking_enabled?
 
     {
       data: {
         track_label: label,
-        track_event: event,
+        track_action: action,
         track_property: property
       }
     }

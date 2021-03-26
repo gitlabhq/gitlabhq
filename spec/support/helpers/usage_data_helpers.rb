@@ -242,4 +242,12 @@ module UsageDataHelpers
       end
     end
   end
+
+  def load_sample_metric_definition(filename: 'sample_metric.yml')
+    load_metric_yaml(fixture_file("lib/generators/gitlab/usage_metric_definition_generator/#{filename}"))
+  end
+
+  def load_metric_yaml(data)
+    ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
+  end
 end

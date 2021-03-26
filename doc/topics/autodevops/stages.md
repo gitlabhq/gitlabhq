@@ -137,8 +137,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab](https://about.gitlab.com/pricing/) 9.3.
-> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
@@ -165,7 +164,7 @@ see the documentation.
 
 ## Auto Secret Detection
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - Introduced in GitLab Ultimate 13.1.
 > - [Select functionality made available in all tiers](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in 13.3
 
 Secret Detection uses the
@@ -178,8 +177,6 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 To learn more, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
 ## Auto Dependency Scanning **(ULTIMATE)**
-
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
 Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
 The Auto Dependency Scanning stage is skipped on licenses other than
@@ -195,7 +192,7 @@ see the documentation.
 
 ## Auto License Compliance **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
+> Introduced in GitLab Ultimate 11.0.
 
 License Compliance uses the
 [License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
@@ -210,8 +207,6 @@ To learn more about
 documentation.
 
 ## Auto Container Scanning **(ULTIMATE)**
-
-> Introduced in GitLab 10.4.
 
 Vulnerability Static Analysis for containers uses [Clair](https://github.com/quay/clair)
 to check for potential security issues on Docker images. The Auto Container Scanning
@@ -262,8 +257,6 @@ and want to undo it by deploying again, Helm may not detect that anything change
 in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ## Auto DAST **(ULTIMATE)**
-
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 Dynamic Application Security Testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
@@ -422,10 +415,10 @@ including support for `Deployment` in the `extensions/v1beta1` version.
 
 To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
-1. If you are deploying your application for the first time on GitLab 13.0 or
+1. If you are deploying your application for the first time in GitLab 13.0 or
    newer, no configuration should be required.
 
-1. On GitLab 12.10 or older, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
+1. In GitLab 12.10 or older, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
    ```yaml
    deploymentApiVersion: apps/v1
@@ -439,7 +432,7 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
    GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.
 
 WARNING:
-On GitLab 12.9 and 12.10, opting into
+In GitLab 12.9 and 12.10, opting into
 `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes the version `1` PostgreSQL
 database. Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
 to back up and restore your database before opting into version `2` (On

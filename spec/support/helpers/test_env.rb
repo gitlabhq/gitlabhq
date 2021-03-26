@@ -175,7 +175,7 @@ module TestEnv
           { 'default' => repos_path },
           force: true,
           options: {
-            prometheus_listen_addr: ':9236'
+            prometheus_listen_addr: 'localhost:9236'
           }
         )
         Gitlab::SetupHelper::Gitaly.create_configuration(

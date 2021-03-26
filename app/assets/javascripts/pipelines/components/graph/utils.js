@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { unwrapStagesWithNeeds } from '../unwrapping_utils';
@@ -22,13 +21,6 @@ const getQueryHeaders = (etagResource) => {
       'X-Requested-With': 'XMLHttpRequest',
     },
   };
-};
-
-const reportToSentry = (component, failureType) => {
-  Sentry.withScope((scope) => {
-    scope.setTag('component', component);
-    Sentry.captureException(failureType);
-  });
 };
 
 const serializeGqlErr = (gqlError) => {
@@ -113,7 +105,6 @@ const validateConfigPaths = (value) => value.graphqlResourceEtag?.length > 0;
 
 export {
   getQueryHeaders,
-  reportToSentry,
   serializeGqlErr,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GRAPHQL } from './components/graph/constants';
 import PipelineGraphWrapper from './components/graph/graph_component_wrapper.vue';
-import { reportToSentry } from './components/graph/utils';
+import { reportToSentry } from './utils';
 
 Vue.use(VueApollo);
 

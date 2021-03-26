@@ -35,10 +35,14 @@ export default {
       type: Object,
       required: true,
     },
+    isNewCiConfigFile: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     showPipelineStatus() {
-      return this.glFeatures.pipelineStatusForPipelineEditor;
+      return this.glFeatures.pipelineStatusForPipelineEditor && !this.isNewCiConfigFile;
     },
     // make sure corners are rounded correctly depending on if
     // pipeline status is rendered

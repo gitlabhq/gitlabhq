@@ -10,7 +10,7 @@ RSpec.describe TrackingHelper do
     let(:results) do
       {
         no_data: {},
-        with_data: { data: { track_label: 'a', track_event: 'b', track_property: 'c' } }
+        with_data: { data: { track_label: 'a', track_action: 'b', track_property: 'c' } }
       }
     end
 

@@ -56,10 +56,10 @@ The instance then notifies the user.
 ## Review existing GPG keys
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
-> - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) on GitLab 13.11.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-gpg-keys-view).
 
 WARNING:

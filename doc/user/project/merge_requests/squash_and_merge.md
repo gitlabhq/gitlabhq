@@ -7,8 +7,7 @@ type: reference, concepts
 
 # Squash and merge **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1024) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.17.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18956) from [GitLab Starter](https://about.gitlab.com/pricing/)to GitLab Free in 11.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18956) to GitLab Free in 11.0.
 
 With squash and merge you can combine all your merge request's commits into one
 and retain a clean history.
@@ -105,11 +104,11 @@ squashing can itself be considered equivalent to rebasing.
 ## Squash Commits Options
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2.
-> - It was deployed behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) on GitLab 13.3.
-> - It's enabled on GitLab.com.
-> - It can be enabled per project.
-> - It's recommended for production use.
+> - Deployed behind a feature flag, disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) in GitLab 13.3.
+> - Enabled on GitLab.com.
+> - Can be enabled per project.
+> - Recommended for production use.
 
 With Squash Commits Options you can configure the behavior of Squash and Merge for your project.
 To set it up, navigate to your project's **Settings > General** and expand **Merge requests**.

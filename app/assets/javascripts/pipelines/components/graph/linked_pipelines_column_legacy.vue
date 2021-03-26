@@ -1,7 +1,7 @@
 <script>
+import { reportToSentry } from '../../utils';
 import { UPSTREAM } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
-import { reportToSentry } from './utils';
 
 export default {
   components: {

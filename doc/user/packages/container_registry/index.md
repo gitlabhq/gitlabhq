@@ -499,11 +499,11 @@ The cleanup policy:
 1. Collects all tags for a given repository in a list.
 1. Excludes the tag named `latest` from the list.
 1. Evaluates the `name_regex` (tags to expire), excluding non-matching names from the list.
+1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
 1. Excludes any tags that do not have a manifest (not part of the options in the UI).
 1. Orders the remaining tags by `created_date`.
 1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
-1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
 WARNING:

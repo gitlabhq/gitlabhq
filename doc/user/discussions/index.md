@@ -269,10 +269,10 @@ Additionally, locked issues and merge requests can't be reopened.
 ## Confidential Comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -285,7 +285,7 @@ To create a confidential comment, select the **Make this comment confidential** 
 
 ## Merge request reviews
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
 
 When looking at a merge request diff, you are able to start a review.
@@ -487,9 +487,9 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 ### Batch Suggestions
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
-> - It was deployed behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) on GitLab 13.2.
-> - It's enabled on GitLab.com.
+> - Deployed behind a feature flag, disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
+> - Enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batch-suggestions).
 
 You can apply multiple suggestions at once to reduce the number of commits added

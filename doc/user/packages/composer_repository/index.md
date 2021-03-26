@@ -8,12 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab Premium 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab Free 13.10.
 
 Publish [Composer](https://getcomposer.org/) packages in your project's Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
-
-Only Composer 1.x is supported. Consider contributing or even adding support for
-[Composer 2.0 in the Package Registry](https://gitlab.com/gitlab-org/gitlab/-/issues/259840).
 
 ## Create a Composer package
 

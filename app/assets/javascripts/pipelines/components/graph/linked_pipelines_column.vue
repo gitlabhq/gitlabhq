@@ -1,11 +1,11 @@
 <script>
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { LOAD_FAILURE } from '../../constants';
+import { reportToSentry } from '../../utils';
 import { ONE_COL_WIDTH, UPSTREAM } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
 import {
   getQueryHeaders,
-  reportToSentry,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,

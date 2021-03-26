@@ -28,7 +28,7 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
 };
 
 const createEventPayload = (el, { suffix = '' } = {}) => {
-  const action = el.dataset.trackEvent + (suffix || '');
+  const action = (el.dataset.trackAction || el.dataset.trackEvent) + (suffix || '');
   let value = el.dataset.trackValue || el.value || undefined;
   if (el.type === 'checkbox' && !el.checked) value = false;
 
@@ -52,7 +52,7 @@ const createEventPayload = (el, { suffix = '' } = {}) => {
 };
 
 const eventHandler = (e, func, opts = {}) => {
-  const el = e.target.closest('[data-track-event]');
+  const el = e.target.closest('[data-track-event], [data-track-action]');
 
   if (!el) return;
 
@@ -130,7 +130,9 @@ export default class Tracking {
   static trackLoadEvents(category = document.body.dataset.page, parent = document) {
     if (!this.enabled()) return [];
 
-    const loadEvents = parent.querySelectorAll('[data-track-event="render"]');
+    const loadEvents = parent.querySelectorAll(
+      '[data-track-action="render"], [data-track-event="render"]',
+    );
 
     loadEvents.forEach((element) => {
       const { action, data } = createEventPayload(element);

@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { reportToSentry } from '../../utils';
 import JobItem from './job_item.vue';
-import { reportToSentry } from './utils';
 
 /**
  * Renders the dropdown for the pipeline graph.

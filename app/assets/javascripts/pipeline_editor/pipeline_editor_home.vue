@@ -19,6 +19,10 @@ export default {
       type: String,
       required: true,
     },
+    isNewCiConfigFile: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -40,7 +44,10 @@ export default {
 
 <template>
   <div>
-    <pipeline-editor-header :ci-config-data="ciConfigData" />
+    <pipeline-editor-header
+      :ci-config-data="ciConfigData"
+      :is-new-ci-config-file="isNewCiConfigFile"
+    />
     <pipeline-editor-tabs
       :ci-config-data="ciConfigData"
       :ci-file-content="ciFileContent"

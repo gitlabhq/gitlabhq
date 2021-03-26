@@ -49,7 +49,9 @@ More links:
 
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling**.
+1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. In the top navigation bar, click **(admin)** **Admin Area**.
+1. In the left sidebar, go to **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Click the **Preview payload** button.
 
@@ -57,9 +59,17 @@ For an example payload, see [Example Usage Ping payload](#example-usage-ping-pay
 
 ## Disable Usage Ping
 
-To disable Usage Ping in the GitLab UI, go to the **Settings** page of your administration panel and uncheck the **Usage Ping** checkbox.
+To disable Usage Ping in the GitLab UI:
 
-To disable Usage Ping and prevent it from being configured in the future through the administration panel, Omnibus installs can set the following in [`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. In the top navigation bar, click **(admin)** **Admin Area**.
+1. In the left sidebar, go to **Settings > Metrics and profiling**.
+1. Expand the **Usage statistics** section.
+1. Clear the **Usage Ping** checkbox and click **Save changes**.
+
+To disable Usage Ping and prevent it from being configured in the future through
+the administration panel, Omnibus installs can set the following in
+[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
 
 ```ruby
 gitlab_rails['usage_ping_enabled'] = false

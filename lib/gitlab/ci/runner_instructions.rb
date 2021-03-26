@@ -117,20 +117,20 @@ module Gitlab
         return unless @project
         raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_pipeline, @project)
 
-        @project.runners_token
+        '$REGISTRATION_TOKEN'
       end
 
       def group_token
         return unless @group
         raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_group, @group)
 
-        @group.runners_token
+        '$REGISTRATION_TOKEN'
       end
 
       def instance_token
         raise Gitlab::Access::AccessDeniedError unless @current_user&.admin?
 
-        Gitlab::CurrentSettings.runners_registration_token
+        '$REGISTRATION_TOKEN'
       end
     end
   end

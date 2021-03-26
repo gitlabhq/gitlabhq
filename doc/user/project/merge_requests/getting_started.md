@@ -206,10 +206,10 @@ is set for deletion, the merge request widget displays the
 ### Branch retargeting on merge **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) on GitLab 13.10.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-branch-retargeting-on-merge). **(FREE SELF)**
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) in GitLab 13.10.
+> - Recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-branch-retargeting-on-merge). **(FREE SELF)**
 
 In specific circumstances, GitLab can retarget the destination branch of
 open merge request, if the destination branch merges while the merge request is

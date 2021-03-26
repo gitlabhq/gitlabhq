@@ -9,10 +9,15 @@ type: reference, index, howto
 
 NOTE:
 Only project maintainers and administrators have the [permissions](../../permissions.md#project-members-permissions)
-to access a project settings.
+to access project settings.
 
-You can adjust your [project](../index.md) settings by navigating
-to your project's homepage and clicking **Settings**.
+The **Settings** page in GitLab provides a centralized home for your
+[project](../index.md) configuration options. To access it, go to your project's homepage
+and, in the left navigation menu, clicking **Settings**. To reduce complexity, settings are
+grouped by topic into sections. To display all settings in a section, click **Expand**.
+
+In GitLab versions [13.10 and later](https://gitlab.com/groups/gitlab-org/-/epics/4842),
+GitLab displays a search box to help you find the settings you want to view.
 
 ## General settings
 

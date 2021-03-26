@@ -91,7 +91,7 @@ apps were fetched from the central Helm stable repository (`https://kubernetes-c
 This repository [was deleted](https://github.com/helm/charts#deprecation-timeline)
 on November 13, 2020. This causes the installation CI/CD pipeline to
 fail. Upgrade to GitLab 13.6, or alternatively, you can
-use the following `.gitlab-ci.yml`, which has been tested on GitLab 13.5:
+use the following `.gitlab-ci.yml`, which has been tested in GitLab 13.5:
 
 ```yaml
 include:
@@ -1062,7 +1062,7 @@ supported by GitLab before installing any of the applications.
 used to install the GitLab-managed apps. GitLab runs each `helm` command
 in a pod in the `gitlab-managed-apps` namespace inside the cluster.
 
-- For clusters created on GitLab 13.6 and newer, GitLab uses Helm 3 to manage
+- For clusters created in GitLab 13.6 and newer, GitLab uses Helm 3 to manage
   applications.
 - For clusters created on versions of GitLab prior to 13.6, GitLab uses Helm 2
   with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server. Prior

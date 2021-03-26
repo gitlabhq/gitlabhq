@@ -62,10 +62,10 @@ be enabled for a single project, and is not ready for production use:
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
-> - It's [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#anchor-to-section). **(FREE SELF)**
+> - [Deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#anchor-to-section). **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -120,10 +120,10 @@ use:
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
-> - It was [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
-> - [Became enabled by default](link-to-issue) on GitLab 12.1.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
+> - [Deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
+> - [Enabled by default](link-to-issue) in GitLab 12.1.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
 WARNING:
@@ -177,9 +177,9 @@ cannot be enabled for a single project, and is ready for production use:
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
-> - It's [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
+> - [Deployed behind a feature flag](<replace with path to>/user/feature_flags.md), enabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
 WARNING:
@@ -249,10 +249,10 @@ be enabled by project, and is ready for production use:
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
-> - It's [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It can be enabled or disabled for a single project.
-> - It's recommended for production use.
+> - [Deployed behind a feature flag](<replace with path to>/user/feature_flags.md), enabled by default.
+> - Enabled on GitLab.com.
+> - Can be enabled or disabled for a single project.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
 WARNING:

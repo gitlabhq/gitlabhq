@@ -51,7 +51,8 @@ end
 js_patterns = Regexp.union(
   'Tracking.event',
   /\btrack\(/,
-  'data-track-event'
+  'data-track-event',
+  'data-track-action'
 )
 
 dictionary_pattern = Regexp.union(

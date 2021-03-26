@@ -19,7 +19,7 @@ module Clusters
     before_save :ensure_token
 
     validates :description, length: { maximum: 1024 }
-    validates :name, presence: true, length: { maximum: 255 }, on: :create
+    validates :name, presence: true, length: { maximum: 255 }
 
     def track_usage
       track_values = { last_used_at: Time.current.utc }

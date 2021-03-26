@@ -10,8 +10,7 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { DRAW_FAILURE } from '../../constants';
-import { createJobsHash, generateJobNeedsDict } from '../../utils';
-import { reportToSentry } from '../graph/utils';
+import { createJobsHash, generateJobNeedsDict, reportToSentry } from '../../utils';
 import { parseData } from '../parsing_utils';
 import { reportPerformance } from './api';
 import { generateLinksData } from './drawing_utils';

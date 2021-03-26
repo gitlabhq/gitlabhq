@@ -284,6 +284,7 @@ Rails.application.routes.draw do
 
   draw :git_http
   draw :api
+  draw :customers_dot
   draw :sidekiq
   draw :help
   draw :google_api

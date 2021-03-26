@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
             result = subject.register_command
 
             expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{group.runners_token}")
+            expect(result).to include("--registration-token $REGISTRATION_TOKEN")
             expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
           end
         end
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
             result = subject.register_command
 
             expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{project.runners_token}")
+            expect(result).to include("--registration-token $REGISTRATION_TOKEN")
             expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
           end
         end
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
             result = subject.register_command
 
             expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{Gitlab::CurrentSettings.runners_registration_token}")
+            expect(result).to include("--registration-token $REGISTRATION_TOKEN")
             expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
           end
         end

@@ -4,12 +4,12 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
+import { reportToSentry } from '../../utils';
 import { IID_FAILURE, STAGE_VIEW } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
   getQueryHeaders,
-  reportToSentry,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,

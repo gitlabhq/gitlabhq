@@ -148,7 +148,7 @@ The following are PostgreSQL upgrade validation tests we performed.
 [PostgreSQL 11 upgrade procedure for Geo installations](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4975):
 
 - Description: Prior to making PostgreSQL 11 the default version of PostgreSQL in GitLab 12.10, we
-  tested upgrading to PostgreSQL 11 in Geo deployments on GitLab 12.9.
+  tested upgrading to PostgreSQL 11 in Geo deployments in GitLab 12.9.
 - Outcome: Partially successful. Issues were discovered in multi-node configurations with a separate
   tracking database and concerns were raised about allowing automatic upgrades when Geo enabled.
 - Follow up issues:

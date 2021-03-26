@@ -18,6 +18,7 @@ describe('Pipeline editor home wrapper', () => {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
         isCiConfigDataLoading: false,
+        isNewCiConfigFile: false,
         ...props,
       },
     });
