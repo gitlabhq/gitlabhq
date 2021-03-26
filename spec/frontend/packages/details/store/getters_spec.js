@@ -27,6 +27,7 @@ import {
   mockPipelineInfo,
   mavenPackage as packageWithoutBuildInfo,
   pypiPackage,
+  rubygemsPackage,
 } from '../../mock_data';
 import {
   generateMavenCommand,
@@ -104,6 +105,7 @@ describe('Getters PackageDetails Store', () => {
       ${npmPackage}              | ${'npm'}
       ${nugetPackage}            | ${'NuGet'}
       ${pypiPackage}             | ${'PyPI'}
+      ${rubygemsPackage}         | ${'RubyGems'}
     `(`package type`, ({ packageEntity, expectedResult }) => {
       beforeEach(() => setupState({ packageEntity }));
 

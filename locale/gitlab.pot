@@ -6440,7 +6440,7 @@ msgstr ""
 msgid "CloudLicense|Paste your activation code below"
 msgstr ""
 
-msgid "CloudLicense|This instance is currently using the Core plan."
+msgid "CloudLicense|This instance is currently using the %{planName} plan."
 msgstr ""
 
 msgid "Cluster"
@@ -22051,6 +22051,9 @@ msgstr ""
 msgid "PackageRegistry|Remove package"
 msgstr ""
 
+msgid "PackageRegistry|RubyGems"
+msgstr ""
+
 msgid "PackageRegistry|Settings for Maven packages"
 msgstr ""
 
@@ -22145,6 +22148,9 @@ msgid "PackageType|NuGet"
 msgstr ""
 
 msgid "PackageType|PyPI"
+msgstr ""
+
+msgid "PackageType|RubyGems"
 msgstr ""
 
 msgid "PackageType|npm"

@@ -36,7 +36,8 @@ class NoteEntity < API::Entities::Note
     end
 
     expose :can_resolve_discussion do |note|
-      note.discussion.resolvable? && note.discussion.can_resolve?(current_user)
+      discussion = options.fetch(:discussion, nil) || note.discussion
+      discussion.resolvable? && discussion.can_resolve?(current_user)
     end
   end
 

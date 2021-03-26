@@ -230,17 +230,33 @@ Read more about [Vue Apollo](https://github.com/vuejs/vue-apollo) in the [Vue Ap
 
 It is possible to manage an application state with Apollo by passing
 in a resolvers object when creating the default client. The default state can be set by writing
-to the cache after setting up the default client.
+to the cache after setting up the default client. In the example below, we are using query with `@client` Apollo directive to write the initial data to Apollo cache and then get this state in the Vue component:
 
 ```javascript
+// user.query.graphql
+
+query User {
+  user @client {
+    name
+    surname
+    age
+  }
+}
+```
+
+```javascript
+// index.js
+
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import userQuery from '~/user/user.query.graphql'
 Vue.use(VueApollo);
 
 const defaultClient = createDefaultClient();
 
-defaultClient.cache.writeData({
+defaultClient.cache.writeQuery({
+  query: userQuery,
   data: {
     user: {
       name: 'John',
@@ -255,16 +271,15 @@ const apolloProvider = new VueApollo({
 });
 ```
 
-We can query local data with `@client` Apollo directive:
-
 ```javascript
-// user.query.graphql
+// App.vue
+import userQuery from '~/user/user.query.graphql'
 
-query User {
-  user @client {
-    name
-    surname
-    age
+export default {
+  apollo: {
+    user: {
+      query: userQuery
+    }
   }
 }
 ```

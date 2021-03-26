@@ -60,6 +60,11 @@ export default {
       required: false,
       default: null,
     },
+    lines: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     note: {
       type: Object,
       required: false,
@@ -333,6 +338,7 @@ export default {
           :help-page-path="helpPagePath"
           :show-suggest-popover="showSuggestPopover"
           :textarea-value="updatedNoteBody"
+          :lines="lines"
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         >
           <template #textarea>

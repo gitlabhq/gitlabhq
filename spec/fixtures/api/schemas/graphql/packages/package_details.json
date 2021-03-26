@@ -23,7 +23,7 @@
     },
     "packageType": {
       "type": ["string"],
-      "enum": ["MAVEN", "NPM", "CONAN", "NUGET", "PYPI", "COMPOSER", "GENERIC", "GOLANG", "DEBIAN"]
+      "enum": ["MAVEN", "NPM", "CONAN", "NUGET", "PYPI", "COMPOSER", "GENERIC", "GOLANG", "RUBYGEMS", "DEBIAN"]
     },
     "tags": {
       "type": "object",

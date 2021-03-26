@@ -2,7 +2,13 @@
 
 class DiscussionEntity < BaseDiscussionEntity
   expose :notes do |discussion, opts|
-    request.note_entity.represent(discussion.notes, opts.merge(with_base_discussion: false))
+    request.note_entity.represent(
+      discussion.notes,
+      opts.merge(
+        with_base_discussion: false,
+        discussion: discussion
+      )
+    )
   end
 
   expose :positions, if: -> (d, _) { display_merge_ref_discussions?(d) } do |discussion|

@@ -38,6 +38,7 @@ describe('Packages shared utils', () => {
       ${'npm'}      | ${'npm'}
       ${'nuget'}    | ${'NuGet'}
       ${'pypi'}     | ${'PyPI'}
+      ${'rubygems'} | ${'RubyGems'}
       ${'composer'} | ${'Composer'}
       ${'foo'}      | ${null}
     `(`package type`, ({ packageType, expectedResult }) => {

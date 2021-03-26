@@ -19,6 +19,8 @@ export const getPackageTypeLabel = (packageType) => {
       return s__('PackageType|NuGet');
     case PackageType.PYPI:
       return s__('PackageType|PyPI');
+    case PackageType.RUBYGEMS:
+      return s__('PackageType|RubyGems');
     case PackageType.COMPOSER:
       return s__('PackageType|Composer');
     case PackageType.GENERIC:

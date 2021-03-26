@@ -247,6 +247,14 @@ FactoryBot.define do
       size { 4.kilobytes }
     end
 
+    trait(:unprocessed_gem) do
+      package
+      file_fixture { 'spec/fixtures/packages/rubygems/package.gem' }
+      file_name { 'package.gem' }
+      file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
+      size { 4.kilobytes }
+    end
+
     trait(:gemspec) do
       package
       file_fixture { 'spec/fixtures/packages/rubygems/package.gemspec' }

@@ -7,7 +7,7 @@ product_stage: protect
 product_group: group::container security
 product_category: web_firewall
 value_type: number
-status: data_available
+status: deprecated
 time_frame: all
 data_source: database
 distribution:
@@ -17,4 +17,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

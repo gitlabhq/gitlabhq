@@ -43,6 +43,8 @@ end
 RSpec.shared_examples 'process rubygems upload' do |user_type, status, add_member = true|
   RSpec.shared_examples 'creates rubygems package files' do
     it 'creates package files', :aggregate_failures do
+      expect(::Packages::Rubygems::ExtractionWorker).to receive(:perform_async).once
+
       expect { subject }
           .to change { project.packages.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
@@ -50,6 +52,17 @@ RSpec.shared_examples 'process rubygems upload' do |user_type, status, add_membe
 
       package_file = project.packages.last.package_files.reload.last
       expect(package_file.file_name).to eq('package.gem')
+    end
+
+    it 'returns bad request if package creation fails' do
+      file_service = double('file_service', execute: nil)
+
+      expect(::Packages::CreatePackageFileService).to receive(:new).and_return(file_service)
+      expect(::Packages::Rubygems::ExtractionWorker).not_to receive(:perform_async)
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 

@@ -19,9 +19,11 @@ RSpec.describe 'Projects > Files > User uploads files' do
       wait_for_requests
     end
 
-    include_examples 'it uploads and commit a new text file'
+    include_examples 'it uploads and commits a new text file'
 
-    include_examples 'it uploads and commit a new image file'
+    include_examples 'it uploads and commits a new image file'
+
+    include_examples 'it uploads and commits a new pdf file'
 
     include_examples 'it uploads a file to a sub-directory'
   end
@@ -33,6 +35,6 @@ RSpec.describe 'Projects > Files > User uploads files' do
       visit(project_tree_path(project2))
     end
 
-    include_examples 'it uploads and commit a new file to a forked project'
+    include_examples 'it uploads and commits a new file to a forked project'
   end
 end

@@ -6,6 +6,7 @@ query securityReportDownloadPaths(
   project(fullPath: $projectPath) {
     mergeRequest(iid: $iid) {
       headPipeline {
+        id
         jobs(securityReportTypes: $reportTypes) {
           nodes {
             name

@@ -37,6 +37,11 @@ export default {
       required: false,
       default: false,
     },
+    suggestionStartIndex: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -54,7 +59,9 @@ export default {
       ].join('\n');
     },
     mdSuggestion() {
-      return ['```suggestion:-0+0', `{text}`, '```'].join('\n');
+      return [['```', `suggestion:-${this.suggestionStartIndex}+0`].join(''), `{text}`, '```'].join(
+        '\n',
+      );
     },
     isMac() {
       // Accessing properties using ?. to allow tests to use

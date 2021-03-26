@@ -36,8 +36,8 @@ FactoryBot.define do
       package_type { :rubygems }
 
       after :create do |package|
-        create :package_file, :gem, package: package
-        create :package_file, :gemspec, package: package
+        create :package_file, package.processing? ? :unprocessed_gem : :gem, package: package
+        create :package_file, :gemspec, package: package unless package.processing?
       end
 
       trait(:with_metadatum) do
