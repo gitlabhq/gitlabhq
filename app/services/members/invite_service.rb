@@ -84,7 +84,11 @@ module Members
     def add_member(email)
       new_member = source.add_user(email, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
-      errors[email] = new_member.errors.full_messages.to_sentence if new_member.invalid?
+      if new_member.invalid?
+        errors[email] = new_member.errors.full_messages.to_sentence
+      else
+        after_execute(member: new_member)
+      end
     end
 
     def result

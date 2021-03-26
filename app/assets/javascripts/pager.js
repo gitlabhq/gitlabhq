@@ -16,7 +16,6 @@ export default {
     callback = $.noop,
     container = '',
   ) {
-    this.url = $('.content_list').data('href') || removeParams(['limit', 'offset']);
     this.limit = limit;
     this.offset = parseInt(getParameterByName('offset'), 10) || this.limit;
     this.disable = disable;
@@ -32,8 +31,10 @@ export default {
 
   getOld() {
     this.loading.show();
+    const url = $('.content_list').data('href') || removeParams(['limit', 'offset']);
+
     axios
-      .get(this.url, {
+      .get(url, {
         params: {
           limit: this.limit,
           offset: this.offset,
