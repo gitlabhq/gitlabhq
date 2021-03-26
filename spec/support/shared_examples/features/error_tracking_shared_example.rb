@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'error tracking index page' do
   it 'renders the error index page', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
-    within('div.js-title-container') do
+    within('[data-testid="breadcrumb-links"]') do
       expect(page).to have_content(project.namespace.name)
       expect(page).to have_content(project.name)
     end

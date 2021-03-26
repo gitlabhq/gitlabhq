@@ -264,18 +264,18 @@ describe('Api', () => {
     it('fetches group labels', (done) => {
       const options = { params: { search: 'foo' } };
       const expectedGroup = 'gitlab-org';
-      const expectedUrl = `${dummyUrlRoot}/groups/${expectedGroup}/-/labels`;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${expectedGroup}/labels`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           id: 1,
-          title: 'Foo Label',
+          name: 'Foo Label',
         },
       ]);
 
       Api.groupLabels(expectedGroup, options)
         .then((res) => {
           expect(res.length).toBe(1);
-          expect(res[0].title).toBe('Foo Label');
+          expect(res[0].name).toBe('Foo Label');
         })
         .then(done)
         .catch(done.fail);
@@ -593,7 +593,7 @@ describe('Api', () => {
   });
 
   describe('newLabel', () => {
-    it('creates a new label', (done) => {
+    it('creates a new project label', (done) => {
       const namespace = 'some namespace';
       const project = 'some project';
       const labelData = { some: 'data' };
@@ -618,26 +618,23 @@ describe('Api', () => {
       });
     });
 
-    it('creates a group label', (done) => {
+    it('creates a new group label', (done) => {
       const namespace = 'group/subgroup';
-      const labelData = { some: 'data' };
+      const labelData = { name: 'Foo', color: '#000000' };
       const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
-      const expectedData = {
-        label: labelData,
-      };
       mock.onPost(expectedUrl).reply((config) => {
-        expect(config.data).toBe(JSON.stringify(expectedData));
+        expect(config.data).toBe(JSON.stringify({ color: labelData.color }));
 
         return [
           httpStatus.OK,
           {
-            name: 'test',
+            ...labelData,
           },
         ];
       });
 
       Api.newLabel(namespace, undefined, labelData, (response) => {
-        expect(response.name).toBe('test');
+        expect(response.name).toBe('Foo');
         done();
       });
     });

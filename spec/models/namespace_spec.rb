@@ -1415,6 +1415,12 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#paid?' do
+    it 'returns false for a root namespace with a free plan' do
+      expect(namespace.paid?).to eq(false)
+    end
+  end
+
   describe '#shared_runners_setting' do
     using RSpec::Parameterized::TableSyntax
 

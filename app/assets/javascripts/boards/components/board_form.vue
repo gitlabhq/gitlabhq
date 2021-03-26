@@ -163,6 +163,9 @@ export default {
     currentMutation() {
       return this.board.id ? updateBoardMutation : createBoardMutation;
     },
+    deleteMutation() {
+      return destroyBoardMutation;
+    },
     baseMutationVariables() {
       const { board } = this;
       const variables = {
@@ -244,17 +247,20 @@ export default {
 
       return this.boardUpdateResponse(response.data);
     },
+    async deleteBoard() {
+      await this.$apollo.mutate({
+        mutation: this.deleteMutation,
+        variables: {
+          id: fullBoardId(this.board.id),
+        },
+      });
+    },
     async submit() {
       if (this.board.name.length === 0) return;
       this.isLoading = true;
       if (this.isDeleteForm) {
         try {
-          await this.$apollo.mutate({
-            mutation: destroyBoardMutation,
-            variables: {
-              id: fullBoardId(this.board.id),
-            },
-          });
+          await this.deleteBoard();
           visitUrl(this.rootPath);
         } catch {
           Flash(this.$options.i18n.deleteErrorMessage);

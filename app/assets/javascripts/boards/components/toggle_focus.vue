@@ -47,6 +47,7 @@ export default {
       class="js-focus-mode-btn"
       data-qa-selector="focus_mode_button"
       :title="$options.i18n.toggleFocusMode"
+      :aria-label="$options.i18n.toggleFocusMode"
       @click="toggleFocusMode"
     />
   </div>

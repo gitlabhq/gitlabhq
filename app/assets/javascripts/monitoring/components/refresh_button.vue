@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { mapActions } from 'vuex';
-import { n__, __ } from '~/locale';
+import { n__, __, s__ } from '~/locale';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -45,6 +45,9 @@ const makeInterval = (length = 0, unit = 's') => {
 };
 
 export default {
+  i18n: {
+    refreshDashboard: s__('Metrics|Refresh dashboard'),
+  },
   components: {
     GlButtonGroup,
     GlButton,
@@ -148,7 +151,8 @@ export default {
       v-gl-tooltip
       class="gl-flex-grow-1"
       variant="default"
-      :title="s__('Metrics|Refresh dashboard')"
+      :title="$options.i18n.refreshDashboard"
+      :aria-label="$options.i18n.refreshDashboard"
       icon="retry"
       @click="refresh"
     />

@@ -363,6 +363,7 @@ export default {
       <gl-button
         v-gl-tooltip
         :title="sortDirectionTooltip"
+        :aria-label="sortDirectionTooltip"
         :icon="sortDirectionIcon"
         class="flex-shrink-1"
         @click="handleSortDirectionClick"

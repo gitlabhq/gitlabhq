@@ -2917,6 +2917,9 @@ msgstr ""
 msgid "AlertSettings|Delete integration"
 msgstr ""
 
+msgid "AlertSettings|Edit integration"
+msgstr ""
+
 msgid "AlertSettings|Edit payload"
 msgstr ""
 
@@ -31061,6 +31064,9 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
+msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
+msgstr ""
+
 msgid "This group cannot be invited to a project inside a group with enforced SSO"
 msgstr ""
 
@@ -31068,6 +31074,9 @@ msgid "This group does not have any group runners yet."
 msgstr ""
 
 msgid "This group has been scheduled for permanent removal on %{date}"
+msgstr ""
+
+msgid "This group is linked to a subscription"
 msgstr ""
 
 msgid "This group, including all subgroups, projects and git repositories, will be reachable from only the specified IP address ranges."

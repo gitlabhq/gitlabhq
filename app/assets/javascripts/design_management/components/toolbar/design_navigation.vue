@@ -12,6 +12,10 @@ import allDesignsMixin from '../../mixins/all_designs';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
 
 export default {
+  i18n: {
+    nextButton: s__('DesignManagement|Go to next design'),
+    previousButton: s__('DesignManagement|Go to previous design'),
+  },
   components: {
     GlButton,
     GlButtonGroup,
@@ -81,7 +85,8 @@ export default {
       <gl-button
         v-gl-tooltip.bottom
         :disabled="!previousDesign"
-        :title="s__('DesignManagement|Go to previous design')"
+        :title="$options.i18n.previousButton"
+        :aria-label="$options.i18n.previousButton"
         icon="angle-left"
         class="js-previous-design"
         @click="navigateToDesign(previousDesign)"
@@ -89,7 +94,8 @@ export default {
       <gl-button
         v-gl-tooltip.bottom
         :disabled="!nextDesign"
-        :title="s__('DesignManagement|Go to next design')"
+        :title="$options.i18n.nextButton"
+        :aria-label="$options.i18n.nextButton"
         icon="angle-right"
         class="js-next-design"
         @click="navigateToDesign(nextDesign)"

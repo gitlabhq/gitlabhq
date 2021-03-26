@@ -326,10 +326,11 @@ To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.c
 ## Cached issue count **(FREE SELF)**
 
 > - [Introduced]([link-to-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/243753)) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use this feature in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cached-issue-count) **(FREE SELF)**
+> - It was [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/323493) in GitLab 13.10.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-issue-count) **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -373,7 +374,7 @@ You can then see issue statuses in the issues list and the
 
 ## Enable or disable cached issue count **(FREE SELF)**
 
-Cached issue count in the left sidebar is under development and not ready for production use. It is
+Cached issue count in the left sidebar is under development but ready for production use. It is
 deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can disable it.

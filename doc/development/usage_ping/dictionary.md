@@ -9956,6 +9956,54 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_due_date_as_fixed_monthly`
+
+Counts of MAU setting epic due date as inherited
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210325060507_g_project_management_users_setting_epic_due_date_as_fixed_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_due_date_as_fixed_weekly`
+
+Counts of WAU setting epic due date as fixed
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210325060623_g_project_management_users_setting_epic_due_date_as_fixed_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_due_date_as_inherited_monthly`
+
+Counts of MAU setting epic due date as inherited
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210325060315_g_project_management_users_setting_epic_due_date_as_inherited_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_due_date_as_inherited_weekly`
+
+Counts of WAU setting epic due date as inherited
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210325060903_g_project_management_users_setting_epic_due_date_as_inherited_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_start_date_as_fixed_monthly`
 
 Counts of MAU setting epic start date as fixed

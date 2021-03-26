@@ -84,6 +84,7 @@ export default {
         icon="file-tree"
         class="gl-mr-3 js-toggle-tree-list"
         :title="toggleFileBrowserTitle"
+        :aria-label="toggleFileBrowserTitle"
         :selected="showTreeList"
         @click="setShowTreeList({ showTreeList: !showTreeList })"
       />

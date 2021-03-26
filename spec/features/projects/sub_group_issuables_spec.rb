@@ -16,18 +16,18 @@ RSpec.describe 'Subgroup Issuables', :js do
   it 'shows the full subgroup title when issues index page is empty' do
     visit project_issues_path(project)
 
-    expect_to_have_full_subgroup_title
+    expect_to_have_breadcrumb_links
   end
 
   it 'shows the full subgroup title when merge requests index page is empty' do
     visit project_merge_requests_path(project)
 
-    expect_to_have_full_subgroup_title
+    expect_to_have_breadcrumb_links
   end
 
-  def expect_to_have_full_subgroup_title
-    title = find('.breadcrumbs-links')
+  def expect_to_have_breadcrumb_links
+    links = find('[data-testid="breadcrumb-links"]')
 
-    expect(title).to have_content 'group subgroup project'
+    expect(links).to have_content 'group subgroup project'
   end
 end

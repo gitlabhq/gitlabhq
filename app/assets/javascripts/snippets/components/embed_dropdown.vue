@@ -65,6 +65,7 @@ export default {
             <gl-button
               v-gl-tooltip.hover
               :title="$options.MSG_COPY"
+              :aria-label="$options.MSG_COPY"
               :data-clipboard-text="value"
               icon="copy-to-clipboard"
               data-qa-selector="copy_button"

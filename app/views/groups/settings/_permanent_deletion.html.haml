@@ -5,4 +5,5 @@
       = _('Removing this group also removes all child projects, including archived projects, and their resources.')
       %br
       %strong= _('Removed group can not be restored!')
-    = button_to _('Remove group'), '#', class: 'btn gl-button btn-danger js-confirm-danger', data: { 'confirm-danger-message' => remove_group_message(group) }
+
+    = render 'groups/settings/remove_button', group: group
