@@ -1,5 +1,5 @@
 .dropdown.gl-display-flex.gl-align-items-center.gl-ml-3#js-add-list
-  %button.gl-button.btn.btn-confirm.btn-confirm-secondary.js-new-board-list{ type: "button", data: board_list_data }
+  %button.gl-button.btn.btn-confirm.js-new-board-list{ type: "button", data: board_list_data }
     Add list
   .dropdown-menu.dropdown-extended-height.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable.js-tab-container-labels
     = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }

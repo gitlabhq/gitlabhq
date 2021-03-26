@@ -98,16 +98,27 @@ class a {
 }
 ```
 
-## Use ParseInt
+## Converting Strings to Integers
 
-Use `ParseInt` when converting a numeric string into a number.
+When converting strings to integers, `parseInt` has a slight performance advantage over `Number`, but `Number` is semantic and can be more readable. Prefer `parseInt`, but do not discourage `Number` if it significantly helps readability.
+
+**WARNING:** `parseInt` **must** include the [radix argument](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt).
 
 ```javascript
 // bad
-Number('10')
+parseInt('10');
+
+// bad
+things.map(parseInt)
+
+// ok
+Number("106")
 
 // good
-parseInt('10', 10);
+things.map(Number)
+
+// good
+parseInt("106", 10)
 ```
 
 ## CSS Selectors - Use `js-` prefix

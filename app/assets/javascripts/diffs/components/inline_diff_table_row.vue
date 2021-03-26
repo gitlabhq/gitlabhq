@@ -140,7 +140,6 @@ export default {
           ref="addDiffNoteButton"
           type="button"
           class="add-diff-note note-button js-add-diff-note-button"
-          data-qa-selector="diff_comment_button"
           :disabled="line.commentsDisabled"
           @click="handleCommentButton"
         >

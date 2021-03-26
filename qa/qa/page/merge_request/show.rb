@@ -67,8 +67,11 @@ module QA
           element :edit_in_ide_button
         end
 
-        view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
+        view 'app/assets/javascripts/diffs/components/diff_row.vue' do
           element :diff_comment_button
+        end
+
+        view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
           element :new_diff_line_link
         end
 

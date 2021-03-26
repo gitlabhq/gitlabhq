@@ -110,15 +110,17 @@ link in the issue sidebar.
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
+> - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 
 You can search for an epic from the list of epics using filtered search bar (similar to
-that of Issues and Merge Requests) based on following parameters:
+that of issues and merge requests) based on following parameters:
 
 - Title or description
 - Author name / username
 - Labels
+- Reaction emoji
 
-![epics search](img/epics_search.png)
+![epics search](img/epics_search_v13_11.png)
 
 To search, go to the list of epics and select the field **Search or filter results**.
 It displays a dropdown menu, from which you can add an author. You can also enter plain
