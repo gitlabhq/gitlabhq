@@ -9,7 +9,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
   InvalidPolicyError = Class.new(StandardError)
 
-  BATCH_SIZE = 1000.freeze
+  BATCH_SIZE = 1000
 
   def perform
     throttling_enabled? ? perform_throttled : perform_unthrottled

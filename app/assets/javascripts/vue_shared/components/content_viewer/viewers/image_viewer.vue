@@ -3,6 +3,8 @@ import { throttle } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { encodeSaferUrl } from '~/lib/utils/url_utility';
 
+const BLOB_PREFIX = 'blob:';
+
 export default {
   props: {
     path: {
@@ -45,7 +47,7 @@ export default {
       return this.width && this.height;
     },
     safePath() {
-      return encodeSaferUrl(this.path);
+      return this.path.startsWith(BLOB_PREFIX) ? this.path : encodeSaferUrl(this.path);
     },
   },
   beforeDestroy() {

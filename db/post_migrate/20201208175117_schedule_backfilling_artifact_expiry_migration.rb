@@ -5,7 +5,7 @@ class ScheduleBackfillingArtifactExpiryMigration < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
   SWITCH_DATE = Time.utc(2020, 6, 22).freeze
-  INDEX_NAME = 'expired_artifacts_temp_index'.freeze
+  INDEX_NAME = 'expired_artifacts_temp_index'
   INDEX_CONDITION = "expire_at IS NULL AND created_at < '#{SWITCH_DATE}'"
 
   disable_ddl_transaction!

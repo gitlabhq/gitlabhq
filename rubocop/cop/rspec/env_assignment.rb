@@ -17,7 +17,7 @@ module RuboCop
       #     stub_env('FOO', 'bar')
       #   end
       class EnvAssignment < RuboCop::Cop::Cop
-        MESSAGE = "Don't assign to ENV, use `stub_env` instead.".freeze
+        MESSAGE = "Don't assign to ENV, use `stub_env` instead."
 
         def_node_search :env_assignment?, <<~PATTERN
           (send (const nil? :ENV) :[]= ...)

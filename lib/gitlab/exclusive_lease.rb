@@ -15,14 +15,14 @@ module Gitlab
     PREFIX = 'gitlab:exclusive_lease'
     NoKey = Class.new(ArgumentError)
 
-    LUA_CANCEL_SCRIPT = <<~EOS.freeze
+    LUA_CANCEL_SCRIPT = <<~EOS
       local key, uuid = KEYS[1], ARGV[1]
       if redis.call("get", key) == uuid then
         redis.call("del", key)
       end
     EOS
 
-    LUA_RENEW_SCRIPT = <<~EOS.freeze
+    LUA_RENEW_SCRIPT = <<~EOS
       local key, uuid, ttl = KEYS[1], ARGV[1], ARGV[2]
       if redis.call("get", key) == uuid then
         redis.call("expire", key, ttl)

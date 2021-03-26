@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Storage usage quota
+# Storage usage quota **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in GitLab 12.0.
 > - Moved to GitLab Free.

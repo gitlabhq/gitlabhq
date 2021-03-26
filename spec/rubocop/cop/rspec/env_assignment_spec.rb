@@ -5,8 +5,8 @@ require 'fast_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/env_assignment'
 
 RSpec.describe RuboCop::Cop::RSpec::EnvAssignment do
-  offense_call_single_quotes_key = %(ENV['FOO'] = 'bar').freeze
-  offense_call_double_quotes_key = %(ENV["FOO"] = 'bar').freeze
+  offense_call_single_quotes_key = %(ENV['FOO'] = 'bar')
+  offense_call_double_quotes_key = %(ENV["FOO"] = 'bar')
 
   let(:source_file) { 'spec/foo_spec.rb' }
 

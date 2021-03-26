@@ -4,7 +4,7 @@ class CleanupProjectsWithBadHasExternalIssueTrackerData < ActiveRecord::Migratio
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  TMP_INDEX_NAME = 'tmp_idx_projects_on_id_where_has_external_issue_tracker_is_true'.freeze
+  TMP_INDEX_NAME = 'tmp_idx_projects_on_id_where_has_external_issue_tracker_is_true'
   BATCH_SIZE = 100
 
   disable_ddl_transaction!

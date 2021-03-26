@@ -7,7 +7,7 @@
 class CiArtifactMetadataGenerator
   attr_accessor :entries, :output
 
-  ARTIFACT_METADATA = "GitLab Build Artifacts Metadata 0.0.2\n".freeze
+  ARTIFACT_METADATA = "GitLab Build Artifacts Metadata 0.0.2\n"
 
   def initialize(stream)
     @entries = {}

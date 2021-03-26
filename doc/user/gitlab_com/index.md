@@ -50,7 +50,7 @@ Projects can be backed up in their entirety by exporting them either [through th
 
 With exports, be sure to take note of [what is and is not](../project/settings/import_export.md#exported-contents), included in a project export.
 
-Since GitLab is built on Git, you can back up **just** the repository of a project by [cloning](../../gitlab-basics/start-using-git.md#clone-a-repository) it to another machine. Similarly, if you need to back up just the wiki of a repository it can also be cloned and all files uploaded to that wiki are included [if they were uploaded after 2020-08-22](../project/wiki/index.md#creating-a-new-wiki-page).
+Since GitLab is built on Git, you can back up **just** the repository of a project by [cloning](../../gitlab-basics/start-using-git.md#clone-a-repository) it to another machine. Similarly, if you need to back up just the wiki of a repository it can also be cloned and all files uploaded to that wiki are included [if they were uploaded after 2020-08-22](../project/wiki/index.md#create-a-new-wiki-page).
 
 ## Alternative SSH port
 

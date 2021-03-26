@@ -7,8 +7,8 @@ class Packages::Dependency < ApplicationRecord
   validates :name, uniqueness: { scope: :version_pattern }
 
   NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
-  MAX_STRING_LENGTH = 255.freeze
-  MAX_CHUNKED_QUERIES_COUNT = 10.freeze
+  MAX_STRING_LENGTH = 255
+  MAX_CHUNKED_QUERIES_COUNT = 10
 
   def self.ids_for_package_names_and_version_patterns(names_and_version_patterns = {}, chunk_size = 50, max_rows_limit = 200)
     names_and_version_patterns.reject! { |key, value| key.size > MAX_STRING_LENGTH || value.size > MAX_STRING_LENGTH }

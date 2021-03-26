@@ -11,7 +11,7 @@ module Gitlab
 
     UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{4}\h{8}/.freeze
     NAMESPACE_REGEX = /(\h{8})-(\h{4})-(\h{4})-(\h{4})-(\h{4})(\h{8})/.freeze
-    PACK_PATTERN = "NnnnnN".freeze
+    PACK_PATTERN = "NnnnnN"
 
     class << self
       def v5(name, namespace_id: default_namespace_id)

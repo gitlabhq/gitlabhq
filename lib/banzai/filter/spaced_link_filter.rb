@@ -42,7 +42,7 @@ module Banzai
       TEXT_QUERY = %Q(descendant-or-self::text()[
         not(#{IGNORE_PARENTS.map { |p| "ancestor::#{p}" }.join(' or ')})
         and contains(., ']\(')
-      ]).freeze
+      ])
 
       def call
         doc.xpath(TEXT_QUERY).each do |node|

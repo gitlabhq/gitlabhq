@@ -898,11 +898,6 @@ Style/RedundantFetchBlock:
 Style/RedundantFileExtensionInRequire:
   Enabled: false
 
-# Offense count: 248
-# Cop supports --auto-correct.
-Style/RedundantFreeze:
-  Enabled: false
-
 # Offense count: 206
 # Cop supports --auto-correct.
 Style/RedundantInterpolation:

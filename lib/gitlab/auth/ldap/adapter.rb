@@ -5,7 +5,7 @@ module Gitlab
     module Ldap
       class Adapter
         SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
-        MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size.freeze
+        MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size
 
         attr_reader :provider, :ldap
 

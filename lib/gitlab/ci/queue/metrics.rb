@@ -14,7 +14,7 @@ module Gitlab
 
         METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'
         DEFAULT_METRICS_SHARD = 'default'
-        JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
+        JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5
 
         OPERATION_COUNTERS = [
           :build_can_pick,

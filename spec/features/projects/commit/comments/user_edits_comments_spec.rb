@@ -19,7 +19,7 @@ RSpec.describe "User edits a comment on a commit", :js do
   end
 
   it "edits comment" do
-    new_comment_text = "+1 Awesome!".freeze
+    new_comment_text = "+1 Awesome!"
 
     page.within(".main-notes-list") do
       note = find(".note")

@@ -16,13 +16,13 @@ repository, but you do want to keep it in the same project where your code
 resides.
 
 You can create Wiki pages in the web interface or
-[locally using Git](#adding-and-editing-wiki-pages-locally) since every Wiki is
+[locally using Git](#create-or-edit-wiki-pages-locally) since every Wiki is
 a separate Git repository.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5,
 **group wikis** became available. Their usage is similar to project wikis, with a few [limitations](../../group/index.md#group-wikis).
 
-## First time creating the Home page
+## Create the wiki home page
 
 The first time you visit a Wiki, you are directed to create the Home page.
 The Home page is necessary to be created because it serves as the landing page
@@ -32,7 +32,7 @@ message.
 
 ![New home page](img/wiki_create_home_page.png)
 
-## Creating a new wiki page
+## Create a new wiki page
 
 NOTE:
 Requires Developer [permissions](../../permissions.md).
@@ -60,7 +60,7 @@ When you're ready, select **Create page** and the new page is created.
 
 ![New page](img/wiki_create_new_page.png)
 
-### Attachment storage
+### Store attachments for wiki pages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
@@ -94,7 +94,7 @@ Please note that:
 - Non-ASCII characters take up more than one byte.
 - It's still possible to create files and directories exceeding those limits locally through Git, but this might break on other people's machines.
 
-## Editing a wiki page
+## Edit a wiki page
 
 You need Developer [permissions](../../permissions.md) or higher to edit a wiki page.
 To do so:
@@ -103,12 +103,12 @@ To do so:
 1. Edit the content.
 1. Select **Save changes**.
 
-### Adding a table of contents
+### Create a table of contents
 
 To generate a table of contents from the headings in a Wiki page, use the `[[_TOC_]]` tag.
 For an example, see [Table of contents](../../markdown.md#table-of-contents).
 
-## Deleting a wiki page
+## Delete a wiki page
 
 You need Maintainer [permissions](../../permissions.md) or higher to delete a wiki page.
 To do so:
@@ -117,7 +117,7 @@ To do so:
 1. Select **Delete page**.
 1. Confirm the deletion.
 
-## Moving a wiki page
+## Move a wiki page
 
 You need Developer [permissions](../../permissions.md) or higher to move a wiki page.
 To do so:
@@ -139,7 +139,7 @@ If you want to do the opposite:
 1. Change the **Title** from `about` to `company/about`.
 1. Select **Save changes**.
 
-## Viewing a list of all created wiki pages
+## View list of all wiki pages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17673/) in GitLab 13.5, wiki pages are displayed as a nested tree in the sidebar and pages overview.
 
@@ -151,7 +151,7 @@ found. The list is ordered alphabetically.
 If you have many pages, not all are listed in the sidebar. Select
 **View All Pages** to see all of them.
 
-## Viewing the history of a wiki page
+## View history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository,
 and you can view them by selecting **Page history**.
@@ -163,7 +163,7 @@ number in the **Page version** column.
 
 ![Wiki page history](img/wiki_page_history.png)
 
-### Viewing the changes between page versions
+### View changes between page versions
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
 
@@ -175,7 +175,7 @@ Similar to versioned diff file views, you can see the changes made in a given Wi
 
    ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
 
-## Wiki activity records
+## Track wiki events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in **GitLab 12.10.**
 > - Git events were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
@@ -186,7 +186,7 @@ displayed on the [user profile](../../profile/index.md#access-your-user-profile)
 [group](../../group/index.md#view-group-activity),
 and [project](../working_with_projects.md#project-activity) activity pages.
 
-## Adding and editing wiki pages locally
+## Create or edit wiki pages locally
 
 Since wikis are based on Git repositories, you can clone them locally and edit
 them like you would do with every other Git repository.
@@ -202,7 +202,7 @@ otherwise they don't display when pushed to GitLab:
 - AsciiDoc extensions: `.adoc`, `.ad`, `.asciidoc`.
 - Other markup extensions: `.textile`, `.rdoc`, `.org`, `.creole`, `.wiki`, `.mediawiki`, `.rst`.
 
-## Customizing sidebar
+## Customize sidebar
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
 
@@ -225,3 +225,7 @@ Example for `_sidebar` (using Markdown format):
 ```
 
 Support for displaying a generated table of contents with a custom side navigation is planned.
+
+## Resources
+
+- [Group wikis](../../group/index.md#group-wikis)

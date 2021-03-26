@@ -4,11 +4,11 @@ class ScheduleArtifactExpiryBackfill < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  MIGRATION = 'BackfillArtifactExpiryDate'.freeze
+  MIGRATION = 'BackfillArtifactExpiryDate'
   SWITCH_DATE = Date.new(2020, 06, 22).freeze
-  INDEX_NAME = 'expired_artifacts_temp_index'.freeze
+  INDEX_NAME = 'expired_artifacts_temp_index'
   OLD_INDEX_CONDITION = "expire_at IS NULL AND created_at < '#{SWITCH_DATE}'"
-  INDEX_CONDITION = "expire_at IS NULL AND date(created_at AT TIME ZONE 'UTC') < '2020-06-22'::date".freeze
+  INDEX_CONDITION = "expire_at IS NULL AND date(created_at AT TIME ZONE 'UTC') < '2020-06-22'::date"
 
   disable_ddl_transaction!
 

@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Utils do
 
   describe '.nlbr' do
     it 'replaces new lines with <br>' do
-      expect(described_class.nlbr("<b>hello</b>\n<i>world</i>".freeze)).to eq("hello<br>world")
+      expect(described_class.nlbr("<b>hello</b>\n<i>world</i>")).to eq("hello<br>world")
     end
   end
 
@@ -388,8 +388,8 @@ RSpec.describe Gitlab::Utils do
 
   describe ".safe_downcase!" do
     where(:str, :result) do
-      "test".freeze | "test"
-      "Test".freeze | "test"
+      "test" | "test"
+      "Test" | "test"
       "test" | "test"
       "Test" | "test"
     end

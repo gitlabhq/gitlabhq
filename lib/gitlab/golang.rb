@@ -7,7 +7,7 @@ module Gitlab
     extend self
 
     def local_module_prefix
-      @gitlab_prefix ||= "#{Settings.build_gitlab_go_url}/".freeze
+      @gitlab_prefix ||= "#{Settings.build_gitlab_go_url}/"
     end
 
     def semver_tag?(tag)

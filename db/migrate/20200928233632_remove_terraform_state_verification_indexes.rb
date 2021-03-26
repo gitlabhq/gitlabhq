@@ -4,8 +4,8 @@ class RemoveTerraformStateVerificationIndexes < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  CHECKSUM_INDEX_NAME = "terraform_states_verification_checksum_partial".freeze
-  FAILURE_INDEX_NAME = "terraform_states_verification_failure_partial".freeze
+  CHECKSUM_INDEX_NAME = "terraform_states_verification_checksum_partial"
+  FAILURE_INDEX_NAME = "terraform_states_verification_failure_partial"
 
   disable_ddl_transaction!
 

@@ -4,7 +4,7 @@ module Gitlab
   module Prometheus
     module Queries
       class MatchedMetricQuery < BaseQuery
-        MAX_QUERY_ITEMS = 40.freeze
+        MAX_QUERY_ITEMS = 40
 
         def query
           groups_data.map do |group, data|

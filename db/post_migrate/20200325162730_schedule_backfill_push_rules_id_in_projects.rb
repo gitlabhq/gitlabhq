@@ -5,7 +5,7 @@ class ScheduleBackfillPushRulesIdInProjects < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
-  MIGRATION = 'BackfillPushRulesIdInProjects'.freeze
+  MIGRATION = 'BackfillPushRulesIdInProjects'
   BATCH_SIZE = 1_000
 
   class PushRules < ActiveRecord::Base

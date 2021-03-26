@@ -3,7 +3,7 @@
 module Mutations
   module ContainerRepositories
     class DestroyTags < ::Mutations::ContainerRepositories::DestroyBase
-      LIMIT = 20.freeze
+      LIMIT = 20
 
       TOO_MANY_TAGS_ERROR_MESSAGE = "Number of tags is greater than #{LIMIT}"
 

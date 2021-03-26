@@ -6491,6 +6491,9 @@ msgstr ""
 msgid "ClusterAgents|Integrate with the GitLab Agent"
 msgstr ""
 
+msgid "ClusterAgents|Last used"
+msgstr ""
+
 msgid "ClusterAgents|Learn how to create an agent access token"
 msgstr ""
 
@@ -6498,6 +6501,9 @@ msgid "ClusterAgents|Learn more about installing the GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Name"
+msgstr ""
+
+msgid "ClusterAgents|Never"
 msgstr ""
 
 msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"

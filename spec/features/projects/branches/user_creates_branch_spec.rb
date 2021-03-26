@@ -16,7 +16,7 @@ RSpec.describe "User creates branch", :js do
   end
 
   it "creates new branch" do
-    branch_name = "deploy_keys".freeze
+    branch_name = "deploy_keys"
 
     create_branch(branch_name)
 
@@ -25,7 +25,7 @@ RSpec.describe "User creates branch", :js do
 
   context "when branch name is invalid" do
     it "does not create new branch" do
-      invalid_branch_name = "1.0 stable".freeze
+      invalid_branch_name = "1.0 stable"
 
       fill_in("branch_name", with: invalid_branch_name)
       page.find("body").click # defocus the branch_name input

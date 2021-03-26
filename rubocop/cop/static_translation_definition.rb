@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     class StaticTranslationDefinition < RuboCop::Cop::Cop
-      MSG = "The text you're translating will be already in the translated form when it's assigned to the constant. When a users changes the locale, these texts won't be translated again. Consider moving the translation logic to a method.".freeze
+      MSG = "The text you're translating will be already in the translated form when it's assigned to the constant. When a users changes the locale, these texts won't be translated again. Consider moving the translation logic to a method."
 
       TRANSLATION_METHODS = %i[_ s_ n_].freeze
 

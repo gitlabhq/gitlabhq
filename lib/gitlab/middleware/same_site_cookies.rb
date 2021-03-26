@@ -17,7 +17,7 @@
 module Gitlab
   module Middleware
     class SameSiteCookies
-      COOKIE_SEPARATOR = "\n".freeze
+      COOKIE_SEPARATOR = "\n"
 
       def initialize(app)
         @app = app

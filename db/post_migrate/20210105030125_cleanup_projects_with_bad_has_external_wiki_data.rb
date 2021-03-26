@@ -4,7 +4,7 @@ class CleanupProjectsWithBadHasExternalWikiData < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  TMP_INDEX_NAME = 'tmp_index_projects_on_id_where_has_external_wiki_is_true'.freeze
+  TMP_INDEX_NAME = 'tmp_index_projects_on_id_where_has_external_wiki_is_true'
   BATCH_SIZE = 100
 
   disable_ddl_transaction!
