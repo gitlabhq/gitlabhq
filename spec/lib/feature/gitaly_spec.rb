@@ -8,6 +8,7 @@ RSpec.describe Feature::Gitaly do
 
   before do
     skip_feature_flags_yaml_validation
+    skip_default_enabled_yaml_check
   end
 
   describe ".enabled?" do

@@ -132,4 +132,15 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
       expect(cache.include?(:foo, 'bar')).to be(false)
     end
   end
+
+  describe '#try_include?' do
+    it 'checks existence of the redis set and inclusion' do
+      expect(cache.try_include?(:foo, 'value')).to eq([false, false])
+
+      cache.write(:foo, ['value'])
+
+      expect(cache.try_include?(:foo, 'value')).to eq([true, true])
+      expect(cache.try_include?(:foo, 'bar')).to eq([false, true])
+    end
+  end
 end

@@ -12,7 +12,7 @@ module BulkImports
             group(fullPath: $full_path) {
               milestones(first: 100, after: $cursor, includeDescendants: false) {
                 page_info: pageInfo {
-                  end_cursor: endCursor
+                  next_page: endCursor
                   has_next_page: hasNextPage
                 }
                 nodes {

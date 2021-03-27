@@ -24,7 +24,7 @@ variables:
       container_scanning: gl-container-scanning-report.json
   dependencies: []
 
-container_scanning_deprecated:
+container_scanning:
   extends: .cs_common
   variables:
     # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here with a specific image
@@ -44,7 +44,7 @@ container_scanning_deprecated:
           $GITLAB_FEATURES =~ /\bcontainer_scanning\b/ &&
           $CS_MAJOR_VERSION =~ /^[0-3]$/
 
-container_scanning:
+container_scanning_new:
   extends: .cs_common
   variables:
     CS_PROJECT: 'container-scanning'

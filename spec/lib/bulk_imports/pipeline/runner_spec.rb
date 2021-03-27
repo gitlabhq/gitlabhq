@@ -245,7 +245,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
         data: { foo: :bar },
         page_info: {
           'has_next_page' => has_next_page,
-          'end_cursor' => has_next_page ? 'cursor' : nil
+          'next_page' => has_next_page ? 'cursor' : nil
         }
       )
     end

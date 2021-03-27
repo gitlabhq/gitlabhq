@@ -9,7 +9,7 @@ RSpec.describe BulkImports::Pipeline::ExtractedData do
   let(:page_info) do
     {
       'has_next_page' => has_next_page,
-      'end_cursor' => cursor
+      'next_page' => cursor
     }
   end
 

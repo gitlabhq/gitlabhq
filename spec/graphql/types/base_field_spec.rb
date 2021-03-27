@@ -128,6 +128,7 @@ RSpec.describe Types::BaseField do
 
         before do
           skip_feature_flags_yaml_validation
+          skip_default_enabled_yaml_check
         end
 
         it 'returns false if the feature is not enabled' do

@@ -13,6 +13,7 @@ Set the title to: `Description of the original issue`
 - [ ] Mark this [issue as related] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
+- [ ] Add one of the `~severity::x` labels to the issue and all associated merge requests. 
 
 ## Development
 

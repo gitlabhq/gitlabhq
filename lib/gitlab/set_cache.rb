@@ -51,6 +51,19 @@ module Gitlab
       with { |redis| redis.sismember(cache_key(key), value) }
     end
 
+    # Like include?, but also tells us if the cache was populated when it ran
+    # by returning two booleans: [member_exists, set_exists]
+    def try_include?(key, value)
+      full_key = cache_key(key)
+
+      with do |redis|
+        redis.multi do
+          redis.sismember(full_key, value)
+          redis.exists(full_key)
+        end
+      end
+    end
+
     def ttl(key)
       with { |redis| redis.ttl(cache_key(key)) }
     end

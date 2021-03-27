@@ -11,7 +11,7 @@ module BulkImports
             group(fullPath: $full_path) {
               group_members: groupMembers(relations: DIRECT, first: 100, after: $cursor) {
                 page_info: pageInfo {
-                  end_cursor: endCursor
+                  next_page: endCursor
                   has_next_page: hasNextPage
                 }
                 nodes {

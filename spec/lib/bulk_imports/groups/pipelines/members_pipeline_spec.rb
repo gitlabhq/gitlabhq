@@ -103,7 +103,7 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
 
     page_info = {
       'has_next_page' => has_next_page,
-      'end_cursor' => has_next_page ? 'cursor' : nil
+      'next_page' => has_next_page ? 'cursor' : nil
     }
 
     BulkImports::Pipeline::ExtractedData.new(data: data, page_info: page_info)

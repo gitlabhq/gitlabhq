@@ -36,11 +36,18 @@ module Gitlab
     end
 
     def fetch(key, &block)
-      if exist?(key)
-        read(key)
-      else
-        write(key, yield)
+      full_key = cache_key(key)
+
+      smembers, exists = with do |redis|
+        redis.multi do
+          redis.smembers(full_key)
+          redis.exists(full_key)
+        end
       end
+
+      return smembers if exists
+
+      write(key, yield)
     end
   end
 end

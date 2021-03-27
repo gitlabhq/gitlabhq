@@ -94,7 +94,7 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
   def extracted_data(title:, has_next_page: false)
     page_info = {
       'has_next_page' => has_next_page,
-      'end_cursor' => has_next_page ? 'cursor' : nil
+      'next_page' => has_next_page ? 'cursor' : nil
     }
 
     BulkImports::Pipeline::ExtractedData.new(data: [label_data(title)], page_info: page_info)

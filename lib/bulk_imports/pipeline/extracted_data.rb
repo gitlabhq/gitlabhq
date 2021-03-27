@@ -18,7 +18,7 @@ module BulkImports
       end
 
       def next_page
-        @page_info&.dig('end_cursor')
+        @page_info&.dig('next_page')
       end
 
       def each(&block)
