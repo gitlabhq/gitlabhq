@@ -71,12 +71,12 @@ class GpgKey < ApplicationRecord
   end
 
   def emails_with_verified_status
-    user_infos.map do |user_info|
+    user_infos.to_h do |user_info|
       [
         user_info[:email],
         user.verified_email?(user_info[:email])
       ]
-    end.to_h
+    end
   end
 
   def verified?

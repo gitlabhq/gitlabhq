@@ -35,9 +35,7 @@ module Packages
       private
 
       def build_package_tags
-        Hash[
-          package_tags.map { |tag| [tag.name, tag.package.version] }
-        ]
+        package_tags.to_h { |tag| [tag.name, tag.package.version] }
       end
 
       def build_package_version(package, package_file)

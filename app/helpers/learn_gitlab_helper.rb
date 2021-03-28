@@ -11,14 +11,14 @@ module LearnGitlabHelper
   def onboarding_actions_data(project)
     attributes = onboarding_progress(project).attributes.symbolize_keys
 
-    action_urls.map do |action, url|
+    action_urls.to_h do |action, url|
       [
         action,
         url: url,
         completed: attributes[OnboardingProgress.column_name(action)].present?,
         svg: image_path("learn_gitlab/#{action}.svg")
       ]
-    end.to_h
+    end
   end
 
   private

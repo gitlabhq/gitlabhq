@@ -33,9 +33,9 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      attributes = self.class.clone_accessors.map do |attribute|
+      attributes = self.class.clone_accessors.to_h do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
-      end.to_h
+      end
 
       attributes[:user] = current_user
 

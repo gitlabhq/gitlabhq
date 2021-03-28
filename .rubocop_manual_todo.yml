@@ -3428,16 +3428,6 @@ Gitlab/NamespacedClass:
 # WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/322739
 Style/HashTransformation:
   Exclude:
-    - 'app/controllers/projects/branches_controller.rb'
-    - 'app/finders/ci/commit_statuses_finder.rb'
-    - 'app/helpers/learn_gitlab_helper.rb'
-    - 'app/models/ci/build_trace_chunk.rb'
-    - 'app/models/concerns/cache_markdown_field.rb'
-    - 'app/models/gpg_key.rb'
-    - 'app/presenters/packages/npm/package_presenter.rb'
-    - 'app/services/ci/pipeline_processing/atomic_processing_service/status_collection.rb'
-    - 'app/services/ci/retry_build_service.rb'
-    - 'app/services/packages/nuget/create_dependency_service.rb'
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/productivity_analytics.rb'
     - 'ee/app/models/sca/license_compliance.rb'
