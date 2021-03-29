@@ -2,7 +2,7 @@
 
 - page_title _("Merge Requests")
 
-- if group_merge_requests_count(state: 'all') == 0
+- if @merge_requests&.size == 0
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area

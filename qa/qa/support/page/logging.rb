@@ -64,7 +64,7 @@ module QA
           super
         end
 
-        def click_element_coordinates(name)
+        def click_element_coordinates(name, **kwargs)
           log(%Q(clicking the coordinates of :#{name}))
 
           super

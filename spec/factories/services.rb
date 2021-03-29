@@ -56,6 +56,7 @@ FactoryBot.define do
       api_url { nil }
       username { 'jira_username' }
       password { 'jira_password' }
+      jira_issue_transition_automatic { false }
       jira_issue_transition_id { '56-1' }
       issues_enabled { false }
       project_key { nil }
@@ -66,7 +67,9 @@ FactoryBot.define do
     before(:create) do |service, evaluator|
       if evaluator.create_data
         create(:jira_tracker_data, service: service,
-               url: evaluator.url, api_url: evaluator.api_url, jira_issue_transition_id: evaluator.jira_issue_transition_id,
+               url: evaluator.url, api_url: evaluator.api_url,
+               jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
+               jira_issue_transition_id: evaluator.jira_issue_transition_id,
                username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
                project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
                vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype

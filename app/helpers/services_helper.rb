@@ -86,7 +86,7 @@ module ServicesHelper
   end
 
   def integration_form_data(integration, group: nil)
-    {
+    form_data = {
       id: integration.id,
       show_active: integration.show_active_box?.to_s,
       activated: (integration.active || integration.new_record?).to_s,
@@ -106,6 +106,13 @@ module ServicesHelper
       test_path: scoped_test_integration_path(integration),
       reset_path: scoped_reset_integration_path(integration, group: group)
     }
+
+    if integration.is_a?(JiraService)
+      form_data[:jira_issue_transition_automatic] = integration.jira_issue_transition_automatic
+      form_data[:jira_issue_transition_id] = integration.jira_issue_transition_id
+    end
+
+    form_data
   end
 
   def trigger_events_for_service(integration)

@@ -166,20 +166,6 @@ RSpec.describe MergeRequests::MergeService do
           service.execute(merge_request)
         end
 
-        context 'when jira_issue_transition_id is not present' do
-          before do
-            allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(nil)
-          end
-
-          it 'does not close issue' do
-            jira_tracker.update!(jira_issue_transition_id: nil)
-
-            expect_any_instance_of(JiraService).not_to receive(:transition_issue)
-
-            service.execute(merge_request)
-          end
-        end
-
         context 'wrong issue markdown' do
           it 'does not close issues on Jira issue tracker' do
             jira_issue = ExternalIssue.new('#JIRA-123', project)

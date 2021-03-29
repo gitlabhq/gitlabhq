@@ -1,5 +1,5 @@
 - issues_count = group_open_issues_count(@group)
-- merge_requests_count = group_merge_requests_count(state: 'opened')
+- merge_requests_count = group_open_merge_requests_count(@group)
 - aside_title = @group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
 - overview_title = @group.subgroup? ? _('Subgroup overview') : _('Group overview')
 
@@ -92,13 +92,13 @@
               = sprite_icon('git-merge')
             %span.nav-item-name
               = _('Merge Requests')
-            %span.badge.badge-pill.count= number_with_delimiter(merge_requests_count)
+            %span.badge.badge-pill.count= merge_requests_count
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(path: 'groups#merge_requests', html_options: { class: "fly-out-top-item" } ) do
               = link_to merge_requests_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Merge Requests')
-                %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
+                %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= merge_requests_count
 
       = render_if_exists "layouts/nav/ee/security_link" # EE-specific
 

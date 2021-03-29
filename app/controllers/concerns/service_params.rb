@@ -44,6 +44,7 @@ module ServiceParams
     # make those event names plural as special case.
     :issues_events,
     :issues_url,
+    :jira_issue_transition_automatic,
     :jira_issue_transition_id,
     :manual_configuration,
     :merge_requests_events,

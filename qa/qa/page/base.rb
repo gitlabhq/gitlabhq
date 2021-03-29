@@ -171,8 +171,8 @@ module QA
       # This is a helpful workaround when there is a transparent element overlapping
       # the target element and so, normal `click_element` on target would raise
       # Selenium::WebDriver::Error::ElementClickInterceptedError
-      def click_element_coordinates(name)
-        page.driver.browser.action.move_to(find_element(name).native).click.perform
+      def click_element_coordinates(name, **kwargs)
+        page.driver.browser.action.move_to(find_element(name, **kwargs).native).click.perform
       end
 
       # replace with (..., page = self.class)

@@ -13977,6 +13977,7 @@ CREATE TABLE jira_tracker_data (
     encrypted_proxy_username_iv text,
     encrypted_proxy_password text,
     encrypted_proxy_password_iv text,
+    jira_issue_transition_automatic boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );

@@ -82,11 +82,8 @@ RSpec.describe JiraService do
 
     subject(:fields) { service.fields }
 
-    it 'includes transition help link' do
-      transition_id_field = fields.find { |field| field[:name] == 'jira_issue_transition_id' }
-
-      expect(transition_id_field[:title]).to eq('Jira workflow transition IDs')
-      expect(transition_id_field[:help]).to include('/help/user/project/integrations/jira')
+    it 'returns custom fields' do
+      expect(fields.pluck(:name)).to eq(%w[url api_url username password])
     end
   end
 
@@ -460,10 +457,10 @@ RSpec.describe JiraService do
     end
 
     context 'with options' do
-      let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields" }
+      let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields,transitions" }
 
       it 'calls the Jira API with the options to get the issue' do
-        jira_service.find_issue(issue_key, rendered_fields: true)
+        jira_service.find_issue(issue_key, rendered_fields: true, transitions: true)
 
         expect(WebMock).to have_requested(:get, issue_url)
       end
@@ -494,7 +491,7 @@ RSpec.describe JiraService do
       end
 
       before do
-        allow(jira_service).to receive_messages(jira_issue_transition_id: '999')
+        jira_service.jira_issue_transition_id = '999'
 
         # These stubs are needed to test JiraService#close_issue.
         # We close the issue then do another request to API to check if it got closed.
@@ -505,7 +502,7 @@ RSpec.describe JiraService do
         allow(closed_issue).to receive(:resolution).and_return(true)
         allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
 
-        allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return('JIRA-123')
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return(issue_key)
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         WebMock.stub_request(:get, issue_url).with(basic_auth: %w(jira-username jira-password))
@@ -662,6 +659,61 @@ RSpec.describe JiraService do
         expect(WebMock).to have_requested(:post, transitions_url).with(
           body: /"id":"999"/
         ).once
+      end
+
+      context 'when custom transition IDs are blank' do
+        before do
+          jira_service.jira_issue_transition_id = ''
+        end
+
+        it 'does not transition the issue' do
+          close_issue
+
+          expect(WebMock).not_to have_requested(:post, transitions_url)
+        end
+      end
+
+      context 'when using automatic issue transitions' do
+        let(:transitions) do
+          [
+            { id: '1' },
+            { id: '2', to: { statusCategory: { key: 'new' } } },
+            { id: '3', to: { statusCategory: { key: 'done' } } },
+            { id: '4', to: { statusCategory: { key: 'done' } } }
+          ]
+        end
+
+        before do
+          jira_service.jira_issue_transition_automatic = true
+
+          close_issue
+        end
+
+        it 'uses the next transition with a status category of done' do
+          expect(WebMock).to have_requested(:post, transitions_url).with(
+            body: /"id":"3"/
+          ).once
+        end
+
+        context 'when no done transition is available' do
+          let(:transitions) do
+            [
+              { id: '1', to: { statusCategory: { key: 'new' } } }
+            ]
+          end
+
+          it 'does not attempt to transition' do
+            expect(WebMock).not_to have_requested(:post, transitions_url)
+          end
+        end
+
+        context 'when no valid transitions are returned' do
+          let(:transitions) { 'foo' }
+
+          it 'does not attempt to transition' do
+            expect(WebMock).not_to have_requested(:post, transitions_url)
+          end
+        end
       end
 
       context 'when using multiple transition ids' do
@@ -900,6 +952,24 @@ RSpec.describe JiraService do
       it 'handles trailing slashes' do
         expect(service.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue!default.jspa')
       end
+    end
+  end
+
+  describe '#issue_transition_enabled?' do
+    it 'returns true if automatic transitions are enabled' do
+      jira_service.jira_issue_transition_automatic = true
+
+      expect(jira_service.issue_transition_enabled?).to be(true)
+    end
+
+    it 'returns true if custom transitions are set' do
+      jira_service.jira_issue_transition_id = '1, 2, 3'
+
+      expect(jira_service.issue_transition_enabled?).to be(true)
+    end
+
+    it 'returns false if automatic and custom transitions are disabled' do
+      expect(jira_service.issue_transition_enabled?).to be(false)
     end
   end
 end

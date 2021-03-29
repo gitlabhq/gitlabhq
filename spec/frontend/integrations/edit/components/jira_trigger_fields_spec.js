@@ -30,14 +30,23 @@ describe('JiraTriggerFields', () => {
   const findCommentSettings = () => wrapper.find('[data-testid="comment-settings"]');
   const findCommentDetail = () => wrapper.find('[data-testid="comment-detail"]');
   const findCommentSettingsCheckbox = () => findCommentSettings().find(GlFormCheckbox);
+  const findIssueTransitionEnabled = () =>
+    wrapper.find('[data-testid="issue-transition-enabled"] input[type="checkbox"]');
+  const findIssueTransitionMode = () => wrapper.find('[data-testid="issue-transition-mode"]');
+  const findIssueTransitionModeRadios = () =>
+    findIssueTransitionMode().findAll('input[type="radio"]');
+  const findIssueTransitionIdsField = () =>
+    wrapper.find('input[type="text"][name="service[jira_issue_transition_id]"]');
 
   describe('template', () => {
     describe('initialTriggerCommit and initialTriggerMergeRequest are false', () => {
-      it('does not show comment settings', () => {
+      it('does not show trigger settings', () => {
         createComponent();
 
         expect(findCommentSettings().isVisible()).toBe(false);
         expect(findCommentDetail().isVisible()).toBe(false);
+        expect(findIssueTransitionEnabled().exists()).toBe(false);
+        expect(findIssueTransitionMode().exists()).toBe(false);
       });
     });
 
@@ -48,9 +57,11 @@ describe('JiraTriggerFields', () => {
         });
       });
 
-      it('shows comment settings', () => {
+      it('shows trigger settings', () => {
         expect(findCommentSettings().isVisible()).toBe(true);
         expect(findCommentDetail().isVisible()).toBe(false);
+        expect(findIssueTransitionEnabled().isVisible()).toBe(true);
+        expect(findIssueTransitionMode().exists()).toBe(false);
       });
 
       // As per https://vuejs.org/v2/guide/forms.html#Checkbox-1,
@@ -73,13 +84,15 @@ describe('JiraTriggerFields', () => {
     });
 
     describe('initialTriggerMergeRequest is true', () => {
-      it('shows comment settings', () => {
+      it('shows trigger settings', () => {
         createComponent({
           initialTriggerMergeRequest: true,
         });
 
         expect(findCommentSettings().isVisible()).toBe(true);
         expect(findCommentDetail().isVisible()).toBe(false);
+        expect(findIssueTransitionEnabled().isVisible()).toBe(true);
+        expect(findIssueTransitionMode().exists()).toBe(false);
       });
     });
 
@@ -95,21 +108,94 @@ describe('JiraTriggerFields', () => {
       });
     });
 
-    it('disables checkboxes and radios if inheriting', () => {
+    describe('initialJiraIssueTransitionAutomatic is false, initialJiraIssueTransitionId is not set', () => {
+      it('selects automatic transitions when enabling transitions', () => {
+        createComponent({
+          initialTriggerCommit: true,
+          initialEnableComments: true,
+        });
+
+        const checkbox = findIssueTransitionEnabled();
+        expect(checkbox.element.checked).toBe(false);
+        checkbox.trigger('click');
+
+        return wrapper.vm.$nextTick().then(() => {
+          const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
+          expect(radio1.element.checked).toBe(true);
+          expect(radio2.element.checked).toBe(false);
+        });
+      });
+    });
+
+    describe('initialJiraIssueTransitionAutomatic is true', () => {
+      it('uses automatic transitions', () => {
+        createComponent({
+          initialTriggerCommit: true,
+          initialJiraIssueTransitionAutomatic: true,
+        });
+
+        expect(findIssueTransitionEnabled().element.checked).toBe(true);
+
+        const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
+        expect(radio1.element.checked).toBe(true);
+        expect(radio2.element.checked).toBe(false);
+
+        expect(findIssueTransitionIdsField().exists()).toBe(false);
+      });
+    });
+
+    describe('initialJiraIssueTransitionId is set', () => {
+      it('uses custom transitions', () => {
+        createComponent({
+          initialTriggerCommit: true,
+          initialJiraIssueTransitionId: '1, 2, 3',
+        });
+
+        expect(findIssueTransitionEnabled().element.checked).toBe(true);
+
+        const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
+        expect(radio1.element.checked).toBe(false);
+        expect(radio2.element.checked).toBe(true);
+
+        const field = findIssueTransitionIdsField();
+        expect(field.isVisible()).toBe(true);
+        expect(field.element).toMatchObject({
+          type: 'text',
+          value: '1, 2, 3',
+        });
+      });
+    });
+
+    describe('initialJiraIssueTransitionAutomatic is true, initialJiraIssueTransitionId is set', () => {
+      it('uses automatic transitions', () => {
+        createComponent({
+          initialTriggerCommit: true,
+          initialJiraIssueTransitionAutomatic: true,
+          initialJiraIssueTransitionId: '1, 2, 3',
+        });
+
+        expect(findIssueTransitionEnabled().element.checked).toBe(true);
+
+        const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
+        expect(radio1.element.checked).toBe(true);
+        expect(radio2.element.checked).toBe(false);
+
+        expect(findIssueTransitionIdsField().exists()).toBe(false);
+      });
+    });
+
+    it('disables input fields if inheriting', () => {
       createComponent(
         {
           initialTriggerCommit: true,
           initialEnableComments: true,
+          initialJiraIssueTransitionId: '1, 2, 3',
         },
         true,
       );
 
-      wrapper.findAll('[type=checkbox]').wrappers.forEach((checkbox) => {
-        expect(checkbox.attributes('disabled')).toBe('disabled');
-      });
-
-      wrapper.findAll('[type=radio]').wrappers.forEach((radio) => {
-        expect(radio.attributes('disabled')).toBe('disabled');
+      wrapper.findAll('[type=text], [type=checkbox], [type=radio]').wrappers.forEach((input) => {
+        expect(input.attributes('disabled')).toBe('disabled');
       });
     });
   });

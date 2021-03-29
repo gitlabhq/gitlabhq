@@ -1413,6 +1413,29 @@ RSpec.describe API::Internal::Base do
     end
   end
 
+  describe 'GET /internal/geo_proxy' do
+    subject { get api('/internal/geo_proxy'), params: { secret_token: secret_token } }
+
+    context 'with valid auth' do
+      it 'returns empty data' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'with invalid auth' do
+      let(:secret_token) { 'invalid_token' }
+
+      it 'returns unauthorized' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   def lfs_auth_project(project)
     post(
       api("/internal/lfs_authenticate"),

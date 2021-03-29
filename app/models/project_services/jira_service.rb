@@ -31,7 +31,7 @@ class JiraService < IssueTrackerService
 
   # TODO: we can probably just delegate as part of
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
-  data_field :username, :password, :url, :api_url, :jira_issue_transition_id, :project_key, :issues_enabled,
+  data_field :username, :password, :url, :api_url, :jira_issue_transition_automatic, :jira_issue_transition_id, :project_key, :issues_enabled,
     :vulnerabilities_enabled, :vulnerabilities_issuetype
 
   before_update :reset_password
@@ -124,9 +124,6 @@ class JiraService < IssueTrackerService
   end
 
   def fields
-    transition_id_help_path = help_page_path('user/project/integrations/jira', anchor: 'obtaining-a-transition-id')
-    transition_id_help_link_start = '<a href="%{transition_id_help_path}" target="_blank" rel="noopener noreferrer">'.html_safe % { transition_id_help_path: transition_id_help_path }
-
     [
       {
         type: 'text',
@@ -156,13 +153,6 @@ class JiraService < IssueTrackerService
         non_empty_password_help: s_('JiraService|Leave blank to use your current password or API token'),
         placeholder: s_('JiraService|Use a password for server version and an API token for cloud version'),
         required: true
-      },
-      {
-        type: 'text',
-        name: 'jira_issue_transition_id',
-        title: s_('JiraService|Jira workflow transition IDs'),
-        placeholder: s_('JiraService|For example, 12, 24'),
-        help: s_('JiraService|Set transition IDs for Jira workflow transitions. %{link_start}Learn more%{link_end}'.html_safe % { link_start: transition_id_help_link_start, link_end: '</a>'.html_safe })
       }
     ]
   end
@@ -190,17 +180,19 @@ class JiraService < IssueTrackerService
     # support any events.
   end
 
-  def find_issue(issue_key, rendered_fields: false)
-    options = {}
-    options = options.merge(expand: 'renderedFields') if rendered_fields
+  def find_issue(issue_key, rendered_fields: false, transitions: false)
+    expands = []
+    expands << 'renderedFields' if rendered_fields
+    expands << 'transitions' if transitions
+    options = { expand: expands.join(',') } if expands.any?
 
-    jira_request { client.Issue.find(issue_key, options) }
+    jira_request { client.Issue.find(issue_key, options || {}) }
   end
 
   def close_issue(entity, external_issue, current_user)
-    issue = find_issue(external_issue.iid)
+    issue = find_issue(external_issue.iid, transitions: jira_issue_transition_automatic)
 
-    return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
+    return if issue.nil? || has_resolution?(issue) || !issue_transition_enabled?
 
     commit_id = case entity
                 when Commit then entity.id
@@ -275,6 +267,10 @@ class JiraService < IssueTrackerService
     true
   end
 
+  def issue_transition_enabled?
+    jira_issue_transition_automatic || jira_issue_transition_id.present?
+  end
+
   private
 
   def server_info
@@ -295,20 +291,44 @@ class JiraService < IssueTrackerService
   # the issue is transitioned at the order given by the user
   # if any transition fails it will log the error message and stop the transition sequence
   def transition_issue(issue)
-    jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).each do |transition_id|
-      issue.transitions.build.save!(transition: { id: transition_id })
-    rescue => error
-      log_error(
-        "Issue transition failed",
-          error: {
-            exception_class: error.class.name,
-            exception_message: error.message,
-            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
-          },
-         client_url: client_url
-      )
-      return false
+    return transition_issue_to_done(issue) if jira_issue_transition_automatic
+
+    jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).all? do |transition_id|
+      transition_issue_to_id(issue, transition_id)
     end
+  end
+
+  def transition_issue_to_id(issue, transition_id)
+    issue.transitions.build.save!(
+      transition: { id: transition_id }
+    )
+
+    true
+  rescue => error
+    log_error(
+      "Issue transition failed",
+        error: {
+          exception_class: error.class.name,
+          exception_message: error.message,
+          exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
+        },
+        client_url: client_url
+    )
+
+    false
+  end
+
+  def transition_issue_to_done(issue)
+    transitions = issue.transitions rescue []
+
+    transition = transitions.find do |transition|
+      status = transition&.to&.statusCategory
+      status && status['key'] == 'done'
+    end
+
+    return false unless transition
+
+    transition_issue_to_id(issue, transition.id)
   end
 
   def log_usage(action, user)
