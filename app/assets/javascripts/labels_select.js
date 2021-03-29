@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, dot-notation, no-empty */
+/* eslint-disable func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -7,7 +7,6 @@ import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import boardsStore from './boards/stores/boards_store';
-import ModalStore from './boards/stores/modal_store';
 import CreateLabelDropdown from './create_label';
 import { deprecatedCreateFlash as flash } from './flash';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
@@ -361,21 +360,7 @@ export default class LabelsSelect {
             return;
           }
 
-          let boardsModel;
-          if ($dropdown.closest('.add-issues-modal').length) {
-            boardsModel = ModalStore.store.filter;
-          }
-
-          if (boardsModel) {
-            if (label.isAny) {
-              boardsModel['label_name'] = [];
-            } else if ($el.hasClass('is-active')) {
-              boardsModel['label_name'].push(label.title);
-            }
-
-            e.preventDefault();
-            return;
-          } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+          if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             if (!$dropdown.hasClass('js-multiselect')) {
               selectedLabel = label.title;
               return Issuable.filterResults($dropdown.closest('form'));

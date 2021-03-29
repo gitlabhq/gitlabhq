@@ -1773,11 +1773,6 @@ msgstr ""
 msgid "Add \"%{value}\""
 msgstr ""
 
-msgid "Add %d issue"
-msgid_plural "Add %d issues"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
@@ -1926,9 +1921,6 @@ msgid "Add header and footer to emails. Please note that color settings will onl
 msgstr ""
 
 msgid "Add image comment"
-msgstr ""
-
-msgid "Add issues"
 msgstr ""
 
 msgid "Add italic text"
@@ -3674,9 +3666,6 @@ msgid "An instance-level serverless domain already exists."
 msgstr ""
 
 msgid "An issue already exists"
-msgstr ""
-
-msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
 msgstr ""
 
 msgid "An issue title is required"
@@ -10581,9 +10570,6 @@ msgstr ""
 msgid "Descriptive label"
 msgstr ""
 
-msgid "Deselect all"
-msgstr ""
-
 msgid "Design Management files and data"
 msgstr ""
 
@@ -12944,9 +12930,6 @@ msgstr ""
 msgid "Failed to update issue status"
 msgstr ""
 
-msgid "Failed to update issues, please try again."
-msgstr ""
-
 msgid "Failed to update the Canary Ingress."
 msgstr ""
 
@@ -14450,9 +14433,6 @@ msgid "Go back"
 msgstr ""
 
 msgid "Go back (while searching for files)"
-msgstr ""
-
-msgid "Go back to %{tagStart}Open issues%{tagEnd} and select some issues to add to your board."
 msgstr ""
 
 msgid "Go full screen"
@@ -21670,9 +21650,6 @@ msgstr ""
 msgid "Open in your IDE"
 msgstr ""
 
-msgid "Open issues"
-msgstr ""
-
 msgid "Open raw"
 msgstr ""
 
@@ -22910,9 +22887,6 @@ msgid "Please accept the Terms of Service before continuing."
 msgstr ""
 
 msgid "Please add a comment in the text area above"
-msgstr ""
-
-msgid "Please add a list to your board first"
 msgstr ""
 
 msgid "Please check the configuration file for this chart"
@@ -30602,9 +30576,6 @@ msgstr ""
 msgid "There are no issues to show"
 msgstr ""
 
-msgid "There are no issues to show."
-msgstr ""
-
 msgid "There are no issues with the selected labels"
 msgstr ""
 
@@ -34997,12 +34968,6 @@ msgstr ""
 msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."
 msgstr ""
 
-msgid "You haven't added any issues to your project yet"
-msgstr ""
-
-msgid "You haven't selected any issues yet"
-msgstr ""
-
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
@@ -36910,9 +36875,6 @@ msgid "to help your contributors communicate effectively!"
 msgstr ""
 
 msgid "to join %{source_name}"
-msgstr ""
-
-msgid "to list"
 msgstr ""
 
 msgid "toggle collapse"

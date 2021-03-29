@@ -11,7 +11,6 @@ import {
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
-import ModalStore from '../boards/stores/modal_store';
 import axios from '../lib/utils/axios_utils';
 import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { loadCSSFile } from '../lib/utils/css_utils';
@@ -504,9 +503,7 @@ function UsersSelect(currentUser, els, options = {}) {
           }
           return;
         }
-        if ($el.closest('.add-issues-modal').length) {
-          ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
-        } else if (handleClick) {
+        if (handleClick) {
           e.preventDefault();
           handleClick(user, isMarking);
         } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {

@@ -450,7 +450,6 @@ The feature is enabled by default when you use group issue boards with epic swim
 
 - [Create a new list](#create-a-new-list).
 - [Remove an existing list](#remove-a-list).
-- [Add issues to a list](#add-issues-to-a-list).
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
 - [Filter issues](#filter-issues) that appear across your issue board.
 - [Create workflows](#create-workflows).
@@ -489,31 +488,19 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list **(FREE SELF)**
+### Add issues to a list
 
-> - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(FREE SELF)**
+> The **Add issues** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57329) in GitLab 13.11.
 
-You can add issues to a list in a project issue board by clicking the **Add issues** button
-in the top right corner of the issue board. This opens up a modal
-window where you can see all the issues that do not belong to any list.
+If your board is scoped to one or more attributes, go to the issues you want to add and apply the
+same attributes as your board scope.
 
-Select one or more issues by clicking the cards and then click **Add issues**
-to add them to the selected list. You can limit the issues you want to add to
-the list by filtering by the following:
+For example, to add an issue to a list scoped to the `Doing` label, in a group issue board:
 
-- Assignee
-- Author
-- Epic
-- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
-- Label
-- Milestone
-- My Reaction
-- Release
-- Weight
+1. Go to an issue in the group or one of the subgroups or projects.
+1. Add the `Doing` label.
+
+The issue should now show in the `Doing` list on your issue board.
 
 ### Remove an issue from a list
 
@@ -655,24 +642,6 @@ To disable it:
 
 ```ruby
 Feature.disable(:graphql_board_lists)
-```
-
-## Enable or disable adding issues to the list **(FREE SELF)**
-
-Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:add_issues_button)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:add_issues_button)
 ```
 
 ### Enable or disable new add list form **(FREE SELF)**

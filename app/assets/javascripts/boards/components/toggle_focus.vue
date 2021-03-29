@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="board-extra-actions gl-ml-3 gl-display-none gl-md-display-flex gl-align-items-center">
+  <div class="gl-ml-3 gl-display-none gl-md-display-flex gl-align-items-center">
     <gl-button
       ref="toggleFocusModeButton"
       v-gl-tooltip

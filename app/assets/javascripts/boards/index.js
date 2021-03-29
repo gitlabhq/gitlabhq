@@ -10,26 +10,21 @@ import {
   setWeightFetchingState,
   setEpicFetchingState,
   getMilestoneTitle,
-  getBoardsModalData,
 } from 'ee_else_ce/boards/ee_functions';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardContent from '~/boards/components/board_content.vue';
-import BoardExtraActions from '~/boards/components/board_extra_actions.vue';
 import './models/label';
 import './models/assignee';
 import '~/boards/models/milestone';
 import '~/boards/models/project';
 import '~/boards/filters/due_date_filters';
-import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
 import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
-import modalMixin from '~/boards/mixins/modal_mixins';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
-import ModalStore from '~/boards/stores/modal_store';
 import toggleFocusMode from '~/boards/toggle_focus';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import createDefaultClient from '~/lib/graphql';
@@ -78,7 +73,6 @@ export default () => {
     components: {
       BoardContent,
       BoardSidebar,
-      BoardAddIssuesModal,
       BoardSettingsSidebar: () => import('~/boards/components/board_settings_sidebar.vue'),
     },
     provide: {
@@ -316,49 +310,7 @@ export default () => {
 
   boardConfigToggle(boardsStore);
 
-  const issueBoardsModal = document.getElementById('js-add-issues-btn');
-
-  if (issueBoardsModal && gon.features.addIssuesButton) {
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: issueBoardsModal,
-      mixins: [modalMixin],
-      data() {
-        return {
-          modal: ModalStore.store,
-          store: boardsStore.state,
-          ...getBoardsModalData(),
-          canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
-        };
-      },
-      computed: {
-        disabled() {
-          if (!this.store || !this.store.lists) {
-            return true;
-          }
-          return !this.store.lists.filter((list) => !list.preset).length;
-        },
-      },
-      methods: {
-        openModal() {
-          if (!this.disabled) {
-            this.toggleModal(true);
-          }
-        },
-      },
-      render(createElement) {
-        return createElement(BoardExtraActions, {
-          props: {
-            canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
-            openModal: this.openModal,
-            disabled: this.disabled,
-          },
-        });
-      },
-    });
-  }
-
-  toggleFocusMode(ModalStore, boardsStore);
+  toggleFocusMode();
   toggleLabels();
 
   if (gon.licensed_features?.swimlanes) {

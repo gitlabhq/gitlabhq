@@ -413,6 +413,10 @@ class Service < ApplicationRecord
     !instance? && !group_id
   end
 
+  def project_level?
+    project_id.present?
+  end
+
   def parent
     project || group
   end
