@@ -337,7 +337,7 @@ function mountCopyEmailComponent() {
   new Vue({
     el,
     render: (createElement) =>
-      createElement(CopyEmailToClipboard, { props: { copyText: createNoteEmail } }),
+      createElement(CopyEmailToClipboard, { props: { issueEmailAddress: createNoteEmail } }),
   });
 }
 

@@ -27,6 +27,11 @@ export default {
       required: false,
       default: false,
     },
+    clipboardTooltipText: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   computed: {
     clipboardProps() {
@@ -35,7 +40,9 @@ export default {
         tooltipBoundary: 'viewport',
         tooltipPlacement: 'left',
         text: this.value,
-        title: sprintf(this.$options.i18n.clipboardTooltip, { name: this.name }),
+        title:
+          this.clipboardTooltipText ||
+          sprintf(this.$options.i18n.clipboardTooltip, { name: this.name }),
       };
     },
     loadingIconLabel() {

@@ -349,14 +349,6 @@ export default {
     refetchDiffData() {
       this.fetchData(false);
     },
-    startDiffRendering() {
-      requestIdleCallback(
-        () => {
-          this.startRenderDiffsQueue();
-        },
-        { timeout: 1000 },
-      );
-    },
     needsReload() {
       return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
     },
@@ -368,8 +360,6 @@ export default {
         .then(({ real_size }) => {
           this.diffFilesLength = parseInt(real_size, 10);
           if (toggleTree) this.setTreeDisplay();
-
-          this.startDiffRendering();
         })
         .catch(() => {
           createFlash(__('Something went wrong on our end. Please try again!'));
@@ -384,7 +374,6 @@ export default {
           // change when loading the other half of the diff files.
           this.setDiscussions();
         })
-        .then(() => this.startDiffRendering())
         .catch(() => {
           createFlash(__('Something went wrong on our end. Please try again!'));
         });

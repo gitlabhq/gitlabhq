@@ -61,5 +61,14 @@ describe('SidebarCopyableField', () => {
         expect(findClipboardButton().exists()).toBe(false);
       });
     });
+
+    describe('with `clipboardTooltipText` prop', () => {
+      it('sets ClipboardButton `title` prop to `clipboardTooltipText` value', () => {
+        const mockClipboardTooltipText = 'Copy my custom value';
+        createComponent({ ...defaultProps, clipboardTooltipText: mockClipboardTooltipText });
+
+        expect(findClipboardButton().props('title')).toBe(mockClipboardTooltipText);
+      });
+    });
   });
 });

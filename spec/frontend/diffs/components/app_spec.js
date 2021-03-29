@@ -105,7 +105,6 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'setDiscussions').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm, 'startRenderDiffsQueue').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'unwatchDiscussions').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'unwatchRetrievingBatches').mockImplementation(() => {});
       store.state.diffs.retrievingBatches = true;
@@ -119,7 +118,6 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
@@ -134,7 +132,6 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Gitaly
+# Gitaly and Gitaly Cluster **(FREE SELF)**
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
 It is used by GitLab to read and write Git data.
@@ -68,8 +68,202 @@ GitLab installations for more than 2000 users should use Gitaly Cluster.
 
 ## Gitaly Cluster
 
-Gitaly can run in a clustered configuration to scale Gitaly and increase fault tolerance. For more
-information, see [Gitaly Cluster](praefect.md).
+Gitaly, the service that provides storage for Git repositories, can
+be run in a clustered configuration to scale the Gitaly service and increase
+fault tolerance. In this configuration, every Git repository is stored on every
+Gitaly node in the cluster.
+
+Using a Gitaly Cluster increases fault tolerance by:
+
+- Replicating write operations to warm standby Gitaly nodes.
+- Detecting Gitaly node failures.
+- Automatically routing Git requests to an available Gitaly node.
+
+NOTE:
+Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
+customers.
+
+The availability objectives for Gitaly clusters are:
+
+- **Recovery Point Objective (RPO):** Less than 1 minute.
+
+  Writes are replicated asynchronously. Any writes that have not been replicated
+  to the newly promoted primary are lost.
+
+  [Strong consistency](praefect.md#strong-consistency) can be used to avoid loss in some
+  circumstances.
+
+- **Recovery Time Objective (RTO):** Less than 10 seconds.
+  Outages are detected by a health check run by each Praefect node every
+  second. Failover requires ten consecutive failed health checks on each
+  Praefect node.
+
+  [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
+  is planned to improve this to less than 1 second.
+
+Gitaly Cluster supports:
+
+- [Strong consistency](praefect.md#strong-consistency) of the secondary replicas.
+- [Automatic failover](praefect.md#automatic-failover-and-leader-election) from the primary to the secondary.
+- Reporting of possible data loss if replication queue is non-empty.
+- Marking repositories as [read only](praefect.md#read-only-mode) if data loss is detected to prevent data inconsistencies.
+
+Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
+for improvements including
+[horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+
+### Overview
+
+Git storage is provided through the Gitaly service in GitLab, and is essential
+to the operation of the GitLab application. When the number of
+users, repositories, and activity grows, it is important to scale Gitaly
+appropriately by:
+
+- Increasing the available CPU and memory resources available to Git before
+  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
+- Increase available storage before storage limits are reached causing write
+  operations to fail.
+- Improve fault tolerance by removing single points of failure. Git should be
+  considered mission critical if a service degradation would prevent you from
+  deploying changes to production.
+
+### Moving beyond NFS
+
+WARNING:
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+Gitaly Cluster as soon as possible.
+
+[Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
+is not well suited to Git workloads which are CPU and IOPS sensitive.
+Specifically:
+
+- Git is sensitive to file system latency. Even simple operations require many
+  read operations. Operations that are fast on block storage can become an order of
+  magnitude slower. This significantly impacts GitLab application performance.
+- NFS performance optimizations that prevent the performance gap between
+  block storage and NFS being even wider are vulnerable to race conditions. We have observed
+  [data inconsistencies](https://gitlab.com/gitlab-org/gitaly/-/issues/2589)
+  in production environments caused by simultaneous writes to different NFS
+  clients. Data corruption is not an acceptable risk.
+
+Gitaly Cluster is purpose built to provide reliable, high performance, fault
+tolerant Git storage.
+
+Further reading:
+
+- Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
+- Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
+
+### Where Gitaly Cluster fits
+
+GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
+[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
+repository storages based on their configured weights. Each repository storage is either:
+
+- A Gitaly storage served directly by Gitaly. These map to a directory on the file system of a
+  Gitaly node.
+- A [virtual storage](#virtual-storage-or-direct-gitaly-storage) served by Praefect. A virtual
+  storage is a cluster of Gitaly storages that appear as a single repository storage.
+
+Virtual storages are a feature of Gitaly Cluster. They support replicating the repositories to
+multiple storages for fault tolerance. Virtual storages can improve performance by distributing
+requests across Gitaly nodes. Their distributed nature makes it viable to have a single repository
+storage in GitLab to simplify repository management.
+
+### Components of Gitaly Cluster
+
+Gitaly Cluster consists of multiple components:
+
+- [Load balancer](praefect.md#load-balancer) for distributing requests and providing fault-tolerant access to
+  Praefect nodes.
+- [Praefect](praefect.md#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
+- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#pgbouncer),
+  recommended for pooling Praefect's database connections.
+- Gitaly nodes to provide repository storage and Git access.
+
+![Cluster example](img/cluster_example_v13_3.png)
+
+In this example:
+
+- Repositories are stored on a virtual storage called `storage-1`.
+- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
+- The three Gitaly nodes store data on their file systems.
+
+### Virtual storage or direct Gitaly storage
+
+Gitaly supports multiple models of scaling:
+
+- Clustering using Gitaly Cluster, where each repository is stored on multiple Gitaly nodes in the
+  cluster. Read requests are distributed between repository replicas and write requests are
+  broadcast to repository replicas. GitLab accesses virtual storage.
+- Direct access to Gitaly storage using [repository storage paths](../repository_storage_paths.md),
+  where each repository is stored on the assigned Gitaly node. All requests are routed to this node.
+
+The following is Gitaly set up to use direct access to Gitaly instead of Gitaly Cluster:
+
+![Shard example](img/shard_example_v13_3.png)
+
+In this example:
+
+- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`,
+  or `storage-3`.
+- Each storage is serviced by a Gitaly node.
+- The three Gitaly nodes store data in three separate hashed storage locations.
+
+Generally, virtual storage with Gitaly Cluster can replace direct Gitaly storage configurations, at
+the expense of additional storage needed to store each repository on multiple Gitaly nodes. The
+benefit of using Gitaly Cluster over direct Gitaly storage is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across replicas.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  replicas.
+- Simpler management, because all Gitaly nodes are identical.
+
+Under some workloads, CPU and memory requirements may require a large fleet of Gitaly nodes. It
+can be uneconomical to have one to one replication factor.
+
+A hybrid approach can be used in these instances, where each shard is configured as a smaller
+cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
+to provide greater flexibility for extremely large GitLab instances.
+
+### Gitaly Cluster compared to Geo
+
+Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+
+- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster is used.
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+  an entire instance of GitLab. Users know when they are using Geo for
+  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  including Git data.
+
+The following table outlines the major differences between Gitaly Cluster and Geo:
+
+| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                                        | Consistency                              | Provides redundancy for |
+|:---------------|:---------|:----------|:-------------------|:----------------------------------------------------------------|:-----------------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-leader-election) | [Strong](praefect.md#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)                     | Eventual                                 | Entire GitLab instance  |
+
+For more information, see:
+
+- Geo [use cases](../geo/index.md#use-cases).
+- Geo [architecture](../geo/index.md#architecture).
+
+### Architecture
+
+Praefect is a router and transaction manager for Gitaly, and a required
+component for running a Gitaly Cluster.
+
+![Architecture diagram](img/praefect_architecture_v12_10.png)
+
+For more information, see [Gitaly High Availability (HA) Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md).
+
+### Configure Gitaly Cluster
+
+For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
 ## Do not bypass Gitaly
 
@@ -180,7 +374,7 @@ There are two facets to our efforts to remove direct Git access in GitLab:
   NFS.
 
 The second facet presents the only real solution. For this, we developed
-[Gitaly Cluster](praefect.md).
+[Gitaly Cluster](#gitaly-cluster).
 
 ## NFS deprecation notice
 
@@ -198,7 +392,7 @@ Additional information:
 
 GitLab recommends:
 
-- Creating a [Gitaly Cluster](praefect.md) as soon as possible.
+- Creating a [Gitaly Cluster](#gitaly-cluster) as soon as possible.
 - [Moving your projects](praefect.md#migrate-existing-repositories-to-gitaly-cluster) from NFS-based
 storage to the Gitaly Cluster.
 

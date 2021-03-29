@@ -1,22 +1,17 @@
-import { getByText } from '@testing-library/dom';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import CopyEmailToClipboard from '~/sidebar/components/copy_email_to_clipboard.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CopyableField from '~/vue_shared/components/sidebar/copyable_field.vue';
 
 describe('CopyEmailToClipboard component', () => {
-  const sampleEmail = 'sample+email@test.com';
+  const mockIssueEmailAddress = 'sample+email@test.com';
 
-  const wrapper = mount(CopyEmailToClipboard, {
+  const wrapper = shallowMount(CopyEmailToClipboard, {
     propsData: {
-      copyText: sampleEmail,
+      issueEmailAddress: mockIssueEmailAddress,
     },
   });
 
-  it('renders the Issue email text with the forwardable email', () => {
-    expect(getByText(wrapper.element, `Issue email: ${sampleEmail}`)).not.toBeNull();
-  });
-
-  it('finds ClipboardButton with the correct props', () => {
-    expect(wrapper.find(ClipboardButton).props('text')).toBe(sampleEmail);
+  it('sets CopyableField `value` prop to issueEmailAddress', () => {
+    expect(wrapper.find(CopyableField).props('value')).toBe(mockIssueEmailAddress);
   });
 });

@@ -80,7 +80,7 @@ describe('DiffsStoreActions', () => {
     jest.spyOn(utils, 'idleCallback').mockImplementation(() => null);
     ['requestAnimationFrame', 'requestIdleCallback'].forEach((method) => {
       global[method] = (cb) => {
-        cb();
+        cb({ timeRemaining: () => 10 });
       };
     });
   });
@@ -198,7 +198,7 @@ describe('DiffsStoreActions', () => {
           { type: types.VIEW_DIFF_FILE, payload: 'test2' },
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
-        [],
+        [{ type: 'startRenderDiffsQueue' }, { type: 'startRenderDiffsQueue' }],
         done,
       );
     });

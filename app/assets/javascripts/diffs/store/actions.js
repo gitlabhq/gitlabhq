@@ -49,7 +49,6 @@ import {
   convertExpandLines,
   idleCallback,
   allDiscussionWrappersExpanded,
-  prepareDiffData,
   prepareLineForRenamedFile,
 } from './utils';
 
@@ -163,7 +162,15 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
         return pagination.next_page;
       })
-      .then((nextPage) => nextPage && getBatch(nextPage))
+      .then((nextPage) => {
+        dispatch('startRenderDiffsQueue');
+
+        if (nextPage) {
+          return getBatch(nextPage);
+        }
+
+        return null;
+      })
       .catch(() => commit(types.SET_RETRIEVING_BATCHES, false));
 
   return getBatch()
@@ -197,13 +204,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
       commit(types.SET_DIFF_METADATA, strippedData);
 
-      worker.postMessage(
-        prepareDiffData({
-          diff: data,
-          priorFiles: state.diffFiles,
-          meta: true,
-        }),
-      );
+      worker.postMessage(data.diff_files);
 
       return data;
     })
@@ -304,33 +305,38 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
-  const checkItem = () =>
-    new Promise((resolve) => {
-      const nextFile = state.diffFiles.find(
-        (file) =>
-          !file.renderIt &&
-          file.viewer &&
-          (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text),
-      );
+  const diffFilesToRender = state.diffFiles.filter(
+    (file) =>
+      !file.renderIt &&
+      file.viewer &&
+      (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text),
+  );
+  let currentDiffFileIndex = 0;
 
-      if (nextFile) {
-        requestAnimationFrame(() => {
-          commit(types.RENDER_FILE, nextFile);
+  const checkItem = () => {
+    const nextFile = diffFilesToRender[currentDiffFileIndex];
+
+    if (nextFile) {
+      currentDiffFileIndex += 1;
+      commit(types.RENDER_FILE, nextFile);
+
+      const requestIdle = () =>
+        requestIdleCallback((idleDeadline) => {
+          // Wait for at least 5ms before trying to render
+          if (idleDeadline.timeRemaining() >= 6) {
+            checkItem();
+          } else {
+            requestIdle();
+          }
         });
-        requestIdleCallback(
-          () => {
-            checkItem()
-              .then(resolve)
-              .catch(() => {});
-          },
-          { timeout: 1000 },
-        );
-      } else {
-        resolve();
-      }
-    });
 
-  return checkItem();
+      requestIdle();
+    }
+  };
+
+  if (diffFilesToRender.length) {
+    checkItem();
+  }
 };
 
 export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);

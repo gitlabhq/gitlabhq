@@ -8582,9 +8582,6 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
-msgid "Copy email address"
-msgstr ""
-
 msgid "Copy environment"
 msgstr ""
 
@@ -20749,6 +20746,9 @@ msgstr ""
 msgid "No authentication methods configured."
 msgstr ""
 
+msgid "No available branches"
+msgstr ""
+
 msgid "No available groups to fork the project."
 msgstr ""
 
@@ -21538,6 +21538,9 @@ msgid "OnDemandScans|You can either choose a passive scan or validate the target
 msgstr ""
 
 msgid "OnDemandScans|You cannot run an active scan against an unvalidated site."
+msgstr ""
+
+msgid "OnDemandScans|You must create a repository within your project to run an on-demand scan."
 msgstr ""
 
 msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
@@ -26365,7 +26368,10 @@ msgstr ""
 msgid "Revoked project access token %{project_access_token_name}!"
 msgstr ""
 
-msgid "RightSidebar|Issue email: %{copyText}"
+msgid "RightSidebar|Copy email address"
+msgstr ""
+
+msgid "RightSidebar|Issue email"
 msgstr ""
 
 msgid "RightSidebar|adding a"

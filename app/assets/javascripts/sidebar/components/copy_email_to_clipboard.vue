@@ -1,43 +1,24 @@
 <script>
-import { s__, __, sprintf } from '~/locale';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CopyableField from '../../vue_shared/components/sidebar/copyable_field.vue';
 
 export default {
-  i18n: {
-    copyEmail: __('Copy email address'),
-  },
   components: {
-    ClipboardButton,
+    CopyableField,
   },
   props: {
-    copyText: {
+    issueEmailAddress: {
       type: String,
       required: true,
-    },
-  },
-  computed: {
-    emailText() {
-      return sprintf(s__('RightSidebar|Issue email: %{copyText}'), { copyText: this.copyText });
     },
   },
 };
 </script>
 
 <template>
-  <div
+  <copyable-field
     data-qa-selector="copy-forward-email"
-    class="copy-email-address gl-display-flex gl-align-items-center gl-justify-content-space-between"
-  >
-    <span
-      class="gl-overflow-hidden gl-text-overflow-ellipsis gl-white-space-nowrap hide-collapsed gl-w-85p"
-      >{{ emailText }}</span
-    >
-    <clipboard-button
-      class="copy-email-button gl-bg-none!"
-      category="tertiary"
-      :title="$options.i18n.copyEmail"
-      :text="copyText"
-      tooltip-placement="left"
-    />
-  </div>
+    :name="s__('RightSidebar|Issue email')"
+    :clipboard-tooltip-text="s__('RightSidebar|Copy email address')"
+    :value="issueEmailAddress"
+  />
 </template>

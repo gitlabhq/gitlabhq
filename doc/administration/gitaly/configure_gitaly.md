@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Configure Gitaly
+# Configure Gitaly **(FREE SELF)**
 
 The Gitaly service itself is configured by using a [TOML configuration file](reference.md).
 
