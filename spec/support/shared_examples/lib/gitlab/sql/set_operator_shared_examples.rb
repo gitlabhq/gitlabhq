@@ -43,4 +43,33 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
       expect(set_operator.to_sql).to eq('NULL')
     end
   end
+
+  describe 'remove_order parameter' do
+    let(:scopes) do
+      [
+        User.where(id: 1).order(id: :desc).limit(1),
+        User.where(id: 2).order(id: :asc).limit(1)
+      ]
+    end
+
+    subject(:union_query) { described_class.new(scopes, remove_order: remove_order).to_sql }
+
+    context 'when remove_order: true' do
+      let(:remove_order) { true }
+
+      it 'removes the ORDER BY from the query' do
+        expect(union_query).not_to include('ORDER BY "users"."id" DESC')
+        expect(union_query).not_to include('ORDER BY "users"."id" ASC')
+      end
+    end
+
+    context 'when remove_order: false' do
+      let(:remove_order) { false }
+
+      it 'does not remove the ORDER BY from the query' do
+        expect(union_query).to include('ORDER BY "users"."id" DESC')
+        expect(union_query).to include('ORDER BY "users"."id" ASC')
+      end
+    end
+  end
 end

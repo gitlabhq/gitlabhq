@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import DeleteImage from '~/registry/explorer/components/delete_image.vue';
 import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
 import GroupEmptyState from '~/registry/explorer/components/list_page/group_empty_state.vue';
@@ -343,7 +344,7 @@ describe('List Page', () => {
       const doSearch = async () => {
         await waitForApolloRequestRender();
         findRegistrySearch().vm.$emit('filter:changed', [
-          { type: 'filtered-search-term', value: { data: 'centos6' } },
+          { type: FILTERED_SEARCH_TERM, value: { data: 'centos6' } },
         ]);
 
         findRegistrySearch().vm.$emit('filter:submit');

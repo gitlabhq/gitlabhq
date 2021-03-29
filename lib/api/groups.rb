@@ -141,6 +141,10 @@ module API
       def authorize_group_creation!
         authorize! :create_group
       end
+
+      def check_subscription!(group)
+        render_api_error!("This group can't be removed because it is linked to a subscription.", :bad_request) if group.paid?
+      end
     end
 
     resource :groups do
@@ -239,6 +243,7 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
+        check_subscription! group
 
         delete_group(group)
       end

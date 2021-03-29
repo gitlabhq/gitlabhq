@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
 import PackageSearch from './package_search.vue';
 import PackageTitle from './package_title.vue';
@@ -30,7 +31,7 @@ export default {
     }),
     emptySearch() {
       return (
-        this.filter.filter((f) => f.type !== 'filtered-search-term' || f.value?.data).length === 0
+        this.filter.filter((f) => f.type !== FILTERED_SEARCH_TERM || f.value?.data).length === 0
       );
     },
 

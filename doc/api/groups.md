@@ -975,6 +975,9 @@ Parameters:
 
 The response is `202 Accepted` if the user has authorization.
 
+NOTE:
+A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/index.md#change-the-linked-namespace) with a different group.
+
 ## Restore group marked for deletion **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.

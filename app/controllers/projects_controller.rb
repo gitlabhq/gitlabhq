@@ -35,6 +35,10 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:allow_editing_commit_messages, @project)
   end
 
+  before_action do
+    push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
+  end
+
   layout :determine_layout
 
   feature_category :projects, [

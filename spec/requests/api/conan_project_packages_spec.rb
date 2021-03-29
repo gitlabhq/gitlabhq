@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ConanProjectPackages do
+RSpec.describe API::ConanProjectPackages, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
   include_context 'conan api setup'
 
   let(:project_id) { project.id }

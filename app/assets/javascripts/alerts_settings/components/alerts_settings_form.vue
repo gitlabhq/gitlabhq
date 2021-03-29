@@ -505,7 +505,7 @@ export default {
 
               <gl-form-textarea
                 id="sample-payload"
-                v-model.trim="samplePayload.json"
+                v-model="samplePayload.json"
                 :disabled="canEditPayload"
                 :state="isSampePayloadValid"
                 :placeholder="$options.i18n.integrationFormSteps.mapFields.placeholder"
@@ -669,7 +669,7 @@ export default {
 
           <gl-form-textarea
             id="test-payload"
-            v-model.trim="testPayload.json"
+            v-model="testPayload.json"
             :state="isTestPayloadValid"
             :placeholder="$options.i18n.integrationFormSteps.testPayload.placeholder"
             class="gl-my-3"

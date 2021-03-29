@@ -441,8 +441,8 @@ GEM
       terminal-table (~> 1.5, >= 1.5.1)
     gitlab-chronic (0.10.5)
       numerizer (~> 0.2)
-    gitlab-dangerfiles (0.8.0)
-      danger
+    gitlab-dangerfiles (1.1.0)
+      danger-gitlab
     gitlab-experiment (0.5.1)
       activesupport (>= 3.0)
       scientist (~> 1.6, >= 1.6.0)
@@ -1377,7 +1377,6 @@ DEPENDENCIES
   countries (~> 3.0)
   creole (~> 0.5.0)
   crystalball (~> 0.7.0)
-  danger-gitlab (~> 8.0)
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.1)
   default_value_for (~> 3.4.0)
@@ -1423,7 +1422,7 @@ DEPENDENCIES
   gitaly (~> 13.9.0.pre.rc1)
   github-markup (~> 1.7.0)
   gitlab-chronic (~> 0.10.5)
-  gitlab-dangerfiles (~> 0.8.0)
+  gitlab-dangerfiles (~> 1.1.0)
   gitlab-experiment (~> 0.5.1)
   gitlab-fog-azure-rm (~> 1.0.1)
   gitlab-fog-google (~> 1.13)

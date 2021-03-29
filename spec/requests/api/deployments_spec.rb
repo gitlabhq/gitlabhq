@@ -3,22 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe API::Deployments do
-  let(:user)        { create(:user) }
-  let(:non_member)  { create(:user) }
+  let_it_be(:user)        { create(:user) }
+  let_it_be(:non_member)  { create(:user) }
 
   before do
     project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/deployments' do
-    let(:project) { create(:project, :repository) }
-    let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
+    let_it_be(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
+    let_it_be(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+
+    def perform_request(params = {})
+      get api("/projects/#{project.id}/deployments", user), params: params
+    end
 
     context 'as member of the project' do
       it 'returns projects deployments sorted by id asc' do
-        get api("/projects/#{project.id}/deployments", user)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -32,7 +36,7 @@ RSpec.describe API::Deployments do
 
       context 'with updated_at filters specified' do
         it 'returns projects deployments with last update in specified datetime range' do
-          get api("/projects/#{project.id}/deployments", user), params: { updated_before: 30.minutes.ago, updated_after: 90.minutes.ago }
+          perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago })
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
@@ -42,10 +46,7 @@ RSpec.describe API::Deployments do
 
       context 'with the environment filter specifed' do
         it 'returns deployments for the environment' do
-          get(
-            api("/projects/#{project.id}/deployments", user),
-            params: { environment: deployment_1.environment.name }
-          )
+          perform_request({ environment: deployment_1.environment.name })
 
           expect(json_response.size).to eq(1)
           expect(json_response.first['iid']).to eq(deployment_1.iid)
@@ -85,6 +86,16 @@ RSpec.describe API::Deployments do
             expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
+      end
+
+      it 'returns multiple deployments without N + 1' do
+        perform_request # warm up the cache
+
+        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+        create(:deployment, :success, project: project, iid: 21, ref: 'master')
+
+        expect { perform_request }.not_to exceed_query_limit(control_count)
       end
     end
 

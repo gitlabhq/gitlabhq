@@ -1,0 +1,8 @@
+---
+name: cached_api_merge_request_version
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57568
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326093
+milestone: '13.11'
+type: development
+group: group::source code
+default_enabled: true

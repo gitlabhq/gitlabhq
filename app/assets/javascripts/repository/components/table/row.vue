@@ -12,6 +12,7 @@ import { escapeRegExp } from 'lodash';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../../mixins/get_ref';
 import commitQuery from '../../queries/commit.query.graphql';
 
@@ -41,7 +42,7 @@ export default {
       },
     },
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   props: {
     id: {
       type: String,
@@ -103,10 +104,21 @@ export default {
     };
   },
   computed: {
+    refactorBlobViewerEnabled() {
+      return this.glFeatures.refactorBlobViewer;
+    },
     routerLinkTo() {
-      return this.isFolder
-        ? { path: `/-/tree/${this.escapedRef}/${escapeFileUrl(this.path)}` }
-        : null;
+      const blobRouteConfig = { path: `/-/blob/${this.escapedRef}/${escapeFileUrl(this.path)}` };
+      const treeRouteConfig = { path: `/-/tree/${this.escapedRef}/${escapeFileUrl(this.path)}` };
+
+      if (this.refactorBlobViewerEnabled && this.isBlob) {
+        return blobRouteConfig;
+      }
+
+      return this.isFolder ? treeRouteConfig : null;
+    },
+    isBlob() {
+      return this.type === 'blob';
     },
     isFolder() {
       return this.type === 'tree';
@@ -115,7 +127,7 @@ export default {
       return this.type === 'commit';
     },
     linkComponent() {
-      return this.isFolder ? 'router-link' : 'a';
+      return this.isFolder || (this.refactorBlobViewerEnabled && this.isBlob) ? 'router-link' : 'a';
     },
     fullPath() {
       return this.path.replace(new RegExp(`^${escapeRegExp(this.currentPath)}/`), '');

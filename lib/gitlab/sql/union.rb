@@ -4,8 +4,8 @@ module Gitlab
   module SQL
     # Class for building SQL UNION statements.
     #
-    # ORDER BYs are dropped from the relations as the final sort order is not
-    # guaranteed any way.
+    # By default ORDER BYs are dropped from the relations as the final sort
+    # order is not guaranteed any way.
     #
     # Example usage:
     #
