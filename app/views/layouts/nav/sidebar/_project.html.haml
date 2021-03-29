@@ -1,4 +1,4 @@
-%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation'), 'aria-label': _('Project navigation') }
+%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(@project), 'aria-label': _('Project navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to project_path(@project), title: @project.name do

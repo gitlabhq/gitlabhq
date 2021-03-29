@@ -54,11 +54,6 @@ RSpec.describe Gitlab::Metrics do
   end
 
   describe '.measure' do
-    before do
-      skip_feature_flags_yaml_validation
-      skip_default_enabled_yaml_check
-    end
-
     context 'without a transaction' do
       it 'returns the return value of the block' do
         val = described_class.measure(:foo) { 10 }

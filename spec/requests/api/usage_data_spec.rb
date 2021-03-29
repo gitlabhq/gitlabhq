@@ -73,7 +73,6 @@ RSpec.describe API::UsageData do
       context 'with unknown event' do
         before do
           skip_feature_flags_yaml_validation
-          skip_default_enabled_yaml_check
         end
 
         it 'returns status ok' do
@@ -150,7 +149,6 @@ RSpec.describe API::UsageData do
       context 'with unknown event' do
         before do
           skip_feature_flags_yaml_validation
-          skip_default_enabled_yaml_check
         end
 
         it 'returns status ok' do

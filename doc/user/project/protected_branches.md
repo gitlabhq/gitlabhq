@@ -177,13 +177,12 @@ Deleting a protected branch is allowed only by using the web interface; not from
 This means that you can't accidentally delete a protected branch from your
 command line or a Git client application.
 
-## Allow force push on protected branches **(FREE SELF)**
+## Allow force push on protected branches
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-allow-force-push-on-protected-branches).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 behind a disabled feature flag.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-allow-force-push-on-protected-branches).
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -253,8 +252,8 @@ for details about the pipelines security model.
 
 ## Enable or disable allow force push on protected branches **(FREE SELF)**
 
-Allow force push on protected branches is under development and not ready for
-production use. It is deployed behind a feature flag that is **disabled by default**.
+Allow force push on protected branches is ready for
+production use. It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it.
 

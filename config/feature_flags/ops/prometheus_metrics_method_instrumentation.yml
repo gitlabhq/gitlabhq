@@ -1,8 +1,0 @@
----
-name: prometheus_metrics_method_instrumentation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4304
-rollout_issue_url:
-milestone: '10.5'
-type: ops
-group:
-default_enabled: false

@@ -27,7 +27,7 @@
 \
 
 - sorted_by_name(queries).each do |query|
-  = render_name_and_description(query)
+  = render_name_and_description(query, owner: 'Query')
   \
   = render_return_type(query)
   - unless query[:arguments].empty?
@@ -35,7 +35,7 @@
     ~ "| Name | Type | Description |"
     ~ "| ---- | ---- | ----------- |"
     - sorted_by_name(query[:arguments]).each do |argument|
-      = render_field(argument)
+      = render_field(argument, query[:type][:name])
     \
 
 :plain
@@ -58,7 +58,7 @@
     ~ "| Field | Type | Description |"
     ~ "| ----- | ---- | ----------- |"
     - sorted_by_name(type[:fields]).each do |field|
-      = render_field(field)
+      = render_field(field, type[:name])
     \
 
 :plain
@@ -79,7 +79,7 @@
     ~ "| Value | Description |"
     ~ "| ----- | ----------- |"
     - sorted_by_name(enum[:values]).each do |value|
-      = render_enum_value(value)
+      = render_enum_value(enum, value)
     \
 
 :plain
@@ -121,12 +121,12 @@
 \
 
 - graphql_union_types.each do |type|
-  = render_name_and_description(type, 4)
+  = render_name_and_description(type, level: 4)
   \
   One of:
   \
-  - type[:possible_types].each do |type_name|
-    ~ "- [`#{type_name}`](##{type_name.downcase})"
+  - type[:possible_types].each do |member|
+    = render_union_member(member)
   \
 
 :plain
@@ -134,7 +134,7 @@
 \
 
 - graphql_interface_types.each do |type|
-  = render_name_and_description(type, 4)
+  = render_name_and_description(type, level: 4)
   \
   Implementations:
   \
@@ -144,5 +144,5 @@
   ~ "| Field | Type | Description |"
   ~ "| ----- | ---- | ----------- |"
   - sorted_by_name(type[:fields] + type[:connections]).each do |field|
-    = render_field(field)
+    = render_field(field, type[:name])
   \

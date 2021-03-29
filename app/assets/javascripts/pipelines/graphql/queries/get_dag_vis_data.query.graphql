@@ -1,6 +1,7 @@
 query getDagVisData($projectPath: ID!, $iid: ID!) {
   project(fullPath: $projectPath) {
     pipeline(iid: $iid) {
+      id
       stages {
         nodes {
           name

@@ -16,28 +16,45 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:track, :series]).with_message('has already been sent') }
   end
 
-  describe '.without_track_or_series' do
-    let(:track) { 0 }
+  describe '.without_track_and_series' do
+    let(:track) { :create }
     let(:series) { 0 }
 
-    let_it_be(:in_product_marketing_email) { create(:in_product_marketing_email, series: 0, track: 0) }
+    let_it_be(:user) { create(:user) }
 
-    subject(:without_track_or_series) { described_class.without_track_or_series(track, series) }
+    subject(:without_track_and_series) { User.merge(described_class.without_track_and_series(track, series)) }
 
-    context 'for the same track and series' do
-      it { is_expected.to be_empty }
+    before do
+      create(:in_product_marketing_email, track: :create, series: 0, user: user)
+      create(:in_product_marketing_email, track: :create, series: 1, user: user)
+      create(:in_product_marketing_email, track: :verify, series: 0, user: user)
     end
 
-    context 'for a different track' do
-      let(:track) { 1 }
-
-      it { is_expected.to eq([in_product_marketing_email])}
+    context 'when given track and series already exists' do
+      it { expect(without_track_and_series).to be_empty }
     end
 
-    context 'for a different series' do
-      let(:series) { 1 }
+    context 'when track does not exist' do
+      let(:track) { :trial }
 
-      it { is_expected.to eq([in_product_marketing_email])}
+      it { expect(without_track_and_series).to eq [user] }
+    end
+
+    context 'when series does not exist' do
+      let(:series) { 2 }
+
+      it { expect(without_track_and_series).to eq [user] }
+    end
+
+    context 'when no track or series for a user exists' do
+      let(:track) { :create }
+      let(:series) { 0 }
+
+      before do
+        @other_user = create(:user)
+      end
+
+      it { expect(without_track_and_series).to eq [@other_user] }
     end
   end
 end

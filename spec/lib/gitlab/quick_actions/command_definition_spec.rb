@@ -127,10 +127,10 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
           subject.condition_block = proc { false }
         end
 
-        it "doesn't execute the command" do
+        it "counts the command as executed" do
           subject.execute(context, nil)
 
-          expect(context.commands_executed_count).to be_nil
+          expect(context.commands_executed_count).to eq(1)
           expect(context.run).to be false
         end
       end
@@ -238,8 +238,8 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
           subject.condition_block = proc { false }
         end
 
-        it 'returns nil' do
-          expect(subject.execute_message({}, nil)).to be_nil
+        it 'returns an error message' do
+          expect(subject.execute_message({}, nil)).to eq('Could not apply command command.')
         end
       end
 

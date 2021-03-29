@@ -6,15 +6,17 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
   let(:comparer) { described_class.new(base_report, head_report) }
   let(:base_report) { Gitlab::Ci::Reports::CodequalityReports.new }
   let(:head_report) { Gitlab::Ci::Reports::CodequalityReports.new }
-  let(:degradation_1) { build(:codequality_degradation_1) }
-  let(:degradation_2) { build(:codequality_degradation_2) }
+  let(:major_degradation) { build(:codequality_degradation, :major) }
+  let(:minor_degradation) { build(:codequality_degradation, :major) }
+  let(:critical_degradation) { build(:codequality_degradation, :critical) }
+  let(:blocker_degradation) { build(:codequality_degradation, :blocker) }
 
   describe '#status' do
     subject(:report_status) { comparer.status }
 
     context 'when head report has an error' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns status failed' do
@@ -50,7 +52,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when head report has an error' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns the number of new errors' do
@@ -70,8 +72,8 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has an error and head has a different error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
       it 'counts the base report error as resolved' do
@@ -81,7 +83,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors head has no errors' do
       before do
-        base_report.add_degradation(degradation_1)
+        base_report.add_degradation(major_degradation)
       end
 
       it 'counts the base report errors as resolved' do
@@ -91,8 +93,8 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head has the same error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_1)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns zero' do
@@ -102,7 +104,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report does not have errors and head has errors' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns zero' do
@@ -124,7 +126,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has an error' do
       before do
-        base_report.add_degradation(degradation_1)
+        base_report.add_degradation(major_degradation)
       end
 
       it 'returns zero' do
@@ -134,7 +136,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when head report has an error' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'includes the head report error in the count' do
@@ -144,8 +146,8 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head report has errors' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
       it 'includes errors in the count' do
@@ -155,9 +157,9 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head report has the same error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
       it 'includes errors in the count' do
@@ -179,20 +181,28 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head has the same error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        base_report.add_degradation(critical_degradation)
+        base_report.add_degradation(blocker_degradation)
+        head_report.add_degradation(critical_degradation)
+        head_report.add_degradation(blocker_degradation)
+        head_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
-      it 'includes the base report errors' do
-        expect(existing_errors).to contain_exactly(degradation_1)
+      it 'includes the base report errors sorted by severity' do
+        expect(existing_errors).to eq([
+          blocker_degradation,
+          critical_degradation,
+          major_degradation
+        ])
       end
     end
 
     context 'when base report has errors and head has a different error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
       it 'returns an empty array' do
@@ -202,7 +212,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report does not have errors and head has errors' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns an empty array' do
@@ -224,19 +234,25 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head has more errors' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(critical_degradation)
+        head_report.add_degradation(minor_degradation)
+        head_report.add_degradation(blocker_degradation)
+        head_report.add_degradation(major_degradation)
       end
 
-      it 'includes errors not found in the base report' do
-        expect(new_errors).to eq([degradation_2])
+      it 'includes errors not found in the base report sorted by severity' do
+        expect(new_errors).to eq([
+          blocker_degradation,
+          critical_degradation,
+          minor_degradation
+        ])
       end
     end
 
     context 'when base report has an error and head has no errors' do
       before do
-        base_report.add_degradation(degradation_1)
+        base_report.add_degradation(major_degradation)
       end
 
       it 'returns an empty array' do
@@ -246,11 +262,11 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report does not have errors and head has errors' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns the head report error' do
-        expect(new_errors).to eq([degradation_1])
+        expect(new_errors).to eq([major_degradation])
       end
     end
 
@@ -268,9 +284,9 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report errors are still found in the head report' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        head_report.add_degradation(major_degradation)
+        head_report.add_degradation(minor_degradation)
       end
 
       it 'returns an empty array' do
@@ -280,18 +296,25 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
 
     context 'when base report has errors and head has a different error' do
       before do
-        base_report.add_degradation(degradation_1)
-        head_report.add_degradation(degradation_2)
+        base_report.add_degradation(major_degradation)
+        base_report.add_degradation(minor_degradation)
+        base_report.add_degradation(critical_degradation)
+        base_report.add_degradation(blocker_degradation)
+        head_report.add_degradation(major_degradation)
       end
 
-      it 'returns the base report error' do
-        expect(resolved_errors).to eq([degradation_1])
+      it 'returns the base report errors not found in the head report, sorted by severity' do
+        expect(resolved_errors).to eq([
+          blocker_degradation,
+          critical_degradation,
+          minor_degradation
+        ])
       end
     end
 
     context 'when base report does not have errors and head has errors' do
       before do
-        head_report.add_degradation(degradation_1)
+        head_report.add_degradation(major_degradation)
       end
 
       it 'returns an empty array' do

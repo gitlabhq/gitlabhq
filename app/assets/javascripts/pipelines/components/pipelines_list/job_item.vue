@@ -150,7 +150,11 @@ export default {
   >
     <gl-link
       v-if="hasDetails"
-      v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
+      v-gl-tooltip="{
+        boundary: 'viewport',
+        placement: 'bottom',
+        customClass: 'gl-pointer-events-none',
+      }"
       :href="detailsPath"
       :title="tooltipText"
       :class="jobClasses"

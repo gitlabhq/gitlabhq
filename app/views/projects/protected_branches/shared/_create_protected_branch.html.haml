@@ -21,7 +21,7 @@
         = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push:"), class: 'col-md-2 text-left text-md-right'
         .col-md-10
           = yield :push_access_levels
-      - if ::Feature.enabled?(:allow_force_push_to_protected_branches, @project)
+      - if ::Feature.enabled?(:allow_force_push_to_protected_branches, @project, default_enabled: :yaml)
         .form-group.row
           = f.label :allow_force_push, s_("ProtectedBranch|Allow force push:"), class: 'col-md-2 gl-text-left text-md-right'
           .col-md-10

@@ -138,38 +138,64 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     it { is_expected.not_to send_in_product_marketing_email }
   end
 
-  context 'when the user has already received any marketing email in this batch' do
-    before do
-      other_group = create(:group)
-      other_group.add_developer(user)
-      create(:onboarding_progress, namespace: other_group, created_at: previous_action_completed_at, git_write_at: current_action_completed_at)
+  describe 'do not send emails twice' do
+    subject { described_class.send_for_all_tracks_and_intervals }
+
+    let(:user) { create(:user, email_opted_in: true) }
+
+    context 'when user already got a specific email' do
+      before do
+        create(:in_product_marketing_email, user: user, track: track, series: 0)
+      end
+
+      it { is_expected.not_to send_in_product_marketing_email(user.id, anything, track, 0) }
     end
 
-    # For any group Notify is called exactly once
-    it { is_expected.to send_in_product_marketing_email(user.id, anything, :create, 0) }
-  end
+    context 'when user already got sent the whole track' do
+      before do
+        0.upto(2) do |series|
+          create(:in_product_marketing_email, user: user, track: track, series: series)
+        end
+      end
 
-  context 'when user has already received a specific series in a track before' do
-    before do
-      described_class.new(:create, described_class::INTERVAL_DAYS.index(interval)).execute
+      it 'does not send any of the emails anymore', :aggregate_failures do
+        0.upto(2) do |series|
+          expect(subject).not_to send_in_product_marketing_email(user.id, anything, track, series)
+        end
+      end
     end
 
-    # For any group Notify is called exactly once
-    it { is_expected.to send_in_product_marketing_email(user.id, anything, :create, described_class::INTERVAL_DAYS.index(interval)) }
+    context 'when user is in two groups' do
+      let(:other_group) { create(:group) }
 
-    context 'when different series' do
-      let(:interval) { 5 }
-      let(:actions_completed) { { created_at: frozen_time - 6.days } }
+      before do
+        other_group.add_developer(user)
+      end
 
-      it { is_expected.to send_in_product_marketing_email(user.id, anything, :create, described_class::INTERVAL_DAYS.index(interval)) }
-    end
+      context 'when both groups would get the same email' do
+        before do
+          create(:onboarding_progress, namespace: other_group, **actions_completed)
+        end
 
-    context 'when different track' do
-      let(:track) { :verify }
-      let(:interval) { 1 }
-      let(:actions_completed) { { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days } }
+        it 'does not send the same email twice' do
+          subject
 
-      it { is_expected.to send_in_product_marketing_email(user.id, anything, :verify, described_class::INTERVAL_DAYS.index(interval)) }
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, anything, :create, 0).once
+        end
+      end
+
+      context 'when other group gets a different email' do
+        before do
+          create(:onboarding_progress, namespace: other_group, created_at: previous_action_completed_at, git_write_at: frozen_time - 2.days)
+        end
+
+        it 'sends both emails' do
+          subject
+
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, group.id, :create, 0)
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, other_group.id, :verify, 0)
+        end
+      end
     end
   end
 

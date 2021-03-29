@@ -23,7 +23,6 @@ module Namespaces
     def initialize(track, interval)
       @track = track
       @interval = interval
-      @current_batch_user_ids = []
       @in_product_marketing_email_records = []
     end
 
@@ -35,13 +34,11 @@ module Namespaces
           send_email_for_group(group)
         end
       end
-
-      record_sent_emails
     end
 
     private
 
-    attr_reader :track, :interval, :current_batch_user_ids, :in_product_marketing_email_records
+    attr_reader :track, :interval, :in_product_marketing_email_records
 
     def send_email_for_group(group)
       experiment_enabled_for_group = experiment_enabled_for_group?(group)
@@ -49,8 +46,13 @@ module Namespaces
       return unless experiment_enabled_for_group
 
       users_for_group(group).each do |user|
-        send_email(user, group) if can_perform_action?(user, group)
+        if can_perform_action?(user, group)
+          send_email(user, group)
+          track_sent_email(user, track, series)
+        end
       end
+
+      save_tracked_emails!
     end
 
     def experiment_enabled_for_group?(group)
@@ -75,13 +77,9 @@ module Namespaces
     end
 
     def users_for_group(group)
-      group.users.where(email_opted_in: true)
-        .where.not(id: current_batch_user_ids)
-        .left_outer_joins(:in_product_marketing_emails)
-        .merge(
-          Users::InProductMarketingEmail.without_track_or_series(track, series)
-            .or(Users::InProductMarketingEmail.where(id: nil))
-        )
+      group.users
+        .where(email_opted_in: true)
+        .merge(Users::InProductMarketingEmail.without_track_and_series(track, series))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -100,8 +98,6 @@ module Namespaces
 
     def send_email(user, group)
       NotificationService.new.in_product_marketing(user.id, group.id, track, series)
-
-      track_sent_email(user, group, track, series)
     end
 
     def completed_actions
@@ -122,13 +118,12 @@ module Namespaces
       INTERVAL_DAYS.index(interval)
     end
 
-    def record_sent_emails
+    def save_tracked_emails!
       Users::InProductMarketingEmail.bulk_insert!(in_product_marketing_email_records)
+      @in_product_marketing_email_records = []
     end
 
-    def track_sent_email(user, group, track, series)
-      current_batch_user_ids << user.id
-
+    def track_sent_email(user, track, series)
       in_product_marketing_email_records << Users::InProductMarketingEmail.new(
         user: user,
         track: track,

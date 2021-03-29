@@ -345,6 +345,24 @@ RSpec.describe Notes::CreateService do
 
           expect(note.errors[:commands_only]).to be_present
         end
+
+        it 'adds commands failed message to note errors' do
+          note_text = %(/reopen)
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+          expect(note.errors[:commands_only]).to contain_exactly('Could not apply reopen command.')
+        end
+
+        it 'generates success and failed error messages' do
+          note_text = %(/close\n/reopen)
+          service = double(:service)
+          allow(Issues::UpdateService).to receive(:new).and_return(service)
+          expect(service).to receive(:execute)
+
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+          expect(note.errors[:commands_only]).to contain_exactly('Closed this issue. Could not apply reopen command.')
+        end
       end
     end
 

@@ -24,7 +24,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
 
       find('body').send_keys([:shift, 'M'])
 
-      check_page_title('Merge Requests')
+      check_page_title('Merge requests')
 
       find('body').send_keys([:shift, 'T'])
 

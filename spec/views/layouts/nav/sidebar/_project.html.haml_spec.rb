@@ -346,4 +346,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
   end
+
+  it_behaves_like 'sidebar includes snowplow attributes', 'render', 'projects_side_navigation', 'projects_side_navigation'
 end

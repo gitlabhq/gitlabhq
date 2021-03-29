@@ -21,8 +21,19 @@ module Users
       team: 3
     }, _suffix: true
 
-    scope :without_track_or_series, -> (track, series) do
-      where.not(track: track).or(where.not(series: series))
+    scope :without_track_and_series, -> (track, series) do
+      users = User.arel_table
+      product_emails = arel_table
+
+      join_condition = users[:id].eq(product_emails[:user_id])
+        .and(product_emails[:track]).eq(tracks[track])
+        .and(product_emails[:series]).eq(series)
+
+      arel_join = users.join(product_emails, Arel::Nodes::OuterJoin).on(join_condition)
+
+      joins(arel_join.join_sources)
+        .where(in_product_marketing_emails: { id: nil })
+        .select(Arel.sql("DISTINCT ON(#{users.table_name}.id) #{users.table_name}.*"))
     end
   end
 end

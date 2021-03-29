@@ -438,8 +438,6 @@ RSpec.describe API::Features, stub_feature_flags: false do
 
       context 'when the gate value was set' do
         before do
-          skip_feature_flags_yaml_validation
-          skip_default_enabled_yaml_check
           Feature.enable(feature_name)
         end
 

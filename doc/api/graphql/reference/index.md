@@ -135,7 +135,12 @@ Returns [`InstanceSecurityDashboard`](#instancesecuritydashboard).
 
 ### `instanceStatisticsMeasurements`
 
-Get statistics on the instance. Deprecated in 13.10: This field was renamed. Use the `usageTrendsMeasurements` field instead.
+Get statistics on the instance.
+
+WARNING:
+**Deprecated** in 13.10.
+This was renamed.
+Use: `Query.usageTrendsMeasurements`.
 
 Returns [`UsageTrendsMeasurementConnection`](#usagetrendsmeasurementconnection).
 
@@ -393,7 +398,12 @@ Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnec
 
 ### `vulnerabilitiesCountByDayAndSeverity`
 
-Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
+Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard.
+
+WARNING:
+**Deprecated** in 13.3.
+Use of this is not recommended.
+Use: `Query.vulnerabilitiesCountByDay`.
 
 Returns [`VulnerabilitiesCountByDayAndSeverityConnection`](#vulnerabilitiescountbydayandseverityconnection).
 
@@ -488,7 +498,7 @@ Describes an alert from the project's Alert Management.
 | `hosts` | [`[String!]`](#string) | List of hosts the alert came from. |
 | `iid` | [`ID!`](#id) | Internal ID of the alert. |
 | `issue` | [`Issue`](#issue) | Issue attached to the alert. |
-| `issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use issue field. Deprecated in 13.10. |
+| `issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 13.10. Use issue field. |
 | `metricsDashboardUrl` | [`String`](#string) | URL for metrics embed for the alert. |
 | `monitoringTool` | [`String`](#string) | Monitoring tool the alert came from. |
 | `notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. |
@@ -527,12 +537,12 @@ Represents total number of alerts for the represented categories.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `acknowledged` | [`Int`](#int) | Number of alerts with status ACKNOWLEDGED for the project |
+| `acknowledged` | [`Int`](#int) | Number of alerts with status ACKNOWLEDGED for the project. |
 | `all` | [`Int`](#int) | Total number of alerts for the project. |
-| `ignored` | [`Int`](#int) | Number of alerts with status IGNORED for the project |
+| `ignored` | [`Int`](#int) | Number of alerts with status IGNORED for the project. |
 | `open` | [`Int`](#int) | Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project. |
-| `resolved` | [`Int`](#int) | Number of alerts with status RESOLVED for the project |
-| `triggered` | [`Int`](#int) | Number of alerts with status TRIGGERED for the project |
+| `resolved` | [`Int`](#int) | Number of alerts with status RESOLVED for the project. |
+| `triggered` | [`Int`](#int) | Number of alerts with status TRIGGERED for the project. |
 
 ### `AlertManagementHttpIntegration`
 
@@ -870,7 +880,7 @@ Represents an epic on an issue board.
 | `upvotes` | [`Int!`](#int) | Number of upvotes the epic has received. |
 | `userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the epic. |
 | `userNotesCount` | [`Int!`](#int) | Number of user notes of the epic. |
-| `userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource. |
 | `userPreferences` | [`BoardEpicUserPreferences`](#boardepicuserpreferences) | User preferences for the epic on the issue board. |
 | `webPath` | [`String!`](#string) | Web path of the epic. |
 | `webUrl` | [`String!`](#string) | Web URL of the epic. |
@@ -1428,7 +1438,7 @@ Represents the code coverage summary for a project.
 | `authorName` | [`String`](#string) | Commit authors name. |
 | `authoredDate` | [`Time`](#time) | Timestamp of when the commit was authored. |
 | `description` | [`String`](#string) | Description of the commit message. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `id` | [`ID!`](#id) | ID (global ID) of the commit. |
 | `message` | [`String`](#string) | Raw commit message. |
 | `pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines of the commit ordered latest first. |
@@ -1436,7 +1446,7 @@ Represents the code coverage summary for a project.
 | `shortId` | [`String!`](#string) | Short SHA1 ID of the commit. |
 | `signatureHtml` | [`String`](#string) | Rendered HTML of the commit signature. |
 | `title` | [`String`](#string) | Title of the commit message. |
-| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title` |
+| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | `webPath` | [`String!`](#string) | Web path of the commit. |
 | `webUrl` | [`String!`](#string) | Web URL of the commit. |
 
@@ -1935,7 +1945,7 @@ Represents a DAST scanner profile.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `editPath` | [`String`](#string) | Relative web path to the edit page of a scanner profile. |
-| `globalId` **{warning-solid}** | [`DastScannerProfileID!`](#dastscannerprofileid) | **Deprecated:** Use `id`. Deprecated in 13.6. |
+| `globalId` **{warning-solid}** | [`DastScannerProfileID!`](#dastscannerprofileid) | **Deprecated** in 13.6. Use `id`. |
 | `id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the DAST scanner profile. |
 | `profileName` | [`String`](#string) | Name of the DAST scanner profile. |
 | `referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
@@ -1963,7 +1973,7 @@ Autogenerated return type of DastScannerProfileCreate.
 | ----- | ---- | ----------- |
 | `clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | `errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| `globalId` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** Use `id`. Deprecated in 13.6. |
+| `globalId` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated** in 13.6. Use `id`. |
 | `id` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile. |
 
 ### `DastScannerProfileDeletePayload`
@@ -2009,7 +2019,7 @@ Represents a DAST Site Profile.
 | `referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | `requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. Will always return `null` if `security_dast_site_profiles_additional_fields` feature flag is disabled. |
 | `targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
-| `userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource. |
 | `validationStatus` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status of the site profile. |
 
 ### `DastSiteProfileAuth`
@@ -2069,7 +2079,7 @@ Check permissions for the current user on site profile.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createOnDemandDastScan` | [`Boolean!`](#boolean) | Indicates the user can perform `create_on_demand_dast_scan` on this resource |
+| `createOnDemandDastScan` | [`Boolean!`](#boolean) | Indicates the user can perform `create_on_demand_dast_scan` on this resource. |
 
 ### `DastSiteProfileUpdatePayload`
 
@@ -2184,7 +2194,7 @@ A single design.
 | `fullPath` | [`String!`](#string) | The full path to the design file. |
 | `id` | [`ID!`](#id) | The ID of this design. |
 | `image` | [`String!`](#string) | The URL of the full-sized image. |
-| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated |
+| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
 | `issue` | [`Issue!`](#issue) | The issue the design belongs to. |
 | `notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. |
 | `notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
@@ -2204,7 +2214,7 @@ A design pinned to a specific version. The image field reflects the design as of
 | `fullPath` | [`String!`](#string) | The full path to the design file. |
 | `id` | [`ID!`](#id) | The ID of this design. |
 | `image` | [`String!`](#string) | The URL of the full-sized image. |
-| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated |
+| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
 | `issue` | [`Issue!`](#issue) | The issue the design belongs to. |
 | `notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
 | `project` | [`Project!`](#project) | The project the design belongs to. |
@@ -2299,7 +2309,7 @@ Autogenerated return type of DesignManagementUpload.
 | `clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | `designs` | [`[Design!]!`](#design) | The designs that were uploaded by the mutation. |
 | `errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| `skippedDesigns` | [`[Design!]!`](#design) | Any designs that were skipped from the upload due to there being no change to their content since their last version |
+| `skippedDesigns` | [`[Design!]!`](#design) | Any designs that were skipped from the upload due to there being no change to their content since their last version. |
 
 ### `DesignVersion`
 
@@ -2658,7 +2668,7 @@ Represents an epic.
 | `upvotes` | [`Int!`](#int) | Number of upvotes the epic has received. |
 | `userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the epic. |
 | `userNotesCount` | [`Int!`](#int) | Number of user notes of the epic. |
-| `userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource. |
 | `webPath` | [`String!`](#string) | Web path of the epic. |
 | `webUrl` | [`String!`](#string) | Web URL of the epic. |
 
@@ -2804,7 +2814,7 @@ Relationship between an epic and an issue.
 | `createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
 | `currentUserTodos` | [`TodoConnection!`](#todoconnection) | To-do items for the current user. |
 | `description` | [`String`](#string) | Description of the issue. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with this issue. |
 | `discussionLocked` | [`Boolean!`](#boolean) | Indicates discussion is locked on the issue. |
 | `discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. |
@@ -2837,7 +2847,7 @@ Relationship between an epic and an issue.
 | `taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Task completion status of the issue. |
 | `timeEstimate` | [`Int!`](#int) | Time estimate of the issue. |
 | `title` | [`String!`](#string) | Title of the issue. |
-| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title` |
+| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | `totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the issue. |
 | `type` | [`IssueType`](#issuetype) | Type of the issue. |
 | `updatedAt` | [`Time!`](#time) | Timestamp of when the issue was last updated. |
@@ -2845,7 +2855,7 @@ Relationship between an epic and an issue.
 | `upvotes` | [`Int!`](#int) | Number of upvotes the issue has received. |
 | `userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the issue. |
 | `userNotesCount` | [`Int!`](#int) | Number of user notes of the issue. |
-| `userPermissions` | [`IssuePermissions!`](#issuepermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`IssuePermissions!`](#issuepermissions) | Permissions for the current user on the resource. |
 | `webPath` | [`String!`](#string) | Web path of the issue. |
 | `webUrl` | [`String!`](#string) | Web URL of the issue. |
 | `weight` | [`Int`](#int) | Weight of the issue. |
@@ -2920,14 +2930,14 @@ Check permissions for the current user on an epic.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_epic` on this resource |
-| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource |
-| `createEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `create_epic` on this resource |
-| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource |
-| `destroyEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_epic` on this resource |
-| `readEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic` on this resource |
-| `readEpicIid` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic_iid` on this resource |
-| `updateEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `update_epic` on this resource |
+| `adminEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_epic` on this resource. |
+| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
+| `createEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `create_epic` on this resource. |
+| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
+| `destroyEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_epic` on this resource. |
+| `readEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic` on this resource. |
+| `readEpicIid` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic_iid` on this resource. |
+| `updateEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `update_epic` on this resource. |
 
 ### `EpicSetSubscriptionPayload`
 
@@ -3063,13 +3073,13 @@ Autogenerated return type of GitlabSubscriptionActivate.
 | `containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | `customEmoji` | [`CustomEmojiConnection`](#customemojiconnection) | Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled. |
 | `description` | [`String`](#string) | Description of the namespace. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | `epic` | [`Epic`](#epic) | Find a single epic. |
 | `epicBoard` | [`EpicBoard`](#epicboard) | Find a single epic board. |
 | `epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. |
 | `epics` | [`EpicConnection`](#epicconnection) | Find epics. |
-| `epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace |
+| `epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | `fullName` | [`String!`](#string) | Full name of the namespace. |
 | `fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | `groupMembers` | [`GroupMemberConnection`](#groupmemberconnection) | A membership of a user within this group. |
@@ -3104,11 +3114,11 @@ Autogenerated return type of GitlabSubscriptionActivate.
 | `totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | `totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | `twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
-| `userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | `visibility` | [`String`](#string) | Visibility of the namespace. |
 | `vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities reported on the projects in the group and its subgroups. |
 | `vulnerabilitiesCountByDay` | [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection) | Number of vulnerabilities per day for the projects in the group and its subgroups. |
-| `vulnerabilitiesCountByDayAndSeverity` **{warning-solid}** | [`VulnerabilitiesCountByDayAndSeverityConnection`](#vulnerabilitiescountbydayandseverityconnection) | **Deprecated:** Use `vulnerabilitiesCountByDay`. Deprecated in 13.3. |
+| `vulnerabilitiesCountByDayAndSeverity` **{warning-solid}** | [`VulnerabilitiesCountByDayAndSeverityConnection`](#vulnerabilitiescountbydayandseverityconnection) | **Deprecated** in 13.3. Use `vulnerabilitiesCountByDay`. |
 | `vulnerabilityGrades` | [`[VulnerableProjectsByGrade!]!`](#vulnerableprojectsbygrade) | Represents vulnerable project counts for each grade. |
 | `vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. |
 | `vulnerabilitySeveritiesCount` | [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount) | Counts for each vulnerability severity in the group and its subgroups. |
@@ -3128,7 +3138,7 @@ Represents a Group Membership.
 | `id` | [`ID!`](#id) | ID of the member. |
 | `updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | `user` | [`User!`](#user) | User that is associated with the member object. |
-| `userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 
 ### `GroupMemberConnection`
 
@@ -3153,7 +3163,7 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource |
+| `readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource. |
 
 ### `GroupReleaseStats`
 
@@ -3161,8 +3171,8 @@ Contains release-related statistics about a group.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. Will always return `null` if `group_level_release_statistics` feature flag is disabled |
-| `releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. Will always return `null` if `group_level_release_statistics` feature flag is disabled |
+| `releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. Will always return `null` if `group_level_release_statistics` feature flag is disabled. |
+| `releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. Will always return `null` if `group_level_release_statistics` feature flag is disabled. |
 
 ### `GroupStats`
 
@@ -3178,14 +3188,14 @@ Represents the Geo sync and verification state of a group wiki repository.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createdAt` | [`Time`](#time) | Timestamp when the GroupWikiRepositoryRegistry was created |
+| `createdAt` | [`Time`](#time) | Timestamp when the GroupWikiRepositoryRegistry was created. |
 | `groupWikiRepositoryId` | [`ID!`](#id) | ID of the Group Wiki Repository. |
-| `id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry |
-| `lastSyncFailure` | [`String`](#string) | Error message during sync of the GroupWikiRepositoryRegistry |
-| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the GroupWikiRepositoryRegistry |
-| `retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry should be resynced |
-| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry |
-| `state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry |
+| `id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the GroupWikiRepositoryRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the GroupWikiRepositoryRegistry. |
+| `retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry. |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry. |
 
 ### `GroupWikiRepositoryRegistryConnection`
 
@@ -3366,7 +3376,7 @@ An edge in a connection.
 | `createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
 | `currentUserTodos` | [`TodoConnection!`](#todoconnection) | To-do items for the current user. |
 | `description` | [`String`](#string) | Description of the issue. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with this issue. |
 | `discussionLocked` | [`Boolean!`](#boolean) | Indicates discussion is locked on the issue. |
 | `discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. |
@@ -3397,7 +3407,7 @@ An edge in a connection.
 | `taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Task completion status of the issue. |
 | `timeEstimate` | [`Int!`](#int) | Time estimate of the issue. |
 | `title` | [`String!`](#string) | Title of the issue. |
-| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title` |
+| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | `totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the issue. |
 | `type` | [`IssueType`](#issuetype) | Type of the issue. |
 | `updatedAt` | [`Time!`](#time) | Timestamp of when the issue was last updated. |
@@ -3405,7 +3415,7 @@ An edge in a connection.
 | `upvotes` | [`Int!`](#int) | Number of upvotes the issue has received. |
 | `userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the issue. |
 | `userNotesCount` | [`Int!`](#int) | Number of user notes of the issue. |
-| `userPermissions` | [`IssuePermissions!`](#issuepermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`IssuePermissions!`](#issuepermissions) | Permissions for the current user on the resource. |
 | `webPath` | [`String!`](#string) | Web path of the issue. |
 | `webUrl` | [`String!`](#string) | Web URL of the issue. |
 | `weight` | [`Int`](#int) | Weight of the issue. |
@@ -3457,14 +3467,14 @@ Check permissions for the current user on a issue.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_issue` on this resource |
-| `createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource |
-| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource |
-| `destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource |
-| `readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource |
-| `readIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `read_issue` on this resource |
-| `reopenIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `reopen_issue` on this resource |
-| `updateIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `update_issue` on this resource |
+| `adminIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_issue` on this resource. |
+| `createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
+| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
+| `destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
+| `readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
+| `readIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `read_issue` on this resource. |
+| `reopenIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `reopen_issue` on this resource. |
+| `updateIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `update_issue` on this resource. |
 
 ### `IssueSetAssigneesPayload`
 
@@ -3562,9 +3572,9 @@ Represents total number of issues for the represented statuses.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `all` | [`Int`](#int) | Number of issues with status ALL for the project |
-| `closed` | [`Int`](#int) | Number of issues with status CLOSED for the project |
-| `opened` | [`Int`](#int) | Number of issues with status OPENED for the project |
+| `all` | [`Int`](#int) | Number of issues with status ALL for the project. |
+| `closed` | [`Int`](#int) | Number of issues with status CLOSED for the project. |
+| `opened` | [`Int`](#int) | Number of issues with status OPENED for the project. |
 
 ### `Iteration`
 
@@ -3574,7 +3584,7 @@ Represents an iteration object.
 | ----- | ---- | ----------- |
 | `createdAt` | [`Time!`](#time) | Timestamp of iteration creation. |
 | `description` | [`String`](#string) | Description of the iteration. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `dueDate` | [`Time`](#time) | Timestamp of the iteration due date. |
 | `id` | [`ID!`](#id) | ID of the iteration. |
 | `iid` | [`ID!`](#id) | Internal ID of the iteration. |
@@ -3764,7 +3774,7 @@ An edge in a connection.
 | `color` | [`String!`](#string) | Background color of the label. |
 | `createdAt` | [`Time!`](#time) | When this label was created. |
 | `description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `id` | [`ID!`](#id) | Label ID. |
 | `textColor` | [`String!`](#string) | Text color of the label. |
 | `title` | [`String!`](#string) | Content of the label. |
@@ -3852,7 +3862,7 @@ An edge in a connection.
 | `defaultMergeCommitMessageWithDescription` | [`String`](#string) | Default merge commit message of the merge request with description. |
 | `defaultSquashCommitMessage` | [`String`](#string) | Default squash commit message of the merge request. |
 | `description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `diffHeadSha` | [`String`](#string) | Diff head SHA of the merge request. |
 | `diffRefs` | [`DiffRefs`](#diffrefs) | References of the base SHA, the head SHA, and the start SHA for this merge request. |
 | `diffStats` | [`[DiffStats!]`](#diffstats) | Details about which files were changed in this merge request. |
@@ -3906,16 +3916,16 @@ An edge in a connection.
 | `targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |
 | `targetProject` | [`Project!`](#project) | Target project of the merge request. |
 | `targetProjectId` | [`Int!`](#int) | ID of the merge request target project. |
-| `taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Completion status of tasks |
+| `taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Completion status of tasks. |
 | `timeEstimate` | [`Int!`](#int) | Time estimate of the merge request. |
 | `title` | [`String!`](#string) | Title of the merge request. |
-| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title` |
+| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | `totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the merge request. |
 | `updatedAt` | [`Time!`](#time) | Timestamp of when the merge request was last updated. |
 | `upvotes` | [`Int!`](#int) | Number of upvotes for the merge request. |
 | `userDiscussionsCount` | [`Int`](#int) | Number of user discussions in the merge request. |
 | `userNotesCount` | [`Int`](#int) | User notes count of the merge request. |
-| `userPermissions` | [`MergeRequestPermissions!`](#mergerequestpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`MergeRequestPermissions!`](#mergerequestpermissions) | Permissions for the current user on the resource. |
 | `webUrl` | [`String`](#string) | Web URL of the merge request. |
 | `workInProgress` | [`Boolean!`](#boolean) | Indicates if the merge request is a draft. |
 
@@ -3957,14 +3967,14 @@ Represents the Geo sync and verification state of a Merge Request diff.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createdAt` | [`Time`](#time) | Timestamp when the MergeRequestDiffRegistry was created |
-| `id` | [`ID!`](#id) | ID of the MergeRequestDiffRegistry |
-| `lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry |
-| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the MergeRequestDiffRegistry |
+| `createdAt` | [`Time`](#time) | Timestamp when the MergeRequestDiffRegistry was created. |
+| `id` | [`ID!`](#id) | ID of the MergeRequestDiffRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the MergeRequestDiffRegistry. |
 | `mergeRequestDiffId` | [`ID!`](#id) | ID of the Merge Request diff. |
-| `retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry should be resynced |
-| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry |
-| `state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry |
+| `retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry. |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry. |
 
 ### `MergeRequestDiffRegistryConnection`
 
@@ -4000,15 +4010,15 @@ Check permissions for the current user on a merge request.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_merge_request` on this resource |
-| `canMerge` | [`Boolean!`](#boolean) | Indicates the user can perform `can_merge` on this resource |
-| `cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource |
-| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource |
-| `pushToSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_source_branch` on this resource |
-| `readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource |
-| `removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource |
-| `revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource |
-| `updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource |
+| `adminMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_merge_request` on this resource. |
+| `canMerge` | [`Boolean!`](#boolean) | Indicates the user can perform `can_merge` on this resource. |
+| `cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource. |
+| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
+| `pushToSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_source_branch` on this resource. |
+| `readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
+| `removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource. |
+| `revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource. |
+| `updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource. |
 
 ### `MergeRequestReviewerRereviewPayload`
 
@@ -4204,7 +4214,7 @@ Contains statistics about a milestone.
 | `complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled. |
 | `containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | `description` | [`String`](#string) | Description of the namespace. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `fullName` | [`String!`](#string) | Full name of the namespace. |
 | `fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | `id` | [`ID!`](#id) | ID of the namespace. |
@@ -4258,7 +4268,7 @@ Autogenerated return type of NamespaceIncreaseStorageTemporarily.
 | ----- | ---- | ----------- |
 | `author` | [`User!`](#user) | User who wrote this note. |
 | `body` | [`String!`](#string) | Content of the note. |
-| `bodyHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `note` |
+| `bodyHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `note`. |
 | `confidential` | [`Boolean`](#boolean) | Indicates if this note is confidential. |
 | `createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | `discussion` | [`Discussion`](#discussion) | The discussion this note is a part of. |
@@ -4273,7 +4283,7 @@ Autogenerated return type of NamespaceIncreaseStorageTemporarily.
 | `systemNoteIconName` | [`String`](#string) | Name of the icon corresponding to a system note. |
 | `updatedAt` | [`Time!`](#time) | Timestamp of the note's last activity. |
 | `url` | [`String`](#string) | URL to view this Note in the Web UI. |
-| `userPermissions` | [`NotePermissions!`](#notepermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`NotePermissions!`](#notepermissions) | Permissions for the current user on the resource. |
 
 ### `NoteConnection`
 
@@ -4298,12 +4308,12 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminNote` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_note` on this resource |
-| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource |
-| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource |
-| `readNote` | [`Boolean!`](#boolean) | Indicates the user can perform `read_note` on this resource |
-| `repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource |
-| `resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource |
+| `adminNote` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_note` on this resource. |
+| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
+| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
+| `readNote` | [`Boolean!`](#boolean) | Indicates the user can perform `read_note` on this resource. |
+| `repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource. |
+| `resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource. |
 
 ### `OncallParticipantType`
 
@@ -4458,14 +4468,14 @@ Represents the Geo sync and verification state of a package file.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createdAt` | [`Time`](#time) | Timestamp when the PackageFileRegistry was created |
-| `id` | [`ID!`](#id) | ID of the PackageFileRegistry |
-| `lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry |
-| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackageFileRegistry |
+| `createdAt` | [`Time`](#time) | Timestamp when the PackageFileRegistry was created. |
+| `id` | [`ID!`](#id) | ID of the PackageFileRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackageFileRegistry. |
 | `packageFileId` | [`ID!`](#id) | ID of the PackageFile. |
-| `retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry should be resynced |
-| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry |
-| `state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry |
+| `retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry. |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry. |
 
 ### `PackageFileRegistryConnection`
 
@@ -4568,8 +4578,8 @@ Information about pagination in a connection.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `endCursor` | [`String`](#string) | When paginating forwards, the cursor to continue. |
-| `hasNextPage` | [`Boolean!`](#boolean) | When paginating forwards, are there more items? |
-| `hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items? |
+| `hasNextPage` | [`Boolean!`](#boolean) | When paginating forwards, are there more items?. |
+| `hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items?. |
 | `startCursor` | [`String`](#string) | When paginating backwards, the cursor to continue. |
 
 ### `Pipeline`
@@ -4581,7 +4591,7 @@ Information about pagination in a connection.
 | `cancelable` | [`Boolean!`](#boolean) | Specifies if a pipeline can be canceled. |
 | `commitPath` | [`String`](#string) | Path to the commit that triggered the pipeline. |
 | `committedAt` | [`Time`](#time) | Timestamp of the pipeline's commit. |
-| `configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE) |
+| `configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE). |
 | `coverage` | [`Float`](#float) | Coverage percentage. |
 | `createdAt` | [`Time!`](#time) | Timestamp of the pipeline's creation. |
 | `detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
@@ -4601,11 +4611,11 @@ Information about pagination in a connection.
 | `sourceJob` | [`CiJob`](#cijob) | Job where pipeline was triggered from. |
 | `stages` | [`CiStageConnection`](#cistageconnection) | Stages of the pipeline. |
 | `startedAt` | [`Time`](#time) | Timestamp when the pipeline was started. |
-| `status` | [`PipelineStatusEnum!`](#pipelinestatusenum) | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED) |
+| `status` | [`PipelineStatusEnum!`](#pipelinestatusenum) | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED). |
 | `updatedAt` | [`Time!`](#time) | Timestamp of the pipeline's last activity. |
 | `upstream` | [`Pipeline`](#pipeline) | Pipeline that triggered the pipeline. |
 | `user` | [`User`](#user) | Pipeline user. |
-| `userPermissions` | [`PipelinePermissions!`](#pipelinepermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`PipelinePermissions!`](#pipelinepermissions) | Permissions for the current user on the resource. |
 | `warnings` | [`Boolean!`](#boolean) | Indicates if a pipeline has warnings. |
 
 ### `PipelineAnalytics`
@@ -4666,9 +4676,9 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline` on this resource |
-| `destroyPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pipeline` on this resource |
-| `updatePipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline` on this resource |
+| `adminPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline` on this resource. |
+| `destroyPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pipeline` on this resource. |
+| `updatePipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline` on this resource. |
 
 ### `PipelineRetryPayload`
 
@@ -4752,7 +4762,7 @@ An edge in a connection.
 | `dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. |
 | `dastSiteValidations` | [`DastSiteValidationConnection`](#dastsitevalidationconnection) | DAST Site Validations associated with the project. |
 | `description` | [`String`](#string) | Short description of the project. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `environment` | [`Environment`](#environment) | A single environment of the project. |
 | `environments` | [`EnvironmentConnection`](#environmentconnection) | Environments of the project. |
 | `forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
@@ -4766,7 +4776,7 @@ An edge in a connection.
 | `issue` | [`Issue`](#issue) | A single issue of the project. |
 | `issueStatusCounts` | [`IssueStatusCountsType`](#issuestatuscountstype) | Counts of issues by status for the project. |
 | `issues` | [`IssueConnection`](#issueconnection) | Issues of the project. |
-| `issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user |
+| `issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | `iterationCadences` | [`IterationCadenceConnection`](#iterationcadenceconnection) | Find iteration cadences. |
 | `iterations` | [`IterationConnection`](#iterationconnection) | Find iterations. |
 | `jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
@@ -4778,7 +4788,7 @@ An edge in a connection.
 | `lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
 | `mergeRequest` | [`MergeRequest`](#mergerequest) | A single merge request of the project. |
 | `mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests of the project. |
-| `mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user |
+| `mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
 | `mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | `milestones` | [`MilestoneConnection`](#milestoneconnection) | Milestones of the project. |
 | `name` | [`String!`](#string) | Name of the project (without namespace). |
@@ -4815,7 +4825,7 @@ An edge in a connection.
 | `services` | [`ServiceConnection`](#serviceconnection) | Project services. |
 | `sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
 | `snippets` | [`SnippetConnection`](#snippetconnection) | Snippets of the project. |
-| `snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user |
+| `snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
 | `squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
 | `sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
 | `starCount` | [`Int!`](#int) | Number of times the project has been starred. |
@@ -4824,14 +4834,14 @@ An edge in a connection.
 | `tagList` | [`String`](#string) | List of project topics (not Git tags). |
 | `terraformState` | [`TerraformState`](#terraformstate) | Find a single Terraform state by name. |
 | `terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. |
-| `userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | `visibility` | [`String`](#string) | Visibility of the project. |
 | `vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities reported on the project. |
 | `vulnerabilitiesCountByDay` | [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection) | Number of vulnerabilities per day for the project. |
 | `vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. |
 | `vulnerabilitySeveritiesCount` | [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount) | Counts for each vulnerability severity in the project. |
 | `webUrl` | [`String`](#string) | Web URL of the project. |
-| `wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user |
+| `wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
 
 ### `ProjectCiCdSetting`
 
@@ -4875,7 +4885,7 @@ Represents a Project Membership.
 | `project` | [`Project`](#project) | Project that User is a member of. |
 | `updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | `user` | [`User!`](#user) | User that is associated with the member object. |
-| `userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 
 ### `ProjectMemberConnection`
 
@@ -4900,48 +4910,48 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminOperations` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_operations` on this resource |
-| `adminProject` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_project` on this resource |
-| `adminRemoteMirror` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_remote_mirror` on this resource |
-| `adminWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_wiki` on this resource |
-| `archiveProject` | [`Boolean!`](#boolean) | Indicates the user can perform `archive_project` on this resource |
-| `changeNamespace` | [`Boolean!`](#boolean) | Indicates the user can perform `change_namespace` on this resource |
-| `changeVisibilityLevel` | [`Boolean!`](#boolean) | Indicates the user can perform `change_visibility_level` on this resource |
-| `createDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `create_deployment` on this resource |
-| `createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource |
-| `createIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `create_issue` on this resource |
-| `createLabel` | [`Boolean!`](#boolean) | Indicates the user can perform `create_label` on this resource |
-| `createMergeRequestFrom` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_from` on this resource |
-| `createMergeRequestIn` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_in` on this resource |
-| `createPages` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pages` on this resource |
-| `createPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline` on this resource |
-| `createPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline_schedule` on this resource |
-| `createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource |
-| `createWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `create_wiki` on this resource |
-| `destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource |
-| `destroyPages` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pages` on this resource |
-| `destroyWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_wiki` on this resource |
-| `downloadCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_code` on this resource |
-| `downloadWikiCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_wiki_code` on this resource |
-| `forkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `fork_project` on this resource |
-| `pushCode` | [`Boolean!`](#boolean) | Indicates the user can perform `push_code` on this resource |
-| `pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_delete_protected_branch` on this resource |
-| `readCommitStatus` | [`Boolean!`](#boolean) | Indicates the user can perform `read_commit_status` on this resource |
-| `readCycleAnalytics` | [`Boolean!`](#boolean) | Indicates the user can perform `read_cycle_analytics` on this resource |
-| `readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource |
-| `readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource |
-| `readPagesContent` | [`Boolean!`](#boolean) | Indicates the user can perform `read_pages_content` on this resource |
-| `readProject` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project` on this resource |
-| `readProjectMember` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project_member` on this resource |
-| `readWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `read_wiki` on this resource |
-| `removeForkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_fork_project` on this resource |
-| `removePages` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_pages` on this resource |
-| `removeProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_project` on this resource |
-| `renameProject` | [`Boolean!`](#boolean) | Indicates the user can perform `rename_project` on this resource |
-| `requestAccess` | [`Boolean!`](#boolean) | Indicates the user can perform `request_access` on this resource |
-| `updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource |
-| `updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource |
-| `uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource |
+| `adminOperations` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_operations` on this resource. |
+| `adminProject` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_project` on this resource. |
+| `adminRemoteMirror` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_remote_mirror` on this resource. |
+| `adminWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_wiki` on this resource. |
+| `archiveProject` | [`Boolean!`](#boolean) | Indicates the user can perform `archive_project` on this resource. |
+| `changeNamespace` | [`Boolean!`](#boolean) | Indicates the user can perform `change_namespace` on this resource. |
+| `changeVisibilityLevel` | [`Boolean!`](#boolean) | Indicates the user can perform `change_visibility_level` on this resource. |
+| `createDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `create_deployment` on this resource. |
+| `createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
+| `createIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `create_issue` on this resource. |
+| `createLabel` | [`Boolean!`](#boolean) | Indicates the user can perform `create_label` on this resource. |
+| `createMergeRequestFrom` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_from` on this resource. |
+| `createMergeRequestIn` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_in` on this resource. |
+| `createPages` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pages` on this resource. |
+| `createPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline` on this resource. |
+| `createPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline_schedule` on this resource. |
+| `createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
+| `createWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `create_wiki` on this resource. |
+| `destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
+| `destroyPages` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pages` on this resource. |
+| `destroyWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_wiki` on this resource. |
+| `downloadCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_code` on this resource. |
+| `downloadWikiCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_wiki_code` on this resource. |
+| `forkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `fork_project` on this resource. |
+| `pushCode` | [`Boolean!`](#boolean) | Indicates the user can perform `push_code` on this resource. |
+| `pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_delete_protected_branch` on this resource. |
+| `readCommitStatus` | [`Boolean!`](#boolean) | Indicates the user can perform `read_commit_status` on this resource. |
+| `readCycleAnalytics` | [`Boolean!`](#boolean) | Indicates the user can perform `read_cycle_analytics` on this resource. |
+| `readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
+| `readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
+| `readPagesContent` | [`Boolean!`](#boolean) | Indicates the user can perform `read_pages_content` on this resource. |
+| `readProject` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project` on this resource. |
+| `readProjectMember` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project_member` on this resource. |
+| `readWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `read_wiki` on this resource. |
+| `removeForkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_fork_project` on this resource. |
+| `removePages` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_pages` on this resource. |
+| `removeProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_project` on this resource. |
+| `renameProject` | [`Boolean!`](#boolean) | Indicates the user can perform `rename_project` on this resource. |
+| `requestAccess` | [`Boolean!`](#boolean) | Indicates the user can perform `request_access` on this resource. |
+| `updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource. |
+| `updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
+| `uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
 
 ### `ProjectStatistics`
 
@@ -5026,7 +5036,7 @@ Represents a release.
 | `commit` | [`Commit`](#commit) | The commit associated with the release. |
 | `createdAt` | [`Time`](#time) | Timestamp of when the release was created. |
 | `description` | [`String`](#string) | Description (also known as "release notes") of the release. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `evidences` | [`ReleaseEvidenceConnection`](#releaseevidenceconnection) | Evidence for the release. |
 | `links` | [`ReleaseLinks`](#releaselinks) | Links of the release. |
 | `milestones` | [`MilestoneConnection`](#milestoneconnection) | Milestones associated to the release. |
@@ -5275,7 +5285,7 @@ Represents a requirement.
 | `author` | [`User!`](#user) | Author of the requirement. |
 | `createdAt` | [`Time!`](#time) | Timestamp of when the requirement was created. |
 | `description` | [`String`](#string) | Description of the requirement. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `id` | [`ID!`](#id) | ID of the requirement. |
 | `iid` | [`ID!`](#id) | Internal ID of the requirement. |
 | `lastTestReportManuallyCreated` | [`Boolean`](#boolean) | Indicates if latest test report was created by user. |
@@ -5284,9 +5294,9 @@ Represents a requirement.
 | `state` | [`RequirementState!`](#requirementstate) | State of the requirement. |
 | `testReports` | [`TestReportConnection`](#testreportconnection) | Test reports of the requirement. |
 | `title` | [`String`](#string) | Title of the requirement. |
-| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title` |
+| `titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | `updatedAt` | [`Time!`](#time) | Timestamp of when the requirement was last updated. |
-| `userPermissions` | [`RequirementPermissions!`](#requirementpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`RequirementPermissions!`](#requirementpermissions) | Permissions for the current user on the resource. |
 
 ### `RequirementConnection`
 
@@ -5313,11 +5323,11 @@ Check permissions for the current user on a requirement.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_requirement` on this resource |
-| `createRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `create_requirement` on this resource |
-| `destroyRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_requirement` on this resource |
-| `readRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `read_requirement` on this resource |
-| `updateRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `update_requirement` on this resource |
+| `adminRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_requirement` on this resource. |
+| `createRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `create_requirement` on this resource. |
+| `destroyRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_requirement` on this resource. |
+| `readRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `read_requirement` on this resource. |
+| `updateRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `update_requirement` on this resource. |
 
 ### `RequirementStatesCount`
 
@@ -5587,13 +5597,13 @@ Represents summary of a security report.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `apiFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `api_fuzzing` scan |
-| `containerScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `container_scanning` scan |
-| `coverageFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `coverage_fuzzing` scan |
-| `dast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dast` scan |
-| `dependencyScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dependency_scanning` scan |
-| `sast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `sast` scan |
-| `secretDetection` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `secret_detection` scan |
+| `apiFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `api_fuzzing` scan. |
+| `containerScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `container_scanning` scan. |
+| `coverageFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `coverage_fuzzing` scan. |
+| `dast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dast` scan. |
+| `dependencyScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dependency_scanning` scan. |
+| `sast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `sast` scan. |
+| `secretDetection` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `secret_detection` scan. |
 
 ### `SecurityReportSummarySection`
 
@@ -5779,11 +5789,11 @@ Represents a snippet entry.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `author` | [`User`](#user) | The owner of the snippet. |
-| `blob` **{warning-solid}** | [`SnippetBlob!`](#snippetblob) | **Deprecated:** Use `blobs`. Deprecated in 13.3. |
+| `blob` **{warning-solid}** | [`SnippetBlob!`](#snippetblob) | **Deprecated** in 13.3. Use `blobs`. |
 | `blobs` | [`SnippetBlobConnection`](#snippetblobconnection) | Snippet blobs. |
 | `createdAt` | [`Time!`](#time) | Timestamp this snippet was created. |
 | `description` | [`String`](#string) | Description of the snippet. |
-| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description` |
+| `descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | `discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. |
 | `fileName` | [`String`](#string) | File Name of the snippet. |
 | `httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
@@ -5794,7 +5804,7 @@ Represents a snippet entry.
 | `sshUrlToRepo` | [`String`](#string) | SSH URL to the snippet repository. |
 | `title` | [`String!`](#string) | Title of the snippet. |
 | `updatedAt` | [`Time!`](#time) | Timestamp this snippet was updated. |
-| `userPermissions` | [`SnippetPermissions!`](#snippetpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`SnippetPermissions!`](#snippetpermissions) | Permissions for the current user on the resource. |
 | `visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | Visibility Level of the snippet. |
 | `webUrl` | [`String!`](#string) | Web URL of the snippet. |
 
@@ -5873,12 +5883,12 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_snippet` on this resource |
-| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource |
-| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource |
-| `readSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `read_snippet` on this resource |
-| `reportSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `report_snippet` on this resource |
-| `updateSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `update_snippet` on this resource |
+| `adminSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_snippet` on this resource. |
+| `awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
+| `createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
+| `readSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `read_snippet` on this resource. |
+| `reportSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `report_snippet` on this resource. |
+| `updateSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `update_snippet` on this resource. |
 
 ### `SnippetRepositoryRegistry`
 
@@ -5886,14 +5896,14 @@ Represents the Geo sync and verification state of a snippet repository.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createdAt` | [`Time`](#time) | Timestamp when the SnippetRepositoryRegistry was created |
-| `id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry |
-| `lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry |
-| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the SnippetRepositoryRegistry |
-| `retryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry should be resynced |
-| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the SnippetRepositoryRegistry |
+| `createdAt` | [`Time`](#time) | Timestamp when the SnippetRepositoryRegistry was created. |
+| `id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the SnippetRepositoryRegistry. |
+| `retryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the SnippetRepositoryRegistry. |
 | `snippetRepositoryId` | [`ID!`](#id) | ID of the Snippet Repository. |
-| `state` | [`RegistryState`](#registrystate) | Sync state of the SnippetRepositoryRegistry |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the SnippetRepositoryRegistry. |
 
 ### `SnippetRepositoryRegistryConnection`
 
@@ -6042,13 +6052,13 @@ Represents the Geo sync and verification state of a terraform state version.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createdAt` | [`Time`](#time) | Timestamp when the TerraformStateVersionRegistry was created |
-| `id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry |
-| `lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry |
-| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry |
-| `retryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry should be resynced |
-| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry |
-| `state` | [`RegistryState`](#registrystate) | Sync state of the TerraformStateVersionRegistry |
+| `createdAt` | [`Time`](#time) | Timestamp when the TerraformStateVersionRegistry was created. |
+| `id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry. |
+| `retryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry. |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the TerraformStateVersionRegistry. |
 | `terraformStateVersionId` | [`ID!`](#id) | ID of the terraform state version. |
 
 ### `TerraformStateVersionRegistryConnection`
@@ -6221,7 +6231,7 @@ Autogenerated return type of TodoRestoreMany.
 | `clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | `errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | `todos` | [`[Todo!]!`](#todo) | Updated to-do items. |
-| `updatedIds` **{warning-solid}** | [`[TodoID!]!`](#todoid) | **Deprecated:** Use to-do items. Deprecated in 13.2. |
+| `updatedIds` **{warning-solid}** | [`[TodoID!]!`](#todoid) | **Deprecated** in 13.2. Use to-do items. |
 
 ### `TodoRestorePayload`
 
@@ -6242,7 +6252,7 @@ Autogenerated return type of TodosMarkAllDone.
 | `clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | `errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | `todos` | [`[Todo!]!`](#todo) | Updated to-do items. |
-| `updatedIds` **{warning-solid}** | [`[TodoID!]!`](#todoid) | **Deprecated:** Use to-do items. Deprecated in 13.2. |
+| `updatedIds` **{warning-solid}** | [`[TodoID!]!`](#todoid) | **Deprecated** in 13.2. Use to-do items. |
 
 ### `ToggleAwardEmojiPayload`
 
@@ -6484,7 +6494,7 @@ Representation of a GitLab user.
 | `avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | `bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | `callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. |
-| `email` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use public_email. Deprecated in 13.7. |
+| `email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: `User.publicEmail`. |
 | `groupCount` | [`Int`](#int) | Group count for the user. Available only when feature flag `user_group_counts` is enabled. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. |
 | `id` | [`ID!`](#id) | ID of the user. |
@@ -6498,7 +6508,7 @@ Representation of a GitLab user.
 | `state` | [`UserState!`](#userstate) | State of the user. |
 | `status` | [`UserStatus`](#userstatus) | User status. |
 | `todos` | [`TodoConnection!`](#todoconnection) | To-do items of the user. |
-| `userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | `username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | `webPath` | [`String!`](#string) | Web path of the user. |
 | `webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -6562,7 +6572,7 @@ An edge in a connection.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource |
+| `createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
 
 ### `UserStatus`
 
@@ -6571,7 +6581,7 @@ An edge in a connection.
 | `availability` | [`AvailabilityEnum!`](#availabilityenum) | User availability status. |
 | `emoji` | [`String`](#string) | String representation of emoji. |
 | `message` | [`String`](#string) | User status message. |
-| `messageHtml` | [`String`](#string) | HTML of the user status message |
+| `messageHtml` | [`String`](#string) | HTML of the user status message. |
 
 ### `VulnerabilitiesCountByDay`
 
@@ -6579,14 +6589,14 @@ Represents the count of vulnerabilities by severity on a particular day. This da
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `critical` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with critical severity |
+| `critical` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with critical severity. |
 | `date` | [`ISO8601Date!`](#iso8601date) | Date for the count. |
-| `high` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with high severity |
-| `info` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with info severity |
-| `low` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with low severity |
-| `medium` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with medium severity |
+| `high` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with high severity. |
+| `info` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with info severity. |
+| `low` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with low severity. |
+| `medium` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with medium severity. |
 | `total` | [`Int!`](#int) | Total number of vulnerabilities on a particular day. |
-| `unknown` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with unknown severity |
+| `unknown` | [`Int!`](#int) | Total number of vulnerabilities on a particular day with unknown severity. |
 
 ### `VulnerabilitiesCountByDayAndSeverity`
 
@@ -6665,11 +6675,11 @@ Represents a vulnerability.
 | `resolvedBy` | [`User`](#user) | The user that resolved the vulnerability. |
 | `resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
 | `scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
-| `severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
-| `state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED) |
+| `severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
+| `state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | `title` | [`String`](#string) | Title of the vulnerability. |
 | `userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
-| `userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource |
+| `userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
 | `vulnerabilityPath` | [`String`](#string) | URL to the vulnerability's details page. |
 
 ### `VulnerabilityConfirmPayload`
@@ -7024,15 +7034,15 @@ Check permissions for the current user on a vulnerability.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `adminVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability` on this resource |
-| `adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_external_issue_link` on this resource |
-| `adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_issue_link` on this resource |
-| `createVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability` on this resource |
-| `createVulnerabilityExport` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_export` on this resource |
-| `createVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_feedback` on this resource |
-| `destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource |
-| `readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource |
-| `updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource |
+| `adminVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability` on this resource. |
+| `adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_external_issue_link` on this resource. |
+| `adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_issue_link` on this resource. |
+| `createVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability` on this resource. |
+| `createVulnerabilityExport` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_export` on this resource. |
+| `createVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_feedback` on this resource. |
+| `destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource. |
+| `readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource. |
+| `updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource. |
 
 ### `VulnerabilityResolvePayload`
 
@@ -7090,12 +7100,12 @@ Represents vulnerability counts by severity.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `critical` | [`Int`](#int) | Number of vulnerabilities of CRITICAL severity of the project |
-| `high` | [`Int`](#int) | Number of vulnerabilities of HIGH severity of the project |
-| `info` | [`Int`](#int) | Number of vulnerabilities of INFO severity of the project |
-| `low` | [`Int`](#int) | Number of vulnerabilities of LOW severity of the project |
-| `medium` | [`Int`](#int) | Number of vulnerabilities of MEDIUM severity of the project |
-| `unknown` | [`Int`](#int) | Number of vulnerabilities of UNKNOWN severity of the project |
+| `critical` | [`Int`](#int) | Number of vulnerabilities of CRITICAL severity of the project. |
+| `high` | [`Int`](#int) | Number of vulnerabilities of HIGH severity of the project. |
+| `info` | [`Int`](#int) | Number of vulnerabilities of INFO severity of the project. |
+| `low` | [`Int`](#int) | Number of vulnerabilities of LOW severity of the project. |
+| `medium` | [`Int`](#int) | Number of vulnerabilities of MEDIUM severity of the project. |
+| `unknown` | [`Int`](#int) | Number of vulnerabilities of UNKNOWN severity of the project. |
 
 ### `VulnerableDependency`
 
@@ -7139,13 +7149,13 @@ Access level to a resource.
 
 | Value | Description |
 | ----- | ----------- |
-| `DEVELOPER` | Developer access |
-| `GUEST` | Guest access |
-| `MAINTAINER` | Maintainer access |
-| `MINIMAL_ACCESS` | Minimal access |
-| `NO_ACCESS` | No access |
-| `OWNER` | Owner access |
-| `REPORTER` | Reporter access |
+| `DEVELOPER` | Developer access. |
+| `GUEST` | Guest access. |
+| `MAINTAINER` | Maintainer access. |
+| `MINIMAL_ACCESS` | Minimal access. |
+| `NO_ACCESS` | No access. |
+| `OWNER` | Owner access. |
+| `REPORTER` | Reporter access. |
 
 ### `AlertManagementAlertSort`
 
@@ -7171,10 +7181,10 @@ Values for sorting alerts.
 | `UPDATED_DESC` | Updated at descending order. |
 | `UPDATED_TIME_ASC` | Created time by ascending order. |
 | `UPDATED_TIME_DESC` | Created time by descending order. |
-| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
-| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
-| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
-| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+| `created_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_ASC`. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_DESC`. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_ASC`. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_DESC`. Deprecated in 13.5. |
 
 ### `AlertManagementDomainFilter`
 
@@ -7227,12 +7237,12 @@ Alert severity values.
 
 | Value | Description |
 | ----- | ----------- |
-| `CRITICAL` | Critical severity |
-| `HIGH` | High severity |
-| `INFO` | Info severity |
-| `LOW` | Low severity |
-| `MEDIUM` | Medium severity |
-| `UNKNOWN` | Unknown severity |
+| `CRITICAL` | Critical severity. |
+| `HIGH` | High severity. |
+| `INFO` | Info severity. |
+| `LOW` | Low severity. |
+| `MEDIUM` | Medium severity. |
+| `UNKNOWN` | Unknown severity. |
 
 ### `AlertManagementStatus`
 
@@ -7240,10 +7250,10 @@ Alert status values.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACKNOWLEDGED` | Acknowledged status |
-| `IGNORED` | Ignored status |
-| `RESOLVED` | Resolved status |
-| `TRIGGERED` | Triggered status |
+| `ACKNOWLEDGED` | Acknowledged status. |
+| `IGNORED` | Ignored status. |
+| `RESOLVED` | Resolved status. |
+| `TRIGGERED` | Triggered status. |
 
 ### `ApiFuzzingScanMode`
 
@@ -7261,8 +7271,8 @@ User availability status.
 
 | Value | Description |
 | ----- | ----------- |
-| `BUSY` | Busy |
-| `NOT_SET` | Not Set |
+| `BUSY` | Busy. |
+| `NOT_SET` | Not Set. |
 
 ### `BlobViewersType`
 
@@ -7322,31 +7332,31 @@ Mode of a commit action.
 
 | Value | Description |
 | ----- | ----------- |
-| `EVERY_DAY` | Every day |
-| `EVERY_MONTH` | Every month |
-| `EVERY_THREE_MONTHS` | Every three months |
-| `EVERY_TWO_WEEKS` | Every two weeks |
-| `EVERY_WEEK` | Every week |
+| `EVERY_DAY` | Every day. |
+| `EVERY_MONTH` | Every month. |
+| `EVERY_THREE_MONTHS` | Every three months. |
+| `EVERY_TWO_WEEKS` | Every two weeks. |
+| `EVERY_WEEK` | Every week. |
 
 ### `ContainerExpirationPolicyKeepEnum`
 
 | Value | Description |
 | ----- | ----------- |
-| `FIFTY_TAGS` | 50 tags per image name |
-| `FIVE_TAGS` | 5 tags per image name |
-| `ONE_HUNDRED_TAGS` | 100 tags per image name |
-| `ONE_TAG` | 1 tag per image name |
-| `TEN_TAGS` | 10 tags per image name |
-| `TWENTY_FIVE_TAGS` | 25 tags per image name |
+| `FIFTY_TAGS` | 50 tags per image name. |
+| `FIVE_TAGS` | 5 tags per image name. |
+| `ONE_HUNDRED_TAGS` | 100 tags per image name. |
+| `ONE_TAG` | 1 tag per image name. |
+| `TEN_TAGS` | 10 tags per image name. |
+| `TWENTY_FIVE_TAGS` | 25 tags per image name. |
 
 ### `ContainerExpirationPolicyOlderThanEnum`
 
 | Value | Description |
 | ----- | ----------- |
-| `FOURTEEN_DAYS` | 14 days until tags are automatically removed |
-| `NINETY_DAYS` | 90 days until tags are automatically removed |
-| `SEVEN_DAYS` | 7 days until tags are automatically removed |
-| `THIRTY_DAYS` | 30 days until tags are automatically removed |
+| `FOURTEEN_DAYS` | 14 days until tags are automatically removed. |
+| `NINETY_DAYS` | 90 days until tags are automatically removed. |
+| `SEVEN_DAYS` | 7 days until tags are automatically removed. |
+| `THIRTY_DAYS` | 30 days until tags are automatically removed. |
 
 ### `ContainerRepositoryCleanupStatus`
 
@@ -7371,10 +7381,10 @@ Values for sorting container repositories.
 | `NAME_DESC` | Name by descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
-| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
-| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
-| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
-| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+| `created_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_ASC`. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_DESC`. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_ASC`. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_DESC`. Deprecated in 13.5. |
 
 ### `ContainerRepositoryStatus`
 
@@ -7415,11 +7425,11 @@ Color of the data visualization palette.
 
 | Value | Description |
 | ----- | ----------- |
-| `AQUA` | Aqua color |
-| `BLUE` | Blue color |
-| `GREEN` | Green color |
-| `MAGENTA` | Magenta color |
-| `ORANGE` | Orange color |
+| `AQUA` | Aqua color. |
+| `BLUE` | Blue color. |
+| `GREEN` | Green color. |
+| `MAGENTA` | Magenta color. |
+| `ORANGE` | Orange color. |
 
 ### `DataVisualizationWeightEnum`
 
@@ -7427,17 +7437,17 @@ Weight of the data visualization palette.
 
 | Value | Description |
 | ----- | ----------- |
-| `WEIGHT_100` | 100 weight |
-| `WEIGHT_200` | 200 weight |
-| `WEIGHT_300` | 300 weight |
-| `WEIGHT_400` | 400 weight |
-| `WEIGHT_50` | 50 weight |
-| `WEIGHT_500` | 500 weight |
-| `WEIGHT_600` | 600 weight |
-| `WEIGHT_700` | 700 weight |
-| `WEIGHT_800` | 800 weight |
-| `WEIGHT_900` | 900 weight |
-| `WEIGHT_950` | 950 weight |
+| `WEIGHT_100` | 100 weight. |
+| `WEIGHT_200` | 200 weight. |
+| `WEIGHT_300` | 300 weight. |
+| `WEIGHT_400` | 400 weight. |
+| `WEIGHT_50` | 50 weight. |
+| `WEIGHT_500` | 500 weight. |
+| `WEIGHT_600` | 600 weight. |
+| `WEIGHT_700` | 700 weight. |
+| `WEIGHT_800` | 800 weight. |
+| `WEIGHT_900` | 900 weight. |
+| `WEIGHT_950` | 950 weight. |
 
 ### `DesignCollectionCopyState`
 
@@ -7445,9 +7455,9 @@ Copy state of a DesignCollection.
 
 | Value | Description |
 | ----- | ----------- |
-| `ERROR` | The DesignCollection encountered an error during a copy |
-| `IN_PROGRESS` | The DesignCollection is being copied |
-| `READY` | The DesignCollection has no copy in progress |
+| `ERROR` | The DesignCollection encountered an error during a copy. |
+| `IN_PROGRESS` | The DesignCollection is being copied. |
+| `READY` | The DesignCollection has no copy in progress. |
 
 ### `DesignVersionEvent`
 
@@ -7455,9 +7465,9 @@ Mutation event of a design within a version.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATION` | A creation event |
-| `DELETION` | A deletion event |
-| `MODIFICATION` | A modification event |
+| `CREATION` | A creation event. |
+| `DELETION` | A deletion event. |
+| `MODIFICATION` | A modification event. |
 | `NONE` | No change. |
 
 ### `DiffPositionType`
@@ -7466,8 +7476,8 @@ Type of file the position refers to.
 
 | Value | Description |
 | ----- | ----------- |
-| `image` | An image |
-| `text` | A text file |
+| `image` | An image. |
+| `text` | A text file. |
 
 ### `EntryType`
 
@@ -7528,19 +7538,19 @@ Event action.
 
 | Value | Description |
 | ----- | ----------- |
-| `APPROVED` | Approved action |
-| `ARCHIVED` | Archived action |
-| `CLOSED` | Closed action |
-| `COMMENTED` | Commented action |
-| `CREATED` | Created action |
-| `DESTROYED` | Destroyed action |
-| `EXPIRED` | Expired action |
-| `JOINED` | Joined action |
-| `LEFT` | Left action |
-| `MERGED` | Merged action |
-| `PUSHED` | Pushed action |
-| `REOPENED` | Reopened action |
-| `UPDATED` | Updated action |
+| `APPROVED` | Approved action. |
+| `ARCHIVED` | Archived action. |
+| `CLOSED` | Closed action. |
+| `COMMENTED` | Commented action. |
+| `CREATED` | Created action. |
+| `DESTROYED` | Destroyed action. |
+| `EXPIRED` | Expired action. |
+| `JOINED` | Joined action. |
+| `LEFT` | Left action. |
+| `MERGED` | Merged action. |
+| `PUSHED` | Pushed action. |
+| `REOPENED` | Reopened action. |
+| `UPDATED` | Updated action. |
 
 ### `GroupMemberRelation`
 
@@ -7548,9 +7558,9 @@ Group member relation.
 
 | Value | Description |
 | ----- | ----------- |
-| `DESCENDANTS` | Descendants members |
-| `DIRECT` | Direct members |
-| `INHERITED` | Inherited members |
+| `DESCENDANTS` | Descendants members. |
+| `DIRECT` | Direct members. |
+| `INHERITED` | Inherited members. |
 
 ### `HealthStatus`
 
@@ -7568,11 +7578,11 @@ Incident severity.
 
 | Value | Description |
 | ----- | ----------- |
-| `CRITICAL` | Critical severity |
-| `HIGH` | High severity |
-| `LOW` | Low severity |
-| `MEDIUM` | Medium severity |
-| `UNKNOWN` | Unknown severity |
+| `CRITICAL` | Critical severity. |
+| `HIGH` | High severity. |
+| `LOW` | Low severity. |
+| `MEDIUM` | Medium severity. |
+| `UNKNOWN` | Unknown severity. |
 
 ### `IssuableState`
 
@@ -7612,10 +7622,10 @@ Values for sorting issues.
 | `UPDATED_DESC` | Updated at descending order. |
 | `WEIGHT_ASC` | Weight by ascending order. |
 | `WEIGHT_DESC` | Weight by descending order. |
-| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
-| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
-| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
-| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+| `created_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_ASC`. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_DESC`. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_ASC`. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_DESC`. Deprecated in 13.5. |
 
 ### `IssueState`
 
@@ -7643,9 +7653,9 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
-| `INCIDENT` | Incident issue type |
-| `ISSUE` | Issue issue type |
-| `TEST_CASE` | Test Case issue type |
+| `INCIDENT` | Incident issue type. |
+| `ISSUE` | Issue issue type. |
+| `TEST_CASE` | Test Case issue type. |
 
 ### `IterationState`
 
@@ -7755,10 +7765,10 @@ Values for sorting merge requests.
 | `PRIORITY_DESC` | Priority by descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
-| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
-| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
-| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
-| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+| `created_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_ASC`. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_DESC`. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_ASC`. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_DESC`. Deprecated in 13.5. |
 
 ### `MergeRequestState`
 
@@ -7823,24 +7833,24 @@ Rotation length unit of an on-call rotation.
 
 | Value | Description |
 | ----- | ----------- |
-| `DAYS` | Days |
-| `HOURS` | Hours |
-| `WEEKS` | Weeks |
+| `DAYS` | Days. |
+| `HOURS` | Hours. |
+| `WEEKS` | Weeks. |
 
 ### `PackageTypeEnum`
 
 | Value | Description |
 | ----- | ----------- |
-| `COMPOSER` | Packages from the Composer package manager |
-| `CONAN` | Packages from the Conan package manager |
-| `DEBIAN` | Packages from the Debian package manager |
-| `GENERIC` | Packages from the Generic package manager |
-| `GOLANG` | Packages from the Golang package manager |
-| `MAVEN` | Packages from the Maven package manager |
-| `NPM` | Packages from the npm package manager |
-| `NUGET` | Packages from the Nuget package manager |
-| `PYPI` | Packages from the PyPI package manager |
-| `RUBYGEMS` | Packages from the Rubygems package manager |
+| `COMPOSER` | Packages from the Composer package manager. |
+| `CONAN` | Packages from the Conan package manager. |
+| `DEBIAN` | Packages from the Debian package manager. |
+| `GENERIC` | Packages from the Generic package manager. |
+| `GOLANG` | Packages from the Golang package manager. |
+| `MAVEN` | Packages from the Maven package manager. |
+| `NPM` | Packages from the npm package manager. |
+| `NUGET` | Packages from the Nuget package manager. |
+| `PYPI` | Packages from the PyPI package manager. |
+| `RUBYGEMS` | Packages from the Rubygems package manager. |
 
 ### `PipelineConfigSourceEnum`
 
@@ -7878,10 +7888,10 @@ Project member relation.
 
 | Value | Description |
 | ----- | ----------- |
-| `DESCENDANTS` | Descendants members |
-| `DIRECT` | Direct members |
-| `INHERITED` | Inherited members |
-| `INVITED_GROUPS` | Invited Groups members |
+| `DESCENDANTS` | Descendants members. |
+| `DIRECT` | Direct members. |
+| `INHERITED` | Inherited members. |
+| `INVITED_GROUPS` | Invited Groups members. |
 
 ### `RegistryState`
 
@@ -7900,10 +7910,10 @@ Type of the link: `other`, `runbook`, `image`, `package`.
 
 | Value | Description |
 | ----- | ----------- |
-| `IMAGE` | Image link type |
-| `OTHER` | Other link type |
-| `PACKAGE` | Package link type |
-| `RUNBOOK` | Runbook link type |
+| `IMAGE` | Image link type. |
+| `OTHER` | Other link type. |
+| `PACKAGE` | Package link type. |
+| `RUNBOOK` | Runbook link type. |
 
 ### `ReleaseSort`
 
@@ -7949,13 +7959,13 @@ Size of UI component in SAST configuration page.
 
 | Value | Description |
 | ----- | ----------- |
-| `API_FUZZING` | API FUZZING scan report |
-| `CONTAINER_SCANNING` | CONTAINER SCANNING scan report |
-| `COVERAGE_FUZZING` | COVERAGE FUZZING scan report |
-| `DAST` | DAST scan report |
-| `DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report |
-| `SAST` | SAST scan report |
-| `SECRET_DETECTION` | SECRET DETECTION scan report |
+| `API_FUZZING` | API FUZZING scan report. |
+| `CONTAINER_SCANNING` | CONTAINER SCANNING scan report. |
+| `COVERAGE_FUZZING` | COVERAGE FUZZING scan report. |
+| `DAST` | DAST scan report. |
+| `DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report. |
+| `SAST` | SAST scan report. |
+| `SECRET_DETECTION` | SECRET DETECTION scan report. |
 
 ### `SecurityScannerType`
 
@@ -7986,42 +7996,42 @@ State of a Sentry error.
 
 | Value | Description |
 | ----- | ----------- |
-| `ASANA_SERVICE` | AsanaService type |
-| `ASSEMBLA_SERVICE` | AssemblaService type |
-| `BAMBOO_SERVICE` | BambooService type |
-| `BUGZILLA_SERVICE` | BugzillaService type |
-| `BUILDKITE_SERVICE` | BuildkiteService type |
-| `CAMPFIRE_SERVICE` | CampfireService type |
-| `CONFLUENCE_SERVICE` | ConfluenceService type |
-| `CUSTOM_ISSUE_TRACKER_SERVICE` | CustomIssueTrackerService type |
-| `DATADOG_SERVICE` | DatadogService type |
-| `DISCORD_SERVICE` | DiscordService type |
-| `DRONE_CI_SERVICE` | DroneCiService type |
-| `EMAILS_ON_PUSH_SERVICE` | EmailsOnPushService type |
-| `EWM_SERVICE` | EwmService type |
-| `EXTERNAL_WIKI_SERVICE` | ExternalWikiService type |
-| `FLOWDOCK_SERVICE` | FlowdockService type |
-| `GITHUB_SERVICE` | GithubService type |
-| `HANGOUTS_CHAT_SERVICE` | HangoutsChatService type |
-| `HIPCHAT_SERVICE` | HipchatService type |
-| `IRKER_SERVICE` | IrkerService type |
-| `JENKINS_SERVICE` | JenkinsService type |
-| `JIRA_SERVICE` | JiraService type |
-| `MATTERMOST_SERVICE` | MattermostService type |
-| `MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type |
-| `MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type |
-| `PACKAGIST_SERVICE` | PackagistService type |
-| `PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type |
-| `PIVOTALTRACKER_SERVICE` | PivotaltrackerService type |
-| `PROMETHEUS_SERVICE` | PrometheusService type |
-| `PUSHOVER_SERVICE` | PushoverService type |
-| `REDMINE_SERVICE` | RedmineService type |
-| `SLACK_SERVICE` | SlackService type |
-| `SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type |
-| `TEAMCITY_SERVICE` | TeamcityService type |
-| `UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type |
-| `WEBEX_TEAMS_SERVICE` | WebexTeamsService type |
-| `YOUTRACK_SERVICE` | YoutrackService type |
+| `ASANA_SERVICE` | AsanaService type. |
+| `ASSEMBLA_SERVICE` | AssemblaService type. |
+| `BAMBOO_SERVICE` | BambooService type. |
+| `BUGZILLA_SERVICE` | BugzillaService type. |
+| `BUILDKITE_SERVICE` | BuildkiteService type. |
+| `CAMPFIRE_SERVICE` | CampfireService type. |
+| `CONFLUENCE_SERVICE` | ConfluenceService type. |
+| `CUSTOM_ISSUE_TRACKER_SERVICE` | CustomIssueTrackerService type. |
+| `DATADOG_SERVICE` | DatadogService type. |
+| `DISCORD_SERVICE` | DiscordService type. |
+| `DRONE_CI_SERVICE` | DroneCiService type. |
+| `EMAILS_ON_PUSH_SERVICE` | EmailsOnPushService type. |
+| `EWM_SERVICE` | EwmService type. |
+| `EXTERNAL_WIKI_SERVICE` | ExternalWikiService type. |
+| `FLOWDOCK_SERVICE` | FlowdockService type. |
+| `GITHUB_SERVICE` | GithubService type. |
+| `HANGOUTS_CHAT_SERVICE` | HangoutsChatService type. |
+| `HIPCHAT_SERVICE` | HipchatService type. |
+| `IRKER_SERVICE` | IrkerService type. |
+| `JENKINS_SERVICE` | JenkinsService type. |
+| `JIRA_SERVICE` | JiraService type. |
+| `MATTERMOST_SERVICE` | MattermostService type. |
+| `MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type. |
+| `MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type. |
+| `PACKAGIST_SERVICE` | PackagistService type. |
+| `PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type. |
+| `PIVOTALTRACKER_SERVICE` | PivotaltrackerService type. |
+| `PROMETHEUS_SERVICE` | PrometheusService type. |
+| `PUSHOVER_SERVICE` | PushoverService type. |
+| `REDMINE_SERVICE` | RedmineService type. |
+| `SLACK_SERVICE` | SlackService type. |
+| `SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
+| `TEAMCITY_SERVICE` | TeamcityService type. |
+| `UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
+| `WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
+| `YOUTRACK_SERVICE` | YoutrackService type. |
 
 ### `SnippetBlobActionEnum`
 
@@ -8044,10 +8054,10 @@ Common sort values.
 | `CREATED_DESC` | Created at descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
-| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5. |
-| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5. |
-| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5. |
-| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5. |
+| `created_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_ASC`. Deprecated in 13.5. |
+| `created_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `CREATED_DESC`. Deprecated in 13.5. |
+| `updated_asc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_ASC`. Deprecated in 13.5. |
+| `updated_desc` **{warning-solid}** | **Deprecated:** This was renamed. Please use `UPDATED_DESC`. Deprecated in 13.5. |
 
 ### `TestReportState`
 
@@ -8174,7 +8184,7 @@ The external tracker of the external issue link related to a vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `JIRA` | Jira external tracker |
+| `JIRA` | Jira external tracker. |
 
 ### `VulnerabilityExternalIssueLinkType`
 
@@ -8182,7 +8192,7 @@ The type of the external issue link related to a vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED` | Created link type |
+| `CREATED` | Created link type. |
 
 ### `VulnerabilityGrade`
 
@@ -8750,7 +8760,7 @@ Implementations:
 | `fullPath` | [`String!`](#string) | The full path to the design file. |
 | `id` | [`ID!`](#id) | The ID of this design. |
 | `image` | [`String!`](#string) | The URL of the full-sized image. |
-| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated |
+| `imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
 | `issue` | [`Issue!`](#issue) | The issue the design belongs to. |
 | `notesCount` | [`Int!`](#int) | The total count of user-created notes for this design. |
 | `project` | [`Project!`](#project) | The project the design belongs to. |

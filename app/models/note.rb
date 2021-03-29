@@ -135,6 +135,7 @@ class Note < ApplicationRecord
              project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
+  scope :with_web_entity_associations, -> { preload(:project, :author, :noteable) }
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }

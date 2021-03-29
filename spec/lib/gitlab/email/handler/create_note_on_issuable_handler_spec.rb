@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
   it_behaves_like :note_handler_shared_examples, true do
     let_it_be(:recipient) { user }
 
-    let(:update_commands_only) { email_reply_fixture('emails/update_commands_only_reply.eml') }
+    let(:update_commands_only) { email_reply_fixture('emails/update_commands_only.eml') }
     let(:no_content)           { email_reply_fixture('emails/no_content_reply.eml') }
     let(:commands_in_reply)    { email_reply_fixture('emails/commands_in_reply.eml') }
     let(:with_quick_actions)   { email_reply_fixture('emails/valid_reply_with_quick_actions.eml') }

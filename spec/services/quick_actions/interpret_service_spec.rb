@@ -478,7 +478,7 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    shared_examples 'empty command' do |error_msg|
+    shared_examples 'failed command' do |error_msg|
       it 'populates {} if content contains an unsupported command' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -607,10 +607,10 @@ RSpec.describe QuickActions::InterpretService do
           issuable.update!(confidential: true)
         end
 
-        it 'does not return the success message' do
+        it 'returns an error message' do
           _, _, message = service.execute(content, issuable)
 
-          expect(message).to be_empty
+          expect(message).to eq('Could not apply confidential command.')
         end
 
         it 'is not part of the available commands' do
@@ -728,7 +728,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'can not be merged when logged user does not have permissions' do
         let(:service) { described_class.new(project, create(:user)) }
 
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { merge_request }
         end
@@ -737,7 +737,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'can not be merged when sha does not match' do
         let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
 
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { merge_request }
         end
@@ -755,21 +755,21 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'issue can not be merged' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { issue }
         end
       end
 
       context 'non persisted merge request  cant be merged' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { build(:merge_request) }
         end
       end
 
       context 'not persisted merge request can not be merged' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { build(:merge_request, source_project: project) }
         end
@@ -786,7 +786,7 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command' do
       let(:content) { '/title' }
       let(:issuable) { issue }
     end
@@ -869,12 +869,12 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
+    it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
+    it_behaves_like 'failed command', "Failed to assign a user because no user was found." do
       let(:content) { '/assign' }
       let(:issuable) { issue }
     end
@@ -890,7 +890,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'with an issue instead of a merge request' do
         let(:issuable) { issue }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply assign_reviewer command.'
       end
 
       # CE does not have multiple reviewers
@@ -935,7 +935,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'with an incorrect user' do
         let(:content) { '/assign_reviewer @abcd1234' }
 
-        it_behaves_like 'empty command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
       end
 
       context 'with the "reviewer" alias' do
@@ -953,7 +953,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'with no user' do
         let(:content) { '/assign_reviewer' }
 
-        it_behaves_like 'empty command', "Failed to assign a reviewer because no user was found."
+        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was found."
       end
 
       context 'includes only the user reference with extra text' do
@@ -977,7 +977,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'with an issue instead of a merge request' do
         let(:issuable) { issue }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply unassign_reviewer command.'
       end
 
       context 'with anything after the command' do
@@ -1035,14 +1035,20 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    it_behaves_like 'milestone command' do
-      let(:content) { "/milestone %#{milestone.title}" }
-      let(:issuable) { issue }
-    end
+    context 'project milestones' do
+      before do
+        milestone
+      end
 
-    it_behaves_like 'milestone command' do
-      let(:content) { "/milestone %#{milestone.title}" }
-      let(:issuable) { merge_request }
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'milestone command' do
+        let(:content) { "/milestone %#{milestone.title}" }
+        let(:issuable) { merge_request }
+      end
     end
 
     context 'only group milestones available' do
@@ -1181,7 +1187,7 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command', 'Could not apply due command.' do
       let(:content) { '/due 2016-08-28' }
       let(:issuable) { merge_request }
     end
@@ -1211,7 +1217,7 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command', 'Could not apply remove_due_date command.' do
       let(:content) { '/remove_due_date' }
       let(:issuable) { merge_request }
     end
@@ -1221,12 +1227,12 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command' do
       let(:content) { '/estimate' }
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command' do
       let(:content) { '/estimate abc' }
       let(:issuable) { issue }
     end
@@ -1257,12 +1263,12 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command' do
       let(:content) { '/spend' }
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'failed command' do
       let(:content) { '/spend abc' }
       let(:issuable) { issue }
     end
@@ -1323,7 +1329,7 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'if issuable is a Commit' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply todo command.' do
           let(:issuable) { commit }
         end
       end
@@ -1379,7 +1385,7 @@ RSpec.describe QuickActions::InterpretService do
         end
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command' do
         let(:content) { '/copy_metadata' }
         let(:issuable) { issue }
       end
@@ -1419,19 +1425,19 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'cross project references' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:other_project) { create(:project, :public) }
           let(:source_issuable) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
           let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:content) { "/copy_metadata imaginary##{non_existing_record_iid}" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:other_project) { create(:project, :private) }
           let(:source_issuable) { create(:issue, project: other_project) }
 
@@ -1448,7 +1454,7 @@ RSpec.describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command' do
         let(:content) { '/duplicate' }
         let(:issuable) { issue }
       end
@@ -1461,12 +1467,12 @@ RSpec.describe QuickActions::InterpretService do
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
+        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
           let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
+        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
           let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
@@ -1481,62 +1487,62 @@ RSpec.describe QuickActions::InterpretService do
       let(:issue) { create(:issue, project: project, author: visitor) }
       let(:service) { described_class.new(project, visitor) }
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply assign command.' do
         let(:content) { "/assign @#{developer.username}" }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply unassign command.' do
         let(:content) { '/unassign' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply milestone command.' do
         let(:content) { "/milestone %#{milestone.title}" }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply remove_milestone command.' do
         let(:content) { '/remove_milestone' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply label command.' do
         let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply unlabel command.' do
         let(:content) { %(/unlabel ~"#{inprogress.title}") }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply relabel command.' do
         let(:content) { %(/relabel ~"#{inprogress.title}") }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply due command.' do
         let(:content) { '/due tomorrow' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply remove_due_date command.' do
         let(:content) { '/remove_due_date' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply confidential command.' do
         let(:content) { '/confidential' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply lock command.' do
         let(:content) { '/lock' }
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command' do
+      it_behaves_like 'failed command', 'Could not apply unlock command.' do
         let(:content) { '/unlock' }
         let(:issuable) { issue }
       end
@@ -1554,19 +1560,19 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'ignores command with no argument' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:content) { '/award' }
           let(:issuable) { issue }
         end
       end
 
       context 'ignores non-existing / invalid  emojis' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:content) { '/award noop' }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
         end
@@ -1576,7 +1582,7 @@ RSpec.describe QuickActions::InterpretService do
         let(:content) { '/award :100:' }
         let(:issuable) { commit }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply award command.'
       end
     end
 
@@ -1622,14 +1628,14 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'ignores command with no argument' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply target_branch command.' do
           let(:content) { '/target_branch' }
           let(:issuable) { another_merge_request }
         end
       end
 
       context 'ignores non-existing target branch' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command', 'Could not apply target_branch command.' do
           let(:content) { '/target_branch totally_non_existing_branch' }
           let(:issuable) { another_merge_request }
         end
@@ -1697,34 +1703,34 @@ RSpec.describe QuickActions::InterpretService do
           create(:board, project: project)
         end
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply board_move command.'
       end
 
       context 'if the given label does not exist' do
         let(:issuable) { issue }
         let(:content) { '/board_move ~"Fake Label"' }
 
-        it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
+        it_behaves_like 'failed command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if multiple labels are given' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
 
-        it_behaves_like 'empty command', 'Failed to move this issue because only a single label can be provided.'
+        it_behaves_like 'failed command', 'Failed to move this issue because only a single label can be provided.'
       end
 
       context 'if the given label is not a list on the board' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{bug.title}"} }
 
-        it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
+        it_behaves_like 'failed command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if issuable is not an Issue' do
         let(:issuable) { merge_request }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply board_move command.'
       end
     end
 
@@ -1732,7 +1738,7 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { commit }
 
       context 'ignores command with no argument' do
-        it_behaves_like 'empty command' do
+        it_behaves_like 'failed command' do
           let(:content) { '/tag' }
         end
       end
@@ -1797,7 +1803,7 @@ RSpec.describe QuickActions::InterpretService do
       context 'if issuable is not an Issue' do
         let(:issuable) { merge_request }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply create_merge_request command.'
       end
 
       context "when logged user cannot create_merge_requests in the project" do
@@ -1807,14 +1813,14 @@ RSpec.describe QuickActions::InterpretService do
           project.add_developer(developer)
         end
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply create_merge_request command.'
       end
 
       context 'when logged user cannot push code to the project' do
         let(:project) { create(:project, :private) }
         let(:service) { described_class.new(project, create(:user)) }
 
-        it_behaves_like 'empty command'
+        it_behaves_like 'failed command', 'Could not apply create_merge_request command.'
       end
 
       it 'populates create_merge_request with branch_name and issue iid' do
@@ -1953,7 +1959,7 @@ RSpec.describe QuickActions::InterpretService do
     context 'invite_email command' do
       let_it_be(:issuable) { issue }
 
-      it_behaves_like 'empty command', "No email participants were added. Either none were provided, or they already exist." do
+      it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist." do
         let(:content) { '/invite_email' }
       end
 
@@ -1964,7 +1970,7 @@ RSpec.describe QuickActions::InterpretService do
           issuable.issue_email_participants.create!(email: "a@gitlab.com")
         end
 
-        it_behaves_like 'empty command', "No email participants were added. Either none were provided, or they already exist."
+        it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist."
       end
 
       context 'with new email participants' do

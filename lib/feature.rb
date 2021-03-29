@@ -57,7 +57,7 @@ class Feature
     # use `default_enabled: true` to default the flag to being `enabled`
     # unless set explicitly.  The default is `disabled`
     # TODO: remove the `default_enabled:` and read it from the `defintion_yaml`
-    # check: https://gitlab.com/gitlab-org/gitlab/-/issues/271275
+    # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
     def enabled?(key, thing = nil, type: :development, default_enabled: false)
       if check_feature_flags_definition?
         if thing && !thing.respond_to?(:flipper_id)
@@ -65,11 +65,11 @@ class Feature
             "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
         end
 
-        Feature::Definition.valid_usage!(key, type: type, default_enabled: :yaml)
+        Feature::Definition.valid_usage!(key, type: type, default_enabled: default_enabled)
       end
 
-      # TODO: Remove rubocop disable comment once `default_enabled` argument is removed https://gitlab.com/gitlab-org/gitlab/-/issues/271275
-      default_enabled = Feature::Definition.default_enabled?(key) # rubocop:disable Lint/ShadowedArgument
+      # If `default_enabled: :yaml` we fetch the value from the YAML definition instead.
+      default_enabled = Feature::Definition.default_enabled?(key) if default_enabled == :yaml
 
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.

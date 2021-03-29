@@ -102,11 +102,6 @@ RSpec.describe Gitlab::Metrics::Methods do
         let(:feature_name) { :some_metric_feature }
         let(:metric) { call_fetch_metric_method(docstring: docstring, with_feature: feature_name) }
 
-        before do
-          skip_feature_flags_yaml_validation
-          skip_default_enabled_yaml_check
-        end
-
         context 'when feature is enabled' do
           before do
             stub_feature_flags(feature_name => true)
