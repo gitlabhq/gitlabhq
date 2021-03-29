@@ -316,7 +316,7 @@ class MergeRequest < ApplicationRecord
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
-  scope :with_jira_integration_associations, -> { preload(:metrics, :assignees, :author, :target_project, :source_project) }
+  scope :with_jira_integration_associations, -> { preload_routables.preload(:metrics, :assignees, :author) }
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))

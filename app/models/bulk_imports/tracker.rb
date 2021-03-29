@@ -18,6 +18,8 @@ class BulkImports::Tracker < ApplicationRecord
 
   validates :stage, presence: true
 
+  DEFAULT_PAGE_SIZE = 500
+
   state_machine :status, initial: :created do
     state :created, value: 0
     state :started, value: 1

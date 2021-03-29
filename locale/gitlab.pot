@@ -33456,6 +33456,12 @@ msgstr ""
 msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
+msgid "ValueStreamEvent|Start"
+msgstr ""
+
+msgid "ValueStreamEvent|Stop"
+msgstr ""
+
 msgid "ValueStream|The Default Value Stream cannot be deleted"
 msgstr ""
 
@@ -36535,9 +36541,6 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"
-msgstr ""
-
-msgid "must be later than active period start"
 msgstr ""
 
 msgid "must contain only valid frameworks"

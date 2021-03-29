@@ -246,7 +246,10 @@ RSpec.describe API::V3::Github do
 
         control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
 
-        create(:merge_request, source_project: project, source_branch: 'fix')
+        project3 = create(:project, :repository, creator: user)
+        project3.add_maintainer(user)
+        assignee3 = create(:user)
+        create(:merge_request, source_project: project3, target_project: project3, author: user, assignees: [assignee3])
 
         expect { perform_request }.not_to exceed_query_limit(control_count)
       end
