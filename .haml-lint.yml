@@ -106,6 +106,7 @@ linters:
       - Cop/LineBreakAfterGuardClauses
       - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
+      - Gitlab/FeatureAvailableUsage
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace

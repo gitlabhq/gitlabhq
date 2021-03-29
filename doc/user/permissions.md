@@ -93,7 +93,6 @@ The following table depicts the various user permission levels in a project.
 | View Code Review analytics **(STARTER)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
-| Create new merge request                          |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
@@ -108,6 +107,7 @@ The following table depicts the various user permission levels in a project.
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit [releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Delete [releases](project/releases/index.md)|   |            |            | ✓        | ✓      |
+| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |

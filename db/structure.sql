@@ -13147,7 +13147,8 @@ CREATE TABLE gitlab_subscriptions (
     auto_renew boolean,
     seats_in_use integer DEFAULT 0 NOT NULL,
     seats_owed integer DEFAULT 0 NOT NULL,
-    trial_extension_type smallint
+    trial_extension_type smallint,
+    CONSTRAINT check_77fea3f0e7 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE gitlab_subscriptions_id_seq
@@ -14639,6 +14640,24 @@ CREATE SEQUENCE milestones_id_seq
     CACHE 1;
 
 ALTER SEQUENCE milestones_id_seq OWNED BY milestones.id;
+
+CREATE TABLE namespace_admin_notes (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    note text,
+    CONSTRAINT check_e9d2e71b5d CHECK ((char_length(note) <= 1000))
+);
+
+CREATE SEQUENCE namespace_admin_notes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_admin_notes_id_seq OWNED BY namespace_admin_notes.id;
 
 CREATE TABLE namespace_aggregation_schedules (
     namespace_id integer NOT NULL
@@ -19510,6 +19529,8 @@ ALTER TABLE ONLY metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
+ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_statistics ALTER COLUMN id SET DEFAULT nextval('namespace_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY namespaces ALTER COLUMN id SET DEFAULT nextval('namespaces_id_seq'::regclass);
@@ -20238,9 +20259,6 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE gitlab_subscriptions
-    ADD CONSTRAINT check_77fea3f0e7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -20894,6 +20912,9 @@ ALTER TABLE ONLY milestone_releases
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY namespace_admin_notes
+    ADD CONSTRAINT namespace_admin_notes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
@@ -23121,6 +23142,8 @@ CREATE UNIQUE INDEX index_mr_context_commits_on_merge_request_id_and_sha ON merg
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_nulls_last ON merge_request_metrics USING btree (target_project_id, merged_at DESC NULLS LAST, id DESC);
 
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_time_to_merge ON merge_request_metrics USING btree (target_project_id, merged_at, created_at) WHERE (merged_at > created_at);
+
+CREATE INDEX index_namespace_admin_notes_on_namespace_id ON namespace_admin_notes USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_namespace_aggregation_schedules_on_namespace_id ON namespace_aggregation_schedules USING btree (namespace_id);
 
@@ -25963,6 +25986,9 @@ ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
 
 ALTER TABLE ONLY operations_feature_flags_clients
     ADD CONSTRAINT fk_rails_6650ed902c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_admin_notes
+    ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY web_hook_logs
     ADD CONSTRAINT fk_rails_666826e111 FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;

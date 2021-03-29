@@ -670,8 +670,8 @@ and stored by Docker, it is not possible for GitLab to parse this data and meet 
 ## Limitations
 
 - Moving or renaming existing Container Registry repositories is not supported
-once you have pushed images, because the images are signed, and the
-signature includes the repository name. To move or rename a repository with a
+once you have pushed images, because the images are stored in a path that matches
+the repository path. To move or rename a repository with a
 Container Registry, you must delete all existing images.
 - Prior to GitLab 12.10, any tags that use the same image ID as the `latest` tag
 are not deleted by the cleanup policy.

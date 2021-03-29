@@ -200,7 +200,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 ### Seat Link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in GitLab 12.9.
 
 Seat Link allows GitLab Inc. to provide our GitLab self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
 
@@ -269,7 +269,7 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 #### Disable Seat Link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in GitLab 12.10.
 
 Seat Link is enabled by default.
 

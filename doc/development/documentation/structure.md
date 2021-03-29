@@ -153,6 +153,14 @@ This issue occurs when...
 The workaround is...
 ```
 
+For the topic title:
+
+- Consider including at least a partial error message in the title.
+- Use fewer than 70 characters.
+
+Remember to include the complete error message in the topics content if it is
+not complete in the title.
+
 ## Other information on a topic
 
 Topics include other information.

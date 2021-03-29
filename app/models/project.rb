@@ -2324,6 +2324,11 @@ class Project < ApplicationRecord
                .external_authorization_service_default_label
   end
 
+  # Overridden in EE::Project
+  def licensed_feature_available?(_feature)
+    false
+  end
+
   def licensed_features
     []
   end

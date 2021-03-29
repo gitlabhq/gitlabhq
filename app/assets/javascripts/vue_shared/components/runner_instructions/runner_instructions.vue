@@ -9,6 +9,7 @@ import {
   GlDropdownItem,
   GlIcon,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import { __, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import {
@@ -79,7 +80,7 @@ export default {
       return Object.keys(this.selectedPlatform).length > 0;
     },
     instructionsEmpty() {
-      return Object.keys(this.instructions).length === 0;
+      return isEmpty(this.instructions);
     },
     groupId() {
       return this.group?.id ?? '';
@@ -212,10 +213,7 @@ export default {
             <pre
               class="gl-bg-gray gl-flex-fill-1 gl-white-space-pre-line"
               data-testid="binary-instructions"
-            >
-
-            {{ instructions.installInstructions }}
-          </pre
+              >{{ instructions.installInstructions }}</pre
             >
             <modal-copy-button
               :title="$options.i18n.copyInstructions"

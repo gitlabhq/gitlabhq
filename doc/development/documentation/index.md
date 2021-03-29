@@ -463,7 +463,8 @@ The following GitLab features are used among others:
 
 ## Testing
 
-For more information on documentation testing, see [Documentation testing](testing.md)
+For more information about documentation testing, see the [Documentation testing](testing.md)
+guide.
 
 ## Danger Bot
 

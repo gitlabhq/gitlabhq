@@ -51,10 +51,6 @@ export default {
   },
   methods: {
     ...mapActions(['toggleBoardItem', 'setAssignees']),
-    updateAssignees(data) {
-      const assignees = data.issueSetAssignees?.issue?.assignees?.nodes || [];
-      this.setAssignees(assignees);
-    },
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeIssue, sidebarType: this.sidebarType });
     },
@@ -78,7 +74,7 @@ export default {
         :full-path="fullPath"
         :initial-assignees="activeIssue.assignees"
         class="assignee"
-        @assignees-updated="updateAssignees"
+        @assignees-updated="setAssignees"
       />
       <board-sidebar-epic-select class="epic" />
       <div>

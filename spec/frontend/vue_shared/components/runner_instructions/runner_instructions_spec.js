@@ -1,3 +1,4 @@
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,7 +15,10 @@ localVue.use(VueApollo);
 describe('RunnerInstructions component', () => {
   let wrapper;
   let fakeApollo;
+  let runnerPlatformsHandler;
+  let runnerSetupInstructionsHandler;
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findModalButton = () => wrapper.find('[data-testid="show-modal-button"]');
   const findPlatformButtons = () => wrapper.findAll('[data-testid="platform-button"]');
   const findArchitectureDropdownItems = () =>
@@ -22,10 +26,10 @@ describe('RunnerInstructions component', () => {
   const findBinaryInstructionsSection = () => wrapper.find('[data-testid="binary-instructions"]');
   const findRunnerInstructionsSection = () => wrapper.find('[data-testid="runner-instructions"]');
 
-  beforeEach(async () => {
+  const createComponent = () => {
     const requestHandlers = [
-      [getRunnerPlatforms, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
-      [getRunnerSetupInstructions, jest.fn().mockResolvedValue(mockGraphqlInstructions)],
+      [getRunnerPlatforms, runnerPlatformsHandler],
+      [getRunnerSetupInstructions, runnerSetupInstructionsHandler],
     ];
 
     fakeApollo = createMockApollo(requestHandlers);
@@ -37,6 +41,13 @@ describe('RunnerInstructions component', () => {
       localVue,
       apolloProvider: fakeApollo,
     });
+  };
+
+  beforeEach(async () => {
+    runnerPlatformsHandler = jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms);
+    runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockGraphqlInstructions);
+
+    createComponent();
 
     await wrapper.vm.$nextTick();
   });
@@ -44,6 +55,10 @@ describe('RunnerInstructions component', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  it('should not show alert', () => {
+    expect(findAlert().exists()).toBe(false);
   });
 
   it('should show the "Show Runner installation instructions" button', () => {
@@ -109,5 +124,24 @@ describe('RunnerInstructions component', () => {
     const runner = findRunnerInstructionsSection();
 
     expect(runner.text()).toMatch(mockGraphqlInstructions.data.runnerSetup.registerInstructions);
+  });
+
+  describe('when instructions cannot be loaded', () => {
+    beforeEach(async () => {
+      runnerSetupInstructionsHandler.mockRejectedValue();
+
+      createComponent();
+
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should show alert', () => {
+      expect(findAlert().exists()).toBe(true);
+    });
+
+    it('should not show instructions', () => {
+      expect(findBinaryInstructionsSection().exists()).toBe(false);
+      expect(findRunnerInstructionsSection().exists()).toBe(false);
+    });
   });
 });

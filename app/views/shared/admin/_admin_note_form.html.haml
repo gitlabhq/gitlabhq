@@ -1,0 +1,6 @@
+.form-group.row
+  = f.fields_for :admin_note do |an|
+    .col-sm-2.col-form-label.gl-text-right
+      = an.label :note, s_('Admin|Admin notes')
+    .col-sm-10
+      = an.text_area :note, class: 'form-control'

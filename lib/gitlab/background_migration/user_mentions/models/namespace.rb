@@ -23,8 +23,13 @@ module Gitlab
             parent_id.present? || parent.present?
           end
 
+          # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
+          def feature_available?(feature)
+            licensed_feature_available?(feature)
+          end
+
           # Overridden in EE::Namespace
-          def feature_available?(_feature)
+          def licensed_feature_available?(_feature)
             false
           end
         end

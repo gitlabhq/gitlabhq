@@ -103,6 +103,8 @@
                 %span.monospace= project.full_path + '.git'
 
   .col-md-6
+    = render 'shared/admin/admin_note'
+
     - if can?(current_user, :admin_group_member, @group)
       .card
         .card-header

@@ -1,0 +1,7 @@
+- if @group.admin_note.present?
+  - text = @group.admin_note.note
+  .card.border-info
+    .card-header.bg-info.gl-text-white
+      = s_('Admin|Admin notes')
+    .card-body
+      %p= text

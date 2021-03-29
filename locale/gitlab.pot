@@ -2238,9 +2238,6 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
-msgid "AdminNote|Note"
-msgstr ""
-
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -2674,6 +2671,12 @@ msgid "Administration"
 msgstr ""
 
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
+msgstr ""
+
+msgid "Admin|Admin notes"
+msgstr ""
+
+msgid "Admin|Note"
 msgstr ""
 
 msgid "Admin|View pending user approvals"
@@ -8640,6 +8643,12 @@ msgid "Copy value"
 msgstr ""
 
 msgid "CorpusManagement|Fuzz testing corpus management"
+msgstr ""
+
+msgid "CorpusManagement|New corpus"
+msgstr ""
+
+msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr ""
 
 msgid "Could not add admins as members"

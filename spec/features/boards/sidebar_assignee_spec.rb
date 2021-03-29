@@ -17,8 +17,6 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
   let(:card)              { find('.board:nth-child(2)').first('.board-card') }
 
   before do
-    stub_feature_flags(graphql_board_lists: false)
-
     project.add_maintainer(user)
 
     sign_in(user)

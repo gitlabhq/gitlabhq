@@ -69,6 +69,7 @@ export default {
       'milestoneTitle',
       'releaseTag',
       'search',
+      'myReactionEmoji',
     ]);
     filterParams.not = transformNotFilters(filters);
     commit(types.SET_FILTERS, filterParams);

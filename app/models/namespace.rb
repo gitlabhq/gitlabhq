@@ -46,6 +46,9 @@ class Namespace < ApplicationRecord
   has_one :aggregation_schedule, class_name: 'Namespace::AggregationSchedule'
   has_one :package_setting_relation, inverse_of: :namespace, class_name: 'PackageSetting'
 
+  has_one :admin_note, inverse_of: :namespace
+  accepts_nested_attributes_for :admin_note, update_only: true
+
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
@@ -284,8 +287,13 @@ class Namespace < ApplicationRecord
     false
   end
 
+  # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
+  def feature_available?(feature)
+    licensed_feature_available?(feature)
+  end
+
   # Overridden in EE::Namespace
-  def feature_available?(_feature)
+  def licensed_feature_available?(_feature)
     false
   end
 

@@ -51,7 +51,7 @@ export default {
       if (!this.nestedSummary) {
         return ['gl-px-5'];
       }
-      return ['gl-pl-7', 'gl-pr-5', { 'gl-bg-gray-10': this.statusIcon === ICON_WARNING }];
+      return ['gl-pl-9', 'gl-pr-5', { 'gl-bg-gray-10': this.statusIcon === ICON_WARNING }];
     },
     statusIconSize() {
       if (!this.nestedSummary) {
