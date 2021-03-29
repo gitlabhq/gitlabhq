@@ -28,11 +28,11 @@ The cost of a GitLab self-managed subscription is determined by the following:
 - GitLab tier
 - Subscription seats
 
-## GitLab tier
+## Choose a GitLab tier
 
-Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
-the features which fit your budget. For information on what features are available
-at each tier, see the
+Pricing is [tier-based](https://about.gitlab.com/pricing/), so you can choose
+the features that fit your budget. For information on the features available
+for each tier, see the
 [GitLab self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/).
 
 ## Subscription seats

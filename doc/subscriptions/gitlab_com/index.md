@@ -15,9 +15,9 @@ This page reviews the details of your GitLab SaaS subscription.
 
 ## Choose a GitLab SaaS tier
 
-Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
-the features which fit your budget. For information on what features are available
-at each tier, see the
+Pricing is [tier-based](https://about.gitlab.com/pricing/), so you can choose
+the features that fit your budget. For information on the features available
+for each tier, see the
 [GitLab SaaS feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/).
 
 ## Choose the number of users
