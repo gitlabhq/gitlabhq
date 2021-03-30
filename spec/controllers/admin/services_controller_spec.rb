@@ -44,7 +44,7 @@ RSpec.describe Admin::ServicesController do
   describe "#update" do
     let(:project) { create(:project) }
     let!(:service_template) do
-      RedmineService.create(
+      RedmineService.create!(
         project: nil,
         active: false,
         template: true,

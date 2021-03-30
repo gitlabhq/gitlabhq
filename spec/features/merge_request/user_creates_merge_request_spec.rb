@@ -87,7 +87,7 @@ RSpec.describe "User creates a merge request", :js do
 
       click_button("Compare branches and continue")
 
-      expect(page).to have_css("h3.page-title", text: "New Merge Request")
+      expect(page).to have_css("h3.page-title", text: "New merge request")
 
       page.within("form#new_merge_request") do
         fill_in("Title", with: title)

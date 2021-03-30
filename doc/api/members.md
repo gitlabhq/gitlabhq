@@ -90,8 +90,8 @@ Example response:
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
 
-WARNING:
-Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/249523), the users effective `access_level` may actually be higher than returned value when listing group members.
+If a user is a member of this group or project and also of one or more ancestor groups, only its membership with the highest `access_level` is returned.
+This represents the effective permission of the user.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 

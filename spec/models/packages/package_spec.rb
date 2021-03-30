@@ -367,7 +367,14 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.to validate_presence_of(:version) }
         it { is_expected.to allow_value('1.2.3').for(:version) }
         it { is_expected.to allow_value('1.3.350').for(:version) }
-        it { is_expected.not_to allow_value('1.3.350-20201230123456').for(:version) }
+        it { is_expected.to allow_value('1.3.350-20201230123456').for(:version) }
+        it { is_expected.to allow_value('1.2.3-rc1').for(:version) }
+        it { is_expected.to allow_value('1.2.3g').for(:version) }
+        it { is_expected.to allow_value('1.2').for(:version) }
+        it { is_expected.to allow_value('1.2.bananas').for(:version) }
+        it { is_expected.to allow_value('v1.2.4-build').for(:version) }
+        it { is_expected.to allow_value('d50d836eb3de6177ce6c7a5482f27f9c2c84b672').for(:version) }
+        it { is_expected.to allow_value('this_is_a_string_only').for(:version) }
         it { is_expected.not_to allow_value('..1.2.3').for(:version) }
         it { is_expected.not_to allow_value('  1.2.3').for(:version) }
         it { is_expected.not_to allow_value("1.2.3  \r\t").for(:version) }

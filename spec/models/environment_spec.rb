@@ -302,6 +302,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       'testing'            | described_class.tiers[:testing]
       'testing-prd'        | described_class.tiers[:testing]
       'acceptance-testing' | described_class.tiers[:testing]
+      'production-test'    | described_class.tiers[:testing]
+      'test-production'    | described_class.tiers[:testing]
       'QC'                 | described_class.tiers[:testing]
       'gstg'               | described_class.tiers[:staging]
       'staging'            | described_class.tiers[:staging]
@@ -315,6 +317,12 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       'gprd-cny'           | described_class.tiers[:production]
       'production'         | described_class.tiers[:production]
       'Production'         | described_class.tiers[:production]
+      'PRODUCTION'         | described_class.tiers[:production]
+      'Production/eu'      | described_class.tiers[:production]
+      'production/eu'      | described_class.tiers[:production]
+      'PRODUCTION/EU'      | described_class.tiers[:production]
+      'productioneu'       | described_class.tiers[:production]
+      'production/www.gitlab.com' | described_class.tiers[:production]
       'prod'               | described_class.tiers[:production]
       'PROD'               | described_class.tiers[:production]
       'Live'               | described_class.tiers[:production]
@@ -440,31 +448,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         it 'returns false' do
           expect(environment.includes_commit?(RepoHelpers.sample_commit)).to be false
         end
-      end
-    end
-  end
-
-  describe '#update_merge_request_metrics?' do
-    {
-      'gprd' => false,
-      'prod' => true,
-      'prod-test' => false,
-      'PROD' => true,
-      'production' => true,
-      'production-test' => false,
-      'PRODUCTION' => true,
-      'production/eu' => true,
-      'PRODUCTION/EU' => true,
-      'production/www.gitlab.com' => true,
-      'productioneu' => false,
-      'Production' => true,
-      'Production/eu' => true,
-      'test-production' => false
-    }.each do |name, expected_value|
-      it "returns #{expected_value} for #{name}" do
-        env = create(:environment, name: name)
-
-        expect(env.update_merge_request_metrics?).to eq(expected_value), "Expected the name '#{name}' to result in #{expected_value}, but it didn't."
       end
     end
   end

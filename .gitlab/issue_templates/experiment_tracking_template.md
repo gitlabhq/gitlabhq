@@ -81,6 +81,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Announce on the issue that the flag has been enabled
 - [ ] Remove experiment code and feature flag and add changelog entry - a separate [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Experiment%20Successful%20Cleanup) might be required
 - [ ] After the flag removal is deployed, [clean up the feature flag](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up) by running chatops command in `#production` channel
+- [ ] Assign to the product manager to update the [knowledge base](https://about.gitlab.com/direction/growth/#growth-insights-knowledge-base) (if applicable)
 
 ## Rollback Steps
 

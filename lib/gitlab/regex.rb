@@ -181,7 +181,7 @@ module Gitlab
       end
 
       def generic_package_version_regex
-        /\A\d+\.\d+\.\d+\z/
+        maven_version_regex
       end
 
       def generic_package_name_regex

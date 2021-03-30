@@ -808,4 +808,30 @@ RSpec.describe Deployment do
       end
     end
   end
+
+  describe '#update_merge_request_metrics!' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:environment) { build(:environment, environment_tier, project: project) }
+    let!(:deployment) { create(:deployment, :success, project: project, environment: environment) }
+    let!(:merge_request) { create(:merge_request, :simple, :merged_last_month, project: project) }
+
+    context 'with production environment' do
+      let(:environment_tier) { :production }
+
+      it 'updates merge request metrics for production-grade environment' do
+        expect { deployment.update_merge_request_metrics! }
+          .to change { merge_request.reload.metrics.first_deployed_to_production_at }
+          .from(nil).to(deployment.reload.finished_at)
+      end
+    end
+
+    context 'with staging environment' do
+      let(:environment_tier) { :staging }
+
+      it 'updates merge request metrics for production-grade environment' do
+        expect { deployment.update_merge_request_metrics! }
+          .not_to change { merge_request.reload.metrics.first_deployed_to_production_at }
+      end
+    end
+  end
 end

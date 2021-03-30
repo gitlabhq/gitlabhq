@@ -142,7 +142,7 @@
 ############################
 
 #######################################################
-# EE/FOSS: default refs (MRs, master, schedules) jobs #
+# EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 setup-test-env:
   extends:
     - .rails-job-base
@@ -347,7 +347,7 @@ db:migrate:reset:
 db:check-schema:
   extends:
     - .db-job-base
-    - .rails:rules:ee-mr-and-master-only
+    - .rails:rules:ee-mr-and-default-branch-only
   script:
     - source scripts/schema_changed.sh
 
@@ -538,11 +538,11 @@ rspec:feature-flags:
         run_timed_command "bundle exec scripts/used-feature-flags";
       fi
 
-# EE/FOSS: default refs (MRs, master, schedules) jobs #
+# EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################
 
 ##################################################
-# EE: default refs (MRs, master, schedules) jobs #
+# EE: default refs (MRs, default branch, schedules) jobs #
 rspec migration pg11-as-if-foss:
   extends:
     - .rspec-base-pg11-as-if-foss
@@ -685,81 +685,81 @@ db:rollback geo:
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate
-# EE: default refs (MRs, master, schedules) jobs #
+# EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
 ##########################################
-# EE/FOSS: master nightly scheduled jobs #
+# EE/FOSS: default branch nightly scheduled jobs #
 rspec migration pg12:
   extends:
     - .rspec-base-pg12
     - .rspec-base-migration
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-migration-parallel
 
 rspec unit pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-unit-parallel
 
 rspec integration pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-integration-parallel
 
 rspec system pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
-# EE/FOSS: master nightly scheduled jobs #
+# EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
 #####################################
-# EE: master nightly scheduled jobs #
+# EE: default branch nightly scheduled jobs #
 rspec-ee migration pg12:
   extends:
     - .rspec-ee-base-pg12
     - .rspec-base-migration
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-migration-parallel
 
 rspec-ee unit pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
 rspec-ee integration pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
 rspec-ee system pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 
 rspec-ee unit pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-geo-parallel
 
 rspec-ee integration pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
 rspec-ee system pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
-# EE: master nightly scheduled jobs #
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+# EE: default branch nightly scheduled jobs #
 #####################################
 
 ##################################################

@@ -103,14 +103,8 @@ In short, the Value Stream Analytics dashboard tracks data related to [GitLab fl
 
 ## How the production environment is identified
 
-Value Stream Analytics identifies production environments by looking for project [environments](../../ci/yaml/README.md#environment) with a name matching any of these patterns:
-
-- `prod` or `prod/*`
-- `production` or `production/*`
-
-These patterns are not case-sensitive.
-
-You can change the name of a project environment in your GitLab CI/CD configuration.
+Value Stream Analytics identifies production environments based on
+[the deployment tier of environments](../../ci/environments/index.md#deployment-tier-of-environments).
 
 ## Example workflow
 

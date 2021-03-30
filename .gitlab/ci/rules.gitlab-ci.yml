@@ -11,25 +11,25 @@
   if: '$CI_PROJECT_NAME != "gitlab-foss" && $CI_PROJECT_NAME != "gitlab-ce" && $CI_PROJECT_NAME != "gitlabhq"'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
-.if-master-refs: &if-master-refs
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME == "main"'
+.if-default-branch-refs: &if-default-branch-refs
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
-.if-master-push: &if-master-push
-  if: '($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_REF_NAME == "main") && $CI_PIPELINE_SOURCE == "push"'
+.if-default-branch-push: &if-default-branch-push
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
-.if-master-schedule-2-hourly: &if-master-schedule-2-hourly
-  if: '($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_REF_NAME == "main") && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
 
-.if-master-schedule-nightly: &if-master-schedule-nightly
-  if: '($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_REF_NAME == "main") && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+.if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
 
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
-.if-master-or-tag: &if-master-or-tag
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_TAG'
+.if-default-branch-or-tag: &if-default-branch-or-tag
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
 
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
@@ -52,8 +52,8 @@
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
-.if-dot-com-gitlab-org-master: &if-dot-com-gitlab-org-master
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && ($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME == "main")'
+.if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
@@ -293,7 +293,7 @@
 ################
 .shared:rules:update-cache:
   rules:
-    - <<: *if-master-schedule-2-hourly
+    - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-security-schedule
     - <<: *if-merge-request-title-update-caches
 
@@ -435,26 +435,26 @@
     - <<: *if-merge-request
       changes: *frontend-patterns
 
-.frontend:rules:ee-mr-and-master-only:
+.frontend:rules:ee-mr-and-default-branch-only:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
       when: always
-    - <<: *if-master-refs
+    - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
 .frontend:rules:qa-frontend-node:
   rules:
-    - <<: *if-master-refs
+    - <<: *if-default-branch-refs
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
 
 .frontend:rules:qa-frontend-node-latest:
   rules:
-    - <<: *if-master-refs
+    - <<: *if-default-branch-refs
       changes: *frontend-dependency-patterns
       allow_failure: true
     - <<: *if-merge-request
@@ -465,7 +465,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main")'
+    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-patterns
       allow_failure: true
 
@@ -485,7 +485,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-schedule-2-hourly
+    - <<: *if-default-branch-schedule-2-hourly
 
 ############
 # QA rules #
@@ -825,14 +825,14 @@
     - changes: *db-library-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
-.rails:rules:ee-mr-and-master-only:
+.rails:rules:ee-mr-and-default-branch-only:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-title-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-master-refs
+    - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
 .rails:rules:detect-tests:
@@ -888,7 +888,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-schedule-nightly
+    - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:rspec-coverage:
@@ -898,7 +898,7 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
       when: always
-    - <<: *if-master-schedule-2-hourly
+    - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
       when: always
 
@@ -906,21 +906,21 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-schedule-2-hourly
+    - <<: *if-default-branch-schedule-2-hourly
       allow_failure: true
     - <<: *if-merge-request-title-run-all-rspec
 
-.rails:rules:master-schedule-nightly--code-backstage:
+.rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:
-    - <<: *if-master-schedule-nightly
+    - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
-.rails:rules:master-schedule-nightly--code-backstage-ee-only:
+.rails:rules:default-branch-schedule-nightly--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-schedule-nightly
+    - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
@@ -946,7 +946,7 @@
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
-    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       allow_failure: true
@@ -955,7 +955,7 @@
   rules:
     - if: '$SAST_DISABLED || $GITLAB_FEATURES !~ /\bsast\b/'
       when: never
-    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
       allow_failure: true
@@ -964,7 +964,7 @@
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
       when: never
-    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
       allow_failure: true
@@ -985,7 +985,7 @@
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
-    - <<: *if-master-schedule-nightly
+    - <<: *if-default-branch-schedule-nightly
       allow_failure: true
 
 .reports:rules:license_scanning:
@@ -1119,13 +1119,13 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - <<: *if-master-or-tag
+    - <<: *if-default-branch-or-tag
       changes: *code-backstage-qa-patterns
       when: on_success
 
 .setup:rules:dont-interrupt-me:
   rules:
-    - <<: *if-master-or-tag
+    - <<: *if-default-branch-or-tag
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true

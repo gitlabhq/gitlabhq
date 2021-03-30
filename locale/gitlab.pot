@@ -20593,9 +20593,6 @@ msgstr ""
 msgid "New Label"
 msgstr ""
 
-msgid "New Merge Request"
-msgstr ""
-
 msgid "New Milestone"
 msgstr ""
 

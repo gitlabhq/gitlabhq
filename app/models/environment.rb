@@ -11,8 +11,6 @@ class Environment < ApplicationRecord
   self.reactive_cache_hard_limit = 10.megabytes
   self.reactive_cache_work_type = :external_dependency
 
-  PRODUCTION_ENVIRONMENT_IDENTIFIERS = %w[prod production].freeze
-
   belongs_to :project, required: true
 
   use_fast_destroy :all_deployments
@@ -249,10 +247,6 @@ class Environment < ApplicationRecord
 
   def last_deployed_at
     last_deployment.try(:created_at)
-  end
-
-  def update_merge_request_metrics?
-    PRODUCTION_ENVIRONMENT_IDENTIFIERS.include?(folder_name.downcase)
   end
 
   def ref_path

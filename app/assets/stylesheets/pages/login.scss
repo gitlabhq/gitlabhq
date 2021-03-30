@@ -179,8 +179,9 @@
   }
 
   input[type='submit'] {
-    @extend .btn-block;
     margin-bottom: 0;
+    display: block;
+    width: 100%;
   }
 
   .devise-errors {

@@ -5,7 +5,6 @@ import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form
 import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -20,17 +19,12 @@ export default {
   data() {
     return {
       selectedId: null,
+      selectedLabel: null,
     };
   },
   computed: {
     ...mapState(['labels', 'labelsLoading']),
     ...mapGetters(['getListByLabelId', 'shouldUseGraphQL']),
-    selectedLabel() {
-      if (!this.selectedId) {
-        return null;
-      }
-      return this.labels.find(({ id }) => id === this.selectedId);
-    },
     columnForSelected() {
       return this.getListByLabelId(this.selectedId);
     },
@@ -83,8 +77,13 @@ export default {
       this.fetchLabels(searchTerm);
     },
 
-    showScopedLabels(label) {
-      return this.scopedLabelsAvailable && isScopedLabel(label);
+    setSelectedItem(selectedId) {
+      const label = this.labels.find(({ id }) => id === selectedId);
+      if (!selectedId || !label) {
+        this.selectedLabel = null;
+      } else {
+        this.selectedLabel = { ...label };
+      }
     },
   },
 };
@@ -116,6 +115,7 @@ export default {
         v-if="labels.length > 0"
         v-model="selectedId"
         class="gl-overflow-y-auto gl-px-5 gl-pt-3"
+        @change="setSelectedItem"
       >
         <label
           v-for="label in labels"

@@ -42,7 +42,7 @@ RSpec.describe Admin::ImpersonationsController do
         context "when the impersonator is not admin (anymore)" do
           before do
             impersonator.admin = false
-            impersonator.save
+            impersonator.save!
           end
 
           it "responds with status 404" do

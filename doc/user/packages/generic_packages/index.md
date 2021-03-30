@@ -47,7 +47,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding).                                              |
 | `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
-| `package_version`  | string          | yes      | The package version. It can contain only numbers (`0-9`), and dots (`.`). Must be in the format of `X.Y.Z`, i.e. should match `/\A\d+\.\d+\.\d+\z/` regular expression.
+| `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8).
 | `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 | `status`           | string          | no       | The package status. It can be `default` (default) or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md).
 

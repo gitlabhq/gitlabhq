@@ -1,4 +1,4 @@
-# Builds a cached .tar.gz of the master branch with full history and
+# Builds a cached .tar.gz of the $CI_DEFAULT_BRANCH branch with full history and
 # uploads it to Google Cloud Storage. This archive is downloaded by a
 # script defined by a CI/CD variable named CI_PRE_CLONE_SCRIPT. This has
 # two benefits:

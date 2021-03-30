@@ -137,6 +137,12 @@ class Member < ApplicationRecord
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
 
+  scope :distinct_on_user_with_max_access_level, -> do
+    distinct_members = select('DISTINCT ON (user_id, invite_email) *')
+                       .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
+    Member.from(distinct_members, :members)
+  end
+
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }

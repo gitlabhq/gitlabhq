@@ -1,0 +1,5 @@
+---
+title: Relax version validation on generic packages
+merge_request: 56755
+author:
+type: changed

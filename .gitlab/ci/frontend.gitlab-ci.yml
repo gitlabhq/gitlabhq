@@ -246,7 +246,7 @@ coverage-frontend:
   extends:
     - .default-retry
     - .yarn-cache
-    - .frontend:rules:ee-mr-and-master-only
+    - .frontend:rules:ee-mr-and-default-branch-only
   needs: ["jest"]
   stage: post-test
   before_script:

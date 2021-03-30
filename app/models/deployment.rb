@@ -226,7 +226,7 @@ class Deployment < ApplicationRecord
   end
 
   def update_merge_request_metrics!
-    return unless environment.update_merge_request_metrics? && success?
+    return unless environment.production? && success?
 
     merge_requests = project.merge_requests
                      .joins(:metrics)
