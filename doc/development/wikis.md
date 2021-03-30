@@ -92,3 +92,7 @@ Only some data is persisted in the database:
 The web UI uploads attachments through the REST API, which stores the files as commits in the wiki repository.
 
 Prior to GitLab 11.3 attachments were stored outside of the repository, [see this issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475).
+
+## Related topics
+
+- [Gollum installation instructions](https://github.com/gollum/gollum/wiki/Installation)

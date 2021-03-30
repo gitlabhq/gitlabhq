@@ -9,7 +9,7 @@ class RegistrationsController < Devise::RegistrationsController
   layout 'devise'
 
   prepend_before_action :check_captcha, only: :create
-  before_action :disable_query_limiting, :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :load_recaptcha, only: :new
   before_action :set_invite_params, only: :new
 
@@ -160,10 +160,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
-  end
-
-  def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20798')
   end
 
   def load_recaptcha

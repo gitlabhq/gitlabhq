@@ -173,8 +173,7 @@ Potential resolutions:
 
 - If you're using GitLab versions 11.10-12.7, upgrade to GitLab 12.8.10 or later
   to resolve an identified [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/37012).
-- If you're using GitLab Free or GitLab Starter, be sure you're using
-  GitLab 13.4 or later.
+- If you're using GitLab Free, be sure you're using GitLab 13.4 or later.
 
 [Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
 

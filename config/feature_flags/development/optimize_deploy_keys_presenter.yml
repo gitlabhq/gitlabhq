@@ -1,8 +1,0 @@
----
-name: optimize_deploy_keys_presenter
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56305/diffs
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324143
-milestone: '13.10'
-type: development
-group: group::release
-default_enabled: false

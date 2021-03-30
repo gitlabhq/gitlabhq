@@ -17,8 +17,6 @@ module Gitlab
             MULTIPLE_CACHE_LIMIT = 4
 
             validations do
-              validates :config, presence: true
-
               validate do
                 unless config.is_a?(Hash) || config.is_a?(Array)
                   errors.add(:config, 'can only be a Hash or an Array')

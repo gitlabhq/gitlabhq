@@ -17579,6 +17579,8 @@ CREATE TABLE snippet_repositories (
     verified_at timestamp with time zone,
     verification_checksum bytea,
     verification_failure text,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_started_at timestamp with time zone,
     CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -23874,9 +23876,17 @@ CREATE INDEX index_smartcard_identities_on_user_id ON smartcard_identities USING
 
 CREATE INDEX index_snippet_on_id_and_project_id ON snippets USING btree (id, project_id);
 
+CREATE INDEX index_snippet_repositories_failed_verification ON snippet_repositories USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_snippet_repositories_needs_verification ON snippet_repositories USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
 CREATE UNIQUE INDEX index_snippet_repositories_on_disk_path ON snippet_repositories USING btree (disk_path);
 
 CREATE INDEX index_snippet_repositories_on_shard_id ON snippet_repositories USING btree (shard_id);
+
+CREATE INDEX index_snippet_repositories_pending_verification ON snippet_repositories USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE INDEX index_snippet_repositories_verification_state ON snippet_repositories USING btree (verification_state);
 
 CREATE INDEX index_snippet_repository_storage_moves_on_snippet_id ON snippet_repository_storage_moves USING btree (snippet_id);
 
@@ -25185,7 +25195,7 @@ ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_d3130c9a7f FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY web_hooks
-    ADD CONSTRAINT fk_d47999a98a FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_d47999a98a FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

@@ -237,12 +237,11 @@ To remove a billable user:
 
 ## Subscription expiry
 
-When your subscription or trial expires, GitLab does not delete your data, but
-it may become inaccessible, depending on the tier at expiry. Some features may not
-behave as expected if you're not prepared for the expiry. For example,
-[environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab/-/issues/24759).
+When your subscription expires, you can continue to use GitLab for 14 days.
+On the 15th day, paid features are no longer available. You can
+continue to use free features.
 
-If you renew or upgrade, your data is accessible again.
+To resume paid feature functionality, purchase a new subscription.
 
 ## CI pipeline minutes
 

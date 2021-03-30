@@ -27,43 +27,31 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
     let_it_be(:unrelated_project) { create(:project, :private) }
     let_it_be(:unrelated_deploy_key) { create(:deploy_key, projects: [unrelated_project]) }
 
-    shared_examples_for 'correct behavior' do
-      context 'with enabled keys' do
-        it 'returns correct deploy keys' do
-          expect(presenter.enabled_keys).to eq([deploy_key])
-          expect(presenter.enabled_keys_size).to eq(1)
-        end
-      end
-
-      context 'with available keys' do
-        it 'returns correct deploy keys' do
-          expect(presenter.available_keys).to eq([other_deploy_key, public_deploy_key])
-        end
-      end
-
-      context 'with available project keys' do
-        it 'returns correct deploy keys' do
-          expect(presenter.available_project_keys).to eq([other_deploy_key])
-          expect(presenter.available_project_keys_size).to eq(1)
-        end
-      end
-
-      context 'with available public keys' do
-        it 'returns correct deploy keys' do
-          expect(presenter.available_public_keys).to eq([public_deploy_key])
-          expect(presenter.available_public_keys_size).to eq(1)
-        end
+    context 'with enabled keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.enabled_keys).to eq([deploy_key])
+        expect(presenter.enabled_keys_size).to eq(1)
       end
     end
 
-    it_behaves_like 'correct behavior'
-
-    context 'when optimize_deploy_keys_presenter feature flag is disabled' do
-      before do
-        stub_feature_flags(optimize_deploy_keys_presenter: false)
+    context 'with available keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_keys).to eq([other_deploy_key, public_deploy_key])
       end
+    end
 
-      it_behaves_like 'correct behavior'
+    context 'with available project keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_project_keys).to eq([other_deploy_key])
+        expect(presenter.available_project_keys_size).to eq(1)
+      end
+    end
+
+    context 'with available public keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_public_keys).to eq([public_deploy_key])
+        expect(presenter.available_public_keys_size).to eq(1)
+      end
     end
   end
 

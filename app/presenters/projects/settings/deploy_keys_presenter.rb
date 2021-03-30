@@ -42,17 +42,8 @@ module Projects
       # It excludes:
       # - The deploy keys enabled in the project
       def available_project_keys
-        if Feature.enabled?(:optimize_deploy_keys_presenter, project, default_enabled: :yaml)
-          strong_memoize(:available_project_keys) do
-            current_user.project_deploy_keys.with_projects - enabled_keys
-          end
-        else
-          strong_memoize(:legacy_available_project_keys) do
-            current_user
-              .project_deploy_keys
-              .id_not_in(enabled_keys.select(:id))
-              .with_projects
-          end
+        strong_memoize(:available_project_keys) do
+          current_user.project_deploy_keys.with_projects - enabled_keys
         end
       end
 
@@ -61,22 +52,8 @@ module Projects
       # It excludes:
       # - The deploy keys enabled in the project.
       def available_public_keys
-        if Feature.enabled?(:optimize_deploy_keys_presenter, project, default_enabled: :yaml)
-          strong_memoize(:available_public_keys) do
-            DeployKey.are_public.with_projects - enabled_keys
-          end
-        else
-          strong_memoize(:legacy_available_public_keys) do
-            # This also excludes "Enabled deploy keys in projects that can be accessed by the user".
-            # However, this means we are filtering out a public key that enabled
-            # in the other project, which should be also available for this project.
-            # We should expose the public keys that has not been enabled on the project yet.
-            DeployKey
-              .are_public
-              .id_not_in(enabled_keys.select(:id))
-              .id_not_in(available_project_keys.select(:id))
-              .with_projects
-          end
+        strong_memoize(:available_public_keys) do
+          DeployKey.are_public.with_projects - enabled_keys
         end
       end
 
@@ -110,17 +87,10 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def user_readable_project_ids
-        project_ids = if Feature.enabled?(:optimize_deploy_keys_presenter, project, default_enabled: :yaml)
-                        (available_project_keys + available_public_keys)
-                          .flat_map { |deploy_key| deploy_key.deploy_keys_projects.map(&:project_id) }
-                          .compact
-                          .uniq
-                      else
-                        (available_keys + available_project_keys + available_public_keys)
-                          .flat_map { |deploy_key| deploy_key.deploy_keys_projects.map(&:project_id) }
-                          .compact
-                          .uniq
-                      end
+        project_ids = (available_project_keys + available_public_keys)
+          .flat_map { |deploy_key| deploy_key.deploy_keys_projects.map(&:project_id) }
+          .compact
+          .uniq
 
         current_user.authorized_projects(Gitlab::Access::GUEST).id_in(project_ids).pluck(:id)
       end

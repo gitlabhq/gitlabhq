@@ -397,6 +397,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           to: 'web_ide_schemas#show',
           format: false,
           as: :schema
+
+        resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
+          member do
+            post :test
+          end
+
+          resources :hook_logs, only: [:show] do
+            member do
+              post :retry
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -459,18 +471,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             constraints: { endpoint_identifier: /[A-Za-z0-9]+/ }
 
       draw :legacy_builds
-
-      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
-        member do
-          post :test # rubocop:todo Cop/PutProjectRoutesUnderScope
-        end
-
-        resources :hook_logs, only: [:show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
-          member do
-            post :retry # rubocop:todo Cop/PutProjectRoutesUnderScope
-          end
-        end
-      end
 
       resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
                                      controller: 'registry/repositories'
@@ -571,7 +571,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Legacy routes.
       # Introduced in 12.0.
       # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
-      Gitlab::Routing.redirect_legacy_paths(self, :mirror, :tags,
+      Gitlab::Routing.redirect_legacy_paths(self, :mirror, :tags, :hooks,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
                                             :tracing,

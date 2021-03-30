@@ -318,18 +318,15 @@ The new tier takes effect when the new license is uploaded.
 
 ## Subscription expiry
 
-When your subscription or trial expires, GitLab does not delete your data, but it
-may become inaccessible, depending on the tier at expiry. Some features may not
-behave as expected if you're not prepared for the expiry. For example,
-[environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab/-/issues/24759).
-If you renew or upgrade, your data is again accessible.
+When your license expires, GitLab locks down features, like Git pushes
+and issue creation. Then, your instance becomes read-only and
+an expiration message is displayed to all administrators.
 
-For GitLab self-managed customers, there is a 14-day grace period when your features
-continue to work as-is, after which the entire instance becomes read
-only.
+For GitLab self-managed instances, you have a 14-day grace period
+before this occurs.
 
-However, if you remove the license, you immediately revert to Free
-features, and the instance become read / write again.
+- To resume functionality, upload a new license.
+- To fall back to Free features, delete the expired license.
 
 ## Contact Support
 
