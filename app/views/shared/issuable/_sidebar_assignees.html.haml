@@ -53,10 +53,10 @@
       %ul.dropdown-footer-list
         %li
           - if directly_invite_members?
-            = link_to invite_text,
-              project_project_members_path(@project),
-              title: invite_text,
-              data: { 'is-link': true, 'track-event': 'click_invite_members', 'track-label': track_label }
+            .js-invite-members-trigger{ data: { trigger_element: 'anchor',
+              display_text: invite_text,
+              event: 'click_invite_members',
+              label: track_label } }
           - else
             .js-invite-member-trigger{ data: { display_text: invite_text, event: 'click_invite_members_version_b', label: track_label } }
   - else

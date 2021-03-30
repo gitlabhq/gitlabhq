@@ -1,7 +1,9 @@
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import {
   getQueryParams,
   keyValueToFilterToken,
   searchArrayToFilterTokens,
+  extractFilterAndSorting,
 } from '~/packages_and_registries/shared/utils';
 
 describe('Packages And Registries shared utils', () => {
@@ -27,9 +29,31 @@ describe('Packages And Registries shared utils', () => {
       const search = ['one', 'two'];
 
       expect(searchArrayToFilterTokens(search)).toStrictEqual([
-        { type: 'filtered-search-term', value: { data: 'one' } },
-        { type: 'filtered-search-term', value: { data: 'two' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'one' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'two' } },
       ]);
     });
+  });
+  describe('extractFilterAndSorting', () => {
+    it.each`
+      search     | type        | sort     | orderBy  | result
+      ${['one']} | ${'myType'} | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: 'type', value: { data: 'myType' } }, { type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
+      ${['one']} | ${null}     | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
+      ${[]}      | ${null}     | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
+      ${null}    | ${null}     | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
+      ${null}    | ${null}     | ${null}  | ${'foo'} | ${{ sorting: { orderBy: 'foo' }, filters: [] }}
+      ${null}    | ${null}     | ${null}  | ${null}  | ${{ sorting: {}, filters: [] }}
+    `(
+      'returns sorting and filters objects in the correct form',
+      ({ search, type, sort, orderBy, result }) => {
+        const queryObject = {
+          search,
+          type,
+          sort,
+          orderBy,
+        };
+        expect(extractFilterAndSorting(queryObject)).toStrictEqual(result);
+      },
+    );
   });
 });

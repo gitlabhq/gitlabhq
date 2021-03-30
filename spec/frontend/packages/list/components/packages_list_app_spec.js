@@ -7,6 +7,8 @@ import PackageSearch from '~/packages/list/components/package_search.vue';
 import PackageListApp from '~/packages/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
+import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import * as packageUtils from '~/packages_and_registries/shared/utils';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
@@ -61,6 +63,7 @@ describe('packages_list_app', () => {
 
   beforeEach(() => {
     createStore();
+    jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue({});
   });
 
   afterEach(() => {
@@ -70,25 +73,6 @@ describe('packages_list_app', () => {
   it('renders', () => {
     mountComponent();
     expect(wrapper.element).toMatchSnapshot();
-  });
-
-  describe('empty state', () => {
-    it('generate the correct empty list link', () => {
-      mountComponent();
-
-      const link = findListComponent().find(GlLink);
-
-      expect(link.attributes('href')).toBe(emptyListHelpUrl);
-      expect(link.text()).toBe('publish and share your packages');
-    });
-
-    it('includes the right content on the default tab', () => {
-      mountComponent();
-
-      const heading = findEmptyState().find('h1');
-
-      expect(heading.text()).toBe('There are no packages yet');
-    });
   });
 
   it('call requestPackagesList on page:changed', () => {
@@ -108,10 +92,75 @@ describe('packages_list_app', () => {
     expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', 'foo');
   });
 
-  it('does not call requestPackagesList two times on render', () => {
+  it('does call requestPackagesList only one time on render', () => {
     mountComponent();
 
-    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledTimes(3);
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', expect.any(Object));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', expect.any(Array));
+    expect(store.dispatch).toHaveBeenNthCalledWith(3, 'requestPackagesList');
+  });
+
+  describe('url query string handling', () => {
+    const defaultQueryParamsMock = {
+      search: [1, 2],
+      type: 'npm',
+      sort: 'asc',
+      orderBy: 'created',
+    };
+
+    it('calls setSorting with the query string based sorting', () => {
+      jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue(defaultQueryParamsMock);
+
+      mountComponent();
+
+      expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', {
+        orderBy: defaultQueryParamsMock.orderBy,
+        sort: defaultQueryParamsMock.sort,
+      });
+    });
+
+    it('calls setFilter with the query string based filters', () => {
+      jest.spyOn(packageUtils, 'getQueryParams').mockReturnValue(defaultQueryParamsMock);
+
+      mountComponent();
+
+      expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', [
+        { type: 'type', value: { data: defaultQueryParamsMock.type } },
+        { type: FILTERED_SEARCH_TERM, value: { data: defaultQueryParamsMock.search[0] } },
+        { type: FILTERED_SEARCH_TERM, value: { data: defaultQueryParamsMock.search[1] } },
+      ]);
+    });
+
+    it('calls setSorting and setFilters with the results of extractFilterAndSorting', () => {
+      jest
+        .spyOn(packageUtils, 'extractFilterAndSorting')
+        .mockReturnValue({ filters: ['foo'], sorting: { sort: 'desc' } });
+
+      mountComponent();
+
+      expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', { sort: 'desc' });
+      expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', ['foo']);
+    });
+  });
+
+  describe('empty state', () => {
+    it('generate the correct empty list link', () => {
+      mountComponent();
+
+      const link = findListComponent().find(GlLink);
+
+      expect(link.attributes('href')).toBe(emptyListHelpUrl);
+      expect(link.text()).toBe('publish and share your packages');
+    });
+
+    it('includes the right content on the default tab', () => {
+      mountComponent();
+
+      const heading = findEmptyState().find('h1');
+
+      expect(heading.text()).toBe('There are no packages yet');
+    });
   });
 
   describe('filter without results', () => {

@@ -1,5 +1,6 @@
 import { GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -61,7 +62,7 @@ describe('List Page', () => {
   const waitForApolloRequestRender = async () => {
     jest.runOnlyPendingTimers();
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const mountComponent = ({
@@ -70,6 +71,7 @@ describe('List Page', () => {
     detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock),
     mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock),
     config = { isGroupPage: false },
+    query = {},
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -96,6 +98,7 @@ describe('List Page', () => {
         $toast,
         $route: {
           name: 'foo',
+          query,
         },
         ...mocks,
       },
@@ -159,8 +162,10 @@ describe('List Page', () => {
   });
 
   describe('isLoading is true', () => {
-    it('shows the skeleton loader', () => {
+    it('shows the skeleton loader', async () => {
       mountComponent();
+
+      await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(true);
     });
@@ -177,8 +182,10 @@ describe('List Page', () => {
       expect(findCliCommands().exists()).toBe(false);
     });
 
-    it('title has the metadataLoading props set to true', () => {
+    it('title has the metadataLoading props set to true', async () => {
       mountComponent();
+
+      await nextTick();
 
       expect(findRegistryHeader().props('metadataLoading')).toBe(true);
     });
@@ -312,7 +319,7 @@ describe('List Page', () => {
           await selectImageForDeletion();
 
           findDeleteImage().vm.$emit('success');
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           const alert = findDeleteAlert();
           expect(alert.exists()).toBe(true);
@@ -328,7 +335,7 @@ describe('List Page', () => {
             await selectImageForDeletion();
 
             findDeleteImage().vm.$emit('error');
-            await wrapper.vm.$nextTick();
+            await nextTick();
 
             const alert = findDeleteAlert();
             expect(alert.exists()).toBe(true);
@@ -349,7 +356,7 @@ describe('List Page', () => {
 
         findRegistrySearch().vm.$emit('filter:submit');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
       };
 
       it('has a search box element', async () => {
@@ -374,7 +381,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findRegistrySearch().vm.$emit('sorting:changed', { sort: 'asc' });
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(resolver).toHaveBeenCalledWith(expect.objectContaining({ sort: 'UPDATED_DESC' }));
       });
@@ -417,7 +424,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('prev-page');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ before: pageInfo.startCursor }),
@@ -437,7 +444,7 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('next-page');
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({ after: pageInfo.endCursor }),
@@ -458,11 +465,10 @@ describe('List Page', () => {
       expect(findDeleteModal().exists()).toBe(true);
     });
 
-    it('contains a description with the path of the item to delete', () => {
+    it('contains a description with the path of the item to delete', async () => {
       findImageList().vm.$emit('delete', { path: 'foo' });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findDeleteModal().html()).toContain('foo');
-      });
+      await nextTick();
+      expect(findDeleteModal().html()).toContain('foo');
     });
   });
 
@@ -497,5 +503,61 @@ describe('List Page', () => {
       findDeleteImage().vm.$emit('start');
       testTrackingCall('confirm_delete');
     });
+  });
+
+  describe('url query string handling', () => {
+    const defaultQueryParams = {
+      search: [1, 2],
+      sort: 'asc',
+      orderBy: 'CREATED',
+    };
+    const queryChangePayload = 'foo';
+
+    it('query:updated event pushes the new query to the router', async () => {
+      const push = jest.fn();
+      mountComponent({ mocks: { $router: { push } } });
+
+      await nextTick();
+
+      findRegistrySearch().vm.$emit('query:changed', queryChangePayload);
+
+      expect(push).toHaveBeenCalledWith({ query: queryChangePayload });
+    });
+
+    it('graphql API call has the variables set from the URL', async () => {
+      const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
+      mountComponent({ query: defaultQueryParams, resolver });
+
+      await nextTick();
+
+      expect(resolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 1,
+          sort: 'CREATED_ASC',
+        }),
+      );
+    });
+
+    it.each`
+      sort         | orderBy      | search            | payload
+      ${'ASC'}     | ${undefined} | ${undefined}      | ${{ sort: 'UPDATED_ASC' }}
+      ${undefined} | ${'bar'}     | ${undefined}      | ${{ sort: 'BAR_DESC' }}
+      ${'ASC'}     | ${'bar'}     | ${undefined}      | ${{ sort: 'BAR_ASC' }}
+      ${undefined} | ${undefined} | ${undefined}      | ${{}}
+      ${undefined} | ${undefined} | ${['one']}        | ${{ name: 'one' }}
+      ${undefined} | ${undefined} | ${['one', 'two']} | ${{ name: 'one' }}
+      ${undefined} | ${'UPDATED'} | ${['one', 'two']} | ${{ name: 'one', sort: 'UPDATED_DESC' }}
+      ${'ASC'}     | ${'UPDATED'} | ${['one', 'two']} | ${{ name: 'one', sort: 'UPDATED_ASC' }}
+    `(
+      'with sort equal to $sort, orderBy equal to $orderBy, search set to $search API call has the variables set as $payload',
+      async ({ sort, orderBy, search, payload }) => {
+        const resolver = jest.fn().mockResolvedValue({ sort, orderBy });
+        mountComponent({ query: { sort, orderBy, search }, resolver });
+
+        await nextTick();
+
+        expect(resolver).toHaveBeenCalledWith(expect.objectContaining(payload));
+      },
+    );
   });
 });

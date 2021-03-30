@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'issuable invite members experiments' do
   context 'when a privileged user can invite' do
-    it 'shows a link for inviting members and follows through to the members page' do
+    it 'shows a link for inviting members and launches invite modal' do
       project.add_maintainer(user)
       visit issuable_path
 
@@ -11,14 +11,14 @@ RSpec.shared_examples 'issuable invite members experiments' do
       wait_for_requests
 
       page.within '.dropdown-menu-user' do
-        expect(page).to have_link('Invite Members', href: project_project_members_path(project))
+        expect(page).to have_link('Invite Members')
         expect(page).to have_selector('[data-track-event="click_invite_members"]')
         expect(page).to have_selector('[data-track-label="edit_assignee"]')
       end
 
       click_link 'Invite Members'
 
-      expect(current_path).to eq project_project_members_path(project)
+      expect(page).to have_content("You're inviting members to the")
     end
   end
 

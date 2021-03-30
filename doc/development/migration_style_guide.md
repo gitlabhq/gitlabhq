@@ -302,7 +302,7 @@ end
 
 Adding foreign key to `projects`:
 
-We can use the `add_concurrenct_foreign_key` method in this case, as this helper method
+We can use the `add_concurrent_foreign_key` method in this case, as this helper method
 has the lock retries built into it.
 
 ```ruby

@@ -183,20 +183,52 @@ file.
 
 To add a redirect:
 
-1. Create a merge request in one of the internal docs projects (`gitlab`,
-   `gitlab-runner`, `omnibus-gitlab`, or `charts`), depending on the location of
-   the file that's being moved, renamed, or removed.
-1. To move or rename the documentation file, create a new file with the new
-   name or location, but don't delete the existing documentation file.
-1. In the original documentation file, add the redirect code for
-   `/help`. Use the following template exactly, and change only the links and
-   date. Use relative paths and `.md` for a redirect to another documentation
-   page. Use the full URL (with `https://`) to redirect to a different project or
-   site:
+1. In the repository (`gitlab`, `gitlab-runner`, `omnibus-gitlab`, or `charts`),
+   create a new documentation file. Don't delete the old one. The easiest
+   way is to copy it. For example:
+
+   ```shell
+   cp doc/user/search/old_file.md doc/api/new_file.md
+   ```
+
+1. Add the redirect code to the old documentation file by running the
+   following Rake task. The first argument is the path of the old file,
+   and the second argument is the path of the new file:
+
+   - To redirect to a page in the same project, use relative paths and
+     the `.md` extension. Both old and new paths start from the same location.
+     In the following example, both paths are relative to `doc/`:
+
+     ```shell
+     bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, doc/api/new_file.md]"
+     ```
+
+   - To redirect to a page in a different project or site, use the full URL (with `https://`) :
+
+     ```shell
+     bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, https://example.com]"
+     ```
+
+   Alternatively, you can omit the arguments, and you'll be asked to enter
+   their values:
+
+   ```shell
+   bundle exec rake gitlab:docs:redirect
+   ```
+
+   If you don't want to use the Rake task, you can use the following template.
+   However, the file paths must be relative to the `doc` or `docs` directory.
+   
+   Replace the value of `redirect_to` with the new file path and `YYYY-MM-DD`
+   with the date the file should be removed.
+
+   Redirect files that link to docs in internal documentation projects
+   are removed after three months. Redirect files that link to external sites are
+   removed after one year:
 
    ```markdown
    ---
-   redirect_to: '../path/to/file/index.md'
+   redirect_to: '../newpath/to/file/index.md'
    ---
 
    This document was moved to [another location](../path/to/file/index.md).
@@ -205,27 +237,24 @@ To add a redirect:
    <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
    ```
 
-   Redirect files linking to docs in any of the internal documentations projects
-   are removed after three months. Redirect files linking to external sites are
-   removed after one year.
-
 1. If the documentation page being moved has any Disqus comments, follow the steps
    described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
-1. If a documentation page you're removing includes images that aren't used
+1. Open a merge request with your changes. If a documentation page
+   you're removing includes images that aren't used
    with any other documentation pages, be sure to use your merge request to delete
    those images from the repository.
 1. Assign the merge request to a technical writer for review and merge.
-1. Search for links to the original documentation file. You must find and update all
-   links that point to the original documentation file:
+1. Search for links to the old documentation file. You must find and update all
+   links that point to the old documentation file:
 
    - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
      `grep -r "docs.gitlab.com/ee/path/to/file.html" .`
    - In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
      search the navigation bar configuration files for the path with `.html`:
      `grep -r "path/to/file.html" .`
-   - In any of the four internal projects. This includes searching for links in the docs
+   - In any of the four internal projects, search for links in the docs
      and codebase. Search for all variations, including full URL and just the path.
-     In macOS for example, go to the root directory of the `gitlab` project and run:
+     For example, go to the root directory of the `gitlab` project and run:
 
      ```shell
      grep -r "docs.gitlab.com/ee/path/to/file.html" .

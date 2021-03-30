@@ -6,6 +6,7 @@ import initIssuableSidebar from '~/init_issuable_sidebar';
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import StatusBox from '~/merge_request/components/status_box.vue';
 import initSourcegraph from '~/sourcegraph';
@@ -22,6 +23,7 @@ export default function initMergeRequestShow() {
   initInviteMemberModal();
   initInviteMemberTrigger();
   initInviteMembersModal();
+  initInviteMembersTrigger();
 
   const el = document.querySelector('.js-mr-status-box');
   // eslint-disable-next-line no-new

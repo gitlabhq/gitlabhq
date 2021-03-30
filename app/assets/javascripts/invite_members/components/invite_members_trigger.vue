@@ -1,11 +1,11 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
-  components: { GlButton },
+  components: { GlButton, GlLink },
   props: {
     displayText: {
       type: String,
@@ -37,6 +37,42 @@ export default {
       required: false,
       default: undefined,
     },
+    triggerElement: {
+      type: String,
+      required: false,
+      default: 'button',
+    },
+    event: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    label: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    isButton() {
+      return this.triggerElement === 'button';
+    },
+    componentAttributes() {
+      const baseAttributes = {
+        class: this.classes,
+        'data-qa-selector': 'invite_members_button',
+      };
+
+      if (this.event && this.label) {
+        return {
+          ...baseAttributes,
+          'data-track-event': this.event,
+          'data-track-label': this.label,
+        };
+      }
+
+      return baseAttributes;
+    },
   },
   mounted() {
     this.trackExperimentOnShow();
@@ -57,12 +93,15 @@ export default {
 
 <template>
   <gl-button
-    :class="classes"
-    :icon="icon"
+    v-if="isButton"
+    v-bind="componentAttributes"
     :variant="variant"
-    data-qa-selector="invite_members_button"
+    :icon="icon"
     @click="openModal"
   >
     {{ displayText }}
   </gl-button>
+  <gl-link v-else v-bind="componentAttributes" data-is-link="true" @click="openModal">
+    {{ displayText }}
+  </gl-link>
 </template>
