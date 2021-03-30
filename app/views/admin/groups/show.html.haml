@@ -126,7 +126,7 @@
     .card
       .card-header
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
-        %span.badge.badge-pill= @group.members.size
+        %span.badge.badge-pill= @group.users_count
         .float-right
           = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
             = sprite_icon('pencil-square', css_class: 'gl-icon')

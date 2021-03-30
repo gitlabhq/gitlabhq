@@ -11,7 +11,8 @@ RSpec.describe ::Packages::Maven::PackageFinder do
   let(:param_path) { nil }
   let(:param_project) { nil }
   let(:param_group) { nil }
-  let(:finder) { described_class.new(param_path, user, project: param_project, group: param_group) }
+  let(:param_order_by_package_file) { false }
+  let(:finder) { described_class.new(param_path, user, project: param_project, group: param_group, order_by_package_file: param_order_by_package_file) }
 
   before do
     group.add_developer(user)
@@ -46,7 +47,23 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       context 'within a group' do
         let(:param_group) { group }
 
-        it_behaves_like 'handling valid and invalid paths'
+        context 'with maven_packages_group_level_improvements enabled' do
+          before do
+            stub_feature_flags(maven_packages_group_level_improvements: true)
+            expect(finder).to receive(:packages_visible_to_user).with(user, within_group: group).and_call_original
+          end
+
+          it_behaves_like 'handling valid and invalid paths'
+        end
+
+        context 'with maven_packages_group_level_improvements disabled' do
+          before do
+            stub_feature_flags(maven_packages_group_level_improvements: false)
+            expect(finder).not_to receive(:packages_visible_to_user)
+          end
+
+          it_behaves_like 'handling valid and invalid paths'
+        end
       end
 
       context 'across all projects' do
@@ -76,7 +93,39 @@ RSpec.describe ::Packages::Maven::PackageFinder do
           create(:package_file, :xml, package: package2)
         end
 
-        it { is_expected.to eq(package2) }
+        context 'with maven_packages_group_level_improvements enabled' do
+          before do
+            stub_feature_flags(maven_packages_group_level_improvements: true)
+            expect(finder).not_to receive(:versionless_package?)
+          end
+
+          context 'without order by package file' do
+            it { is_expected.to eq(package3) }
+          end
+
+          context 'with order by package file' do
+            let(:param_order_by_package_file) { true }
+
+            it { is_expected.to eq(package2) }
+          end
+        end
+
+        context 'with maven_packages_group_level_improvements disabled' do
+          before do
+            stub_feature_flags(maven_packages_group_level_improvements: false)
+            expect(finder).to receive(:versionless_package?).and_call_original
+          end
+
+          context 'without order by package file' do
+            it { is_expected.to eq(package2) }
+          end
+
+          context 'with order by package file' do
+            let(:param_order_by_package_file) { true }
+
+            it { is_expected.to eq(package2) }
+          end
+        end
       end
     end
   end

@@ -84,13 +84,7 @@ class RemoteMirror < ApplicationRecord
     end
 
     after_transition started: :failed do |remote_mirror|
-      Gitlab::Metrics.add_event(:remote_mirrors_failed)
-
-      remote_mirror.update(last_update_at: Time.current)
-
-      remote_mirror.run_after_commit do
-        RemoteMirrorNotificationWorker.perform_async(remote_mirror.id)
-      end
+      remote_mirror.send_failure_notifications
     end
   end
 
@@ -188,6 +182,24 @@ class RemoteMirror < ApplicationRecord
     update_fail!
   end
 
+  # Force the mrror into the retry state
+  def hard_retry!(error_message)
+    update_error_message(error_message)
+    self.update_status = :to_retry
+
+    save!(validate: false)
+  end
+
+  # Force the mirror into the failed state
+  def hard_fail!(error_message)
+    update_error_message(error_message)
+    self.update_status = :failed
+
+    save!(validate: false)
+
+    send_failure_notifications
+  end
+
   def url=(value)
     super(value) && return unless Gitlab::UrlSanitizer.valid?(value)
 
@@ -237,6 +249,17 @@ class RemoteMirror < ApplicationRecord
 
   def max_runtime
     last_update_at.present? ? MAX_INCREMENTAL_RUNTIME : MAX_FIRST_RUNTIME
+  end
+
+  def send_failure_notifications
+    Gitlab::Metrics.add_event(:remote_mirrors_failed)
+
+    run_after_commit do
+      RemoteMirrorNotificationWorker.perform_async(id)
+    end
+
+    self.last_update_at = Time.current
+    save!(validate: false)
   end
 
   private

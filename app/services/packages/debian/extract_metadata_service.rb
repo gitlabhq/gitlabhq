@@ -72,7 +72,7 @@ module Packages
 
       def extract_metadata
         fields = extracted_fields
-        architecture = fields.delete(:Architecture) if file_type_debian?
+        architecture = fields.delete('Architecture') if file_type_debian?
 
         {
           file_type: file_type,

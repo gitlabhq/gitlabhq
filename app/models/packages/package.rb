@@ -136,7 +136,9 @@ class Packages::Package < ApplicationRecord
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
 
   def self.for_projects(projects)
-    return none unless projects.any?
+    unless Feature.enabled?(:maven_packages_group_level_improvements)
+      return none unless projects.any?
+    end
 
     where(project_id: projects)
   end

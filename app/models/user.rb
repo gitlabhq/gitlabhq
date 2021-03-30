@@ -1851,10 +1851,12 @@ class User < ApplicationRecord
   end
 
   def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
-    callouts = self.callouts.with_feature_name(feature_name)
-    callouts = callouts.with_dismissed_after(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+    callout = callouts_by_feature_name[feature_name]
 
-    callouts.any?
+    return false unless callout
+    return callout.dismissed_after?(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+
+    true
   end
 
   # Load the current highest access by looking directly at the user's memberships
@@ -1916,6 +1918,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def callouts_by_feature_name
+    @callouts_by_feature_name ||= callouts.index_by(&:feature_name)
+  end
 
   def authorized_groups_without_shared_membership
     Group.from_union([

@@ -263,6 +263,30 @@ RSpec.describe RemoteMirror, :mailer do
     end
   end
 
+  describe '#hard_retry!' do
+    let(:remote_mirror) { create(:remote_mirror).tap {|mirror| mirror.update_column(:url, 'invalid') } }
+
+    it 'transitions an invalid mirror to the to_retry state' do
+      remote_mirror.hard_retry!('Invalid')
+
+      expect(remote_mirror.update_status).to eq('to_retry')
+      expect(remote_mirror.last_error).to eq('Invalid')
+    end
+  end
+
+  describe '#hard_fail!' do
+    let(:remote_mirror) { create(:remote_mirror).tap {|mirror| mirror.update_column(:url, 'invalid') } }
+
+    it 'transitions an invalid mirror to the failed state' do
+      remote_mirror.hard_fail!('Invalid')
+
+      expect(remote_mirror.update_status).to eq('failed')
+      expect(remote_mirror.last_error).to eq('Invalid')
+      expect(remote_mirror.last_update_at).not_to be_nil
+      expect(RemoteMirrorNotificationWorker.jobs).not_to be_empty
+    end
+  end
+
   context 'when remote mirror gets destroyed' do
     it 'removes remote' do
       mirror = create_mirror(url: 'http://foo:bar@test.com')

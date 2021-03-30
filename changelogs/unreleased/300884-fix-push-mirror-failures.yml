@@ -1,0 +1,5 @@
+---
+title: A blocked URL for a push mirror is a hard failure
+merge_request: 57392
+author:
+type: fixed

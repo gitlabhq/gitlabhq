@@ -147,118 +147,136 @@ RSpec.describe API::MavenPackages do
   end
 
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
-    context 'a public project' do
-      subject { download_file(package_file.file_name) }
+    shared_examples 'handling all conditions' do
+      context 'a public project' do
+        subject { download_file(package_file.file_name) }
 
-      it_behaves_like 'tracking the file download event'
+        it_behaves_like 'tracking the file download event'
 
-      it 'returns the file' do
-        subject
+        it 'returns the file' do
+          subject
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'returns sha1 of the file' do
+          download_file(package_file.file_name + '.sha1')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('text/plain')
+          expect(response.body).to eq(package_file.file_sha1)
+        end
       end
 
-      it 'returns sha1 of the file' do
-        download_file(package_file.file_name + '.sha1')
+      context 'internal project' do
+        before do
+          project.team.truncate
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('text/plain')
-        expect(response.body).to eq(package_file.file_sha1)
+        subject { download_file_with_token(package_file.file_name) }
+
+        it_behaves_like 'tracking the file download event'
+
+        it 'returns the file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'denies download when no private token' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it_behaves_like 'downloads with a job token'
+
+        it_behaves_like 'downloads with a deploy token'
+      end
+
+      context 'private project' do
+        subject { download_file_with_token(package_file.file_name) }
+
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        end
+
+        it_behaves_like 'tracking the file download event'
+
+        it 'returns the file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'denies download when not enough permissions' do
+          project.add_guest(user)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'denies download when no private token' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it_behaves_like 'downloads with a job token'
+
+        it_behaves_like 'downloads with a deploy token'
+
+        it 'does not allow download by a unauthorized deploy token with same id as a user with access' do
+          unauthorized_deploy_token = create(:deploy_token, read_package_registry: true, write_package_registry: true)
+
+          another_user = create(:user)
+          project.add_developer(another_user)
+
+          # We force the id of the deploy token and the user to be the same
+          unauthorized_deploy_token.update!(id: another_user.id)
+
+          download_file(
+            package_file.file_name,
+            {},
+            Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => unauthorized_deploy_token.token
+          )
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'project name is different from a package name' do
+        before do
+          maven_metadatum.update!(path: "wrong_name/#{package.version}")
+        end
+
+        it 'rejects request' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
-    context 'internal project' do
+    context 'with maven_packages_group_level_improvements enabled' do
       before do
-        project.team.truncate
-        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        stub_feature_flags(maven_packages_group_level_improvements: true)
       end
 
-      subject { download_file_with_token(package_file.file_name) }
-
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it 'denies download when no private token' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it_behaves_like 'downloads with a job token'
-
-      it_behaves_like 'downloads with a deploy token'
+      it_behaves_like 'handling all conditions'
     end
 
-    context 'private project' do
-      subject { download_file_with_token(package_file.file_name) }
-
+    context 'with maven_packages_group_level_improvements disabled' do
       before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        stub_feature_flags(maven_packages_group_level_improvements: false)
       end
 
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it 'denies download when not enough permissions' do
-        project.add_guest(user)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'denies download when no private token' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it_behaves_like 'downloads with a job token'
-
-      it_behaves_like 'downloads with a deploy token'
-
-      it 'does not allow download by a unauthorized deploy token with same id as a user with access' do
-        unauthorized_deploy_token = create(:deploy_token, read_package_registry: true, write_package_registry: true)
-
-        another_user = create(:user)
-        project.add_developer(another_user)
-
-        # We force the id of the deploy token and the user to be the same
-        unauthorized_deploy_token.update!(id: another_user.id)
-
-        download_file(
-          package_file.file_name,
-          {},
-          Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => unauthorized_deploy_token.token
-        )
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'project name is different from a package name' do
-      before do
-        maven_metadatum.update!(path: "wrong_name/#{package.version}")
-      end
-
-      it 'rejects request' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
+      it_behaves_like 'handling all conditions'
     end
 
     def download_file(file_name, params = {}, request_headers = headers)
@@ -274,6 +292,22 @@ RSpec.describe API::MavenPackages do
     let(:url) { "/packages/maven/#{package.maven_metadatum.path}/#{package_file.file_name}" }
 
     it_behaves_like 'processing HEAD requests'
+
+    context 'with maven_packages_group_level_improvements enabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: true)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
@@ -282,91 +316,11 @@ RSpec.describe API::MavenPackages do
       group.add_developer(user)
     end
 
-    context 'a public project' do
-      subject { download_file(package_file.file_name) }
+    shared_examples 'handling all conditions' do
+      context 'a public project' do
+        subject { download_file(package_file.file_name) }
 
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it 'returns sha1 of the file' do
-        download_file(package_file.file_name + '.sha1')
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('text/plain')
-        expect(response.body).to eq(package_file.file_sha1)
-      end
-    end
-
-    context 'internal project' do
-      before do
-        group.group_member(user).destroy!
-        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-      end
-
-      subject { download_file_with_token(package_file.file_name) }
-
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it 'denies download when no private token' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it_behaves_like 'downloads with a job token'
-
-      it_behaves_like 'downloads with a deploy token'
-    end
-
-    context 'private project' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-      end
-
-      subject { download_file_with_token(package_file.file_name) }
-
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it 'denies download when not enough permissions' do
-        group.add_guest(user)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'denies download when no private token' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it_behaves_like 'downloads with a job token'
-
-      it_behaves_like 'downloads with a deploy token'
-
-      context 'with group deploy token' do
-        subject { download_file_with_token(package_file.file_name, {}, group_deploy_token_headers) }
+        it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
           subject
@@ -375,15 +329,167 @@ RSpec.describe API::MavenPackages do
           expect(response.media_type).to eq('application/octet-stream')
         end
 
-        it 'returns the file with only write_package_registry scope' do
-          deploy_token_for_group.update!(read_package_registry: false)
+        it 'returns sha1 of the file' do
+          download_file(package_file.file_name + '.sha1')
 
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('text/plain')
+          expect(response.body).to eq(package_file.file_sha1)
+        end
+      end
+
+      context 'internal project' do
+        before do
+          group.group_member(user).destroy!
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
+
+        subject { download_file_with_token(package_file.file_name) }
+
+        it_behaves_like 'tracking the file download event'
+
+        it 'returns the file' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('application/octet-stream')
         end
+
+        it 'denies download when no private token' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it_behaves_like 'downloads with a job token'
+
+        it_behaves_like 'downloads with a deploy token'
       end
+
+      context 'private project' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        end
+
+        subject { download_file_with_token(package_file.file_name) }
+
+        it_behaves_like 'tracking the file download event'
+
+        it 'returns the file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'denies download when not enough permissions' do
+          group.add_guest(user)
+
+          subject
+
+          status = Feature.enabled?(:maven_packages_group_level_improvements) ? :not_found : :forbidden
+          expect(response).to have_gitlab_http_status(status)
+        end
+
+        it 'denies download when no private token' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it_behaves_like 'downloads with a job token'
+
+        it_behaves_like 'downloads with a deploy token'
+
+        context 'with group deploy token' do
+          subject { download_file_with_token(package_file.file_name, {}, group_deploy_token_headers) }
+
+          it 'returns the file' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('application/octet-stream')
+          end
+
+          it 'returns the file with only write_package_registry scope' do
+            deploy_token_for_group.update!(read_package_registry: false)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('application/octet-stream')
+          end
+        end
+      end
+
+      context 'maven metadata file' do
+        let_it_be(:sub_group1) { create(:group, parent: group) }
+        let_it_be(:sub_group2)   { create(:group, parent: group) }
+        let_it_be(:project1) { create(:project, :private, group: sub_group1) }
+        let_it_be(:project2) { create(:project, :private, group: sub_group2) }
+        let_it_be(:project3) { create(:project, :private, group: sub_group1) }
+        let_it_be(:package_name) { 'foo' }
+        let_it_be(:package1) { create(:maven_package, project: project1, name: package_name, version: nil) }
+        let_it_be(:package_file1) { create(:package_file, :xml, package: package1, file_name: 'maven-metadata.xml') }
+        let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
+        let_it_be(:package_file2) { create(:package_file, :xml, package: package2, file_name: 'maven-metadata.xml') }
+        let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
+        let_it_be(:package_file3) { create(:package_file, :xml, package: package3, file_name: 'maven-metadata.xml') }
+
+        let(:maven_metadatum) { package3.maven_metadatum }
+
+        subject { download_file_with_token(package_file3.file_name) }
+
+        before do
+          sub_group1.add_developer(user)
+          sub_group2.add_developer(user)
+          # the package with the most recently published file should be returned
+          create(:package_file, :xml, package: package2)
+        end
+
+        context 'in multiple versionless packages' do
+          it 'downloads the file' do
+            expect(::Packages::PackageFileFinder)
+              .to receive(:new).with(package2, 'maven-metadata.xml').and_call_original
+
+            subject
+          end
+        end
+
+        context 'in multiple snapshot packages' do
+          before do
+            version = '1.0.0-SNAPSHOT'
+            [package1, package2, package3].each do |pkg|
+              pkg.update!(version: version)
+
+              pkg.maven_metadatum.update!(path: "#{pkg.name}/#{pkg.version}")
+            end
+          end
+
+          it 'downloads the file' do
+            expect(::Packages::PackageFileFinder)
+              .to receive(:new).with(package3, 'maven-metadata.xml').and_call_original
+
+            subject
+          end
+        end
+      end
+    end
+
+    context 'with maven_packages_group_level_improvements enabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: true)
+      end
+
+      it_behaves_like 'handling all conditions'
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it_behaves_like 'handling all conditions'
     end
 
     def download_file(file_name, params = {}, request_headers = headers)
@@ -398,64 +504,96 @@ RSpec.describe API::MavenPackages do
   describe 'HEAD /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
     let(:url) { "/groups/#{group.id}/-/packages/maven/#{package.maven_metadatum.path}/#{package_file.file_name}" }
 
-    it_behaves_like 'processing HEAD requests'
+    context 'with maven_packages_group_level_improvements enabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: true)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
-    context 'a public project' do
-      subject { download_file(package_file.file_name) }
+    shared_examples 'handling all conditions' do
+      context 'a public project' do
+        subject { download_file(package_file.file_name) }
 
-      it_behaves_like 'tracking the file download event'
+        it_behaves_like 'tracking the file download event'
 
-      it 'returns the file' do
-        subject
+        it 'returns the file' do
+          subject
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'returns sha1 of the file' do
+          download_file(package_file.file_name + '.sha1')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('text/plain')
+          expect(response.body).to eq(package_file.file_sha1)
+        end
       end
 
-      it 'returns sha1 of the file' do
-        download_file(package_file.file_name + '.sha1')
+      context 'private project' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('text/plain')
-        expect(response.body).to eq(package_file.file_sha1)
+        subject { download_file_with_token(package_file.file_name) }
+
+        it_behaves_like 'tracking the file download event'
+
+        it 'returns the file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'denies download when not enough permissions' do
+          project.add_guest(user)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'denies download when no private token' do
+          download_file(package_file.file_name)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it_behaves_like 'downloads with a job token'
+
+        it_behaves_like 'downloads with a deploy token'
       end
     end
 
-    context 'private project' do
+    context 'with maven_packages_group_level_improvements enabled' do
       before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        stub_feature_flags(maven_packages_group_level_improvements: true)
       end
 
-      subject { download_file_with_token(package_file.file_name) }
+      it_behaves_like 'handling all conditions'
+    end
 
-      it_behaves_like 'tracking the file download event'
-
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
       end
 
-      it 'denies download when not enough permissions' do
-        project.add_guest(user)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'denies download when no private token' do
-        download_file(package_file.file_name)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it_behaves_like 'downloads with a job token'
-
-      it_behaves_like 'downloads with a deploy token'
+      it_behaves_like 'handling all conditions'
     end
 
     def download_file(file_name, params = {}, request_headers = headers)
@@ -471,7 +609,21 @@ RSpec.describe API::MavenPackages do
   describe 'HEAD /api/v4/projects/:id/packages/maven/*path/:file_name' do
     let(:url) { "/projects/#{project.id}/packages/maven/#{package.maven_metadatum.path}/#{package_file.file_name}" }
 
-    it_behaves_like 'processing HEAD requests'
+    context 'with maven_packages_group_level_improvements enabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: true)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it_behaves_like 'processing HEAD requests'
+    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do

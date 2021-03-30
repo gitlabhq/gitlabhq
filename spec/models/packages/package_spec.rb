@@ -99,6 +99,34 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  describe '.for_projects' do
+    let_it_be(:package1) { create(:maven_package) }
+    let_it_be(:package2) { create(:maven_package) }
+    let_it_be(:package3) { create(:maven_package) }
+
+    let(:projects) { ::Project.id_in([package1.project_id, package2.project_id]) }
+
+    subject { described_class.for_projects(projects.select(:id)) }
+
+    it 'returns package1 and package2' do
+      expect(projects).not_to receive(:any?)
+
+      expect(subject).to match_array([package1, package2])
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it 'returns package1 and package2' do
+        expect(projects).to receive(:any?).and_call_original
+
+        expect(subject).to match_array([package1, package2])
+      end
+    end
+  end
+
   describe 'validations' do
     subject { build(:package) }
 

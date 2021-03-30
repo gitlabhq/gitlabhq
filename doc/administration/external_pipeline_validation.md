@@ -27,7 +27,15 @@ Response Code Legend:
 
 ## Configuration
 
-Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL and enable `ci_external_validation_service` feature flag.
+To configure external pipeline validation:
+
+1. Set the `EXTERNAL_VALIDATION_SERVICE_URL` environment variable to the external
+   service URL.
+1. Enable the `ci_external_validation_service` feature flag.
+
+By default, requests to the external service time out after five seconds. To override
+the default, set the `EXTERNAL_VALIDATION_SERVICE_TIMEOUT` environment variable to the
+required number of seconds.
 
 ## Payload Schema
 

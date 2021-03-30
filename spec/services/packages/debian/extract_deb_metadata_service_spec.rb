@@ -10,17 +10,17 @@ RSpec.describe Packages::Debian::ExtractDebMetadataService do
   context 'with correct file' do
     it 'return as expected' do
       expected = {
-        'Package': 'libsample0',
-        'Source': 'sample',
-        'Version': '1.2.3~alpha2',
-        'Architecture': 'amd64',
-        'Maintainer': 'John Doe <john.doe@example.com>',
-        'Installed-Size': '7',
-        'Section': 'libs',
-        'Priority': 'optional',
-        'Multi-Arch': 'same',
-        'Homepage': 'https://gitlab.com/',
-        'Description': "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
+        'Package' => 'libsample0',
+        'Source' => 'sample',
+        'Version' => '1.2.3~alpha2',
+        'Architecture' => 'amd64',
+        'Maintainer' => 'John Doe <john.doe@example.com>',
+        'Installed-Size' => '7',
+        'Section' => 'libs',
+        'Priority' => 'optional',
+        'Multi-Arch' => 'same',
+        'Homepage' => 'https://gitlab.com/',
+        'Description' => "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
       }
 
       expect(subject.execute).to eq expected

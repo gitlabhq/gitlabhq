@@ -30450,6 +30450,9 @@ msgstr ""
 msgid "The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable."
 msgstr ""
 
+msgid "The remote mirror URL is invalid."
+msgstr ""
+
 msgid "The remote mirror took to long to complete."
 msgstr ""
 

@@ -13,7 +13,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
 
     context 'with valid package file' do
       it 'extract metadata', :aggregate_failures do
-        expected_fields = { 'Architecture': 'source amd64', 'Binary': 'libsample0 sample-dev sample-udeb' }
+        expected_fields = { 'Architecture' => 'source amd64', 'Binary' => 'libsample0 sample-dev sample-udeb' }
 
         expect(subject[:file_type]).to eq(:changes)
         expect(subject[:architecture]).to be_nil
@@ -40,7 +40,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
       let(:sha256_dsc) { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba 671 sample_1.2.3~alpha2.dsc' }
       let(:sha256_source) { 'b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362 864 sample_1.2.3~alpha2.tar.xz' }
       let(:sha256s) { "#{sha256_dsc}\n#{sha256_source}" }
-      let(:fields) { { Files: md5s, 'Checksums-Sha1': sha1s, 'Checksums-Sha256': sha256s } }
+      let(:fields) { { 'Files' => md5s, 'Checksums-Sha1' => sha1s, 'Checksums-Sha256' => sha256s } }
       let(:metadata) { { file_type: :changes, architecture: 'amd64', fields: fields } }
 
       before do

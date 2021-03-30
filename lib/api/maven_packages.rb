@@ -77,6 +77,22 @@ module API
           request.head? &&
           file.fog_credentials[:provider] == 'AWS'
       end
+
+      def fetch_package(file_name:, project: nil, group: nil)
+        order_by_package_file = false
+        if Feature.enabled?(:maven_packages_group_level_improvements)
+          order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
+                                    !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
+        end
+
+        ::Packages::Maven::PackageFinder.new(
+          params[:path],
+          current_user,
+          project: project,
+          group: group,
+          order_by_package_file: order_by_package_file
+        ).execute!
+      end
     end
 
     desc 'Download the maven package file at instance level' do
@@ -97,8 +113,7 @@ module API
 
       authorize_read_package!(project)
 
-      package = ::Packages::Maven::PackageFinder
-        .new(params[:path], current_user, project: project).execute!
+      package = fetch_package(file_name: file_name, project: project)
 
       package_file = ::Packages::PackageFileFinder
         .new(package, file_name).execute!
@@ -133,8 +148,7 @@ module API
 
         not_found!('Group') unless can?(current_user, :read_group, group)
 
-        package = ::Packages::Maven::PackageFinder
-          .new(params[:path], current_user, group: group).execute!
+        package = fetch_package(file_name: file_name, group: group)
 
         authorize_read_package!(package.project)
 
@@ -171,8 +185,7 @@ module API
 
         file_name, format = extract_format(params[:file_name])
 
-        package = ::Packages::Maven::PackageFinder
-          .new(params[:path], current_user, project: user_project).execute!
+        package = fetch_package(file_name: file_name, project: user_project)
 
         package_file = ::Packages::PackageFileFinder
           .new(package, file_name).execute!

@@ -42,9 +42,9 @@ module Packages
       def files
         strong_memoize(:files) do
           raise ExtractionError.new("is not a changes file") unless file_type == :changes
-          raise ExtractionError.new("Files field is missing") if fields[:Files].blank?
-          raise ExtractionError.new("Checksums-Sha1 field is missing") if fields[:'Checksums-Sha1'].blank?
-          raise ExtractionError.new("Checksums-Sha256 field is missing") if fields[:'Checksums-Sha256'].blank?
+          raise ExtractionError.new("Files field is missing") if fields['Files'].blank?
+          raise ExtractionError.new("Checksums-Sha1 field is missing") if fields['Checksums-Sha1'].blank?
+          raise ExtractionError.new("Checksums-Sha256 field is missing") if fields['Checksums-Sha256'].blank?
 
           init_entries_from_files
           entries_from_checksums_sha1
@@ -56,7 +56,7 @@ module Packages
       end
 
       def init_entries_from_files
-        each_lines_for(:Files) do |line|
+        each_lines_for('Files') do |line|
           md5sum, size, section, priority, filename = line.split
           entry = FileEntry.new(
             filename: filename,
@@ -70,7 +70,7 @@ module Packages
       end
 
       def entries_from_checksums_sha1
-        each_lines_for(:'Checksums-Sha1') do |line|
+        each_lines_for('Checksums-Sha1') do |line|
           sha1sum, size, filename = line.split
           entry = @entries[filename]
           raise ExtractionError.new("#{filename} is listed in Checksums-Sha1 but not in Files") unless entry
@@ -81,7 +81,7 @@ module Packages
       end
 
       def entries_from_checksums_sha256
-        each_lines_for(:'Checksums-Sha256') do |line|
+        each_lines_for('Checksums-Sha256') do |line|
           sha256sum, size, filename = line.split
           entry = @entries[filename]
           raise ExtractionError.new("#{filename} is listed in Checksums-Sha256 but not in Files") unless entry
