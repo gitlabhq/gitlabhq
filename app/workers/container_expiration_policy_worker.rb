@@ -29,13 +29,15 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
   def perform_throttled
     try_obtain_lease do
-      with_runnable_policy do |policy|
-        ContainerExpirationPolicy.transaction do
-          policy.schedule_next_run!
-          ContainerRepository.for_project_id(policy.id)
-                             .each_batch do |relation|
-                               relation.update_all(expiration_policy_cleanup_status: :cleanup_scheduled)
-                             end
+      unless loopless_enabled?
+        with_runnable_policy do |policy|
+          ContainerExpirationPolicy.transaction do
+            policy.schedule_next_run!
+            ContainerRepository.for_project_id(policy.id)
+                               .each_batch do |relation|
+                                 relation.update_all(expiration_policy_cleanup_status: :cleanup_scheduled)
+                               end
+          end
         end
       end
 
@@ -73,6 +75,10 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
   def throttling_enabled?
     Feature.enabled?(:container_registry_expiration_policies_throttling)
+  end
+
+  def loopless_enabled?
+    Feature.enabled?(:container_registry_expiration_policies_loopless)
   end
 
   def lease_timeout

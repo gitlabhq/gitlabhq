@@ -3,6 +3,8 @@
 require 'asana'
 
 class AsanaService < Service
+  include ActionView::Helpers::UrlHelper
+
   prop_accessor :api_key, :restrict_to_branch
   validates :api_key, presence: true, if: :activated?
 
@@ -11,20 +13,12 @@ class AsanaService < Service
   end
 
   def description
-    s_('AsanaService|Asana - Teamwork without email')
+    s_('AsanaService|Add commit messages as comments to Asana tasks')
   end
 
   def help
-    'This service adds commit messages as comments to Asana tasks.
-Once enabled, commit messages are checked for Asana task URLs
-(for example, `https://app.asana.com/0/123456/987654`) or task IDs
-starting with # (for example, `#987654`). Every task ID found will
-get the commit comment added to it.
-
-You can also close a task with a message containing: `fix #123456`.
-
-You can create a Personal Access Token here:
-https://app.asana.com/0/developer-console'
+    docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/asana'), target: '_blank', rel: 'noopener noreferrer'
+    s_('Add commit messages as comments to Asana tasks. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param
@@ -36,14 +30,17 @@ https://app.asana.com/0/developer-console'
       {
         type: 'text',
         name: 'api_key',
-        title: _('API key'),
-        placeholder: s_('AsanaService|User Personal Access Token. User must have access to task, all comments will be attributed to this user.'),
+        title: 'API key',
+        help: s_('AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user.'),
+        # Example Personal Access Token from Asana docs
+        placeholder: '0/68a9e79b868c6789e79a124c30b0',
         required: true
       },
       {
         type: 'text',
         name: 'restrict_to_branch',
-        placeholder: s_('AsanaService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.')
+        title: 'Restrict to branch (optional)',
+        help: s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.')
       }
     ]
   end

@@ -62,25 +62,23 @@
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
-  .float-right
-    - if issuable.new_record?
-      = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'gl-button btn btn-cancel'
-    - else
-      - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
-        = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" }, method: :delete, class: 'btn btn-danger btn-grouped'
-      = link_to _('Cancel'), polymorphic_path([@project, issuable]), class: 'gl-button btn btn-grouped btn-default btn-cancel'
-
-  %span.gl-mr-3
-    - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm', data: { qa_selector: 'issuable_create_button' }
-    - else
-      = form.submit 'Save changes', class: 'gl-button btn btn-confirm'
-
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
-    .inline.gl-mt-3
+    .gl-mb-5
       Please review the
       %strong= link_to('contribution guidelines', guide_url)
       for this project.
+
+  - if issuable.new_record?
+    = form.submit "Create #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button' }
+  - else
+    = form.submit 'Save changes', class: 'gl-button btn btn-confirm gl-mr-2'
+
+  - if issuable.new_record?
+    = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default'
+  - else
+    = link_to _('Cancel'), polymorphic_path([@project, issuable]), class: 'gl-button btn btn-default'
+    - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
+      = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: _('%{issuableType} will be removed! Are you sure?') % { issuableType: issuable.human_class_name } }, method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary gl-float-right'
 
 = render_if_exists 'shared/issuable/remove_approver'
 

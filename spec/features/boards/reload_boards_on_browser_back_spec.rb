@@ -27,7 +27,7 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js do
 
       fill_in 'issue_title', with: 'issue should be shown'
 
-      click_button 'Submit issue'
+      click_button 'Create issue'
 
       page.go_back
       wait_for_requests

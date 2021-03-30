@@ -68,13 +68,13 @@ Example response:
 
 ## Asana
 
-Asana - Teamwork without email
+Add commit messages as comments to Asana tasks.
+
+See also the [Asana service documentation](../user/project/integrations/asana.md).
 
 ### Create/Edit Asana service
 
 Set Asana service for a project.
-
-> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found gets the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your API Keys here: <https://developers.asana.com/docs/#authentication-basics>.
 
 ```plaintext
 PUT /projects/:id/services/asana
@@ -84,8 +84,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | User API token. User must have access to task, all comments are attributed to this user. |
-| `restrict_to_branch` | string | false | Comma-separated list of branches which are automatically inspected. Leave blank to include all branches. |
+| `api_key` | string | true | User API token. User must have access to task. All comments are attributed to this user. |
+| `restrict_to_branch` | string | false | Comma-separated list of branches to be are automatically inspected. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Asana service

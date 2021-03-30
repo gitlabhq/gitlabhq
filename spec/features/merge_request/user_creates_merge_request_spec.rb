@@ -31,7 +31,7 @@ RSpec.describe "User creates a merge request", :js do
     end
 
     fill_in("Title", with: title)
-    click_button("Submit merge request")
+    click_button("Create merge request")
 
     page.within(".merge-request") do
       expect(page).to have_content(title)
@@ -103,7 +103,7 @@ RSpec.describe "User creates a merge request", :js do
       end
       find('.js-assignee-search').click
 
-      click_button("Submit merge request")
+      click_button("Create merge request")
 
       expect(page).to have_content(title).and have_content("Request to merge #{user.namespace.path}:#{source_branch} into master")
     end

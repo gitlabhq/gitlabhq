@@ -54,7 +54,7 @@ RSpec.describe "User creates issue" do
       first('.js-md').click
       first('.rspec-issuable-form-description').native.send_keys('Description')
 
-      click_button("Submit issue")
+      click_button("Create issue")
 
       expect(page).to have_content(issue_title)
         .and have_content(user.name)
@@ -112,7 +112,7 @@ RSpec.describe "User creates issue" do
         fill_in("Title", with: issue_title)
         click_button("Label")
         click_link(label_titles.first)
-        click_button("Submit issue")
+        click_button("Create issue")
 
         expect(page).to have_content(issue_title)
           .and have_content(user.name)
@@ -135,7 +135,7 @@ RSpec.describe "User creates issue" do
 
         expect(find('#issuable-due-date').value).to eq date.to_s
 
-        click_button 'Submit issue'
+        click_button 'Create issue'
 
         page.within '.issuable-sidebar' do
           expect(page).to have_content date.to_s(:medium)
@@ -259,7 +259,7 @@ RSpec.describe "User creates issue" do
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
 
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
     end
   end

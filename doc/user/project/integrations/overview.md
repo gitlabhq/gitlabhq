@@ -25,8 +25,7 @@ want to configure.
 Click on the service links to see further configuration instructions and details.
 
 | Service | Description | Service Hooks |
-| ------- | ----------- | ------------- |
-| Asana     | Asana - Teamwork without email | No |
+| Asana     | Add commit messages as comments to Asana tasks | No |
 | Assembla | Project Management Software (Source Commits Endpoint) | No |
 | [Atlassian Bamboo CI](bamboo.md) | A continuous integration and build server | Yes |
 | Buildkite | Continuous integration and deployments | Yes |

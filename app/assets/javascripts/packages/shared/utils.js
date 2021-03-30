@@ -10,21 +10,21 @@ export const beautifyPath = (path) => (path ? path.split('/').join(' / ') : '');
 export const getPackageTypeLabel = (packageType) => {
   switch (packageType) {
     case PackageType.CONAN:
-      return s__('PackageType|Conan');
+      return s__('PackageRegistry|Conan');
     case PackageType.MAVEN:
-      return s__('PackageType|Maven');
+      return s__('PackageRegistry|Maven');
     case PackageType.NPM:
-      return s__('PackageType|npm');
+      return s__('PackageRegistry|npm');
     case PackageType.NUGET:
-      return s__('PackageType|NuGet');
+      return s__('PackageRegistry|NuGet');
     case PackageType.PYPI:
-      return s__('PackageType|PyPI');
+      return s__('PackageRegistry|PyPI');
     case PackageType.RUBYGEMS:
-      return s__('PackageType|RubyGems');
+      return s__('PackageRegistry|RubyGems');
     case PackageType.COMPOSER:
-      return s__('PackageType|Composer');
+      return s__('PackageRegistry|Composer');
     case PackageType.GENERIC:
-      return s__('PackageType|Generic');
+      return s__('PackageRegistry|Generic');
     default:
       return null;
   }

@@ -28,7 +28,7 @@ RSpec.describe 'create a merge request, allowing commits from members who can me
 
     check 'Allow commits from members who can merge to the target branch'
 
-    click_button 'Submit merge request'
+    click_button 'Create merge request'
 
     wait_for_requests
 

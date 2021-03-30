@@ -11,11 +11,26 @@ RSpec.describe ContainerExpirationPolicyWorker do
   describe '#perform' do
     subject { worker.perform }
 
-    RSpec.shared_examples 'not executing any policy' do
+    shared_examples 'not executing any policy' do
       it 'does not run any policy' do
         expect(ContainerExpirationPolicyService).not_to receive(:new)
 
         subject
+      end
+    end
+
+    shared_examples 'handling a taken exclusive lease' do
+      context 'with exclusive lease taken' do
+        before do
+          stub_exclusive_lease_taken(worker.lease_key, timeout: 5.hours)
+        end
+
+        it 'does not do anything' do
+          expect(ContainerExpirationPolicies::CleanupContainerRepositoryWorker).not_to receive(:perform_with_capacity)
+          expect(worker).not_to receive(:runnable_policies)
+
+          expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
+        end
       end
     end
 
@@ -27,18 +42,77 @@ RSpec.describe ContainerExpirationPolicyWorker do
       end
     end
 
-    context 'with container expiration policies' do
-      let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :runnable) }
-      let_it_be(:container_repository) { create(:container_repository, project: container_expiration_policy.project) }
+    context 'with throttling enabled' do
+      before do
+        stub_feature_flags(container_registry_expiration_policies_throttling: true)
+      end
 
-      context 'with a valid container expiration policy' do
-        it 'schedules the next run' do
-          expect { subject }.to change { container_expiration_policy.reload.next_run_at }
+      context 'with loopless disabled' do
+        before do
+          stub_feature_flags(container_registry_expiration_policies_loopless: false)
         end
 
-        it 'marks the container repository as scheduled for cleanup' do
-          expect { subject }.to change { container_repository.reload.cleanup_scheduled? }.from(false).to(true)
-          expect(ContainerRepository.cleanup_scheduled.count).to eq(1)
+        context 'with container expiration policies' do
+          let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :runnable) }
+          let_it_be(:container_repository) { create(:container_repository, project: container_expiration_policy.project) }
+
+          before do
+            expect(worker).to receive(:with_runnable_policy).and_call_original
+          end
+
+          context 'with a valid container expiration policy' do
+            it 'schedules the next run' do
+              expect { subject }.to change { container_expiration_policy.reload.next_run_at }
+            end
+
+            it 'marks the container repository as scheduled for cleanup' do
+              expect { subject }.to change { container_repository.reload.cleanup_scheduled? }.from(false).to(true)
+              expect(ContainerRepository.cleanup_scheduled.count).to eq(1)
+            end
+
+            it 'calls the limited capacity worker' do
+              expect(ContainerExpirationPolicies::CleanupContainerRepositoryWorker).to receive(:perform_with_capacity)
+
+              subject
+            end
+          end
+
+          context 'with a disabled container expiration policy' do
+            before do
+              container_expiration_policy.disable!
+            end
+
+            it 'does not run the policy' do
+              expect(ContainerRepository).not_to receive(:for_project_id)
+
+              expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
+            end
+          end
+
+          context 'with an invalid container expiration policy' do
+            let(:user) { container_expiration_policy.project.owner }
+
+            before do
+              container_expiration_policy.update_column(:name_regex, '*production')
+            end
+
+            it 'disables the policy and tracks an error' do
+              expect(ContainerRepository).not_to receive(:for_project_id)
+              expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(described_class::InvalidPolicyError), container_expiration_policy_id: container_expiration_policy.id)
+
+              expect { subject }.to change { container_expiration_policy.reload.enabled }.from(true).to(false)
+              expect(ContainerRepository.cleanup_scheduled).to be_empty
+            end
+          end
+        end
+
+        it_behaves_like 'handling a taken exclusive lease'
+      end
+
+      context 'with loopless enabled' do
+        before do
+          stub_feature_flags(container_registry_expiration_policies_loopless: true)
+          expect(worker).not_to receive(:with_runnable_policy)
         end
 
         it 'calls the limited capacity worker' do
@@ -46,47 +120,8 @@ RSpec.describe ContainerExpirationPolicyWorker do
 
           subject
         end
-      end
 
-      context 'with a disabled container expiration policy' do
-        before do
-          container_expiration_policy.disable!
-        end
-
-        it 'does not run the policy' do
-          expect(ContainerRepository).not_to receive(:for_project_id)
-
-          expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
-        end
-      end
-
-      context 'with an invalid container expiration policy' do
-        let(:user) { container_expiration_policy.project.owner }
-
-        before do
-          container_expiration_policy.update_column(:name_regex, '*production')
-        end
-
-        it 'disables the policy and tracks an error' do
-          expect(ContainerRepository).not_to receive(:for_project_id)
-          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(described_class::InvalidPolicyError), container_expiration_policy_id: container_expiration_policy.id)
-
-          expect { subject }.to change { container_expiration_policy.reload.enabled }.from(true).to(false)
-          expect(ContainerRepository.cleanup_scheduled).to be_empty
-        end
-      end
-    end
-
-    context 'with exclusive lease taken' do
-      before do
-        stub_exclusive_lease_taken(worker.lease_key, timeout: 5.hours)
-      end
-
-      it 'does not execute any policy' do
-        expect(ContainerExpirationPolicies::CleanupContainerRepositoryWorker).not_to receive(:perform_with_capacity)
-        expect(worker).not_to receive(:runnable_policies)
-
-        expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
+        it_behaves_like 'handling a taken exclusive lease'
       end
     end
 
