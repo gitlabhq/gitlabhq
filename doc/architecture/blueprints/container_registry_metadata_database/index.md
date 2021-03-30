@@ -343,6 +343,8 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 
 Proposal:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Role                         | Who
 |------------------------------|-------------------------|
 | Author                       |      João Pereira       |

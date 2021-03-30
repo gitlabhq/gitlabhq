@@ -17,7 +17,7 @@ directly in the browser, you'll eventually need to use Git through the command l
 tasks.
 
 For example, if you need to fix complex merge conflicts, rebase branches,
-merge manually, or undo and roll back commits, you musto use Git from
+merge manually, or undo and roll back commits, you must use Git from
 the command line and then push your changes to the remote server.
 
 This guide helps you get started with Git through the command line and can be your reference
