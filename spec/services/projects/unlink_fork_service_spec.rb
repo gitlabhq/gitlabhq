@@ -207,6 +207,17 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
     end
   end
 
+  context 'a project with pool repository' do
+    let(:project) { create(:project, :public, :repository) }
+    let!(:pool_repository) { create(:pool_repository, :ready, source_project: project) }
+
+    subject { described_class.new(project, user) }
+
+    it 'when unlinked leaves pool repository' do
+      expect { subject.execute }.to change { project.reload.has_pool_repository? }.from(true).to(false)
+    end
+  end
+
   context 'when given project is not part of a fork network' do
     let!(:project_without_forks) { create(:project, :public) }
 

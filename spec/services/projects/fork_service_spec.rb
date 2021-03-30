@@ -403,7 +403,7 @@ RSpec.describe Projects::ForkService do
   end
 
   context 'when forking with object pools' do
-    let(:fork_from_project) { create(:project, :public) }
+    let(:fork_from_project) { create(:project, :repository, :public) }
     let(:forker) { create(:user) }
 
     context 'when no pool exists' do
