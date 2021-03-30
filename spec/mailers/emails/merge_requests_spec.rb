@@ -31,7 +31,7 @@ RSpec.describe Emails::MergeRequests do
       aggregate_failures do
         is_expected.to have_referable_subject(merge_request, reply: true)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-        is_expected.to have_body_text('You have been mentioned in Merge Request')
+        is_expected.to have_body_text('You have been mentioned in merge request')
         is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
         is_expected.to have_text_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)

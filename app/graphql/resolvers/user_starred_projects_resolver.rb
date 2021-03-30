@@ -5,8 +5,8 @@ module Resolvers
     type Types::ProjectType.connection_type, null: true
 
     argument :search, GraphQL::STRING_TYPE,
-              required: false,
-              description: 'Search query.'
+             required: false,
+             description: 'Search query.'
 
     alias_method :user, :object
 

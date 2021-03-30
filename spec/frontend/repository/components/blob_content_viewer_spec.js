@@ -76,6 +76,7 @@ describe('Blob content viewer component', () => {
 
     expect(findBlobContent().props('loading')).toEqual(false);
     expect(findBlobContent().props('content')).toEqual('raw content');
+    expect(findBlobContent().props('isRawContent')).toBe(true);
     expect(findBlobContent().props('activeViewer')).toEqual({
       fileType: 'text',
       tooLarge: false,

@@ -13,7 +13,8 @@ responsibilities. Maintain the availability of your software services by putting
 With an on-call schedule, your team is notified immediately when things go wrong so they can quickly
 respond to service outages and disruptions.
 
-To use on-call schedules, you must do the following:
+To use on-call schedules, users with Maintainer [permissions](../../user/permissions.md)
+must do the following:
 
 1. [Create a schedule](#schedules).
 1. [Add a rotation to the schedule](#rotations).

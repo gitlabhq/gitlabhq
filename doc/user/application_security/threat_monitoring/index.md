@@ -221,7 +221,7 @@ to set the status for each alert:
 By default, the list doesn't display resolved or dismissed alerts. To show these alerts, clear the
 checkbox **Hide dismissed alerts**.
 
-![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_9.png)
+![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_11.png)
 
 Clicking an alert's name takes the user to the [alert details page](../../../operations/incident_management/alerts.md#alert-details-page).
 

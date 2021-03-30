@@ -1,12 +1,14 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
 
 export default {
   components: {
     GlIcon,
+    EditorLite,
   },
   mixins: [ViewerMixin],
   inject: ['blobHash'],
@@ -45,27 +47,36 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="file-content code js-syntax-highlight"
-    data-qa-selector="file_content"
-    :class="$options.userColorScheme"
-  >
-    <div class="line-numbers">
-      <a
-        v-for="line in lineNumbers"
-        :id="`L${line}`"
-        :key="line"
-        class="diff-line-num js-line-number"
-        :href="`#LC${line}`"
-        :data-line-number="line"
-        @click="scrollToLine(`#LC${line}`)"
-      >
-        <gl-icon :size="12" name="link" />
-        {{ line }}
-      </a>
-    </div>
-    <div class="blob-content">
-      <pre class="code highlight"><code :data-blob-hash="blobHash" v-html="content"></code></pre>
+  <div>
+    <editor-lite
+      v-if="isRawContent"
+      :value="content"
+      :file-name="fileName"
+      :editor-options="{ readOnly: true }"
+    />
+    <div
+      v-else
+      class="file-content code js-syntax-highlight"
+      data-qa-selector="file_content"
+      :class="$options.userColorScheme"
+    >
+      <div class="line-numbers">
+        <a
+          v-for="line in lineNumbers"
+          :id="`L${line}`"
+          :key="line"
+          class="diff-line-num js-line-number"
+          :href="`#LC${line}`"
+          :data-line-number="line"
+          @click="scrollToLine(`#LC${line}`)"
+        >
+          <gl-icon :size="12" name="link" />
+          {{ line }}
+        </a>
+      </div>
+      <div class="blob-content">
+        <pre class="code highlight"><code :data-blob-hash="blobHash" v-html="content"></code></pre>
+      </div>
     </div>
   </div>
 </template>

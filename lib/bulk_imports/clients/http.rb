@@ -23,7 +23,7 @@ module BulkImports
             resource_url(resource),
             headers: request_headers,
             follow_redirects: false,
-            query: query.merge(request_query)
+            query: query.reverse_merge(request_query)
           )
         end
       end

@@ -117,12 +117,6 @@ RSpec.describe 'GFM autocomplete', :js do
         end
       end
 
-      it 'opens autocomplete menu when field starts with text' do
-        fill_in 'Comment', with: '@'
-
-        expect(find_autocomplete_menu).to be_visible
-      end
-
       it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
         issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
         create(:issue, project: project, title: issue_xss_title)
@@ -153,74 +147,87 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(find_autocomplete_menu).to have_text('alert milestone')
       end
 
-      it 'doesnt select the first item for non-assignee dropdowns' do
-        fill_in 'Comment', with: ':'
+      describe 'autocomplete highlighting' do
+        it 'auto-selects the first item when there is a query, and only for assignees with no query', :aggregate_failures do
+          fill_in 'Comment', with: ':'
+          wait_for_requests
+          expect(find_autocomplete_menu).not_to have_css('.cur')
 
-        wait_for_requests
+          fill_in 'Comment', with: ':1'
+          wait_for_requests
+          expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
 
-        expect(find_autocomplete_menu).not_to have_css('.cur')
+          fill_in 'Comment', with: '@'
+          wait_for_requests
+          expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
+        end
       end
 
-      it 'selects the first item for assignee dropdowns' do
-        fill_in 'Comment', with: '@'
+      describe 'assignees' do
+        it 'does not wrap with quotes for assignee values' do
+          fill_in 'Comment', with: "@#{user.username[0]}"
 
-        wait_for_requests
+          find_highlighted_autocomplete_item.click
 
-        expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
-      end
+          expect(find_field('Comment').value).to have_text("@#{user.username}")
+        end
 
-      it 'includes items for assignee dropdowns with non-ASCII characters in name' do
-        fill_in 'Comment', with: "@#{user.name[0...8]}"
+        it 'includes items for assignee dropdowns with non-ASCII characters in name' do
+          fill_in 'Comment', with: "@#{user.name[0...8]}"
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_autocomplete_menu).to have_text(user.name)
-      end
+          expect(find_autocomplete_menu).to have_text(user.name)
+        end
 
-      it 'searches across full name for assignees' do
-        fill_in 'Comment', with: '@speciąlsome'
+        it 'searches across full name for assignees' do
+          fill_in 'Comment', with: '@speciąlsome'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_highlighted_autocomplete_item).to have_text(user.name)
-      end
+          expect(find_highlighted_autocomplete_item).to have_text(user.name)
+        end
 
-      it 'shows names that start with the query as the top result' do
-        fill_in 'Comment', with: '@mar'
+        it 'shows names that start with the query as the top result' do
+          fill_in 'Comment', with: '@mar'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_highlighted_autocomplete_item).to have_text(user2.name)
-      end
+          expect(find_highlighted_autocomplete_item).to have_text(user2.name)
+        end
 
-      it 'shows usernames that start with the query as the top result' do
-        fill_in 'Comment', with: '@msi'
+        it 'shows usernames that start with the query as the top result' do
+          fill_in 'Comment', with: '@msi'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_highlighted_autocomplete_item).to have_text(user2.name)
-      end
+          expect(find_highlighted_autocomplete_item).to have_text(user2.name)
+        end
 
-      # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/321925
-      it 'shows username when pasting then pressing Enter' do
-        fill_in 'Comment', with: "@#{user.username}\n"
+        # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/321925
+        it 'shows username when pasting then pressing Enter' do
+          fill_in 'Comment', with: "@#{user.username}\n"
 
-        expect(find_field('Comment').value).to have_text "@#{user.username}"
-      end
+          expect(find_field('Comment').value).to have_text "@#{user.username}"
+        end
 
-      it 'does not show `@undefined` when pressing `@` then Enter' do
-        fill_in 'Comment', with: "@\n"
+        it 'does not show `@undefined` when pressing `@` then Enter' do
+          fill_in 'Comment', with: "@\n"
 
-        expect(find_field('Comment').value).to have_text '@'
-        expect(find_field('Comment').value).not_to have_text '@undefined'
-      end
+          expect(find_field('Comment').value).to have_text '@'
+          expect(find_field('Comment').value).not_to have_text '@undefined'
+        end
 
-      it 'selects the first item for non-assignee dropdowns if a query is entered' do
-        fill_in 'Comment', with: ':1'
+        context 'when /assign quick action is selected' do
+          it 'triggers user autocomplete and lists users who are currently not assigned to the issue' do
+            fill_in 'Comment', with: '/as'
 
-        wait_for_requests
+            find_highlighted_autocomplete_item.click
 
-        expect(find_autocomplete_menu).to have_css('.cur:first-of-type')
+            expect(find_autocomplete_menu).not_to have_text(user.username)
+            expect(find_autocomplete_menu).to have_text(user2.username)
+          end
+        end
       end
 
       context 'if a selected value has special characters' do
@@ -230,14 +237,6 @@ RSpec.describe 'GFM autocomplete', :js do
           find_highlighted_autocomplete_item.click
 
           expect(find_field('Comment').value).to have_text("~\"#{label.title}\"")
-        end
-
-        it 'doesn\'t wrap for assignee values' do
-          fill_in 'Comment', with: "@#{user.username[0]}"
-
-          find_highlighted_autocomplete_item.click
-
-          expect(find_field('Comment').value).to have_text("@#{user.username}")
         end
 
         it 'doesn\'t wrap for emoji values' do
@@ -260,17 +259,6 @@ RSpec.describe 'GFM autocomplete', :js do
           fill_in 'Comment', with: '/'
 
           expect(find_autocomplete_menu).to have_css('li', minimum: 6)
-        end
-      end
-
-      context 'assignees' do
-        it 'lists users who are currently not assigned to the issue when using /assign' do
-          fill_in 'Comment', with: '/as'
-
-          find_highlighted_autocomplete_item.click
-
-          expect(find_autocomplete_menu).not_to have_text(user.username)
-          expect(find_autocomplete_menu).to have_text(user2.username)
         end
       end
 
@@ -498,12 +486,6 @@ RSpec.describe 'GFM autocomplete', :js do
         end
       end
 
-      it 'opens autocomplete menu when field starts with text' do
-        fill_in 'Comment', with: '@'
-
-        expect(find_tribute_autocomplete_menu).to be_visible
-      end
-
       it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
         issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
         create(:issue, project: project, title: issue_xss_title)
@@ -534,41 +516,77 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(find_tribute_autocomplete_menu).to have_text('alert milestone')
       end
 
-      it 'selects the first item for assignee dropdowns' do
-        fill_in 'Comment', with: '@'
+      describe 'autocomplete highlighting' do
+        it 'auto-selects the first item with query', :aggregate_failures do
+          fill_in 'Comment', with: ':1'
+          wait_for_requests
+          expect(find_tribute_autocomplete_menu).to have_css('.highlight:first-of-type')
 
-        wait_for_requests
-
-        expect(find_tribute_autocomplete_menu).to have_css('.highlight:first-of-type')
+          fill_in 'Comment', with: '@'
+          wait_for_requests
+          expect(find_tribute_autocomplete_menu).to have_css('.highlight:first-of-type')
+        end
       end
 
-      it 'includes items for assignee dropdowns with non-ASCII characters in name' do
-        fill_in 'Comment', with: "@#{user.name[0...8]}"
+      describe 'assignees' do
+        it 'does not wrap with quotes for assignee values' do
+          fill_in 'Comment', with: "@#{user.username[0..2]}"
 
-        wait_for_requests
+          find_highlighted_tribute_autocomplete_menu.click
 
-        expect(find_tribute_autocomplete_menu).to have_text(user.name)
-      end
-
-      it 'selects the first item for non-assignee dropdowns if a query is entered' do
-        fill_in 'Comment', with: ':1'
-
-        wait_for_requests
-
-        expect(find_tribute_autocomplete_menu).to have_css('.highlight:first-of-type')
-      end
-
-      context 'when autocompleting for groups' do
-        it 'shows the group when searching for the name of the group' do
-          fill_in 'Comment', with: '@mygroup'
-
-          expect(find_tribute_autocomplete_menu).to have_text('My group')
+          expect(find_field('Comment').value).to have_text("@#{user.username}")
         end
 
-        it 'does not show the group when searching for the name of the parent of the group' do
-          fill_in 'Comment', with: '@ancestor'
+        it 'includes items for assignee dropdowns with non-ASCII characters in name' do
+          fill_in 'Comment', with: "@#{user.name[0...8]}"
 
-          expect(find_tribute_autocomplete_menu).not_to have_text('My group')
+          wait_for_requests
+
+          expect(find_tribute_autocomplete_menu).to have_text(user.name)
+        end
+
+        context 'when autocompleting for groups' do
+          it 'shows the group when searching for the name of the group' do
+            fill_in 'Comment', with: '@mygroup'
+
+            expect(find_tribute_autocomplete_menu).to have_text('My group')
+          end
+
+          it 'does not show the group when searching for the name of the parent of the group' do
+            fill_in 'Comment', with: '@ancestor'
+
+            expect(find_tribute_autocomplete_menu).not_to have_text('My group')
+          end
+        end
+
+        context 'when /assign quick action is selected' do
+          it 'lists users who are currently not assigned to the issue' do
+            note = find_field('Comment')
+            note.native.send_keys('/assign ')
+            # The `/assign` ajax response might replace the one by `@` below causing a failed test
+            # so we need to wait for the `/assign` ajax request to finish first
+            wait_for_requests
+            note.native.send_keys('@')
+            wait_for_requests
+
+            expect(find_tribute_autocomplete_menu).not_to have_text(user.username)
+            expect(find_tribute_autocomplete_menu).to have_text(user2.username)
+          end
+
+          it 'lists users who are currently not assigned to the issue when using /assign on the second line' do
+            note = find_field('Comment')
+            note.native.send_keys('/assign @user2')
+            note.native.send_keys(:enter)
+            note.native.send_keys('/assign ')
+            # The `/assign` ajax response might replace the one by `@` below causing a failed test
+            # so we need to wait for the `/assign` ajax request to finish first
+            wait_for_requests
+            note.native.send_keys('@')
+            wait_for_requests
+
+            expect(find_tribute_autocomplete_menu).not_to have_text(user.username)
+            expect(find_tribute_autocomplete_menu).to have_text(user2.username)
+          end
         end
       end
 
@@ -579,14 +597,6 @@ RSpec.describe 'GFM autocomplete', :js do
           find_highlighted_tribute_autocomplete_menu.click
 
           expect(find_field('Comment').value).to have_text("~\"#{label.title}\"")
-        end
-
-        it 'doesn\'t wrap for assignee values' do
-          fill_in 'Comment', with: "@#{user.username[0..2]}"
-
-          find_highlighted_tribute_autocomplete_menu.click
-
-          expect(find_field('Comment').value).to have_text("@#{user.username}")
         end
 
         it 'does not wrap for emoji values' do
@@ -603,36 +613,6 @@ RSpec.describe 'GFM autocomplete', :js do
           find_highlighted_tribute_autocomplete_menu.click
 
           expect(find_field('Comment').value).to have_text('/assign')
-        end
-      end
-
-      context 'assignees' do
-        it 'lists users who are currently not assigned to the issue when using /assign' do
-          note = find_field('Comment')
-          note.native.send_keys('/assign ')
-          # The `/assign` ajax response might replace the one by `@` below causing a failed test
-          # so we need to wait for the `/assign` ajax request to finish first
-          wait_for_requests
-          note.native.send_keys('@')
-          wait_for_requests
-
-          expect(find_tribute_autocomplete_menu).not_to have_text(user.username)
-          expect(find_tribute_autocomplete_menu).to have_text(user2.username)
-        end
-
-        it 'lists users who are currently not assigned to the issue when using /assign on the second line' do
-          note = find_field('Comment')
-          note.native.send_keys('/assign @user2')
-          note.native.send_keys(:enter)
-          note.native.send_keys('/assign ')
-          # The `/assign` ajax response might replace the one by `@` below causing a failed test
-          # so we need to wait for the `/assign` ajax request to finish first
-          wait_for_requests
-          note.native.send_keys('@')
-          wait_for_requests
-
-          expect(find_tribute_autocomplete_menu).not_to have_text(user.username)
-          expect(find_tribute_autocomplete_menu).to have_text(user2.username)
         end
       end
 

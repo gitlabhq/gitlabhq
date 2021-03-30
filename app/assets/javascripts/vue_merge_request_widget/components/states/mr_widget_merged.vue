@@ -151,6 +151,7 @@ export default {
           v-gl-tooltip.hover
           :title="cherryPickTitle"
           size="small"
+          data-qa-selector="cherry_pick_button"
           @click="openCherryPickModal"
         >
           {{ cherryPickLabel }}

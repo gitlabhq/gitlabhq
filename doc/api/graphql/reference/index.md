@@ -38,7 +38,8 @@ Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
 ### `ciConfig`
 
-Get linted and processed contents of a CI config. Should not be requested more than once per request.
+Linted and processed contents of a CI config.
+Should not be requested more than once per request.
 
 Returns [`CiConfig`](#ciconfig).
 
@@ -93,7 +94,7 @@ Returns [`DevopsAdoptionSegmentConnection`](#devopsadoptionsegmentconnection).
 
 ### `echo`
 
-Text to echo back.
+Testing endpoint to validate the API with.
 
 Returns [`String!`](#string).
 
@@ -271,7 +272,7 @@ Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
 ### `runnerSetup`
 
-Get runner setup instructions.
+Runner setup instructions.
 
 Returns [`RunnerSetup`](#runnersetup).
 
@@ -398,7 +399,9 @@ Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnec
 
 ### `vulnerabilitiesCountByDayAndSeverity`
 
-Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard.
+Number of vulnerabilities per severity level, per day, for the projects on the
+current user's instance security dashboard.
+.
 
 WARNING:
 **Deprecated** in 13.3.
@@ -6509,7 +6512,7 @@ Representation of a GitLab user.
 | `starredProjects` | [`ProjectConnection`](#projectconnection) | Projects starred by the user. |
 | `state` | [`UserState!`](#userstate) | State of the user. |
 | `status` | [`UserStatus`](#userstatus) | User status. |
-| `todos` | [`TodoConnection!`](#todoconnection) | To-do items of the user. |
+| `todos` | [`TodoConnection`](#todoconnection) | To-do items of the user. |
 | `userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | `username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | `webPath` | [`String!`](#string) | Web path of the user. |

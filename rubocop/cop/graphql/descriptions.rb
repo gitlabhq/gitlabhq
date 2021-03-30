@@ -54,6 +54,10 @@ module RuboCop
           (send nil? :value ...)
         PATTERN
 
+        def_node_matcher :resolver_kwarg, <<~PATTERN
+          (... (hash <(pair (sym :resolver) $_) ...>))
+        PATTERN
+
         def_node_matcher :description_kwarg, <<~PATTERN
           (... (hash <(pair (sym :description) $_) ...>))
         PATTERN
@@ -64,6 +68,7 @@ module RuboCop
 
         def on_send(node)
           return unless graphql_describable?(node)
+          return if resolver_kwarg(node) # Fields may inherit the description from their resolvers.
 
           description = locate_description(node)
 

@@ -22,13 +22,13 @@ a black-box testing framework for the API and the UI.
 ### Testing nightly builds
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
-You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/nightly/pipelines`
+You can find these pipelines at <https://gitlab.com/gitlab-org/quality/nightly/pipelines>
 (need Developer access permissions). Results are reported in the `#qa-nightly` Slack channel.
 
 ### Testing staging
 
 We run scheduled pipelines each night to test staging.
-You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/staging/pipelines`
+You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/pipelines>
 (need Developer access permissions). Results are reported in the `#qa-staging` Slack channel.
 
 ### Testing code in merge requests
@@ -36,64 +36,63 @@ You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/s
 #### Using the `package-and-qa` job
 
 It is possible to run end-to-end tests for a merge request, eventually being run in
-a pipeline in the [`gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror/) project,
-by triggering the `package-and-qa` manual action in the `test` stage (not
+a pipeline in the [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror) project,
+by triggering the `package-and-qa` manual action in the `qa` stage (not
 available for forks).
 
-**This runs end-to-end tests against a custom CE and EE (with an Ultimate license)
-Omnibus package built from your merge request's changes.**
+**This runs end-to-end tests against a custom EE (with an Ultimate license)
+Docker image built from your merge request's changes.**
 
-Manual action that starts end-to-end tests is also available in merge requests
-in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
-
-Below you can read more about how to use it and how does it work.
+Manual action that starts end-to-end tests is also available
+in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs.html#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
 
 #### How does it work?
 
-Currently, we are using _multi-project pipeline_-like approach to run QA
+Currently, we are using _multi-project pipeline_-like approach to run end-to-end
 pipelines.
 
 ```mermaid
-graph LR
-    A1 -.->|1. Triggers an omnibus-gitlab-mirror pipeline and wait for it to be done| A2
-    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa-mirror pipeline and wait for it to be done| A3
+graph TB
+    A1 -.->|once done, can be triggered| A2
+    A2 -.->|1. Triggers an `omnibus-gitlab-mirror` pipeline<br>and wait for it to be done| B1
+    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a `gitlab-qa-mirror` pipeline<br>and wait for it to be done| C1
 
-subgraph "gitlab-foss/gitlab pipeline"
-    A1[`test` stage<br>`package-and-qa` job]
+subgraph "`gitlab-org/gitlab` pipeline"
+    A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
+    A2[`qa` stage<br>`package-and-qa` job]
     end
 
-subgraph "omnibus-gitlab pipeline"
-    A2[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
+subgraph "`gitlab-org/build/omnibus-gitlab-mirror` pipeline"
+    B1[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
     end
 
-subgraph "gitlab-qa-mirror pipeline"
-    A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa` job<br>and post the result  on the original commit tested| A1
+subgraph "`gitlab-org/gitlab-qa-mirror` pipeline"
+    C1>End-to-end jobs run]
     end
 ```
 
-1. Developer triggers a manual action, that can be found in GitLab merge
-   requests. This starts a chain of pipelines in multiple projects.
+1. In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
+   1. Developer triggers the `package-and-qa` manual action (available once the `build-qa-image` and
+      `build-assets-image` jobs are done), that can be found in GitLab merge
+      requests. This starts a chain of pipelines in multiple projects.
+   1. The script being executed triggers a pipeline in
+      [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
+      and polls for the resulting status. We call this a _status attribution_.
 
-1. The script being executed triggers a pipeline in
-   [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
-   and waits for the resulting status. We call this a _status attribution_.
+1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
+   1. Docker image is being built and pushed to its Container Registry.
+   1. Finally, the `Trigger:qa-test` job triggers a new end-to-end pipeline in
+      [`gitlab-org/gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines) and polls for the resulting status.
 
-1. GitLab packages are being built in the [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
-   pipeline. Packages are then pushed to its Container Registry.
+1. In the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror):
+   1. Container for the Docker image stored in the [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) registry is spun-up.
+   1. End-to-end tests are run with the `gitlab-qa` executable, which spin up a container for the end-to-end image from the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) registry.
 
-1. When packages are ready, and available in the registry, a final step in the
-   [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) pipeline, triggers a new
-   GitLab QA pipeline (those with access can view them at `https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines`). It also waits for a resulting status.
-
-1. GitLab QA pulls images from the registry, spins-up containers and runs tests
-   against a test environment that has been just orchestrated by the `gitlab-qa`
-   tool.
-
-1. The result of the GitLab QA pipeline is being
-   propagated upstream, through Omnibus, back to the GitLab merge request.
+1. The result of the [`gitlab-org/gitlab-qa-mirror` pipeline](https://gitlab.com/gitlab-org/gitlab-qa-mirror) is being
+   propagated upstream (through polling from upstream pipelines), through [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror), back to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) merge request.
 
 Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/156)
-about the tests included in each job/scenario that runs in `gitlab-qa-mirror`.
+about the tests included in each job/scenario that runs in `gitlab-org/gitlab-qa-mirror`.
 
 #### With Pipeline for Merged Results
 

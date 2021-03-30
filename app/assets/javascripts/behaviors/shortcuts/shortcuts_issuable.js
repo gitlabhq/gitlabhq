@@ -120,7 +120,7 @@ export default class ShortcutsIssuable extends Shortcuts {
   static copyBranchName() {
     // There are two buttons - one that is shown when the sidebar
     // is expanded, and one that is shown when it's collapsed.
-    const allCopyBtns = Array.from(document.querySelectorAll('.sidebar-source-branch button'));
+    const allCopyBtns = Array.from(document.querySelectorAll('.js-sidebar-source-branch button'));
 
     // Select whichever button is currently visible so that
     // the "Copied" tooltip is shown when a click is simulated.

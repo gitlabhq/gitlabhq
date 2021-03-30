@@ -47,6 +47,7 @@ export default {
           { variant: 'success' },
           { category: 'primary' },
           { 'data-testid': 'submit-commit' },
+          { 'data-qa-selector': 'submit_commit_button' },
         ],
       },
       actionCancel: {

@@ -100,7 +100,7 @@ module Gitlab
           self.class.queue_size_total.observe({ runner_type: runner_type }, size_proc.call.to_f)
         end
 
-        def observe_queue_time(metric)
+        def observe_queue_time(metric, runner_type)
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
           result = yield
@@ -111,9 +111,9 @@ module Gitlab
 
           case metric
           when :process
-            self.class.queue_iteration_duration_seconds.observe({}, seconds.to_f)
+            self.class.queue_iteration_duration_seconds.observe({ runner_type: runner_type }, seconds.to_f)
           when :retrieve
-            self.class.queue_retrieval_duration_seconds.observe({}, seconds.to_f)
+            self.class.queue_retrieval_duration_seconds.observe({ runner_type: runner_type }, seconds.to_f)
           else
             raise ArgumentError unless Rails.env.production?
           end

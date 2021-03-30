@@ -615,10 +615,22 @@ module Ci
             create(:ci_build, pipeline: pipeline, tag_list: %w[non-matching])
           end
 
-          it "observes queue size of only matching jobs" do
+          it 'observes queue size of only matching jobs' do
             # pending_job + 2 x matching ones
             expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe)
               .with({ runner_type: specific_runner.runner_type }, 3)
+
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
+
+          it 'observes queue processing time by the runner type' do
+            expect(Gitlab::Ci::Queue::Metrics.queue_iteration_duration_seconds)
+              .to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, anything)
+
+            expect(Gitlab::Ci::Queue::Metrics.queue_retrieval_duration_seconds)
+              .to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, anything)
 
             expect(execute(specific_runner)).to eq(pending_job)
           end

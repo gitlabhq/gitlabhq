@@ -29,11 +29,9 @@ module Mutations
     end
 
     def ready?(**args)
-      if Gitlab::Database.read_only?
-        raise_resource_not_available_error! ERROR_MESSAGE
-      else
-        true
-      end
+      raise_resource_not_available_error! ERROR_MESSAGE if Gitlab::Database.read_only?
+
+      true
     end
 
     def load_application_object(argument, lookup_as_type, id, context)

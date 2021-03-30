@@ -18,10 +18,10 @@ to use this endpoint.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab Free 13.5.
 
-With Maintainer or higher [permissions](../../user/permissions.md), you can view
-the list of configured alerts integrations by navigating to
-**Settings > Operations** in your project's sidebar menu, and expanding **Alerts** section.
-The list displays the integration name, type, and status (enabled or disabled):
+With Maintainer or higher [permissions](../../user/permissions.md),
+you can view the list of configured alerts integrations by navigating to **Settings > Operations**
+in your project's sidebar menu, and expanding the **Alert integrations** section. The list displays
+the integration name, type, and status (enabled or disabled):
 
 ![Current Integrations](img/integrations_list_v13_5.png)
 
@@ -39,9 +39,11 @@ receive alert payloads in JSON format. You can always
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Operations** in your project.
-1. Expand the **Alerts** section, and in the **Integration** dropdown menu, select **Generic**.
-1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
-   for the webhook configuration.
+1. Expand the **Alert integrations** section, and in the **Select integration type** dropdown menu,
+   select **HTTP Endpoint**.
+1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
+   are available in the **View credentials** tab after you save the integration. You must also input
+   the URL and Authorization Key in your external service.
 
 ### HTTP Endpoints **(PREMIUM)**
 
@@ -54,11 +56,11 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Operations** in your project.
-1. Expand the **Alerts** section.
+1. Expand the **Alert integrations** section.
 1. For each endpoint you want to create:
 
    1. Click the **Add new integration** button.
-   1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
+   1. In the **Select integration type** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.
@@ -85,7 +87,7 @@ correct information in the [Alert list](alerts.md) and the
 [Alert Details page](alerts.md#alert-details-page), map your alert's fields to
 GitLab fields when you [create an HTTP endpoint](#http-endpoints):
 
-![Alert Management List](img/custom_alert_mapping_v13_10.png)
+![Alert Management List](img/custom_alert_mapping_v13_11.png)
 
 ### External Prometheus integration
 
@@ -165,9 +167,11 @@ alert to confirm your integration works properly.
 
 1. Sign in as a user with Developer or greater [permissions](../../user/permissions.md).
 1. Navigate to **Settings > Operations** in your project.
-1. Click **Alerts endpoint** to expand the section.
-1. Enter a sample payload in **Alert test payload** (valid JSON is required).
-1. Click **Test alert payload**.
+1. Click **Alert integrations** to expand the section.
+1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list). 
+1. Select the **Send test alert** tab to open it.
+1. Enter a test payload in the payload field (valid JSON is required).
+1. Click **Send**.
 
 GitLab displays an error or success message, depending on the outcome of your test.
 

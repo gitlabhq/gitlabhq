@@ -35,7 +35,7 @@ module QA
       attribute :target do
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
-          resource.branch_name = project.default_branch
+          resource.branch_name = target_branch
           resource.new_branch = @target_new_branch
           resource.remote_branch = target_branch
         end
@@ -62,6 +62,7 @@ module QA
         @labels = []
         @file_name = "added_file-#{SecureRandom.hex(8)}.txt"
         @file_content = "File Added"
+        @target_branch = "master"
         @target_new_branch = true
         @no_preparation = false
         @wait_for_merge = true

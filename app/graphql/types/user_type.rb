@@ -11,44 +11,72 @@ module Types
 
     expose_permissions Types::PermissionTypes::User
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id,
+          type: GraphQL::ID_TYPE,
+          null: false,
           description: 'ID of the user.'
-    field :bot, GraphQL::BOOLEAN_TYPE, null: false,
+    field :bot,
+          type: GraphQL::BOOLEAN_TYPE,
+          null: false,
           description: 'Indicates if the user is a bot.',
           method: :bot?
-    field :username, GraphQL::STRING_TYPE, null: false,
+    field :username,
+          type: GraphQL::STRING_TYPE,
+          null: false,
           description: 'Username of the user. Unique within this instance of GitLab.'
-    field :name, GraphQL::STRING_TYPE, null: false,
+    field :name,
+          type: GraphQL::STRING_TYPE,
+          null: false,
           description: 'Human-readable name of the user.'
-    field :state, Types::UserStateEnum, null: false,
+    field :state,
+          type: Types::UserStateEnum,
+          null: false,
           description: 'State of the user.'
-    field :email, GraphQL::STRING_TYPE, null: true,
+    field :email,
+          type: GraphQL::STRING_TYPE,
+          null: true,
           description: 'User email.', method: :public_email,
           deprecated: { reason: :renamed, replacement: 'User.publicEmail', milestone: '13.7' }
-    field :public_email, GraphQL::STRING_TYPE, null: true,
+    field :public_email,
+          type: GraphQL::STRING_TYPE,
+          null: true,
           description: "User's public email."
-    field :avatar_url, GraphQL::STRING_TYPE, null: true,
+    field :avatar_url,
+          type: GraphQL::STRING_TYPE,
+          null: true,
           description: "URL of the user's avatar."
-    field :web_url, GraphQL::STRING_TYPE, null: false,
+    field :web_url,
+          type: GraphQL::STRING_TYPE,
+          null: false,
           description: 'Web URL of the user.'
-    field :web_path, GraphQL::STRING_TYPE, null: false,
+    field :web_path,
+          type: GraphQL::STRING_TYPE,
+          null: false,
           description: 'Web path of the user.'
-    field :todos, Types::TodoType.connection_type, null: false,
+    field :todos,
           resolver: Resolvers::TodoResolver,
           description: 'To-do items of the user.'
-    field :group_memberships, Types::GroupMemberType.connection_type, null: true,
+    field :group_memberships,
+          type: Types::GroupMemberType.connection_type,
+          null: true,
           description: 'Group memberships of the user.'
-    field :group_count, GraphQL::INT_TYPE, null: true,
+    field :group_count,
           resolver: Resolvers::Users::GroupCountResolver,
           description: 'Group count for the user.',
           feature_flag: :user_group_counts
-    field :status, Types::UserStatusType, null: true,
-           description: 'User status.'
-    field :location, ::GraphQL::STRING_TYPE, null: true,
+    field :status,
+          type: Types::UserStatusType,
+          null: true,
+          description: 'User status.'
+    field :location,
+          type: ::GraphQL::STRING_TYPE,
+          null: true,
           description: 'The location of the user.'
-    field :project_memberships, Types::ProjectMemberType.connection_type, null: true,
+    field :project_memberships,
+          type: Types::ProjectMemberType.connection_type,
+          null: true,
           description: 'Project memberships of the user.'
-    field :starred_projects, Types::ProjectType.connection_type, null: true,
+    field :starred_projects,
           description: 'Projects starred by the user.',
           resolver: Resolvers::UserStarredProjectsResolver
 
@@ -64,8 +92,6 @@ module Types
           description: 'Merge Requests assigned to the user for review.'
 
     field :snippets,
-          Types::SnippetType.connection_type,
-          null: true,
           description: 'Snippets authored by the user.',
           resolver: Resolvers::Users::SnippetsResolver
     field :callouts,

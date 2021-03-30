@@ -126,7 +126,7 @@ export default {
       const diffLines = this.diffFile[INLINE_DIFF_LINES_KEY];
       let isAdding = false;
 
-      for (let i = 0, diffLinesLength = diffLines.length - 1; i < diffLinesLength; i += 1) {
+      for (let i = 0, diffLinesLength = diffLines.length - 1; i <= diffLinesLength; i += 1) {
         const line = diffLines[i];
 
         if (start.line_code === line.line_code) {

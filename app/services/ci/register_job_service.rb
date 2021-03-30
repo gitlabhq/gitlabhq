@@ -24,7 +24,7 @@ module Ci
     def execute(params = {})
       @metrics.increment_queue_operation(:queue_attempt)
 
-      @metrics.observe_queue_time(:process) do
+      @metrics.observe_queue_time(:process, @runner.runner_type) do
         process_queue(params)
       end
     end
@@ -128,7 +128,7 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def retrieve_queue(queue_query_proc)
-      @metrics.observe_queue_time(:retrieve) do
+      @metrics.observe_queue_time(:retrieve, @runner.runner_type) do
         queue_query_proc.call
       end
     end

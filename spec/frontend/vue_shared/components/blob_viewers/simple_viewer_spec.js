@@ -1,13 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 describe('Blob Simple Viewer component', () => {
   let wrapper;
   const contentMock = `<span id="LC1">First</span>\n<span id="LC2">Second</span>\n<span id="LC3">Third</span>`;
   const blobHash = 'foo-bar';
 
-  function createComponent(content = contentMock) {
+  function createComponent(content = contentMock, isRawContent = false) {
     wrapper = shallowMount(SimpleViewer, {
       provide: {
         blobHash,
@@ -15,6 +16,8 @@ describe('Blob Simple Viewer component', () => {
       propsData: {
         content,
         type: 'text',
+        fileName: 'test.js',
+        isRawContent,
       },
     });
   }
@@ -81,6 +84,20 @@ describe('Blob Simple Viewer component', () => {
         expect(currentlyHighlighted.classes()).not.toContain(HIGHLIGHT_CLASS_NAME);
         expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
       });
+    });
+  });
+
+  describe('raw content', () => {
+    const findEditorLite = () => wrapper.find(EditorLite);
+    const isRawContent = true;
+
+    it('uses the Editor Lite component in readonly mode when viewing raw content', () => {
+      createComponent('raw content', isRawContent);
+
+      expect(findEditorLite().exists()).toBe(true);
+      expect(findEditorLite().props('value')).toBe('raw content');
+      expect(findEditorLite().props('fileName')).toBe('test.js');
+      expect(findEditorLite().props('editorOptions')).toEqual({ readOnly: true });
     });
   });
 });

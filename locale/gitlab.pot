@@ -1074,6 +1074,9 @@ msgstr[1] ""
 msgid "+%{approvers} more approvers"
 msgstr ""
 
+msgid "+%{extra} more"
+msgstr ""
+
 msgid "+%{more_assignees_count}"
 msgstr ""
 
@@ -20546,6 +20549,9 @@ msgstr ""
 msgid "NetworkPolicy|Search by policy name"
 msgstr ""
 
+msgid "NetworkPolicy|Status"
+msgstr ""
+
 msgid "Never"
 msgstr ""
 
@@ -25470,7 +25476,7 @@ msgstr ""
 msgid "Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
 msgstr ""
 
-msgid "Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
+msgid "Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0.0%{codeEnd}, %{codeStart}v2.1.0-pre%{codeEnd}."
 msgstr ""
 
 msgid "Releases documentation"
@@ -27054,6 +27060,9 @@ msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}More
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for vulnerabilities of Critical, High, or Unknown severity. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
 msgstr ""
 
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
@@ -31817,6 +31826,15 @@ msgid "To Do"
 msgstr ""
 
 msgid "To GitLab"
+msgstr ""
+
+msgid "To accept this invitation, create an account or sign in."
+msgstr ""
+
+msgid "To accept this invitation, sign in or create an account."
+msgstr ""
+
+msgid "To accept this invitation, sign in."
 msgstr ""
 
 msgid "To access this domain create a new DNS record"

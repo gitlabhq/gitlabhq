@@ -55,7 +55,10 @@ module Types
     field :container_repository, Types::ContainerRepositoryDetailsType,
           null: true,
           description: 'Find a container repository.' do
-            argument :id, ::Types::GlobalIDType[::ContainerRepository], required: true, description: 'The global ID of the container repository.'
+            argument :id,
+                     type: ::Types::GlobalIDType[::ContainerRepository],
+                     required: true,
+                     description: 'The global ID of the container repository.'
           end
 
     field :package,
@@ -72,9 +75,7 @@ module Types
           description: 'Find users.',
           resolver: Resolvers::UsersResolver
 
-    field :echo, GraphQL::STRING_TYPE, null: false,
-          description: 'Text to echo back.',
-          resolver: Resolvers::EchoResolver
+    field :echo, resolver: Resolvers::EchoResolver
 
     field :issue, Types::IssueType,
           null: true,
@@ -102,18 +103,10 @@ module Types
           null: true,
           description: 'CI related settings that apply to the entire instance.'
 
-    field :runner_platforms, Types::Ci::RunnerPlatformType.connection_type,
-      null: true, description: 'Supported runner platforms.',
-      resolver: Resolvers::Ci::RunnerPlatformsResolver
+    field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver
+    field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver
 
-    field :runner_setup, Types::Ci::RunnerSetupType, null: true,
-      description: 'Get runner setup instructions.',
-      resolver: Resolvers::Ci::RunnerSetupResolver
-
-    field :ci_config, Types::Ci::Config::ConfigType, null: true,
-      description: 'Get linted and processed contents of a CI config. Should not be requested more than once per request.',
-      resolver: Resolvers::Ci::ConfigResolver,
-      complexity: 126 # AUTHENTICATED_COMPLEXITY / 2 + 1
+    field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_COMPLEXITY / 2 + 1
 
     def design_management
       DesignManagementObject.new(nil)

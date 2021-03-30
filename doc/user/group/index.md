@@ -653,3 +653,15 @@ The group's new subgroups have push rules set for them based on either:
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
+
+## Troubleshooting
+
+### Verify if access is blocked by IP restriction
+
+If a user sees a 404 when they would normally expect access, and the problem is limited to a specific group, search the `auth.log` rails log for one or more of the following:
+
+- `json.message`: `'Attempting to access IP restricted group'`
+- `json.allowed`: `false`
+
+In viewing the log entries, compare the `remote.ip` with the list of
+[allowed IPs](#restrict-group-access-by-ip-address) for the group.

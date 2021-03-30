@@ -1,4 +1,3 @@
-import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -8,18 +7,21 @@ import { IssuableType } from '~/issue_show/constants';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CopyableField from '~/vue_shared/components/sidebar/copyable_field.vue';
 import { issueReferenceResponse } from '../../mock_data';
 
 describe('Sidebar Reference Widget', () => {
   let wrapper;
   let fakeApollo;
-  const referenceText = 'reference';
+
+  const mockReferenceValue = 'reference-1234';
+
+  const findCopyableField = () => wrapper.findComponent(CopyableField);
 
   const createComponent = ({
-    issuableType,
+    issuableType = IssuableType.Issue,
     referenceQuery = issueReferenceQuery,
-    referenceQueryHandler = jest.fn().mockResolvedValue(issueReferenceResponse(referenceText)),
+    referenceQueryHandler = jest.fn().mockResolvedValue(issueReferenceResponse(mockReferenceValue)),
   } = {}) => {
     Vue.use(VueApollo);
 
@@ -39,14 +41,20 @@ describe('Sidebar Reference Widget', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
+  });
+
+  describe('when reference is loading', () => {
+    it('sets CopyableField `is-loading` prop to `true`', () => {
+      createComponent({ referenceQueryHandler: jest.fn().mockReturnValue(new Promise(() => {})) });
+      expect(findCopyableField().props('isLoading')).toBe(true);
+    });
   });
 
   describe.each([
     [IssuableType.Issue, issueReferenceQuery],
     [IssuableType.MergeRequest, mergeRequestReferenceQuery],
   ])('when issuableType is %s', (issuableType, referenceQuery) => {
-    it('displays the reference text', async () => {
+    it('sets CopyableField `value` prop to reference value', async () => {
       createComponent({
         issuableType,
         referenceQuery,
@@ -54,40 +62,32 @@ describe('Sidebar Reference Widget', () => {
 
       await waitForPromises();
 
-      expect(wrapper.text()).toContain(referenceText);
+      expect(findCopyableField().props('value')).toBe(mockReferenceValue);
     });
 
-    it('displays loading icon while fetching and hides clipboard icon', async () => {
-      createComponent({
-        issuableType,
-        referenceQuery,
+    describe('when error occurs', () => {
+      it('calls createFlash with correct parameters', async () => {
+        const mockError = new Error('mayday');
+
+        createComponent({
+          issuableType,
+          referenceQuery,
+          referenceQueryHandler: jest.fn().mockRejectedValue(mockError),
+        });
+
+        await waitForPromises();
+
+        const [
+          [
+            {
+              message,
+              error: { networkError },
+            },
+          ],
+        ] = wrapper.emitted('fetch-error');
+        expect(message).toBe('An error occurred while fetching reference');
+        expect(networkError).toEqual(mockError);
       });
-
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(ClipboardButton).exists()).toBe(false);
-    });
-
-    it('calls createFlash with correct parameters', async () => {
-      const mockError = new Error('mayday');
-
-      createComponent({
-        issuableType,
-        referenceQuery,
-        referenceQueryHandler: jest.fn().mockRejectedValue(mockError),
-      });
-
-      await waitForPromises();
-
-      const [
-        [
-          {
-            message,
-            error: { networkError },
-          },
-        ],
-      ] = wrapper.emitted('fetch-error');
-      expect(message).toBe('An error occurred while fetching reference');
-      expect(networkError).toEqual(mockError);
     });
   });
 });

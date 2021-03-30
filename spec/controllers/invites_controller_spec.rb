@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe InvitesController do
   let_it_be(:user) { create(:user) }
-  let(:member) { create(:project_member, :invited, invite_email: user.email) }
+  let_it_be(:member, reload: true) { create(:project_member, :invited, invite_email: user.email) }
   let(:raw_invite_token) { member.raw_invite_token }
   let(:project_members) { member.source.users }
   let(:md5_member_global_id) { Digest::MD5.hexdigest(member.to_global_id.to_s) }
@@ -77,10 +77,83 @@ RSpec.describe InvitesController do
 
     context 'when not logged in' do
       context 'when inviter is a member' do
-        it 'is redirected to a new session with invite email param' do
-          request
+        context 'when instance allows sign up' do
+          it 'indicates an account can be created in notice' do
+            request
 
-          expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+            expect(flash[:notice]).to include('or create an account')
+          end
+
+          context 'when user exists with the invited email' do
+            it 'is redirected to a new session with invite email param' do
+              request
+
+              expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+            end
+          end
+
+          context 'when user exists with the invited email as secondary email' do
+            before do
+              secondary_email = create(:email, user: user, email: 'foo@example.com')
+              member.update!(invite_email: secondary_email.email)
+            end
+
+            it 'is redirected to a new session with invite email param' do
+              request
+
+              expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+            end
+          end
+
+          context 'when user does not exist with the invited email' do
+            before do
+              member.update!(invite_email: 'bogus_email@example.com')
+            end
+
+            it 'indicates an account can be created in notice' do
+              request
+
+              expect(flash[:notice]).to include('create an account or sign in')
+            end
+
+            it 'is redirected to a new registration with invite email param' do
+              request
+
+              expect(response).to redirect_to(new_user_registration_path(invite_email: member.invite_email))
+            end
+          end
+        end
+
+        context 'when instance does not allow sign up' do
+          before do
+            stub_application_setting(allow_signup?: false)
+          end
+
+          it 'does not indicate an account can be created in notice' do
+            request
+
+            expect(flash[:notice]).not_to include('or create an account')
+          end
+
+          context 'when user exists with the invited email' do
+            it 'is redirected to a new session with invite email param' do
+              request
+
+              expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+            end
+          end
+
+          context 'when user does not exist with the invited email' do
+            before do
+              member.update!(invite_email: 'bogus_email@example.com')
+            end
+
+            it 'is redirected to a new session with invite email param' do
+              request
+
+              expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+            end
+          end
         end
       end
 

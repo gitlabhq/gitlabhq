@@ -66,6 +66,10 @@ The following resources are migrated to the target instance:
   - due date
   - created at
   - updated at
+- Badges ([Introduced in 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431))
+  - name
+  - link URL
+  - image URL
 
 Any other items are **not** migrated.
 

@@ -36,6 +36,12 @@ export default {
       blobHash: uniqueId(),
     };
   },
+  props: {
+    path: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       projectPath: '',
@@ -85,6 +91,7 @@ export default {
       <blob-content
         :blob="blobInfo"
         :content="blobInfo.rawBlob"
+        :is-raw-content="true"
         :active-viewer="viewer"
         :loading="false"
       />

@@ -20,7 +20,7 @@ RSpec.shared_examples 'User views empty wiki' do
     end
   end
 
-  shared_examples 'empty wiki message' do |writable: false, issuable: false, confluence: false|
+  shared_examples 'empty wiki message' do |writable: false, issuable: false, confluence: false, expect_button: true|
     # This mirrors the logic in:
     # - app/views/shared/empty_states/_wikis.html.haml
     # - WikiHelper#wiki_empty_state_messages
@@ -37,7 +37,7 @@ RSpec.shared_examples 'User views empty wiki' do
       if issuable && !writable
         expect(element).to have_content("improve the wiki for this #{container_name}")
         expect(element).to have_link("issue tracker", href: project_issues_path(project))
-        expect(element).to have_link("Suggest wiki improvement", href: new_project_issue_path(project))
+        expect(element.has_link?("Suggest wiki improvement", href: new_project_issue_path(project))).to be(expect_button)
       else
         expect(element).not_to have_content("improve the wiki for this #{container_name}")
         expect(element).not_to have_link("issue tracker")

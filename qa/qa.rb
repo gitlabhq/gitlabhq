@@ -500,6 +500,7 @@ module QA
       autoload :Wiki, 'qa/page/component/wiki'
       autoload :WikiSidebar, 'qa/page/component/wiki_sidebar'
       autoload :WikiPageForm, 'qa/page/component/wiki_page_form'
+      autoload :CommitModal, 'qa/page/component/commit_modal'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

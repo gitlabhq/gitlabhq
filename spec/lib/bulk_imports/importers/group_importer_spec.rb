@@ -23,6 +23,7 @@ RSpec.describe BulkImports::Importers::GroupImporter do
       expect_to_run_pipeline BulkImports::Groups::Pipelines::MembersPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::LabelsPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::MilestonesPipeline, context: context
+      expect_to_run_pipeline BulkImports::Groups::Pipelines::BadgesPipeline, context: context
 
       if Gitlab.ee?
         expect_to_run_pipeline('EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize, context: context)

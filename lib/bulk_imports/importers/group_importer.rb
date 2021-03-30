@@ -34,7 +34,8 @@ module BulkImports
           BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
           BulkImports::Groups::Pipelines::MembersPipeline,
           BulkImports::Groups::Pipelines::LabelsPipeline,
-          BulkImports::Groups::Pipelines::MilestonesPipeline
+          BulkImports::Groups::Pipelines::MilestonesPipeline,
+          BulkImports::Groups::Pipelines::BadgesPipeline
         ]
       end
     end

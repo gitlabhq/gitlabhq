@@ -67,7 +67,7 @@ export default {
   <div>
     <clipboard-button
       v-if="!isLoading"
-      css-class="sidebar-collapsed-icon dont-change-state"
+      css-class="sidebar-collapsed-icon dont-change-state gl-rounded-0! gl-hover-bg-transparent"
       v-bind="clipboardProps"
     />
 

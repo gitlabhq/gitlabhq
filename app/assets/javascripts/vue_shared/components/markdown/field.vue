@@ -168,6 +168,9 @@ export default {
         false,
       );
     },
+    suggestionsStartIndex() {
+      return Math.max(this.lines.length - 1, 0);
+    },
   },
   watch: {
     isSubmitting(isSubmitting) {
@@ -260,7 +263,7 @@ export default {
       :line-content="lineContent"
       :can-suggest="canSuggest"
       :show-suggest-popover="showSuggestPopover"
-      :suggestion-start-index="lines.length - 1"
+      :suggestion-start-index="suggestionsStartIndex"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
