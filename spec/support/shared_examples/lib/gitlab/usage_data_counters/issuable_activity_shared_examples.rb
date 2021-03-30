@@ -14,10 +14,6 @@ RSpec.shared_examples 'a daily tracked issuable event' do
       expect(track_action(author: user1)).to be_truthy
       expect(track_action(author: user1)).to be_truthy
       expect(track_action(author: user2)).to be_truthy
-      expect(track_action(author: user3, time: time - 3.days)).to be_truthy
-
-      expect(count_unique(date_from: time, date_to: time)).to eq(2)
-      expect(count_unique(date_from: time - 5.days, date_to: 1.day.since(time))).to eq(3)
     end
   end
 

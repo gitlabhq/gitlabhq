@@ -10,7 +10,7 @@ RSpec.describe 'User views services' do
 
     expect(page).to have_content('Integrations')
     expect(page).to have_content('Campfire')
-    expect(page).to have_content('HipChat')
+    expect(page).to have_content('Jira')
     expect(page).to have_content('Assembla')
     expect(page).to have_content('Pushover')
     expect(page).to have_content('Atlassian Bamboo')

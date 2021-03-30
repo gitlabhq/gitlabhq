@@ -649,10 +649,12 @@ RSpec.describe Packages::Package, type: :model do
     describe '.displayable' do
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
+      let_it_be(:error_package) { create(:maven_package, :error) }
 
       subject { described_class.displayable }
 
-      it 'does not include hidden packages', :aggregate_failures do
+      it 'does not include non-displayable packages', :aggregate_failures do
+        is_expected.to include(error_package)
         is_expected.not_to include(hidden_package)
         is_expected.not_to include(processing_package)
       end

@@ -29,7 +29,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     >
       <markdown-header-stub
         linecontent=""
-        suggestionstartindex="0"
+        suggestionstartindex="-1"
       />
        
       <div

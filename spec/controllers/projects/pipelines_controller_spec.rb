@@ -13,7 +13,7 @@ RSpec.describe Projects::PipelinesController do
     allow(Sidekiq.logger).to receive(:info)
     stub_not_protect_default_branch
     project.add_developer(user)
-    project.project_feature.update(builds_access_level: feature)
+    project.project_feature.update!(builds_access_level: feature)
 
     sign_in(user)
   end
@@ -702,7 +702,7 @@ RSpec.describe Projects::PipelinesController do
 
     before do
       project.add_developer(user)
-      project.project_feature.update(builds_access_level: feature)
+      project.project_feature.update!(builds_access_level: feature)
     end
 
     context 'with a valid .gitlab-ci.yml file' do
@@ -777,7 +777,7 @@ RSpec.describe Projects::PipelinesController do
 
     before do
       project.add_developer(user)
-      project.project_feature.update(builds_access_level: feature)
+      project.project_feature.update!(builds_access_level: feature)
     end
 
     context 'with a valid .gitlab-ci.yml file' do

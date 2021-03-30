@@ -5,6 +5,8 @@ class Packages::Package < ApplicationRecord
   include UsageStatistics
   include Gitlab::Utils::StrongMemoize
 
+  DISPLAYABLE_STATUSES = [:default, :error].freeze
+
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
@@ -70,7 +72,7 @@ class Packages::Package < ApplicationRecord
                        composer: 6, generic: 7, golang: 8, debian: 9,
                        rubygems: 10 }
 
-  enum status: { default: 0, hidden: 1, processing: 2 }
+  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
@@ -80,7 +82,7 @@ class Packages::Package < ApplicationRecord
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :with_status, ->(status) { where(status: status) }
-  scope :displayable, -> { with_status(:default) }
+  scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }

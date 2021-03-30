@@ -34,120 +34,120 @@ module Gitlab
       ISSUE_COMMENT_REMOVED = 'g_project_management_issue_comment_removed'
 
       class << self
-        def track_issue_created_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_CREATED, author, time)
+        def track_issue_created_action(author:)
+          track_unique_action(ISSUE_CREATED, author)
         end
 
-        def track_issue_title_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_TITLE_CHANGED, author, time)
+        def track_issue_title_changed_action(author:)
+          track_unique_action(ISSUE_TITLE_CHANGED, author)
         end
 
-        def track_issue_description_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_DESCRIPTION_CHANGED, author, time)
+        def track_issue_description_changed_action(author:)
+          track_unique_action(ISSUE_DESCRIPTION_CHANGED, author)
         end
 
-        def track_issue_assignee_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_ASSIGNEE_CHANGED, author, time)
+        def track_issue_assignee_changed_action(author:)
+          track_unique_action(ISSUE_ASSIGNEE_CHANGED, author)
         end
 
-        def track_issue_made_confidential_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_MADE_CONFIDENTIAL, author, time)
+        def track_issue_made_confidential_action(author:)
+          track_unique_action(ISSUE_MADE_CONFIDENTIAL, author)
         end
 
-        def track_issue_made_visible_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_MADE_VISIBLE, author, time)
+        def track_issue_made_visible_action(author:)
+          track_unique_action(ISSUE_MADE_VISIBLE, author)
         end
 
-        def track_issue_closed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_CLOSED, author, time)
+        def track_issue_closed_action(author:)
+          track_unique_action(ISSUE_CLOSED, author)
         end
 
-        def track_issue_reopened_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_REOPENED, author, time)
+        def track_issue_reopened_action(author:)
+          track_unique_action(ISSUE_REOPENED, author)
         end
 
-        def track_issue_label_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_LABEL_CHANGED, author, time)
+        def track_issue_label_changed_action(author:)
+          track_unique_action(ISSUE_LABEL_CHANGED, author)
         end
 
-        def track_issue_milestone_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_MILESTONE_CHANGED, author, time)
+        def track_issue_milestone_changed_action(author:)
+          track_unique_action(ISSUE_MILESTONE_CHANGED, author)
         end
 
-        def track_issue_cross_referenced_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_CROSS_REFERENCED, author, time)
+        def track_issue_cross_referenced_action(author:)
+          track_unique_action(ISSUE_CROSS_REFERENCED, author)
         end
 
-        def track_issue_moved_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_MOVED, author, time)
+        def track_issue_moved_action(author:)
+          track_unique_action(ISSUE_MOVED, author)
         end
 
-        def track_issue_related_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_RELATED, author, time)
+        def track_issue_related_action(author:)
+          track_unique_action(ISSUE_RELATED, author)
         end
 
-        def track_issue_unrelated_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_UNRELATED, author, time)
+        def track_issue_unrelated_action(author:)
+          track_unique_action(ISSUE_UNRELATED, author)
         end
 
-        def track_issue_marked_as_duplicate_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_MARKED_AS_DUPLICATE, author, time)
+        def track_issue_marked_as_duplicate_action(author:)
+          track_unique_action(ISSUE_MARKED_AS_DUPLICATE, author)
         end
 
-        def track_issue_locked_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_LOCKED, author, time)
+        def track_issue_locked_action(author:)
+          track_unique_action(ISSUE_LOCKED, author)
         end
 
-        def track_issue_unlocked_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_UNLOCKED, author, time)
+        def track_issue_unlocked_action(author:)
+          track_unique_action(ISSUE_UNLOCKED, author)
         end
 
-        def track_issue_designs_added_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_DESIGNS_ADDED, author, time)
+        def track_issue_designs_added_action(author:)
+          track_unique_action(ISSUE_DESIGNS_ADDED, author)
         end
 
-        def track_issue_designs_modified_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_DESIGNS_MODIFIED, author, time)
+        def track_issue_designs_modified_action(author:)
+          track_unique_action(ISSUE_DESIGNS_MODIFIED, author)
         end
 
-        def track_issue_designs_removed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_DESIGNS_REMOVED, author, time)
+        def track_issue_designs_removed_action(author:)
+          track_unique_action(ISSUE_DESIGNS_REMOVED, author)
         end
 
-        def track_issue_due_date_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_DUE_DATE_CHANGED, author, time)
+        def track_issue_due_date_changed_action(author:)
+          track_unique_action(ISSUE_DUE_DATE_CHANGED, author)
         end
 
-        def track_issue_time_estimate_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_TIME_ESTIMATE_CHANGED, author, time)
+        def track_issue_time_estimate_changed_action(author:)
+          track_unique_action(ISSUE_TIME_ESTIMATE_CHANGED, author)
         end
 
-        def track_issue_time_spent_changed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_TIME_SPENT_CHANGED, author, time)
+        def track_issue_time_spent_changed_action(author:)
+          track_unique_action(ISSUE_TIME_SPENT_CHANGED, author)
         end
 
-        def track_issue_comment_added_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_COMMENT_ADDED, author, time)
+        def track_issue_comment_added_action(author:)
+          track_unique_action(ISSUE_COMMENT_ADDED, author)
         end
 
-        def track_issue_comment_edited_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_COMMENT_EDITED, author, time)
+        def track_issue_comment_edited_action(author:)
+          track_unique_action(ISSUE_COMMENT_EDITED, author)
         end
 
-        def track_issue_comment_removed_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_COMMENT_REMOVED, author, time)
+        def track_issue_comment_removed_action(author:)
+          track_unique_action(ISSUE_COMMENT_REMOVED, author)
         end
 
-        def track_issue_cloned_action(author:, time: Time.zone.now)
-          track_unique_action(ISSUE_CLONED, author, time)
+        def track_issue_cloned_action(author:)
+          track_unique_action(ISSUE_CLONED, author)
         end
 
         private
 
-        def track_unique_action(action, author, time)
+        def track_unique_action(action, author)
           return unless author
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id, time: time)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
         end
       end
     end

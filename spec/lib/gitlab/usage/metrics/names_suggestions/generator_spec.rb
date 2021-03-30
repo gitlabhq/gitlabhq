@@ -44,7 +44,10 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
           #   ::Deployment.arel_table[:environment_id]
           # )
           let(:key_path) { 'counts.ingress_modsecurity_logging' }
-          let(:name_suggestion) { /count_distinct_environment_id_from_<adjective describing\: '\(clusters_applications_ingress\.modsecurity_enabled = TRUE AND clusters_applications_ingress\.modsecurity_mode = \d+ AND clusters.enabled = TRUE AND deployments.status = \d+\)'>_deployments_<with>_clusters_<having>_clusters_applications_ingress/ }
+          let(:name_suggestion) do
+            constrains = /'\(clusters_applications_ingress\.modsecurity_enabled = TRUE AND clusters_applications_ingress\.modsecurity_mode = \d+ AND clusters.enabled = TRUE AND deployments.status = \d+\)'/
+            /count_distinct_environment_id_from_<adjective describing\: #{constrains}>_deployments_<with>_<adjective describing\: #{constrains}>_clusters_<having>_<adjective describing\: #{constrains}>_clusters_applications_ingress/
+          end
         end
       end
 

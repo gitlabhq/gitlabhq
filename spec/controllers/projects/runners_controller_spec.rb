@@ -46,7 +46,7 @@ RSpec.describe Projects::RunnersController do
 
   describe '#resume' do
     it 'marks the runner as active and ticks the queue' do
-      runner.update(active: false)
+      runner.update!(active: false)
 
       expect do
         post :resume, params: params
@@ -61,7 +61,7 @@ RSpec.describe Projects::RunnersController do
 
   describe '#pause' do
     it 'marks the runner as inactive and ticks the queue' do
-      runner.update(active: true)
+      runner.update!(active: true)
 
       expect do
         post :pause, params: params

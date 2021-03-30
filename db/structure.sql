@@ -23090,6 +23090,8 @@ CREATE INDEX index_merge_requests_on_target_project_id_and_iid_and_state_id ON m
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_iid_jira_title ON merge_requests USING btree (target_project_id, iid) WHERE ((title)::text ~ '[A-Z][A-Z_0-9]+-\d+'::text);
 
+CREATE INDEX index_merge_requests_on_target_project_id_and_source_branch ON merge_requests USING btree (target_project_id, source_branch);
+
 CREATE INDEX index_merge_requests_on_target_project_id_and_squash_commit_sha ON merge_requests USING btree (target_project_id, squash_commit_sha);
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_target_branch ON merge_requests USING btree (target_project_id, target_branch) WHERE ((state_id = 1) AND (merge_when_pipeline_succeeds = true));

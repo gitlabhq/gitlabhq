@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Kubernetes Agent **(PREMIUM SELF)**
+# GitLab Kubernetes Agent **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - [In GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300960), KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.

@@ -62,7 +62,7 @@ RSpec.describe Projects::Releases::EvidencesController do
 
       context 'when the release was created before evidence existed' do
         before do
-          evidence.destroy
+          evidence.destroy!
         end
 
         it_behaves_like 'not found'

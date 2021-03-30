@@ -260,7 +260,7 @@ export default {
       :line-content="lineContent"
       :can-suggest="canSuggest"
       :show-suggest-popover="showSuggestPopover"
-      :suggestion-start-index="lines.length"
+      :suggestion-start-index="lines.length - 1"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"

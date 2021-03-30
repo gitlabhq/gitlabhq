@@ -56,7 +56,7 @@ module Gitlab
 
       class << self
         def paths
-          @paths ||= [Rails.root.join('config', 'metrics', '**', '*.yml')]
+          @paths ||= [Rails.root.join('config', 'metrics', '[^agg]*', '*.yml')]
         end
 
         def definitions(skip_validation: false)

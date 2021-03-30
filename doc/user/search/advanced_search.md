@@ -91,7 +91,7 @@ Examples:
 
 ### Excluding filters
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31684) in GitLab Starter 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31684) in GitLab 13.3.
 
 Filters can be inverted to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
 

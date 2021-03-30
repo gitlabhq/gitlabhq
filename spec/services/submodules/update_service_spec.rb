@@ -90,7 +90,7 @@ RSpec.describe Submodules::UpdateService do
             let(:submodule) { '../six' }
 
             it_behaves_like 'returns error result' do
-              let(:error_message) { 'Invalid parameters' }
+              let(:error_message) { 'Invalid submodule path' }
             end
           end
         end

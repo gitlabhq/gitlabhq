@@ -12,10 +12,10 @@ RSpec.describe 'Disable individual triggers', :js do
   end
 
   context 'service has multiple supported events' do
-    let(:service_name) { 'HipChat' }
+    let(:service_name) { 'Jenkins CI' }
 
     it 'shows trigger checkboxes' do
-      event_count = HipchatService.supported_events.count
+      event_count = JenkinsService.supported_events.count
 
       expect(page).to have_content "Trigger"
       expect(page).to have_css(checkbox_selector, visible: :all, count: event_count)

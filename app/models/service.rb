@@ -12,7 +12,7 @@ class Service < ApplicationRecord
 
   SERVICE_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
-    drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat hipchat irker jira
+    drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze

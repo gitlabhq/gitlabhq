@@ -44,7 +44,7 @@ RSpec.describe Projects::IssuesController do
         let_it_be(:issue) { create(:issue, project: new_project) }
 
         before do
-          project.route.destroy
+          project.route.destroy!
           new_project.redirect_routes.create!(path: project.full_path)
           new_project.add_developer(user)
         end
@@ -711,7 +711,7 @@ RSpec.describe Projects::IssuesController do
 
         issue.update!(last_edited_by: deleted_user, last_edited_at: Time.current)
 
-        deleted_user.destroy
+        deleted_user.destroy!
         sign_in(user)
       end
 
@@ -1064,10 +1064,10 @@ RSpec.describe Projects::IssuesController do
         labels = create_list(:label, 10, project: project).map(&:to_reference)
         issue = create(:issue, project: project, description: 'Test issue')
 
-        control_count = ActiveRecord::QueryRecorder.new { issue.update(description: [issue.description, label].join(' ')) }.count
+        control_count = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }.count
 
         # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
-        expect { issue.update(description: [issue.description, labels].join(' ')) }
+        expect { issue.update!(description: [issue.description, labels].join(' ')) }
           .not_to exceed_query_limit(control_count + 2 * labels.count)
       end
 
@@ -1923,7 +1923,7 @@ RSpec.describe Projects::IssuesController do
       before do
         sign_in(user)
 
-        project.route.destroy
+        project.route.destroy!
         new_project.redirect_routes.create!(path: project.full_path)
         new_project.add_developer(user)
       end

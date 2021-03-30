@@ -47,7 +47,7 @@ RSpec.describe Projects::ImportsController do
 
         context 'when import is in progress' do
           before do
-            import_state.update(status: :started)
+            import_state.update!(status: :started)
           end
 
           it 'renders template' do
@@ -65,7 +65,7 @@ RSpec.describe Projects::ImportsController do
 
         context 'when import failed' do
           before do
-            import_state.update(status: :failed)
+            import_state.update!(status: :failed)
           end
 
           it 'redirects to new_namespace_project_import_path' do
@@ -77,7 +77,7 @@ RSpec.describe Projects::ImportsController do
 
         context 'when import finished' do
           before do
-            import_state.update(status: :finished)
+            import_state.update!(status: :finished)
           end
 
           context 'when project is a fork' do
@@ -126,7 +126,7 @@ RSpec.describe Projects::ImportsController do
 
         context 'when import never happened' do
           before do
-            import_state.update(status: :none)
+            import_state.update!(status: :none)
           end
 
           it 'redirects to namespace_project_path' do

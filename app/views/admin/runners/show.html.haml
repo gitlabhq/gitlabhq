@@ -1,19 +1,11 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
-= content_for :title do
-  %h3.project-title
-    Runner ##{@runner.id}
-    .float-right
-      - if @runner.instance_type?
-        %span.runner-state.runner-state-shared
-          Shared
-      - else
-        %span.runner-state.runner-state-specific
-          Specific
-
 - page_title @runner.short_sha
-- add_to_breadcrumbs _("Runners"), admin_runners_path
-- breadcrumb_title "##{@runner.id}"
+- add_to_breadcrumbs _('Runners'), admin_runners_path
+- breadcrumb_title page_title
+
+%h2.page-title
+  = sprintf(s_('Runners|Runner #%{runner_id}'), {runner_id: @runner.id})
 
 - if @runner.instance_type?
   .bs-callout.bs-callout-success

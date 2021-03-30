@@ -26,7 +26,7 @@ RSpec.describe Projects::CycleAnalytics::EventsController do
       let(:issue) { create(:issue, project: project, created_at: 9.days.ago) }
 
       before do
-        issue.update(milestone: milestone)
+        issue.update!(milestone: milestone)
       end
 
       it 'is not empty' do

@@ -65,7 +65,7 @@ RSpec.describe Projects::LabelsController do
       end
 
       it 'does not include group labels when project does not belong to a group' do
-        project.update(namespace: create(:namespace))
+        project.update!(namespace: create(:namespace))
 
         list_labels
 
@@ -221,7 +221,7 @@ RSpec.describe Projects::LabelsController do
       end
 
       context 'when requesting a redirected path' do
-        let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+        let_it_be(:redirect_route) { project.redirect_routes.create!(path: project.full_path + 'old') }
 
         it 'redirects to the canonical path' do
           get :index, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }
@@ -267,7 +267,7 @@ RSpec.describe Projects::LabelsController do
     end
 
     context 'when requesting a redirected path' do
-      let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+      let_it_be(:redirect_route) { project.redirect_routes.create!(path: project.full_path + 'old') }
 
       it 'returns not found' do
         post :generate, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }

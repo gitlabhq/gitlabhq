@@ -26554,6 +26554,9 @@ msgstr ""
 msgid "Runners|Revision"
 msgstr ""
 
+msgid "Runners|Runner #%{runner_id}"
+msgstr ""
+
 msgid "Runners|Shared"
 msgstr ""
 
@@ -30690,6 +30693,9 @@ msgstr ""
 msgid "There was a problem fetching branches."
 msgstr ""
 
+msgid "There was a problem fetching emojis."
+msgstr ""
+
 msgid "There was a problem fetching groups."
 msgstr ""
 
@@ -32190,7 +32196,7 @@ msgstr ""
 msgid "Trials|You can apply your trial to a new group or an existing group."
 msgstr ""
 
-msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
+msgid "Trials|You won't get a free trial right now but you can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
 msgstr ""
 
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"

@@ -448,7 +448,7 @@ RSpec.describe Projects::ArtifactsController do
 
       context 'with regular branch' do
         before do
-          pipeline.update(ref: 'master',
+          pipeline.update!(ref: 'master',
                           sha: project.commit('master').sha)
 
           get :latest_succeeded, params: params_from_ref('master')
@@ -459,7 +459,7 @@ RSpec.describe Projects::ArtifactsController do
 
       context 'with branch name containing slash' do
         before do
-          pipeline.update(ref: 'improve/awesome',
+          pipeline.update!(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
 
           get :latest_succeeded, params: params_from_ref('improve/awesome')
@@ -470,7 +470,7 @@ RSpec.describe Projects::ArtifactsController do
 
       context 'with branch name and path containing slashes' do
         before do
-          pipeline.update(ref: 'improve/awesome',
+          pipeline.update!(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
 
           get :latest_succeeded, params: params_from_ref('improve/awesome', job.name, 'file/README.md')

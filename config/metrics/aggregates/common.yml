@@ -1,4 +1,4 @@
-# Aggregated metrics that include EE only event names within `events:` attribute have to be defined at ee/lib/gitlab/usage_data_counters/aggregated_metrics/common.yml
+# Aggregated metrics that include EE only event names within `events:` attribute have to be defined at ee/config/metrics/aggregates/common.yml
 # instead of this file.
 #- name: unique name of aggregated metric
 #  operator: aggregation operator. Valid values are:

@@ -63,7 +63,7 @@ or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc a
 
 ## Integrations
 
-Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, and Slack are available as [Integrations](../user/project/integrations/overview.md).
+Integration with services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack are available as [Integrations](../user/project/integrations/overview.md).
 
 ## Troubleshooting
 

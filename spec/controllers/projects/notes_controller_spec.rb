@@ -334,7 +334,7 @@ RSpec.describe Projects::NotesController do
 
     before do
       project.update_attribute(:visibility_level, project_visibility)
-      project.project_feature.update(merge_requests_access_level: merge_requests_access_level)
+      project.project_feature.update!(merge_requests_access_level: merge_requests_access_level)
       sign_in(user)
     end
 
@@ -917,7 +917,7 @@ RSpec.describe Projects::NotesController do
 
         context "when the note is not resolvable" do
           before do
-            note.update(system: true)
+            note.update!(system: true)
           end
 
           it "returns status 404" do
@@ -980,7 +980,7 @@ RSpec.describe Projects::NotesController do
 
         context "when the note is not resolvable" do
           before do
-            note.update(system: true)
+            note.update!(system: true)
           end
 
           it "returns status 404" do

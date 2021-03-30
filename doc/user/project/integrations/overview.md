@@ -41,7 +41,6 @@ Click on the service links to see further configuration instructions and details
 | [Generic alerts](../../../operations/incident_management/integrations.md) **(ULTIMATE)** | Receive alerts on GitLab from any source | No |
 | [GitHub](github.md) **(PREMIUM)** | Sends pipeline notifications to GitHub | No |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat | No |
-| [HipChat](hipchat.md) | Private group chat and IM | No |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway | No |
 | [Jira](jira.md) | Jira issue tracker | No |
 | [Jenkins](../../../integration/jenkins.md) **(STARTER)** | An extendable open source continuous integration server | Yes |

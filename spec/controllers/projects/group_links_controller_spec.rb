@@ -31,7 +31,7 @@ RSpec.describe Projects::GroupLinksController do
 
     context 'when project is not allowed to be shared with a group' do
       before do
-        group.update(share_with_group_lock: false)
+        group.update!(share_with_group_lock: false)
       end
 
       include_context 'link project to group'

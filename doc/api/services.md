@@ -692,53 +692,6 @@ Get Hangouts Chat service settings for a project.
 GET /projects/:id/services/hangouts-chat
 ```
 
-## HipChat
-
-Private group chat and IM
-
-### Create/Edit HipChat service
-
-Set HipChat service for a project.
-
-```plaintext
-PUT /projects/:id/services/hipchat
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token` | string | true | Room token |
-| `color` | string | false | The room color |
-| `notify` | boolean | false | Enable notifications |
-| `room` | string | false |Room name or ID |
-| `api_version` | string | false | Leave blank for default (v2) |
-| `server` | string | false | Leave blank for default. For example, `https://hipchat.example.com`. |
-| `push_events` | boolean | false | Enable notifications for push events |
-| `issues_events` | boolean | false | Enable notifications for issue events |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events |
-| `note_events` | boolean | false | Enable notifications for note events |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
-
-### Delete HipChat service
-
-Delete HipChat service for a project.
-
-```plaintext
-DELETE /projects/:id/services/hipchat
-```
-
-### Get HipChat service settings
-
-Get HipChat service settings for a project.
-
-```plaintext
-GET /projects/:id/services/hipchat
-```
-
 ## Irker (IRC gateway)
 
 Send IRC messages, on update, to a list of recipients through an Irker gateway.

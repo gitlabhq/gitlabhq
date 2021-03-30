@@ -71,7 +71,7 @@ RSpec.describe Projects::ForksController do
 
     context 'when fork is internal' do
       before do
-        forked_project.update(visibility_level: Project::INTERNAL, group: group)
+        forked_project.update!(visibility_level: Project::INTERNAL, group: group)
       end
 
       it 'forks counts are correct' do
@@ -86,7 +86,7 @@ RSpec.describe Projects::ForksController do
 
     context 'when fork is private' do
       before do
-        forked_project.update(visibility_level: Project::PRIVATE, group: group)
+        forked_project.update!(visibility_level: Project::PRIVATE, group: group)
       end
 
       shared_examples 'forks counts' do
