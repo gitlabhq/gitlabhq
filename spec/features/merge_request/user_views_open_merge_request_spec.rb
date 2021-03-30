@@ -111,4 +111,21 @@ RSpec.describe 'User views an open merge request' do
       end
     end
   end
+
+  context 'XSS source branch' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:source_branch) { "&#39;&gt;&lt;iframe/srcdoc=&#39;&#39;&gt;&lt;/iframe&gt;" }
+
+    before do
+      project.repository.create_branch(source_branch, "master")
+
+      mr = create(:merge_request, source_project: project, target_project: project, source_branch: source_branch)
+
+      visit(merge_request_path(mr))
+    end
+
+    it 'encodes branch name' do
+      expect(find('cite.ref-name')[:title]).to eq(source_branch)
+    end
+  end
 end

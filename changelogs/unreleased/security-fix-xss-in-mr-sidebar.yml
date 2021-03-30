@@ -1,0 +1,5 @@
+---
+title: Fixed XSS in merge requests sidebar
+merge_request:
+author:
+type: security
