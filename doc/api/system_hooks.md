@@ -88,7 +88,7 @@ Example response:
 ## Test system hook
 
 ```plaintext
-GET /hooks/:id
+POST /hooks/:id
 ```
 
 | Attribute | Type | Required | Description |
@@ -98,7 +98,7 @@ GET /hooks/:id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks/2"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks/1"
 ```
 
 Example response:
