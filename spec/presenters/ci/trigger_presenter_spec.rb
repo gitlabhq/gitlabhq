@@ -35,7 +35,7 @@ RSpec.describe Ci::TriggerPresenter do
 
   context 'when user is a trigger owner and builds admin' do
     before do
-      trigger.update(owner: user)
+      trigger.update!(owner: user)
     end
 
     describe '#token' do

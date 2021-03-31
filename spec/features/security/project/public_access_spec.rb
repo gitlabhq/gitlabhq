@@ -164,7 +164,7 @@ RSpec.describe "Public Project Access" do
 
     context "when allowed for public" do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:admin) }
@@ -180,7 +180,7 @@ RSpec.describe "Public Project Access" do
 
     context "when disallowed for public" do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
@@ -204,7 +204,7 @@ RSpec.describe "Public Project Access" do
 
     context "when allowed for public" do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:admin) }
@@ -220,7 +220,7 @@ RSpec.describe "Public Project Access" do
 
     context "when disallowed for public" do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
@@ -244,7 +244,7 @@ RSpec.describe "Public Project Access" do
 
     context 'when allowed for public' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:admin) }
@@ -260,7 +260,7 @@ RSpec.describe "Public Project Access" do
 
     context 'when disallowed for public' do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }

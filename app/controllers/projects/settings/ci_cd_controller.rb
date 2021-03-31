@@ -62,7 +62,7 @@ module Projects
       end
 
       def runner_setup_scripts
-        private_runner_setup_scripts(project: @project)
+        private_runner_setup_scripts
       end
 
       private

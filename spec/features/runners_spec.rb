@@ -92,7 +92,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          specific_runner.update(tag_list: ['tag'])
+          specific_runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do
@@ -370,7 +370,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          runner.update(tag_list: ['tag'])
+          runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do
@@ -450,7 +450,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          runner.update(tag_list: ['tag'])
+          runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do

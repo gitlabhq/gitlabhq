@@ -13,7 +13,7 @@ module API
 
       helpers do
         def authenticate_gitlab_kas_request!
-          unauthorized! unless Gitlab::Kas.verify_api_request(headers)
+          render_api_error!('KAS JWT authentication invalid', 401) unless Gitlab::Kas.verify_api_request(headers)
         end
 
         def agent_token
@@ -51,7 +51,7 @@ module API
         end
 
         def check_agent_token
-          forbidden! unless agent_token
+          unauthorized! unless agent_token
 
           forbidden! unless Gitlab::Kas.included_in_gitlab_com_rollout?(agent.project)
 

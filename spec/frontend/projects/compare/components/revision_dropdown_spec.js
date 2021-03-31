@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
@@ -23,6 +23,10 @@ describe('RevisionDropdown component', () => {
         ...defaultProps,
         ...props,
       },
+      stubs: {
+        GlDropdown,
+        GlSearchBoxByType,
+      },
     });
   };
 
@@ -36,6 +40,7 @@ describe('RevisionDropdown component', () => {
   });
 
   const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
 
   it('sets hidden input', () => {
     createComponent();
@@ -83,6 +88,40 @@ describe('RevisionDropdown component', () => {
 
     await axios.waitForAll();
     expect(axios.get).toHaveBeenLastCalledWith(newRefsProjectPath);
+  });
+
+  describe('search', () => {
+    it('shows flash message on error', async () => {
+      axiosMock.onGet('some/invalid/path').replyOnce(404);
+
+      createComponent();
+
+      await wrapper.vm.searchBranchesAndTags();
+      expect(createFlash).toHaveBeenCalled();
+    });
+
+    it('makes request with search param', async () => {
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: {
+          Branches: [],
+          Tags: [],
+        },
+      });
+
+      const mockSearchTerm = 'foobar';
+      createComponent();
+      findSearchBox().vm.$emit('input', mockSearchTerm);
+      await axios.waitForAll();
+
+      expect(axios.get).toHaveBeenCalledWith(
+        defaultProps.refsProjectPath,
+        expect.objectContaining({
+          params: {
+            search: mockSearchTerm,
+          },
+        }),
+      );
+    });
   });
 
   describe('GlDropdown component', () => {

@@ -94,28 +94,37 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
     end
   end
 
-  describe '#process' do
+  shared_examples 'processing an exception' do
     context 'when there is Sidekiq data' do
+      let(:wrapped_value) { { extra: { sidekiq: value } } }
+
       shared_examples 'Sidekiq arguments' do |args_in_job_hash: true|
         let(:path) { [:extra, :sidekiq, args_in_job_hash ? :job : nil, 'args'].compact }
         let(:args) { [1, 'string', { a: 1 }, [1, 2]] }
 
-        it 'only allows numeric arguments for an unknown worker' do
-          value = { 'args' => args, 'class' => 'UnknownWorker' }
+        context 'for an unknown worker' do
+          let(:value) do
+            hash = { 'args' => args, 'class' => 'UnknownWorker' }
 
-          value = { job: value } if args_in_job_hash
+            args_in_job_hash ? { job: hash } : hash
+          end
 
-          expect(subject.process(extra_sidekiq(value)).dig(*path))
-            .to eq([1, described_class::FILTERED_STRING, described_class::FILTERED_STRING, described_class::FILTERED_STRING])
+          it 'only allows numeric arguments for an unknown worker' do
+            expect(result_hash.dig(*path))
+              .to eq([1, described_class::FILTERED_STRING, described_class::FILTERED_STRING, described_class::FILTERED_STRING])
+          end
         end
 
-        it 'allows all argument types for a permitted worker' do
-          value = { 'args' => args, 'class' => 'PostReceive' }
+        context 'for a permitted worker' do
+          let(:value) do
+            hash = { 'args' => args, 'class' => 'PostReceive' }
 
-          value = { job: value } if args_in_job_hash
+            args_in_job_hash ? { job: hash } : hash
+          end
 
-          expect(subject.process(extra_sidekiq(value)).dig(*path))
-            .to eq(args)
+          it 'allows all argument types for a permitted worker' do
+            expect(result_hash.dig(*path)).to eq(args)
+          end
         end
       end
 
@@ -127,39 +136,62 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
         include_examples 'Sidekiq arguments', args_in_job_hash: false
       end
 
-      it 'removes a jobstr field if present' do
-        value = {
-          job: { 'args' => [1] },
-          jobstr: { 'args' => [1] }.to_json
-        }
+      context 'when a jobstr field is present' do
+        let(:value) do
+          {
+            job: { 'args' => [1] },
+            jobstr: { 'args' => [1] }.to_json
+          }
+        end
 
-        expect(subject.process(extra_sidekiq(value)))
-          .to eq(extra_sidekiq(value.except(:jobstr)))
+        it 'removes the jobstr' do
+          expect(result_hash.dig(:extra, :sidekiq)).to eq(value.except(:jobstr))
+        end
       end
 
-      it 'does nothing with no jobstr' do
-        value = { job: { 'args' => [1] } }
+      context 'when no jobstr value is present' do
+        let(:value) { { job: { 'args' => [1] } } }
 
-        expect(subject.process(extra_sidekiq(value)))
-          .to eq(extra_sidekiq(value))
+        it 'does nothing' do
+          expect(result_hash.dig(:extra, :sidekiq)).to eq(value)
+        end
       end
     end
 
     context 'when there is no Sidekiq data' do
-      it 'does nothing' do
-        value = {
-          request: {
-            method: 'POST',
-            data: { 'key' => 'value' }
-          }
-        }
+      let(:value) { { tags: { foo: 'bar', baz: 'quux' } } }
+      let(:wrapped_value) { value }
 
-        expect(subject.process(value)).to eq(value)
+      it 'does nothing' do
+        expect(result_hash).to include(value)
+        expect(result_hash.dig(:extra, :sidekiq)).to be_nil
       end
     end
+  end
 
-    def extra_sidekiq(hash)
-      { extra: { sidekiq: hash } }
+  describe '.call' do
+    let(:event) { Raven::Event.new(wrapped_value) }
+    let(:result_hash) { described_class.call(event).to_hash }
+
+    it_behaves_like 'processing an exception'
+
+    context 'when followed by #process' do
+      let(:result_hash) { described_class.new.process(described_class.call(event).to_hash) }
+
+      it_behaves_like 'processing an exception'
+    end
+  end
+
+  describe '#process' do
+    let(:event) { Raven::Event.new(wrapped_value) }
+    let(:result_hash) { described_class.new.process(event.to_hash) }
+
+    context 'with sentry_processors_before_send disabled' do
+      before do
+        stub_feature_flags(sentry_processors_before_send: false)
+      end
+
+      it_behaves_like 'processing an exception'
     end
   end
 end

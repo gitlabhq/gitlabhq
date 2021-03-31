@@ -239,7 +239,7 @@ RSpec.describe 'Login' do
           expect(codes.size).to eq 10
 
           # Ensure the generated codes get saved
-          user.save(touch: false)
+          user.save!(touch: false)
         end
 
         context 'with valid code' do

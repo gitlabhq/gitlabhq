@@ -58,7 +58,7 @@ RSpec.describe 'Clusters', :js do
         before do
           click_link 'default-cluster'
           fill_in 'cluster_environment_scope', with: 'production/*'
-          within '.js-cluster-integration-form' do
+          within '.js-cluster-details-form' do
             click_button 'Save changes'
           end
         end
@@ -149,7 +149,7 @@ RSpec.describe 'Clusters', :js do
         before do
           click_link 'default-cluster'
           fill_in 'cluster_environment_scope', with: 'production/*'
-          within ".js-cluster-integration-form" do
+          within ".js-cluster-details-form" do
             click_button 'Save changes'
           end
         end

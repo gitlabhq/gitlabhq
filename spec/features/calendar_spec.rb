@@ -64,7 +64,7 @@ RSpec.describe 'Contributions Calendar', :js do
       author_id: user.id
     }
 
-    Event.create(note_comment_params)
+    Event.create!(note_comment_params)
   end
 
   def selected_day_activities(visible: true)

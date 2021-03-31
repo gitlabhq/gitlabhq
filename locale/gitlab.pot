@@ -7832,6 +7832,9 @@ msgstr ""
 msgid "CompareRevisions|There was an error while loading the branch/tag list. Please try again."
 msgstr ""
 
+msgid "CompareRevisions|There was an error while searching the branch/tag list. Please try again."
+msgstr ""
+
 msgid "CompareRevisions|There was an error while updating the branch/tag list. Please try again."
 msgstr ""
 
@@ -14447,6 +14450,24 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
+msgstr ""
+
+msgid "GithubIntegration|Obtain statuses for commits and pull requests."
+msgstr ""
+
+msgid "GithubIntegration|Repository URL"
+msgstr ""
+
+msgid "GithubIntegration|Select this if you want GitHub to mark status checks as \"Required\". %{learn_more_link_start}Learn more%{learn_more_link_end}."
+msgstr ""
+
+msgid "GithubIntegration|Static status check names (optional)"
+msgstr ""
+
+msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
+msgstr ""
+
 msgid "Gitlab Pages"
 msgstr ""
 
@@ -16704,9 +16725,6 @@ msgid "Integrations|Standard"
 msgstr ""
 
 msgid "Integrations|This integration, and inheriting projects were reset."
-msgstr ""
-
-msgid "Integrations|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
 msgid "Integrations|To keep this project going, create a new issue."
@@ -34334,6 +34352,9 @@ msgid "What describes you best?"
 msgstr ""
 
 msgid "What does this command do?"
+msgstr ""
+
+msgid "What is repository mirroring?"
 msgstr ""
 
 msgid "What is squashing?"

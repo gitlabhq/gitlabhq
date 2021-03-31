@@ -281,9 +281,9 @@ Returns [`RunnerSetup`](#runnersetup).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `architecture` | [`String!`](#string) | Architecture to generate the instructions for. |
-| `groupId` | [`GroupID`](#groupid) | Group to register the runner for. |
+| `groupId` | [`GroupID`](#groupid) | Group to register the runner for. Deprecated in 13.11: No longer used. |
 | `platform` | [`String!`](#string) | Platform to generate the instructions for. |
-| `projectId` | [`ProjectID`](#projectid) | Project to register the runner for. |
+| `projectId` | [`ProjectID`](#projectid) | Project to register the runner for. Deprecated in 13.11: No longer used. |
 
 ### `snippets`
 

@@ -625,7 +625,7 @@ This also applies when using links in between translated sentences, otherwise th
   ```haml
   - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
   - zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
-  = s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+  = html_escape(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}')) % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
   ```
 
 - In Vue, instead of:

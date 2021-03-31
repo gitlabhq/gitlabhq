@@ -85,7 +85,7 @@ func TestConfigDefaults(t *testing.T) {
 		DocumentRoot:             "public",
 		ProxyHeadersTimeout:      5 * time.Minute,
 		APIQueueTimeout:          queueing.DefaultTimeout,
-		APICILongPollingDuration: 50 * time.Second,
+		APICILongPollingDuration: 50 * time.Nanosecond, // TODO this is meant to be 50*time.Second but it has been wrong for ages
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
 	}
 

@@ -3,7 +3,7 @@ import IntegrationForm from '../components/integration_form.vue';
 import { createStore } from '../stores';
 
 export default () => {
-  const entryPoint = document.querySelector('#js-cluster-integration-form');
+  const entryPoint = document.querySelector('#js-cluster-details-form');
 
   if (!entryPoint) {
     return;

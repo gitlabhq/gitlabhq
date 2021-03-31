@@ -16,17 +16,11 @@ const DEFAULT_PROPS = {
 describe('Suggestion Diff component', () => {
   let wrapper;
 
-  const createComponent = (props, glFeatures = {}) => {
+  const createComponent = (props) => {
     wrapper = shallowMount(SuggestionDiffHeader, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          batchSuggestions: true,
-          ...glFeatures,
-        },
       },
     });
   };
@@ -208,18 +202,6 @@ describe('Suggestion Diff component', () => {
         expect(findRemoveFromBatchButton().exists()).toBe(false);
         expect(findApplyBatchButton().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('batchSuggestions feature flag is set to false', () => {
-    beforeEach(() => {
-      createComponent({}, { batchSuggestions: false });
-    });
-
-    it('disables add to batch buttons but keeps apply suggestion enabled', () => {
-      expect(findApplyButton().exists()).toBe(true);
-      expect(findAddToBatchButton().exists()).toBe(false);
-      expect(findApplyButton().attributes('disabled')).not.toBe('true');
     });
   });
 

@@ -54,7 +54,7 @@ RSpec.describe Oauth::AuthorizationsController do
   shared_examples "Implicit grant can't be used in confidential application" do
     context 'when application is confidential' do
       before do
-        application.update(confidential: true)
+        application.update!(confidential: true)
         params[:response_type] = 'token'
       end
 
@@ -96,7 +96,7 @@ RSpec.describe Oauth::AuthorizationsController do
         end
 
         it 'deletes session.user_return_to and redirects when skip authorization' do
-          application.update(trusted: true)
+          application.update!(trusted: true)
           request.session['user_return_to'] = 'http://example.com'
 
           subject

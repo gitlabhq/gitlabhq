@@ -41,7 +41,7 @@ RSpec.describe 'View error index page', :js, :use_clean_rails_memory_store_cachi
 
   context 'with error tracking settings disabled' do
     before do
-      project_error_tracking_settings.update(enabled: false)
+      project_error_tracking_settings.update!(enabled: false)
       sign_in(project.owner)
 
       visit project_error_tracking_index_path(project)

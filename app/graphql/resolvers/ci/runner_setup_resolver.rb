@@ -21,19 +21,19 @@ module Resolvers
       argument :project_id,
                type: ::Types::GlobalIDType[::Project],
                required: false,
+               deprecated: { reason: 'No longer used', milestone: '13.11' },
                description: 'Project to register the runner for.'
 
       argument :group_id,
                type: ::Types::GlobalIDType[::Group],
                required: false,
+               deprecated: { reason: 'No longer used', milestone: '13.11' },
                description: 'Group to register the runner for.'
 
       def resolve(platform:, architecture:, **args)
         instructions = Gitlab::Ci::RunnerInstructions.new(
-          current_user: current_user,
           os: platform,
-          arch: architecture,
-          **target_param(args)
+          arch: architecture
         )
 
         {

@@ -319,7 +319,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -348,7 +348,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -375,7 +375,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -405,7 +405,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -414,7 +414,7 @@ RSpec.describe "Private Project Access" do
     context 'when public buils are disabled' do
       before do
         project.public_builds = false
-        project.save
+        project.save!
       end
 
       it { is_expected.to be_denied_for(:guest).of(project) }
@@ -440,7 +440,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
       end
 
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -448,7 +448,7 @@ RSpec.describe "Private Project Access" do
 
     context 'when public builds is disabled' do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it { is_expected.to be_denied_for(:guest).of(project) }

@@ -38,16 +38,16 @@ RSpec.describe API::Internal::Kubernetes do
   end
 
   shared_examples 'agent authentication' do
-    it 'returns 403 if Authorization header not sent' do
+    it 'returns 401 if Authorization header not sent' do
       send_request
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns 403 if Authorization is for non-existent agent' do
+    it 'returns 401 if Authorization is for non-existent agent' do
       send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
   end
 

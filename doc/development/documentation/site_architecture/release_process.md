@@ -6,14 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Monthly release process
 
-When a new GitLab version is released on the 22nd, we need to release the published documentation
-for the new version.
+When a new GitLab version is released on the 22nd, we release version-specific published
+documentation for the new version.
 
-This should be done as soon as possible after the GitLab version is announced, so that:
+We complete the process as soon as possible after the GitLab version is announced. The result is:
 
-- The published documentation includes the three most recent minor releases of the current major
-  version, and the most recent minor releases of the last two major versions. For example 13.9,
-  13.8, 13.7, 12.10, and 11.11.
+- The [online published documentation](https://docs.gitlab.com) includes:
+  - The three most recent minor releases of the current major version. For example 13.9, 13.8, and
+    13.7.
+  - The most recent minor releases of the last two major versions. For example 12.10, and 11.11.
 - Documentation updates after the 22nd are for the next release. The versions drop down
   should have the current milestone with `-pre` appended to it, for example `13.10-pre`.
 
@@ -31,23 +32,30 @@ For example:
   [stable branch](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/13.8) and Docker image:
   [`registry.gitlab.com/gitlab-org/gitlab-docs:13.8`](https://gitlab.com/gitlab-org/gitlab-docs/container_registry/631635).
 
-To set up a documentation release, follow these steps:
+## Recommended timeline
 
-1. [Add the charts version](#add-chart-version), so that the documentation is built using the
-   [version of the charts project that maps to](https://docs.gitlab.com/charts/installation/version_mappings.html)
-   the GitLab release. This step may have been completed already.
-1. [Create a stable branch and Docker image](#create-stable-branch-and-docker-image-for-release) for
-   the new version.
-1. [Create a release merge request](#create-release-merge-request) for the new version, which
-   updates the version dropdown menu for the current documentation and adds the release to the
-   Docker configuration. For example, the
-   [release merge request for 13.9](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1555).
-1. [Update the three online versions](#update-dropdown-for-online-versions), so that they display the new release on their
-   version dropdown menus. For example:
-   - The merge request to [update the 13.9 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1556).
-   - The merge request to [update the 13.8 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1557).
-   - The merge request to [update the 13.7 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1558).
-1. [Merge the release merge request and run the necessary Docker image builds](#merge-release-merge-request-and-run-docker-image-builds).
+To minimize problems during the documentation release process, use the following timeline:
+
+- Before the 20nd of the month:
+
+  [Add the charts version](#add-chart-version), so that the documentation is built using the
+  [version of the charts project that maps to](https://docs.gitlab.com/charts/installation/version_mappings.html)
+  the GitLab release. This step may have been completed already.
+
+- On or near the 20th of the month:
+
+  1. [Create a stable branch and Docker image](#create-stable-branch-and-docker-image-for-release) for
+     the new version.
+  1. [Create a release merge request](#create-release-merge-request) for the new version, which
+     updates the version dropdown menu for the current documentation and adds the release to the
+     Docker configuration. For example, the
+     [release merge request for 13.9](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1555).
+  1. [Update the three online versions](#update-dropdown-for-online-versions), so that they display the new release on their
+     version dropdown menus.
+
+- On the 22nd of the month:
+
+  [Merge the release merge requests and run the necessary Docker image builds](#merge-merge-requests-and-run-docker-image-builds).
 
 ## Add chart version
 
@@ -135,8 +143,12 @@ Do not merge the release merge request yet.
 
 ## Update dropdown for online versions
 
-To update`content/_data/versions.yaml` for all online versions (stable branches `X.Y` of the
-`gitlab-docs` project):
+To update `content/_data/versions.yaml` for all online versions (stable branches `X.Y` of the
+`gitlab-docs` project). For example:
+
+- The merge request to [update the 13.9 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1556).
+- The merge request to [update the 13.8 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1557).
+- The merge request to [update the 13.7 version dropdown menu for the 13.9 release](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1558).
 
 1. Run the Rake task that creates all of the necessary merge requests to update the dropdowns. For
    example, for the 13.9 release:
@@ -146,13 +158,12 @@ To update`content/_data/versions.yaml` for all online versions (stable branches 
    ./bin/rake release:dropdowns
    ```
 
-   These merge requests are set to automatically merge.
-
 1. [Visit the merge requests page](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests?label_name%5B%5D=release)
-   to check that their pipelines pass. After all MRs are merged, proceed to the following and final
-   step.
+   to check that their pipelines pass.
 
-## Merge release merge request and run Docker image builds
+Do not merge these merge requests yet.
+
+## Merge merge requests and run Docker image builds
 
 The merge requests for the dropdowns should now all be merged into their respective stable branches.
 Each merge triggers a new pipeline for each stable branch. Wait for the stable branch pipelines to
@@ -160,7 +171,9 @@ complete, then:
 
 1. Check the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/pipelines)
    and make sure all stable branches have green pipelines.
-1. After all the pipelines succeed, merge the [release merge request](#create-release-merge-request).
+1. After all the pipelines succeed:
+   1. Merge all of the [dropdown merge requests](#update-dropdown-for-online-versions).
+   1. Merge the [release merge request](#create-release-merge-request).
 1. Finally, run the
    [`Build docker images weekly` pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules)
    that builds the `:latest` and `:archives` Docker images.

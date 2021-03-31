@@ -10124,6 +10124,54 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_fixed_epic_due_date_monthly`
+
+Counts of MAU manually updating fixed due date
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210329043548_g_project_management_users_updating_fixed_epic_due_date_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_fixed_epic_due_date_weekly`
+
+Counts of WAU manually updating fixed due date
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210329042536_g_project_management_users_updating_fixed_epic_due_date_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_fixed_epic_start_date_monthly`
+
+Counts of MAU manually updating fixed start date
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210329043509_g_project_management_users_updating_fixed_epic_start_date_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_updating_fixed_epic_start_date_weekly`
+
+Counts of WAU manually updating fixed start date
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210329043402_g_project_management_users_updating_fixed_epic_start_date_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.ide_edit.g_edit_by_sfe_monthly`
 
 Missing description

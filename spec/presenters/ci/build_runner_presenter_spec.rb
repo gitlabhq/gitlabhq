@@ -223,7 +223,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
       let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
 
       before do
-        pipeline.persistent_ref.create
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
       end
 
       it 'returns the correct refspecs' do
@@ -261,7 +261,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
       before do
-        pipeline.persistent_ref.create
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
       end
 
       it 'exposes the persistent pipeline ref' do

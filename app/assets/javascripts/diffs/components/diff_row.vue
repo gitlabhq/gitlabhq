@@ -1,5 +1,6 @@
 <script>
-import { GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+/* eslint-disable vue/no-v-html */
+import { GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -21,7 +22,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -256,7 +256,7 @@ export default {
           @mousedown="handleParallelLineMouseDown"
         >
           <strong v-if="isLeftConflictMarker">{{ conflictText(line.left) }}</strong>
-          <span v-else v-safe-html="line.left.rich_text"></span>
+          <span v-else v-html="line.left.rich_text"></span>
         </div>
       </template>
       <template v-else-if="!inline || (line.left && line.left.type === $options.CONFLICT_MARKER)">
@@ -345,7 +345,6 @@ export default {
         <div
           :id="line.right.line_code"
           :key="line.right.rich_text"
-          v-safe-html="line.right.rich_text"
           :class="[
             line.right.type,
             {
@@ -360,7 +359,7 @@ export default {
           <strong v-if="line.right.type === $options.CONFLICT_MARKER_THEIR">{{
             conflictText(line.right)
           }}</strong>
-          <span v-else v-safe-html="line.right.rich_text"></span>
+          <span v-else v-html="line.right.rich_text"></span>
         </div>
       </template>
       <template v-else>

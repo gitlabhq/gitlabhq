@@ -127,7 +127,7 @@ module API
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
-        super(projects_relation).preload(:group)
+        super(projects_relation).preload(group: :namespace_settings)
                                 .preload(:ci_cd_settings)
                                 .preload(:project_setting)
                                 .preload(:container_expiration_policy)
