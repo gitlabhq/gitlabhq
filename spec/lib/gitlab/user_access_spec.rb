@@ -216,6 +216,15 @@ RSpec.describe Gitlab::UserAccess do
         expect(access.can_merge_to_branch?(@branch.name)).to be_falsey
       end
     end
+
+    context 'when skip_collaboration_check is true' do
+      let(:access) { described_class.new(user, container: project, skip_collaboration_check: true) }
+
+      it 'does not call Project#branch_allows_collaboration?' do
+        expect(project).not_to receive(:branch_allows_collaboration?)
+        expect(access.can_push_to_branch?('master')).to be_falsey
+      end
+    end
   end
 
   describe '#can_create_tag?' do

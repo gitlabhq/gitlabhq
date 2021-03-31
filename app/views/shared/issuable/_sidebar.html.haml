@@ -138,7 +138,7 @@
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
             .sidebar-mr-source-branch.hide-collapsed
               %span
-                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<cite class='ref-name' title='#{source_branch}'>".html_safe, source_branch_close: "</cite>".html_safe, source_branch: source_branch }
+                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<cite class='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</cite>".html_safe, source_branch: html_escape(source_branch) }
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
 
       - if show_forwarding_email

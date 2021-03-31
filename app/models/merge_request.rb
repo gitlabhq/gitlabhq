@@ -1337,8 +1337,8 @@ class MergeRequest < ApplicationRecord
     has_no_commits? || branch_missing? || cannot_be_merged?
   end
 
-  def can_be_merged_by?(user)
-    access = ::Gitlab::UserAccess.new(user, container: project)
+  def can_be_merged_by?(user, skip_collaboration_check: false)
+    access = ::Gitlab::UserAccess.new(user, container: project, skip_collaboration_check: skip_collaboration_check)
     access.can_update_branch?(target_branch)
   end
 
