@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.7 (2021-03-31)
+
+### Security (5 changes)
+
+- Fixed XSS in merge requests sidebar.
+- Leave pool repository on fork unlinking.
+- Fix arbitrary read/write in AsciiDoctor and Kroki gems.
+- Prevent infinite loop when checking if collaboration is allowed.
+- Require POST request to trigger system hooks.
+
+### Removed (1 change)
+
+- Make HipChat project service do nothing. !57434
+
+### Other (3 changes)
+
+- Remove direct mimemagic dependency. !57387
+- Refactor MimeMagic calls to new MimeType class. !57421
+- Switch to using a fake mimemagic gem. !57443
+
+
 ## 13.8.6 (2021-03-17)
 
 ### Security (1 change)
