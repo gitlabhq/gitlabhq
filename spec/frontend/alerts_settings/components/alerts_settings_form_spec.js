@@ -10,6 +10,9 @@ import alertFields from '../mocks/alert_fields.json';
 import parsedMapping from '../mocks/parsed_mapping.json';
 import { defaultAlertSettingsConfig } from './util';
 
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
 describe('AlertsSettingsForm', () => {
   let wrapper;
   const mockToastShow = jest.fn();
@@ -410,33 +413,35 @@ describe('AlertsSettingsForm', () => {
       createComponent();
     });
 
-    it('should not be able to submit when no integration type is selected', () => {
-      selectOptionAtIndex(0);
+    it('should not be able to submit when no integration type is selected', async () => {
+      await selectOptionAtIndex(0);
 
       expect(findSubmitButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('should not be able to submit when HTTP integration form is invalid', () => {
-      selectOptionAtIndex(1);
-
+    it('should not be able to submit when HTTP integration form is invalid', async () => {
+      await selectOptionAtIndex(1);
+      await findFormFields().at(0).vm.$emit('input', '');
       expect(findSubmitButton().attributes('disabled')).toBe('disabled');
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
       await selectOptionAtIndex(1);
-      await findFormFields().at(0).setValue('Name');
+      await findFormFields().at(0).vm.$emit('input', 'Name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 
-    it('should not be able to submit when Prometheus integration form is invalid', () => {
-      selectOptionAtIndex(2);
+    it('should not be able to submit when Prometheus integration form is invalid', async () => {
+      await selectOptionAtIndex(2);
+      await findFormFields().at(0).vm.$emit('input', '');
 
       expect(findSubmitButton().attributes('disabled')).toBe('disabled');
     });
 
     it('should be able to submit when Prometheus integration  form is valid', async () => {
       await selectOptionAtIndex(2);
-      await findFormFields().at(0).setValue('http://valid.url');
+      await findFormFields().at(0).vm.$emit('input', 'http://valid.url');
+
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 
@@ -445,7 +450,7 @@ describe('AlertsSettingsForm', () => {
         currentIntegration: { type: typeSet.http, name: 'Existing integration' },
       });
       await nextTick();
-      await findFormFields().at(0).setValue('Updated name');
+      await findFormFields().at(0).vm.$emit('input', 'Updated name');
 
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
@@ -457,6 +462,21 @@ describe('AlertsSettingsForm', () => {
       await nextTick();
 
       expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('should disable submit button after click on validation failure', async () => {
+      await selectOptionAtIndex(1);
+      findSubmitButton().trigger('click');
+      await nextTick();
+
+      expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('should scroll to invalid field on validation failure', async () => {
+      await selectOptionAtIndex(1);
+      findSubmitButton().trigger('click');
+
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
     });
   });
 });

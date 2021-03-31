@@ -69,6 +69,7 @@ export default {
   <board-editable-item
     ref="sidebarItem"
     class="board-sidebar-due-date"
+    data-testid="sidebar-due-date"
     :title="$options.i18n.dueDate"
     :loading="loading"
     @open="openDatePicker"

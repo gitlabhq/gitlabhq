@@ -223,6 +223,10 @@ export default {
     testAlertModal() {
       return this.isFormDirty ? testAlertModalId : null;
     },
+    prometheusUrlInvalidFeedback() {
+      const { blankUrlError, invalidUrlError } = i18n.integrationFormSteps.prometheusFormUrl;
+      return this.integrationForm.apiUrl?.length ? invalidUrlError : blankUrlError;
+    },
   },
   watch: {
     tabIndex(val) {
@@ -288,6 +292,9 @@ export default {
       if (this.isHttp) {
         this.validationState.apiUrl = true;
         this.validateName();
+        if (!this.validationState.name) {
+          this.$refs.integrationName.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       } else if (this.isPrometheus) {
         this.validationState.name = true;
         this.validateApiUrl();
@@ -300,6 +307,11 @@ export default {
       this.$emit('save-and-test-alert-payload', this.dataForSave, this.testAlertPayload);
     },
     submit(testAfterSubmit = false) {
+      this.triggerValidation();
+
+      if (!this.isFormValid) {
+        return;
+      }
       const event = this.currentIntegration ? 'update-integration' : 'create-new-integration';
       this.$emit(event, this.dataForSave, testAfterSubmit);
     },
@@ -412,7 +424,6 @@ export default {
             :disabled="isSelectDisabled"
             class="gl-max-w-full"
             :options="integrationTypesOptions"
-            @change="triggerValidation"
           />
 
           <alert-settings-form-help-block
@@ -439,6 +450,7 @@ export default {
           >
             <gl-form-input
               id="name-integration"
+              ref="integrationName"
               v-model="integrationForm.name"
               type="text"
               :placeholder="$options.i18n.integrationFormSteps.nameIntegration.placeholder"
@@ -473,7 +485,7 @@ export default {
             class="gl-my-4"
             :label="$options.i18n.integrationFormSteps.prometheusFormUrl.label"
             label-for="api-url"
-            :invalid-feedback="$options.i18n.integrationFormSteps.prometheusFormUrl.error"
+            :invalid-feedback="prometheusUrlInvalidFeedback"
             :state="validationState.apiUrl"
           >
             <gl-form-input

@@ -70,7 +70,8 @@ export const i18n = {
     prometheusFormUrl: {
       label: s__('AlertSettings|Prometheus API base URL'),
       help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
-      error: s__('AlertSettings|URL is invalid.'),
+      blankUrlError: __('URL cannot be blank'),
+      invalidUrlError: __('URL is invalid'),
     },
     restKeyInfo: {
       label: s__(

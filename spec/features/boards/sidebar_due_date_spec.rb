@@ -17,8 +17,6 @@ RSpec.describe 'Project issue boards sidebar due date', :js do
   end
 
   before do
-    stub_feature_flags(graphql_board_lists: false)
-
     project.add_maintainer(user)
 
     sign_in(user)
@@ -31,10 +29,10 @@ RSpec.describe 'Project issue boards sidebar due date', :js do
     it 'updates due date' do
       click_card(card)
 
-      page.within('.due_date') do
+      page.within('[data-testid="sidebar-due-date"]') do
         today = Date.today.day
 
-        click_link 'Edit'
+        click_button 'Edit'
 
         click_button today.to_s
 

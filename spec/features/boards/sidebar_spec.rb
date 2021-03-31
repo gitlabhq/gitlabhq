@@ -13,8 +13,6 @@ RSpec.describe 'Project issue boards sidebar', :js do
   let(:card)          { find('.board:nth-child(1)').first('.board-card') }
 
   before do
-    stub_feature_flags(graphql_board_lists: false)
-
     project.add_maintainer(user)
 
     sign_in(user)
@@ -44,7 +42,7 @@ RSpec.describe 'Project issue boards sidebar', :js do
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
-    find('.gutter-toggle').click
+    find("[data-testid='sidebar-drawer'] .gl-drawer-close-button").click
 
     expect(page).not_to have_selector('.issue-boards-sidebar')
   end

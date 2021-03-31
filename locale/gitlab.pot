@@ -3005,9 +3005,6 @@ msgstr ""
 msgid "AlertSettings|URL cannot be blank and must start with http or https"
 msgstr ""
 
-msgid "AlertSettings|URL is invalid."
-msgstr ""
-
 msgid "AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
@@ -8724,6 +8721,12 @@ msgid "Could not load the user chart. Please refresh the page to try again."
 msgstr ""
 
 msgid "Could not load usage counts. Please refresh the page to try again."
+msgstr ""
+
+msgid "Could not remove %{user} from %{group}. Cannot remove last group owner."
+msgstr ""
+
+msgid "Could not remove %{user} from %{group}. User is not a group member."
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -32403,6 +32406,12 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
+msgid "URL cannot be blank"
+msgstr ""
+
+msgid "URL is invalid"
+msgstr ""
+
 msgid "URL is required"
 msgstr ""
 
@@ -33163,6 +33172,9 @@ msgid "User %{current_user_username} has started impersonating %{username}"
 msgstr ""
 
 msgid "User %{username} was successfully removed."
+msgstr ""
+
+msgid "User %{user} was removed from %{group}."
 msgstr ""
 
 msgid "User ID"
