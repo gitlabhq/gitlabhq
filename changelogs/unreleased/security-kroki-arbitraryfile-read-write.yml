@@ -1,5 +1,0 @@
----
-title: Fix arbitrary read/write in AsciiDoctor and Kroki gems
-merge_request:
-author:
-type: security

@@ -1,5 +1,0 @@
----
-title: Disable arbitrary URI and file reads in JSON validator
-merge_request:
-author:
-type: security
