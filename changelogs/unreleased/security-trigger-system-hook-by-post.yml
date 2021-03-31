@@ -1,5 +1,0 @@
----
-title: Require POST request to trigger system hooks
-merge_request:
-author:
-type: security
