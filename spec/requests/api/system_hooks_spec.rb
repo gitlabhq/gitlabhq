@@ -103,15 +103,15 @@ RSpec.describe API::SystemHooks do
     end
   end
 
-  describe "GET /hooks/:id" do
-    it "returns hook by id" do
-      get api("/hooks/#{hook.id}", admin)
-      expect(response).to have_gitlab_http_status(:ok)
+  describe 'POST /hooks/:id' do
+    it "returns and trigger hook by id" do
+      post api("/hooks/#{hook.id}", admin)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['event_name']).to eq('project_create')
     end
 
     it "returns 404 on failure" do
-      get api("/hooks/404", admin)
+      post api("/hooks/404", admin)
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end

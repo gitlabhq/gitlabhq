@@ -32,6 +32,8 @@ module Projects
         if fork_network = @project.root_of_fork_network
           fork_network.update(root_project: nil, deleted_root_project_name: @project.full_name)
         end
+
+        @project.leave_pool_repository
       end
 
       # rubocop: disable Cop/InBatches
