@@ -34656,6 +34656,9 @@ msgstr ""
 msgid "Write a comment…"
 msgstr ""
 
+msgid "Write a description or drag your files here…"
+msgstr ""
+
 msgid "Write milestone description..."
 msgstr ""
 

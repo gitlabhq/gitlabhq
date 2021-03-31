@@ -136,8 +136,10 @@ postgresql:
   metrics:
     enabled: false
   resources:
+    requests:
       cpu: 600m
       memory: 1000M
+    limits:
       cpu: 1300m
       memory: 1500M
 prometheus:

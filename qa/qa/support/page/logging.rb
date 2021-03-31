@@ -81,7 +81,7 @@ module QA
         end
 
         def fill_element(name, content)
-          masked_content = name.to_s.include?('password') ? '*****' : content
+          masked_content = name.to_s.match?(/token|key|password/) ? '*****' : content
 
           log(%Q(filling :#{name} with "#{masked_content}"))
 

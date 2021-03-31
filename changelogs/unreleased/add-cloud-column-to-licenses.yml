@@ -1,0 +1,5 @@
+---
+title: 'Migration: Add cloud column to licenses'
+merge_request: 57781
+author:
+type: added

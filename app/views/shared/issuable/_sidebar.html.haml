@@ -138,7 +138,7 @@
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
             .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
               %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
-                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' title='#{source_branch}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: source_branch }
+                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' data-testid='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: html_escape(source_branch) }
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
 
       - if show_forwarding_email

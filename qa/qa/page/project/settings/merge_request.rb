@@ -20,11 +20,11 @@ module QA
           end
 
           def click_save_changes
-            click_element :save_merge_request_changes_button
+            click_element(:save_merge_request_changes_button)
           end
 
           def enable_ff_only
-            click_element :merge_ff_radio_button
+            click_element(:merge_ff_radio_button)
             click_save_changes
           end
 

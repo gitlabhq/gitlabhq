@@ -1110,7 +1110,7 @@
 
 .review:rules:danger:
   rules:
-    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID'
+    - if: '$CI_MERGE_REQUEST_IID'
 
 ###############
 # Setup rules #

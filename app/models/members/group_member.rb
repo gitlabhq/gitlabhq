@@ -7,7 +7,7 @@ class GroupMember < Member
   SOURCE_TYPE = 'Namespace'
 
   belongs_to :group, foreign_key: 'source_id'
-
+  alias_attribute :namespace_id, :source_id
   delegate :update_two_factor_requirement, to: :user
 
   # Make sure group member points only to group as it source

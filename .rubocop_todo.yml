@@ -927,13 +927,6 @@ Style/RedundantRegexpEscape:
 Style/RedundantSelf:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantSelfAssignment:
-  Exclude:
-    - 'app/models/concerns/issuable.rb'
-    - 'spec/db/schema_spec.rb'
-
 # Offense count: 213
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, AllowInnerSlashes.

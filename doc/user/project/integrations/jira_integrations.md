@@ -6,30 +6,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira integrations **(FREE)**
 
-GitLab can be integrated with [Jira](https://www.atlassian.com/software/jira).
+If your organization uses [Jira](https://www.atlassian.com/software/jira) issues,
+you can [migrate](../../../user/project/import/jira.md) your issues from Jira and work
+exclusively in GitLab.
 
-[Issues](../issues/index.md) are a tool for discussing ideas, and planning and tracking work.
-However, your organization may already use Jira for these purposes, with extensive, established data
-and business processes they rely on.
+However, if you'd like to continue to use Jira, you can integrate it with GitLab.
 
-Although you can [migrate](../../../user/project/import/jira.md) your Jira issues and work
-exclusively in GitLab, you can also continue to use Jira by using the GitLab Jira integrations.
+There are two ways to use GitLab with Jira:
 
-## Integration types
-
-There are two different Jira integrations that allow different types of cross-referencing between
-GitLab activity and Jira issues, with additional features:
-
-- [Jira integration](jira.md), built in to GitLab. In a given GitLab project, it can be configured
-  to connect to any Jira instance, either hosted by you or hosted in
-  [Atlassian cloud](https://www.atlassian.com/cloud).
-- [Jira development panel integration](../../../integration/jira/index.md). Connects all
-  GitLab projects under a specified group or personal namespace.
-
-Jira development panel integration configuration depends on whether:
-
-- You're using GitLab.com or a self-managed GitLab instance.
-- You're using Jira on [Atlassian cloud](https://www.atlassian.com/cloud) or on your own server.
+- [Jira integration](jira.md). Connect a GitLab project
+  to a Jira instance. The Jira instance can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud).
+- [Jira Development panel integration](../../../integration/jira_development_panel.md).
+  Connect all GitLab projects under a group or personal namespace.
 
 The integration you choose depends on the capabilities you require.
 You can also install both at the same time.

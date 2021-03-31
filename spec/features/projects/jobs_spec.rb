@@ -32,7 +32,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'shows the empty state page' do
         expect(page).to have_content('Use jobs to automate your tasks')
-        expect(page).to have_link('Create CI/CD configuration file', href: project.present(current_user: user).add_ci_yml_path)
+        expect(page).to have_link('Create CI/CD configuration file', href: project_ci_pipeline_editor_path(project))
       end
     end
 

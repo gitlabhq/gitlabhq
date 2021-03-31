@@ -35,7 +35,7 @@ This section is for links to information elsewhere in the GitLab documentation.
   - Storing data in another location.
   - Destructively reseeding the GitLab database.
   - Guidance around updating packaged PostgreSQL, including how to stop it
-    happening automatically.
+    from happening automatically.
 
 - [Information about external PostgreSQL](../postgresql/external.md).
 

@@ -114,7 +114,7 @@ RSpec.describe 'Database schema' do
             # postgres and mysql both automatically create an index on the primary
             # key. Also, the rails connection.indexes() method does not return
             # automatically generated indexes (like the primary key index).
-            first_indexed_column = first_indexed_column.push(primary_key_column)
+            first_indexed_column.push(primary_key_column)
 
             expect(first_indexed_column.uniq).to include(*foreign_keys_columns)
           end

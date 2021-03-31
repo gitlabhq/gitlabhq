@@ -92,6 +92,15 @@ module Gitlab
             expect(render(data[:input], context)).to include(data[:output])
           end
         end
+
+        it 'does not allow locked attributes to be overridden' do
+          input = <<~ADOC
+            {counter:max-include-depth:1234}
+            <|-- {max-include-depth}
+          ADOC
+
+          expect(render(input, {})).not_to include('1234')
+        end
       end
 
       context "images" do
@@ -542,6 +551,40 @@ module Gitlab
           HTML
 
           expect(render(input, context)).to include(output.strip)
+        end
+
+        it 'does not allow kroki-plantuml-include to be overridden' do
+          input = <<~ADOC
+            [plantuml, test="{counter:kroki-plantuml-include:/etc/passwd}", format="png"]
+            ....
+            class BlockProcessor
+
+            BlockProcessor <|-- {counter:kroki-plantuml-include}
+            ....
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>
+            <a class=\"no-attachment-icon\" href=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"Diagram\" class=\"lazy\" data-src=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\"></a>
+            </div>
+            </div>
+          HTML
+
+          expect(render(input, {})).to include(output.strip)
+        end
+
+        it 'does not allow kroki-server-url to be overridden' do
+          input = <<~ADOC
+            [plantuml, test="{counter:kroki-server-url:evilsite}", format="png"]
+            ....
+            class BlockProcessor
+
+            BlockProcessor
+            ....
+          ADOC
+
+          expect(render(input, {})).not_to include('evilsite')
         end
       end
 

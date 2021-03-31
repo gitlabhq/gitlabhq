@@ -66,6 +66,12 @@ RSpec.describe GroupMember do
 
   it_behaves_like 'members notifications', :group
 
+  describe '#namespace_id' do
+    subject { build(:group_member, source_id: 1).namespace_id }
+
+    it { is_expected.to eq 1 }
+  end
+
   describe '#real_source_type' do
     subject { create(:group_member).real_source_type }
 

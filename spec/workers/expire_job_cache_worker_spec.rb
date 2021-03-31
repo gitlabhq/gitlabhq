@@ -8,7 +8,8 @@ RSpec.describe ExpireJobCacheWorker do
 
   describe '#perform' do
     context 'with a job in the pipeline' do
-      let(:job) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
+
       let(:job_args) { job.id }
 
       include_examples 'an idempotent worker' do
@@ -30,6 +31,24 @@ RSpec.describe ExpireJobCacheWorker do
 
           subject
         end
+      end
+
+      it 'does not perform extra queries', :aggregate_failures do
+        worker = described_class.new
+        recorder = ActiveRecord::QueryRecorder.new { worker.perform(job.id) }
+
+        occurences = recorder.data.values.flat_map {|v| v[:occurrences]}
+        project_queries = occurences.select {|s| s.include?('FROM "projects"')}
+        namespace_queries = occurences.select {|s| s.include?('FROM "namespaces"')}
+        route_queries = occurences.select {|s| s.include?('FROM "routes"')}
+
+        # This worker is run 1 million times an hour, so we need to save as much
+        # queries as possible.
+        expect(recorder.count).to be <= 1
+
+        expect(project_queries.size).to eq(0)
+        expect(namespace_queries.size).to eq(0)
+        expect(route_queries.size).to eq(0)
       end
     end
 

@@ -2711,7 +2711,7 @@ class Project < ApplicationRecord
       # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
-          merge_request.can_be_merged_by?(user)
+          merge_request.can_be_merged_by?(user, skip_collaboration_check: true)
         end
       end
     end

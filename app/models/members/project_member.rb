@@ -5,6 +5,8 @@ class ProjectMember < Member
 
   belongs_to :project, foreign_key: 'source_id'
 
+  delegate :namespace_id, to: :project
+
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
   validates :source_type, format: { with: /\AProject\z/ }

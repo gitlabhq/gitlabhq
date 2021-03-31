@@ -55,6 +55,7 @@ class CommitStatus < ApplicationRecord
   scope :for_ref, -> (ref) { where(ref: ref) }
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
+  scope :eager_load_pipeline, -> { eager_load(:pipeline, project: { namespace: :route }) }
 
   scope :for_project_paths, -> (paths) do
     where(project: Project.where_full_path_in(Array(paths)))

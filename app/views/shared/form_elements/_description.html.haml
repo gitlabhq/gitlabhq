@@ -1,7 +1,7 @@
 - project = local_assigns.fetch(:project)
 - model = local_assigns.fetch(:model)
 - form = local_assigns.fetch(:form)
-- placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a comment or drag your files here…')
+- placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a description or drag your files here…')
 
 - supports_quick_actions = true
 - preview_url = preview_markdown_path(project, target_type: model.class.name)

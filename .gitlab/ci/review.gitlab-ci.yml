@@ -234,7 +234,15 @@ danger-review:
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --with danger"
     - run_timed_command "retry yarn install --frozen-lockfile"
   script:
-    - run_timed_command "bundle exec danger --fail-on-errors=true --verbose"
+    - >
+      if [ -z "$DANGER_GITLAB_API_TOKEN" ]; then
+        # Force danger to skip CI source GitLab and fallback to "local only git repo".
+        unset GITLAB_CI
+        # We need to base SHA to help danger determine the base commit for this shallow clone.
+        run_timed_command "bundle exec danger dry_run --fail-on-errors=true --verbose --base='$CI_MERGE_REQUEST_DIFF_BASE_SHA'"
+      else
+        run_timed_command "bundle exec danger --fail-on-errors=true --verbose"
+      fi
 
 update-danger-review-cache:
   extends:

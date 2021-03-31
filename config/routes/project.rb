@@ -553,7 +553,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Deprecated unscoped routing.
       scope as: 'deprecated' do
         # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-        draw :pipelines
         draw :repository
 
         # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/29572
@@ -576,7 +575,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :environments, :protected_environments, :error_tracking, :alert_management,
                                             :tracing,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
-                                            :vulnerability_feedback, :security, :dependencies, :issues)
+                                            :vulnerability_feedback, :security, :dependencies, :issues,
+                                            :pipelines, :pipeline_schedules)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

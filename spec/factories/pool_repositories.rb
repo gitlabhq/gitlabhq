@@ -6,7 +6,7 @@ FactoryBot.define do
     state { :none }
 
     before(:create) do |pool|
-      pool.source_project = create(:project, :repository)
+      pool.source_project ||= create(:project, :repository)
       pool.source_project.update!(pool_repository: pool)
     end
 

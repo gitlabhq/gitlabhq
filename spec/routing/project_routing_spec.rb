@@ -684,6 +684,26 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::PipelinesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/-/pipelines')).to route_to('projects/pipelines#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/pipelines/12')).to route_to('projects/pipelines#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '12')
+    end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/pipelines', '/gitlab/gitlabhq/-/pipelines'
+  end
+
+  describe Projects::PipelineSchedulesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/-/pipeline_schedules')).to route_to('projects/pipeline_schedules#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/pipeline_schedules', '/gitlab/gitlabhq/-/pipeline_schedules'
+  end
+
   describe Projects::Settings::OperationsController, 'routing' do
     it 'to #reset_alerting_token' do
       expect(post('/gitlab/gitlabhq/-/settings/operations/reset_alerting_token')).to route_to('projects/settings/operations#reset_alerting_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
