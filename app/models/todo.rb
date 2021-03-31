@@ -148,6 +148,10 @@ class Todo < ApplicationRecord
         .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
         .order('todos.created_at')
     end
+
+    def pluck_user_id
+      pluck(:user_id)
+    end
   end
 
   def resource_parent

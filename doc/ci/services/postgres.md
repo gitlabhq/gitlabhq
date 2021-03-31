@@ -45,7 +45,7 @@ Database: nice_marmot
 ```
 
 If you're wondering why we used `postgres` for the `Host`, read more at
-[How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
+[How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
 
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
 For example, to use PostgreSQL 9.3, the service becomes `postgres:9.3`.

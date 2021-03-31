@@ -435,4 +435,12 @@ RSpec.describe Todo do
       end
     end
   end
+
+  describe '.pluck_user_id' do
+    subject { described_class.pluck_user_id }
+
+    let_it_be(:todo) { create(:todo) }
+
+    it { is_expected.to eq([todo.user_id]) }
+  end
 end

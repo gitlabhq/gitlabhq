@@ -512,7 +512,7 @@ Use `image` to specify [a Docker image](../docker/using_docker_images.md#what-is
 
 For:
 
-- Usage examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Usage examples, see [Define `image` in the `.gitlab-ci.yml` file](../docker/using_docker_images.md#define-image-in-the-gitlab-ciyml-file).
 - Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
 
 #### `image:name`
@@ -529,11 +529,11 @@ For more information, see [Available settings for `image`](../docker/using_docke
 
 #### `services`
 
-Use `services` to specify a [service Docker image](../docker/using_docker_images.md#what-is-a-service), linked to a base image specified in [`image`](#image).
+Use `services` to specify a [service Docker image](../services/index.md), linked to a base image specified in [`image`](#image).
 
 For:
 
-- Usage examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Usage examples, see [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
 - Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
 - Example services, see [GitLab CI/CD Services](../services/index.md).
 
@@ -541,25 +541,25 @@ For:
 
 An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
 
 ##### `services:alias`
 
 An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
 
 ##### `services:entrypoint`
 
 An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
 
 ##### `services:command`
 
 An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
 
 ### `script`
 
@@ -4590,7 +4590,7 @@ If a variable of the same name is defined globally and for a specific job, the
 [job-specific variable overrides the global variable](../variables/README.md#priority-of-cicd-variables).
 
 All YAML-defined variables are also set to any linked
-[Docker service containers](../docker/using_docker_images.md#what-is-a-service).
+[Docker service containers](../services/index.md).
 
 You can use [YAML anchors for variables](#yaml-anchors-for-variables).
 
