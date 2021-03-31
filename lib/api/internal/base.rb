@@ -109,9 +109,7 @@ module API
           end
         end
 
-        def validate_actor_key(actor, key_id)
-          return 'Could not find a user without a key' unless key_id
-
+        def validate_actor(actor)
           return 'Could not find the given key' unless actor.key
 
           'Could not find a user for the given key' unless actor.user
@@ -206,7 +204,7 @@ module API
           actor.update_last_used_at!
           user = actor.user
 
-          error_message = validate_actor_key(actor, params[:key_id])
+          error_message = validate_actor(actor)
 
           if params[:user_id] && user.nil?
             break { success: false, message: 'Could not find the given user' }
@@ -235,7 +233,7 @@ module API
           actor.update_last_used_at!
           user = actor.user
 
-          error_message = validate_actor_key(actor, params[:key_id])
+          error_message = validate_actor(actor)
 
           break { success: false, message: 'Deploy keys cannot be used to create personal access tokens' } if actor.key.is_a?(DeployKey)
 
@@ -308,7 +306,7 @@ module API
           actor.update_last_used_at!
           user = actor.user
 
-          error_message = validate_actor_key(actor, params[:key_id])
+          error_message = validate_actor(actor)
 
           if error_message
             { success: false, message: error_message }

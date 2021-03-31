@@ -230,8 +230,8 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       context 'matching the first rule in the list' do
-        it 'saves a pending pipeline' do
-          expect(pipeline).to be_pending
+        it 'saves a created pipeline' do
+          expect(pipeline).to be_created
           expect(pipeline).to be_persisted
         end
       end
@@ -239,8 +239,8 @@ RSpec.describe Ci::CreatePipelineService do
       context 'matching the last rule in the list' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves a pending pipeline' do
-          expect(pipeline).to be_pending
+        it 'saves a created pipeline' do
+          expect(pipeline).to be_created
           expect(pipeline).to be_persisted
         end
       end
@@ -280,8 +280,8 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       context 'matching the first rule in the list' do
-        it 'saves a pending pipeline' do
-          expect(pipeline).to be_pending
+        it 'saves a created pipeline' do
+          expect(pipeline).to be_created
           expect(pipeline).to be_persisted
         end
       end
@@ -305,8 +305,8 @@ RSpec.describe Ci::CreatePipelineService do
       context 'with partial match' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves a pending pipeline' do
-          expect(pipeline).to be_pending
+        it 'saves a created pipeline' do
+          expect(pipeline).to be_created
           expect(pipeline).to be_persisted
         end
       end
@@ -349,8 +349,8 @@ RSpec.describe Ci::CreatePipelineService do
       context 'where workflow passes and the job passes' do
         let(:ref) { 'refs/heads/feature' }
 
-        it 'saves a pending pipeline' do
-          expect(pipeline).to be_pending
+        it 'saves a created pipeline' do
+          expect(pipeline).to be_created
           expect(pipeline).to be_persisted
         end
       end

@@ -118,6 +118,10 @@ module Types
       field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
             description: 'Indicates if the pipeline is active.'
 
+      field :uses_needs, GraphQL::BOOLEAN_TYPE, null: true,
+            method: :uses_needs?,
+            description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
+
       def detailed_status
         object.detailed_status(current_user)
       end

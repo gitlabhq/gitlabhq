@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Issuable type info popover renders 1`] = `
+<span
+  id="popovercontainer"
+>
+  <gl-icon-stub
+    class="gl-ml-5 gl-text-gray-500"
+    id="issuable-type-info"
+    name="question-o"
+    size="16"
+  />
+   
+  <gl-popover-stub
+    container="popovercontainer"
+    cssclasses=""
+    target="issuable-type-info"
+    title="Issue types"
+    triggers="focus hover"
+  >
+    <ul
+      class="gl-list-style-none gl-p-0 gl-m-0"
+    >
+      <li
+        class="gl-mb-3"
+      >
+        <div
+          class="gl-font-weight-bold"
+        >
+          Issue
+        </div>
+         
+        <span>
+          For general work
+        </span>
+      </li>
+       
+      <li>
+        <div
+          class="gl-font-weight-bold"
+        >
+          Incident
+        </div>
+         
+        <span>
+          For investigating IT service disruptions or outages
+        </span>
+      </li>
+    </ul>
+  </gl-popover-stub>
+</span>
+`;

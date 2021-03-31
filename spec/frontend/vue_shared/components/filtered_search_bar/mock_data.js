@@ -3,7 +3,6 @@ import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
-import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
@@ -60,16 +59,6 @@ export const mockMilestones = [
   mockEscapedMilestone,
 ];
 
-export const mockEmoji1 = {
-  name: 'thumbsup',
-};
-
-export const mockEmoji2 = {
-  name: 'star',
-};
-
-export const mockEmojis = [mockEmoji1, mockEmoji2];
-
 export const mockBranchToken = {
   type: 'source_branch',
   icon: 'branch',
@@ -112,16 +101,6 @@ export const mockMilestoneToken = {
   token: MilestoneToken,
   operators: [{ value: '=', description: 'is', default: 'true' }],
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
-};
-
-export const mockReactionEmojiToken = {
-  type: 'my_reaction_emoji',
-  icon: 'thumb-up',
-  title: 'My-Reaction',
-  unique: true,
-  token: EmojiToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
-  fetchEmojis: () => Promise.resolve(mockEmojis),
 };
 
 export const mockMembershipToken = {

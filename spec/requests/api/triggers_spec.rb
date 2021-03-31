@@ -49,8 +49,6 @@ RSpec.describe API::Triggers do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to include('id' => pipeline.id)
-        pipeline.builds.reload
-        expect(pipeline.builds.pending.size).to eq(2)
         expect(pipeline.builds.size).to eq(5)
       end
 

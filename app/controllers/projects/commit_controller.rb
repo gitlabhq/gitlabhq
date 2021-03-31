@@ -19,11 +19,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_box_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
-
-  before_action only: [:show, :pipelines] do
-    push_frontend_feature_flag(:ci_commit_pipeline_mini_graph_vue, @project, default_enabled: :yaml)
-  end
-
   before_action do
     push_frontend_feature_flag(:pick_into_project)
   end
@@ -214,7 +209,6 @@ class Projects::CommitController < Projects::ApplicationController
   def define_commit_box_vars
     @last_pipeline = @commit.last_pipeline
 
-    return unless ::Gitlab::Ci::Features.ci_commit_pipeline_mini_graph_vue_enabled?(@project)
     return unless @commit.last_pipeline
 
     @last_pipeline_stages = StageSerializer.new(project: @project, current_user: @current_user).represent(@last_pipeline.stages)

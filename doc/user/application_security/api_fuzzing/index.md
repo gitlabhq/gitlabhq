@@ -74,10 +74,6 @@ starting in GitLab 14.0, GitLab will not check your repository's root for config
 ### Configuration form
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-api-fuzzing-configuration-form). **(ULTIMATE)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -102,25 +98,6 @@ Select **Copy code and open `.gitlab-ci.yml` file** to copy the snippet to your 
 to your project's `.gitlab-ci.yml` file where you can paste the YAML configuration.
 
 Select **Copy code only** to copy the snippet to your clipboard and close the modal.
-
-#### Enable or disable API Fuzzing configuration form **(ULTIMATE)**
-
-The API Fuzzing configuration form is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:api_fuzzing_configuration_ui)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:api_fuzzing_configuration_ui)
-```
 
 ### OpenAPI Specification
 

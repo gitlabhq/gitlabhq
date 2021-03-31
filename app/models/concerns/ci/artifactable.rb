@@ -4,8 +4,10 @@ module Ci
   module Artifactable
     extend ActiveSupport::Concern
 
-    NotSupportedAdapterError = Class.new(StandardError)
+    include ObjectStorable
 
+    STORE_COLUMN = :file_store
+    NotSupportedAdapterError = Class.new(StandardError)
     FILE_FORMAT_ADAPTERS = {
       gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
       raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
@@ -20,6 +22,7 @@ module Ci
 
       scope :expired_before, -> (timestamp) { where(arel_table[:expire_at].lt(timestamp)) }
       scope :expired, -> (limit) { expired_before(Time.current).limit(limit) }
+      scope :project_id_in, ->(ids) { where(project_id: ids) }
     end
 
     def each_blob(&blk)

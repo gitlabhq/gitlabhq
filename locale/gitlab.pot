@@ -3155,9 +3155,6 @@ msgstr ""
 msgid "Allow only the selected protocols to be used for Git access."
 msgstr ""
 
-msgid "Allow overrides to approval lists per merge request (MR)"
-msgstr ""
-
 msgid "Allow owners to manage default branch protection per group"
 msgstr ""
 
@@ -3447,9 +3444,6 @@ msgid "An error occurred while fetching terraform reports."
 msgstr ""
 
 msgid "An error occurred while fetching the board lists. Please try again."
-msgstr ""
-
-msgid "An error occurred while fetching the builds."
 msgstr ""
 
 msgid "An error occurred while fetching the job log."
@@ -13529,7 +13523,13 @@ msgstr ""
 msgid "For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}."
 msgstr ""
 
+msgid "For general work"
+msgstr ""
+
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
+msgstr ""
+
+msgid "For investigating IT service disruptions or outages"
 msgstr ""
 
 msgid "For more info, read the documentation."
@@ -17199,6 +17199,9 @@ msgid "Issue published on status page."
 msgstr ""
 
 msgid "Issue title"
+msgstr ""
+
+msgid "Issue types"
 msgstr ""
 
 msgid "Issue update failed"
@@ -23291,7 +23294,10 @@ msgstr ""
 msgid "Prevent users from changing their profile name"
 msgstr ""
 
-msgid "Prevent users from modifying MR approval rules."
+msgid "Prevent users from modifying MR approval rules in merge requests."
+msgstr ""
+
+msgid "Prevent users from modifying MR approval rules in projects and merge requests."
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -25531,6 +25537,9 @@ msgid "Remove %{displayReference}"
 msgstr ""
 
 msgid "Remove Zoom meeting"
+msgstr ""
+
+msgid "Remove all approvals in a merge request when new commits are pushed to its source branch."
 msgstr ""
 
 msgid "Remove all or specific assignee(s)"
@@ -29172,13 +29181,13 @@ msgstr ""
 msgid "Status: %{title}"
 msgstr ""
 
+msgid "StatusPage|AWS %{docsLink}"
+msgstr ""
+
 msgid "StatusPage|AWS Secret access key"
 msgstr ""
 
 msgid "StatusPage|AWS access key ID"
-msgstr ""
-
-msgid "StatusPage|AWS documentation"
 msgstr ""
 
 msgid "StatusPage|AWS region"
@@ -29193,9 +29202,6 @@ msgstr ""
 msgid "StatusPage|Configure file storage settings to link issues in this project to an external status page."
 msgstr ""
 
-msgid "StatusPage|For help with configuration, visit %{docsLink}"
-msgstr ""
-
 msgid "StatusPage|S3 Bucket name"
 msgstr ""
 
@@ -29208,7 +29214,7 @@ msgstr ""
 msgid "StatusPage|Status page frontend documentation"
 msgstr ""
 
-msgid "StatusPage|To publish incidents to an external status page, GitLab will store a JSON file in your Amazon S3 account in a location accessible to your external status page service. Make sure to also set up %{docsLink}"
+msgid "StatusPage|To publish incidents to an external status page, GitLab stores a JSON file in your Amazon S3 account at a location that your external status page service can access. Make sure to also set up %{docsLink}"
 msgstr ""
 
 msgid "StatusPage|configuration documentation"
@@ -30718,9 +30724,6 @@ msgid "There was a problem communicating with your device."
 msgstr ""
 
 msgid "There was a problem fetching branches."
-msgstr ""
-
-msgid "There was a problem fetching emojis."
 msgstr ""
 
 msgid "There was a problem fetching groups."

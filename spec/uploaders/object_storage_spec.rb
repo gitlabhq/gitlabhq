@@ -441,6 +441,22 @@ RSpec.describe ObjectStorage do
       end
     end
 
+    shared_examples 'extracts base filename' do
+      it "returns true for ExtractsBase" do
+        expect(subject[:FeatureFlagExtractBase]).to be true
+      end
+
+      context 'when workhorse_extract_filename_base is disabled' do
+        before do
+          stub_feature_flags(workhorse_extract_filename_base: false)
+        end
+
+        it "returns false for ExtractsBase" do
+          expect(subject[:FeatureFlagExtractBase]).to be false
+        end
+      end
+    end
+
     shared_examples 'uses local storage' do
       it_behaves_like 'returns the maximum size given' do
         it "returns temporary path" do
@@ -502,12 +518,15 @@ RSpec.describe ObjectStorage do
       end
 
       it_behaves_like 'uses local storage'
+      it_behaves_like 'extracts base filename'
     end
 
     context 'when object storage is enabled' do
       before do
         allow(Gitlab.config.uploads.object_store).to receive(:enabled) { true }
       end
+
+      it_behaves_like 'extracts base filename'
 
       context 'when direct upload is enabled' do
         before do

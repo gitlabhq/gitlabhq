@@ -313,6 +313,7 @@ export default {
     </div>
 
     <pipelines-filtered-search
+      v-if="stateToRender !== $options.stateMap.emptyState"
       :project-id="projectId"
       :params="validatedParams"
       @filterPipelines="filterPipelines"

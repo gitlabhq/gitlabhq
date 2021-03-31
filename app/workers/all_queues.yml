@@ -1307,6 +1307,14 @@
   :weight: 5
   :idempotent:
   :tags: []
+- :name: pipeline_processing:ci_initial_pipeline_process
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 5
+  :idempotent: true
+  :tags: []
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
   :feature_category: :continuous_delivery
   :has_external_dependencies:

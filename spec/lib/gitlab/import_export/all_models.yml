@@ -269,6 +269,7 @@ stages:
 - builds
 - bridges
 - latest_statuses
+- retried_statuses
 statuses:
 - project
 - pipeline

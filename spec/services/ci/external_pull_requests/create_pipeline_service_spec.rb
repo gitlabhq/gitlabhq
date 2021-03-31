@@ -34,7 +34,7 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
           expect(subject).to eq(project.ci_pipelines.last)
           expect(subject.external_pull_request).to eq(pull_request)
           expect(subject.user).to eq(user)
-          expect(subject.status).to eq('pending')
+          expect(subject.status).to eq('created')
           expect(subject.ref).to eq(pull_request.source_branch)
           expect(subject.sha).to eq(pull_request.source_sha)
           expect(subject.source_sha).to eq(pull_request.source_sha)

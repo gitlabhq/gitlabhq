@@ -8,9 +8,11 @@ module Gitlab
           # After pipeline has been successfully created we can start processing it.
           class Process < Chain::Base
             def perform!
-              ::Ci::ProcessPipelineService
-                .new(@pipeline)
-                .execute
+              if ::Feature.enabled?(:ci_async_initial_pipeline_processing, project, default_enabled: :yaml)
+                ::Ci::InitialPipelineProcessWorker.perform_async(pipeline.id)
+              else
+                ::Ci::ProcessPipelineService.new(pipeline).execute
+              end
             end
 
             def break?

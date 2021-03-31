@@ -248,14 +248,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
 
           expect(subject[:pipeline]).to eq(pipeline_payload)
         end
-
-        context 'when merge_request_cached_pipeline_serializer is disabled' do
-          it 'does not return pipeline' do
-            stub_feature_flags(merge_request_cached_pipeline_serializer: false)
-
-            expect(subject[:pipeline]).to be_nil
-          end
-        end
       end
 
       context 'when user does not have access to pipelines' do

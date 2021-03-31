@@ -322,7 +322,7 @@ Regardless of the approval rules you choose for your project, users can edit the
 request, overriding the rules you set as [default](#adding--editing-a-default-approval-rule).
 To prevent that from happening:
 
-1. Uncheck the **Allow overrides to approval lists per merge request (MR).** checkbox.
+1. Select the **Prevent users from modifying MR approval rules in merge requests.** checkbox.
 1. Click **Save changes**.
 
 #### Resetting approvals on push

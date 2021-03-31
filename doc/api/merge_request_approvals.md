@@ -645,7 +645,7 @@ DELETE /projects/:id/external_approval_rules/:rule_id
 You can update an existing external approval rule for a project using the following endpoint:
 
 ```plaintext
-PATCH /projects/:id/external_approval_rules/:rule_id
+PUT /projects/:id/external_approval_rules/:rule_id
 ```
 
 | Attribute              | Type           | Required | Description                                        |

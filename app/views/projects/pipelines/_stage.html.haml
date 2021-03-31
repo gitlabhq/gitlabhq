@@ -1,5 +1,0 @@
-- grouped_statuses = @stage.statuses.latest_ordered.group_by(&:status)
-- Ci::HasStatus::ORDERED_STATUSES.each do |ordered_status|
-  - grouped_statuses.fetch(ordered_status, []).each do |status|
-    %li
-      = render 'ci/status/dropdown_graph_badge', subject: status

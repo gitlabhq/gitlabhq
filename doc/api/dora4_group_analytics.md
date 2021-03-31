@@ -14,6 +14,9 @@ type: reference, api
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-dora4-analytics-group-api).
 
 WARNING:
+These endpoints are deprecated and will be removed in GitLab 14.0. Use the [DORA metrics API](dora/metrics.md) instead.
+
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 All methods require reporter authorization.

@@ -226,19 +226,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
           expect(subject[:pipeline]).to be_nil
         end
 
-        context 'when merge_request_cached_pipeline_serializer is disabled' do
-          it 'returns detailed info about pipeline' do
-            stub_feature_flags(merge_request_cached_pipeline_serializer: false)
-
-            pipeline_payload =
-              MergeRequests::PipelineEntity
-                .represent(pipeline, request: req)
-                .as_json
-
-            expect(subject[:pipeline]).to eq(pipeline_payload)
-          end
-        end
-
         it 'returns ci_status' do
           expect(subject[:ci_status]).to eq('pending')
         end

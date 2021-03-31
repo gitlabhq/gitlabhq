@@ -446,6 +446,10 @@ module Ci
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
+    def uses_needs?
+      builds.where(scheduling_type: :dag).any?
+    end
+
     def stages_count
       statuses.select(:stage).distinct.count
     end

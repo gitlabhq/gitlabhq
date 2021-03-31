@@ -23,7 +23,7 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js do
   end
 
   it 'displays a mini pipeline graph' do
-    expect(page).to have_selector('.mr-widget-pipeline-graph')
+    expect(page).to have_selector('[data-testid="pipeline-mini-graph"]')
   end
 
   context 'as json' do

@@ -1,8 +1,0 @@
----
-name: ci_commit_pipeline_mini_graph_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55363
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323356
-milestone: '13.10'
-type: development
-group: group::pipeline authoring
-default_enabled: true

@@ -25,10 +25,6 @@ module QA
             element :file_title_content
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/blob_viewers/simple_viewer.vue' do
-            element :file_content
-          end
-
           base.view 'app/assets/javascripts/blob/components/blob_content.vue' do
             element :file_content
           end

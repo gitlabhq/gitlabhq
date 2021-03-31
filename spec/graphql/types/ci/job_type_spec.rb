@@ -20,7 +20,7 @@ RSpec.describe Types::Ci::JobType do
       pipeline
       queued_at
       scheduledAt
-      scheduledAt
+      schedulingType
       shortSha
       stage
       started_at

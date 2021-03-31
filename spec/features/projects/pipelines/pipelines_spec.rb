@@ -534,7 +534,7 @@ RSpec.describe 'Pipelines', :js do
         end
 
         it 'renders a mini pipeline graph' do
-          expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
+          expect(page).to have_selector('[data-testid="pipeline-mini-graph"]')
           expect(page).to have_selector(dropdown_selector)
         end
 

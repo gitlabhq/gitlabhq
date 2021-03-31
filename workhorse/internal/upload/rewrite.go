@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -113,6 +114,10 @@ func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipa
 	multipartFiles.WithLabelValues(rew.filter.Name()).Inc()
 
 	filename := p.FileName()
+
+	if opts.FeatureFlagExtractBase {
+		filename = filepath.Base(filename)
+	}
 
 	if strings.Contains(filename, "/") || filename == "." || filename == ".." {
 		return fmt.Errorf("illegal filename: %q", filename)

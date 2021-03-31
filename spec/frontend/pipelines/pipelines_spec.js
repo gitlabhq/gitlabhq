@@ -515,6 +515,10 @@ describe('Pipelines', () => {
         expect(findEmptyState().text()).toBe('There are currently no pipelines.');
       });
 
+      it('renders filtered search', () => {
+        expect(findFilteredSearch().exists()).toBe(true);
+      });
+
       it('renders tab empty state finished scope', async () => {
         mock.onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } }).reply(200, {
           pipelines: [],
@@ -545,6 +549,10 @@ describe('Pipelines', () => {
         expect(findEmptyState().find(GlButton).attributes('href')).toBe(
           '/help/ci/quick_start/index.md',
         );
+      });
+
+      it('does not render filtered search', () => {
+        expect(findFilteredSearch().exists()).toBe(false);
       });
 
       it('does not render tabs nor buttons', () => {

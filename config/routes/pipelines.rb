@@ -12,7 +12,6 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
 
   member do
     get :stage
-    get :stage_ajax
     post :cancel
     post :retry
     get :builds

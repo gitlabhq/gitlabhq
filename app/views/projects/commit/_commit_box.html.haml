@@ -59,11 +59,8 @@
       - if @last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), @last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
-          - if ::Gitlab::Ci::Features.ci_commit_pipeline_mini_graph_vue_enabled?(@project)
-            .stage-cell
-              .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe } }
-          - else
-            = render 'shared/mini_pipeline_graph', pipeline: @last_pipeline, klass: 'js-commit-pipeline-graph'
+          .stage-cell
+            .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe } }
       - if @last_pipeline.duration
         in
         = time_interval_in_words @last_pipeline.duration

@@ -60,3 +60,11 @@ pre {
 a[href]::after {
   content: none !important;
 }
+
+.with-performance-bar .layout-page {
+  margin-top: 0;
+}
+
+.content-wrapper {
+  margin-top: 0;
+}

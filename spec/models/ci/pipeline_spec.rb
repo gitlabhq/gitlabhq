@@ -3782,6 +3782,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#uses_needs?' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    context 'when the scheduling type is `dag`' do
+      it 'returns true' do
+        create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
+
+        expect(pipeline.uses_needs?).to eq(true)
+      end
+    end
+
+    context 'when the scheduling type is nil or stage' do
+      it 'returns false' do
+        create(:ci_build, pipeline: pipeline, scheduling_type: :stage)
+
+        expect(pipeline.uses_needs?).to eq(false)
+      end
+    end
+  end
+
   describe '#total_size' do
     let(:pipeline) { create(:ci_pipeline) }
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }

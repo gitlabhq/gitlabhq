@@ -54,12 +54,7 @@ export default {
       :file-name="fileName"
       :editor-options="{ readOnly: true }"
     />
-    <div
-      v-else
-      class="file-content code js-syntax-highlight"
-      data-qa-selector="file_content"
-      :class="$options.userColorScheme"
-    >
+    <div v-else class="file-content code js-syntax-highlight" :class="$options.userColorScheme">
       <div class="line-numbers">
         <a
           v-for="line in lineNumbers"
