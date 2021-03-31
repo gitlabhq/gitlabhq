@@ -86,7 +86,7 @@ export default {
       isRequesting: false,
       isResolving: false,
       commentLineStart: {},
-      resolveAsThread: this.glFeatures.removeResolveNote,
+      resolveAsThread: true,
     };
   },
   computed: {
@@ -139,14 +139,9 @@ export default {
       return this.note.isDraft;
     },
     canResolve() {
-      if (this.glFeatures.removeResolveNote && !this.discussionRoot) return false;
+      if (!this.discussionRoot) return false;
 
-      if (this.glFeatures.removeResolveNote) return this.note.current_user.can_resolve_discussion;
-
-      return (
-        this.note.current_user.can_resolve ||
-        (this.note.isDraft && this.note.discussion_id !== null)
-      );
+      return this.note.current_user.can_resolve_discussion;
     },
     lineRange() {
       return this.note.position?.line_range;

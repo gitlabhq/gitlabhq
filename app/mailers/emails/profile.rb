@@ -74,6 +74,18 @@ module Emails
       end
     end
 
+    def ssh_key_expired_email(user, fingerprints)
+      return unless user && user.active?
+
+      @user = user
+      @fingerprints = fingerprints
+      @target_url = profile_keys_url
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email, subject: subject(_("Your SSH key has expired")))
+      end
+    end
+
     def unknown_sign_in_email(user, ip, time)
       @user = user
       @ip = ip

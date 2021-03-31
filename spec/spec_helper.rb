@@ -25,7 +25,7 @@ ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'
 
-require File.expand_path('../config/environment', __dir__)
+require_relative '../config/environment'
 
 require 'rspec/mocks'
 require 'rspec/rails'
@@ -71,6 +71,8 @@ Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_examples/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
+
+require_relative '../tooling/quality/test_level'
 
 quality_level = Quality::TestLevel.new
 

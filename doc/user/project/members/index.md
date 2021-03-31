@@ -78,7 +78,8 @@ want to add.
 ![Search for people](img/add_user_search_people_v13_8.png)
 
 Select the user and the [permission level](../../permissions.md)
-that you'd like to give the user. Note that you can select more than one user.
+that you'd like to give the user. You can add more than one user at a time.
+The Owner role can only be assigned at the group level.
 
 ![Give user permissions](img/add_user_give_permissions_v13_8.png)
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require_relative '../../../tooling/quality/test_level'
 
 RSpec.describe Quality::TestLevel do
   describe '#pattern' do
@@ -197,7 +197,7 @@ RSpec.describe Quality::TestLevel do
     it 'raises an error for an unknown level' do
       expect { subject.level_for('spec/unknown/foo_spec.rb') }
         .to raise_error(described_class::UnknownTestLevelError,
-          %r{Test level for spec/unknown/foo_spec.rb couldn't be set. Please rename the file properly or change the test level detection regexes in .+/lib/quality/test_level.rb.})
+          %r{Test level for spec/unknown/foo_spec.rb couldn't be set. Please rename the file properly or change the test level detection regexes in .+/tooling/quality/test_level.rb.})
     end
   end
 

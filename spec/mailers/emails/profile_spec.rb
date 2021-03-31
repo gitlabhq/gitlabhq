@@ -212,6 +212,57 @@ RSpec.describe Emails::Profile do
     end
   end
 
+  describe 'notification email for expired ssh key' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
+
+    context 'when valid' do
+      subject { Notify.ssh_key_expired_email(user, fingerprints) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /Your SSH key has expired/
+      end
+
+      it 'mentions the ssh keu has expired' do
+        is_expected.to have_body_text /Your SSH keys with the following fingerprints has expired/
+      end
+
+      it 'includes a link to ssh key page' do
+        is_expected.to have_body_text /#{profile_keys_url}/
+      end
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+      end
+    end
+
+    context 'when invalid' do
+      context 'when user does not exist' do
+        it do
+          expect { Notify.ssh_key_expired_email(nil) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+
+      context 'when user is not active' do
+        before do
+          user.block!
+        end
+
+        it do
+          expect { Notify.ssh_key_expired_email(user) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+    end
+  end
+
   describe 'user unknown sign in email' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '169.0.0.1' }

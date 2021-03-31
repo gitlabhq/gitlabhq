@@ -1,0 +1,13 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  = _('Your SSH keys with the following fingerprints has expired:')
+%table
+  %tbody
+    - @fingerprints.each do |fingerprint|
+      %tr
+        %td= fingerprint
+
+%p
+  - ssh_key_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
+  = html_escape(_('You can create a new one or check them in your %{ssh_key_link_start}SSH keys%{ssh_key_link_end} settings.')) % { ssh_key_link_start: ssh_key_link_start, ssh_key_link_end: '</a>'.html_safe }

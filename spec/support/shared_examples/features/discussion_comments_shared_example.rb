@@ -304,7 +304,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           let(:reply_id) { find("#{comments_selector} .note:last-of-type", match: :first)['data-note-id'] }
 
           it 'can be replied to after resolving' do
-            click_button "Resolve thread"
+            find('button[data-qa-selector="resolve_discussion_button"]').click
             wait_for_requests
 
             refresh
@@ -316,7 +316,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           it 'shows resolved thread when toggled' do
             submit_reply('a')
 
-            click_button "Resolve thread"
+            find('button[data-qa-selector="resolve_discussion_button"]').click
             wait_for_requests
 
             expect(page).to have_selector(".note-row-#{note_id}", visible: true)

@@ -18804,9 +18804,6 @@ msgstr ""
 msgid "Mark as ready"
 msgstr ""
 
-msgid "Mark as resolved"
-msgstr ""
-
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
@@ -23298,6 +23295,9 @@ msgid "Prevent users from modifying MR approval rules in merge requests."
 msgstr ""
 
 msgid "Prevent users from modifying MR approval rules in projects and merge requests."
+msgstr ""
+
+msgid "Prevent users from modifying MR approval rules."
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -30900,6 +30900,9 @@ msgstr ""
 msgid "There was an error when subscribing to this label."
 msgstr ""
 
+msgid "There was an error when trying to sync your license. Please verify that your instance is using an active license key."
+msgstr ""
+
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
@@ -34815,6 +34818,12 @@ msgstr ""
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings"
 msgstr ""
 
+msgid "You can create a new one or check them in your %{ssh_key_link_start}SSH keys%{ssh_key_link_end} settings."
+msgstr ""
+
+msgid "You can create a new one or check them in your SSH keys settings %{ssh_key_link}."
+msgstr ""
+
 msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}"
 msgstr ""
 
@@ -35310,10 +35319,16 @@ msgstr ""
 msgid "Your Public Email will be displayed on your public profile."
 msgstr ""
 
+msgid "Your SSH key has expired"
+msgstr ""
+
 msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
+msgstr ""
+
+msgid "Your SSH keys with the following fingerprints has expired:"
 msgstr ""
 
 msgid "Your To-Do List"
@@ -35434,6 +35449,9 @@ msgid "Your license does not support on-call schedules"
 msgstr ""
 
 msgid "Your license is valid from"
+msgstr ""
+
+msgid "Your license was successfully synced."
 msgstr ""
 
 msgid "Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your %{code_open}.gitlab-license%{code_close} file."

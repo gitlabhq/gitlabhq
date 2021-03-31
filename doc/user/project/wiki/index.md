@@ -7,68 +7,61 @@ type: reference, how-to
 
 # Wiki **(FREE)**
 
-A separate system for documentation called Wiki, is built right into each
-GitLab project. It is enabled by default on all new projects and you can find
-it under **Wiki** in your project.
+If you don't want to keep your documentation in your repository, but you do want
+to keep it in the same project as your code, you can use the wiki GitLab provides
+in each GitLab project. Every wiki is a separate Git repository, so you can create
+wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
 
-Wikis are very convenient if you don't want to keep your documentation in your
-repository, but you do want to keep it in the same project where your code
-resides.
-
-You can create Wiki pages in the web interface or
-[locally using Git](#create-or-edit-wiki-pages-locally) since every Wiki is
-a separate Git repository.
-
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5,
-**group wikis** became available. Their usage is similar to project wikis, with a few [limitations](../../group/index.md#group-wikis).
+To access the wiki for a project or group, go to the page for your project or group
+and, in the left sidebar, select **Wiki**. If **Wiki** is not listed in the
+left sidebar, a project administrator has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Create the wiki home page
 
-The first time you visit a Wiki, you are directed to create the Home page.
-The Home page is necessary to be created because it serves as the landing page
-when viewing a Wiki. Complete the **Content** section, and then select
-**Create page**. You can always edit it later, so go ahead and write a welcome
-message.
+When a wiki is created, it is empty. On your first visit, GitLab instructs you
+to create a page to serve as the landing page when a user views the wiki:
 
-![New home page](img/wiki_create_home_page.png)
+1. Select a **Format** for [styling your text](#style-your-wiki-content).
+1. Add a welcome message in the **Content** section. You can always edit it later.
+1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
+   if you don't enter one yourself.
+1. Select **Create page**.
 
 ## Create a new wiki page
 
-NOTE:
-Requires Developer [permissions](../../permissions.md).
+Users with Developer [permissions](../../permissions.md) can create new wiki pages:
 
-Create a new page by selecting the **New page** button that can be found
-in all wiki pages.
+1. Go to the page for your project or group.
+1. In the left sidebar, select **Wiki**.
+1. Select **New page** on this page, or any other wiki page.
+1. Select a [content format](#style-your-wiki-content).
+1. Add a title for your new page. You can specify a full path for the wiki page
+   by using `/` in the title to indicate subdirectories. GitLab creates any missing
+   subdirectories in the path. For example, a title of `docs/my-page` creates a wiki
+   page with a path `/wikis/docs/my-page`.
+1. Add content to your wiki page.
+1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
+   if you don't enter one yourself.
+1. Select **Create page**.
 
-Enter a title for your new wiki page.
+## Style your wiki content
 
-You can specify a full path for the wiki page by using '/' in the
-title to indicate subdirectories. Any missing directories are created
-automatically. For example, a title of `docs/my-page` creates a wiki
-page with a path `/wikis/docs/my-page`.
+GitLab wikis support Markdown, RDoc, AsciiDoc, and Org for content.
 
-After you enter the page name, it's time to fill in its content. GitLab wikis
-support Markdown, RDoc, AsciiDoc, and Org. For Markdown based pages, all the
-[Markdown features](../../markdown.md) are supported and for links there is
-some [wiki specific](../../markdown.md#wiki-specific-markdown) behavior.
-
-In the web interface the commit message is optional, but the GitLab Wiki is
-based on Git and needs a commit message, so one is created for you if you
-don't enter one.
-
-When you're ready, select **Create page** and the new page is created.
-
-![New page](img/wiki_create_new_page.png)
+Wiki pages written in Markdown support all [Markdown features](../../markdown.md),
+and also provide some [wiki-specific behavior](../../markdown.md#wiki-specific-markdown)
+for links.
 
 ### Store attachments for wiki pages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
-Any file uploaded to the wiki with the GitLab
-interface is stored in the wiki Git repository, and is available
-if you clone the wiki repository locally. All uploaded files prior to GitLab
-11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
-repository, you must upload them again.
+When you upload a file to the wiki through the GitLab interface, the file is stored
+in the wiki's Git repository. The file is available to you if you clone the
+wiki repository locally.
+
+Files uploaded to a wiki in GitLab 11.3 and earlier are stored in GitLab itself.
+You must re-upload the files to add them to the wiki's Git repository.
 
 ### Special characters in page titles
 
@@ -226,6 +219,36 @@ Example for `_sidebar` (using Markdown format):
 
 Support for displaying a generated table of contents with a custom side navigation is planned.
 
+## Group wikis **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+
+Group wikis work the same way as project wikis. Their usage is similar to project wikis, with a few limitations.
+
+Group wikis can be edited by members with [Developer permissions](../../permissions.md#group-members-permissions)
+and above.
+
+You can move group wiki repositories by using the [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
+
+There are a few limitations compared to project wikis:
+
+- Git LFS is not supported.
+- Group wikis are not included in global search.
+- Changes to group wikis don't show up in the group's activity feed.
+
+For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
+
+## Enable or disable a project wiki
+
+Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
+can enable or disable the project wiki by following the instructions in
+[Sharing and permissions](../settings/index.md#sharing-and-permissions).
+
+Administrators for self-managed GitLab installs can
+[configure additional wiki settings](../../../administration/wikis/index.md).
+
 ## Resources
 
-- [Group wikis](../../group/index.md#group-wikis)
+- [Wiki settings for administrators](../../../administration/wikis/index.md)
+- [Project wikis API](../../../api/wikis.md)
+- [Group wikis API](../../../api/group_wikis.md)

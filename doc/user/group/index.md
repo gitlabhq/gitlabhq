@@ -20,6 +20,7 @@ Then you can:
   [merge requests](../project/merge_requests/reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group)
   for all projects in the group, together in a single list view.
 - [Bulk edit](../group/bulk_editing/index.md) issues, epics, and merge requests.
+- [Create a wiki](../project/wiki/index.md) for the group.
 
 You can also create [subgroups](subgroups/index.md).
 
@@ -322,25 +323,6 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
 
 Now you can edit the user's permissions from the **Members** page.
 
-## Group wikis **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
-
-Group wikis work the same way as [project wikis](../project/wiki/index.md).
-
-Group wikis can be edited by members with [Developer permissions](../../user/permissions.md#group-members-permissions)
-and above.
-
-You can move group wiki repositories by using the [Group repository storage moves API](../../api/group_repository_storage_moves.md).
-
-There are a few limitations compared to project wikis:
-
-- Git LFS is not supported.
-- Group wikis are not included in global search.
-- Changes to group wikis don't show up in the group's activity feed.
-
-For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
-
 ## Transfer a group
 
 You can transfer groups in the following ways:
@@ -629,6 +611,7 @@ The group's new subgroups have push rules set for them based on either:
 
 ## Related topics
 
+- [Group wikis](../project/wiki/index.md)
 - [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size). **(FREE SELF)**
 - [Repositories analytics](repositories_analytics/index.md): View overall activity of all projects with code coverage. **(PREMIUM)**
 - [Contribution analytics](contribution_analytics/index.md): View the contributions (pushes, merge requests,

@@ -46,6 +46,7 @@ the `author` field. GitLab team members **should not**.
   and with `type` set to `security`.
 - Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
 - Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry. See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
+- Any change that introduces an [Advanced Search migration](elasticsearch.md#creating-a-new-advanced-search-migration) **must** have a changelog entry.
 - Performance improvements **should** have a changelog entry.
 - Changes that need to be documented in the Product Intelligence [Event Dictionary](https://about.gitlab.com/handbook/product/product-intelligence-guide/#event-dictionary)
   also require a changelog entry.

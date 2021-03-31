@@ -9,7 +9,8 @@ type: reference, api
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13372) in GitLab 10.0.
 
-Available only in APIv4.
+The project [wikis](../user/project/wiki/index.md) API is available only in APIv4.
+An API for [group wikis](group_wikis.md) is also available.
 
 ## List wiki pages
 

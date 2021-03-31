@@ -120,8 +120,8 @@ describe('WikiForm', () => {
 
   it.each`
     persisted | titleHelpText                                                                                              | titleHelpLink
-    ${true}   | ${'You can move this page by adding the path to the beginning of the title.'}                              | ${'/help/user/project/wiki/index#moving-a-wiki-page'}
-    ${false}  | ${'You can specify the full path for the new file. We will automatically create any missing directories.'} | ${'/help/user/project/wiki/index#creating-a-new-wiki-page'}
+    ${true}   | ${'You can move this page by adding the path to the beginning of the title.'}                              | ${'/help/user/project/wiki/index#move-a-wiki-page'}
+    ${false}  | ${'You can specify the full path for the new file. We will automatically create any missing directories.'} | ${'/help/user/project/wiki/index#create-a-new-wiki-page'}
   `(
     'shows appropriate title help text and help link for when persisted=$persisted',
     async ({ persisted, titleHelpLink, titleHelpText }) => {

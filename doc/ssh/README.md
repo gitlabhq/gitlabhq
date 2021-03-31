@@ -218,6 +218,7 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    The expiration date is informational only, and does not prevent you from using
    the key. However, administrators can view expiration dates and
    use them for guidance when [deleting keys](../user/admin_area/credentials_inventory.md#delete-a-users-ssh-key).
+   GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
 1. Select **Add key**.
 
 ## Verify that you can connect

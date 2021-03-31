@@ -16,7 +16,7 @@ in the GitLab codebase to conditionally enable features
 and test them.
 
 Features that are developed and merged behind a feature flag
-should not include a changelog entry. The entry should be added either in the merge
+should not include a changelog entry. A changelog entry with `type: added` should be included in the merge
 request removing the feature flag or the merge request where the default value of
 the feature flag is set to enabled. If the feature contains any database migrations, it
 *should* include a changelog entry for the database changes.

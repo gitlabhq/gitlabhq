@@ -39,12 +39,13 @@ usernames. A GitLab administrator can configure the GitLab instance to
 NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner,
-or an instance administrator, who receives all permissions. For more information, see [projects members documentation](project/members/index.md).
+The Owner permission is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
+While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
+For more information, see [projects members documentation](project/members/index.md).
 
 The following table depicts the various user permission levels in a project.
 
-| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner (*10*) |
+| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -170,10 +171,10 @@ The following table depicts the various user permission levels in a project.
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
-| Reposition comments on images (posted by any user)|✓ (*11*) | ✓ (*11*)   |  ✓ (*11*)   | ✓        | ✓      |
+| Reposition comments on images (posted by any user)|✓ (*10*) | ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
-| View project Audit Events                         |         |            |  ✓ (*12*)   | ✓        | ✓      |
+| View project Audit Events                         |         |            |  ✓ (*11*)   | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** |         |            |             | ✓        | ✓      |
 | View 2FA status of members                        |         |            |             | ✓        | ✓      |
@@ -201,7 +202,6 @@ The following table depicts the various user permission levels in a project.
 1. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
 1. For information on eligible approvers for merge requests, see
    [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
-1. Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
 
@@ -209,7 +209,7 @@ The following table depicts the various user permission levels in a project.
 
 ### Wiki and issues
 
-Project features like wiki and issues can be hidden from users depending on
+Project features like [wikis](project/wiki/index.md) and issues can be hidden from users depending on
 which visibility level you select on project settings.
 
 - Disabled: disabled for everyone

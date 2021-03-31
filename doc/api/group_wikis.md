@@ -9,7 +9,8 @@ type: reference, api
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212199) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 
-Available only in APIv4.
+The [group wikis](../user/project/wiki/index.md#group-wikis) API is available only in APIv4.
+An API for [project wikis](wikis.md) is also available.
 
 ## List wiki pages
 

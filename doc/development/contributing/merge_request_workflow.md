@@ -249,6 +249,7 @@ requirements.
 1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
    added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
    with any questions.
+1. The User Experience (UX) for people not using the features isn't negatively affected.
 
 ## Dependencies
 

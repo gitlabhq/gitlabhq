@@ -14,10 +14,6 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
     "a[title=\"#{title}\"][href=\"#{url}\"]"
   end
 
-  before do
-    stub_feature_flags(remove_resolve_note: false)
-  end
-
   describe 'As a user with access to the project' do
     before do
       project.add_maintainer(user)
@@ -39,7 +35,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     context 'resolving the thread' do
       before do
-        click_button 'Resolve thread'
+        find('button[data-qa-selector="resolve_discussion_button"]').click
       end
 
       it 'hides the link for creating a new issue' do

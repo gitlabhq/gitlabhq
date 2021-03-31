@@ -560,6 +560,9 @@ Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvi
 Settings.cron_jobs['user_status_cleanup_batch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['user_status_cleanup_batch_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['user_status_cleanup_batch_worker']['job_class'] = 'UserStatusCleanup::BatchWorker'
+Settings.cron_jobs['ssh_keys_expired_notification_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ssh_keys_expired_notification_worker']['cron'] ||= '0 2 * * *'
+Settings.cron_jobs['ssh_keys_expired_notification_worker']['job_class'] = 'SshKeys::ExpiredNotificationWorker'
 
 Gitlab.com do
   Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})

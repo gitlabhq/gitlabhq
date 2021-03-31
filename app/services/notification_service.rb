@@ -79,6 +79,13 @@ class NotificationService
     mailer.access_token_expired_email(user).deliver_later
   end
 
+  # Notify the user when at least one of their ssh key has expired today
+  def ssh_key_expired(user, fingerprints)
+    return unless user.can?(:receive_notifications)
+
+    mailer.ssh_key_expired_email(user, fingerprints).deliver_later
+  end
+
   # Notify a user when a previously unknown IP or device is used to
   # sign in to their account
   def unknown_sign_in(user, ip, time)

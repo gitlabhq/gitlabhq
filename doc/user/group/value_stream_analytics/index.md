@@ -202,7 +202,12 @@ GitLab allows users to create multiple value streams, hide default stages and cr
 
 Stages are visually depicted as a horizontal process flow. Selecting a stage updates the content below the value stream.
 
-This is enabled by default. If you have a self-managed instance, an
+Hovering over a stage item displays a popover with the following information:
+
+- Start event description for the given stage
+- End event description
+
+Horizontal path navigation is enabled by default. If you have a self-managed instance, an
 administrator can [open a Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md)
 and disable it with the following command:
 

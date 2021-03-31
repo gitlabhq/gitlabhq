@@ -1,9 +1,7 @@
 import { mapGetters } from 'vuex';
 import { sprintf, s__, __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
-  mixins: [glFeatureFlagsMixin()],
   props: {
     discussionId: {
       type: String,
@@ -54,11 +52,7 @@ export default {
     resolveButtonTitle() {
       if (this.isDraft || this.discussionId) return this.resolvedStatusMessage;
 
-      let title = __('Mark as resolved');
-
-      if (this.glFeatures.removeResolveNote) {
-        title = __('Resolve thread');
-      }
+      let title = __('Resolve thread');
 
       if (this.resolvedBy) {
         title = sprintf(__('Resolved by %{name}'), { name: this.resolvedBy.name });

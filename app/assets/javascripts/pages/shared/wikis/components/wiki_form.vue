@@ -40,7 +40,7 @@ export default {
     helpPath() {
       return setUrlFragment(
         this.pageInfo.helpPath,
-        this.pageInfo.persisted ? 'moving-a-wiki-page' : 'creating-a-new-wiki-page',
+        this.pageInfo.persisted ? 'move-a-wiki-page' : 'create-a-new-wiki-page',
       );
     },
     commitMessageI18n() {
