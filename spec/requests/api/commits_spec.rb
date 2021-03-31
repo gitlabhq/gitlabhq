@@ -1439,6 +1439,22 @@ RSpec.describe API::Commits do
           it_behaves_like 'ref comments'
         end
       end
+
+      context 'multiple notes' do
+        let!(:note) { create(:diff_note_on_commit, project: project) }
+        let(:commit) { note.commit }
+        let(:commit_id) { note.commit_id }
+
+        it 'are returned without N + 1' do
+          get api(route, current_user) # warm up the cache
+
+          control_count = ActiveRecord::QueryRecorder.new { get api(route, current_user) }.count
+
+          create(:diff_note_on_commit, project: project, author: create(:user))
+
+          expect { get api(route, current_user) }.not_to exceed_query_limit(control_count)
+        end
+      end
     end
 
     context 'when the commit is present on two projects' do

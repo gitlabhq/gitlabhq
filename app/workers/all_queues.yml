@@ -187,6 +187,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:database_batched_background_migration
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:environments_auto_stop_cron
   :feature_category: :continuous_delivery
   :has_external_dependencies:

@@ -23,6 +23,10 @@ module Gitlab
           finished: 3
         }
 
+        def self.active_migration
+          active.queue_order.first
+        end
+
         def interval_elapsed?
           last_job.nil? || last_job.created_at <= Time.current - interval
         end

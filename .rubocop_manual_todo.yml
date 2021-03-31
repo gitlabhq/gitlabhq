@@ -2275,7 +2275,6 @@ Gitlab/NamespacedClass:
     - 'app/models/application_setting/term.rb'
     - 'app/models/approval.rb'
     - 'app/models/audit_event.rb'
-    - 'app/models/audit_event_archived.rb'
     - 'app/models/authentication_event.rb'
     - 'app/models/award_emoji.rb'
     - 'app/models/badge.rb'

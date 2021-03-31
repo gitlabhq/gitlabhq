@@ -8,6 +8,16 @@ module Gitlab
           @migration_wrapper = migration_wrapper
         end
 
+        # Runs the next batched_job for a batched_background_migration.
+        #
+        # The batch bounds of the next job are calculated at runtime, based on the migration
+        # configuration and the bounds of the most recently created batched_job. Updating the
+        # migration configuration will cause future jobs to use the updated batch sizes.
+        #
+        # The job instance will automatically receive a set of arguments based on the migration
+        # configuration. For more details, see the BatchedMigrationWrapper class.
+        #
+        # Note that this method is primarily intended to called by a scheduled worker.
         def run_migration_job(active_migration)
           if next_batched_job = create_next_batched_job!(active_migration)
             migration_wrapper.perform(next_batched_job)
@@ -16,7 +26,15 @@ module Gitlab
           end
         end
 
+        # Runs all remaining batched_jobs for a batched_background_migration.
+        #
+        # This method is intended to be used in a test/dev environment to execute the background
+        # migration inline. It should NOT be used in a real environment for any non-trivial migrations.
         def run_entire_migration(migration)
+          unless Rails.env.development? || Rails.env.test?
+            raise 'this method is not intended for use in real environments'
+          end
+
           while migration.active?
             run_migration_job(migration)
 

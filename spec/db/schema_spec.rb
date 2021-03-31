@@ -87,7 +87,6 @@ RSpec.describe 'Database schema' do
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
-    web_hooks: %w[group_id],
     web_hook_logs_part_0c5294f417: %w[web_hook_id]
   }.with_indifferent_access.freeze
 

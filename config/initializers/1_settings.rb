@@ -565,6 +565,9 @@ Gitlab.com do
   Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 9 * * *'
   Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['job_class'] = 'Namespaces::InProductMarketingEmailsWorker'
+  Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['batched_background_migrations_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Database::BatchedBackgroundMigrationWorker'
 end
 
 Gitlab.ee do

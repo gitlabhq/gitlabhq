@@ -4,6 +4,13 @@ module Gitlab
   module Database
     module BackgroundMigration
       class BatchedMigrationWrapper
+        # Wraps the execution of a batched_background_migration.
+        #
+        # Updates the job's tracking records with the status of the migration
+        # when starting and finishing execution, and optionally saves batch_metrics
+        # the migration provides, if any are given.
+        #
+        # The job's batch_metrics are serialized to JSON for storage.
         def perform(batch_tracking_record)
           start_tracking_execution(batch_tracking_record)
 
@@ -34,6 +41,10 @@ module Gitlab
             tracking_record.migration_column_name,
             tracking_record.sub_batch_size,
             *tracking_record.migration_job_arguments)
+
+          if job_instance.respond_to?(:batch_metrics)
+            tracking_record.metrics = job_instance.batch_metrics
+          end
         end
 
         def finish_tracking_execution(tracking_record)

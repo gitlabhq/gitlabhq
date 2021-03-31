@@ -34,10 +34,16 @@ module Gitlab
         parent_batch_relation = relation_scoped_to_range(batch_table, batch_column, start_id, end_id)
 
         parent_batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
-          sub_batch.update_all("#{quoted_copy_to}=#{quoted_copy_from}")
+          batch_metrics.time_operation(:update_all) do
+            sub_batch.update_all("#{quoted_copy_to}=#{quoted_copy_from}")
+          end
 
           sleep(PAUSE_SECONDS)
         end
+      end
+
+      def batch_metrics
+        @batch_metrics ||= Gitlab::Database::BackgroundMigration::BatchMetrics.new
       end
 
       private

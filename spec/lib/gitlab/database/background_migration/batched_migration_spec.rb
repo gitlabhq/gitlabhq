@@ -29,6 +29,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.active_migration' do
+    let!(:migration1) { create(:batched_background_migration, :finished) }
+    let!(:migration2) { create(:batched_background_migration, :active) }
+    let!(:migration3) { create(:batched_background_migration, :active) }
+
+    it 'returns the first active migration according to queue order' do
+      expect(described_class.active_migration).to eq(migration2)
+    end
+  end
+
   describe '#interval_elapsed?' do
     context 'when the migration has no last_job' do
       let(:batched_migration) { build(:batched_background_migration) }

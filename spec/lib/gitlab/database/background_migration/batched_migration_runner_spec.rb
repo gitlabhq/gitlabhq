@@ -139,6 +139,19 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
   end
 
   describe '#run_entire_migration' do
+    context 'when not in a development or test environment' do
+      it 'raises an error' do
+        environment = double('environment', development?: false, test?: false)
+        migration = build(:batched_background_migration, :finished)
+
+        allow(Rails).to receive(:env).and_return(environment)
+
+        expect do
+          runner.run_entire_migration(migration)
+        end.to raise_error('this method is not intended for use in real environments')
+      end
+    end
+
     context 'when the given migration is not active' do
       it 'does not create and run migration jobs' do
         migration = build(:batched_background_migration, :finished)

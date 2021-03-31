@@ -109,6 +109,7 @@ class Note < ApplicationRecord
   scope :with_updated_at, ->(time) { where(updated_at: time) }
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
+  scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, -> do
     includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              { system_note_metadata: :description_version }, :note_diff_file, :diff_note_positions, :suggestions)

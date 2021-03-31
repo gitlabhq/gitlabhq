@@ -64,5 +64,13 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
       expect(test_table.where('name is NULL and name_convert_to_text is NULL').pluck(:id)).to contain_exactly(15)
       expect(test_table.where("name_convert_to_text = 'no name'").count).to eq(0)
     end
+
+    it 'tracks timings of queries' do
+      expect(subject.batch_metrics.timings).to be_empty
+
+      subject.perform(10, 20, table_name, 'id', sub_batch_size, 'name', 'name_convert_to_text')
+
+      expect(subject.batch_metrics.timings[:update_all]).not_to be_empty
+    end
   end
 end
