@@ -220,8 +220,11 @@ Example for source installs:
 incoming_email:
     enabled: true
 
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    # The email address including the %{key} placeholder that will be replaced to reference the
+    # item being replied to. This %{key} should be included in its entirety within the email
+    # address and not replaced by another value.
+    # For example: emailadress+%{key}@gmail.com.
+    # The placeholder must appear in the "user" part of the address (before the `@`).
     address: "incoming+%{key}@gitlab.example.com"
 
     # Email account username

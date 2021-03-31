@@ -447,6 +447,10 @@ class Issue < ApplicationRecord
     issue_email_participants.pluck(IssueEmailParticipant.arel_table[:email].lower)
   end
 
+  def issue_assignee_user_ids
+    issue_assignees.pluck(:user_id)
+  end
+
   private
 
   # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id

@@ -1470,13 +1470,19 @@ msgstr ""
 msgid "API version"
 msgstr ""
 
+msgid "APIFuzzing|$VariableWithPassword"
+msgstr ""
+
+msgid "APIFuzzing|$VariableWithUsername"
+msgstr ""
+
+msgid "APIFuzzing|/folder/example_file.json"
+msgstr ""
+
 msgid "APIFuzzing|API Fuzzing Configuration"
 msgstr ""
 
-msgid "APIFuzzing|Authentication is handled by providing HTTP basic authentication token as a header or cookie. %{linkStart}More information%{linkEnd}."
-msgstr ""
-
-msgid "APIFuzzing|Base URL of API fuzzing target."
+msgid "APIFuzzing|Base URL of API testing target. For example, http://www.example.com."
 msgstr ""
 
 msgid "APIFuzzing|Choose a method"
@@ -1486,6 +1492,9 @@ msgid "APIFuzzing|Choose a profile"
 msgstr ""
 
 msgid "APIFuzzing|Code snippet for the API Fuzzing configuration"
+msgstr ""
+
+msgid "APIFuzzing|Configure HTTP basic authentication values. Other authentication methods are supported. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "APIFuzzing|Copy code and open .gitlab-ci.yml file"
@@ -1500,10 +1509,10 @@ msgstr ""
 msgid "APIFuzzing|Enable authentication"
 msgstr ""
 
-msgid "APIFuzzing|Ex: $TestPassword"
+msgid "APIFuzzing|Enter the name of the variable containing the password. For example, $VariableWithPassword."
 msgstr ""
 
-msgid "APIFuzzing|Ex: $TestUsername"
+msgid "APIFuzzing|Enter the name of the variable containing the username. For example, $VariableWithUsername."
 msgstr ""
 
 msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz"
@@ -1512,19 +1521,13 @@ msgstr ""
 msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.har"
 msgstr ""
 
-msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.json"
+msgid "APIFuzzing|File path containing APIs to be tested. For example, /folder/example_file.json."
 msgstr ""
 
 msgid "APIFuzzing|Generate code snippet"
 msgstr ""
 
 msgid "APIFuzzing|HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
-msgstr ""
-
-msgid "APIFuzzing|Instead of entering the password directly, enter the key of the CI variable set to the password."
-msgstr ""
-
-msgid "APIFuzzing|Instead of entering the username directly, enter the key of the CI variable set to the username."
 msgstr ""
 
 msgid "APIFuzzing|Make sure your credentials are secured"
@@ -1534,6 +1537,9 @@ msgid "APIFuzzing|Password for basic authentication"
 msgstr ""
 
 msgid "APIFuzzing|Postman collections are a group of saved requests you can organize into folders."
+msgstr ""
+
+msgid "APIFuzzing|Predefined profiles"
 msgstr ""
 
 msgid "APIFuzzing|Scan mode"
@@ -1564,9 +1570,6 @@ msgid "APIFuzzing|Use this tool to generate API fuzzing configuration YAML to co
 msgstr ""
 
 msgid "APIFuzzing|Username for basic authentication"
-msgstr ""
-
-msgid "APIFuzzing|We recommend that you review the JSON specifications file before adding it to a repository."
 msgstr ""
 
 msgid "APIFuzzing|You may need a maintainer's help to secure your credentials."
@@ -12501,9 +12504,6 @@ msgstr ""
 msgid "Evidence collection"
 msgstr ""
 
-msgid "Ex: Example.com"
-msgstr ""
-
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
@@ -21698,12 +21698,6 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-msgid "Open API"
-msgstr ""
-
-msgid "Open API specification file path"
-msgstr ""
-
 msgid "Open Selection"
 msgstr ""
 
@@ -21732,6 +21726,12 @@ msgid "Open sidebar"
 msgstr ""
 
 msgid "Open: %{open}"
+msgstr ""
+
+msgid "OpenAPI"
+msgstr ""
+
+msgid "OpenAPI specification file path"
 msgstr ""
 
 msgid "Opened"
@@ -36105,6 +36105,9 @@ msgid "help"
 msgstr ""
 
 msgid "http:"
+msgstr ""
+
+msgid "http://www.example.com"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
