@@ -1,5 +1,0 @@
----
-title: Refactor MimeMagic calls to new MimeType class
-merge_request: 57421
-author:
-type: other

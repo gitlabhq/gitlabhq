@@ -11,10 +11,11 @@ module Gitlab
     attr_reader :user, :push_ability
     attr_accessor :container
 
-    def initialize(user, container: nil, push_ability: :push_code)
+    def initialize(user, container: nil, push_ability: :push_code, skip_collaboration_check: false)
       @user = user
       @container = container
       @push_ability = push_ability
+      @skip_collaboration_check = skip_collaboration_check
     end
 
     def can_do_action?(action)
@@ -87,6 +88,8 @@ module Gitlab
 
     private
 
+    attr_reader :skip_collaboration_check
+
     def can_push?
       user.can?(push_ability, container)
     end
@@ -98,6 +101,8 @@ module Gitlab
     end
 
     def branch_allows_collaboration_for?(ref)
+      return false if skip_collaboration_check
+
       # Checking for an internal project or group to prevent an infinite loop:
       # https://gitlab.com/gitlab-org/gitlab/issues/36805
       (!project.internal? && project.branch_allows_collaboration?(user, ref))
