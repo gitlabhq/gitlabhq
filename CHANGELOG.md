@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.10.2 (2021-04-01)
+
+### Fixed (1 change)
+
+- Fixed rendering of the image blobs. !57479
+
+### Added (1 change)
+
+- Improve performance for composer v2 clients. !55169
+
+
 ## 13.10.1 (2021-03-31)
 
 ### Security (6 changes)
