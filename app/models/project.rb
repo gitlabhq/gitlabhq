@@ -519,7 +519,7 @@ class Project < ApplicationRecord
   scope :with_packages, -> { joins(:packages) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
-  scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :joined, ->(user) { where.not(namespace_id: user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }

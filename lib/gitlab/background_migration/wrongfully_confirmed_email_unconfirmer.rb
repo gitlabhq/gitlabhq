@@ -27,7 +27,7 @@ module Gitlab
           joins(:user)
             .merge(UserModel.active)
             .where(id: (start_id..stop_id))
-            .where('emails.confirmed_at IS NOT NULL')
+            .where.not('emails.confirmed_at' => nil)
             .where('emails.confirmed_at = users.confirmed_at')
             .where('emails.email <> users.email')
             .where('NOT EXISTS (SELECT 1 FROM user_synced_attributes_metadata WHERE user_id=users.id AND email_synced IS true)')

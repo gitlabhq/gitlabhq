@@ -232,8 +232,6 @@ Rails/SaveBang:
     - 'spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'spec/lib/after_commit_queue_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'
-    - 'spec/lib/banzai/reference_parser/external_issue_parser_spec.rb'
-    - 'spec/lib/banzai/reference_redactor_spec.rb'
     - 'spec/lib/gitlab/alerting/alert_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/records_fetcher_spec.rb'
     - 'spec/lib/gitlab/auth/ldap/user_spec.rb'

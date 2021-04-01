@@ -28,7 +28,7 @@ module Ci
 
       pipeline.reset_ancestor_bridges!
 
-      MergeRequests::AddTodoWhenBuildFailsService
+      ::MergeRequests::AddTodoWhenBuildFailsService
         .new(project, current_user)
         .close_all(pipeline)
 

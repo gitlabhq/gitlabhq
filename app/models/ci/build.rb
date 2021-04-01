@@ -93,8 +93,7 @@ module Ci
     validates :ref, presence: true
 
     scope :not_interruptible, -> do
-      joins(:metadata).where('ci_builds_metadata.id NOT IN (?)',
-        Ci::BuildMetadata.scoped_build.with_interruptible.select(:id))
+      joins(:metadata).where.not('ci_builds_metadata.id' => Ci::BuildMetadata.scoped_build.with_interruptible.select(:id))
     end
 
     scope :unstarted, -> { where(runner_id: nil) }

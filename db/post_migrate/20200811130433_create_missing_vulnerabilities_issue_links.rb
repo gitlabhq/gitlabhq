@@ -18,11 +18,11 @@ class CreateMissingVulnerabilitiesIssueLinks < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    VulnerabilitiesFeedback.where('issue_id IS NOT NULL').each_batch do |relation|
+    VulnerabilitiesFeedback.where.not(issue_id: nil).each_batch do |relation|
       timestamp = Time.now
       issue_links = relation
         .joins("JOIN vulnerability_occurrences vo ON vo.project_id = vulnerability_feedback.project_id AND vo.report_type = vulnerability_feedback.category AND encode(vo.project_fingerprint, 'hex') = vulnerability_feedback.project_fingerprint")
-        .where('vo.vulnerability_id IS NOT NULL')
+        .where.not('vo.vulnerability_id' => nil)
         .pluck(:vulnerability_id, :issue_id)
         .map do |v_id, i_id|
           {

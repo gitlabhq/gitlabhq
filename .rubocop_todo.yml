@@ -640,11 +640,6 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: false
 
-# Offense count: 21
-# Cop supports --auto-correct.
-Rails/WhereNot:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Security/YAMLLoad:

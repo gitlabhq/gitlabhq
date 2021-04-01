@@ -44,7 +44,7 @@ module Ci
       next if position.present?
 
       self.position = statuses.select(:stage_idx)
-        .where('stage_idx IS NOT NULL')
+        .where.not(stage_idx: nil)
         .group(:stage_idx)
         .order('COUNT(*) DESC')
         .first&.stage_idx.to_i

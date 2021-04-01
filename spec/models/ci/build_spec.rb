@@ -3582,10 +3582,10 @@ RSpec.describe Ci::Build do
   end
 
   describe 'state transition when build fails' do
-    let(:service) { MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
+    let(:service) { ::MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
 
     before do
-      allow(MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).and_return(service)
+      allow(::MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).and_return(service)
       allow(service).to receive(:close)
     end
 
@@ -3670,15 +3670,42 @@ RSpec.describe Ci::Build do
         subject.drop!
       end
 
-      it 'creates a todo' do
-        project.add_developer(user)
+      context 'when async_add_build_failure_todo flag enabled' do
+        it 'creates a todo async', :sidekiq_inline do
+          project.add_developer(user)
 
-        expect_next_instance_of(TodoService) do |todo_service|
-          expect(todo_service)
-            .to receive(:merge_request_build_failed).with(merge_request)
+          expect_next_instance_of(TodoService) do |todo_service|
+            expect(todo_service)
+              .to receive(:merge_request_build_failed).with(merge_request)
+          end
+
+          subject.drop!
         end
 
-        subject.drop!
+        it 'does not create a sync todo' do
+          project.add_developer(user)
+
+          expect(TodoService).not_to receive(:new)
+
+          subject.drop!
+        end
+      end
+
+      context 'when async_add_build_failure_todo flag disabled' do
+        before do
+          stub_feature_flags(async_add_build_failure_todo: false)
+        end
+
+        it 'creates a todo sync' do
+          project.add_developer(user)
+
+          expect_next_instance_of(TodoService) do |todo_service|
+            expect(todo_service)
+              .to receive(:merge_request_build_failed).with(merge_request)
+          end
+
+          subject.drop!
+        end
       end
     end
 

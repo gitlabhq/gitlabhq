@@ -37,6 +37,10 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
     ExpirePipelineCacheWorker.perform_async(build.pipeline_id)
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
 
+    if build.failed? && Feature.enabled?(:async_add_build_failure_todo, build.project, default_enabled: :yaml)
+      ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)
+    end
+
     ##
     # We want to delay sending a build trace to object storage operation to
     # validate that this fixes a race condition between this and flushing live

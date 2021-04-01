@@ -1790,28 +1790,14 @@ RSpec.describe User do
 
     context 'when user has running CI pipelines' do
       let(:service) { double }
+      let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
 
-      context 'with abort_user_pipelines_on_block feature enabled' do
-        let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
+      it 'aborts all running pipelines and related jobs' do
+        expect(user).to receive(:pipelines).and_return(pipelines)
+        expect(Ci::AbortPipelinesService).to receive(:new).and_return(service)
+        expect(service).to receive(:execute).with(pipelines)
 
-        it 'aborts all running pipelines and related jobs' do
-          stub_feature_flags(abort_user_pipelines_on_block: true)
-          expect(user).to receive(:pipelines).and_return(pipelines)
-          expect(Ci::AbortPipelinesService).to receive(:new).and_return(service)
-          expect(service).to receive(:execute).with(pipelines)
-
-          user.block
-        end
-      end
-
-      context 'with abort_user_pipelines_on_block feature disabled' do
-        it 'cancels all running pipelines and related jobs' do
-          stub_feature_flags(abort_user_pipelines_on_block: false)
-          expect(Ci::CancelUserPipelinesService).to receive(:new).and_return(service)
-          expect(service).to receive(:execute).with(user)
-
-          user.block
-        end
+        user.block
       end
     end
 

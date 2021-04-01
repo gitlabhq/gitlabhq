@@ -218,7 +218,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
       stub_const("#{described_class}::TRACKS", { bar: :git_write })
     end
 
-    it { expect { subject }.to raise_error(NotImplementedError, 'Track foo not defined') }
+    it { expect { subject }.to raise_error(ArgumentError, 'Track foo not defined') }
   end
 
   context 'when group is a sub-group' do

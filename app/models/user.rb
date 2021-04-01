@@ -353,12 +353,7 @@ class User < ApplicationRecord
     # this state transition object in order to do a rollback.
     # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
-      if Feature.enabled?(:abort_user_pipelines_on_block, user)
-        Ci::AbortPipelinesService.new.execute(user.pipelines)
-      else
-        Ci::CancelUserPipelinesService.new.execute(user)
-      end
-
+      Ci::AbortPipelinesService.new.execute(user.pipelines)
       Ci::DisableUserPipelineSchedulesService.new.execute(user)
     end
     # rubocop: enable CodeReuse/ServiceClass
@@ -1041,7 +1036,7 @@ class User < ApplicationRecord
       [
         Project.where(namespace: namespace),
         Project.joins(:project_authorizations)
-          .where("projects.namespace_id <> ?", namespace.id)
+          .where.not('projects.namespace_id' => namespace.id)
           .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
       ],
       remove_duplicates: false

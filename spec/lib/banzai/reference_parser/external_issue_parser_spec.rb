@@ -21,7 +21,7 @@ RSpec.describe Banzai::ReferenceParser::ExternalIssueParser do
 
       levels.each do |level|
         it "creates reference when the feature is #{level}" do
-          project.project_feature.update(issues_access_level: level)
+          project.project_feature.update!(issues_access_level: level)
 
           visible_nodes = subject.nodes_visible_to_user(user, [link])
 

@@ -24110,40 +24110,40 @@ msgstr ""
 msgid "ProjectService|Enter new password"
 msgstr ""
 
-msgid "ProjectService|Event will be triggered by a push to the repository"
+msgid "ProjectService|Event triggered when a commit is created or updated."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a commit is created/updated"
+msgid "ProjectService|Event triggered when a confidential issue is created, updated, or closed."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a confidential issue is created/updated/closed"
+msgid "ProjectService|Event triggered when a deployment starts or finishes."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a deployment starts or finishes"
+msgid "ProjectService|Event triggered when a merge request is created, updated, or merged."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a merge request is created/updated/merged"
+msgid "ProjectService|Event triggered when a new tag is pushed to the repository."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a new tag is pushed to the repository"
+msgid "ProjectService|Event triggered when a new, unique alert is recorded."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a new, unique alert is recorded"
+msgid "ProjectService|Event triggered when a pipeline status changes."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a pipeline status changes"
+msgid "ProjectService|Event triggered when a wiki page is created or updated."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a wiki page is created/updated"
+msgid "ProjectService|Event triggered when an issue is created, updated, or closed."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when an issue is created/updated/closed"
+msgid "ProjectService|Event triggered when someone adds a comment on a confidential issue."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when someone adds a comment"
+msgid "ProjectService|Event triggered when someone adds a comment."
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when someone adds a comment on a confidential issue"
+msgid "ProjectService|Event triggered when someone pushes to the repository."
 msgstr ""
 
 msgid "ProjectService|Issue URL"

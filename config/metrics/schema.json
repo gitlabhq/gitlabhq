@@ -5,6 +5,10 @@
     "key_path": {
       "type": "string"
     },
+    "name": {
+      "type": ["string", "null"],
+      "pattern": "^([a-z]+_)*[a-z]+$"
+    },
     "description": {
       "type": "string"
     },

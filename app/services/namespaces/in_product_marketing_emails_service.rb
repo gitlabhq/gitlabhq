@@ -27,7 +27,7 @@ module Namespaces
     end
 
     def execute
-      raise NotImplementedError, "Track #{track} not defined" unless TRACKS.key?(track)
+      raise ArgumentError, "Track #{track} not defined" unless TRACKS.key?(track)
 
       groups_for_track.each_batch do |groups|
         groups.each do |group|

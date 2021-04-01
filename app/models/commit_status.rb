@@ -56,6 +56,7 @@ class CommitStatus < ApplicationRecord
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :eager_load_pipeline, -> { eager_load(:pipeline, project: { namespace: :route }) }
+  scope :with_pipeline, -> { joins(:pipeline) }
 
   scope :for_project_paths, -> (paths) do
     where(project: Project.where_full_path_in(Array(paths)))
@@ -180,6 +181,7 @@ class CommitStatus < ApplicationRecord
     end
 
     after_transition any => :failed do |commit_status|
+      next if Feature.enabled?(:async_add_build_failure_todo, commit_status.project, default_enabled: :yaml)
       next unless commit_status.project
 
       # rubocop: disable CodeReuse/ServiceClass

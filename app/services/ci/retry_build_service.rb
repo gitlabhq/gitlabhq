@@ -21,7 +21,7 @@ module Ci
 
         Gitlab::OptimisticLocking.retry_lock(new_build, name: 'retry_build', &:enqueue)
 
-        MergeRequests::AddTodoWhenBuildFailsService
+        ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project, current_user)
           .close(new_build)
       end

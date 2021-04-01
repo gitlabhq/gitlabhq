@@ -2,7 +2,7 @@
 
 class MicrosoftTeamsService < ChatNotificationService
   def title
-    'Microsoft Teams Notification'
+    'Microsoft Teams notifications'
   end
 
   def description
@@ -14,13 +14,7 @@ class MicrosoftTeamsService < ChatNotificationService
   end
 
   def help
-    'This service sends notifications about projects events to Microsoft Teams channels.<br />
-    To set up this service:
-    <ol>
-      <li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors/connectors-using#setting-up-a-custom-incoming-webhook">Setup a custom Incoming Webhook using Office 365 Connectors For Microsoft Teams</a>.</li>
-      <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
-      <li>Select events below to enable notifications.</li>
-    </ol>'
+    '<p>Use this service to send notifications about events in GitLab projects to your Microsoft Teams channels. <a href="https://docs.gitlab.com/ee/user/project/integrations/microsoft_teams.html">How do I configure this integration?</a></p>'
   end
 
   def webhook_placeholder
@@ -40,8 +34,8 @@ class MicrosoftTeamsService < ChatNotificationService
 
   def default_fields
     [
-      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
+      { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}" },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'If selected, successful pipelines do not trigger a notification event.' },
       { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
     ]
   end

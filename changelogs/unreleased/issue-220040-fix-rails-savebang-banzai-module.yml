@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang Rubocop offenses for banzai modules
+merge_request: 58108
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

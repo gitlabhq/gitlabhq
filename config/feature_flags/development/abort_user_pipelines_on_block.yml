@@ -1,8 +1,0 @@
----
-name: abort_user_pipelines_on_block
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56126
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324045
-milestone: '13.10'
-type: development
-group: group::memory
-default_enabled: false

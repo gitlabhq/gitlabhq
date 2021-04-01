@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::CodeStageStart do
 
     other_merge_request = create(:merge_request, source_project: project, source_branch: 'a', target_branch: 'master')
 
-    records = subject.apply_query_customization(MergeRequest.all).where('merge_requests_closing_issues.issue_id IS NOT NULL')
+    records = subject.apply_query_customization(MergeRequest.all).where.not('merge_requests_closing_issues.issue_id' => nil)
     expect(records).to eq([merge_request])
     expect(records).not_to include(other_merge_request)
   end
