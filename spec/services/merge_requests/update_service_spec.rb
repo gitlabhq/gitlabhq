@@ -948,18 +948,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
-        opts = {
-          title: 'Awesome merge_request',
-          description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}",
-          source_branch: 'feature',
-          target_branch: 'master',
-          force_remove_source_branch: '1'
-        }
-
-        merge_request = MergeRequests::CreateService.new(project, user, opts).execute
-
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+        create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
+        create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
 
         service = described_class.new(project, user, description: "not closing any issues")
         allow(service).to receive(:execute_hooks)

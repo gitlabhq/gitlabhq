@@ -47,16 +47,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           .to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
-      it 'does not creates todos' do
-        attributes = {
-          project: project,
-          target_id: merge_request.id,
-          target_type: merge_request.class.name
-        }
-
-        expect(Todo.where(attributes).count).to be_zero
-      end
-
       it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do
         attributes = {
           action: :created,
@@ -113,20 +103,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it { expect(merge_request.assignees).to eq([user2]) }
-
-        it 'creates a todo for new assignee' do
-          attributes = {
-            project: project,
-            author: user,
-            user: user2,
-            target_id: merge_request.id,
-            target_type: merge_request.class.name,
-            action: Todo::ASSIGNED,
-            state: :pending
-          }
-
-          expect(Todo.where(attributes).count).to eq 1
-        end
       end
 
       context 'when reviewer is assigned' do
@@ -141,20 +117,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it { expect(merge_request.reviewers).to eq([user2]) }
-
-        it 'creates a todo for new reviewer' do
-          attributes = {
-            project: project,
-            author: user,
-            user: user2,
-            target_id: merge_request.id,
-            target_type: merge_request.class.name,
-            action: Todo::REVIEW_REQUESTED,
-            state: :pending
-          }
-
-          expect(Todo.where(attributes).count).to eq 1
-        end
 
         it 'invalidates counter cache for reviewers', :use_clean_rails_memory_store_caching do
           expect { merge_request }
@@ -328,12 +290,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
       end
 
-      it 'increments the usage data counter of create event' do
-        counter = Gitlab::UsageDataCounters::MergeRequestCounter
-
-        expect { service.execute }.to change { counter.read(:create) }.by(1)
-      end
-
       context 'after_save callback to store_mentions' do
         let(:labels) { create_pair(:label, project: project) }
         let(:milestone) { create(:milestone, project: project) }
@@ -494,35 +450,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'while saving references to issues that the created merge request closes' do
-      let(:first_issue) { create(:issue, project: project) }
-      let(:second_issue) { create(:issue, project: project) }
-
-      let(:opts) do
-        {
-          title: 'Awesome merge_request',
-          source_branch: 'feature',
-          target_branch: 'master',
-          force_remove_source_branch: '1'
-        }
-      end
-
-      before do
-        project.add_maintainer(user)
-        project.add_developer(user2)
-      end
-
-      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
-        issue_closing_opts = opts.merge(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
-        service = described_class.new(project, user, issue_closing_opts)
-        allow(service).to receive(:execute_hooks)
-        merge_request = service.execute
-
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
-      end
-    end
-
     context 'when source and target projects are different' do
       let(:target_project) { fork_project(project, nil, repository: true) }
 
@@ -569,14 +496,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           merge_request = described_class.new(project, user, opts).execute
 
           expect(merge_request).to be_persisted
-        end
-
-        it 'calls MergeRequests::LinkLfsObjectsService#execute', :sidekiq_might_not_need_inline do
-          expect_next_instance_of(MergeRequests::LinkLfsObjectsService) do |service|
-            expect(service).to receive(:execute).with(instance_of(MergeRequest))
-          end
-
-          described_class.new(project, user, opts).execute
         end
 
         it 'does not create the merge request when the target project is archived' do

@@ -19,7 +19,7 @@ RSpec.describe 'The group page' do
       expect(page).to have_link('Details')
       expect(page).to have_link('Activity')
       expect(page).to have_link('Issues')
-      expect(page).to have_link('Merge Requests')
+      expect(page).to have_link('Merge requests')
       expect(page).to have_link('Members')
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe 'The group page' do
         expect(page).not_to have_link('Contribution')
 
         expect(page).not_to have_link('Issues')
-        expect(page).not_to have_link('Merge Requests')
+        expect(page).not_to have_link('Merge requests')
         expect(page).to have_link('Members')
       end
     end

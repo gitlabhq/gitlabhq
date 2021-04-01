@@ -24,6 +24,16 @@ module MergeRequests
       merge_request.create_cross_references!(current_user)
 
       OnboardingProgressService.new(merge_request.target_project.namespace).execute(action: :merge_request_created)
+
+      todo_service.new_merge_request(merge_request, current_user)
+      merge_request.cache_merge_request_closes_issues!(current_user)
+
+      Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
+      link_lfs_objects(merge_request)
+    end
+
+    def link_lfs_objects(merge_request)
+      LinkLfsObjectsService.new(merge_request.target_project).execute(merge_request)
     end
   end
 end

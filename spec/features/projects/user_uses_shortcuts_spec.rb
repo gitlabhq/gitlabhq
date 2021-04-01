@@ -151,7 +151,7 @@ RSpec.describe 'User uses shortcuts', :js do
       find('body').native.send_key('g')
       find('body').native.send_key('m')
 
-      expect(page).to have_active_navigation('Merge Requests')
+      expect(page).to have_active_navigation('Merge requests')
     end
   end
 

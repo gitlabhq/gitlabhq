@@ -1,5 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import { createStore } from '~/mr_notes/stores';
@@ -9,12 +10,17 @@ import diffsMockData from '../mock_data/merge_request_diffs';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
+const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
+
 describe('CompareVersions', () => {
   let wrapper;
   let store;
   const targetBranchName = 'tmp-wine-dev';
+  const { commit } = getDiffWithCommit();
 
-  const createWrapper = (props) => {
+  const createWrapper = (props = {}, commitArgs = {}) => {
+    store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
     wrapper = mount(CompareVersionsComponent, {
       localVue,
       store,
@@ -28,6 +34,11 @@ describe('CompareVersions', () => {
   const findLimitedContainer = () => wrapper.find('.container-limited.limit-container-width');
   const findCompareSourceDropdown = () => wrapper.find('.mr-version-dropdown');
   const findCompareTargetDropdown = () => wrapper.find('.mr-version-compare-dropdown');
+  const getCommitNavButtonsElement = () => wrapper.find('.commit-nav-buttons');
+  const getNextCommitNavElement = () =>
+    getCommitNavButtonsElement().find('.btn-group > *:last-child');
+  const getPrevCommitNavElement = () =>
+    getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
   beforeEach(() => {
     store = createStore();
@@ -159,6 +170,126 @@ describe('CompareVersions', () => {
     it('does not render compare dropdowns', () => {
       expect(findCompareSourceDropdown().exists()).toBe(false);
       expect(findCompareTargetDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('without neighbor commits', () => {
+    beforeEach(() => {
+      createWrapper({ commit: { ...commit, prev_commit_id: null, next_commit_id: null } });
+    });
+
+    it('does not render any navigation buttons', () => {
+      expect(getCommitNavButtonsElement().exists()).toEqual(false);
+    });
+  });
+
+  describe('with neighbor commits', () => {
+    let mrCommit;
+
+    beforeEach(() => {
+      mrCommit = {
+        ...commit,
+        next_commit_id: 'next',
+        prev_commit_id: 'prev',
+      };
+
+      createWrapper({}, mrCommit);
+    });
+
+    it('renders the commit navigation buttons', () => {
+      expect(getCommitNavButtonsElement().exists()).toEqual(true);
+
+      createWrapper({
+        commit: { ...mrCommit, next_commit_id: null },
+      });
+      expect(getCommitNavButtonsElement().exists()).toEqual(true);
+
+      createWrapper({
+        commit: { ...mrCommit, prev_commit_id: null },
+      });
+      expect(getCommitNavButtonsElement().exists()).toEqual(true);
+    });
+
+    describe('prev commit', () => {
+      const { location } = window;
+
+      beforeAll(() => {
+        delete window.location;
+        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
+      });
+
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
+      });
+
+      afterAll(() => {
+        window.location = location;
+      });
+
+      it('uses the correct href', () => {
+        const link = getPrevCommitNavElement();
+
+        expect(link.element.getAttribute('href')).toEqual(PREV_COMMIT_URL);
+      });
+
+      it('triggers the correct Vuex action on click', () => {
+        const link = getPrevCommitNavElement();
+
+        link.trigger('click');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
+            direction: 'previous',
+          });
+        });
+      });
+
+      it('renders a disabled button when there is no prev commit', () => {
+        createWrapper({}, { ...mrCommit, prev_commit_id: null });
+
+        const button = getPrevCommitNavElement();
+
+        expect(button.element.hasAttribute('disabled')).toEqual(true);
+      });
+    });
+
+    describe('next commit', () => {
+      const { location } = window;
+
+      beforeAll(() => {
+        delete window.location;
+        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
+      });
+
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
+      });
+
+      afterAll(() => {
+        window.location = location;
+      });
+
+      it('uses the correct href', () => {
+        const link = getNextCommitNavElement();
+
+        expect(link.element.getAttribute('href')).toEqual(NEXT_COMMIT_URL);
+      });
+
+      it('triggers the correct Vuex action on click', () => {
+        const link = getNextCommitNavElement();
+
+        link.trigger('click');
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
+        });
+      });
+
+      it('renders a disabled button when there is no next commit', () => {
+        createWrapper({}, { ...mrCommit, next_commit_id: null });
+
+        const button = getNextCommitNavElement();
+
+        expect(button.element.hasAttribute('disabled')).toEqual(true);
+      });
     });
   });
 });

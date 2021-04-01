@@ -6,18 +6,18 @@
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3
     .home-panel-title-row.gl-display-flex
-      .avatar-container.rect-avatar.s64.home-panel-avatar.gl-flex-shrink-0.gl-w-11.gl-h-11.gl-mr-3.float-none
+      %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.gl-mb-2.gl-font-size-h1.gl-line-height-24.gl-font-weight-bold{ data: { qa_selector: 'project_name_content' }, itemprop: 'name' }
+          %h1.home-panel-title.gl-mt-3.gl-mb-2.gl-font-size-h1.gl-line-height-24.gl-font-weight-bold.gl-ml-3{ data: { qa_selector: 'project_name_content' }, itemprop: 'name' }
             = @project.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
         .home-panel-metadata.d-flex.flex-wrap.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
           - if can?(current_user, :read_project, @project)
-            - button_class = "btn-clipboard btn-transparent btn-no-padding gl-font-base gl-font-weight-normal gl-line-height-normal home-panel-metadata"
+            - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
             - button_text = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
             = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id, hide_button_icon: true, button_text: button_text, class: button_class, qa_selector: 'project_id_content', itemprop: 'identifier')
           - if current_user

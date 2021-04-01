@@ -145,10 +145,10 @@ To seamlessly navigate among commits in a merge request:
 1. Select a commit to open it in the single-commit view.
 1. Navigate through the commits by either:
 
-   - Selecting **Prev** and **Next** buttons on the top-right of the page.
+   - Selecting **Prev** and **Next** buttons right beneath the tab buttons.
    - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
-![Merge requests commit navigation](img/commit_nav_v13_4.png)
+![Merge requests commit navigation](img/commit_nav_v13_11.png)
 
 ### Incrementally expand merge request diffs
 

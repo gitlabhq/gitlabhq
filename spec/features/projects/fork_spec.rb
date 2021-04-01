@@ -208,7 +208,7 @@ RSpec.describe 'Project fork' do
       expect(page).to have_content(/new merge request/i)
 
       page.within '.nav-sidebar' do
-        first(:link, 'Merge Requests').click
+        first(:link, 'Merge requests').click
       end
 
       expect(page).to have_content(/new merge request/i)

@@ -135,7 +135,7 @@ module API
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
+                                         forked_from_project: [:route, :forks, :tags, :group, :project_feature, namespace: [:route, :owner]])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

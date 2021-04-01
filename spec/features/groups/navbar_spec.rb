@@ -30,7 +30,7 @@ RSpec.describe 'Group navbar' do
         ]
       },
       {
-        nav_item: _('Merge Requests'),
+        nav_item: _('Merge requests'),
         nav_sub_items: []
       },
       (security_and_compliance_nav_item if Gitlab.ee?),

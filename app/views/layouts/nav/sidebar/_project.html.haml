@@ -160,14 +160,14 @@
             .nav-icon-container
               = sprite_icon('git-merge')
             %span.nav-item-name#js-onboarding-mr-link
-              = _('Merge Requests')
+              = _('Merge requests')
             %span.badge.badge-pill.count.merge_counter.js-merge-counter
               = number_with_delimiter(@project.open_merge_requests_count)
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(controller: :merge_requests, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_merge_requests_path(@project) do
                 %strong.fly-out-top-item-name
-                  = _('Merge Requests')
+                  = _('Merge requests')
                 %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge
                   = number_with_delimiter(@project.open_merge_requests_count)
 
