@@ -280,7 +280,7 @@ FROM users
 WHERE twitter != '';
 ```
 
-This query simply counts the number of users that have a Twitter profile set.
+This query counts the number of users that have a Twitter profile set.
 Let's run this using `EXPLAIN (ANALYZE, BUFFERS)`:
 
 ```sql
@@ -388,7 +388,7 @@ we created the index:
 CREATE INDEX CONCURRENTLY twitter_test ON users (twitter);
 ```
 
-We simply told PostgreSQL to index all possible values of the `twitter` column,
+We told PostgreSQL to index all possible values of the `twitter` column,
 even empty strings. Our query in turn uses `WHERE twitter != ''`. This means
 that the index does improve things, as we don't need to do a sequential scan,
 but we may still encounter empty strings. This means PostgreSQL _has_ to apply a

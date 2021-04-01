@@ -181,7 +181,7 @@ module QA
       end
 
       def verify_storage_move(source_storage, destination_storage, repo_type: :project)
-        return if QA::Runtime::Env.dot_com?
+        return if Specs::Helpers::ContextSelector.dot_com?
 
         repo_path = verify_storage_move_from_gitaly(source_storage[:name], repo_type: repo_type)
 

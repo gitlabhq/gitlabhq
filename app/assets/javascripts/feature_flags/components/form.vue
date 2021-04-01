@@ -30,6 +30,7 @@ import Strategy from './strategy.vue';
 
 export default {
   i18n: {
+    removeLabel: s__('FeatureFlags|Remove'),
     statusLabel: s__('FeatureFlags|Status'),
   },
   components: {
@@ -507,7 +508,8 @@ export default {
                   <gl-button
                     v-if="!isAllEnvironment(scope.environmentScope) && canUpdateScope(scope)"
                     v-gl-tooltip
-                    :title="s__('FeatureFlags|Remove')"
+                    :title="$options.i18n.removeLabel"
+                    :aria-label="$options.i18n.removeLabel"
                     class="js-delete-scope btn-transparent pr-3 pl-3"
                     icon="clear"
                     data-testid="feature-flag-delete"

@@ -994,7 +994,7 @@ False positives can be handled in two ways:
 Checks perform testing of a specific type and can be turned on and off for specific configuration
 profiles. The provided [configuration files](#configuration-files) define several profiles that you
 can use. The profile definition in the configuration file lists all the checks that are active
-during a scan. To turn off a specific check, simply remove it from the profile definition in the
+during a scan. To turn off a specific check, remove it from the profile definition in the
 configuration file. The profiles are defined in the `Profiles` section of the configuration file.
 
 Example profile definition:

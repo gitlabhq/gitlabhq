@@ -13,6 +13,10 @@ import CsvExportModal from './csv_export_modal.vue';
 import CsvImportModal from './csv_import_modal.vue';
 
 export default {
+  i18n: {
+    exportAsCsvButtonText: __('Export as CSV'),
+    importIssuesText: __('Import issues'),
+  },
   name: 'CsvImportExportButtons',
   components: {
     GlButtonGroup,
@@ -57,16 +61,15 @@ export default {
       return `${this.issuableType}-import-modal`;
     },
     importButtonText() {
-      return this.showLabel ? this.$options.importIssuesText : null;
+      return this.showLabel ? this.$options.i18n.importIssuesText : null;
     },
     importButtonTooltipText() {
-      return this.showLabel ? null : this.$options.importIssuesText;
+      return this.showLabel ? null : this.$options.i18n.importIssuesText;
     },
     importButtonIcon() {
       return this.showLabel ? null : 'import';
     },
   },
-  importIssuesText: __('Import issues'),
 };
 </script>
 
@@ -75,9 +78,10 @@ export default {
     <gl-button-group>
       <gl-button
         v-if="showExportButton"
-        v-gl-tooltip.hover="__('Export as CSV')"
+        v-gl-tooltip.hover="$options.i18n.exportAsCsvButtonText"
         v-gl-modal="exportModalId"
         icon="export"
+        :aria-label="$options.i18n.exportAsCsvButtonText"
         data-qa-selector="export_as_csv_button"
         data-testid="export-csv-button"
       />

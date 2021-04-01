@@ -223,4 +223,4 @@ When importing, GitLab would execute the following command, passing the `import_
 git clone file://git:/tmp/lol
 ```
 
-Git would simply ignore the `git:` part, interpret the path as `file:///tmp/lol`, and import the repository into the new project. This action could potentially give the attacker access to any repository in the system, whether private or not.
+Git ignores the `git:` part, interpret the path as `file:///tmp/lol`, and imports the repository into the new project. This action could potentially give the attacker access to any repository in the system, whether private or not.

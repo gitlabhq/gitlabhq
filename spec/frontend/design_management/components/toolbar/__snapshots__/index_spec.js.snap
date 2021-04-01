@@ -41,6 +41,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
   />
    
   <gl-button-stub
+    aria-label="Download design"
     buttontextclasses=""
     category="primary"
     href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"

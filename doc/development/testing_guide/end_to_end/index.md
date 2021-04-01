@@ -159,9 +159,9 @@ See [Review Apps](../review_apps.md) for more details about Review Apps.
 ## How do I run the tests?
 
 If you are not [testing code in a merge request](#testing-code-in-merge-requests),
-there are two main options for running the tests. If you simply want to run
-the existing tests against a live GitLab instance or against a pre-built Docker image
-you can use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also [examples
+there are two main options for running the tests. If you want to run
+the existing tests against a live GitLab instance or against a pre-built Docker image,
+use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also [examples
 of the test scenarios you can run via the orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#examples).
 
 On the other hand, if you would like to run against a local development GitLab

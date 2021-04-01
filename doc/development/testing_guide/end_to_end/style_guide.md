@@ -122,7 +122,7 @@ avoid confusion or make the code more readable. For example, if a page object is
 named `New`, it could be confusing to name the block argument `new` because that
 is used to instantiate objects, so `new_page` would be acceptable.
 
-We chose not to simply use `page` because that would shadow the
+We chose not to use `page` because that would shadow the
 Capybara DSL, potentially leading to confusion and bugs.
 
 ### Examples

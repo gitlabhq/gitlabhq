@@ -33715,6 +33715,9 @@ msgstr ""
 msgid "View merge request"
 msgstr ""
 
+msgid "View on %{url}"
+msgstr ""
+
 msgid "View open merge request"
 msgstr ""
 

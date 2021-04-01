@@ -755,7 +755,7 @@ If a manual mock is needed for a CE module, place it in `spec/frontend/mocks/ce`
   any behavior, only provides a nice es6 compatible wrapper.
 - [`__mocks__/monaco-editor/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js) -
   This mock is helpful because the Monaco package is completely incompatible in a Jest environment. In fact, webpack requires a special loader to make it work. This mock
-  simply makes this package consumable by Jest.
+  makes this package consumable by Jest.
 
 ### Keep mocks light
 

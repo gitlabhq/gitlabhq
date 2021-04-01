@@ -1,13 +1,16 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import DeleteButton from '../delete_button.vue';
 import DesignNavigation from './design_navigation.vue';
 
 export default {
+  i18n: {
+    downloadButtonLabel: s__('DesignManagement|Download design'),
+  },
   components: {
     GlButton,
     GlIcon,
@@ -119,7 +122,8 @@ export default {
       v-gl-tooltip.bottom
       :href="image"
       icon="download"
-      :title="s__('DesignManagement|Download design')"
+      :title="$options.i18n.downloadButtonLabel"
+      :aria-label="$options.i18n.downloadButtonLabel"
     />
     <delete-button
       v-if="isLatestVersion && canDeleteDesign"

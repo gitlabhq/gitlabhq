@@ -100,6 +100,7 @@ export default {
           category="secondary"
           variant="danger"
           icon="remove"
+          :aria-label="$options.modal.actionPrimary.text"
           data-testid="delete-user-list"
           @click="confirmDeleteList(list)"
         />

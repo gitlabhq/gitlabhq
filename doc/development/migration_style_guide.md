@@ -254,7 +254,7 @@ end
 
 **Creating a new table with a foreign key:**
 
-We can simply wrap the `create_table` method with `with_lock_retries`:
+We can wrap the `create_table` method with `with_lock_retries`:
 
 ```ruby
 def up
@@ -715,7 +715,7 @@ the `DROP TABLE` statement is likely to stall concurrent traffic until it fails 
 Table **has no records** (feature was never in use) and **no foreign
 keys**:
 
-- Simply use the `drop_table` method in your migration.
+- Use the `drop_table` method in your migration.
 
 ```ruby
 def change

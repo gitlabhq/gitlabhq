@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
+import { s__ } from '~/locale';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
 import DashboardPanel from './dashboard_panel.vue';
@@ -24,6 +25,9 @@ metrics:
 `;
 
 export default {
+  i18n: {
+    refreshButtonLabel: s__('Metrics|Refresh Prometheus data'),
+  },
   components: {
     GlCard,
     GlForm,
@@ -191,7 +195,8 @@ export default {
       v-gl-tooltip
       data-testid="previewRefreshButton"
       icon="retry"
-      :title="s__('Metrics|Refresh Prometheus data')"
+      :title="$options.i18n.refreshButtonLabel"
+      :aria-label="$options.i18n.refreshButtonLabel"
       @click="onRefresh"
     />
     <dashboard-panel :graph-data="panelPreviewGraphData" />

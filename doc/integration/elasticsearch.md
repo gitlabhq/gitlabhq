@@ -679,7 +679,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
 Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the master branch in a repository, a project is deleted, etc), a document in the index is deleted. However, since these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases. Elasticsearch does intelligent merging of segments in order to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% wasted space in the index.
 
-In general, we recommend simply letting Elasticsearch merge and reclaim space automatically, with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene's defaults as-is and not fret too much about when deletes are reclaimed."_
+In general, we recommend letting Elasticsearch merge and reclaim space automatically, with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene's defaults as-is and not fret too much about when deletes are reclaimed."_
 
 However, some larger installations may wish to tune the merge policy settings:
 
@@ -719,8 +719,7 @@ data).
 The use of Elasticsearch in GitLab is only ever as a secondary data store.
 This means that all of the data stored in Elasticsearch can always be derived
 again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
-the Elasticsearch data store is ever corrupted for whatever reason, you can
-simply reindex everything from scratch.
+the Elasticsearch data store is ever corrupted for whatever reason, you can reindex everything from scratch.
 
 ## Troubleshooting
 
@@ -916,7 +915,7 @@ In GitLab 13.9, a change was made where [binary file names are being indexed](ht
 ### Last resort to recreate an index
 
 There may be cases where somehow data never got indexed and it's not in the
-queue, or the index is somehow in a state where migrations just simply cannot
+queue, or the index is somehow in a state where migrations just cannot
 proceed. It is always best to try to troubleshoot the root cause of the problem
 using the above [troubleshooting](#troubleshooting) steps.
 

@@ -2,6 +2,7 @@
 
 require 'gitlab/qa'
 require 'uri'
+require 'active_support/core_ext/object/blank'
 
 module QA
   module Runtime
@@ -24,48 +25,6 @@ module QA
         SUPPORTED_FEATURES
       end
 
-      def context_matches?(*options)
-        return false unless Runtime::Scenario.attributes[:gitlab_address]
-
-        opts = {}
-        opts[:domain] = '.+'
-        opts[:tld] = '.com'
-
-        uri = URI(Runtime::Scenario.gitlab_address)
-
-        options.each do |option|
-          opts[:domain] = 'gitlab' if option == :production
-
-          if option.is_a?(Hash) && !option[:pipeline].nil? && !ci_project_name.nil?
-            return pipeline_matches?(option[:pipeline])
-
-          elsif option.is_a?(Hash) && !option[:subdomain].nil?
-            opts.merge!(option)
-
-            opts[:subdomain] = case option[:subdomain]
-                               when Array
-                                 "(#{option[:subdomain].join("|")})."
-                               when Regexp
-                                 option[:subdomain]
-                               else
-                                 "(#{option[:subdomain]})."
-                               end
-          end
-        end
-
-        uri.host.match?(/^#{opts[:subdomain]}#{opts[:domain]}#{opts[:tld]}$/)
-      end
-
-      alias_method :dot_com?, :context_matches?
-
-      def pipeline_matches?(pipeline_to_run_in)
-        Array(pipeline_to_run_in).any? { |pipeline| pipeline.to_s.casecmp?(pipeline_from_project_name) }
-      end
-
-      def pipeline_from_project_name
-        ci_project_name.to_s.start_with?('gitlab-qa') ? Runtime::Env.default_branch : ci_project_name
-      end
-
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
       end
@@ -80,6 +39,10 @@ module QA
 
       def ci_job_url
         ENV['CI_JOB_URL']
+      end
+
+      def ci_job_name
+        ENV['CI_JOB_NAME']
       end
 
       def ci_project_name

@@ -551,7 +551,7 @@ does not account for weights.
 
 As we are [moving towards using `sidekiq-cluster` in
 Free](https://gitlab.com/gitlab-org/gitlab/-/issues/34396), newly-added
-workers do not need to have weights specified. They can simply use the
+workers do not need to have weights specified. They can use the
 default weight, which is 1.
 
 ## Worker context

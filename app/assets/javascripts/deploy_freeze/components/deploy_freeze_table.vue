@@ -68,6 +68,7 @@ export default {
           v-gl-modal.deploy-freeze-modal
           icon="pencil"
           data-testid="edit-deploy-freeze"
+          :aria-label="__('Edit deploy freeze')"
           @click="setFreezePeriod(item)"
         />
       </template>

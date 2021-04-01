@@ -22,6 +22,7 @@ RSpec.configure do |config|
   config.include ::Matchers
 
   QA::Specs::Helpers::Quarantine.configure_rspec
+  QA::Specs::Helpers::ContextSelector.configure_rspec
 
   config.before do |example|
     QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
