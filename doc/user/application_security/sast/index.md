@@ -100,8 +100,7 @@ and the [Maven wrapper](https://github.com/takari/maven-wrapper).
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4895) in GitLab 13.7.
 
-GitLab SAST can scan repositories that contain multiple projects. All projects must be in the same
-language.
+GitLab SAST can scan repositories that contain multiple projects.
 
 The following analyzers have multi-project support:
 

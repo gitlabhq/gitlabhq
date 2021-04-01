@@ -2,7 +2,7 @@ import { escape, minBy } from 'lodash';
 import emojiAliases from 'emojis/aliases.json';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
-import { CATEGORY_ICON_MAP } from './constants';
+import { CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from './constants';
 
 let emojiMap = null;
 let validEmojiNames = null;
@@ -162,6 +162,9 @@ let emojiCategoryMap;
 export function getEmojiCategoryMap() {
   if (!emojiCategoryMap) {
     emojiCategoryMap = CATEGORY_NAMES.reduce((acc, category) => {
+      if (category === FREQUENTLY_USED_KEY) {
+        return acc;
+      }
       return { ...acc, [category]: [] };
     }, {});
     Object.keys(emojiMap).forEach((name) => {

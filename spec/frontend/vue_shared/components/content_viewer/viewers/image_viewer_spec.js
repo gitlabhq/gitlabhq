@@ -1,12 +1,12 @@
-import { mount } from '@vue/test-utils';
-import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
+import { shallowMount } from '@vue/test-utils';
+import { GREEN_BOX_IMAGE_URL, DUMMY_IMAGE_BLOB_PATH } from 'spec/test_constants';
 import ImageViewer from '~/vue_shared/components/content_viewer/viewers/image_viewer.vue';
 
 describe('Image Viewer', () => {
   let wrapper;
 
   it('renders image preview', () => {
-    wrapper = mount(ImageViewer, {
+    wrapper = shallowMount(ImageViewer, {
       propsData: { path: GREEN_BOX_IMAGE_URL, fileSize: 1024 },
     });
 
@@ -22,7 +22,7 @@ describe('Image Viewer', () => {
     `(
       'shows file size as "$humanizedFileSize", if fileSize=$fileSize and renderInfo=$renderInfo',
       ({ fileSize, renderInfo, elementExists, humanizedFileSize }) => {
-        wrapper = mount(ImageViewer, {
+        wrapper = shallowMount(ImageViewer, {
           propsData: { path: GREEN_BOX_IMAGE_URL, fileSize, renderInfo },
         });
 
@@ -36,11 +36,19 @@ describe('Image Viewer', () => {
 
   describe('file path', () => {
     it('should output a valid URL path for the image', () => {
-      wrapper = mount(ImageViewer, {
+      wrapper = shallowMount(ImageViewer, {
         propsData: { path: '/url/hello#1.jpg' },
       });
 
       expect(wrapper.find('img').attributes('src')).toBe('/url/hello%231.jpg');
+    });
+    it('outputs path without transformations when outputting a Blob', () => {
+      const file = new File([], DUMMY_IMAGE_BLOB_PATH);
+      const path = window.URL.createObjectURL(file);
+      wrapper = shallowMount(ImageViewer, {
+        propsData: { path },
+      });
+      expect(wrapper.find('img').attributes('src')).toBe(path);
     });
   });
 });

@@ -15,7 +15,8 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
   let(:branch) { project.repository.find_branch('master') }
 
   let(:packages) { [package1, package2] }
-  let(:presenter) { described_class.new(group, packages) }
+  let(:is_v2) { false }
+  let(:presenter) { described_class.new(group, packages, is_v2) }
 
   describe '#package_versions' do
     subject { presenter.package_versions }
@@ -78,6 +79,20 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
 
     it 'returns the provider json' do
       expect(subject).to match(expected_json)
+    end
+
+    context 'with a client version 2' do
+      let(:is_v2) { true }
+      let(:expected_json) do
+        {
+          'packages' => [],
+          'metadata-url' => "prefix/api/v4/group/#{group.id}/-/packages/composer/p2/%package%.json"
+        }
+      end
+
+      it 'returns the provider json' do
+        expect(subject).to match(expected_json)
+      end
     end
   end
 end

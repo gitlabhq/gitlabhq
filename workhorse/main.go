@@ -102,7 +102,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	fset.UintVar(&cfg.APILimit, "apiLimit", 0, "Number of API requests allowed at single time")
 	fset.UintVar(&cfg.APIQueueLimit, "apiQueueLimit", 0, "Number of API requests allowed to be queued")
 	fset.DurationVar(&cfg.APIQueueTimeout, "apiQueueDuration", queueing.DefaultTimeout, "Maximum queueing duration of requests")
-	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50*time.Second, "Long polling duration for job requesting for runners (default 50s - enabled)")
+	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50, "Long polling duration for job requesting for runners (default 50s - enabled)")
 	fset.BoolVar(&cfg.PropagateCorrelationID, "propagateCorrelationID", false, "Reuse existing Correlation-ID from the incoming request header `X-Request-ID` if present")
 
 	if err := fset.Parse(args); err != nil {

@@ -7,20 +7,30 @@ RSpec.shared_context 'Composer user type' do |user_type, add_member|
   end
 end
 
+RSpec.shared_examples 'Composer package index with version' do |schema_path|
+  it 'returns the package index' do
+    subject
+
+    expect(response).to have_gitlab_http_status(status)
+
+    if status == :success
+      expect(response).to match_response_schema(schema_path)
+      expect(json_response).to eq presenter.root
+    end
+  end
+end
+
 RSpec.shared_examples 'Composer package index' do |user_type, status, add_member, include_package|
   include_context 'Composer user type', user_type, add_member do
     let(:expected_packages) { include_package == :include_package ? [package] : [] }
     let(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages ) }
 
-    it 'returns the package index' do
-      subject
+    it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index'
 
-      expect(response).to have_gitlab_http_status(status)
+    context 'with version 2' do
+      let(:headers) { super().merge('User-Agent' => 'Composer/2.0.9 (Darwin; 19.6.0; PHP 7.4.8; cURL 7.71.1)') }
 
-      if status == :success
-        expect(response).to match_response_schema('public_api/v4/packages/composer/index')
-        expect(json_response).to eq presenter.root
-      end
+      it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index_v2'
     end
   end
 end
