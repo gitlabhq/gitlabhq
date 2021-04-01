@@ -623,7 +623,7 @@ fails, because the file is mounted as read-only. Do not change it from
 read-only, because problems occur.
 
 Here is an example of `/opt/.docker/config.json` that follows the
-[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determining-your-docker_auth_config-data)
+[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determine-your-docker_auth_config-data)
 documentation:
 
 ```json
@@ -683,7 +683,7 @@ to include the file.
 ### Option 3: Use `DOCKER_AUTH_CONFIG`
 
 If you already have
-[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determining-your-docker_auth_config-data)
+[`DOCKER_AUTH_CONFIG`](using_docker_images.md#determine-your-docker_auth_config-data)
 defined, you can use the variable and save it in
 `~/.docker/config.json`.
 

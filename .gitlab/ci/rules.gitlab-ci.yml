@@ -101,6 +101,7 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
+  - "scripts/review_apps/base-config.yaml"
   - "scripts/trigger-build"
 
 .ci-qa-patterns: &ci-qa-patterns

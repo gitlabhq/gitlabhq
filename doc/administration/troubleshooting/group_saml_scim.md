@@ -85,23 +85,3 @@ Adding a user:
 SSO settings:
 
 ![OneLogin SSO settings](img/OneLogin-SSOsettings.png)
-
-## ADFS
-
-Setup SAML SSO URL:
-
-![ADFS Setup SAML SSO URL](img/ADFS-saml-setup-sso-url.png)
-
-Configure Assertions:
-
-![ADFS Configure Assertions](img/ADFS-configure-assertions.png)
-
-Configure NameID:
-
-![ADFS ADFS-configure-NameID](img/ADFS-configure-NameID.png)
-
-Determine Certificate Fingerprint:
-
-| Via UI | Via Shell |
-|--------|-----------|
-| ![ADFS Determine Token Signing Certificate Fingerprint](img/ADFS-determine-token-signing-certificate-fingerprint.png) | ![ADFS Determine Token Signing Fingerprint From Shell](img/ADFS-determine-token-signing-fingerprint-from-shell.png) |

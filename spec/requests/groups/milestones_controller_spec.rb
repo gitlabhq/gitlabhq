@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Groups::MilestonesController do
   context 'N+1 DB queries' do
-    let(:user) { create(:user) }
-    let!(:public_group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:public_group) { create(:group, :public) }
 
     let!(:public_project_with_private_issues_and_mrs) do
       create(:project, :public, :issues_private, :merge_requests_private, group: public_group)
@@ -51,6 +51,26 @@ RSpec.describe Groups::MilestonesController do
         end
 
         expect { get show_path }.not_to exceed_all_query_limit(control)
+      end
+    end
+
+    describe 'GET #merge_requests' do
+      let(:milestone) { create(:milestone, group: public_group) }
+      let(:project) { create(:project, :public, :merge_requests_enabled, :issues_enabled, group: public_group) }
+      let!(:merge_request) { create(:merge_request, milestone: milestone, source_project: project) }
+
+      def perform_request
+        get merge_requests_group_milestone_path(public_group, milestone, format: :json)
+      end
+
+      it 'avoids N+1 database queries' do
+        perform_request # warm up the cache
+
+        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+        create(:merge_request, milestone: milestone, source_project: project, source_branch: 'fix')
+
+        expect { perform_request }.not_to exceed_query_limit(control_count)
       end
     end
   end
