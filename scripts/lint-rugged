@@ -29,6 +29,7 @@ ALLOWED = [
   'config/initializers/lograge.rb',
   'lib/gitlab/grape_logging/loggers/perf_logger.rb',
   'lib/gitlab/instrumentation_helper.rb',
+  'lib/gitlab/sidekiq_middleware/instrumentation_logger.rb',
   'lib/gitlab/rugged_instrumentation.rb',
   'lib/peek/views/rugged.rb'
 ].freeze

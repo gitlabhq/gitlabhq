@@ -40,16 +40,21 @@ for them.
 MARKDOWN
 
 OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
-NOT_AVAILABLE_TEMPLATE = 'No %{role} available'
+NOT_AVAILABLE_TEMPLATES = {
+  default: 'No %{role} available',
+  product_intelligence: "No engineer is available for automated assignment, please reach out to `#g_product_intelligence` slack channel or mention `@gitlab-org/growth/product-intelligence/engineers` for assistance."
+}.freeze
 
-def note_for_spins_role(spins, role)
+def note_for_spins_role(spins, role, category)
+  template = NOT_AVAILABLE_TEMPLATES[category] || NOT_AVAILABLE_TEMPLATES[:default]
+
   spins.each do |spin|
     note = note_for_spin_role(spin, role)
 
     return note if note
   end
 
-  NOT_AVAILABLE_TEMPLATE % { role: role }
+  template % { role: role }
 end
 
 def note_for_spin_role(spin, role)
@@ -61,8 +66,8 @@ def note_for_spin_role(spin, role)
 end
 
 def markdown_row_for_spins(category, spins_array)
-  reviewer_note = note_for_spins_role(spins_array, :reviewer)
-  maintainer_note = note_for_spins_role(spins_array, :maintainer)
+  maintainer_note = note_for_spins_role(spins_array, :maintainer, category)
+  reviewer_note = note_for_spins_role(spins_array, :reviewer, category)
 
   "| #{helper.label_for_category(category)} | #{reviewer_note} | #{maintainer_note} |"
 end
@@ -77,10 +82,13 @@ changes.delete(:docs)
 changes.delete(:changelog)
 # No special review for feature flags needed.
 changes.delete(:feature_flag)
-categories = changes.keys - [:unknown]
+categories = Set.new(changes.keys - [:unknown])
 
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
-categories << :database if helper.mr_labels.include?('database') && !categories.include?(:database)
+categories << :database if helper.mr_labels.include?('database')
+
+# Ensure to spin for Product Intelligence reviewer when ~"product intelligence::review pending" is applied
+categories << :product_intelligence if helper.mr_labels.include?("product intelligence::review pending")
 
 if changes.any?
   project = project_helper.project_name

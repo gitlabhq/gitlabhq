@@ -50,7 +50,7 @@ module Pages
     def zip_source
       return unless deployment&.file
 
-      return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project, default_enabled: true)
+      return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project, default_enabled: :yaml)
 
       return if deployment.migrated? && !Feature.enabled?(:pages_serve_from_migrated_zip, project, default_enabled: true)
 

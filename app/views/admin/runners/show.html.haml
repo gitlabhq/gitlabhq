@@ -4,8 +4,11 @@
 - add_to_breadcrumbs _('Runners'), admin_runners_path
 - breadcrumb_title page_title
 
-%h2.page-title
-  = sprintf(s_('Runners|Runner #%{runner_id}'), {runner_id: @runner.id})
+- if Feature.enabled?(:runner_detailed_view_vue_ui, current_user, default_enabled: :yaml)
+  #js-runner-detail{ data: {runner_id: @runner.id} }
+- else
+  %h2.page-title
+    = sprintf(s_('Runners|Runner #%{runner_id}'), {runner_id: @runner.id})
 
 - if @runner.instance_type?
   .bs-callout.bs-callout-success

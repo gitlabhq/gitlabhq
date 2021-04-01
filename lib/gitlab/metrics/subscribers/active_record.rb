@@ -51,6 +51,10 @@ module Gitlab
           payload
         end
 
+        def self.known_payload_keys
+          DB_COUNTERS
+        end
+
         private
 
         def ignored_query?(payload)

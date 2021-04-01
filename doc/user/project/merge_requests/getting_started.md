@@ -230,8 +230,6 @@ GitLab retargets up to four merge requests when their target branch is merged in
 `master`, so you don't need to perform this operation manually. Merge requests from
 forks are not retargeted.
 
-The feature today works only one a merge. Clicking the `Remove source branch` button
-after the merge request was merged will not automatically retarget merge request.
 The feature today works only on merge. Clicking the **Remove source branch** button
 after the merge request was merged will not automatically retarget a merge request.
 This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).

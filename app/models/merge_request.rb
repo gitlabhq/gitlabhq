@@ -1317,11 +1317,8 @@ class MergeRequest < ApplicationRecord
     message.join("\n\n")
   end
 
-  # Returns the oldest multi-line commit message, or the MR title if none found
   def default_squash_commit_message
-    strong_memoize(:default_squash_commit_message) do
-      first_multiline_commit&.safe_message || title
-    end
+    title
   end
 
   # Returns the oldest multi-line commit

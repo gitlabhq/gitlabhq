@@ -1115,6 +1115,8 @@ If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still u
 1. [Move](../../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
+1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
+   Omit the group namespace here, because it will automatically be prepended by GitLab.
 
 ### Pages daemon fails with permission denied errors
 

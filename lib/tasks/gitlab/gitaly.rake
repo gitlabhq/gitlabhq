@@ -17,24 +17,29 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
 
       checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
-      command = []
-      _, status = Gitlab::Popen.popen(%w[which gmake])
-      command << (status == 0 ? 'gmake' : 'make')
-
-      if Rails.env.test?
-        command.push(
-          'BUNDLE_FLAGS=--no-deployment',
-          "GEM_HOME=#{Bundler.bundle_path}")
-      end
-
       storage_paths = { 'default' => args.storage_path }
       Gitlab::SetupHelper::Gitaly.create_configuration(args.dir, storage_paths)
+
+      # In CI we run scripts/gitaly-test-build
+      next if ENV['CI'].present?
+
       Dir.chdir(args.dir) do
-        # In CI we run scripts/gitaly-test-build instead of this command
-        unless ENV['CI'].present?
-          Bundler.with_original_env { Gitlab::Popen.popen(command, nil, { "RUBYOPT" => nil, "BUNDLE_GEMFILE" => nil }) }
+        Bundler.with_original_env do
+          env = { "RUBYOPT" => nil, "BUNDLE_GEMFILE" => nil }
+
+          if Rails.env.test?
+            env["GEM_HOME"] = Bundler.bundle_path.to_s
+            env["BUNDLE_DEPLOYMENT"] = 'false'
+          end
+
+          Gitlab::Popen.popen([make_cmd], nil, env)
         end
       end
+    end
+
+    def make_cmd
+      _, status = Gitlab::Popen.popen(%w[which gmake])
+      status == 0 ? 'gmake' : 'make'
     end
   end
 end

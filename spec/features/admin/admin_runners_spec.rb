@@ -292,7 +292,7 @@ RSpec.describe "Admin Runners" do
       end
     end
 
-    describe 'runner page title' do
+    describe 'runner page title', :js do
       it 'contains the runner id' do
         expect(find('.page-title')).to have_content("Runner ##{runner.id}")
       end

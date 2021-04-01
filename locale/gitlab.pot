@@ -3221,6 +3221,9 @@ msgstr ""
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
+msgid "Allowed group"
+msgstr ""
+
 msgid "Allowed to create:"
 msgstr ""
 
@@ -10484,9 +10487,6 @@ msgstr ""
 msgid "DeployTokens|Revoke"
 msgstr ""
 
-msgid "DeployTokens|Revoke %{b_start}%{name}%{b_end}?"
-msgstr ""
-
 msgid "DeployTokens|Revoke %{name}"
 msgstr ""
 
@@ -10512,9 +10512,6 @@ msgid "DeployTokens|Use this token as a password. Save it. This password can %{i
 msgstr ""
 
 msgid "DeployTokens|Username"
-msgstr ""
-
-msgid "DeployTokens|You are about to revoke %{b_start}%{name}%{b_end}."
 msgstr ""
 
 msgid "DeployTokens|Your new Deploy Token username"
@@ -11587,6 +11584,9 @@ msgid "Enable Spam Check via external API endpoint"
 msgstr ""
 
 msgid "Enable access to Grafana"
+msgstr ""
+
+msgid "Enable access to the Performance Bar"
 msgstr ""
 
 msgid "Enable access to the Performance Bar for a given group."
@@ -15588,6 +15588,9 @@ msgstr ""
 msgid "How do I configure runners?"
 msgstr ""
 
+msgid "How do I configure this integration?"
+msgstr ""
+
 msgid "How do I generate it?"
 msgstr ""
 
@@ -18945,6 +18948,9 @@ msgstr ""
 msgid "MattermostService|Add to Mattermost"
 msgstr ""
 
+msgid "MattermostService|After you configure the integration, view your new Mattermost commands by entering"
+msgstr ""
+
 msgid "MattermostService|Command trigger word"
 msgstr ""
 
@@ -18963,13 +18969,10 @@ msgstr ""
 msgid "MattermostService|Response username"
 msgstr ""
 
-msgid "MattermostService|See list of available commands in Mattermost after setting up this service, by entering"
-msgstr ""
-
 msgid "MattermostService|Suggestions:"
 msgstr ""
 
-msgid "MattermostService|This service allows users to perform common operations on this project by entering slash commands in Mattermost."
+msgid "MattermostService|Use this service to perform common tasks in your project by entering slash commands in Mattermost."
 msgstr ""
 
 msgid "Max 100,000 events"
@@ -24164,7 +24167,7 @@ msgstr ""
 msgid "ProjectService|TeamCity URL"
 msgstr ""
 
-msgid "ProjectService|To set up this service:"
+msgid "ProjectService|To configure this integration, you should:"
 msgstr ""
 
 msgid "ProjectSettings|%{link_start}What are description templates?%{link_end}"

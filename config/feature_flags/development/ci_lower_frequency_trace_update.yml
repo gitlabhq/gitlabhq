@@ -1,8 +1,0 @@
----
-name: ci_lower_frequency_trace_update
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56743
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324768 
-milestone: '13.11'
-type: development
-group: group::continuous integration
-default_enabled: false

@@ -34,16 +34,21 @@ module Tooling
 
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend],
+        [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend, :product_intelligence],
 
         %r{\A(ee/)?config/feature_flags/} => :feature_flag,
 
         %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} => :changelog,
 
+        %r{\Adoc/development/usage_ping/dictionary\.md\z} => [:docs, :product_intelligence],
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
 
+        %r{\A(
+          app/assets/javascripts/tracking\.js |
+          spec/frontend/tracking_spec\.js
+        )\z}x => [:frontend, :product_intelligence],
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,
         %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
@@ -95,6 +100,17 @@ module Tooling
         %r{\A(ee/)?spec/support/shared_contexts/features/} => :test,
         %r{\A(ee/)?spec/support/helpers/features/} => :test,
 
+        %r{\A(ee/)?lib/gitlab/usage_data_counters/.*\.yml\z} => [:product_intelligence],
+        %r{\A(ee/)?config/metrics/((.*\.yml)|(schema\.json))\z} => [:product_intelligence],
+        %r{\A(ee/)?lib/gitlab/usage_data(_counters)?(/|\.rb)} => [:backend, :product_intelligence],
+        %r{\A(
+          lib/gitlab/tracking\.rb |
+          spec/lib/gitlab/tracking_spec\.rb |
+          app/helpers/tracking_helper\.rb |
+          spec/helpers/tracking_helper_spec\.rb |
+          lib/generators/rails/usage_metric_definition_generator\.rb |
+          spec/lib/generators/usage_metric_definition_generator_spec\.rb |
+          generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :product_intelligence],
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
         %r{\A(ee/)?spec/} => :backend,

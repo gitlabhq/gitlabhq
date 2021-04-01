@@ -192,7 +192,7 @@ Supported values are:
 
 #### `query.issuable_state`
 
-Filter by the state of the queried "issuable".
+Filter by the current state of the queried "issuable".
 
 By default, the `opened` state filter is applied.
 
@@ -206,10 +206,10 @@ Supported values are:
 
 #### `query.filter_labels`
 
-Filter by labels applied to the queried "issuable".
+Filter by labels currently applied to the queried "issuable".
 
 By default, no labels filter is applied. All the defined labels must be
-applied to the "issuable" in order for it to be selected.
+currently applied to the "issuable" in order for it to be selected.
 
 Example:
 
@@ -262,7 +262,7 @@ Supported values are:
 
 #### `query.period_limit`
 
-Define how far "issuables" are queried in the past.
+Define how far "issuables" are queried in the past (using the `query.period_field`).
 
 The unit is related to the `query.group_by` you defined. For instance if you
 defined `query.group_by: 'day'`  then `query.period_limit: 365` would mean
@@ -303,7 +303,7 @@ you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 You can limit where the "issuables" can be queried from:
 
-- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-your-insights), with `projects`, you can limit the projects to be queried. By default, all projects under the group are used.
+- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-your-insights), with `projects`, you can limit the projects to be queried. By default, all projects currently under the group are used.
 - If `.gitlab/insights.yml` is used for a project's insights, specifying any other projects yields no results. By default, the project itself is used.
 
 #### `projects.only`

@@ -84,12 +84,7 @@ matching_changed_files = usage_data_changed_files +
 
 if matching_changed_files.any?
 
-  mention = if helper.draft_mr?
-              "`#{ENGINEERS_GROUP}`"
-            else
-              ENGINEERS_GROUP
-            end
-
+  mention = "`#{ENGINEERS_GROUP}`"
   warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?

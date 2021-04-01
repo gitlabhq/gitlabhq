@@ -2533,7 +2533,7 @@ RSpec.describe API::MergeRequests do
       it "results in a default squash commit message when not set" do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
 
-        expect(squash_commit.message).to eq(merge_request.default_squash_commit_message)
+        expect(squash_commit.message.chomp).to eq(merge_request.default_squash_commit_message.chomp)
       end
     end
 

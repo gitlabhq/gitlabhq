@@ -186,39 +186,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:multiline_commits) { subject.commits.select(&is_multiline) }
     let(:singleline_commits) { subject.commits.reject(&is_multiline) }
 
-    context 'when the total number of commits is safe' do
-      it 'returns the oldest multiline commit message' do
-        expect(subject.default_squash_commit_message).to eq(multiline_commits.last.message)
-      end
-    end
-
-    context 'when the total number of commits is big' do
-      let(:safe_number) { 20 }
-
-      before do
-        stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', safe_number)
-      end
-
-      it 'returns the oldest multiline commit message from safe number of commits' do
-        expect(subject.default_squash_commit_message).to eq(
-          "remove emtpy file.(beacase git ignore empty file)\nadd whitespace test file.\n"
-        )
-      end
-    end
-
-    it 'returns the merge request title if there are no multiline commits' do
-      expect(subject).to receive(:commits).and_return(
-        CommitCollection.new(project, singleline_commits)
-      )
-
-      expect(subject.default_squash_commit_message).to eq(subject.title)
-    end
-
-    it 'does not return commit messages from multiline merge commits' do
-      collection = CommitCollection.new(project, multiline_commits).enrich!
-
-      expect(collection.commits).to all( receive(:merge_commit?).and_return(true) )
-      expect(subject).to receive(:commits).and_return(collection)
+    it 'returns the merge request title' do
       expect(subject.default_squash_commit_message).to eq(subject.title)
     end
   end

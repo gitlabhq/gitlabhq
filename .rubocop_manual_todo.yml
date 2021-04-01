@@ -279,8 +279,6 @@ Rails/SaveBang:
     - 'spec/lib/gitlab/import_export/uploads_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/wiki_restorer_spec.rb'
     - 'spec/lib/gitlab/lets_encrypt/client_spec.rb'
-    - 'spec/lib/gitlab/markdown_cache/active_record/extension_spec.rb'
-    - 'spec/lib/gitlab/markdown_cache/redis/store_spec.rb'
     - 'spec/lib/gitlab/middleware/go_spec.rb'
     - 'spec/lib/gitlab/shard_health_cache_spec.rb'
     - 'spec/lib/mattermost/command_spec.rb'

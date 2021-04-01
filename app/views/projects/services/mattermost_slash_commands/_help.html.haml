@@ -3,12 +3,12 @@
 .info-well
   .well-segment
     %p
-      = s_("MattermostService|This service allows users to perform common operations on this project by entering slash commands in Mattermost.")
+      = s_("MattermostService|Use this service to perform common tasks in your project by entering slash commands in Mattermost.")
       = link_to help_page_path('user/project/integrations/mattermost_slash_commands.md'), target: '_blank' do
-        = _("View documentation")
+        = _("How do I configure this integration?")
         = sprite_icon('external-link')
     %p.inline
-      = s_("MattermostService|See list of available commands in Mattermost after setting up this service, by entering")
+      = s_("MattermostService|After you configure the integration, view your new Mattermost commands by entering")
     %kbd.inline /&lt;trigger&gt; help
     - if !enabled && @service.project_level?
       = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service

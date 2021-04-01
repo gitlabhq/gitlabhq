@@ -1,0 +1,5 @@
+---
+title: Remove ci_lower_frequency_trace_update feature flag
+merge_request: 57713
+author:
+type: performance

@@ -20,7 +20,6 @@ The GitLab [SCIM API](../../../api/scim.md) implements part of [the RFC7644 prot
 The following actions are available:
 
 - Create users
-- Update users (Azure only)
 - Deactivate users
 
 The following identity providers are supported:

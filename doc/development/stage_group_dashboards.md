@@ -18,6 +18,50 @@ The list of dashboards for each stage group is accessible at <https://dashboards
 
 The dashboards for stage groups are at a very early stage. All contributions are welcome. If you have any questions or suggestions, please submit an issue in the [Scalability Team issues tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/new).
 
+## Dashboard content
+
+### Error budget
+
+By default, the first row of the panels on the dashboard will show the error
+budget for the stage group. This row shows how the features owned by
+the group are contributing to our [overall
+availability](https://about.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability).
+
+The budget is always aggregated over the 28 days before the [time
+selected on the dashboard](#time-range-controls).
+
+We're currently displaying the information in 2 formats:
+
+1. Availability: This number can be compared to GitLab.com's overall
+   availability target of 99.95% uptime.
+1. Budget Spent: This shows the time over the past 28 days that
+   features owned by the group have not been performing adequately.
+
+We're still discussing which of these is more understandable, please
+contribute in
+[Scalability issue #946](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/946)
+if you have thoughts on this topic.
+
+The budget is calculated based on indicators per component. Each
+component has 2 indicators:
+
+1. [Apdex](https://en.wikipedia.org/wiki/Apdex): The rate of
+   operations that performed adequately.
+1. Error rate: The rate of operations that had errors.
+
+The calculation to a ratio then happens as follows:
+
+```math
+\frac {operations\_meeting\_apdex + (total\_operations - operations\_with_\errors)} {total\_apdex\_measurements + total\_operations}
+```
+
+*Caveat:* Not all components are included, causing the
+calculation to be less accurate for some groups. We're working on
+adding all components in
+[&437](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/437). This
+could cause the dashboard to display "No Data" for features with lower
+traffic.
+
 ## Usage
 
 Inside a stage group dashboard, there are some notable components. Let's take the [Source Code group's dashboard](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups-group-dashboard-create-source-code?orgId=1) as an example.

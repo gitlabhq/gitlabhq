@@ -43,6 +43,7 @@ export default {
       variables: [],
       key: '',
       secretValue: '',
+      triggerBtnDisabled: false,
     };
   },
   computed: {
@@ -97,6 +98,11 @@ export default {
         this.variables.findIndex((el) => el.id === id),
         1,
       );
+    },
+    trigger() {
+      this.triggerBtnDisabled = true;
+
+      this.triggerManualJob(this.variables);
     },
   },
 };
@@ -182,7 +188,9 @@ export default {
         variant="info"
         category="primary"
         :aria-label="__('Trigger manual job')"
-        @click="triggerManualJob(variables)"
+        :disabled="triggerBtnDisabled"
+        data-testid="trigger-manual-job-btn"
+        @click="trigger"
       >
         {{ action.button_title }}
       </gl-button>

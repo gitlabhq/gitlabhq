@@ -41,6 +41,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task' do
 
     describe 'checkout or clone' do
       before do
+        stub_env('CI', false)
         expect(Dir).to receive(:chdir).with(clone_path)
       end
 
@@ -86,18 +87,14 @@ RSpec.describe 'gitlab:gitaly namespace rake task' do
         end
 
         context 'when Rails.env is test' do
-          let(:command) do
-            %W[make
-               BUNDLE_FLAGS=--no-deployment
-               GEM_HOME=#{Bundler.bundle_path}]
-          end
+          let(:command) { %w[make] }
 
           before do
             stub_rails_env('test')
           end
 
-          it 'calls make in the gitaly directory with --no-deployment flag for bundle' do
-            expect(Gitlab::Popen).to receive(:popen).with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
+          it 'calls make in the gitaly directory with BUNDLE_DEPLOYMENT and GEM_HOME variables' do
+            expect(Gitlab::Popen).to receive(:popen).with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil, "BUNDLE_DEPLOYMENT" => 'false', "GEM_HOME" => Bundler.bundle_path.to_s }).and_return(true)
 
             subject
           end

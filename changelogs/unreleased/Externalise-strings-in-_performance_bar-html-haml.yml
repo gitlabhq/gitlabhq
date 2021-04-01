@@ -1,0 +1,5 @@
+---
+title: Externalise strings in application_settings/_performance_bar.html.haml
+merge_request: 58018
+author: nuwe1
+type: other

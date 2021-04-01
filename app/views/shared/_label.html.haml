@@ -12,18 +12,18 @@
     - if can?(current_user, :admin_label, @project)
       %li.inline.js-toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
         dom_id: dom_id(label), type: label.type } }
-        %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
+        %button.add-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip.gl-ml-3{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
           = sprite_icon('star-o')
-        %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
+        %button.remove-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip.gl-ml-3{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
           = sprite_icon('star')
     - if can?(current_user, :admin_label, label)
       %li.inline
-        = link_to label.edit_path, class: 'btn btn-transparent label-action edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
+        = link_to label.edit_path, class: 'btn gl-button btn-default-tertiary btn-sm edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
           = sprite_icon('pencil')
     - if can?(current_user, :admin_label, label)
       %li.inline
         .dropdown
-          %button{ type: 'button', class: 'btn btn-transparent js-label-options-dropdown label-action', data: { toggle: 'dropdown' }, aria_label: _('Label actions dropdown') }
+          %button{ type: 'button', class: 'btn gl-button btn-default-tertiary btn-sm js-label-options-dropdown', data: { toggle: 'dropdown' }, aria_label: _('Label actions dropdown') }
             = sprite_icon('ellipsis_v')
           .dropdown-menu.dropdown-open-left
             %ul
