@@ -31,8 +31,9 @@ export default {
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
+  inject: ['currentUserId'],
   computed: {
-    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId']),
+    ...mapState(['members', 'tableFields', 'tableAttrs']),
     filteredFields() {
       return FIELDS.filter(
         (field) => this.tableFields.includes(field.key) && this.showField(field),

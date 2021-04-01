@@ -36,7 +36,7 @@
   }
 
   .file-title {
-    @extend .monospace;
+    @include gl-font-monospace;
     line-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;

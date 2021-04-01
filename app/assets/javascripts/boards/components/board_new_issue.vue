@@ -10,7 +10,7 @@ import ProjectSelect from './project_select.vue';
 export default {
   name: 'BoardNewIssue',
   i18n: {
-    submit: __('Submit issue'),
+    submit: __('Create issue'),
     cancel: __('Cancel'),
   },
   components: {

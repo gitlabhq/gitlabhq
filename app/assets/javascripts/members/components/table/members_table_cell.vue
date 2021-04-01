@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import { MEMBER_TYPES } from '../../constants';
 import {
   isGroup,
@@ -12,6 +11,7 @@ import {
 
 export default {
   name: 'MembersTableCell',
+  inject: ['currentUserId'],
   props: {
     member: {
       type: Object,
@@ -19,7 +19,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentUserId']),
     isGroup() {
       return isGroup(this.member);
     },

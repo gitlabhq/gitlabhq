@@ -22,10 +22,11 @@ export const initMembersApp = (
   Vue.use(Vuex);
   Vue.use(GlToast);
 
+  const { sourceId, canManageMembers, ...vuexStoreAttributes } = parseDataAttributes(el);
+
   const store = new Vuex.Store(
     membersStore({
-      ...parseDataAttributes(el),
-      currentUserId: gon.current_user_id || null,
+      ...vuexStoreAttributes,
       tableFields,
       tableAttrs,
       tableSortableFields,
@@ -38,6 +39,11 @@ export const initMembersApp = (
     el,
     components: { App },
     store,
+    provide: {
+      currentUserId: gon.current_user_id || null,
+      sourceId,
+      canManageMembers,
+    },
     render: (createElement) => createElement('app'),
   });
 };

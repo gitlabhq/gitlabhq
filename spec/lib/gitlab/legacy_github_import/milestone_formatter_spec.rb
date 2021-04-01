@@ -92,7 +92,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
     let(:iid_attr) { :id }
 
     before do
-      project.update(import_type: 'gitea')
+      project.update!(import_type: 'gitea')
     end
 
     it_behaves_like 'Gitlab::LegacyGithubImport::MilestoneFormatter#attributes'

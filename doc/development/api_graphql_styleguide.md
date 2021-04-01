@@ -392,6 +392,28 @@ field :blob, type: Types::Snippets::BlobType,
 
 This will increment the [`complexity` score](#field-complexity) of the field by `1`.
 
+If a resolver calls Gitaly, it can be annotated with
+`BaseResolver.calls_gitaly!`. This passes `calls_gitaly: true` to any
+field that uses this resolver.
+
+For example:
+
+```ruby
+class BranchResolver < BaseResolver
+  type ::Types::BranchType, null: true
+  calls_gitaly!
+
+  argument name: ::GraphQL::STRING_TYPE, required: true
+
+  def resolve(name:)
+    object.branch(name)
+  end
+end
+```
+
+Then when we use it, any field that uses `BranchResolver` has the correct
+value for `calls_gitaly:`.
+
 ### Exposing permissions for a type
 
 To expose permissions the current user has on a resource, you can call
@@ -1137,9 +1159,10 @@ When using resolvers, they can and should serve as the SSoT for field metadata.
 All field options (apart from the field name) can be declared on the resolver.
 These include:
 
-- `type` (this is particularly important, and is planned to be mandatory)
+- `type` (required - all resolvers must include a type annotation)
 - `extras`
 - `description`
+- Gitaly annotations (with `calls_gitaly!`)
 
 Example:
 
@@ -1149,6 +1172,7 @@ module Resolvers
     type Types::MyType, null: true
     extras [:lookahead]
     description 'Retrieve a single MyType'
+    calls_gitaly!
   end
 end
 ```

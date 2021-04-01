@@ -39,7 +39,7 @@ Incident, you have two options to do this manually.
 1. Go to **Issues > List**, and select **New issue**.
 1. In the **Type** dropdown, select **Incident**. Only fields relevant to
    incidents are displayed on the page.
-1. Create the incident as needed, and select **Submit issue** to save the
+1. Create the incident as needed, and select **Create issue** to save the
    incident.
 
 ![Incident List Create](img/new_incident_create_v13_4.png)

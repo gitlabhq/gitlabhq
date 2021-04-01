@@ -290,7 +290,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
     subject { described_class.new(project) }
 
     before do
-      project.update(import_type: 'gitea', import_url: "#{repo_root}/foo/group/project.git")
+      project.update!(import_type: 'gitea', import_url: "#{repo_root}/foo/group/project.git")
     end
 
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute' do

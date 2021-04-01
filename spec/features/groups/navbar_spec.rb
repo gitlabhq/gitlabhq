@@ -68,7 +68,7 @@ RSpec.describe 'Group navbar' do
     before do
       stub_config(registry: { enabled: true })
 
-      insert_container_nav(_('Kubernetes'))
+      insert_container_nav
 
       visit group_path(group)
     end
@@ -80,7 +80,7 @@ RSpec.describe 'Group navbar' do
     before do
       stub_config(dependency_proxy: { enabled: true })
 
-      insert_dependency_proxy_nav(_('Dependency Proxy'))
+      insert_dependency_proxy_nav
 
       visit group_path(group)
     end

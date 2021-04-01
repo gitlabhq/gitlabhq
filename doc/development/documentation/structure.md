@@ -113,7 +113,7 @@ To create an issue:
 1. Go to **Issues > List**.
 1. In the top right, click **New issue**.
 1. Complete the fields. (If you have a reference topic that lists each field, link to it here.)
-1. Click **Submit issue**.
+1. Click **Create issue**.
 
 The issue is created. You can view it by going to **Issues > List**.
 ```

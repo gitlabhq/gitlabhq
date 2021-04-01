@@ -7,10 +7,10 @@ RSpec.describe 'Project issue boards sidebar', :js do
 
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue)   { create(:issue, project: project, relative_position: 1) }
   let_it_be(:board)   { create(:board, project: project) }
   let_it_be(:list)    { create(:list, board: board, position: 0) }
-  let(:card)          { find('.board:nth-child(1)').first('.board-card') }
+
+  let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 
   before do
     project.add_maintainer(user)
@@ -18,41 +18,17 @@ RSpec.describe 'Project issue boards sidebar', :js do
     sign_in(user)
 
     visit project_board_path(project, board)
+
     wait_for_requests
   end
 
-  it 'shows sidebar when clicking issue' do
-    click_card(card)
+  it_behaves_like 'issue boards sidebar'
 
-    expect(page).to have_selector('.issue-boards-sidebar')
+  def first_card
+    find('.board:nth-child(1)').first("[data-testid='board_card']")
   end
 
-  it 'closes sidebar when clicking issue' do
-    click_card(card)
-
-    expect(page).to have_selector('.issue-boards-sidebar')
-
-    click_card(card)
-
-    expect(page).not_to have_selector('.issue-boards-sidebar')
-  end
-
-  it 'closes sidebar when clicking close button' do
-    click_card(card)
-
-    expect(page).to have_selector('.issue-boards-sidebar')
-
-    find("[data-testid='sidebar-drawer'] .gl-drawer-close-button").click
-
-    expect(page).not_to have_selector('.issue-boards-sidebar')
-  end
-
-  it 'shows issue details when sidebar is open' do
-    click_card(card)
-
-    page.within('.issue-boards-sidebar') do
-      expect(page).to have_content(issue.title)
-      expect(page).to have_content(issue.to_reference)
-    end
+  def click_first_issue_card
+    click_card(first_card)
   end
 end

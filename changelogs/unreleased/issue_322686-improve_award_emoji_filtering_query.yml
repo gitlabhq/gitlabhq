@@ -1,0 +1,5 @@
+---
+title: Add composite index to support epic filtering by award emoji
+merge_request: 57759
+author:
+type: performance

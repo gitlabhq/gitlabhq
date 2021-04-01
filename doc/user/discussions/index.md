@@ -119,7 +119,7 @@ the unresolved threads.
 
 ![Issue mentioning threads in a merge request](img/preview_issue_for_threads.png)
 
-Hitting **Submit issue** causes all threads to be marked as resolved and
+Hitting **Create issue** causes all threads to be marked as resolved and
 add a note referring to the newly created issue.
 
 ![Mark threads as resolved notice](img/resolve_thread_issue_notice.png)

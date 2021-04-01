@@ -127,7 +127,7 @@ export default {
     </component>
 
     <epics-swimlanes
-      v-else
+      v-else-if="boardListsToUse.length"
       ref="swimlanes"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"

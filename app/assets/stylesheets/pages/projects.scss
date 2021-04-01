@@ -136,10 +136,6 @@
     }
   }
 
-  .notification-dropdown .dropdown-menu {
-    @extend .dropdown-menu-right;
-  }
-
   .download-button {
     @include media-breakpoint-down(md) {
       margin-left: 0;
@@ -838,7 +834,7 @@ pre.light-well {
   }
 
   .form-control {
-    @extend .monospace;
+    @include gl-font-monospace;
     background-color: $white;
     border-color: $border-color;
     font-size: 14px;

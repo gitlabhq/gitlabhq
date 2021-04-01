@@ -10,10 +10,9 @@ localVue.use(Vuex);
 describe('MembersFilteredSearchBar', () => {
   let wrapper;
 
-  const createComponent = (state) => {
+  const createComponent = ({ state = {}, provide = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
-        sourceId: 1,
         filteredSearchBar: {
           show: true,
           tokens: ['two_factor'],
@@ -21,13 +20,17 @@ describe('MembersFilteredSearchBar', () => {
           placeholder: 'Filter members',
           recentSearchesStorageKey: 'group_members',
         },
-        canManageMembers: true,
         ...state,
       },
     });
 
     wrapper = shallowMount(MembersFilteredSearchBar, {
       localVue,
+      provide: {
+        sourceId: 1,
+        canManageMembers: true,
+        ...provide,
+      },
       store,
     });
   };
@@ -68,14 +71,18 @@ describe('MembersFilteredSearchBar', () => {
     describe('when `canManageMembers` is false', () => {
       it('excludes 2FA token', () => {
         createComponent({
-          filteredSearchBar: {
-            show: true,
-            tokens: ['two_factor', 'with_inherited_permissions'],
-            searchParam: 'search',
-            placeholder: 'Filter members',
-            recentSearchesStorageKey: 'group_members',
+          state: {
+            filteredSearchBar: {
+              show: true,
+              tokens: ['two_factor', 'with_inherited_permissions'],
+              searchParam: 'search',
+              placeholder: 'Filter members',
+              recentSearchesStorageKey: 'group_members',
+            },
           },
-          canManageMembers: false,
+          provide: {
+            canManageMembers: false,
+          },
         });
 
         expect(findFilteredSearchBar().props('tokens')).toEqual([

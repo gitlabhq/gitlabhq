@@ -37,13 +37,14 @@ export default {
       ],
     },
   ],
+  inject: ['sourceId', 'canManageMembers'],
   data() {
     return {
       initialFilterValue: [],
     };
   },
   computed: {
-    ...mapState(['sourceId', 'filteredSearchBar', 'canManageMembers']),
+    ...mapState(['filteredSearchBar']),
     tokens() {
       return this.$options.availableTokens.filter((token) => {
         if (

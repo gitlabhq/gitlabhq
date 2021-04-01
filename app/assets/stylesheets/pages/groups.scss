@@ -160,17 +160,6 @@
     vertical-align: top;
   }
 
-
-  .notification-dropdown {
-    .dropdown-menu {
-      @extend .dropdown-menu-right;
-    }
-
-    .icon {
-      fill: $gl-text-color-secondary;
-    }
-  }
-
   .new-project-subgroup {
     .dropdown-primary {
       min-width: 115px;

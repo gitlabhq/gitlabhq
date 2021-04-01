@@ -50,6 +50,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        resources :infrastructure_registry, only: [:index], module: :packages
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             resources :artifacts, only: [] do

@@ -15,7 +15,6 @@ describe('SortDropdown', () => {
   const createComponent = (state) => {
     const store = new Vuex.Store({
       state: {
-        sourceId: 1,
         tableSortableFields: ['account', 'granted', 'expires', 'maxRole', 'lastSignIn'],
         filteredSearchBar: {
           show: true,
@@ -30,6 +29,9 @@ describe('SortDropdown', () => {
 
     wrapper = mount(SortDropdown, {
       localVue,
+      provide: {
+        sourceId: 1,
+      },
       store,
     });
   };

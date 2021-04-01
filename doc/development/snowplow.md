@@ -314,6 +314,7 @@ Custom event tracking and instrumentation can be added by directly calling the `
 | `project`  | Project                   | nil           | The project associated with the event. |
 | `user`     | User                      | nil           | The user associated with the event. |
 | `namespace` | Namespace                | nil           | The namespace associated with the event. |
+| `extra`   | Hash                | `{}`         | Additional keyword arguments are collected into a hash and sent with the event. |
 
 Tracking can be viewed as either tracking user behavior, or can be used for instrumentation to monitor and visualize performance over time in an area or aspect of code.
 
@@ -495,6 +496,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `namespace_id` | **{dotted-circle}** | integer               |                                                               |
 | `environment`  | **{check-circle}**  | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
 | `source`       | **{check-circle}**  | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
+| `extra`        | **{dotted-circle}**  | JSON                  | Any additional data associated with the event, in the form of key-value pairs |
 
 ### Default Schema
 

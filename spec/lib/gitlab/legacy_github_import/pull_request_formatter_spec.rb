@@ -260,7 +260,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter do
 
   context 'when importing a Gitea project' do
     before do
-      project.update(import_type: 'gitea')
+      project.update!(import_type: 'gitea')
     end
 
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#attributes'

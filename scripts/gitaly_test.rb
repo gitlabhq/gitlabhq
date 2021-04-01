@@ -34,6 +34,10 @@ module GitalyTest
     File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile')
   end
 
+  def gemfile_dir
+    File.dirname(gemfile)
+  end
+
   def gitlab_shell_secret_file
     File.join(tmp_tests_gitlab_shell_dir, '.gitlab_shell_secret')
   end
@@ -42,8 +46,7 @@ module GitalyTest
     env_hash = {
       'HOME' => File.expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
-      'BUNDLE_APP_CONFIG' => File.join(File.dirname(gemfile), '.bundle/config'),
-      'BUNDLE_FLAGS' => "--jobs=4 --retry=3",
+      'BUNDLE_APP_CONFIG' => File.join(gemfile_dir, '.bundle'),
       'BUNDLE_INSTALL_FLAGS' => nil,
       'BUNDLE_GEMFILE' => gemfile,
       'RUBYOPT' => nil,
@@ -52,13 +55,20 @@ module GitalyTest
       'GITALY_TESTING_NO_GIT_HOOKS' => "1"
     }
 
-    if ENV['CI']
-      bundle_path = File.expand_path('../vendor/gitaly-ruby', __dir__)
-      env_hash['BUNDLE_FLAGS'] += " --path=#{bundle_path}"
-    end
-
     env_hash
   end
+
+  # rubocop:disable GitlabSecurity/SystemCommandInjection
+  def set_bundler_config
+    system('bundle config set --local jobs 4', chdir: gemfile_dir)
+    system('bundle config set --local retry 3', chdir: gemfile_dir)
+
+    if ENV['CI']
+      bundle_path = File.expand_path('../vendor/gitaly-ruby', __dir__)
+      system('bundle', 'config', 'set', '--local', 'path', bundle_path, chdir: gemfile_dir)
+    end
+  end
+  # rubocop:enable GitlabSecurity/SystemCommandInjection
 
   def config_path(service)
     case service

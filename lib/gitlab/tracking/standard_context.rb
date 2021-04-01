@@ -3,11 +3,11 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-3'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-4'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
-      def initialize(namespace: nil, project: nil, user: nil, **data)
-        @data = data
+      def initialize(namespace: nil, project: nil, user: nil, **extra)
+        @extra = extra
       end
 
       def to_context
@@ -35,8 +35,9 @@ module Gitlab
       def to_h
         {
           environment: environment,
-          source: source
-        }.merge(@data)
+          source: source,
+          extra: @extra
+        }
       end
     end
   end

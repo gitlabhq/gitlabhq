@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Tracking do
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)
-          .with(project: project, user: user, namespace: namespace)
+          .with(project: project, user: user, namespace: namespace, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
           .and_call_original
 
         expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|
@@ -66,7 +66,8 @@ RSpec.describe Gitlab::Tracking do
         end
 
         described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5,
-                              context: [other_context], project: project, user: user, namespace: namespace)
+                              context: [other_context], project: project, user: user, namespace: namespace,
+                              extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
       end
     end
 

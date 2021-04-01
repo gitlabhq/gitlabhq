@@ -42,33 +42,6 @@ describe('initMembersApp', () => {
     expect(wrapper.find(MembersApp).exists()).toBe(true);
   });
 
-  it('sets `currentUserId` in Vuex store', () => {
-    setup();
-
-    expect(vm.$store.state.currentUserId).toBe(123);
-  });
-
-  describe('when `gon.current_user_id` is not set (user is not logged in)', () => {
-    it('sets `currentUserId` as `null` in Vuex store', () => {
-      window.gon = {};
-      setup();
-
-      expect(vm.$store.state.currentUserId).toBeNull();
-    });
-  });
-
-  it('parses and sets `data-source-id` as `sourceId` in Vuex store', () => {
-    setup();
-
-    expect(vm.$store.state.sourceId).toBe(234);
-  });
-
-  it('parses and sets `data-can-manage-members` as `canManageMembers` in Vuex store', () => {
-    setup();
-
-    expect(vm.$store.state.canManageMembers).toBe(true);
-  });
-
   it('parses and sets `members` in Vuex store', () => {
     setup();
 

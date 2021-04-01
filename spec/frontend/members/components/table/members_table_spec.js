@@ -32,17 +32,20 @@ describe('MembersTable', () => {
           table: { 'data-qa-selector': 'members_list' },
           tr: { 'data-qa-selector': 'member_row' },
         },
-        sourceId: 1,
-        currentUserId: 1,
         ...state,
       },
     });
   };
 
-  const createComponent = (state) => {
+  const createComponent = (state, provide = {}) => {
     wrapper = mount(MembersTable, {
       localVue,
       store: createStore(state),
+      provide: {
+        sourceId: 1,
+        currentUserId: 1,
+        ...provide,
+      },
       stubs: [
         'member-avatar',
         'member-source',
@@ -119,7 +122,7 @@ describe('MembersTable', () => {
 
       describe('when user is not logged in', () => {
         it('does not render the "Actions" field', () => {
-          createComponent({ currentUserId: null, tableFields: ['actions'] });
+          createComponent({ tableFields: ['actions'] }, { currentUserId: null });
 
           expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
         });

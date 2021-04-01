@@ -23,10 +23,10 @@ RSpec.describe Gitlab::ErrorTracking::Processor::ContextPayloadProcessor do
     end
 
     it 'merges the context payload into event payload', :aggregate_failures do
-      expect(result_hash[:user]).to eq(ip_address: '127.0.0.1', username: 'root')
+      expect(result_hash[:user]).to include(ip_address: '127.0.0.1', username: 'root')
 
       expect(result_hash[:tags])
-        .to eq(priority: 'high',
+        .to include(priority: 'high',
                locale: 'en',
                program: 'test',
                feature_category: 'feature_a',

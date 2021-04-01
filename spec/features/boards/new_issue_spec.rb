@@ -60,7 +60,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('bug')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests
@@ -85,7 +85,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('bug')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests
@@ -100,7 +100,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('new issue')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests

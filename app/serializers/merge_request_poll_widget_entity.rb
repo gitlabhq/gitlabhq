@@ -19,7 +19,11 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   # User entities
   expose :merge_user, using: UserEntity
 
-  expose :merge_pipeline, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project)} do |merge_request, options|
+  expose :merge_pipeline, if: ->(mr, _) {
+    Feature.disabled?(:merge_request_cached_merge_pipeline_serializer, mr.project, default_enabled: :yaml) &&
+      mr.merged? &&
+      can?(request.current_user, :read_pipeline, mr.target_project)
+  } do |merge_request, options|
     MergeRequests::PipelineEntity.represent(merge_request.merge_pipeline, options)
   end
 

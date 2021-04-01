@@ -6,9 +6,9 @@ RSpec.describe MergeRequestPollWidgetEntity do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let(:project)  { create :project, :repository }
-  let(:resource) { create(:merge_request, source_project: project, target_project: project) }
-  let(:user)     { create(:user) }
+  let_it_be(:project)  { create :project, :repository }
+  let_it_be(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:user)     { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -22,20 +22,33 @@ RSpec.describe MergeRequestPollWidgetEntity do
   end
 
   describe 'merge_pipeline' do
+    before do
+      stub_feature_flags(merge_request_cached_merge_pipeline_serializer: false)
+    end
+
     it 'returns nil' do
       expect(subject[:merge_pipeline]).to be_nil
     end
 
     context 'when is merged' do
-      let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+      let_it_be(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
 
       before do
         project.add_maintainer(user)
       end
 
+      context 'when user cannot read pipelines on target project' do
+        before do
+          project.team.truncate
+        end
+
+        it 'returns nil' do
+          expect(subject[:merge_pipeline]).to be_nil
+        end
+      end
+
       it 'returns merge_pipeline' do
-        pipeline.reload
         pipeline_payload =
           MergeRequests::PipelineEntity
             .represent(pipeline, request: request)
@@ -44,9 +57,9 @@ RSpec.describe MergeRequestPollWidgetEntity do
         expect(subject[:merge_pipeline]).to eq(pipeline_payload)
       end
 
-      context 'when user cannot read pipelines on target project' do
+      context 'when merge_request_cached_merge_pipeline_serializer is enabled' do
         before do
-          project.add_guest(user)
+          stub_feature_flags(merge_request_cached_merge_pipeline_serializer: true)
         end
 
         it 'returns nil' do

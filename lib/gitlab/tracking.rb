@@ -9,8 +9,8 @@ module Gitlab
         Gitlab::CurrentSettings.snowplow_enabled?
       end
 
-      def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil) # rubocop:disable Metrics/ParameterLists
-        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace).to_context, *context]
+      def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
+        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
 
         snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
         product_analytics.event(category, action, label: label, property: property, value: value, context: contexts)
