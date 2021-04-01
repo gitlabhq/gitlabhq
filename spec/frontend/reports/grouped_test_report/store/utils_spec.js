@@ -238,4 +238,18 @@ describe('Reports store utils', () => {
       });
     });
   });
+
+  describe('formatFilePath', () => {
+    it.each`
+      file                        | expected
+      ${'./test.js'}              | ${'test.js'}
+      ${'/test.js'}               | ${'test.js'}
+      ${'.//////////////test.js'} | ${'test.js'}
+      ${'test.js'}                | ${'test.js'}
+      ${'mock/path./test.js'}     | ${'mock/path./test.js'}
+      ${'./mock/path./test.js'}   | ${'mock/path./test.js'}
+    `('should format $file to be $expected', ({ file, expected }) => {
+      expect(utils.formatFilePath(file)).toBe(expected);
+    });
+  });
 });

@@ -231,7 +231,7 @@ module API
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
         optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
-        at_least_one_of :password, :reset_password
+        at_least_one_of :password, :reset_password, :force_random_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
         optional :force_random_password, type: Boolean, desc: 'Flag indicating a random password will be set'

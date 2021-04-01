@@ -99,8 +99,6 @@ Rails/SaveBang:
     - 'ee/spec/models/visible_approvable_spec.rb'
     - 'ee/spec/models/vulnerabilities/feedback_spec.rb'
     - 'ee/spec/models/vulnerabilities/issue_link_spec.rb'
-    - 'ee/spec/presenters/audit_event_presenter_spec.rb'
-    - 'ee/spec/presenters/epic_presenter_spec.rb'
     - 'ee/spec/requests/api/boards_spec.rb'
     - 'ee/spec/requests/api/epic_issues_spec.rb'
     - 'ee/spec/requests/api/epic_links_spec.rb'

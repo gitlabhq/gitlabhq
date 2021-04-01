@@ -759,6 +759,29 @@ An approval is optional when a license report:
 
 ## Troubleshooting
 
+### ASDF_PYTHON_VERSION does not automatically install the version
+
+Defining a non-latest Python version in ASDF_PYTHON_VERSION [doesn't have it automatically installed](https://gitlab.com/gitlab-org/gitlab/-/issues/325604). If your project requires a non-latest version of Python:
+
+1. Define the required version by setting the `ASDF_PYTHON_VERSION` CI/CD variable.
+1. Pass a custom script to the `SETUP_CMD` CI/CD variable to install the required version and dependencies.
+
+For example: 
+
+```yaml
+include:
+  - template: Security/License-Scanning.gitlab-ci.yml
+
+license_scanning:
+    SETUP_CMD: ./setup.sh
+    ASDF_PYTHON_VERSION: "3.7.2"
+  before_script:
+    - echo "asdf install python 3.7.2 && pip install -r requirements.txt" > setup.sh
+    - chmod +x setup.sh
+    - apt-get -y update
+    - apt-get -y install build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+```
+
 ### `ERROR -- : asdf: No preset version installed for command`
 
 This error occurs when the version of the tools used by your project

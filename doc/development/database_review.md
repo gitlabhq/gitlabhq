@@ -30,9 +30,9 @@ A database review is required for:
   See the [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
   for implementation details.
 
-A database reviewer is expected to look out for obviously complex
+A database reviewer is expected to look out for overly complex
 queries in the change and review those closer. If the author does not
-point out specific queries for review and there are no obviously
+point out specific queries for review and there are no overly
 complex queries, it is enough to concentrate on reviewing the
 migration only.
 
@@ -221,7 +221,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - Data migrations should be reversible too or come with a description of how to reverse, when possible.
     This applies to all types of migrations (regular, post-deploy, background).
 - Query performance
-  - Check for any obviously complex queries and queries the author specifically
+  - Check for any overly complex queries and queries the author specifically
     points out for review (if any)
   - If not present yet, ask the author to provide SQL queries and query plans
     (for example, by using [ChatOps](understanding_explain_plans.md#chatops) or direct

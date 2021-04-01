@@ -928,7 +928,8 @@ RSpec.describe API::Users do
     end
 
     it "creates user with random password" do
-      params = attributes_for(:user, force_random_password: true, reset_password: true)
+      params = attributes_for(:user, force_random_password: true)
+      params.delete(:password)
       post api('/users', admin), params: params
 
       expect(response).to have_gitlab_http_status(:created)
@@ -936,8 +937,7 @@ RSpec.describe API::Users do
       user_id = json_response['id']
       new_user = User.find(user_id)
 
-      expect(new_user.valid_password?(params[:password])).to eq(false)
-      expect(new_user.recently_sent_password_reset?).to eq(true)
+      expect(new_user.encrypted_password).to be_present
     end
 
     it "creates user with private profile" do

@@ -17,6 +17,7 @@ localVue.use(Vuex);
 
 describe('Grouped test reports app', () => {
   const endpoint = 'endpoint.json';
+  const headBlobPath = '/blob/path';
   const pipelinePath = '/path/to/pipeline';
   let wrapper;
   let mockStore;
@@ -27,6 +28,7 @@ describe('Grouped test reports app', () => {
       localVue,
       propsData: {
         endpoint,
+        headBlobPath,
         pipelinePath,
         ...props,
       },
@@ -56,7 +58,7 @@ describe('Grouped test reports app', () => {
       ...getStoreConfig(),
       actions: {
         fetchReports: () => {},
-        setEndpoint: () => {},
+        setPaths: () => {},
       },
     });
     mountComponent();

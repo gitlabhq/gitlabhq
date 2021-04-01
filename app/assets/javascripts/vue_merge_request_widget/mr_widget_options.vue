@@ -480,6 +480,7 @@ export default {
         v-if="mr.testResultsPath"
         class="js-reports-container"
         :endpoint="mr.testResultsPath"
+        :head-blob-path="mr.headBlobPath"
         :pipeline-path="mr.pipeline.path"
       />
 

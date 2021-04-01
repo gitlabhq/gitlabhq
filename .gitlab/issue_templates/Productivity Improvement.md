@@ -34,6 +34,6 @@ after the implementation is merged/deployed/released.
 
 - [ ] The solution improved the situation.
   - If yes, check this box and close the issue. Well done! :tada:
-  - Otherwise, create a new "Productivity Improvement" issue. You can re-use the description from this issue, but obviously another solution should be chosen this time.
+  - Otherwise, create a new "Productivity Improvement" issue. You can re-use the description from this issue, but another solution should be chosen this time.
 
 /label ~"Engineering Productivity" ~meta

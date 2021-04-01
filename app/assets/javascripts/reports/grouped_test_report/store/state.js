@@ -41,15 +41,15 @@ export default () => ({
     open: false,
 
     data: {
-      class: {
-        value: null,
-        text: s__('Reports|Class'),
-        type: fieldTypes.link,
-      },
       classname: {
         value: null,
         text: s__('Reports|Classname'),
         type: fieldTypes.text,
+      },
+      filename: {
+        value: null,
+        text: s__('Reports|Filename'),
+        type: fieldTypes.link,
       },
       execution_time: {
         value: null,
@@ -59,12 +59,12 @@ export default () => ({
       failure: {
         value: null,
         text: s__('Reports|Failure'),
-        type: fieldTypes.codeBock,
+        type: fieldTypes.codeBlock,
       },
       system_output: {
         value: null,
         text: s__('Reports|System output'),
-        type: fieldTypes.codeBock,
+        type: fieldTypes.codeBlock,
       },
     },
   },

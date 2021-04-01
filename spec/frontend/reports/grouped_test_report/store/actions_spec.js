@@ -3,7 +3,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import {
-  setEndpoint,
+  setPaths,
   requestReports,
   fetchReports,
   stopPolling,
@@ -23,13 +23,18 @@ describe('Reports Store Actions', () => {
     mockedState = state();
   });
 
-  describe('setEndpoint', () => {
-    it('should commit SET_ENDPOINT mutation', (done) => {
+  describe('setPaths', () => {
+    it('should commit SET_PATHS mutation', (done) => {
       testAction(
-        setEndpoint,
-        'endpoint.json',
+        setPaths,
+        { endpoint: 'endpoint.json', headBlobPath: '/blob/path' },
         mockedState,
-        [{ type: types.SET_ENDPOINT, payload: 'endpoint.json' }],
+        [
+          {
+            type: types.SET_PATHS,
+            payload: { endpoint: 'endpoint.json', headBlobPath: '/blob/path' },
+          },
+        ],
         [],
         done,
       );

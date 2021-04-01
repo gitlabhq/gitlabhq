@@ -39,6 +39,10 @@ export default {
       required: false,
       default: '',
     },
+    headBlobPath: {
+      type: String,
+      required: true,
+    },
   },
   componentNames,
   computed: {
@@ -73,12 +77,15 @@ export default {
     },
   },
   created() {
-    this.setEndpoint(this.endpoint);
+    this.setPaths({
+      endpoint: this.endpoint,
+      headBlobPath: this.headBlobPath,
+    });
 
     this.fetchReports();
   },
   methods: {
-    ...mapActions(['setEndpoint', 'fetchReports', 'closeModal']),
+    ...mapActions(['setPaths', 'fetchReports', 'closeModal']),
     reportText(report) {
       const { name, summary } = report || {};
 

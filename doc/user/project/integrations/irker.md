@@ -23,7 +23,7 @@ git clone https://gitlab.com/esr/irker.git
 
 Once you have downloaded the code, you can run the Python script named `irkerd`.
 This script is the gateway script, it acts both as an IRC client, for sending
-messages to an IRC server obviously, and as a TCP server, for receiving messages
+messages to an IRC server, and as a TCP server, for receiving messages
 from the GitLab service.
 
 If the Irker server runs on the same machine, you are done. If not, you

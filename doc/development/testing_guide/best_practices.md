@@ -86,7 +86,7 @@ a parent context. Examples of these are:
 - `:clean_gitlab_redis_cache` which provides a clean Redis cache to the examples.
 - `:request_store` which provides a request store to the examples.
 
-Obviously we should reduce test dependencies, and avoiding
+We should reduce test dependencies, and avoiding
 capabilities also reduces the amount of set-up needed.
 
 `:js` is particularly important to avoid. This must only be used if the feature

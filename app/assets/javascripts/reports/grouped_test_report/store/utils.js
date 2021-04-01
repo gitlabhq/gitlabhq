@@ -100,3 +100,12 @@ export const statusIcon = (status) => {
 
   return ICON_NOTFOUND;
 };
+
+/**
+ * Removes `./` from the beginning of a file path so it can be appended onto a blob path
+ * @param {String} file
+ * @returns {String}  - formatted value
+ */
+export const formatFilePath = (file) => {
+  return file.replace(/^\.?\/*/, '');
+};

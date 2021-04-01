@@ -424,7 +424,7 @@ Feature.enabled?(:licensed_feature_feature_flag, project) &&
 ### Feature groups
 
 Feature groups must be defined statically in `lib/feature.rb` (in the
-`.register_feature_groups` method), but their implementation can obviously be
+`.register_feature_groups` method), but their implementation can be
 dynamic (querying the DB, for example).
 
 Once defined in `lib/feature.rb`, you can to activate a

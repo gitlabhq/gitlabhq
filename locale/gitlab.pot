@@ -25882,9 +25882,6 @@ msgstr ""
 msgid "Reports|Base report parsing error:"
 msgstr ""
 
-msgid "Reports|Class"
-msgstr ""
-
 msgid "Reports|Classname"
 msgstr ""
 
@@ -25902,6 +25899,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Reports|Failure"
+msgstr ""
+
+msgid "Reports|Filename"
 msgstr ""
 
 msgid "Reports|Head report parsing error:"
