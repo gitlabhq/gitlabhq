@@ -30,8 +30,8 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
 
   describe '#run' do
     it 'imports group milestones' do
-      first_page = extracted_data(title: 'milestone1', has_next_page: true)
-      last_page = extracted_data(title: 'milestone2')
+      first_page = extracted_data(title: 'milestone1', iid: 1, has_next_page: true)
+      last_page = extracted_data(title: 'milestone2', iid: 2)
 
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor)
@@ -96,10 +96,11 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
     end
   end
 
-  def milestone_data(title)
+  def milestone_data(title, iid: 1)
     {
       'title' => title,
       'description' => 'desc',
+      'iid' => iid,
       'state' => 'closed',
       'start_date' => '2020-10-21',
       'due_date' => '2020-10-22',
@@ -108,14 +109,14 @@ RSpec.describe BulkImports::Groups::Pipelines::MilestonesPipeline do
     }
   end
 
-  def extracted_data(title:, has_next_page: false)
+  def extracted_data(title:, iid: 1, has_next_page: false)
     page_info = {
       'has_next_page' => has_next_page,
       'next_page' => has_next_page ? 'cursor' : nil
     }
 
     BulkImports::Pipeline::ExtractedData.new(
-      data: milestone_data(title),
+      data: milestone_data(title, iid: iid),
       page_info: page_info
     )
   end

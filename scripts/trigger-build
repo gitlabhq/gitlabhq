@@ -136,13 +136,15 @@ module Trigger
 
     def extra_variables
       # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
-      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
-      # We also set IMAGE_TAG so the GitLab and QA docker images are tagged with
-      # that SHA.
+      # and fallback to CI_COMMIT_SHA (merged result commit) for the non-MR pipelines.
+      # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results.
+      # We also set IMAGE_TAG so the GitLab Docker image is tagged with that SHA.
       source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
       {
         'GITLAB_VERSION' => source_sha,
         'IMAGE_TAG' => source_sha,
+        'QA_IMAGE' => "#{ENV['CI_REGISTRY']}/#{ENV['CI_PROJECT_PATH']}/gitlab-ee-qa:#{ENV['CI_COMMIT_REF_SLUG']}",
+        'SKIP_QA_DOCKER' => 'true',
         'ALTERNATIVE_SOURCES' => 'true',
         'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
         'ee' => Trigger.ee? ? 'true' : 'false',

@@ -681,6 +681,19 @@ export const roundOffFloat = (number, precision = 0) => {
 };
 
 /**
+ * Method to round values to the nearest half (0.5)
+ *
+ * Eg; roundToNearestHalf(3.141592) = 3, roundToNearestHalf(3.41592) = 3.5
+ *
+ * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * more supported examples.
+ *
+ * @param {Float} number
+ * @returns {Float|Number}
+ */
+export const roundToNearestHalf = (num) => Math.round(num * 2).toFixed() / 2;
+
+/**
  * Method to round down values with decimal places
  * with provided precision.
  *

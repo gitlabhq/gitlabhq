@@ -18,10 +18,6 @@ module Gitlab
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
 
-      def self_describing_event(schema_url, data:, context: nil)
-        snowplow.self_describing_event(schema_url, data: data, context: context)
-      end
-
       def snowplow_options(group)
         additional_features = Feature.enabled?(:additional_snowplow_tracking, group)
         {

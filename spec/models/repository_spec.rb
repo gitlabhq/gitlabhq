@@ -1698,12 +1698,13 @@ RSpec.describe Repository do
     end
 
     it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
-      merge_commit_id = repository.merge_to_ref(user,
-                                                merge_request.diff_head_sha,
-                                                merge_request,
-                                                merge_request.merge_ref_path,
-                                                'Custom message',
-                                                merge_request.target_branch_ref)
+      merge_commit_id =
+        repository.merge_to_ref(user,
+          source_sha: merge_request.diff_head_sha,
+          branch: merge_request.target_branch,
+          target_ref: merge_request.merge_ref_path,
+          message: 'Custom message',
+          first_parent_ref: merge_request.target_branch_ref)
 
       merge_commit = repository.commit(merge_commit_id)
 

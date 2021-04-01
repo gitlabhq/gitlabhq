@@ -209,6 +209,25 @@ RSpec.describe PipelineSerializer do
         end
       end
 
+      context 'with build environments' do
+        let(:ref) { 'feature' }
+
+        it 'verifies number of queries', :request_store do
+          stub_licensed_features(protected_environments: true)
+
+          env = create(:environment, project: project)
+          create(:ci_build, :scheduled, project: project, environment: env.name)
+          create(:ci_build, :scheduled, project: project, environment: env.name)
+          create(:ci_build, :scheduled, project: project, environment: env.name)
+
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+          expected_queries = Gitlab.ee? ? 61 : 57
+
+          expect(recorded.count).to be_within(1).of(expected_queries)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
+
       context 'with scheduled and manual builds' do
         let(:ref) { 'feature' }
 

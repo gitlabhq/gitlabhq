@@ -281,4 +281,48 @@ RSpec.describe IssuesHelper do
       expect(helper.issue_header_actions_data(project, issue, current_user)).to include(expected)
     end
   end
+
+  shared_examples 'issues list data' do
+    it 'returns expected result' do
+      finder = double.as_null_object
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:finder).and_return(finder)
+      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:url_for).and_return('#')
+      allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
+
+      expected = {
+        calendar_path: '#',
+        can_bulk_update: 'true',
+        can_edit: 'true',
+        email: current_user&.notification_email,
+        endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
+        export_csv_path: export_csv_project_issues_path(project),
+        full_path: project.full_path,
+        import_csv_issues_path: '#',
+        issues_path: project_issues_path(project),
+        max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
+        new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.id, milestone_id: finder.milestones.first.id }),
+        project_import_jira_path: project_import_jira_path(project),
+        rss_path: '#',
+        show_new_issue_link: 'true'
+      }
+
+      expect(helper.issues_list_data(project, current_user, finder)).to include(expected)
+    end
+  end
+
+  describe '#issues_list_data' do
+    context 'when user is signed in' do
+      it_behaves_like 'issues list data' do
+        let(:current_user) { double.as_null_object }
+      end
+    end
+
+    context 'when user is anonymous' do
+      it_behaves_like 'issues list data' do
+        let(:current_user) { nil }
+      end
+    end
+  end
 end

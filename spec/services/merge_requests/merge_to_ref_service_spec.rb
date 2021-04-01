@@ -257,8 +257,9 @@ RSpec.describe MergeRequests::MergeToRefService do
       let(:params) { { allow_conflicts: true } }
 
       it 'calls merge_to_ref with allow_conflicts param' do
-        expect(project.repository).to receive(:merge_to_ref)
-          .with(anything, anything, anything, anything, anything, anything, true)
+        expect(project.repository).to receive(:merge_to_ref) do |user, **kwargs|
+          expect(kwargs[:allow_conflicts]).to eq(true)
+        end.and_call_original
 
         service.execute(merge_request)
       end

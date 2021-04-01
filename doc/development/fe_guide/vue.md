@@ -99,6 +99,86 @@ return new Vue({
 > When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique
 across the codebase.
 
+#### Providing Rails form fields to Vue applications
+
+When composing a form with Rails, the `name`, `id`, and `value` attributes of form inputs are generated
+to match the backend. It can be helpful to have access to these generated attributes when converting 
+a Rails form to Vue, or when [integrating components (datepicker, project selector, etc)](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) into it.
+The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application. 
+This allows us to easily integrate Vue components without changing how the form submits.
+
+```haml
+-# form.html.haml
+= form_for user do |form|
+  .js-user-form
+    = form.text_field :name, class: 'form-control gl-form-input', data: { js_name: 'name' }
+    = form.text_field :email, class: 'form-control gl-form-input', data: { js_name: 'email' }
+```
+
+> The `js_name` data attribute is used as the key in the resulting JavaScript object.
+For example `= form.text_field :email, data: { js_name: 'fooBarBaz' }` would be translated 
+to `{ fooBarBaz: { name: 'user[email]', id: 'user_email', value: '' } }`
+
+```javascript
+// index.js
+import Vue from 'vue';
+import { parseRailsFormFields } from '~/lib/utils/forms';
+import UserForm from './components/user_form.vue';
+
+export const initUserForm = () => {
+  const el = document.querySelector('.js-user-form');
+
+  if (!el) {
+    return null;
+  }
+
+  const fields = parseRailsFormFields(el);
+
+  return new Vue({
+    el,
+    render(h) {
+      return h(UserForm, {
+        props: {
+          fields,
+        },
+      });
+    },
+  });
+};
+```
+
+```vue
+<script>
+// user_form.vue
+import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
+
+export default {
+  name: 'UserForm',
+  components: { GlButton, GlFormGroup, GlFormInput },
+  props: {
+    fields: {
+      type: Object,
+      required: true,
+    },
+  },
+};
+</script>
+
+<template>
+  <div>
+    <gl-form-group :label-for="fields.name.id" :label="__('Name')">
+      <gl-form-input v-bind="fields.name" size="lg" />
+    </gl-form-group>
+
+    <gl-form-group :label-for="fields.email.id" :label="__('Email')">
+      <gl-form-input v-bind="fields.email" type="email" size="lg" />
+    </gl-form-group>
+
+    <gl-button type="submit" category="primary" variant="confirm">{{ __('Update') }}</gl-button>
+  </div>
+</template>
+```
+
 #### Accessing the `gl` object
 
 We query the `gl` object for data that doesn't change during the application's life

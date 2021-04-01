@@ -16,6 +16,7 @@ module BulkImports
                   has_next_page: hasNextPage
                 }
                 nodes {
+                  iid
                   title
                   description
                   state

@@ -57,6 +57,7 @@ The following resources are migrated to the target instance:
   - due date
   - created at
   - updated at
+  - iid ([Introduced in 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/326157))
 - Iterations ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428))
   - iid
   - title

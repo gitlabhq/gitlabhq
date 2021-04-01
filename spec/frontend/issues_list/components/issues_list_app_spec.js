@@ -1,10 +1,14 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
+import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
+import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
+
 import {
   CREATED_DESC,
   PAGE_SIZE,
@@ -24,12 +28,21 @@ describe('IssuesListApp component', () => {
   let axiosMock;
   let wrapper;
 
-  const fullPath = 'path/to/project';
+  const calendarPath = 'calendar/path';
   const endpoint = 'api/endpoint';
+  const exportCsvPath = 'export/csv/path';
+  const fullPath = 'path/to/project';
   const issuesPath = `${fullPath}/-/issues`;
+  const newIssuePath = `new/issue/path`;
+  const rssPath = 'rss/path';
   const state = 'opened';
   const xPage = 1;
   const xTotal = 25;
+  const tabCounts = {
+    opened: xTotal,
+    closed: undefined,
+    all: undefined,
+  };
   const fetchIssuesResponse = {
     data: [],
     headers: {
@@ -38,14 +51,21 @@ describe('IssuesListApp component', () => {
     },
   };
 
+  const findGlButtons = () => wrapper.findAllComponents(GlButton);
+  const findGlButtonAt = (index) => findGlButtons().at(index);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
 
-  const mountComponent = () =>
+  const mountComponent = ({ provide = {} } = {}) =>
     shallowMount(IssuesListApp, {
       provide: {
+        calendarPath,
         endpoint,
+        exportCsvPath,
         fullPath,
         issuesPath,
+        newIssuePath,
+        rssPath,
+        ...provide,
       },
     });
 
@@ -73,6 +93,9 @@ describe('IssuesListApp component', () => {
         searchInputPlaceholder: 'Search or filter results…',
         sortOptions,
         initialSortBy: CREATED_DESC,
+        tabs: IssuableListTabs,
+        currentTab: IssuableStates.Opened,
+        tabCounts,
         showPaginationControls: true,
         issuables: [],
         totalItems: xTotal,
@@ -80,6 +103,85 @@ describe('IssuesListApp component', () => {
         previousPage: xPage - 1,
         nextPage: xPage + 1,
         urlParams: { page: xPage, state },
+      });
+    });
+  });
+
+  describe('header action buttons', () => {
+    it('renders rss button', () => {
+      wrapper = mountComponent();
+
+      expect(findGlButtonAt(0).attributes()).toMatchObject({
+        href: rssPath,
+        icon: 'rss',
+        'aria-label': IssuesListApp.i18n.rssLabel,
+      });
+    });
+
+    it('renders calendar button', () => {
+      wrapper = mountComponent();
+
+      expect(findGlButtonAt(1).attributes()).toMatchObject({
+        href: calendarPath,
+        icon: 'calendar',
+        'aria-label': IssuesListApp.i18n.calendarLabel,
+      });
+    });
+
+    it('renders csv import/export component', async () => {
+      const search = '?page=1&search=refactor';
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { search },
+      });
+
+      wrapper = mountComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent(CsvImportExportButtons).props()).toMatchObject({
+        exportCsvPath: `${exportCsvPath}${search}`,
+        issuableCount: xTotal,
+      });
+    });
+
+    describe('bulk edit button', () => {
+      it('renders when user has permissions', () => {
+        wrapper = mountComponent({ provide: { canBulkUpdate: true } });
+
+        expect(findGlButtonAt(2).text()).toBe('Edit issues');
+      });
+
+      it('does not render when user has permissions', () => {
+        wrapper = mountComponent({ provide: { canBulkUpdate: false } });
+
+        expect(findGlButtons().filter((button) => button.text() === 'Edit issues')).toHaveLength(0);
+      });
+
+      it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', () => {
+        wrapper = mountComponent({ provide: { canBulkUpdate: true } });
+
+        jest.spyOn(eventHub, '$emit');
+
+        findGlButtonAt(2).vm.$emit('click');
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
+      });
+    });
+
+    describe('new issue button', () => {
+      it('renders when user has permissions', () => {
+        wrapper = mountComponent({ provide: { showNewIssueLink: true } });
+
+        expect(findGlButtonAt(2).text()).toBe('New issue');
+        expect(findGlButtonAt(2).attributes('href')).toBe(newIssuePath);
+      });
+
+      it('does not render when user does not have permissions', () => {
+        wrapper = mountComponent({ provide: { showNewIssueLink: false } });
+
+        expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
       });
     });
   });
@@ -117,6 +219,26 @@ describe('IssuesListApp component', () => {
         });
       },
     );
+  });
+
+  describe('when "click-tab" event is emitted by IssuableList', () => {
+    beforeEach(() => {
+      axiosMock.onGet(endpoint).reply(200, fetchIssuesResponse.data, {
+        'x-page': 2,
+        'x-total': xTotal,
+      });
+
+      wrapper = mountComponent();
+
+      findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
+    });
+
+    it('makes API call to filter the list by the new state and resets the page to 1', () => {
+      expect(axiosMock.history.get[1].params).toMatchObject({
+        page: 1,
+        state: IssuableStates.Closed,
+      });
+    });
   });
 
   describe('when "page-change" event is emitted by IssuableList', () => {

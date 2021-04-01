@@ -1746,14 +1746,15 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:right_branch) { 'test-master' }
     let(:first_parent_ref) { 'refs/heads/test-master' }
     let(:target_ref) { 'refs/merge-requests/999/merge' }
-    let(:allow_conflicts) { false }
 
     before do
       repository.create_branch(right_branch, branch_head) unless repository.ref_exists?(first_parent_ref)
     end
 
     def merge_to_ref
-      repository.merge_to_ref(user, left_sha, right_branch, target_ref, 'Merge message', first_parent_ref, allow_conflicts)
+      repository.merge_to_ref(user,
+          source_sha: left_sha, branch: right_branch, target_ref: target_ref,
+          message: 'Merge message', first_parent_ref: first_parent_ref)
     end
 
     it 'generates a commit in the target_ref' do

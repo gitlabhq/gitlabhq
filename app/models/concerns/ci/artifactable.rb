@@ -42,3 +42,5 @@ module Ci
     end
   end
 end
+
+Ci::Artifactable.prepend_ee_mod

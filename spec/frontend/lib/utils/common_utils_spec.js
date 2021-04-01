@@ -987,6 +987,16 @@ describe('common_utils', () => {
     });
   });
 
+  describe('roundToNearestHalf', () => {
+    it('Rounds decimals ot the nearest half', () => {
+      expect(commonUtils.roundToNearestHalf(3.141592)).toBe(3);
+      expect(commonUtils.roundToNearestHalf(3.41592)).toBe(3.5);
+      expect(commonUtils.roundToNearestHalf(1.27)).toBe(1.5);
+      expect(commonUtils.roundToNearestHalf(1.23)).toBe(1);
+      expect(commonUtils.roundToNearestHalf(1.778)).toBe(2);
+    });
+  });
+
   describe('searchBy', () => {
     const searchSpace = {
       iid: 1,

@@ -58,14 +58,14 @@ describe('CsvExportModal', () => {
 
     describe('issuable count info text', () => {
       it('displays the info text when issuableCount is > -1', () => {
-        wrapper = createComponent({ injectedProperties: { issuableCount: 10 } });
+        wrapper = createComponent({ props: { issuableCount: 10 } });
         expect(wrapper.findByTestId('issuable-count-note').exists()).toBe(true);
         expect(wrapper.findByTestId('issuable-count-note').text()).toContain('10 issues selected');
         expect(findIcon().exists()).toBe(true);
       });
 
       it("doesn't display the info text when issuableCount is -1", () => {
-        wrapper = createComponent({ injectedProperties: { issuableCount: -1 } });
+        wrapper = createComponent({ props: { issuableCount: -1 } });
         expect(wrapper.findByTestId('issuable-count-note').exists()).toBe(false);
       });
     });
@@ -83,7 +83,7 @@ describe('CsvExportModal', () => {
     describe('primary button', () => {
       it('passes the exportCsvPath to the button', () => {
         const exportCsvPath = '/gitlab-org/gitlab-test/-/issues/export_csv';
-        wrapper = createComponent({ injectedProperties: { exportCsvPath } });
+        wrapper = createComponent({ props: { exportCsvPath } });
         expect(findButton().attributes('href')).toBe(exportCsvPath);
       });
     });

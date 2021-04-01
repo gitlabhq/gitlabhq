@@ -32,7 +32,8 @@ RSpec.describe 'factories' do
       [:project_member, :blocked],
       [:project, :remote_mirror],
       [:remote_mirror, :ssh],
-      [:user_preference, :only_comments]
+      [:user_preference, :only_comments],
+      [:ci_pipeline_artifact, :remote_store]
     ]
   end
 

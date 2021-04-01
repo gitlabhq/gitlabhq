@@ -53,6 +53,18 @@ export default {
       default: false,
     },
   },
+  props: {
+    exportCsvPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    issuableCount: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
+  },
   computed: {
     exportModalId() {
       return `${this.issuableType}-export-modal`;
@@ -105,7 +117,12 @@ export default {
         >
       </gl-dropdown>
     </gl-button-group>
-    <csv-export-modal v-if="showExportButton" :modal-id="exportModalId" />
+    <csv-export-modal
+      v-if="showExportButton"
+      :modal-id="exportModalId"
+      :export-csv-path="exportCsvPath"
+      :issuable-count="issuableCount"
+    />
     <csv-import-modal v-if="showImportButton" :modal-id="importModalId" />
   </div>
 </template>

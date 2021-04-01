@@ -13,32 +13,24 @@
   issues_path: project_issues_path(@project),
   project_path: @project.full_path } }
 
-- if project_issues(@project).exists?
+- if Feature.enabled?(:vue_issues_list, @project)
+  .js-issues-list{ data: issues_list_data(@project, current_user, finder) }
+  - if @can_bulk_update
+    = render 'shared/issuable/bulk_update_sidebar', type: :issues
+- elsif project_issues(@project).exists?
   .top-area
     = render 'shared/issuable/nav', type: :issues
     = render "projects/issues/nav_btns"
+  = render 'shared/issuable/search_bar', type: :issues
 
-  - if Feature.enabled?(:vue_issues_list, @project)
-    - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))
-    .js-issues-list{ data: { endpoint: data_endpoint,
-      full_path: @project.full_path,
-      has_blocked_issues_feature: Gitlab.ee? && @project.feature_available?(:blocked_issues).to_s,
-      has_issuable_health_status_feature: Gitlab.ee? && @project.feature_available?(:issuable_health_status).to_s,
-      has_issue_weights_feature: Gitlab.ee? && @project.feature_available?(:issue_weights).to_s,
-      issues_path: project_issues_path(@project) } }
-    - if @can_bulk_update
-      = render 'shared/issuable/bulk_update_sidebar', type: :issues
-  - else
-    = render 'shared/issuable/search_bar', type: :issues
+  - if @can_bulk_update
+    = render 'shared/issuable/bulk_update_sidebar', type: :issues
 
-    - if @can_bulk_update
-      = render 'shared/issuable/bulk_update_sidebar', type: :issues
-
-    .issues-holder
-      = render 'issues'
-      - if new_issue_email
-        .issuable-footer.text-center
-          .js-issueable-by-email{ data: { initial_email: new_issue_email, issuable_type: issuable_type, emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'), quick_actions_help_path: help_page_path('user/project/quick_actions'), markdown_help_path: help_page_path('user/markdown'), reset_path: new_issuable_address_project_path(@project, issuable_type: issuable_type) } }
+  .issues-holder
+    = render 'issues'
+    - if new_issue_email
+      .issuable-footer.text-center
+        .js-issueable-by-email{ data: { initial_email: new_issue_email, issuable_type: issuable_type, emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'), quick_actions_help_path: help_page_path('user/project/quick_actions'), markdown_help_path: help_page_path('user/markdown'), reset_path: new_issuable_address_project_path(@project, issuable_type: issuable_type) } }
 - else
   - new_project_issue_button_path = @project.archived? ? false : new_project_issue_path(@project)
   = render 'shared/empty_states/issues', new_project_issue_button_path: new_project_issue_button_path, show_import_button: true

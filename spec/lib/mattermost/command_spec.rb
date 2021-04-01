@@ -19,7 +19,7 @@ RSpec.describe Mattermost::Command do
         trigger: 'gitlab' }
     end
 
-    subject { described_class.new(nil).create(params) }
+    subject { described_class.new(nil).create(params) } # rubocop:disable Rails/SaveBang
 
     context 'for valid trigger word' do
       before do

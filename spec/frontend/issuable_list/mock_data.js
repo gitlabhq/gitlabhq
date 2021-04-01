@@ -135,7 +135,7 @@ export const mockTabs = [
 export const mockTabCounts = {
   opened: 5,
   closed: 0,
-  all: 5,
+  all: undefined,
 };
 
 export const mockIssuableListProps = {

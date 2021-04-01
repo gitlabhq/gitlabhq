@@ -46,14 +46,11 @@ export default class IssuableBulkUpdateSidebar {
     this.$bulkEditSubmitBtn.on('click', () => this.prepForSubmit());
     this.$checkAllContainer.on('click', () => this.updateFormState());
 
-    issueableEventHub.$on('issuables:updateBulkEdit', () => {
-      // Danger! Strong coupling ahead!
-      // The bulk update sidebar and its dropdowns look for checkboxes, and get data on which issue
-      // is selected by inspecting the DOM. Ideally, we would pass the selected issuable IDs and their properties
-      // explicitly, but this component is used in too many places right now to refactor straight away.
-
-      this.updateFormState();
-    });
+    // The event hub connects this bulk update logic with `issues_list_app.vue`.
+    // We can remove it once we've refactored the issues list page bulk edit sidebar to Vue.
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/325874
+    issueableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
+    issueableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
   }
 
   initDropdowns() {
@@ -110,7 +107,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   toggleBulkEdit(e, enable) {
-    e.preventDefault();
+    e?.preventDefault();
 
     issueableEventHub.$emit('issuables:toggleBulkEdit', enable);
 

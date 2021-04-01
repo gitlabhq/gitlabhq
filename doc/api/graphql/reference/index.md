@@ -803,6 +803,7 @@ Represents a project or group issue board.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `assignee` | [`User`](#user) | The board assignee. |
+| `createdAt` | [`Time!`](#time) | Timestamp of when the board was created. |
 | `epics` | [`BoardEpicConnection`](#boardepicconnection) | Epics associated with board issues. |
 | `hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | `hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
@@ -812,6 +813,7 @@ Represents a project or group issue board.
 | `lists` | [`BoardListConnection`](#boardlistconnection) | Lists of the board. |
 | `milestone` | [`Milestone`](#milestone) | The board milestone. |
 | `name` | [`String`](#string) | Name of the board. |
+| `updatedAt` | [`Time!`](#time) | Timestamp of when the board was last updated. |
 | `webPath` | [`String!`](#string) | Web path of the board. |
 | `webUrl` | [`String!`](#string) | Web URL of the board. |
 | `weight` | [`Int`](#int) | Weight of the board. |
@@ -3031,6 +3033,7 @@ Represents an external issue.
 | `minimumReverificationInterval` | [`Int`](#int) | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. |
 | `name` | [`String`](#string) | The unique identifier for this Geo node. |
 | `packageFileRegistries` | [`PackageFileRegistryConnection`](#packagefileregistryconnection) | Package file registries of the GeoNode. |
+| `pipelineArtifactRegistries` | [`PipelineArtifactRegistryConnection`](#pipelineartifactregistryconnection) | Find pipeline artifact registries on this Geo node. Available only when feature flag `geo_pipeline_artifact_replication` is enabled. |
 | `primary` | [`Boolean`](#boolean) | Indicates whether this Geo node is the primary. |
 | `reposMaxCapacity` | [`Int`](#int) | The maximum concurrency of repository backfill for this secondary node. |
 | `selectiveSyncNamespaces` | [`NamespaceConnection`](#namespaceconnection) | The namespaces that should be synced, if `selective_sync_type` == `namespaces`. |
@@ -4641,6 +4644,40 @@ Information about pagination in a connection.
 | `yearPipelinesLabels` | [`[String!]`](#string) | Labels for the yearly pipeline count. |
 | `yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. |
 | `yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. |
+
+### `PipelineArtifactRegistry`
+
+Represents the Geo sync and verification state of a pipeline artifact.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `createdAt` | [`Time`](#time) | Timestamp when the PipelineArtifactRegistry was created. |
+| `id` | [`ID!`](#id) | ID of the PipelineArtifactRegistry. |
+| `lastSyncFailure` | [`String`](#string) | Error message during sync of the PipelineArtifactRegistry. |
+| `lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PipelineArtifactRegistry. |
+| `pipelineArtifactId` | [`ID!`](#id) | ID of the pipeline artifact. |
+| `retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry should be resynced. |
+| `retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
+| `state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
+
+### `PipelineArtifactRegistryConnection`
+
+The connection type for PipelineArtifactRegistry.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `edges` | [`[PipelineArtifactRegistryEdge]`](#pipelineartifactregistryedge) | A list of edges. |
+| `nodes` | [`[PipelineArtifactRegistry]`](#pipelineartifactregistry) | A list of nodes. |
+| `pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+### `PipelineArtifactRegistryEdge`
+
+An edge in a connection.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| `node` | [`PipelineArtifactRegistry`](#pipelineartifactregistry) | The item at the end of the edge. |
 
 ### `PipelineCancelPayload`
 

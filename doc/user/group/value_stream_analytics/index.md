@@ -196,9 +196,20 @@ GitLab allows users to create multiple value streams, hide default stages and cr
 > - It's enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/feature_flags.md). **(FREE SELF)**
 
-![Value stream path navigation](img/vsa_path_nav_v13_10.png "Value stream path navigation")
+![Value stream path navigation](img/vsa_path_nav_v13_11.png "Value stream path navigation")
 
-Stages are visually depicted as a horizontal process flow. Selecting a stage updates the content below the value stream.
+Stages are visually depicted as a horizontal process flow. Selecting a stage updates the content
+below the value stream.
+
+The stage time is displayed next to the name of each stage, in the following format:
+
+| Symbol | Description |
+|--------|-------------|
+| `m`    | Minutes     |
+| `h`    | Hours       |
+| `d`    | Days        |
+| `w`    | Weeks       |
+| `M`    | Months      |
 
 Hovering over a stage item displays a popover with the following information:
 
