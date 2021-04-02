@@ -412,7 +412,7 @@ export default {
                 :text="commentButtonTitle"
                 class="gl-mr-3 js-comment-button js-comment-submit-button comment-type-dropdown"
                 category="primary"
-                variant="success"
+                variant="confirm"
                 :disabled="disableSubmitButton"
                 data-testid="comment-button"
                 data-qa-selector="comment_button"

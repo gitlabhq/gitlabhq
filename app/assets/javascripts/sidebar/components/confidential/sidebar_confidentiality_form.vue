@@ -121,7 +121,7 @@ export default {
           </gl-button>
           <gl-button
             category="secondary"
-            variant="warning"
+            variant="confirm"
             :disabled="loading"
             :loading="loading"
             data-testid="confidential-toggle"
