@@ -25,6 +25,20 @@ module Gitlab
 
             vars.to_a.map { |var| [var[:key].to_s, var[:value]] }.to_h
           end
+
+          def inherit_yaml_variables(from:, to:, inheritance:)
+            merge_variables(apply_inheritance(from, inheritance), to)
+          end
+
+          private
+
+          def apply_inheritance(variables, inheritance)
+            case inheritance
+            when true then variables
+            when false then {}
+            when Array then variables.select { |var| inheritance.include?(var[:key]) }
+            end
+          end
         end
       end
     end

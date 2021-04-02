@@ -91,6 +91,11 @@
   redis_slot: analytics
   aggregation: weekly
   feature_flag: track_unique_visits
+- name: i_analytics_dev_ops_adoption
+  category: analytics
+  redis_slot: analytics
+  aggregation: weekly
+  feature_flag: track_unique_visits
 - name: g_analytics_merge_request
   category: analytics
   redis_slot: analytics

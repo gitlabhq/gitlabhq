@@ -140,6 +140,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/db/geo/post_migrate/foo'                                | [:database, :migration]
       'app/models/project_authorization.rb'                       | [:database]
       'app/services/users/refresh_authorized_projects_service.rb' | [:database]
+      'app/services/authorized_project_update/find_records_due_for_refresh_service.rb' | [:database]
       'lib/gitlab/background_migration.rb'                        | [:database]
       'lib/gitlab/background_migration/foo'                       | [:database]
       'ee/lib/gitlab/background_migration/foo'                    | [:database]

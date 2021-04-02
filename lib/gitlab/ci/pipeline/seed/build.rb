@@ -18,6 +18,8 @@ module Gitlab
             @previous_stages = previous_stages
             @needs_attributes = dig(:needs_attributes)
             @resource_group_key = attributes.delete(:resource_group_key)
+            @job_variables = @seed_attributes.delete(:job_variables)
+            @root_variables_inheritance = @seed_attributes.delete(:root_variables_inheritance) { true }
 
             @using_rules  = attributes.key?(:rules)
             @using_only   = attributes.key?(:only)
@@ -31,6 +33,8 @@ module Gitlab
               .new(attributes.delete(:rules), default_when: 'on_success')
             @cache = Gitlab::Ci::Build::Cache
               .new(attributes.delete(:cache), @pipeline)
+
+            recalculate_yaml_variables!
           end
 
           def name
@@ -206,6 +210,14 @@ module Gitlab
             return {} unless @seed_attributes.dig(:options, :allow_failure_criteria)
 
             { options: { allow_failure_criteria: nil } }
+          end
+
+          def recalculate_yaml_variables!
+            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
+
+            @seed_attributes[:yaml_variables] = Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
+              from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance
+            )
           end
         end
       end

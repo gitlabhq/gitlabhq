@@ -194,5 +194,39 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         expect(pipeline.variables.size).to eq(0)
       end
     end
+
+    describe '#root_variables' do
+      let(:config) do
+        {
+          variables: { VAR1: 'var 1' },
+          workflow: {
+            rules: [{ if: '$CI_PIPELINE_SOURCE',
+                      variables: { VAR1: 'overridden var 1' } },
+                    { when: 'always' }]
+          },
+          rspec: { script: 'rake' }
+        }
+      end
+
+      let(:rspec_variables) { command.pipeline_seed.stages[0].statuses[0].variables.to_hash }
+
+      it 'sends root variable with overridden by rules' do
+        run_chain
+
+        expect(rspec_variables['VAR1']).to eq('overridden var 1')
+      end
+
+      context 'when the FF ci_workflow_rules_variables is disabled' do
+        before do
+          stub_feature_flags(ci_workflow_rules_variables: false)
+        end
+
+        it 'sends root variable' do
+          run_chain
+
+          expect(rspec_variables['VAR1']).to eq('var 1')
+        end
+      end
+    end
   end
 end

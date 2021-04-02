@@ -382,8 +382,24 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         context 'with only job variables' do
           it 'does return defined variables' do
             expect(entry.value).to include(
+              variables: { 'A' => 'job', 'B' => 'job' },
+              job_variables: { 'A' => 'job', 'B' => 'job' },
+              root_variables_inheritance: true
+            )
+          end
+        end
+
+        context 'when FF ci_workflow_rules_variables is disabled' do
+          before do
+            stub_feature_flags(ci_workflow_rules_variables: false)
+          end
+
+          it 'does not return job_variables and root_variables_inheritance' do
+            expect(entry.value).to include(
               variables: { 'A' => 'job', 'B' => 'job' }
             )
+            expect(entry.value).not_to have_key(:job_variables)
+            expect(entry.value).not_to have_key(:root_variables_inheritance)
           end
         end
 
@@ -394,9 +410,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             ).value
           end
 
-          it 'does return all variables and overwrite them' do
+          it 'does return job and root variables' do
             expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' }
+              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' },
+              job_variables: { 'A' => 'job', 'B' => 'job' },
+              root_variables_inheritance: true
             )
           end
 
@@ -408,9 +426,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
               }
             end
 
-            it 'does return only job variables' do
+            it 'does return job and root variables' do
               expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job' }
+                variables: { 'A' => 'job', 'B' => 'job' },
+                job_variables: { 'A' => 'job', 'B' => 'job' },
+                root_variables_inheritance: false
               )
             end
           end
@@ -423,9 +443,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
               }
             end
 
-            it 'does return only job variables' do
+            it 'does return job and root variables' do
               expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' }
+                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' },
+                job_variables: { 'A' => 'job', 'B' => 'job' },
+                root_variables_inheritance: ['D']
               )
             end
           end
@@ -493,8 +515,25 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             name: :rspec,
             stage: 'test',
             only: { refs: %w[branches tags] },
-            variables: {}
+            variables: {},
+            job_variables: {},
+            root_variables_inheritance: true
           )
+        end
+
+        context 'when FF ci_workflow_rules_variables is disabled' do
+          before do
+            stub_feature_flags(ci_workflow_rules_variables: false)
+          end
+
+          it 'does not return job_variables and root_variables_inheritance' do
+            expect(entry.value).to eq(
+              name: :rspec,
+              stage: 'test',
+              only: { refs: %w[branches tags] },
+              variables: {}
+            )
+          end
         end
       end
     end

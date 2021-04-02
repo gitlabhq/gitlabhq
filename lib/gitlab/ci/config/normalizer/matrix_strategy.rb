@@ -43,9 +43,10 @@ module Gitlab
             {
               name: name,
               instance: instance,
-              variables: variables,
+              variables: variables, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
+              job_variables: job_variables,
               parallel: { total: total }
-            }
+            }.compact
           end
 
           def name
@@ -60,6 +61,12 @@ module Gitlab
           private
 
           attr_reader :job_name, :instance, :variables, :total
+
+          def job_variables
+            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
+
+            variables
+          end
         end
       end
     end

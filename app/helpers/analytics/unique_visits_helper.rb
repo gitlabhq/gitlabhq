@@ -16,7 +16,7 @@ module Analytics
     def track_visit(target_id)
       return unless visitor_id
 
-      Gitlab::Analytics::UniqueVisits.new.track_visit(visitor_id, target_id)
+      Gitlab::Analytics::UniqueVisits.new.track_visit(target_id, values: visitor_id)
     end
 
     class_methods do
