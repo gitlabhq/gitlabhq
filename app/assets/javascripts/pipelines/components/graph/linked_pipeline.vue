@@ -183,6 +183,7 @@ export default {
         class="gl-absolute gl-top-0 gl-bottom-0 gl-shadow-none! gl-rounded-0!"
         :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
         :icon="expandedIcon"
+        :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_pipeline_button"
         @click="onClickLinkedPipeline"

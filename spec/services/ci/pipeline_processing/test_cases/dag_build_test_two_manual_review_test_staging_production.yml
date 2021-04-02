@@ -1,0 +1,171 @@
+config:
+  stages: [build, test, review, deploy, post_deploy]
+
+  build:
+    stage: build
+    script: exit 0
+
+  test:
+    stage: test
+    script: exit 0
+
+  release_test1:
+    stage: test
+    when: manual
+    script: exit 0
+
+  release_test2:
+    stage: test
+    when: manual
+    script: exit 0
+
+  review:
+    stage: review
+    script: exit 0
+    needs: [test, release_test1, release_test2]
+
+  staging:
+    stage: deploy
+    script: exit 0
+    needs: [release_test1]
+
+  production:
+    stage: deploy
+    script: exit 0
+    needs: [release_test2]
+
+  after_deploy:
+    stage: post_deploy
+    script: exit 0
+    needs: [production]
+
+  handle_failure:
+    stage: post_deploy
+    when: on_failure
+    script: exit 0
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+      review: created
+      deploy: created
+      post_deploy: created
+    jobs:
+      build: pending
+      test: created
+      release_test1: created
+      release_test2: created
+      review: created
+      staging: created
+      production: created
+      after_deploy: created
+      handle_failure: created
+
+transitions:
+  - event: success
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        build: success
+        test: pending
+        review: skipped
+        deploy: skipped
+        post_deploy: pending
+      jobs:
+        build: success
+        test: pending
+        release_test1: manual
+        release_test2: manual
+        review: skipped
+        staging: skipped
+        production: skipped
+        after_deploy: skipped
+        handle_failure: created
+
+  - event: success
+    jobs: [test]
+    expect:
+      pipeline: success
+      stages:
+        build: success
+        test: success
+        review: skipped
+        deploy: skipped
+        post_deploy: skipped
+      jobs:
+        build: success
+        test: success
+        release_test1: manual
+        release_test2: manual
+        review: skipped
+        staging: skipped
+        production: skipped
+        after_deploy: skipped
+        handle_failure: skipped
+
+  - event: play
+    jobs: [release_test1]
+    expect:
+      pipeline: running
+      stages:
+        build: success
+        test: running
+        review: skipped
+        deploy: pending
+        post_deploy: pending
+      jobs:
+        build: success
+        test: success
+        release_test1: pending
+        release_test2: manual
+        review: skipped
+        staging: created
+        production: skipped
+        after_deploy: skipped
+        handle_failure: created
+
+  - event: success
+    jobs: [release_test1]
+    expect:
+      pipeline: running
+      stages:
+        build: success
+        test: success
+        review: skipped
+        deploy: pending
+        post_deploy: pending
+      jobs:
+        build: success
+        test: success
+        release_test1: success
+        release_test2: manual
+        review: skipped
+        staging: pending
+        production: skipped
+        after_deploy: skipped
+        handle_failure: created
+
+  - event: success
+    jobs: [staging]
+    expect:
+      pipeline: success
+      stages:
+        build: success
+        test: success
+        review: skipped
+        deploy: success
+        post_deploy: skipped
+      jobs:
+        build: success
+        test: success
+        release_test1: success
+        release_test2: manual
+        review: skipped
+        staging: success
+        production: skipped
+        after_deploy: skipped
+        handle_failure: skipped

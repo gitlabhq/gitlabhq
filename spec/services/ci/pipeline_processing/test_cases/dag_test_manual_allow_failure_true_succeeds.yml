@@ -3,7 +3,7 @@ config:
     stage: test
     when: manual
     allow_failure: true
-    script: exit 1
+    script: exit 0
 
   deploy:
     stage: deploy
@@ -21,7 +21,7 @@ init:
       deploy: skipped
 
 transitions:
-  - event: enqueue
+  - event: play
     jobs: [test]
     expect:
       pipeline: pending
@@ -30,7 +30,7 @@ transitions:
         deploy: skipped
       jobs:
         test: pending
-        deploy: skipped
+        deploy: created
 
   - event: run
     jobs: [test]
@@ -41,15 +41,26 @@ transitions:
         deploy: skipped
       jobs:
         test: running
-        deploy: skipped
+        deploy: created
 
-  - event: drop
+  - event: success
     jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: success
+        deploy: pending
+      jobs:
+        test: success
+        deploy: pending
+
+  - event: success
+    jobs: [deploy]
     expect:
       pipeline: success
       stages:
         test: success
-        deploy: skipped
+        deploy: success
       jobs:
-        test: failed
-        deploy: skipped
+        test: success
+        deploy: success

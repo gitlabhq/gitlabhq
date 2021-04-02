@@ -7,7 +7,6 @@ config:
 
   deploy:
     stage: deploy
-    when: on_failure
     script: exit 0
     needs: [test]
 
@@ -33,13 +32,35 @@ transitions:
         test: pending
         deploy: created
 
+  - event: run
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+        deploy: skipped
+      jobs:
+        test: running
+        deploy: created
+
   - event: drop
     jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: success
+        deploy: pending
+      jobs:
+        test: failed
+        deploy: pending
+
+  - event: success
+    jobs: [deploy]
     expect:
       pipeline: success
       stages:
         test: success
-        deploy: skipped
+        deploy: success
       jobs:
         test: failed
-        deploy: skipped
+        deploy: success

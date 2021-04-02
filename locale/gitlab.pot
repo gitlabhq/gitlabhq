@@ -10004,6 +10004,9 @@ msgstr ""
 msgid "Decompressed archive size validation failed."
 msgstr ""
 
+msgid "Decrease"
+msgstr ""
+
 msgid "Default CI configuration path"
 msgstr ""
 
@@ -12625,6 +12628,9 @@ msgid "Expand milestones"
 msgstr ""
 
 msgid "Expand panel"
+msgstr ""
+
+msgid "Expand pipeline"
 msgstr ""
 
 msgid "Expand sidebar"
@@ -16567,6 +16573,9 @@ msgid "Incompatible project"
 msgstr ""
 
 msgid "Incomplete"
+msgstr ""
+
+msgid "Increase"
 msgstr ""
 
 msgid "Indent"

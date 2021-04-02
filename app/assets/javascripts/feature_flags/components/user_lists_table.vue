@@ -7,7 +7,7 @@ import {
   GlTooltipDirective,
   GlModalDirective,
 } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
@@ -24,11 +24,12 @@ export default {
     createdTimeagoLabel: s__('UserList|created %{timeago}'),
     deleteListTitle: s__('UserList|Delete %{name}?'),
     deleteListMessage: s__('User list %{name} will be removed. Are you sure?'),
+    editUserListLabel: s__('FeatureFlags|Edit User List'),
   },
   modal: {
     id: 'deleteListModal',
     actionPrimary: {
-      text: s__('Delete user list'),
+      text: __('Delete user list'),
       attributes: { variant: 'danger', 'data-testid': 'modal-confirm' },
     },
   },
@@ -93,6 +94,7 @@ export default {
           :href="list.path"
           category="secondary"
           icon="pencil"
+          :aria-label="$options.translations.editUserListLabel"
           data-testid="edit-user-list"
         />
         <gl-button

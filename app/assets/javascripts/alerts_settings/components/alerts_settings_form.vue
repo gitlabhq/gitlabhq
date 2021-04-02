@@ -255,7 +255,7 @@ export default {
       if (this.showMappingBuilder) {
         this.resetPayloadAndMappingConfirmed = false;
         this.parsedPayload = payloadAlertFields;
-        this.samplePayload.json = this.isValidNonEmptyJSON(payloadExample) ? payloadExample : null;
+        this.samplePayload.json = this.getPrettifiedPayload(payloadExample);
         this.updateMapping(this.getCleanMapping(payloadAttributeMappings));
       }
       this.$el.scrollIntoView({ block: 'center' });
@@ -287,6 +287,11 @@ export default {
         if (parsed) return !isEmpty(parsed);
       }
       return false;
+    },
+    getPrettifiedPayload(payload) {
+      return this.isValidNonEmptyJSON(payload)
+        ? JSON.stringify(JSON.parse(payload), null, '\t')
+        : null;
     },
     triggerValidation() {
       if (this.isHttp) {

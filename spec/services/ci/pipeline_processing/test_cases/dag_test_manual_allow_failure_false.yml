@@ -21,7 +21,7 @@ init:
       deploy: created
 
 transitions:
-  - event: enqueue
+  - event: play
     jobs: [test]
     expect:
       pipeline: pending

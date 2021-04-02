@@ -2,8 +2,6 @@
 
 module Ci
   class RetryBuildService < ::BaseService
-    include Gitlab::OptimisticLocking
-
     def self.clone_accessors
       %i[pipeline project ref tag options name
          allow_failure stage stage_id stage_idx trigger_request
@@ -16,10 +14,8 @@ module Ci
       build.ensure_scheduling_type!
 
       reprocess!(build).tap do |new_build|
-        mark_subsequent_stages_as_processable(build)
-        build.pipeline.reset_ancestor_bridges!
-
         Gitlab::OptimisticLocking.retry_lock(new_build, name: 'retry_build', &:enqueue)
+        AfterRequeueJobService.new(project, current_user).execute(build)
 
         ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project, current_user)
@@ -64,12 +60,6 @@ module Ci
         build.save!
       end
       build
-    end
-
-    def mark_subsequent_stages_as_processable(build)
-      build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |skipped|
-        retry_optimistic_lock(skipped, name: 'ci_retry_build_mark_subsequent_stages') { |build| build.process(current_user) }
-      end
     end
   end
 end
