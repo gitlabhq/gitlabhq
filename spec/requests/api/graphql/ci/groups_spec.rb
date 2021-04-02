@@ -9,9 +9,10 @@ RSpec.describe 'Query.project.pipeline.stages.groups' do
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:group_graphql_data) { graphql_data_at(:project, :pipeline, :stages, :nodes, 0, :groups, :nodes) }
 
-  let_it_be(:job_a) { create(:commit_status, pipeline: pipeline, name: 'rspec 0 2') }
-  let_it_be(:job_b) { create(:ci_build, pipeline: pipeline, name: 'rspec 0 1') }
-  let_it_be(:job_c) { create(:ci_bridge, pipeline: pipeline, name: 'spinach 0 1') }
+  let_it_be(:ref) { 'master' }
+  let_it_be(:job_a) { create(:commit_status, pipeline: pipeline, name: 'rspec 0 2', ref: ref) }
+  let_it_be(:job_b) { create(:ci_build, pipeline: pipeline, name: 'rspec 0 1', ref: ref) }
+  let_it_be(:job_c) { create(:ci_bridge, pipeline: pipeline, name: 'spinach 0 1', ref: ref) }
 
   let(:params) { {} }
 

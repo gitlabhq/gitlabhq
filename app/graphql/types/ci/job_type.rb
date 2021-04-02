@@ -47,6 +47,22 @@ module Types
             description: 'Short SHA1 ID of the commit.'
       field :scheduling_type, GraphQL::STRING_TYPE, null: true,
             description: 'Type of pipeline scheduling. Value is `dag` if the pipeline uses the `needs` keyword, and `stage` otherwise.'
+      field :commit_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Path to the commit that triggered the job.'
+      field :ref_name, GraphQL::STRING_TYPE, null: true,
+            description: 'Ref name of the job.'
+      field :ref_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Path to the ref.'
+      field :playable, GraphQL::BOOLEAN_TYPE, null: false, method: :playable?,
+            description: 'Indicates the job can be played.'
+      field :retryable, GraphQL::BOOLEAN_TYPE, null: false, method: :retryable?,
+            description: 'Indicates the job can be retried.'
+      field :cancelable, GraphQL::BOOLEAN_TYPE, null: false, method: :cancelable?,
+            description: 'Indicates the job can be canceled.'
+      field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
+            description: 'Indicates the job is active.'
+      field :coverage, GraphQL::FLOAT_TYPE, null: true,
+            description: 'Coverage level of the job.'
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find
@@ -84,6 +100,22 @@ module Types
         model_name = object.type || ::CommitStatus.name
         id = object.id
         Gitlab::GlobalId.build(model_name: model_name, id: id)
+      end
+
+      def commit_path
+        ::Gitlab::Routing.url_helpers.project_commit_path(object.project, object.sha)
+      end
+
+      def ref_name
+        object&.ref
+      end
+
+      def ref_path
+        ::Gitlab::Routing.url_helpers.project_commits_path(object.project, ref_name)
+      end
+
+      def coverage
+        object&.coverage
       end
     end
   end

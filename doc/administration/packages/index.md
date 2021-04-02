@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Package Registry administration
+# GitLab Package Registry administration **(FREE SELF)**
 
 GitLab Packages allows organizations to use GitLab as a private repository
 for a variety of common package managers. Users are able to build and publish

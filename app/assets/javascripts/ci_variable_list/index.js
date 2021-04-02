@@ -43,7 +43,8 @@ const mountCiVariableListApp = (containerEl) => {
   });
 };
 
-export default () => {
-  const el = document.querySelector('#js-ci-project-variables');
+export default (containerId = 'js-ci-project-variables') => {
+  const el = document.getElementById(containerId);
+
   return !el ? {} : mountCiVariableListApp(el);
 };

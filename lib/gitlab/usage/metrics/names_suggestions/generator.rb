@@ -6,6 +6,7 @@ module Gitlab
       module NamesSuggestions
         class Generator < ::Gitlab::UsageData
           FREE_TEXT_METRIC_NAME = "<please fill metric name>"
+          REDIS_EVENT_METRIC_NAME = "<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>"
           CONSTRAINTS_PROMPT_TEMPLATE = "<adjective describing: '%{constraints}'>"
 
           class << self
@@ -24,7 +25,7 @@ module Gitlab
             end
 
             def redis_usage_counter
-              FREE_TEXT_METRIC_NAME
+              REDIS_EVENT_METRIC_NAME
             end
 
             def alt_usage_data(*)
@@ -32,7 +33,7 @@ module Gitlab
             end
 
             def redis_usage_data_totals(counter)
-              counter.fallback_totals.transform_values { |_| FREE_TEXT_METRIC_NAME}
+              counter.fallback_totals.transform_values { |_| REDIS_EVENT_METRIC_NAME }
             end
 
             def sum(relation, column, *rest)
@@ -48,6 +49,10 @@ module Gitlab
             end
 
             def name_suggestion(relation:, column: nil, prefix: nil, distinct: nil)
+              # rubocop: disable CodeReuse/ActiveRecord
+              relation = relation.unscope(where: :created_at)
+              # rubocop: enable CodeReuse/ActiveRecord
+
               parts = [prefix]
               arel_column = arelize_column(relation, column)
 
@@ -81,7 +86,7 @@ module Gitlab
 
               parts << actual_source
               parts += process_joined_relations(actual_source, arel, relation, constraints)
-              parts.compact.join('_')
+              parts.compact.join('_').delete('"')
             end
 
             def append_constraints_prompt(target, constraints, parts)

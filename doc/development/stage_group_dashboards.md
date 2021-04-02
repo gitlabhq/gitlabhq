@@ -22,8 +22,13 @@ The dashboards for stage groups are at a very early stage. All contributions are
 
 ### Error budget
 
-By default, the first row of the panels on the dashboard will show the error
-budget for the stage group. This row shows how the features owned by
+Read more about how we are using error budgets overall in our
+[handbook](https://about.gitlab.com/handbook/engineering/error-budgets/).
+
+By default, the first row of panels on the dashbhoard will show the [error
+budget for the stage
+group](https://about.gitlab.com/handbook/engineering/error-budgets/#budget-spend-by-stage-group). This
+row shows how the features owned by
 the group are contributing to our [overall
 availability](https://about.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability).
 

@@ -387,6 +387,8 @@ Example of response
 
 ## Get job token's job
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51727) in GitLab 13.10.
+
 Retrieve the job that generated a job token.
 
 ```plaintext
