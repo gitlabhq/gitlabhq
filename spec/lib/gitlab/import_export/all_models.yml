@@ -256,6 +256,8 @@ ci_pipelines:
 - messages
 - pipeline_artifacts
 - latest_statuses
+- dast_profile
+- dast_profiles_pipeline
 ci_refs:
 - project
 - ci_pipelines

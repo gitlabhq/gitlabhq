@@ -137,24 +137,14 @@ The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
 
 [This regular expression](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
-evaluates the job names: `\d+[\s:\/\\]+\d+\s*`.
+evaluates the job names: `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z`.
+One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **end**
+of job names only. Matching substrings found at the beginning or in the middle of
+job names are not removed.
 
-### Improved job grouping
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52644) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../administration/feature_flags.md). **(FREE SELF)**
-
-Job grouping is evaluated with an improved regular expression to group jobs by name:
-
-- `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z`.
-
-The new implementation removes one or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences
-from the **end** of job names only.
-
-Matching substrings occurring at the beginning or in the middle of build names are
-no longer removed.
+In [GitLab 13.8 and earlier](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52644),
+the regular expression is `\d+[\s:\/\\]+\d+\s*`. [Feature flag](../../user/feature_flags.md)
+removed in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/322080).
 
 ## Specifying variables when running manual jobs
 
