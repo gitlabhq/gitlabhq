@@ -7,10 +7,6 @@ RSpec.describe NewProjectReadmeExperiment, :experiment do
 
   let(:actor) { User.new(id: 42, created_at: Time.current) }
 
-  before do
-    stub_experiments(new_project_readme: :control)
-  end
-
   describe "exclusions" do
     let(:threshold) { described_class::MAX_ACCOUNT_AGE }
 

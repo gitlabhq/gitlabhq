@@ -110,6 +110,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
         @file_by_file_default = current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
+        @update_current_user_path = expose_path(api_v4_user_preferences_path)
         @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
 
         set_pipeline_variables

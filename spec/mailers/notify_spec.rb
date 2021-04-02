@@ -799,14 +799,14 @@ RSpec.describe Notify do
           is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE))
         end
 
-        it 'contains invite link for the avatar', :experiment do
+        it 'contains invite link for the avatar' do
           stub_experiments('members/invite_email': :avatar)
 
           is_expected.not_to have_content('You are invited!')
           is_expected.not_to have_body_text 'What is a GitLab'
         end
 
-        it 'contains invite link for the avatar', :experiment do
+        it 'contains invite link for the avatar' do
           stub_experiments('members/invite_email': :permission_info)
 
           is_expected.not_to have_content('You are invited!')

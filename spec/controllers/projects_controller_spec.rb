@@ -221,22 +221,16 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:record_experiment_user)
       end
 
-      context 'when user can push to default branch' do
+      context 'when user can push to default branch', :experiment do
         let(:user) { empty_project.owner }
 
-        it 'creates an "view_project_show" experiment tracking event', :snowplow do
-          allow_next_instance_of(ApplicationExperiment) do |e|
-            allow(e).to receive(:should_track?).and_return(true)
-          end
+        it 'creates an "view_project_show" experiment tracking event' do
+          expect(experiment(:empty_repo_upload)).to track(
+            :view_project_show,
+            property: 'empty'
+          ).on_next_instance
 
           get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
-
-          expect_snowplow_event(
-            category: 'empty_repo_upload',
-            action: 'view_project_show',
-            property: 'empty',
-            context: [{ schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', data: anything }]
-          )
         end
       end
 
@@ -449,7 +443,7 @@ RSpec.describe ProjectsController do
         :created,
         property: 'blank',
         value: 1
-      ).on_any_instance.with_context(actor: user)
+      ).with_context(actor: user).on_next_instance
 
       post :create, params: { project: project_params }
     end

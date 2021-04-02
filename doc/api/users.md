@@ -677,6 +677,28 @@ Example response:
 }
 ```
 
+## User preference modification
+
+Update the current user's preferences.
+
+```plaintext
+PUT /user/preferences
+```
+
+```json
+{
+  "id": 1,
+    "user_id": 1
+      "view_diffs_file_by_file": true
+}
+```
+
+Parameters:
+
+| Attribute                    | Required | Description                                                 |
+| :--------------------------- | :------- | :---------------------------------------------------------- |
+| `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
+
 ## Set user status
 
 Set the status of the current user.

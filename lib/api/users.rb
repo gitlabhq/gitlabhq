@@ -996,6 +996,29 @@ module API
         present paginate(current_user.emails), with: Entities::Email
       end
 
+      desc "Update the current user's preferences" do
+        success Entities::UserPreferences
+        detail 'This feature was introduced in GitLab 13.10.'
+      end
+      params do
+        requires :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+      end
+      put "preferences", feature_category: :users do
+        authenticate!
+
+        preferences = current_user.user_preference
+
+        attrs = declared_params(include_missing: false)
+
+        service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
+
+        if service.success?
+          present preferences, with: Entities::UserPreferences
+        else
+          render_api_error!('400 Bad Request', 400)
+        end
+      end
+
       desc 'Get a single email address owned by the currently authenticated user' do
         success Entities::Email
       end

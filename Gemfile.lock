@@ -443,7 +443,7 @@ GEM
       numerizer (~> 0.2)
     gitlab-dangerfiles (1.1.0)
       danger-gitlab
-    gitlab-experiment (0.5.1)
+    gitlab-experiment (0.5.2)
       activesupport (>= 3.0)
       scientist (~> 1.6, >= 1.6.0)
     gitlab-fog-azure-rm (1.0.1)
@@ -1424,7 +1424,7 @@ DEPENDENCIES
   github-markup (~> 1.7.0)
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 1.1.0)
-  gitlab-experiment (~> 0.5.1)
+  gitlab-experiment (~> 0.5.2)
   gitlab-fog-azure-rm (~> 1.0.1)
   gitlab-fog-google (~> 1.13)
   gitlab-labkit (~> 0.16.2)
