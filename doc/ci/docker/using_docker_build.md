@@ -105,7 +105,6 @@ not without its own challenges:
 - **The `docker-compose` command**: This command is not available in this configuration by default.
   To use `docker-compose` in your job scripts, follow the `docker-compose`
   [installation instructions](https://docs.docker.com/compose/install/).
-  You can view a sample project that uses this approach here: <https://gitlab.com/gitlab-examples/docker>.
 - **Cache**: Each job runs in a new environment. Concurrent jobs work fine,
   because every build gets its own instance of Docker engine and they don't conflict with each other.
   However, jobs can be slower because there's no caching of layers.

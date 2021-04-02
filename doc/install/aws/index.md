@@ -654,8 +654,9 @@ That concludes the configuration changes for our GitLab instance. Next, we'll cr
 
 ### Log in for the first time
 
-Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser. You will be asked to set up a password
-for the `root` user which has admin privileges on the GitLab instance. This password will be stored in the database.
+Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser.
+If you didn't change the password by any other means, the default password will be the same as the instance ID. To change the default password, login as the `root` user
+with the default password and [change it in the user profile](../../user/profile#change-your-password).
 
 When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we'll be able to log in with username `root` and the newly created password.
 

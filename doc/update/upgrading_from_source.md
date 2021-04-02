@@ -75,7 +75,7 @@ curl --remote-name --progress "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7
 echo 'cb9731a17487e0ad84037490a6baf8bfa31a09e8  ruby-2.7.2.tar.gz' | shasum -c - && tar xzf ruby-2.7.2.tar.gz
 cd ruby-2.7.2
 
-./configure --disable-install-rdoc
+./configure --disable-install-rdoc --enable-shared
 make
 sudo make install
 ```

@@ -1,9 +1,9 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
+import UserDate from '~/vue_shared/components/user_date.vue';
 import UserActions from './user_actions.vue';
 import UserAvatar from './user_avatar.vue';
-import UserDate from './user_date.vue';
 
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';

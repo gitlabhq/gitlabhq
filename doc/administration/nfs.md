@@ -241,7 +241,7 @@ From the [Linux man page](https://linux.die.net/man/5/nfs), the important parts:
 >
 > Using the nocto option may improve performance for read-only mounts, but should be used only if the data on the server changes only occasionally.
 
-We have noticed this behavior in an issue about [refs not found after a push](https://gitlab.com/gitlab-org/gitaly/-/issues/2589),
+We have noticed this behavior in an issue about [refs not found after a push](https://gitlab.com/gitlab-org/gitlab/-/issues/326066),
 where newly added loose refs can be seen as missing on a different client with a local dentry cache, as
 [described in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326066#note_539436931).
 
