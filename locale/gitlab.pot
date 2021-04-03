@@ -30516,6 +30516,9 @@ msgstr ""
 msgid "The merge request can now be merged."
 msgstr ""
 
+msgid "The merge request has been updated, and the number of code quality violations in this file has changed."
+msgstr ""
+
 msgid "The metric must be one of %{metrics}."
 msgstr ""
 

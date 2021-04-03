@@ -31,7 +31,7 @@ variables:
 
 To set values for the `POSTGRES_DB`, `POSTGRES_USER`,
 `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`,
-[assign them to a CI/CD variable in the user interface](../variables/README.md#create-a-custom-variable-in-the-ui),
+[assign them to a CI/CD variable in the user interface](../variables/README.md#custom-cicd-variables),
 then assign that variable to the corresponding variable in your
 `.gitlab-ci.yml` file.
 

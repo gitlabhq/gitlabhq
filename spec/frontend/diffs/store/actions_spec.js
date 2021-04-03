@@ -17,6 +17,9 @@ import {
   fetchDiffFilesBatch,
   fetchDiffFilesMeta,
   fetchCoverageFiles,
+  clearEtagPoll,
+  stopCodequalityPolling,
+  fetchCodequality,
   assignDiscussionsToDiff,
   removeDiscussionsFromDiff,
   startRenderDiffsQueue,
@@ -98,6 +101,7 @@ describe('DiffsStoreActions', () => {
       const endpointMetadata = '/diffs/set/endpoint/metadata';
       const endpointBatch = '/diffs/set/endpoint/batch';
       const endpointCoverage = '/diffs/set/coverage_reports';
+      const endpointCodequality = '/diffs/set/codequality_diff';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
@@ -109,6 +113,7 @@ describe('DiffsStoreActions', () => {
           endpointBatch,
           endpointMetadata,
           endpointCoverage,
+          endpointCodequality,
           projectPath,
           dismissEndpoint,
           showSuggestPopover,
@@ -118,6 +123,7 @@ describe('DiffsStoreActions', () => {
           endpointBatch: '',
           endpointMetadata: '',
           endpointCoverage: '',
+          endpointCodequality: '',
           projectPath: '',
           dismissEndpoint: '',
           showSuggestPopover: true,
@@ -130,6 +136,7 @@ describe('DiffsStoreActions', () => {
               endpointMetadata,
               endpointBatch,
               endpointCoverage,
+              endpointCodequality,
               projectPath,
               dismissEndpoint,
               showSuggestPopover,
@@ -290,6 +297,47 @@ describe('DiffsStoreActions', () => {
       mock.onGet(endpointCoverage).reply(400);
 
       testAction(fetchCoverageFiles, {}, { endpointCoverage }, [], [], () => {
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith(expect.stringMatching('Something went wrong'));
+        done();
+      });
+    });
+  });
+
+  describe('fetchCodequality', () => {
+    let mock;
+    const endpointCodequality = '/fetch';
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      stopCodequalityPolling();
+      clearEtagPoll();
+    });
+
+    it('should commit SET_CODEQUALITY_DATA with received response', (done) => {
+      const data = {
+        files: { 'app.js': [{ line: 1, description: 'Unexpected alert.', severity: 'minor' }] },
+      };
+
+      mock.onGet(endpointCodequality).reply(200, { data });
+
+      testAction(
+        fetchCodequality,
+        {},
+        { endpointCodequality },
+        [{ type: types.SET_CODEQUALITY_DATA, payload: { data } }],
+        [],
+        done,
+      );
+    });
+
+    it('should show flash on API error', (done) => {
+      mock.onGet(endpointCodequality).reply(400);
+
+      testAction(fetchCodequality, {}, { endpointCodequality }, [], [], () => {
         expect(createFlash).toHaveBeenCalledTimes(1);
         expect(createFlash).toHaveBeenCalledWith(expect.stringMatching('Something went wrong'));
         done();

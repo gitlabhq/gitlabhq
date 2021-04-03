@@ -41,6 +41,7 @@ export default {
     GlDropdownDivider,
     GlFormCheckbox,
     GlLoadingIcon,
+    CodeQualityBadge: () => import('ee_component/diffs/components/code_quality_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -91,6 +92,11 @@ export default {
       default: false,
     },
     reviewed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasCodequalityChanges: {
       type: Boolean,
       required: false,
       default: false,
@@ -326,6 +332,8 @@ export default {
         data-track-label="diff_copy_file_path_button"
         data-track-property="diff_copy_file"
       />
+
+      <code-quality-badge v-if="hasCodequalityChanges" class="gl-mr-2" />
 
       <small v-if="isModeChanged" ref="fileMode" class="mr-1">
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}

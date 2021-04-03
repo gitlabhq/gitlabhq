@@ -376,6 +376,26 @@ describe('Diffs Module Getters', () => {
     });
   });
 
+  describe('fileCodequalityDiff', () => {
+    beforeEach(() => {
+      Object.assign(localState.codequalityDiff, {
+        files: { 'app.js': [{ line: 1, description: 'Unexpected alert.', severity: 'minor' }] },
+      });
+    });
+
+    it('returns empty array when no codequality data is available', () => {
+      Object.assign(localState.codequalityDiff, {});
+
+      expect(getters.fileCodequalityDiff(localState)('test.js')).toEqual([]);
+    });
+
+    it('returns array when codequality data is available for given file', () => {
+      expect(getters.fileCodequalityDiff(localState)('app.js')).toEqual([
+        { line: 1, description: 'Unexpected alert.', severity: 'minor' },
+      ]);
+    });
+  });
+
   describe('suggestionCommitMessage', () => {
     let rootState;
 

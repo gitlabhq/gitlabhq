@@ -113,6 +113,19 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_CODEQUALITY_DATA', () => {
+    it('should set codequality data', () => {
+      const state = { codequalityDiff: {} };
+      const codequality = {
+        files: { 'app.js': [{ line: 1, description: 'Unexpected alert.', severity: 'minor' }] },
+      };
+
+      mutations[types.SET_CODEQUALITY_DATA](state, codequality);
+
+      expect(state.codequalityDiff).toEqual(codequality);
+    });
+  });
+
   describe('SET_DIFF_VIEW_TYPE', () => {
     it('should set diff view type properly', () => {
       const state = {};

@@ -14,7 +14,7 @@ need it for your tests to run.
 
 If you want to use a MySQL container, you can use [GitLab Runner](../runners/README.md) with the Docker executor.
 
-1. [Create CI/CD variables](../variables/README.md#create-a-custom-variable-in-the-ui) for your
+1. [Create CI/CD variables](../variables/README.md#custom-cicd-variables) for your
    MySQL database and password by going to **Settings > CI/CD**, expanding **Variables**,
    and clicking **Add Variable**.
 

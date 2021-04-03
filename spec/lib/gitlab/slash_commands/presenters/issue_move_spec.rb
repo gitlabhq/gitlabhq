@@ -7,6 +7,7 @@ RSpec.describe Gitlab::SlashCommands::Presenters::IssueMove do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:other_project) { create(:project) }
   let_it_be(:old_issue, reload: true) { create(:issue, project: project) }
+
   let(:new_issue) { Issues::MoveService.new(project, user).execute(old_issue, other_project) }
   let(:attachment) { subject[:attachments].first }
 

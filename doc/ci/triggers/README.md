@@ -192,7 +192,7 @@ source repository. Be sure to URL-encode `ref` if it contains slashes.
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
-The payload is exposed as a [file-type variable](../variables/README.md#custom-cicd-variables-of-type-file),
+The payload is exposed as a [file-type variable](../variables/README.md#cicd-variable-types),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 ## Making use of trigger variables

@@ -56,6 +56,7 @@ describe('diffs/components/app', () => {
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
         endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
+        endpointCodequality: `${TEST_HOST}/diff/endpointCodequality`,
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
@@ -138,6 +139,24 @@ describe('diffs/components/app', () => {
       expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
       expect(wrapper.vm.diffFilesLength).toBe(100);
       expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
+    });
+  });
+
+  describe('codequality diff', () => {
+    it('fetches code quality data when endpoint is provided', () => {
+      createComponent();
+      jest.spyOn(wrapper.vm, 'fetchCodequality');
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchCodequality).toHaveBeenCalled();
+    });
+
+    it('does not fetch code quality data when endpoint is blank', async () => {
+      createComponent({ endpointCodequality: '' });
+      jest.spyOn(wrapper.vm, 'fetchCodequality');
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
     });
   });
 

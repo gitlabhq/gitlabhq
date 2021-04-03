@@ -187,6 +187,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#histogram' do
     let_it_be(:projects) { create_list(:project, 3) }
+
     let(:project1) { projects.first }
     let(:project2) { projects.second }
     let(:project3) { projects.third }

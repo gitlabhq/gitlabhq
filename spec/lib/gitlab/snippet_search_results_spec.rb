@@ -6,6 +6,7 @@ RSpec.describe Gitlab::SnippetSearchResults do
   include SearchHelpers
 
   let_it_be(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }
+
   let(:results) { described_class.new(snippet.author, 'foo') }
 
   describe '#snippet_titles_count' do

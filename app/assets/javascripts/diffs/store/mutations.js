@@ -33,6 +33,7 @@ export default {
       endpointMetadata,
       endpointBatch,
       endpointCoverage,
+      endpointCodequality,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -45,6 +46,7 @@ export default {
       endpointMetadata,
       endpointBatch,
       endpointCoverage,
+      endpointCodequality,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -85,6 +87,10 @@ export default {
 
   [types.SET_COVERAGE_DATA](state, coverageFiles) {
     Object.assign(state, { coverageFiles });
+  },
+
+  [types.SET_CODEQUALITY_DATA](state, codequalityDiffData) {
+    Object.assign(state, { codequalityDiff: codequalityDiffData });
   },
 
   [types.RENDER_FILE](state, file) {

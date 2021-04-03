@@ -189,7 +189,7 @@ To override the default behavior, you can
 
 You can also pass custom CI/CD [variables](../variables/README.md)
 to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
-For more information, read about [`.gitlab-ci.yml` defined variables](../variables/README.md#gitlab-ciyml-defined-variables).
+For more information, read about [`.gitlab-ci.yml` defined variables](../variables/README.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
 
 ```yaml
 # The following variables are automatically passed down to the Postgres container

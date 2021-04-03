@@ -1229,7 +1229,7 @@ expression string per rule, rather than an array of them. Any set of expressions
 evaluated can be [conjoined into a single expression](../variables/README.md#conjunction--disjunction)
 by using `&&` or `||`, and the [variable matching operators (`==`, `!=`, `=~` and `!~`)](../variables/README.md#syntax-of-cicd-variable-expressions).
 
-Unlike variables in [`script`](../variables/README.md#syntax-of-cicd-variables-in-job-scripts)
+Unlike variables in [`script`](../variables/README.md#use-cicd-variables-in-job-scripts)
 sections, variables in rules expressions are always formatted as `$VARIABLE`.
 
 `if:` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)

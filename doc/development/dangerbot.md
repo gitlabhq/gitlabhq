@@ -156,7 +156,7 @@ is not shared to forks. To work around this, you can add an [environment
 variable](../ci/variables/README.md) called `DANGER_GITLAB_API_TOKEN` with a
 personal API token to your fork. That way the danger comments are made from CI
 using that API token instead. Making the variable
-[masked](../ci/variables/README.md#mask-a-custom-variable) makes sure it
+[masked](../ci/variables/README.md#mask-a-cicd-variable) makes sure it
 doesn't show up in the job logs. The variable cannot be
-[protected](../ci/variables/README.md#protect-a-custom-variable), as it needs
+[protected](../ci/variables/README.md#protect-a-cicd-variable), as it needs
 to be present for all feature branches.
