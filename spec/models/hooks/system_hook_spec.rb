@@ -56,7 +56,7 @@ RSpec.describe SystemHook do
     end
 
     it "user_destroy hook" do
-      user.destroy
+      user.destroy!
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_destroy/,
@@ -102,7 +102,7 @@ RSpec.describe SystemHook do
     end
 
     it 'group destroy hook' do
-      group.destroy
+      group.destroy!
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /group_destroy/,

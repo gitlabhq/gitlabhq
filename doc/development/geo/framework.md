@@ -285,7 +285,7 @@ For example, to add support for files referenced by a `Widget` model with a
              t.integer :verification_state, default: 0, null: false, limit: 2
              t.integer :retry_count, default: 0, limit: 2
              t.integer :verification_retry_count, default: 0, limit: 2
-             t.boolean :checksum_mismatch
+             t.boolean :checksum_mismatch, default: false, null: false
              t.binary :verification_checksum
              t.binary :verification_checksum_mismatched
              t.string :verification_failure, limit: 255
