@@ -67,8 +67,6 @@ Rails/SaveBang:
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
-    - 'ee/spec/models/ci/pipeline_spec.rb'
-    - 'ee/spec/models/ci/subscriptions/project_spec.rb'
     - 'ee/spec/models/ee/appearance_spec.rb'
     - 'ee/spec/models/ee/ci/job_artifact_spec.rb'
     - 'ee/spec/models/ee/protected_branch_spec.rb'
@@ -354,8 +352,6 @@ Rails/SaveBang:
     - 'spec/requests/api/jobs_spec.rb'
     - 'spec/requests/api/labels_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'
-    - 'spec/requests/projects/cycle_analytics_events_spec.rb'
-    - 'spec/requests/users_controller_spec.rb'
 
 Rails/TimeZone:
   Enabled: true

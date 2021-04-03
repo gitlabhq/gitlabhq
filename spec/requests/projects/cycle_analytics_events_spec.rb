@@ -75,7 +75,7 @@ RSpec.describe 'value stream analytics events' do
 
     context 'with private project and builds' do
       before do
-        project.members.last.update(access_level: Gitlab::Access::GUEST)
+        project.members.last.update!(access_level: Gitlab::Access::GUEST)
       end
 
       it 'does not list the test events' do
@@ -100,7 +100,7 @@ RSpec.describe 'value stream analytics events' do
 
   def create_cycle
     milestone = create(:milestone, project: project)
-    issue.update(milestone: milestone)
+    issue.update!(milestone: milestone)
     mr = create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}")
 
     pipeline = create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
