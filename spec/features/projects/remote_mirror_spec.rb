@@ -15,7 +15,7 @@ RSpec.describe 'Project remote mirror', :feature do
 
     context 'when last_error is present but last_update_at is not' do
       it 'renders error message without timstamp' do
-        remote_mirror.update(last_error: 'Some new error', last_update_at: nil)
+        remote_mirror.update!(last_error: 'Some new error', last_update_at: nil)
 
         visit project_mirror_path(project)
 
@@ -25,7 +25,7 @@ RSpec.describe 'Project remote mirror', :feature do
 
     context 'when last_error and last_update_at are present' do
       it 'renders error message with timestamp' do
-        remote_mirror.update(last_error: 'Some new error', last_update_at: Time.now - 5.minutes)
+        remote_mirror.update!(last_error: 'Some new error', last_update_at: Time.now - 5.minutes)
 
         visit project_mirror_path(project)
 

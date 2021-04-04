@@ -76,7 +76,7 @@ RSpec.describe 'Project fork' do
       let(:forking_access_level) { ProjectFeature::PRIVATE }
 
       before do
-        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end
 
       context 'user is not a team member' do

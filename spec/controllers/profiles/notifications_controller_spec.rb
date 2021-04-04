@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Profiles::NotificationsController do
   let(:user) do
     create(:user) do |user|
-      user.emails.create(email: 'original@example.com', confirmed_at: Time.current)
-      user.emails.create(email: 'new@example.com', confirmed_at: Time.current)
+      user.emails.create!(email: 'original@example.com', confirmed_at: Time.current)
+      user.emails.create!(email: 'new@example.com', confirmed_at: Time.current)
       user.notification_email = 'original@example.com'
       user.save!
     end

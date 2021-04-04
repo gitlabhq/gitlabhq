@@ -1057,7 +1057,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         job.run!
         job.cancel!
-        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
         sign_out(:user)
         sign_in(create(:user))

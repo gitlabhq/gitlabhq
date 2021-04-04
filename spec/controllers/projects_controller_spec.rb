@@ -159,7 +159,7 @@ RSpec.describe ProjectsController do
           before do
             setting = user.notification_settings_for(public_project)
             setting.level = :watch
-            setting.save
+            setting.save!
           end
 
           it "shows current notification setting" do
@@ -237,7 +237,7 @@ RSpec.describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update(project_view: project_view)
+            user.update!(project_view: project_view)
 
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end
@@ -260,7 +260,7 @@ RSpec.describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update(project_view: project_view)
+            user.update!(project_view: project_view)
 
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end

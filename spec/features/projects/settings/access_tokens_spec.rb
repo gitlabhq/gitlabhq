@@ -96,7 +96,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
     end
 
     it 'removes expired tokens from active section' do
-      project_access_token.update(expires_at: 5.days.ago)
+      project_access_token.update!(expires_at: 5.days.ago)
       visit project_settings_access_tokens_path(project)
 
       expect(page).to have_selector('.settings-message')
