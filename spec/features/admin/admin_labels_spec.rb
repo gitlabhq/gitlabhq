@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'admin issues labels' do
-  let!(:bug_label) { Label.create(title: 'bug', template: true) }
-  let!(:feature_label) { Label.create(title: 'feature', template: true) }
+  let!(:bug_label) { Label.create!(title: 'bug', template: true) }
+  let!(:feature_label) { Label.create!(title: 'feature', template: true) }
 
   before do
     admin = create(:admin)

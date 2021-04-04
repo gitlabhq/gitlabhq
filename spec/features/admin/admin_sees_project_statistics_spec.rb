@@ -21,7 +21,7 @@ RSpec.describe "Admin > Admin sees project statistics" do
   end
 
   context 'when project has no statistics' do
-    let(:project) { create(:project, :repository) { |project| project.statistics.destroy } }
+    let(:project) { create(:project, :repository) { |project| project.statistics.destroy! } }
 
     it "shows 'Storage: Unknown'" do
       expect(page).to have_content("Storage: Unknown")
