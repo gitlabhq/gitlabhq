@@ -636,7 +636,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
           let(:group_full_path) { redirect_route.path }
 
           it 'redirects to the canonical path' do
@@ -645,7 +645,7 @@ RSpec.describe GroupsController, factory_default: :keep do
           end
 
           context 'when the old group path is a substring of the scheme or host' do
-            let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'http') }
 
             it 'does not modify the requested host' do
               expect(response).to redirect_to(group)
@@ -655,7 +655,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups' do
             # I.e. /groups/oups should not become /grfoo/oups
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups') }
 
             it 'does not modify the /groups part of the path' do
               expect(response).to redirect_to(group)
@@ -707,7 +707,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'redirects to the canonical path' do
             get :issues, params: { id: redirect_route.path }
@@ -717,7 +717,7 @@ RSpec.describe GroupsController, factory_default: :keep do
           end
 
           context 'when the old group path is a substring of the scheme or host' do
-            let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'http') }
 
             it 'does not modify the requested host' do
               get :issues, params: { id: redirect_route.path }
@@ -729,7 +729,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups' do
             # I.e. /groups/oups should not become /grfoo/oups
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups') }
 
             it 'does not modify the /groups part of the path' do
               get :issues, params: { id: redirect_route.path }
@@ -741,7 +741,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups plus the new path' do
             # I.e. /groups/oups/oup should not become /grfoos
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups/oup') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups/oup') }
 
             it 'does not modify the /groups part of the path' do
               get :issues, params: { id: redirect_route.path }
@@ -769,7 +769,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'returns not found' do
             post :update, params: { id: redirect_route.path, group: { path: 'new_path' } }
@@ -795,7 +795,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'returns not found' do
             delete :destroy, params: { id: redirect_route.path }
