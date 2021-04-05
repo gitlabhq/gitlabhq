@@ -18,7 +18,7 @@ module QA
       end
 
       def default_password
-        '5iveL!fe'
+        Runtime::Env.initial_root_password || '5iveL!fe'
       end
 
       def username

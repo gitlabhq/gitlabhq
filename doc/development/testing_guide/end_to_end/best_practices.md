@@ -223,6 +223,15 @@ In summary:
 - **Do**: Split tests across separate files, unless the tests share expensive setup.
 - **Don't**: Put new tests in an existing file without considering the impact on parallelization.
 
+## `let` variables vs instance variables
+
+By default, follow the [testing best practices](../best_practices.md#subject-and-let-variables) when using `let`
+or instance variables. However, in end-to-end tests, set-ups such as creating resources are expensive.
+If you use `let` to store a resource, it will be created for each example separately.
+If the resource can be shared among multiple examples, use an instance variable in the `before(:all)`
+block instead of `let` to save run time.
+When the variable cannot be shared by multiple examples, use `let`.
+
 ## Limit the use of the UI in `before(:context)` and `after` hooks
 
 Limit the use of `before(:context)` hooks to perform setup tasks with only API calls,

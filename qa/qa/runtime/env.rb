@@ -144,6 +144,10 @@ module QA
         ENV['GITLAB_PASSWORD']
       end
 
+      def initial_root_password
+        ENV['GITLAB_INITIAL_ROOT_PASSWORD']
+      end
+
       def github_username
         ENV['GITHUB_USERNAME']
       end

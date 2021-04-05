@@ -161,9 +161,9 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+      it 'does not execute Deployments::LinkMergeRequestWorker' do
         expect(Deployments::LinkMergeRequestWorker)
-          .to receive(:perform_async).with(deployment.id)
+          .not_to receive(:perform_async).with(deployment.id)
 
         deployment.drop!
       end
@@ -188,9 +188,9 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+      it 'does not execute Deployments::LinkMergeRequestWorker' do
         expect(Deployments::LinkMergeRequestWorker)
-          .to receive(:perform_async).with(deployment.id)
+          .not_to receive(:perform_async).with(deployment.id)
 
         deployment.cancel!
       end

@@ -198,7 +198,10 @@ filename format, which is similar to Rails database migrations:
 # frozen_string_literal: true
 
 class MigrationName < Elastic::Migration
-  # Important: Any update to the Elastic index mappings should be replicated in Elastic::Latest::Config
+  # Important: Any updates to the Elastic index mappings must be replicated in the respective
+  # configuration files:
+  #   - `Elastic::Latest::Config`, for the main index.
+  #   - `Elastic::Latest::<Type>Config`, for standalone indices.
 
   def migrate
   end
@@ -214,7 +217,10 @@ Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All mig
 are applied by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 cron worker sequentially.
 
-Any update to the Elastic index mappings should be replicated in [`Elastic::Latest::Config`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+To update Elastic index mappings, apply the configuration to the respective files:
+
+- For the main index: [`Elastic::Latest::Config`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+- For standalone indices: `Elastic::Latest::<Type>Config`.
 
 Migrations can be built with a retry limit and have the ability to be [failed and marked as halted](https://gitlab.com/gitlab-org/gitlab/-/blob/66e899b6637372a4faf61cfd2f254cbdd2fb9f6d/ee/lib/elastic/migration.rb#L40).
 Any data or index cleanup needed to support migration retries should be handled within the migration.

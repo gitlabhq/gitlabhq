@@ -214,11 +214,12 @@ For GitLab.com, there are extremely large tables with 15 second query timeouts, 
 | `merge_request_diff_files`   | 1082                   |
 | `events`                     | 514                    |
 
-We have several batch counting methods available:
+The following operation methods are available for your use:
 
 - [Ordinary Batch Counters](#ordinary-batch-counters)
 - [Distinct Batch Counters](#distinct-batch-counters)
-- [Sum Batch Counters](#sum-batch-counters)
+- [Sum Batch Operation](#sum-batch-operation)
+- [Add Operation](#add-operation)
 - [Estimated Batch Counters](#estimated-batch-counters)
 
 Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases,
@@ -276,7 +277,7 @@ distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::
 distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
 ```
 
-### Sum Batch Counters
+### Sum Batch Operation
 
 Handles `ActiveRecord::StatementInvalid` error
 
@@ -315,6 +316,25 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
+```
+
+### Add Operation
+
+Handles `StandardError`.
+
+Returns `-1` if any of the arguments are `-1`.
+
+Sum the values given as parameters.
+
+Method: `add(*args)`
+
+Examples
+
+```ruby
+project_imports = distinct_count(::Project.where.not(import_type: nil), :creator_id)
+bulk_imports = distinct_count(::BulkImport, :user_id)
+
+ add(project_imports, bulk_imports)
 ```
 
 ### Estimated Batch Counters

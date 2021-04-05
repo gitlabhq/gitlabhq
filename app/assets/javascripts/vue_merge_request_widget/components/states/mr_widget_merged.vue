@@ -130,6 +130,7 @@ export default {
           size="small"
           category="secondary"
           variant="warning"
+          data-qa-selector="revert_button"
           @click="openRevertModal"
         >
           {{ revertLabel }}
