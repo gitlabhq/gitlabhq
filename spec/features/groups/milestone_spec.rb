@@ -133,7 +133,7 @@ RSpec.describe 'Group milestones' do
           href: project_issues_path(project, milestone_title: 'v1.0')
         )
         expect(page).to have_link(
-          '0 Merge Requests',
+          '0 Merge requests',
           href: project_merge_requests_path(project, milestone_title: 'v1.0')
         )
         expect(page).to have_link(
@@ -145,7 +145,7 @@ RSpec.describe 'Group milestones' do
           href: issues_group_path(group, milestone_title: 'GL-113')
         )
         expect(page).to have_link(
-          '0 Merge Requests',
+          '0 Merge requests',
           href: merge_requests_group_path(group, milestone_title: 'GL-113')
         )
       end
@@ -179,7 +179,7 @@ RSpec.describe 'Group milestones' do
 
       it 'renders the merge requests tab' do
         within('.js-milestone-tabs') do
-          click_link('Merge Requests')
+          click_link('Merge requests')
         end
 
         within('#tab-merge-requests') do

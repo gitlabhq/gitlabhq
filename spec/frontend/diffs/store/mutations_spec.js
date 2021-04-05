@@ -7,15 +7,17 @@ import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {
-    it('should set endpoint and project path', () => {
+    it.each`
+      prop                    | value
+      ${'endpoint'}           | ${'/diffs/endpoint'}
+      ${'projectPath'}        | ${'/root/project'}
+      ${'endpointUpdateUser'} | ${'/user/preferences'}
+    `('should set the $prop property into state', ({ prop, value }) => {
       const state = {};
-      const endpoint = '/diffs/endpoint';
-      const projectPath = '/root/project';
 
-      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
+      mutations[types.SET_BASE_CONFIG](state, { [prop]: value });
 
-      expect(state.endpoint).toEqual(endpoint);
-      expect(state.projectPath).toEqual(projectPath);
+      expect(state[prop]).toEqual(value);
     });
   });
 

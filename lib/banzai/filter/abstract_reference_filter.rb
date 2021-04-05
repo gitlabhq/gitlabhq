@@ -2,7 +2,7 @@
 
 module Banzai
   module Filter
-    # Issues, Merge Requests, Snippets, Commits and Commit Ranges share
+    # Issues, merge requests, Snippets, Commits and Commit Ranges share
     # similar functionality in reference filtering.
     class AbstractReferenceFilter < ReferenceFilter
       include CrossProjectReference

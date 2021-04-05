@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class BambooService < CiService
+  include ActionView::Helpers::UrlHelper
   include ReactiveService
 
   prop_accessor :bamboo_url, :build_key, :username, :password
@@ -31,15 +32,16 @@ class BambooService < CiService
   end
 
   def title
-    s_('BambooService|Atlassian Bamboo CI')
+    s_('BambooService|Atlassian Bamboo')
   end
 
   def description
-    s_('BambooService|A continuous integration and build server')
+    s_('BambooService|Use the Atlassian Bamboo CI/CD server with GitLab.')
   end
 
   def help
-    s_('BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo.')
+    docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'), target: '_blank', rel: 'noopener noreferrer'
+    s_('BambooService|Use Atlassian Bamboo to run CI/CD pipelines. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param
@@ -52,19 +54,21 @@ class BambooService < CiService
           type: 'text',
           name: 'bamboo_url',
           title: s_('BambooService|Bamboo URL'),
-          placeholder: s_('BambooService|Bamboo root URL like https://bamboo.example.com'),
+          placeholder: s_('https://bamboo.example.com'),
+          help: s_('BambooService|Bamboo service root URL.'),
           required: true
         },
         {
           type: 'text',
           name: 'build_key',
-          placeholder: s_('BambooService|Bamboo build plan key like KEY'),
+          placeholder: s_('KEY'),
+          help: s_('BambooService|Bamboo build plan key.'),
           required: true
         },
         {
           type: 'text',
           name: 'username',
-          placeholder: s_('BambooService|A user with API access, if applicable')
+          help: s_('BambooService|The user with API access to the Bamboo server.')
         },
         {
           type: 'password',

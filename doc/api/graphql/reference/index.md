@@ -6543,8 +6543,8 @@ Representation of a GitLab user.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `assignedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge Requests assigned to the user. |
-| `authoredMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge Requests authored by the user. |
+| `assignedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests assigned to the user. |
+| `authoredMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests authored by the user. |
 | `avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | `bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | `callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. |
@@ -6556,7 +6556,7 @@ Representation of a GitLab user.
 | `name` | [`String!`](#string) | Human-readable name of the user. |
 | `projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. |
 | `publicEmail` | [`String`](#string) | User's public email. |
-| `reviewRequestedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge Requests assigned to the user for review. |
+| `reviewRequestedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests assigned to the user for review. |
 | `snippets` | [`SnippetConnection`](#snippetconnection) | Snippets authored by the user. |
 | `starredProjects` | [`ProjectConnection`](#projectconnection) | Projects starred by the user. |
 | `state` | [`UserState!`](#userstate) | State of the user. |
@@ -7833,7 +7833,7 @@ State of a GitLab merge request.
 | `all` | All available. |
 | `closed` | In closed state. |
 | `locked` | Discussion has been locked. |
-| `merged` | Merge Request has been merged. |
+| `merged` | Merge request has been merged. |
 | `opened` | In open state. |
 
 ### `MergeStrategyEnum`

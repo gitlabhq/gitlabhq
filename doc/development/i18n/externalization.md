@@ -256,7 +256,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
 - In Vue:
 
   Use the [`GlSprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/utilities-sprintf--sentence-with-link) component if:
-  
+
   - you need to include child components in the translation string.
   - you need to include HTML in your translation string.
   - you are using `sprintf` and need to pass `false` as the third argument to
@@ -699,7 +699,7 @@ bin/rake gettext:regenerate
 
 This command updates `locale/gitlab.pot` file with the newly externalized
 strings and remove any strings that aren't used anymore. You should check this
-file in. Once the changes are on master, they are picked up by
+file in. Once the changes are on the default branch, they are picked up by
 [CrowdIn](https://translate.gitlab.com) and be presented for
 translation.
 

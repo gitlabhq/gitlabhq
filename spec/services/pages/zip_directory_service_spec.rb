@@ -33,15 +33,6 @@ RSpec.describe Pages::ZipDirectoryService do
       expect(archive).to be_nil
       expect(entries_count).to be_nil
     end
-
-    it 'returns error if pages_migration_mark_as_not_deployed is disabled' do
-      stub_feature_flags(pages_migration_mark_as_not_deployed: false)
-
-      expect(status).to eq(:error)
-      expect(message).to eq("Can not find valid public dir in #{service_directory}")
-      expect(archive).to be_nil
-      expect(entries_count).to be_nil
-    end
   end
 
   context "when work direcotry doesn't exist" do

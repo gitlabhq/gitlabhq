@@ -36,8 +36,10 @@ RSpec.describe Database::BatchedBackgroundMigrationWorker, '#perform', :clean_gi
     end
 
     context 'when active migrations exist' do
+      let(:job_interval) { 5.minutes }
+      let(:lease_timeout) { 15.minutes }
       let(:lease_key) { 'batched_background_migration_worker' }
-      let(:migration) { build(:batched_background_migration, :active, interval: 2.minutes) }
+      let(:migration) { build(:batched_background_migration, :active, interval: job_interval) }
 
       before do
         allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
@@ -49,7 +51,7 @@ RSpec.describe Database::BatchedBackgroundMigrationWorker, '#perform', :clean_gi
 
       context 'when the reloaded migration is no longer active' do
         it 'does not run the migration' do
-          expect_to_obtain_exclusive_lease(lease_key, timeout: 4.minutes)
+          expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
 
           expect(migration).to receive(:reload)
           expect(migration).to receive(:active?).and_return(false)
@@ -62,7 +64,7 @@ RSpec.describe Database::BatchedBackgroundMigrationWorker, '#perform', :clean_gi
 
       context 'when the interval has not elapsed' do
         it 'does not run the migration' do
-          expect_to_obtain_exclusive_lease(lease_key, timeout: 4.minutes)
+          expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
 
           expect(migration).to receive(:interval_elapsed?).and_return(false)
 
@@ -74,7 +76,24 @@ RSpec.describe Database::BatchedBackgroundMigrationWorker, '#perform', :clean_gi
 
       context 'when the reloaded migration is still active and the interval has elapsed' do
         it 'runs the migration' do
-          expect_to_obtain_exclusive_lease(lease_key, timeout: 4.minutes)
+          expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
+
+          expect_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |instance|
+            expect(instance).to receive(:run_migration_job).with(migration)
+          end
+
+          expect(worker).to receive(:run_active_migration).and_call_original
+
+          worker.perform
+        end
+      end
+
+      context 'when the calculated timeout is less than the minimum allowed' do
+        let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
+        let(:job_interval) { 2.minutes }
+
+        it 'sets the lease timeout to the minimum value' do
+          expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
 
           expect_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |instance|
             expect(instance).to receive(:run_migration_job).with(migration)
@@ -87,7 +106,7 @@ RSpec.describe Database::BatchedBackgroundMigrationWorker, '#perform', :clean_gi
       end
 
       it 'always cleans up the exclusive lease' do
-        lease = stub_exclusive_lease_taken(lease_key, timeout: 4.minutes)
+        lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
         expect(lease).to receive(:try_obtain).and_return(true)
 

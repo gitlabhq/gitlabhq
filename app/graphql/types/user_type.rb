@@ -83,13 +83,13 @@ module Types
     # Merge request field: MRs can be authored, assigned, or assigned-for-review:
     field :authored_merge_requests,
           resolver: Resolvers::AuthoredMergeRequestsResolver,
-          description: 'Merge Requests authored by the user.'
+          description: 'Merge requests authored by the user.'
     field :assigned_merge_requests,
           resolver: Resolvers::AssignedMergeRequestsResolver,
-          description: 'Merge Requests assigned to the user.'
+          description: 'Merge requests assigned to the user.'
     field :review_requested_merge_requests,
           resolver: Resolvers::ReviewRequestedMergeRequestsResolver,
-          description: 'Merge Requests assigned to the user for review.'
+          description: 'Merge requests assigned to the user for review.'
 
     field :snippets,
           description: 'Snippets authored by the user.',

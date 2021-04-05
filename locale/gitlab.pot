@@ -4714,25 +4714,25 @@ msgstr ""
 msgid "Balsamiq file could not be loaded."
 msgstr ""
 
-msgid "BambooService|A continuous integration and build server"
-msgstr ""
-
-msgid "BambooService|A user with API access, if applicable"
-msgstr ""
-
-msgid "BambooService|Atlassian Bamboo CI"
+msgid "BambooService|Atlassian Bamboo"
 msgstr ""
 
 msgid "BambooService|Bamboo URL"
 msgstr ""
 
-msgid "BambooService|Bamboo build plan key like KEY"
+msgid "BambooService|Bamboo build plan key."
 msgstr ""
 
-msgid "BambooService|Bamboo root URL like https://bamboo.example.com"
+msgid "BambooService|Bamboo service root URL."
 msgstr ""
 
-msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
+msgid "BambooService|The user with API access to the Bamboo server."
+msgstr ""
+
+msgid "BambooService|Use Atlassian Bamboo to run CI/CD pipelines. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}"
+msgstr ""
+
+msgid "BambooService|Use the Atlassian Bamboo CI/CD server with GitLab."
 msgstr ""
 
 msgid "Based on"
@@ -17282,7 +17282,7 @@ msgstr ""
 msgid "Issue label"
 msgstr ""
 
-msgid "Issue or Merge Request ID is required"
+msgid "Issue or merge request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
@@ -17847,6 +17847,9 @@ msgid "Just me"
 msgstr ""
 
 msgid "K8s pod health"
+msgstr ""
+
+msgid "KEY"
 msgstr ""
 
 msgid "Keep artifacts from most recent successful jobs"
@@ -21776,7 +21779,7 @@ msgstr ""
 msgid "Only 1 appearances row can exist"
 msgstr ""
 
-msgid "Only Issue ID or Merge Request ID is required"
+msgid "Only Issue ID or merge request ID is required"
 msgstr ""
 
 msgid "Only Project Members"
@@ -36282,6 +36285,9 @@ msgid "http:"
 msgstr ""
 
 msgid "http://www.example.com"
+msgstr ""
+
+msgid "https://bamboo.example.com"
 msgstr ""
 
 msgid "https://your-bitbucket-server"

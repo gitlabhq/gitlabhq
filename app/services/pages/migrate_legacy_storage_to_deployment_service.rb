@@ -9,9 +9,10 @@ module Pages
 
     attr_reader :project
 
-    def initialize(project, ignore_invalid_entries: false)
+    def initialize(project, ignore_invalid_entries: false, mark_projects_as_not_deployed: false)
       @project = project
       @ignore_invalid_entries = ignore_invalid_entries
+      @mark_projects_as_not_deployed = mark_projects_as_not_deployed
     end
 
     def execute
@@ -36,10 +37,12 @@ module Pages
       archive_path = zip_result[:archive_path]
 
       unless archive_path
+        return error("Archive not created. Missing public directory in #{@project.pages_path}") unless @mark_projects_as_not_deployed
+
         project.set_first_pages_deployment!(nil)
 
         return success(
-          message: "Archive not created. Missing public directory in #{project.pages_path} ? Marked project as not deployed")
+          message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed")
       end
 
       deployment = nil

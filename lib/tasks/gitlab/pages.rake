@@ -11,7 +11,8 @@ namespace :gitlab do
       result = ::Pages::MigrateFromLegacyStorageService.new(logger,
                                                             migration_threads: migration_threads,
                                                             batch_size: batch_size,
-                                                            ignore_invalid_entries: ignore_invalid_entries).execute
+                                                            ignore_invalid_entries: ignore_invalid_entries,
+                                                            mark_projects_as_not_deployed: mark_projects_as_not_deployed).execute
 
       logger.info("A total of #{result[:migrated] + result[:errored]} projects were processed.")
       logger.info("- The #{result[:migrated]} projects migrated successfully")
@@ -49,6 +50,12 @@ namespace :gitlab do
     def ignore_invalid_entries
       Gitlab::Utils.to_boolean(
         ENV.fetch('PAGES_MIGRATION_IGNORE_INVALID_ENTRIES', 'false')
+      )
+    end
+
+    def mark_projects_as_not_deployed
+      Gitlab::Utils.to_boolean(
+        ENV.fetch('PAGES_MIGRATION_MARK_PROJECTS_AS_NOT_DEPLOYED', 'false')
       )
     end
   end

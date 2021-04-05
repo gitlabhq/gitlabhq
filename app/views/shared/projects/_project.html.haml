@@ -90,7 +90,7 @@
           - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project),
                 class: "d-none d-xl-flex align-items-center icon-wrapper merge-requests has-tooltip",
-                title: _('Merge Requests'), data: { container: 'body', placement: 'top' } do
+                title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.open_merge_requests_count)
           - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)

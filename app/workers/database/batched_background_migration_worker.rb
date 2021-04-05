@@ -8,6 +8,9 @@ module Database
     feature_category :database
     idempotent!
 
+    LEASE_TIMEOUT_MULTIPLIER = 3
+    MINIMUM_LEASE_TIMEOUT = 10.minutes.freeze
+
     def perform
       return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops) && active_migration
 
@@ -33,12 +36,17 @@ module Database
       Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_migration_job(active_migration)
     end
 
-    def with_exclusive_lease(timeout)
-      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: timeout * 2)
+    def with_exclusive_lease(interval)
+      timeout = max(interval * LEASE_TIMEOUT_MULTIPLIER, MINIMUM_LEASE_TIMEOUT)
+      lease = Gitlab::ExclusiveLease.new(lease_key, timeout: timeout)
 
       yield if lease.try_obtain
     ensure
       lease&.cancel
+    end
+
+    def max(left, right)
+      left >= right ? left : right
     end
 
     def lease_key

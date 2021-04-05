@@ -31,9 +31,9 @@ class Timelog < ApplicationRecord
 
   def issuable_id_is_present
     if issue_id && merge_request_id
-      errors.add(:base, _('Only Issue ID or Merge Request ID is required'))
+      errors.add(:base, _('Only Issue ID or merge request ID is required'))
     elsif issuable.nil?
-      errors.add(:base, _('Issue or Merge Request ID is required'))
+      errors.add(:base, _('Issue or merge request ID is required'))
     end
   end
 

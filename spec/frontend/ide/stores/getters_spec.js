@@ -24,10 +24,20 @@ const TEST_FORK_PATH = '/test/fork/path';
 describe('IDE store getters', () => {
   let localState;
   let localStore;
+  let origGon;
 
   beforeEach(() => {
+    origGon = window.gon;
+
+    // Feature flag is defaulted to on in prod
+    window.gon = { features: { rejectUnsignedCommitsByGitlab: true } };
+
     localStore = createStore();
     localState = localStore.state;
+  });
+
+  afterEach(() => {
+    window.gon = origGon;
   });
 
   describe('activeFile', () => {
@@ -500,9 +510,25 @@ describe('IDE store getters', () => {
           },
         },
       ],
+      [
+        'when can push code, but cannot push unsigned commits, with reject_unsigned_commits_by_gitlab feature off',
+        {
+          input: {
+            pushCode: true,
+            rejectUnsignedCommits: true,
+            features: { rejectUnsignedCommitsByGitlab: false },
+          },
+          output: {
+            isAllowed: true,
+            message: '',
+            messageShort: '',
+          },
+        },
+      ],
     ])('%s', (testName, { input, output }) => {
-      const { forkInfo, rejectUnsignedCommits, pushCode } = input;
+      const { forkInfo, rejectUnsignedCommits, pushCode, features = {} } = input;
 
+      Object.assign(window.gon.features, features);
       localState.links = { forkInfo };
       localState.projects[TEST_PROJECT_ID] = {
         pushRules: {

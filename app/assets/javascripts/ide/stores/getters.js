@@ -208,7 +208,7 @@ export const canPushCodeStatus = (state, getters) => {
     PUSH_RULE_REJECT_UNSIGNED_COMMITS
   ];
 
-  if (rejectUnsignedCommits) {
+  if (window.gon?.features?.rejectUnsignedCommitsByGitlab && rejectUnsignedCommits) {
     return {
       isAllowed: false,
       message: MSG_CANNOT_PUSH_UNSIGNED,

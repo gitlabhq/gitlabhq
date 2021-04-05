@@ -89,6 +89,11 @@ export default {
       required: false,
       default: '',
     },
+    endpointUpdateUser: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectPath: {
       type: String,
       required: true,
@@ -283,6 +288,7 @@ export default {
       endpointBatch: this.endpointBatch,
       endpointCoverage: this.endpointCoverage,
       endpointCodequality: this.endpointCodequality,
+      endpointUpdateUser: this.endpointUpdateUser,
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,

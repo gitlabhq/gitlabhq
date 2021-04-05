@@ -14,7 +14,8 @@ RSpec.describe 'gitlab:pages' do
       expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
                               migration_threads: 3,
                               batch_size: 10,
-                              ignore_invalid_entries: false) do |service|
+                              ignore_invalid_entries: false,
+                              mark_projects_as_not_deployed: false) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -27,7 +28,8 @@ RSpec.describe 'gitlab:pages' do
       expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
                               migration_threads: 5,
                               batch_size: 10,
-                              ignore_invalid_entries: false) do |service|
+                              ignore_invalid_entries: false,
+                              mark_projects_as_not_deployed: false) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -40,7 +42,8 @@ RSpec.describe 'gitlab:pages' do
       expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
                               migration_threads: 3,
                               batch_size: 100,
-                              ignore_invalid_entries: false) do |service|
+                              ignore_invalid_entries: false,
+                              mark_projects_as_not_deployed: false) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -53,7 +56,22 @@ RSpec.describe 'gitlab:pages' do
       expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
                               migration_threads: 3,
                               batch_size: 10,
-                              ignore_invalid_entries: true) do |service|
+                              ignore_invalid_entries: true,
+                              mark_projects_as_not_deployed: false) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      subject
+    end
+
+    it 'uses PAGES_MIGRATION_MARK_PROJECTS_AS_NOT_DEPLOYED environment variable' do
+      stub_env('PAGES_MIGRATION_MARK_PROJECTS_AS_NOT_DEPLOYED', 'true')
+
+      expect_next_instance_of(::Pages::MigrateFromLegacyStorageService, anything,
+                              migration_threads: 3,
+                              batch_size: 10,
+                              ignore_invalid_entries: false,
+                              mark_projects_as_not_deployed: true) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 

@@ -67,8 +67,9 @@ be enabled for a single project, and is not ready for production use:
 > - Not recommended for production use.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#anchor-to-section). **(FREE SELF)**
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](<replace with path to>/user/feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
 
 (...Regular content goes here...)
 
@@ -126,8 +127,9 @@ use:
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+There can be
+[risks when disabling released features](<replace with path to>/user/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
 
 (...Regular content goes here...)
 
@@ -182,8 +184,9 @@ cannot be enabled for a single project, and is ready for production use:
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+There can be
+[risks when disabling released features](<replace with path to>/user/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
 
 (...Regular content goes here...)
 
@@ -255,8 +258,9 @@ be enabled by project, and is ready for production use:
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(FREE SELF)**
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+There can be
+[risks when disabling released features](<replace with path to>/user/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
 
 (...Regular content goes here...)
 
