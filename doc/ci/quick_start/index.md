@@ -161,4 +161,4 @@ To view your pipeline:
 
   ![Job details](img/job_details_v13_6.png)
 
-If the job status is `stuck`, check to ensure a runner is probably configured for the project.
+If the job status is `stuck`, check to ensure a runner is properly configured for the project.
