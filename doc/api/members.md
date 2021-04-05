@@ -90,7 +90,9 @@ Example response:
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
 
-If a user is a member of this group or project and also of one or more ancestor groups, only its membership with the highest `access_level` is returned.
+If a user is a member of this group or project and also of one or more ancestor groups,
+only its membership with the highest `access_level` is returned.
+([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677)] in GitLab 13.11.)
 This represents the effective permission of the user.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
@@ -494,7 +496,7 @@ DELETE /projects/:id/members/:user_id
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
-| `skip_subresources` | boolean | false   | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. | 
+| `skip_subresources` | boolean | false   | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
 | `unassign_issuables` | boolean | false   | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |
 
 Example request:

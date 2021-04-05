@@ -32,8 +32,8 @@
       = hidden_field_tag 'new_parent_group_id'
 
     %ul
-      - side_effects_link_start = '<a href="https://docs.gitlab.com/ee/user/project/index.html#redirects-when-changing-repository-paths" target="_blank">'
-      - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended %{side_effects_link_start}side effects%{side_effects_link_end}.") % { side_effects_link_start: side_effects_link_start, side_effects_link_end:'</a>' }
+      - side_effects_link_start = '<a href="https://docs.gitlab.com/ee/user/project/index.html#redirects-when-changing-repository-paths" target="_blank">'.html_safe
+      - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended %{side_effects_link_start}side effects%{side_effects_link_end}.") % { side_effects_link_start: side_effects_link_start, side_effects_link_end: '</a>'.html_safe }
       %li= warning_text.html_safe
       %li= s_('GroupSettings|You can only transfer the group to a group you manage.')
       %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')

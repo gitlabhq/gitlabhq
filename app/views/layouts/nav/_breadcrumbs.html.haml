@@ -21,7 +21,7 @@
           %li
             %h2.breadcrumbs-sub-title
               = link_to @breadcrumb_title, breadcrumb_title_link
-    %script{ type:'application/ld+json' }
+    %script{ type: 'application/ld+json' }
       :plain
         #{schema_breadcrumb_json}
     = yield :header_content
