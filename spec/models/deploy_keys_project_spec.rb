@@ -26,7 +26,7 @@ RSpec.describe DeployKeysProject do
         end
 
         it "doesn't destroy the deploy key" do
-          subject.destroy
+          subject.destroy!
 
           expect { deploy_key.reload }.not_to raise_error
         end
@@ -34,7 +34,7 @@ RSpec.describe DeployKeysProject do
 
       context "when the deploy key is private" do
         it "destroys the deploy key" do
-          subject.destroy
+          subject.destroy!
 
           expect { deploy_key.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
@@ -49,7 +49,7 @@ RSpec.describe DeployKeysProject do
       end
 
       it "doesn't destroy the deploy key" do
-        subject.destroy
+        subject.destroy!
 
         expect { deploy_key.reload }.not_to raise_error
       end

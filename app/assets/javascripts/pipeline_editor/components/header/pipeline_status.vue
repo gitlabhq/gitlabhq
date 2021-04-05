@@ -98,7 +98,7 @@ export default {
     </template>
     <template v-else>
       <a :href="status.detailsPath" class="gl-mr-auto">
-        <ci-icon :status="status" :size="18" />
+        <ci-icon :status="status" :size="16" />
       </a>
       <span class="gl-font-weight-bold">
         <gl-sprintf :message="$options.i18n.pipelineInfo">

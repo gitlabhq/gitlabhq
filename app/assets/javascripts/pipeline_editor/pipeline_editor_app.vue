@@ -266,10 +266,20 @@ export default {
       @createEmptyConfigFile="setNewEmptyCiConfigFile"
     />
     <div v-else>
-      <gl-alert v-if="showSuccessAlert" :variant="success.variant" @dismiss="dismissSuccess">
+      <gl-alert
+        v-if="showSuccessAlert"
+        :variant="success.variant"
+        class="gl-mb-5"
+        @dismiss="dismissSuccess"
+      >
         {{ success.text }}
       </gl-alert>
-      <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="dismissFailure">
+      <gl-alert
+        v-if="showFailureAlert"
+        :variant="failure.variant"
+        class="gl-mb-5"
+        @dismiss="dismissFailure"
+      >
         {{ failure.text }}
         <ul v-if="failureReasons.length" class="gl-mb-0">
           <li v-for="reason in failureReasons" :key="reason">{{ reason }}</li>

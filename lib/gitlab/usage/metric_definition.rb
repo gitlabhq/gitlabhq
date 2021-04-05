@@ -5,6 +5,7 @@ module Gitlab
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
       BASE_REPO_PATH = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
+      DEPRECATED_METRIC_STATUSES = %w[deprecated removed].to_set.freeze
 
       attr_reader :path
       attr_reader :attributes
@@ -106,7 +107,7 @@ module Gitlab
       end
 
       def skip_validation?
-        !!attributes[:skip_validation] || @skip_validation
+        !!attributes[:skip_validation] || @skip_validation || DEPRECATED_METRIC_STATUSES.include?(attributes[:status])
       end
     end
   end
