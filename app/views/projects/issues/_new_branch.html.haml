@@ -11,18 +11,18 @@
   - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
 
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
-    .btn-group.btn-group-sm.unavailable
-      %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
-        .spinner.align-text-bottom.mr-1.hide
+    .btn-group.unavailable
+      %button.gl-button.btn{ type: 'button', disabled: 'disabled' }
+        .spinner.align-text-bottom.gl-button-icon.hide
         %span.text
           Checking branch availability…
 
-    .btn-group.btn-group-sm.available.hidden
-      %button.gl-button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
+    .btn-group.available.hidden
+      %button.gl-button.btn.js-create-merge-request.btn-confirm{ type: 'button', data: { action: data_action } }
         .spinner.js-spinner.gl-mr-2.gl-display-none
         = value
 
-      %button.btn.gl-button.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle.gl-flex-grow-0.gl-h-7{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
+      %button.gl-button.btn.btn-confirm.btn-icon.dropdown-toggle.create-merge-request-dropdown-toggle.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
         = sprite_icon('chevron-down')
 
       .droplab-dropdown

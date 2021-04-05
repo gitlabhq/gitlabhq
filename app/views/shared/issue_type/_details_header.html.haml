@@ -13,7 +13,7 @@
       #js-issuable-header-warnings
       = issuable_meta(issuable, @project)
 
-    %a.btn.gl-button.btn-default.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+    %a.btn.gl-button.btn-default.btn-icon.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = sprite_icon('chevron-double-lg-left')
 
   .js-issue-header-actions{ data: issue_header_actions_data(@project, issuable, current_user) }

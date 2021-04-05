@@ -6,11 +6,11 @@ exports[`Design management upload button component renders inverted upload desig
 >
   <gl-button-stub
     buttontextclasses=""
-    category="primary"
+    category="secondary"
     icon=""
     size="small"
     title="Adding a design with the same filename replaces the file in a new version."
-    variant="default"
+    variant="confirm"
   >
     
     Upload designs
@@ -31,11 +31,11 @@ exports[`Design management upload button component renders upload design button 
 <div>
   <gl-button-stub
     buttontextclasses=""
-    category="primary"
+    category="secondary"
     icon=""
     size="small"
     title="Adding a design with the same filename replaces the file in a new version."
-    variant="default"
+    variant="confirm"
   >
     
     Upload designs

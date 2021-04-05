@@ -379,8 +379,7 @@ export default {
             <delete-button
               v-if="isLatestVersion"
               :is-deleting="loading"
-              button-variant="warning"
-              button-category="secondary"
+              button-variant="default"
               button-class="gl-mr-3"
               button-size="small"
               data-qa-selector="archive_button"
