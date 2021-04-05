@@ -78,7 +78,7 @@ RSpec.describe "Issues > User edits issue", :js do
         end
 
         it 'warns about version conflict' do
-          issue.update(title: "New title")
+          issue.update!(title: "New title")
 
           fill_in 'issue_title', with: 'bug 345'
           fill_in 'issue_description', with: 'bug description'
@@ -307,7 +307,7 @@ RSpec.describe "Issues > User edits issue", :js do
           before do
             project.add_guest(guest)
             issue.milestone = milestone
-            issue.save
+            issue.save!
           end
 
           it 'shows milestone text' do

@@ -15,16 +15,18 @@ describe('RemoveMemberModal', () => {
   });
 
   describe.each`
-    state                          | memberType         | isAccessRequest | actionText               | removeSubMembershipsCheckboxExpected | unassignIssuablesCheckboxExpected | message
-    ${'removing a group member'}   | ${'GroupMember'}   | ${'false'}      | ${'Remove member'}       | ${true}                              | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}
-    ${'removing a project member'} | ${'ProjectMember'} | ${'false'}      | ${'Remove member'}       | ${false}                             | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}
-    ${'denying an access request'} | ${'ProjectMember'} | ${'true'}       | ${'Deny access request'} | ${false}                             | ${false}                          | ${"Are you sure you want to deny Jane Doe's request to join the Gitlab Org / Gitlab Test project?"}
+    state                          | memberType         | isAccessRequest | isInvite   | actionText               | removeSubMembershipsCheckboxExpected | unassignIssuablesCheckboxExpected | message
+    ${'removing a group member'}   | ${'GroupMember'}   | ${'false'}      | ${'false'} | ${'Remove member'}       | ${true}                              | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}
+    ${'removing a project member'} | ${'ProjectMember'} | ${'false'}      | ${'false'} | ${'Remove member'}       | ${false}                             | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}
+    ${'denying an access request'} | ${'ProjectMember'} | ${'true'}       | ${'false'} | ${'Deny access request'} | ${false}                             | ${false}                          | ${"Are you sure you want to deny Jane Doe's request to join the Gitlab Org / Gitlab Test project?"}
+    ${'revoking invite'}           | ${'ProjectMember'} | ${'false'}      | ${'true'}  | ${'Revoke invite'}       | ${false}                             | ${false}                          | ${'Are you sure you want to revoke the invitation for foo@bar.com to join the Gitlab Org / Gitlab Test project?'}
   `(
     'when $state',
     ({
       actionText,
       memberType,
       isAccessRequest,
+      isInvite,
       message,
       removeSubMembershipsCheckboxExpected,
       unassignIssuablesCheckboxExpected,
@@ -35,6 +37,7 @@ describe('RemoveMemberModal', () => {
             return {
               modalData: {
                 isAccessRequest,
+                isInvite,
                 message,
                 memberPath,
                 memberType,

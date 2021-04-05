@@ -42,6 +42,7 @@ export default {
         :member-id="member.id"
         :message="message"
         :title="s__('Member|Revoke invite')"
+        is-invite
       />
     </div>
   </action-button-group>

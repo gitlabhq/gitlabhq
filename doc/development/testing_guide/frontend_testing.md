@@ -212,8 +212,8 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/queries/byrole/)
-as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
+When selecting by text it is best to use the [`byRole`](https://testing-library.com/docs/queries/byrole) query
+as it helps enforce accessibility best practices. `findByRole` and the other [DOM Testing Library queries](https://testing-library.com/docs/queries/about) are available when using [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended).
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
 rather than dealing with the complexity of a child component's behavior.
@@ -223,25 +223,27 @@ possible selectors include:
 
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
-  optionally combined with [`findByTestId`](#extendedwrapper-and-findbytestid)
+  optionally combined with [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended)
 - a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
-import { getByRole, getByText } from '@testing-library/dom'
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper'
+
+const wrapper = shallowMountExtended(ExampleComponent);
 
 // In this example, `wrapper` is a `@vue/test-utils` wrapper returned from `mount` or `shallowMount`.
 it('exists', () => {
   // Best (especially for integration tests)
-  getByRole(wrapper.element, 'link', { name: /Click Me/i })
-  getByRole(wrapper.element, 'link', { name: 'Click Me' })
-  getByText(wrapper.element, 'Click Me')
-  getByText(wrapper.element, /Click Me/i)
+  wrapper.findByRole('link', { name: /Click Me/i })
+  wrapper.findByRole('link', { name: 'Click Me' })
+  wrapper.findByText('Click Me')
+  wrapper.findByText(/Click Me/i)
 
   // Good (especially for unit tests)
   wrapper.find(FooComponent);
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="my-foo-id"]');
-  wrapper.findByTestId('my-foo-id'); // with the extendedWrapper utility – check below
+  wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended – check below
   wrapper.find({ ref: 'foo'});
 
   // Bad
@@ -1138,23 +1140,40 @@ These are very useful if you don't have a handle to the request's Promise, for e
 
 Both functions run `callback` on the next tick after the requests finish (using `setImmediate()`), to allow any `.then()` or `.catch()` handlers to run.
 
-### `extendedWrapper` and `findByTestId`
+### `shallowMountExtended` and `mountExtended`
 
-Using `data-testid` is one of the [recommended ways to query DOM elements](#how-to-query-dom-elements).
-You can use the `extendedWrapper` utility on the `wrapper` returned by `shalowMount`/`mount`.
-By doing so, the `wrapper` provides you with the ability to perform a `findByTestId`,
-which is a shortcut to the more verbose `wrapper.find('[data-testid="my-test-id"]');`
+The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform 
+any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about) 
+by prefixing them with `find` or `findAll`.
 
 ```javascript
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('FooComponent', () => {
-  const wrapper = extendedWrapper(shallowMount({
-    template: `<div data-testid="my-test-id"></div>`,
-  }));
+  const wrapper = shallowMountExtended({
+    template: `
+      <div data-testid="gitlab-frontend-stack">
+        <p>GitLab frontend stack</p>
+        <div role="tablist">
+          <button role="tab" aria-selected="true">Vue.js</button>
+          <button role="tab" aria-selected="false">GraphQL</button>
+          <button role="tab" aria-selected="false">SCSS</button>
+        </div>
+      </div>
+    `,
+  });
 
-  it('exists', () => {
-    expect(wrapper.findByTestId('my-test-id').exists()).toBe(true);
+  it('finds elements with `findByTestId`', () => {
+    expect(wrapper.findByTestId('gitlab-frontend-stack').exists()).toBe(true);
+  });
+
+  it('finds elements with `findByText`', () => {
+    expect(wrapper.findByText('GitLab frontend stack').exists()).toBe(true);
+    expect(wrapper.findByText('TypeScript').exists()).toBe(false);
+  });
+
+  it('finds elements with `findAllByRole`', () => {
+    expect(wrapper.findAllByRole('tab').length).toBe(3);
   });
 });
 ```

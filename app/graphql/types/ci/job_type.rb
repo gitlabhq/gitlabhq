@@ -26,6 +26,8 @@ module Types
             description: 'Whether this job is allowed to fail.'
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the job in seconds.'
+      field :tags, [GraphQL::STRING_TYPE], null: true,
+            description: 'Tags for the current job.'
 
       # Life-cycle timestamps:
       field :created_at, Types::TimeType, null: false,
@@ -66,6 +68,10 @@ module Types
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find
+      end
+
+      def tags
+        object.tags.map(&:name) if object.is_a?(::Ci::Build)
       end
 
       def detailed_status

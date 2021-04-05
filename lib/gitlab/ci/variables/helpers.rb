@@ -23,7 +23,7 @@ module Gitlab
           def transform_from_yaml_variables(vars)
             return vars.stringify_keys if vars.is_a?(Hash)
 
-            vars.to_a.map { |var| [var[:key].to_s, var[:value]] }.to_h
+            vars.to_a.to_h { |var| [var[:key].to_s, var[:value]] }
           end
 
           def inherit_yaml_variables(from:, to:, inheritance:)

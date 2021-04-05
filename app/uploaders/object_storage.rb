@@ -187,7 +187,7 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
-          hash[:FeatureFlagExtractBase] = Feature.enabled?(:workhorse_extract_filename_base)
+          hash[:FeatureFlagExtractBase] = Feature.enabled?(:workhorse_extract_filename_base, default_enabled: :yaml)
           hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end

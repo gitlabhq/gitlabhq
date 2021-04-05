@@ -111,7 +111,7 @@ RSpec.describe API::Issues do
       let(:not_member) { create(:user) }
 
       before do
-        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)
+        project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
       end
 
       it 'renders 403' do

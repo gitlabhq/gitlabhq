@@ -36,6 +36,11 @@ export default {
       required: false,
       default: false,
     },
+    isInvite: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['memberPath']),
@@ -57,6 +62,7 @@ export default {
     :data-member-path="computedMemberPath"
     :data-member-type="memberType"
     :data-is-access-request="isAccessRequest"
+    :data-is-invite="isInvite"
     :data-message="message"
     data-qa-selector="delete_member_button"
   />

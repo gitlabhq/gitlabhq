@@ -33,6 +33,7 @@ RSpec.describe Types::Ci::JobType do
       stage
       started_at
       status
+      tags
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

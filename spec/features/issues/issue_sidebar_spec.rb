@@ -171,7 +171,7 @@ RSpec.describe 'Issue Sidebar' do
 
       context 'editing issue labels', :js do
         before do
-          issue.update(labels: [label])
+          issue.update!(labels: [label])
           page.within('.block.labels') do
             click_on 'Edit'
           end

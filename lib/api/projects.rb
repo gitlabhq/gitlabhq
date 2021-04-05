@@ -485,7 +485,7 @@ module API
       get ':id/languages', feature_category: :source_code_management do
         ::Projects::RepositoryLanguagesService
           .new(user_project, current_user)
-          .execute.map { |lang| [lang.name, lang.share] }.to_h
+          .execute.to_h { |lang| [lang.name, lang.share] }
       end
 
       desc 'Delete a project'

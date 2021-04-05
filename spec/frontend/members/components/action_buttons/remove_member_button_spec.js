@@ -28,6 +28,7 @@ describe('RemoveMemberButton', () => {
         message: 'Are you sure you want to remove John Smith?',
         title: 'Remove member',
         isAccessRequest: true,
+        isInvite: true,
         ...propsData,
       },
       directives: {
@@ -48,6 +49,7 @@ describe('RemoveMemberButton', () => {
       'data-member-type': 'GroupMember',
       'data-message': 'Are you sure you want to remove John Smith?',
       'data-is-access-request': 'true',
+      'data-is-invite': 'true',
       'aria-label': 'Remove member',
       title: 'Remove member',
       icon: 'remove',

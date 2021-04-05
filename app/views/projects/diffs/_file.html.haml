@@ -14,10 +14,10 @@
         = submodule_diff_compare_link(diff_file)
 
     - unless diff_file.submodule?
-      .file-actions.d-none.d-sm-block
+      .file-actions.gl-display-none.gl-sm-display-flex
         - if diff_file.blob&.readable_text?
-          %span.has-tooltip{ title: _("Toggle comments for this file") }
-            = link_to '#', class: 'js-toggle-diff-comments btn gl-button btn-default selected', disabled: @diff_notes_disabled do
+          %span.has-tooltip.gl-mr-3{ title: _("Toggle comments for this file") }
+            = link_to '#', class: 'js-toggle-diff-comments btn gl-button btn-default btn-icon selected', disabled: @diff_notes_disabled do
               = sprite_icon('comment')
           \
           - if editable_diff?(diff_file)

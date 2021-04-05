@@ -28,7 +28,7 @@ module Gitlab
         def to_hash_with_defaults
           # NOTE: The current approach of simply mapping all the descendents' keys and values ('config')
           #       into a flat hash may need to be enhanced as we add more complex, non-scalar entries.
-          @global.descendants.map { |descendant| [descendant.key, descendant.config] }.to_h
+          @global.descendants.to_h { |descendant| [descendant.key, descendant.config] }
         end
 
         private

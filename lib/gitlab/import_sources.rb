@@ -28,7 +28,7 @@ module Gitlab
       prepend_if_ee('EE::Gitlab::ImportSources') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       def options
-        Hash[import_table.map { |importer| [importer.title, importer.name] }]
+        import_table.to_h { |importer| [importer.title, importer.name] }
       end
 
       def values

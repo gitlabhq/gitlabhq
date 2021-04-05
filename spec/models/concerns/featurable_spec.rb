@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Featurable do
   let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project) }
   let(:feature_class) { subject.class }
   let(:features) { feature_class::FEATURES }

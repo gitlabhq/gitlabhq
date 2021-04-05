@@ -103,7 +103,7 @@ RSpec.describe 'Issue notes polling', :js do
   end
 
   def update_note(note, new_text)
-    note.update(note: new_text)
+    note.update!(note: new_text)
     wait_for_requests
   end
 

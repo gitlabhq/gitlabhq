@@ -887,7 +887,7 @@ RSpec.describe API::Internal::Base do
     context 'project does not exist' do
       context 'git pull' do
         it 'returns a 200 response with status: false' do
-          project.destroy
+          project.destroy!
 
           pull(key, project)
 

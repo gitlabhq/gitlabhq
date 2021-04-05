@@ -43,6 +43,7 @@ describe('UserActionButtons', () => {
         message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"`,
         title: 'Remove member',
         isAccessRequest: false,
+        isInvite: false,
         icon: 'remove',
       });
     });

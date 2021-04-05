@@ -1235,6 +1235,7 @@ An edge in a connection.
 | `stage` | [`CiStage`](#cistage) | Stage of the job. |
 | `startedAt` | [`Time`](#time) | When the job was started. |
 | `status` | [`CiJobStatus`](#cijobstatus) | Status of the job. |
+| `tags` | [`[String!]`](#string) | Tags for the current job. |
 
 ### `CiJobArtifact`
 

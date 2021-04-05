@@ -14,8 +14,8 @@ RSpec.describe API::CommitStatuses do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', protected: false) }
-      let!(:develop) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'develop', protected: false) }
+      let!(:master) { project.ci_pipelines.create!(source: :push, sha: commit.id, ref: 'master', protected: false) }
+      let!(:develop) { project.ci_pipelines.create!(source: :push, sha: commit.id, ref: 'develop', protected: false) }
 
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
@@ -270,8 +270,8 @@ RSpec.describe API::CommitStatuses do
         end
 
         context 'when a pipeline id is specified' do
-          let!(:first_pipeline) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', status: 'created') }
-          let!(:other_pipeline) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', status: 'created') }
+          let!(:first_pipeline) { project.ci_pipelines.create!(source: :push, sha: commit.id, ref: 'master', status: 'created') }
+          let!(:other_pipeline) { project.ci_pipelines.create!(source: :push, sha: commit.id, ref: 'master', status: 'created') }
 
           subject do
             post api(post_url, developer), params: {
