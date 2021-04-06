@@ -1,25 +1,33 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
 
 describe('Timeago component', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(TimeAgo, {
-      propsData: {
-        pipeline: {
-          details: {
-            ...props,
+  const defaultProps = { duration: 0, finished_at: '' };
+
+  const createComponent = (props = defaultProps, stuck = false) => {
+    wrapper = extendedWrapper(
+      shallowMount(TimeAgo, {
+        propsData: {
+          pipeline: {
+            details: {
+              ...props,
+            },
+            flags: {
+              stuck,
+            },
           },
         },
-      },
-      data() {
-        return {
-          iconTimerSvg: `<svg></svg>`,
-        };
-      },
-    });
+        data() {
+          return {
+            iconTimerSvg: `<svg></svg>`,
+          };
+        },
+      }),
+    );
   };
 
   afterEach(() => {
@@ -29,8 +37,10 @@ describe('Timeago component', () => {
 
   const duration = () => wrapper.find('.duration');
   const finishedAt = () => wrapper.find('.finished-at');
-  const findInProgress = () => wrapper.find('[data-testid="pipeline-in-progress"]');
-  const findSkipped = () => wrapper.find('[data-testid="pipeline-skipped"]');
+  const findInProgress = () => wrapper.findByTestId('pipeline-in-progress');
+  const findSkipped = () => wrapper.findByTestId('pipeline-skipped');
+  const findHourGlassIcon = () => wrapper.findByTestId('hourglass-icon');
+  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
 
   describe('with duration', () => {
     beforeEach(() => {
@@ -47,7 +57,7 @@ describe('Timeago component', () => {
 
   describe('without duration', () => {
     beforeEach(() => {
-      createComponent({ duration: 0, finished_at: '' });
+      createComponent();
     });
 
     it('should not render duration and timer svg', () => {
@@ -72,7 +82,7 @@ describe('Timeago component', () => {
 
   describe('without finishedTime', () => {
     beforeEach(() => {
-      createComponent({ duration: 0, finished_at: '' });
+      createComponent();
     });
 
     it('should not render time and calendar icon', () => {
@@ -99,6 +109,15 @@ describe('Timeago component', () => {
         expect(findSkipped().exists()).toBe(false);
       },
     );
+
+    it('should show warning icon beside in progress if pipeline is stuck', () => {
+      const stuck = true;
+
+      createComponent(defaultProps, stuck);
+
+      expect(findWarningIcon().exists()).toBe(true);
+      expect(findHourGlassIcon().exists()).toBe(false);
+    });
   });
 
   describe('skipped', () => {

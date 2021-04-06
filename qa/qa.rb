@@ -98,6 +98,7 @@ module QA
     autoload :Design, 'qa/resource/design'
     autoload :RegistryRepository, 'qa/resource/registry_repository'
     autoload :Package, 'qa/resource/package'
+    autoload :PipelineSchedules, 'qa/resource/pipeline_schedules'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'

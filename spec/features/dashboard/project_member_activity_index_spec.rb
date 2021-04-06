@@ -11,7 +11,7 @@ RSpec.describe 'Project member activity', :js do
   end
 
   def visit_activities_and_wait_with_event(event_type)
-    Event.create(project: project, author_id: user.id, action: event_type)
+    Event.create!(project: project, author_id: user.id, action: event_type)
     visit activity_project_path(project)
     wait_for_requests
   end

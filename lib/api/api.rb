@@ -294,6 +294,7 @@ module API
       mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataQueries
+      mount ::API::UsageDataNonSqlMetrics
       mount ::API::UserCounts
       mount ::API::Users
       mount ::API::Variables

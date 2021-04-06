@@ -41,7 +41,7 @@ RSpec.describe 'Dashboard Projects' do
           expect(page).to have_content('Developer')
         end
 
-        project.members.last.update(access_level: 40)
+        project.members.last.update!(access_level: 40)
 
         visit dashboard_projects_path
 
@@ -183,7 +183,7 @@ RSpec.describe 'Dashboard Projects' do
       let(:guest_user) { create(:user) }
 
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
         project.add_guest(guest_user)
         sign_in(guest_user)
       end

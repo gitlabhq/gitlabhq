@@ -179,6 +179,10 @@ module QA
         "#{api_get_path}/pipelines"
       end
 
+      def api_pipeline_schedules_path
+        "#{api_get_path}/pipeline_schedules"
+      end
+
       def api_put_path
         "/projects/#{id}"
       end
@@ -288,6 +292,10 @@ module QA
 
       def pipelines
         parse_body(get(Runtime::API::Request.new(api_client, api_pipelines_path).url))
+      end
+
+      def pipeline_schedules
+        parse_body(get(Runtime::API::Request.new(api_client, api_pipeline_schedules_path).url))
       end
 
       private
