@@ -28,6 +28,8 @@ Service.available_services_names.each do |service|
           hash.merge!(k => 1234)
         elsif service == 'jira' && k == :jira_issue_transition_id
           hash.merge!(k => '1,2,3')
+        elsif service == 'emails_on_push' && k == :recipients
+          hash.merge!(k => 'foo@bar.com')
         else
           hash.merge!(k => "someword")
         end

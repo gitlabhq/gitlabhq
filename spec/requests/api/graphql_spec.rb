@@ -208,6 +208,49 @@ RSpec.describe 'GraphQL' do
     end
   end
 
+  describe 'complexity limits' do
+    let_it_be(:project) { create(:project, :public) }
+    let!(:user) { create(:user) }
+
+    let(:query_fields) do
+      <<~QUERY
+      id
+      QUERY
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        query_fields
+      )
+    end
+
+    before do
+      stub_const('GitlabSchema::DEFAULT_MAX_COMPLEXITY', 1)
+    end
+
+    context 'unauthenticated user' do
+      subject { post_graphql(query) }
+
+      it 'raises a complexity error' do
+        subject
+
+        expect_graphql_errors_to_include(/which exceeds max complexity/)
+      end
+    end
+
+    context 'authenticated user' do
+      subject { post_graphql(query, current_user: user) }
+
+      it 'does not raise an error as it uses the `AUTHENTICATED_COMPLEXITY`' do
+        subject
+
+        expect(graphql_errors).to be_nil
+      end
+    end
+  end
+
   describe 'keyset pagination' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: Time.now.change(usec: 200)) }

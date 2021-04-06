@@ -12,6 +12,7 @@ RSpec.describe 'Project issue boards sidebar milestones', :js do
   let_it_be(:issue2)    { create(:issue, project: project, milestone: milestone, relative_position: 2) }
   let_it_be(:board)     { create(:board, project: project) }
   let_it_be(:list)      { create(:list, board: board, position: 0) }
+
   let(:card1)           { find('.board:nth-child(1) .board-card:nth-of-type(1)') }
   let(:card2)           { find('.board:nth-child(1) .board-card:nth-of-type(2)') }
 

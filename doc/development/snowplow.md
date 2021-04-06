@@ -57,13 +57,13 @@ We use Snowplow for the majority of our tracking strategy and it is enabled on G
 - **Admin Area > Settings > General** in the UI.
 - `admin/application_settings/integrations` in your browser.
 
-The following configuration is required:
+Example configuration:
 
-| Name          | Value                     |
-|---------------|---------------------------|
-| Collector     | `snowplow.trx.gitlab.net` |
-| Site ID       | `gitlab`                  |
-| Cookie domain | `.gitlab.com`             |
+| Name          | Value                         |
+|---------------|-------------------------------|
+| Collector     | `your-snowplow-collector.net` |
+| Site ID       | `gitlab`                      |
+| Cookie domain | `.your-gitlab-instance.com`   |
 
 ## Snowplow request flow
 

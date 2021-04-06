@@ -72,13 +72,6 @@ supported by `push_hooks` and `tag_push_hooks` events aren't executed.
 The number of branches or tags supported can be changed via
 [`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Service templates
-
-Service templates are a way to set predefined values for a project integration across
-all new projects on the instance.
-
-Read more about [Service templates](services_templates.md).
-
 ## Project integration management
 
 Project integration management lets you control integration settings across all projects
@@ -86,6 +79,19 @@ of an instance. On the project level, administrators you can choose whether to i
 instance configuration or provide custom settings.
 
 Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
+
+### Service templates
+
+[Service templates](services_templates.md) were a way to set predefined values for
+a project integration across all new projects on the instance. They are deprecated and
+[scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032)
+in GitLab 14.0.
+
+GitLab recommends you use [project integration management](../../admin_area/settings/project_integration_management.md)
+instead of service templates. GitLab versions 13.3 and later provide
+[instance-level integrations](../../admin_area/settings/project_integration_management.md#project-integration-management)
+you can use.
+instead.
 
 ## Troubleshooting integrations
 

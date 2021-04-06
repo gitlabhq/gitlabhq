@@ -460,7 +460,7 @@ class Service < ApplicationRecord
     errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_id && group_id
   end
 
-  def valid_recipients?
+  def validate_recipients?
     activated? && !importing?
   end
 end

@@ -15,6 +15,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
   let_it_be(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let_it_be(:board)       { create(:board, project: project) }
   let_it_be(:list)        { create(:list, board: board, label: development, position: 0) }
+
   let(:card)              { find('.board:nth-child(2)').first('.board-card') }
 
   before do

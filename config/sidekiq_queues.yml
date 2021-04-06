@@ -210,6 +210,8 @@
   - 1
 - - merge_request_reset_approvals
   - 1
+- - merge_requests_assignees_change
+  - 1
 - - merge_requests_delete_source_branch
   - 1
 - - metrics_dashboard_prune_old_annotations

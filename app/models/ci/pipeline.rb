@@ -286,11 +286,9 @@ module Ci
       end
 
       after_transition any => [:failed] do |pipeline|
-        pipeline.run_after_commit do
-          ::Gitlab::Ci::Pipeline::Metrics.pipeline_failure_reason_counter.increment(reason: pipeline.failure_reason)
+        next unless pipeline.auto_devops_source?
 
-          AutoDevops::DisableWorker.perform_async(pipeline.id) if pipeline.auto_devops_source?
-        end
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
     end
 

@@ -10810,13 +10810,16 @@ msgstr ""
 msgid "DevOps Report"
 msgstr ""
 
-msgid "DevopsAdoption|Add / remove groups"
-msgstr ""
-
 msgid "DevopsAdoption|Add Group"
 msgstr ""
 
 msgid "DevopsAdoption|Add a group to get started"
+msgstr ""
+
+msgid "DevopsAdoption|Add/remove groups"
+msgstr ""
+
+msgid "DevopsAdoption|Add/remove sub-groups"
 msgstr ""
 
 msgid "DevopsAdoption|Adopted"
@@ -10891,7 +10894,7 @@ msgstr ""
 msgid "DevopsAdoption|Remove Group"
 msgstr ""
 
-msgid "DevopsAdoption|Remove Group from the table"
+msgid "DevopsAdoption|Remove Group from the table."
 msgstr ""
 
 msgid "DevopsAdoption|Runner configured for project/group"
@@ -10906,10 +10909,16 @@ msgstr ""
 msgid "DevopsAdoption|Scanning"
 msgstr ""
 
-msgid "DevopsAdoption|There was an error fetching Group adoption data. Please refresh the page to try again."
+msgid "DevopsAdoption|There was an error enabling the current group. Please refresh the page."
 msgstr ""
 
-msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page to try again."
+msgid "DevopsAdoption|There was an error fetching Group adoption data. Please refresh the page."
+msgstr ""
+
+msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page."
+msgstr ""
+
+msgid "DevopsAdoption|You cannot remove the group you are currently in."
 msgstr ""
 
 msgid "DevopsReport|Adoption"
@@ -11535,13 +11544,19 @@ msgstr ""
 msgid "EmailsOnPushService|Emails on push"
 msgstr ""
 
-msgid "EmailsOnPushService|Emails separated by whitespace"
+msgid "EmailsOnPushService|Emails separated by whitespace."
 msgstr ""
 
 msgid "EmailsOnPushService|Send from committer"
 msgstr ""
 
 msgid "EmailsOnPushService|Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. %{domains})."
+msgstr ""
+
+msgid "EmailsOnPushService|can't exceed %{recipients_limit}"
+msgstr ""
+
+msgid "EmailsOnPushService|tanuki@example.com gitlab@example.com"
 msgstr ""
 
 msgid "Embed"

@@ -2,7 +2,8 @@
 
 require 'rspec-parameterized'
 require 'gitlab-dangerfiles'
-require 'danger/helper'
+require 'danger'
+require 'danger/plugins/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'

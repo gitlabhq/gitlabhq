@@ -629,45 +629,30 @@ RSpec.describe CommitStatus do
     end
   end
 
-  describe '#drop' do
+  describe 'set failure_reason when drop' do
     let(:commit_status) { create(:commit_status, :created) }
-    let(:counter) { Gitlab::Metrics.counter(:gitlab_ci_job_failure_reasons, 'desc') }
-    let(:failure_reason) { reason.to_s }
 
     subject do
       commit_status.drop!(reason)
       commit_status
     end
 
-    shared_examples 'incrementing failure reason counter' do
-      it 'increments the counter with the failure_reason' do
-        expect { subject }.to change { counter.get(reason: failure_reason) }.by(1)
-      end
-    end
-
     context 'when failure_reason is nil' do
       let(:reason) { }
-      let(:failure_reason) { 'unknown_failure' }
 
       it { is_expected.to be_unknown_failure }
-
-      it_behaves_like 'incrementing failure reason counter'
     end
 
     context 'when failure_reason is script_failure' do
       let(:reason) { :script_failure }
 
       it { is_expected.to be_script_failure }
-
-      it_behaves_like 'incrementing failure reason counter'
     end
 
     context 'when failure_reason is unmet_prerequisites' do
       let(:reason) { :unmet_prerequisites }
 
       it { is_expected.to be_unmet_prerequisites }
-
-      it_behaves_like 'incrementing failure reason counter'
     end
   end
 

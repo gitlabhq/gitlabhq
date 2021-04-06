@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for boards module
+merge_request: 58180
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

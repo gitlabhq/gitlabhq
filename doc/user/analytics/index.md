@@ -46,6 +46,7 @@ in one place.
 The following analytics features are available at the group level:
 
 - [Contribution](../group/contribution_analytics/index.md). **(PREMIUM)**
+- [DevOps Adoption](../group/devops_adoption/index.md). **(ULTIMATE)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Productivity](productivity_analytics.md). **(PREMIUM)**

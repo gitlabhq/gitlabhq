@@ -104,3 +104,15 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_epics_activity
+
+- name: g_project_management_users_setting_epic_confidential
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: g_project_management_users_setting_epic_visible
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity

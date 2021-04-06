@@ -9,7 +9,7 @@ RSpec.describe 'getting merge request information nested in a project' do
   let(:current_user) { create(:user) }
   let(:merge_request_graphql_data) { graphql_data['project']['mergeRequest'] }
   let!(:merge_request) { create(:merge_request, source_project: project) }
-  let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: ['pipeline']) }
+  let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: %w(pipeline jobs)) }
 
   let(:query) do
     graphql_query_for(

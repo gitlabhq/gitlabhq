@@ -420,6 +420,25 @@ RSpec.describe API::MavenPackages do
             expect(response.media_type).to eq('application/octet-stream')
           end
         end
+
+        context 'with a reporter from a subgroup accessing the root group' do
+          let_it_be(:root_group) { create(:group, :private) }
+          let_it_be(:group) { create(:group, :private, parent: root_group) }
+
+          subject { download_file_with_token(package_file.file_name, {}, headers_with_token, root_group.id) }
+
+          before do
+            project.update!(namespace: group)
+            group.add_reporter(user)
+          end
+
+          it 'returns the file' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('application/octet-stream')
+          end
+        end
       end
 
       context 'maven metadata file' do
@@ -492,12 +511,12 @@ RSpec.describe API::MavenPackages do
       it_behaves_like 'handling all conditions'
     end
 
-    def download_file(file_name, params = {}, request_headers = headers)
-      get api("/groups/#{group.id}/-/packages/maven/#{maven_metadatum.path}/#{file_name}"), params: params, headers: request_headers
+    def download_file(file_name, params = {}, request_headers = headers, group_id = group.id)
+      get api("/groups/#{group_id}/-/packages/maven/#{maven_metadatum.path}/#{file_name}"), params: params, headers: request_headers
     end
 
-    def download_file_with_token(file_name, params = {}, request_headers = headers_with_token)
-      download_file(file_name, params, request_headers)
+    def download_file_with_token(file_name, params = {}, request_headers = headers_with_token, group_id = group.id)
+      download_file(file_name, params, request_headers, group_id)
     end
   end
 

@@ -69,8 +69,10 @@ module Gitlab
             end
 
             def validate_service_request
-              headers = {}
-              headers['X-Gitlab-Token'] = validation_service_token if validation_service_token
+              headers = {
+                'X-Request-ID' => Labkit::Correlation::CorrelationId.current_id,
+                'X-Gitlab-Token' => validation_service_token
+              }.compact
 
               Gitlab::HTTP.post(
                 validation_service_url, timeout: validation_service_timeout,

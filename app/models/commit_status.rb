@@ -181,16 +181,15 @@ class CommitStatus < ApplicationRecord
     end
 
     after_transition any => :failed do |commit_status|
+      next if Feature.enabled?(:async_add_build_failure_todo, commit_status.project, default_enabled: :yaml)
+      next unless commit_status.project
+
+      # rubocop: disable CodeReuse/ServiceClass
       commit_status.run_after_commit do
-        ::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter.increment(reason: commit_status.failure_reason)
-
-        # rubocop: disable CodeReuse/ServiceClass
-        next if Feature.enabled?(:async_add_build_failure_todo, commit_status.project, default_enabled: :yaml)
-        next unless commit_status.project
-
-        MergeRequests::AddTodoWhenBuildFailsService.new(project, nil).execute(self)
-        # rubocop: enable CodeReuse/ServiceClass
+        MergeRequests::AddTodoWhenBuildFailsService
+          .new(project, nil).execute(self)
       end
+      # rubocop: enable CodeReuse/ServiceClass
     end
   end
 

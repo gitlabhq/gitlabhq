@@ -1,0 +1,5 @@
+---
+title: Add correlation id in X-Request-ID for external pipeline validation
+merge_request: 58486
+author:
+type: other

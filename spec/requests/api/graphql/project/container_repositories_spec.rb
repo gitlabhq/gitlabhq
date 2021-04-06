@@ -16,7 +16,7 @@ RSpec.describe 'getting container repositories in a project' do
     <<~GQL
       edges {
         node {
-          #{all_graphql_fields_for('container_repositories'.classify, excluded: ['pipeline'])}
+          #{all_graphql_fields_for('container_repositories'.classify, excluded: %w(pipeline jobs))}
         }
       }
     GQL

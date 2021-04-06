@@ -5,7 +5,7 @@ class PipelinesEmailService < Service
 
   prop_accessor :recipients, :branches_to_be_notified
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
-  validates :recipients, presence: true, if: :valid_recipients?
+  validates :recipients, presence: true, if: :validate_recipients?
 
   def initialize_properties
     if properties.nil?

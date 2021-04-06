@@ -31,9 +31,10 @@ class GitlabSchema < GraphQL::Schema
 
   class << self
     def multiplex(queries, **kwargs)
-      kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
+      kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless kwargs.key?(:max_complexity)
 
       queries.each do |query|
+        query[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless query.key?(:max_complexity)
         query[:max_depth] = max_query_depth(kwargs[:context])
       end
 

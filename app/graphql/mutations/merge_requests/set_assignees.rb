@@ -8,7 +8,7 @@ module Mutations
       include Assignable
 
       def update_service_class
-        ::MergeRequests::UpdateService
+        ::MergeRequests::UpdateAssigneesService
       end
     end
   end

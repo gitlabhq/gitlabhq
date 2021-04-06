@@ -27,7 +27,7 @@ As well as defining the experiment rollout and cleanup, this issue incorporates 
 ### What might happen if this goes wrong?
 
 ### What can we monitor to detect problems with this?
-<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? Sentry errors reports can alse be useful to review -->
+<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? Sentry errors reports can also be useful to review -->
 
 ### Tracked data
 <!-- brief description or link to issue or Sisense dashboard -->

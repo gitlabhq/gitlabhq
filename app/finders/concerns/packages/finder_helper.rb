@@ -11,7 +11,7 @@ module Packages
 
     def packages_visible_to_user(user, within_group:)
       return ::Packages::Package.none unless within_group
-      return ::Packages::Package.none unless Ability.allowed?(user, :read_package, within_group)
+      return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = projects_visible_to_reporters(user, within_group.self_and_descendants.select(:id))
       ::Packages::Package.for_projects(projects.select(:id))
@@ -19,7 +19,7 @@ module Packages
 
     def projects_visible_to_user(user, within_group:)
       return ::Project.none unless within_group
-      return ::Project.none unless Ability.allowed?(user, :read_package, within_group)
+      return ::Project.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects_visible_to_reporters(user, within_group.self_and_descendants.select(:id))
     end

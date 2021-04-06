@@ -10,6 +10,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
   let_it_be(:development) { create(:label, project: project, name: 'Development') }
   let_it_be(:regression)  { create(:label, project: project, name: 'Regression') }
   let_it_be(:stretch)     { create(:label, project: project, name: 'Stretch') }
+
   let!(:issue1)           { create(:labeled_issue, project: project, assignees: [user], labels: [development], relative_position: 2) }
   let!(:issue2)           { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)             { create(:board, project: project) }

@@ -3867,16 +3867,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline.drop
         end
       end
-
-      context 'with failure_reason' do
-        let(:pipeline) { create(:ci_pipeline, :running) }
-        let(:failure_reason) { 'config_error' }
-        let(:counter) { Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc') }
-
-        it 'increments the counter with the failure_reason' do
-          expect { pipeline.drop!(failure_reason) }.to change { counter.get(reason: failure_reason) }.by(1)
-        end
-      end
     end
   end
 

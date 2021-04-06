@@ -10,10 +10,17 @@ RSpec.shared_examples 'an assignable resource' do
   describe '#resolve' do
     let_it_be(:assignee) { create(:user) }
     let_it_be(:assignee2) { create(:user) }
+
     let(:assignee_usernames) { [assignee.username] }
     let(:mutated_resource) { subject[resource.class.name.underscore.to_sym] }
+    let(:mode) { described_class.arguments['operationMode'].default_value }
 
-    subject { mutation.resolve(project_path: resource.project.full_path, iid: resource.iid, assignee_usernames: assignee_usernames) }
+    subject do
+      mutation.resolve(project_path: resource.project.full_path,
+                       iid: resource.iid,
+                       operation_mode: mode,
+                       assignee_usernames: assignee_usernames)
+    end
 
     before do
       resource.project.add_developer(assignee)

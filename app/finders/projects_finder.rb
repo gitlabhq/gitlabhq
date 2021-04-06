@@ -131,7 +131,7 @@ class ProjectsFinder < UnionFinder
 
     public_visibility_levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 
-    !public_visibility_levels.include?(params[:visibility_level])
+    !public_visibility_levels.include?(params[:visibility_level].to_i)
   end
 
   def owned_projects?

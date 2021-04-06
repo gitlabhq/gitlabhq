@@ -84,7 +84,7 @@ module Gitlab
           end
 
           def metrics
-            @metrics ||= ::Gitlab::Ci::Pipeline::Metrics
+            @metrics ||= ::Gitlab::Ci::Pipeline::Metrics.new
           end
 
           def observe_creation_duration(duration)
@@ -95,11 +95,6 @@ module Gitlab
           def observe_pipeline_size(pipeline)
             metrics.pipeline_size_histogram
               .observe({ source: pipeline.source.to_s }, pipeline.total_size)
-          end
-
-          def increment_pipeline_failure_reason_counter(reason)
-            metrics.pipeline_failure_reason_counter
-              .increment(reason: (reason || :unknown_failure).to_s)
           end
 
           def dangling_build?

@@ -113,6 +113,45 @@ RSpec.describe API::NugetGroupPackages do
       end
     end
 
+    context 'with a reporter of subgroup' do
+      let_it_be(:package_name) { 'Dummy.Package' }
+      let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
+
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+
+      subject { get api(url), headers: headers }
+
+      before do
+        subgroup.add_reporter(user)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        subgroup.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+      end
+
+      describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/index' do
+        let(:url) { "/groups/#{group.id}/-/packages/nuget/metadata/#{package_name}/index.json" }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/*package_version' do
+        let(:url) { "/groups/#{group.id}/-/packages/nuget/metadata/#{package_name}/#{package.version}.json" }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      describe 'GET /api/v4/groups/:id/-/packages/nuget/query' do
+        let(:search_term) { 'uMmy' }
+        let(:take) { 26 }
+        let(:skip) { 0 }
+        let(:include_prereleases) { false }
+        let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases } }
+        let(:url) { "/groups/#{group.id}/-/packages/nuget/query?#{query_parameters.to_query}" }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+    end
+
     def update_visibility_to(visibility)
       project.update!(visibility_level: visibility)
       subgroup.update!(visibility_level: visibility)

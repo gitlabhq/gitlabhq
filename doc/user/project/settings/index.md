@@ -48,11 +48,10 @@ Compliance framework labels do not affect your project settings.
 #### Custom compliance frameworks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It can be enabled or disabled for a single group
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM)**
+> - [Deployed behind a feature flag](../../feature_flags.md).
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.

@@ -38,6 +38,19 @@ export default class FileTemplateSelector {
     }
 
     this.$wrapper.removeClass('hidden');
+
+    /**
+     * We set the focus on the dropdown that was just shown. This is done so that, after selecting
+     * a template type, the template selector immediately receives the focus.
+     * This improves the UX of the tour as the suggest_gitlab_ci_yml popover requires its target to
+     * be have the focus to appear. This way, users don't have to interact with the template
+     * selector to actually see the first hint: it is shown as soon as the selector becomes visible.
+     * We also need a timeout here, otherwise the template type selector gets stuck and can not be
+     * closed anymore.
+     */
+    setTimeout(() => {
+      this.$dropdown.focus();
+    }, 0);
   }
 
   hide() {
