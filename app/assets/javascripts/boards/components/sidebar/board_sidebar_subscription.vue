@@ -27,9 +27,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['activeIssue', 'projectPathForActiveIssue']),
+    ...mapGetters(['activeBoardItem', 'projectPathForActiveIssue']),
     notificationText() {
-      return this.activeIssue.emailsDisabled
+      return this.activeBoardItem.emailsDisabled
         ? this.$options.i18n.header.subscribeDisabledDescription
         : this.$options.i18n.header.title;
     },
@@ -41,7 +41,7 @@ export default {
 
       try {
         await this.setActiveIssueSubscribed({
-          subscribed: !this.activeIssue.subscribed,
+          subscribed: !this.activeBoardItem.subscribed,
           projectPath: this.projectPathForActiveIssue,
         });
       } catch (error) {
@@ -61,8 +61,8 @@ export default {
   >
     <span data-testid="notification-header-text"> {{ notificationText }} </span>
     <gl-toggle
-      v-if="!activeIssue.emailsDisabled"
-      :value="activeIssue.subscribed"
+      v-if="!activeBoardItem.emailsDisabled"
+      :value="activeBoardItem.subscribed"
       :is-loading="loading"
       :label="$options.i18n.header.title"
       label-position="hidden"

@@ -69,14 +69,15 @@ module QA
         Page::MergeRequest::Show.perform do |mr|
           mr.merge_when_pipeline_succeeds!
 
-          expect(mr.merge_request_status).to match(/to be merged automatically when the pipeline succeeds/)
-
           Support::Waiter.wait_until(sleep_interval: 5) do
             merge_request = merge_request.reload!
             merge_request.state == 'merged'
           end
 
-          expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+          aggregate_failures do
+            expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
+            expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+          end
         end
       end
     end

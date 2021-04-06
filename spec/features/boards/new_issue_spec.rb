@@ -90,7 +90,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       wait_for_requests
 
-      expect(page).to have_selector('.issue-boards-sidebar')
+      expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
     end
 
     it 'successfuly loads labels to be added to newly created issue' do
@@ -109,7 +109,7 @@ RSpec.describe 'Issue Boards new issue', :js do
         find('.board-card').click
       end
 
-      page.within(first('.issue-boards-sidebar')) do
+      page.within(first('[data-testid="issue-boards-sidebar"]')) do
         find('.labels [data-testid="edit-button"]').click
 
         wait_for_requests

@@ -27,7 +27,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ issue: 'activeIssue' }),
+    ...mapGetters({ issue: 'activeBoardItem' }),
     pendingChangesStorageKey() {
       return this.getPendingChangesKey(this.issue);
     },

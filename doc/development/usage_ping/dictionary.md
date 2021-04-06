@@ -6154,27 +6154,27 @@ Tiers: `free`
 
 ### `counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection`
 
-Missing description
+This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183205_product_analytics_test_metrics_intersection.yml)
 
-Group: ``
+Group: `group::product intelligence`
 
-Status: `data_available`
+Status: `removed`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.aggregated_metrics.product_analytics_test_metrics_union`
 
-Missing description
+This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183203_product_analytics_test_metrics_union.yml)
 
-Group: ``
+Group: `group::product intelligence`
 
-Status: `data_available`
+Status: `removed`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.deployments`
 
@@ -6322,27 +6322,27 @@ Tiers:
 
 ### `counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection`
 
-Missing description
+This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216183215_product_analytics_test_metrics_intersection.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216183215_product_analytics_test_metrics_intersection.yml)
 
-Group: ``
+Group: `group::product intelligence`
 
-Status: `data_available`
+Status: `removed`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.product_analytics_test_metrics_union`
 
-Missing description
+This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216183213_product_analytics_test_metrics_union.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216183213_product_analytics_test_metrics_union.yml)
 
-Group: ``
+Group: `group::product intelligence`
 
-Status: `data_available`
+Status: `removed`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `database.adapter`
 

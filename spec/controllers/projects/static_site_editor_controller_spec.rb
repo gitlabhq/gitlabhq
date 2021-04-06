@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:data) { { key: 'value' } }
 
   describe 'GET index' do

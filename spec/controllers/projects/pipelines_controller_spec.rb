@@ -7,6 +7,7 @@ RSpec.describe Projects::PipelinesController do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:feature) { ProjectFeature::ENABLED }
 
   before do

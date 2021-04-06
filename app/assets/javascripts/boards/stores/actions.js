@@ -12,6 +12,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
 import {
   formatBoardLists,
   formatListIssues,
@@ -371,20 +372,20 @@ export default {
   },
 
   setAssignees: ({ commit, getters }, assigneeUsernames) => {
-    commit('UPDATE_ISSUE_BY_ID', {
-      issueId: getters.activeIssue.id,
+    commit('UPDATE_BOARD_ITEM_BY_ID', {
+      itemId: getters.activeBoardItem.id,
       prop: 'assignees',
       value: assigneeUsernames,
     });
   },
 
   setActiveIssueMilestone: async ({ commit, getters }, input) => {
-    const { activeIssue } = getters;
+    const { activeBoardItem } = getters;
     const { data } = await gqlClient.mutate({
       mutation: issueSetMilestoneMutation,
       variables: {
         input: {
-          iid: String(activeIssue.iid),
+          iid: String(activeBoardItem.iid),
           milestoneId: getIdFromGraphQLId(input.milestoneId),
           projectPath: input.projectPath,
         },
@@ -395,65 +396,71 @@ export default {
       throw new Error(data.updateIssue.errors);
     }
 
-    commit(types.UPDATE_ISSUE_BY_ID, {
-      issueId: activeIssue.id,
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: activeBoardItem.id,
       prop: 'milestone',
       value: data.updateIssue.issue.milestone,
     });
   },
 
-  createNewIssue: ({ commit, state }, issueInput) => {
-    const { boardConfig } = state;
+  addListItem: ({ commit }, { list, item, position }) => {
+    commit(types.ADD_BOARD_ITEM_TO_LIST, { listId: list.id, itemId: item.id, atIndex: position });
+    commit(types.UPDATE_BOARD_ITEM, item);
+  },
 
+  removeListItem: ({ commit }, { listId, itemId }) => {
+    commit(types.REMOVE_BOARD_ITEM_FROM_LIST, { listId, itemId });
+    commit(types.REMOVE_BOARD_ITEM, itemId);
+  },
+
+  addListNewIssue: (
+    { state: { boardConfig, boardType, fullPath }, dispatch, commit },
+    { issueInput, list, placeholderId = `tmp-${new Date().getTime()}` },
+  ) => {
     const input = formatIssueInput(issueInput, boardConfig);
 
-    const { boardType, fullPath } = state;
     if (boardType === BoardType.project) {
       input.projectPath = fullPath;
     }
 
-    return gqlClient
+    const placeholderIssue = formatIssue({ ...issueInput, id: placeholderId });
+    dispatch('addListItem', { list, item: placeholderIssue, position: 0 });
+
+    gqlClient
       .mutate({
         mutation: issueCreateMutation,
         variables: { input },
       })
       .then(({ data }) => {
         if (data.createIssue.errors.length) {
-          commit(types.CREATE_ISSUE_FAILURE);
-        } else {
-          return data.createIssue?.issue;
+          throw new Error();
         }
-        return null;
+
+        const rawIssue = data.createIssue?.issue;
+        const formattedIssue = formatIssue({ ...rawIssue, id: getIdFromGraphQLId(rawIssue.id) });
+        dispatch('removeListItem', { listId: list.id, itemId: placeholderId });
+        dispatch('addListItem', { list, item: formattedIssue, position: 0 });
       })
-      .catch(() => commit(types.CREATE_ISSUE_FAILURE));
+      .catch(() => {
+        dispatch('removeListItem', { listId: list.id, itemId: placeholderId });
+        commit(
+          types.SET_ERROR,
+          s__('Boards|An error occurred while creating the issue. Please try again.'),
+        );
+      });
   },
 
-  addListIssue: ({ commit }, { list, issue, position }) => {
-    commit(types.ADD_ISSUE_TO_LIST, { list, issue, position });
-  },
-
-  addListNewIssue: ({ commit, dispatch }, { issueInput, list }) => {
-    const issue = formatIssue({ ...issueInput, id: 'tmp' });
-    commit(types.ADD_ISSUE_TO_LIST, { list, issue, position: 0 });
-
-    dispatch('createNewIssue', issueInput)
-      .then((res) => {
-        commit(types.ADD_ISSUE_TO_LIST, {
-          list,
-          issue: formatIssue({ ...res, id: getIdFromGraphQLId(res.id) }),
-        });
-        commit(types.REMOVE_ISSUE_FROM_LIST, { list, issue });
-      })
-      .catch(() => commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issueId: issueInput.id }));
+  setActiveBoardItemLabels: ({ dispatch }, params) => {
+    dispatch('setActiveIssueLabels', params);
   },
 
   setActiveIssueLabels: async ({ commit, getters }, input) => {
-    const { activeIssue } = getters;
+    const { activeBoardItem } = getters;
     const { data } = await gqlClient.mutate({
       mutation: issueSetLabelsMutation,
       variables: {
         input: {
-          iid: String(activeIssue.iid),
+          iid: String(activeBoardItem.iid),
           addLabelIds: input.addLabelIds ?? [],
           removeLabelIds: input.removeLabelIds ?? [],
           projectPath: input.projectPath,
@@ -465,20 +472,20 @@ export default {
       throw new Error(data.updateIssue.errors);
     }
 
-    commit(types.UPDATE_ISSUE_BY_ID, {
-      issueId: activeIssue.id,
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: activeBoardItem.id,
       prop: 'labels',
       value: data.updateIssue.issue.labels.nodes,
     });
   },
 
   setActiveIssueDueDate: async ({ commit, getters }, input) => {
-    const { activeIssue } = getters;
+    const { activeBoardItem } = getters;
     const { data } = await gqlClient.mutate({
       mutation: issueSetDueDateMutation,
       variables: {
         input: {
-          iid: String(activeIssue.iid),
+          iid: String(activeBoardItem.iid),
           projectPath: input.projectPath,
           dueDate: input.dueDate,
         },
@@ -489,8 +496,8 @@ export default {
       throw new Error(data.updateIssue.errors);
     }
 
-    commit(types.UPDATE_ISSUE_BY_ID, {
-      issueId: activeIssue.id,
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: activeBoardItem.id,
       prop: 'dueDate',
       value: data.updateIssue.issue.dueDate,
     });
@@ -501,7 +508,7 @@ export default {
       mutation: issueSetSubscriptionMutation,
       variables: {
         input: {
-          iid: String(getters.activeIssue.iid),
+          iid: String(getters.activeBoardItem.iid),
           projectPath: input.projectPath,
           subscribedState: input.subscribed,
         },
@@ -512,20 +519,20 @@ export default {
       throw new Error(data.issueSetSubscription.errors);
     }
 
-    commit(types.UPDATE_ISSUE_BY_ID, {
-      issueId: getters.activeIssue.id,
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: getters.activeBoardItem.id,
       prop: 'subscribed',
       value: data.issueSetSubscription.issue.subscribed,
     });
   },
 
   setActiveIssueTitle: async ({ commit, getters }, input) => {
-    const { activeIssue } = getters;
+    const { activeBoardItem } = getters;
     const { data } = await gqlClient.mutate({
       mutation: issueSetTitleMutation,
       variables: {
         input: {
-          iid: String(activeIssue.iid),
+          iid: String(activeBoardItem.iid),
           projectPath: input.projectPath,
           title: input.title,
         },
@@ -536,8 +543,8 @@ export default {
       throw new Error(data.updateIssue.errors);
     }
 
-    commit(types.UPDATE_ISSUE_BY_ID, {
-      issueId: activeIssue.id,
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: activeBoardItem.id,
       prop: 'title',
       value: data.updateIssue.issue.title,
     });
@@ -578,10 +585,10 @@ export default {
     const { selectedBoardItems } = state;
     const index = selectedBoardItems.indexOf(boardItem);
 
-    // If user already selected an item (activeIssue) without using mult-select,
+    // If user already selected an item (activeBoardItem) without using mult-select,
     // include that item in the selection and unset state.ActiveId to hide the sidebar.
-    if (getters.activeIssue) {
-      commit(types.ADD_BOARD_ITEM_TO_SELECTION, getters.activeIssue);
+    if (getters.activeBoardItem) {
+      commit(types.ADD_BOARD_ITEM_TO_SELECTION, getters.activeBoardItem);
       dispatch('unsetActiveId');
     }
 

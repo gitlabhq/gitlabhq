@@ -8,6 +8,7 @@ RSpec.describe Projects::IssuesController do
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user, reload: true) { create(:user) }
+
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
@@ -369,6 +370,7 @@ RSpec.describe Projects::IssuesController do
     end
 
     let_it_be(:issue) { create(:issue, project: project) }
+
     let(:developer) { user }
     let(:params) do
       {
@@ -1185,6 +1187,7 @@ RSpec.describe Projects::IssuesController do
 
     context 'resolving discussions in MergeRequest' do
       let_it_be(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
@@ -1648,6 +1651,7 @@ RSpec.describe Projects::IssuesController do
 
   describe 'POST #import_csv' do
     let_it_be(:project) { create(:project, :public) }
+
     let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
 
     context 'unauthorized' do
@@ -1847,6 +1851,7 @@ RSpec.describe Projects::IssuesController do
 
       context 'with cross-reference system note', :request_store do
         let_it_be(:new_issue) { create(:issue) }
+
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
 
         before do

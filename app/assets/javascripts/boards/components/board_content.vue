@@ -18,6 +18,8 @@ export default {
         ? BoardColumn
         : BoardColumnDeprecated,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
+    EpicBoardContentSidebar: () =>
+      import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
@@ -133,7 +135,14 @@ export default {
 
     <board-content-sidebar
       v-if="isSwimlanesOn || glFeatures.graphqlBoardLists"
-      class="issue-boards-sidebar"
+      class="boards-sidebar"
+      data-testid="issue-boards-sidebar"
+    />
+
+    <epic-board-content-sidebar
+      v-else-if="isEpicBoard"
+      class="boards-sidebar"
+      data-testid="epic-boards-sidebar"
     />
   </div>
 </template>

@@ -8,19 +8,19 @@ RSpec.shared_examples 'issue boards sidebar' do
   end
 
   it 'shows sidebar when clicking issue' do
-    expect(page).to have_selector('.issue-boards-sidebar')
+    expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
   end
 
   it 'closes sidebar when clicking issue' do
-    expect(page).to have_selector('.issue-boards-sidebar')
+    expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
 
     first_card.click
 
-    expect(page).not_to have_selector('.issue-boards-sidebar')
+    expect(page).not_to have_selector('[data-testid="issue-boards-sidebar"]')
   end
 
   it 'shows issue details when sidebar is open', :aggregate_failures do
-    page.within('.issue-boards-sidebar') do
+    page.within('[data-testid="issue-boards-sidebar"]') do
       expect(page).to have_content(issue.title)
       expect(page).to have_content(issue.to_reference)
     end
@@ -28,7 +28,7 @@ RSpec.shared_examples 'issue boards sidebar' do
 
   context 'when clicking close button' do
     before do
-      find("[data-testid='sidebar-drawer'] .gl-drawer-close-button").click
+      find('[data-testid="issue-boards-sidebar"] .gl-drawer-close-button').click
     end
 
     it 'unhighlights the active issue card' do
@@ -37,7 +37,7 @@ RSpec.shared_examples 'issue boards sidebar' do
     end
 
     it 'closes sidebar when clicking close button' do
-      expect(page).not_to have_selector('.issue-boards-sidebar')
+      expect(page).not_to have_selector('[data-testid="issue-boards-sidebar"]')
     end
   end
 

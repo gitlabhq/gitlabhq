@@ -244,6 +244,7 @@ RSpec.describe 'Group' do
 
   describe 'group edit', :js do
     let_it_be(:group) { create(:group, :public) }
+
     let(:path) { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
@@ -289,6 +290,7 @@ RSpec.describe 'Group' do
 
   describe 'group page with markdown description' do
     let_it_be(:group) { create(:group) }
+
     let(:path) { group_path(group) }
 
     before do

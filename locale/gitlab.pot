@@ -12108,6 +12108,9 @@ msgstr ""
 msgid "Epic cannot be found."
 msgstr ""
 
+msgid "Epic details"
+msgstr ""
+
 msgid "Epic events"
 msgstr ""
 

@@ -8,6 +8,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:viewer) { issue.author }
+
   let(:design_id) { design.id }
   let(:sha) { design.versions.first.sha }
   let(:filename) { design.filename }

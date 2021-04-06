@@ -28,7 +28,7 @@ class MergeRequests::PipelineEntity < Grape::Entity
         rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact.job) }
       end
 
-      BuildArtifactEntity.represent(rel, options)
+      BuildArtifactEntity.represent(rel, options.merge(project: pipeline.project))
     end
 
     expose :detailed_status, as: :status, with: DetailedStatusEntity do |pipeline|

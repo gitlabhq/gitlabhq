@@ -12,7 +12,8 @@ module Gitlab
             end
 
             pipeline.add_error_message(message)
-            pipeline.drop!(drop_reason) if drop_reason && persist_pipeline?
+
+            drop_pipeline!(drop_reason)
 
             # TODO: consider not to rely on AR errors directly as they can be
             # polluted with other unrelated errors (e.g. state machine)
@@ -24,8 +25,16 @@ module Gitlab
             pipeline.add_warning_message(message)
           end
 
-          def persist_pipeline?
-            command.save_incompleted && !pipeline.readonly?
+          private
+
+          def drop_pipeline!(drop_reason)
+            return if pipeline.readonly?
+
+            if drop_reason && command.save_incompleted
+              pipeline.drop!(drop_reason)
+            else
+              command.increment_pipeline_failure_reason_counter(drop_reason)
+            end
           end
         end
       end

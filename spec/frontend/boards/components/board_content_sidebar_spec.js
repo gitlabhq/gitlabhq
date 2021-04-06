@@ -24,7 +24,7 @@ describe('BoardContentSidebar', () => {
         issuableType: 'issue',
       },
       getters: {
-        activeIssue: () => {
+        activeBoardItem: () => {
           return { ...mockIssue, epic: null };
         },
         groupPathForActiveIssue: () => mockIssueGroupPath,

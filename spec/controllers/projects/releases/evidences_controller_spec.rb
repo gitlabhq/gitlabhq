@@ -7,6 +7,7 @@ RSpec.describe Projects::Releases::EvidencesController do
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }
   let_it_be(:reporter)   { create(:user) }
+
   let(:user)             { developer }
 
   before do

@@ -8,17 +8,17 @@ export default {
   },
   inject: ['timeTrackingLimitToHours'],
   computed: {
-    ...mapGetters(['activeIssue']),
+    ...mapGetters(['activeBoardItem']),
   },
 };
 </script>
 
 <template>
   <issuable-time-tracker
-    :time-estimate="activeIssue.timeEstimate"
-    :time-spent="activeIssue.totalTimeSpent"
-    :human-time-estimate="activeIssue.humanTimeEstimate"
-    :human-time-spent="activeIssue.humanTotalTimeSpent"
+    :time-estimate="activeBoardItem.timeEstimate"
+    :time-spent="activeBoardItem.totalTimeSpent"
+    :human-time-estimate="activeBoardItem.humanTimeEstimate"
+    :human-time-spent="activeBoardItem.humanTotalTimeSpent"
     :limit-to-hours="timeTrackingLimitToHours"
     :show-collapsed="false"
   />

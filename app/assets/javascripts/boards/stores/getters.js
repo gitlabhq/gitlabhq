@@ -15,17 +15,17 @@ export default {
     return listItemsIds.map((id) => getters.getBoardItemById(id));
   },
 
-  activeIssue: (state) => {
+  activeBoardItem: (state) => {
     return state.boardItems[state.activeId] || {};
   },
 
   groupPathForActiveIssue: (_, getters) => {
-    const { referencePath = '' } = getters.activeIssue;
+    const { referencePath = '' } = getters.activeBoardItem;
     return referencePath.slice(0, referencePath.indexOf('/'));
   },
 
   projectPathForActiveIssue: (_, getters) => {
-    const { referencePath = '' } = getters.activeIssue;
+    const { referencePath = '' } = getters.activeBoardItem;
     return referencePath.slice(0, referencePath.indexOf('#'));
   },
 

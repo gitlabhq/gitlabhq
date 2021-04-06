@@ -27,22 +27,6 @@
     - 'i_compliance_audit_events'
     - 'a_compliance_audit_events_api'
     - 'i_compliance_credential_inventory'
-- name: product_analytics_test_metrics_union
-  operator: OR
-  source: redis
-  time_frame: [7d, 28d]
-  events:
-    - 'i_search_total'
-    - 'i_search_advanced'
-    - 'i_search_paid'
-- name: product_analytics_test_metrics_intersection
-  operator: AND
-  source: redis
-  time_frame: [7d, 28d]
-  events:
-    - 'i_search_total'
-    - 'i_search_advanced'
-    - 'i_search_paid'
 - name: incident_management_alerts_total_unique_counts
   operator: OR
   source: redis

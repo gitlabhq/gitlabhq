@@ -96,6 +96,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'wastes pipeline iid' do
       expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
     end
+
+    it 'increments the error metric' do
+      counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+      expect { run_chain }.to change { counter.get(reason: 'unknown_failure') }.by(1)
+    end
   end
 
   describe 'pipeline protect' do

@@ -8,6 +8,7 @@ RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js 
 
   let_it_be(:user1) { create(:user, name: 'John Doe') }
   let_it_be(:group) { create(:group) }
+
   let(:new_member) { create(:user, name: 'Mary Jane') }
 
   before do

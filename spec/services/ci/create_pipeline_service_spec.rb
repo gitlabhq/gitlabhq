@@ -71,19 +71,21 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'increments the prometheus counter' do
-        expect(Gitlab::Metrics).to receive(:counter)
-          .with(:pipelines_created_total, "Counter of pipelines created")
-          .and_call_original
-        allow(Gitlab::Metrics).to receive(:counter).and_call_original # allow other counters
+        counter = spy('pipeline created counter')
+
+        allow(Gitlab::Ci::Pipeline::Metrics)
+          .to receive(:pipelines_created_counter).and_return(counter)
 
         pipeline
+
+        expect(counter).to have_received(:increment)
       end
 
       it 'records pipeline size in a prometheus histogram' do
         histogram = spy('pipeline size histogram')
 
         allow(Gitlab::Ci::Pipeline::Metrics)
-          .to receive(:new).and_return(histogram)
+          .to receive(:pipeline_size_histogram).and_return(histogram)
 
         execute_service
 
@@ -579,6 +581,13 @@ RSpec.describe Ci::CreatePipelineService do
       let(:message) { 'Message' }
 
       it_behaves_like 'a failed pipeline'
+
+      it 'increments the error metric' do
+        stub_ci_pipeline_yaml_file(ci_yaml)
+
+        counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+        expect { execute_service }.to change { counter.get(reason: 'config_error') }.by(1)
+      end
 
       context 'when receive git commit' do
         before do

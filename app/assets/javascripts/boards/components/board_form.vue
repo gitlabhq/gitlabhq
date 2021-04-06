@@ -127,7 +127,7 @@ export default {
       if (this.isDeleteForm) {
         return 'danger';
       }
-      return 'info';
+      return 'confirm';
     },
     title() {
       if (this.readonly) {

@@ -9,6 +9,7 @@ RSpec.describe Projects::EnvironmentsController do
   let_it_be(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
   let_it_be(:reporter) { create(:user, name: 'repo-dos').tap { |u| project.add_reporter(u) } }
+
   let(:user) { maintainer }
 
   let!(:environment) { create(:environment, name: 'production', project: project) }

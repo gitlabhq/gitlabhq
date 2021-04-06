@@ -11,7 +11,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
   let(:save_incompleted) { false }
 
   let(:command) do
-    double(:command,
+    Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       pipeline_seed: pipeline_seed,
       save_incompleted: save_incompleted
@@ -49,6 +49,11 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
 
         expect(pipeline.deployments_limit_exceeded?).to be true
       end
+
+      it 'calls increment_pipeline_failure_reason_counter' do
+        counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+        expect { perform }.to change { counter.get(reason: 'deployments_limit_exceeded') }.by(1)
+      end
     end
 
     context 'when not saving incomplete pipelines' do
@@ -70,6 +75,12 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
         perform
 
         expect(pipeline.errors.messages).to include(base: ['Pipeline has too many deployments! Requested 2, but the limit is 1.'])
+      end
+
+      it 'increments the error metric' do
+        expect(command).to receive(:increment_pipeline_failure_reason_counter).with(:deployments_limit_exceeded)
+
+        perform
       end
     end
 

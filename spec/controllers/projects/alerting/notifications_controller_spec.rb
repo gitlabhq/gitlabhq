@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Alerting::NotificationsController do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
+
   let(:params) { project_params }
 
   describe 'POST #create' do
@@ -68,6 +69,7 @@ RSpec.describe Projects::Alerting::NotificationsController do
             context 'with a corresponding integration' do
               context 'with integration parameters specified' do
                 let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }
+
                 let(:params) { project_params(endpoint_identifier: integration.endpoint_identifier, name: integration.name) }
 
                 context 'the integration is active' do

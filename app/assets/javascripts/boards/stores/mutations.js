@@ -158,13 +158,13 @@ export default {
     });
   },
 
-  [mutationTypes.UPDATE_ISSUE_BY_ID]: (state, { issueId, prop, value }) => {
-    if (!state.boardItems[issueId]) {
+  [mutationTypes.UPDATE_BOARD_ITEM_BY_ID]: (state, { itemId, prop, value }) => {
+    if (!state.boardItems[itemId]) {
       /* eslint-disable-next-line @gitlab/require-i18n-strings */
       throw new Error('No issue found.');
     }
 
-    Vue.set(state.boardItems[issueId], prop, value);
+    Vue.set(state.boardItems[itemId], prop, value);
   },
 
   [mutationTypes.SET_ASSIGNEE_LOADING](state, isLoading) {
@@ -229,28 +229,23 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.CREATE_ISSUE_FAILURE]: (state) => {
-    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
+  [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (
+    state,
+    { itemId, listId, moveBeforeId, moveAfterId, atIndex },
+  ) => {
+    addItemToList({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex });
   },
 
-  [mutationTypes.ADD_ISSUE_TO_LIST]: (state, { list, issue, position }) => {
-    addItemToList({
-      state,
-      listId: list.id,
-      itemId: issue.id,
-      atIndex: position,
-    });
-    Vue.set(state.boardItems, issue.id, issue);
+  [mutationTypes.REMOVE_BOARD_ITEM_FROM_LIST]: (state, { itemId, listId }) => {
+    removeItemFromList({ state, listId, itemId });
   },
 
-  [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issueId }) => {
-    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
-    removeItemFromList({ state, listId: list.id, itemId: issueId });
+  [mutationTypes.UPDATE_BOARD_ITEM]: (state, item) => {
+    Vue.set(state.boardItems, item.id, item);
   },
 
-  [mutationTypes.REMOVE_ISSUE_FROM_LIST]: (state, { list, issue }) => {
-    removeItemFromList({ state, listId: list.id, itemId: issue.id });
-    Vue.delete(state.boardItems, issue.id);
+  [mutationTypes.REMOVE_BOARD_ITEM]: (state, itemId) => {
+    Vue.delete(state.boardItems, itemId);
   },
 
   [mutationTypes.SET_CURRENT_PAGE]: () => {
