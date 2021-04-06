@@ -10,8 +10,8 @@ type: reference
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
 Snippet repositories can be moved between storages. This can be useful when
-[migrating to Gitaly Cluster](../administration/gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster),
-for example.
+[migrating to Gitaly Cluster](../administration/gitaly/praefect.md#migrate-to-gitaly-cluster), for
+example.
 
 As snippet repository storage moves are processed, they transition through different states. Values
 of `state` are:

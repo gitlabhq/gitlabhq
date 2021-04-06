@@ -5,11 +5,13 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Partial Clone **(FREE)**
+# Partial clone **(FREE)**
 
 As Git repositories grow in size, they can become cumbersome to work with
-because of the large amount of history that must be downloaded, and the large
-amount of disk space they require.
+because of:
+
+- The large amount of history that must be downloaded.
+- The large amount of disk space they require.
 
 [Partial clone](https://github.com/git/git/blob/master/Documentation/technical/partial-clone.txt)
 is a performance optimization that "allows Git to function without having a
@@ -58,9 +60,10 @@ Updating files: 100% (13008/13008), done.
 Filtering content: 100% (3/3), 131.24 MiB | 4.65 MiB/s, done.
 ```
 
-The output is longer because Git first clones the repository excluding
-files larger than 1 megabyte, and second download any missing large files needed
-to checkout the `master` branch.
+The output is longer because Git:
+
+1. Clones the repository excluding files larger than 1 megabyte.
+1. Downloads any missing large files needed to check out the default branch.
 
 When changing branches, Git may need to download more missing files.
 
@@ -68,9 +71,9 @@ When changing branches, Git may need to download more missing files.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
-For enormous repositories with millions of files, and long history, it may be
-helpful to exclude all files and use in combination with `sparse-checkout` to
-reduce the size of your working copy.
+For repositories with millions of files and a long history, you can exclude all files and use
+[`git sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) to reduce the size of
+your working copy.
 
 ```plaintext
 # Clone the repo excluding all files
@@ -108,21 +111,22 @@ For more details, see the Git documentation for
 
 ## Filter by file path
 
-WARNING:
-Partial Clone using `sparse` filters is experimental, slow, and
-significantly increases Gitaly resource utilization when cloning and fetching.
+Deeper integration between partial clone and sparse checkout is possible through the
+`--filter=sparse:oid=<blob-ish>` filter spec. This mode of filtering uses a format similar to a
+`.gitignore` file to specify which files to include when cloning and fetching.
 
-Deeper integration between Partial Clone and Sparse Checkout is being explored
-through the `--filter=sparse:oid=<blob-ish>` filter spec, but this is highly
-experimental. This mode of filtering uses a format similar to a `.gitignore`
-file to specify which files should be included when cloning and fetching.
+WARNING:
+Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
+[Gitaly](../../administration/gitaly/index.md) resource utilization when cloning and fetching.
+[Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
+[`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
+this type of partial clone use and overcomes its limitations.
 
 For more details, see the Git documentation for
-[`rev-list-options`](https://gitlab.com/gitlab-org/git/-/blob/9fadedd637b312089337d73c3ed8447e9f0aa775/Documentation/rev-list-options.txt#L735-780).
+[`rev-list-options`](https://git-scm.com/docs/git-rev-list#Documentation/git-rev-list.txt---filterltfilter-specgt).
 
-1. **Create a filter spec.** For example, consider a monolithic repository with
-   many applications, each in a different subdirectory in the root. Create a file
-   `shiny-app/.filterspec` using the GitLab web interface:
+1. Create a filter spec. For example, consider a monolithic repository with many applications,
+   each in a different subdirectory in the root. Create a file `shiny-app/.filterspec`:
 
    ```plaintext
    # Only the paths listed in the file will be downloaded when performing a
@@ -142,28 +146,14 @@ For more details, see the Git documentation for
    shared-component-b/
    ```
 
-1. **Create a new Git repository and fetch.** Support for `--filter=sparse:oid`
-   using the clone command is incomplete, so we emulate the clone command
-   by hand, using `git init` and `git fetch`. Follow
-   [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/-/issues/4)
-   for updates.
+1. Clone and filter by path. Support for `--filter=sparse:oid` using the
+   clone command is not yet fully integrated with sparse checkout.
 
    ```shell
-   # Create a new directory for the Git repository
-   mkdir jumbo-repo && cd jumbo-repo
 
-   # Initialize a new Git repository
-   git init
-
-   # Add the remote
-   git remote add origin <url>
-
-   # Enable partial clone support for the remote
-   git config --local extensions.partialClone origin
-
-   # Fetch the filtered set of objects using the filterspec stored on the
-   # server. WARNING: this step is slow!
-   git fetch --filter=sparse:oid=master:shiny-app/.gitfilterspec origin
+   # Clone the filtered set of objects using the filterspec stored on the
+   # server. WARNING: this step may be very slow!
+   git clone --sparse --filter=sparse:oid=master:shiny-app/.gitfilterspec <url>
 
    # Optional: observe there are missing objects that we have not fetched
    git rev-list --all --quiet --objects --missing=print | wc -l
@@ -174,21 +164,6 @@ For more details, see the Git documentation for
    show Git status information often run `git fetch` which fetches the
    entire repository. You many need to disable or reconfigure these
    integrations.
-
-1. **Sparse checkout** must be enabled and configured to prevent objects from
-   other paths being downloaded automatically when checking out branches. Follow
-   [issue proposing automating sparse checkouts](https://gitlab.com/gitlab-org/git/-/issues/5) for updates.
-
-   ```shell
-   # Enable sparse checkout
-   git config --local core.sparsecheckout true
-
-   # Configure sparse checkout
-   git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
-
-   # Checkout master
-   git checkout master
-   ```
 
 ## Remove partial clone filtering
 

@@ -2112,6 +2112,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: projects_post_creation
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_schedule_bulk_repository_shard_moves
   :feature_category: :gitaly
   :has_external_dependencies:

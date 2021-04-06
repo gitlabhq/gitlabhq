@@ -39,7 +39,7 @@ The numbers in the image correspond to the following features:
 - **15.** [Edit](#edit)
 - **16.** [Description](#description)
 - **17.** [Mentions](#mentions)
-- **18.** [Related Issues](#related-issues)
+- **18.** [Linked Issues](#linked-issues)
 - **19.** [Related Merge Requests](#related-merge-requests)
 - **20.** [Award emoji](#award-emoji)
 - **21.** [Show all activity](#show-all-activity)
@@ -205,10 +205,10 @@ in a different color, which allows you to quickly see which comments involve you
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
 to all the members of that project's group. This might be interpreted as spam.
 
-### Related Issues
+### Linked Issues
 
-Issues that were mentioned as [related issues](related_issues.md) are listed here.
-You can also click the `+` to add more related issues.
+Issues that were mentioned as [linked issues](related_issues.md) are listed here.
+You can also click the `+` to add more linked issues.
 
 ### Related Merge Requests
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Stage, :models do
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+
   let(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: pipeline.project) }
 
   it_behaves_like 'having unique enum values'

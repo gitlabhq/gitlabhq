@@ -298,6 +298,8 @@
   - 1
 - - projects_git_garbage_collect
   - 1
+- - projects_post_creation
+  - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1
 - - projects_update_repository_storage

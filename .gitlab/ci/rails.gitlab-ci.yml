@@ -802,7 +802,7 @@ fail-pipeline-early:
     GIT_DEPTH: 1
   before_script:
     - source scripts/utils.sh
-    - install_api_client_dependencies_with_apt
+    - install_gitlab_gem
   script:
     - fail_pipeline_early
 # EE: Canonical MR pipelines

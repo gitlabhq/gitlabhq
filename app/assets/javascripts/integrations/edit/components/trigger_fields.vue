@@ -11,7 +11,7 @@ const typeWithPlaceholder = {
 
 const placeholderForType = {
   [typeWithPlaceholder.SLACK]: __('Slack channels (e.g. general, development)'),
-  [typeWithPlaceholder.MATTERMOST]: __('Channel handle (e.g. town-square)'),
+  [typeWithPlaceholder.MATTERMOST]: __('my-channel'),
 };
 
 export default {

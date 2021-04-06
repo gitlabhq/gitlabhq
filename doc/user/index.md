@@ -59,7 +59,7 @@ With GitLab Enterprise Edition, you can also:
   - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md).
   - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
-- Create formal relationships between issues with [Related Issues](project/issues/related_issues.md).
+- Create formal relationships between issues with [linked issues](project/issues/related_issues.md).
 - Use [Burndown Charts](project/milestones/burndown_and_burnup_charts.md) to track progress during a sprint or while working on a new version of their software.
 - Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_search.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](../integration/kerberos.md).

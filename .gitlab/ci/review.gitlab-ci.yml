@@ -29,7 +29,6 @@ review-build-cng:
   stage: review-prepare
   before_script:
     - source ./scripts/utils.sh
-    - install_api_client_dependencies_with_apk
     - install_gitlab_gem
   needs:
     - job: compile-production-assets

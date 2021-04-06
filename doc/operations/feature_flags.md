@@ -394,4 +394,4 @@ end
 You can link related issues to a feature flag. In the **Linked issues** section,
 click the `+` button and input the issue reference number or the full URL of the issue.
 
-This feature is similar to the [related issues](../user/project/issues/related_issues.md) feature.
+This feature is similar to the [linked issues](../user/project/issues/related_issues.md) feature.

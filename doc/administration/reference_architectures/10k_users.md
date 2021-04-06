@@ -15,25 +15,29 @@ full list of reference architectures, see
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
 > - **Test requests per second (RPS) rates:** API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
 
-| Service                                    | Nodes       | Configuration           | GCP             | AWS         | Azure    |
-|--------------------------------------------|-------------|-------------------------|-----------------|-------------|----------|
-| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Consul                                     | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| PostgreSQL                                 | 3           | 8 vCPU, 30 GB memory    | n1-standard-8   | `m5.2xlarge`  | D8s v3   |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Redis - Cache                              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| Redis - Queues / Shared State              | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| Redis Sentinel - Cache                     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
-| Redis Sentinel - Queues / Shared State     | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | `t3.small`    | B1MS     |
-| Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | `m5.4xlarge`  | D16s v3  |
-| Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Praefect PostgreSQL                        | 1+*         | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | `c5.large`    | F2s v2   |
-| Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | `m5.xlarge`   | D4s v3   |
-| GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | `c5.9xlarge`  | F32s v2  |
-| Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
-| Object storage                             | n/a         | n/a                     | n/a             | n/a         | n/a      |
-| NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | `c5.xlarge`   | F4s v2   |
+| Service                                    | Nodes       | Configuration           | GCP              | AWS          | Azure     |
+|--------------------------------------------|-------------|-------------------------|------------------|--------------|-----------|
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Consul                                     | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| PostgreSQL                                 | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Redis - Cache*                             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis - Queues / Shared State*             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis Sentinel - Cache*                    | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
+| Redis Sentinel - Queues / Shared State*    | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
+| Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
+| Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Praefect PostgreSQL*                       | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge` | `F32s v2` |
+| Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Object storage                             | n/a         | n/a                     | n/a              | n/a          | n/a       |
+| NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+
+NOTE:
+Components marked with * can be optionally run on reputable
+third party external PaaS solutions such as Google Cloud SQL or Memorystore.
 
 ```plantuml
 @startuml 10k
@@ -2349,29 +2353,142 @@ considered and customer technical support will be considered out of scope.
   </a>
 </div>
 
-## Cloud Native Deployment (optional)
+## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
+
+As an alternative approach, you can also run select components of GitLab as Cloud Native
+in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
+In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
+in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition, 
+the following other supporting services are supported: NGINX, Task Runner, Migrations,
+Prometheus and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
-deployments. We recommend shifting the Sidekiq and Webservice components into
-Kubernetes to reap cloud native workload management benefits while the others
-are deployed using the traditional server method already described.
+Kubernetes, you can reap certain cloud native workload management benefits while
+the others are deployed in compute VMs with Omnibus as described above in this
+page.
 
-The following sections detail this hybrid approach.
+It should be noted though that this is an advanced setup as running services in
+Kubernetes is well known to be complex. **This setup is only recommended** if
+you have strong working knowledge and experience in Kubernetes. The rest of this
+section will assume this.
 
 ### Cluster topology
 
-The following table provides a starting point for hybrid
-deployment infrastructure. The recommendations use Google Cloud's Kubernetes Engine (GKE)
-and associated machine types, but the memory and CPU requirements should
-translate to most other providers.
+The following tables and diagram details the hybrid environment using the same formats
+as the normal environment above.
 
-Machine count | Machine type | Allocatable vCPUs | Allocatable memory (GB) | Purpose
--|-|-|-|-
-2 | `n1-standard-4` | 7.75  | 25  | Non-GitLab resources, including Grafana, NGINX, and Prometheus
-4 | `n1-standard-4` | 15.5  | 50  | GitLab Sidekiq pods
-4 | `n1-highcpu-32` | 127.5 | 118 | GitLab Webservice pods
+First starting with the components that run in Kubernetes. The recommendations at this
+time use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, but the memory
+and CPU requirements should translate to most other providers. We hope to update this in the
+future with further specific cloud provider details.
 
-"Allocatable" in this table refers to the amount of resources available to workloads deployed in Kubernetes _after_ accounting for the overhead of running Kubernetes itself.
+| Service                                               | Nodes | Configuration           | GCP              | Allocatable CPUs and Memory |
+|-------------------------------------------------------|-------|-------------------------|------------------|-----------------------------|
+| Webservice                                            | 4     | 32 vCPU, 28.8 GB memory | `n1-standard-32` | 127.5 vCPU, 118 GB memory   |
+| Sidekiq                                               | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
+| Supporting services such as NGINX, Prometheus, etc... | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+
+Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
+services where applicable):
+
+| Service                                    | Nodes | Configuration           | GCP              |
+|--------------------------------------------|-------|-------------------------|------------------|
+| Consul                                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| PostgreSQL*                                | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
+| PgBouncer                                  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Internal load balancing node               | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Redis - Cache*                             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis - Queues / Shared State*             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis Sentinel - Cache*                    | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
+| Redis Sentinel - Queues / Shared State*    | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
+| Gitaly                                     | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
+| Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Praefect PostgreSQL*                       | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Object storage                             | n/a   | n/a                     | n/a              |
+
+NOTE:
+Components marked with * can be optionally run on reputable
+third party external PaaS solutions such as Google Cloud SQL or Memorystore.
+
+```plantuml
+@startuml 10k
+
+card "Kubernetes via Helm Charts" as kubernetes {
+  card "**External Load Balancer**" as elb #6a9be7
+
+  together {
+    collections "**Webservice** x4" as gitlab #32CD32
+    collections "**Sidekiq** x4" as sidekiq #ff8dd1
+  }
+
+  card "**Prometheus + Grafana**" as monitor #7FFFD4
+  card "**Supporting Services**" as support
+}
+
+card "**Internal Load Balancer**" as ilb #9370DB
+collections "**Consul** x3" as consul #e76a9b
+
+card "Gitaly Cluster" as gitaly_cluster {
+  collections "**Praefect** x3" as praefect #FF8C00
+  collections "**Gitaly** x3" as gitaly #FF8C00
+  card "**Praefect PostgreSQL***\n//Non fault-tolerant//" as praefect_postgres #FF8C00
+
+  praefect -[#FF8C00]-> gitaly
+  praefect -[#FF8C00]> praefect_postgres
+}
+
+card "Database" as database {
+  collections "**PGBouncer** x3" as pgbouncer #4EA7FF
+  card "**PostgreSQL** (Primary)" as postgres_primary #4EA7FF
+  collections "**PostgreSQL** (Secondary) x2" as postgres_secondary #4EA7FF
+
+  pgbouncer -[#4EA7FF]-> postgres_primary
+  postgres_primary .[#4EA7FF]> postgres_secondary
+}
+
+card "redis" as redis {
+  collections "**Redis Persistent** x3" as redis_persistent #FF6347
+  collections "**Redis Cache** x3" as redis_cache #FF6347
+  collections "**Redis Persistent Sentinel** x3" as redis_persistent_sentinel #FF6347
+  collections "**Redis Cache Sentinel** x3"as redis_cache_sentinel #FF6347
+
+  redis_persistent <.[#FF6347]- redis_persistent_sentinel
+  redis_cache <.[#FF6347]- redis_cache_sentinel
+}
+
+cloud "**Object Storage**" as object_storage #white
+
+elb -[#6a9be7]-> gitlab
+elb -[#6a9be7]-> monitor
+elb -[hidden]-> support
+
+gitlab -[#32CD32]> sidekiq
+gitlab -[#32CD32]--> ilb
+gitlab -[#32CD32]-> object_storage
+gitlab -[#32CD32]---> redis
+gitlab -[hidden]--> consul
+
+sidekiq -[#ff8dd1]--> ilb
+sidekiq -[#ff8dd1]-> object_storage
+sidekiq -[#ff8dd1]---> redis
+sidekiq -[hidden]--> consul
+
+ilb -[#9370DB]-> gitaly_cluster
+ilb -[#9370DB]-> database
+
+consul .[#e76a9b]-> database
+consul .[#e76a9b]-> gitaly_cluster
+consul .[#e76a9b,norank]--> redis
+
+monitor .[#7FFFD4]> consul
+monitor .[#7FFFD4]-> database
+monitor .[#7FFFD4]-> gitaly_cluster
+monitor .[#7FFFD4,norank]--> redis
+monitor .[#7FFFD4]> ilb
+monitor .[#7FFFD4,norank]u--> elb
+
+@enduml
+```
 
 ### Resource usage settings
 
@@ -2379,28 +2496,30 @@ The following formulas help when calculating how many pods may be deployed withi
 The [10k reference architecture example values file](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/10k.yaml)
 documents how to apply the calculated configuration to the Helm Chart.
 
+#### Webservice
+
+Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
+Each Webservice pod will consume roughly 4 vCPUs and 5 GB of memory using
+the [recommended topology](#cluster-topology) because four worker processes
+are created by default and each pod has other small processes running.
+
+For 10k users we recommend a total Puma worker count of around 80.
+With the [provided recommendations](#cluster-topology) this allows the deployment of up to 20
+Webservice pods with 4 workers per pod and 5 pods per node. Expand available resources using
+the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional
+Webservice pod.
+
+For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+
 #### Sidekiq
 
 Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-16 Sidekiq pods. Expand available resources using the 1vCPU to 2GB memory
+16 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
-
-#### Webservice
-
-Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
-Each Webservice pod will consume roughly 2 vCPUs and 2.5 GB of memory using
-the [recommended topology](#cluster-topology) because two worker processes
-are created by default.
-
-The [provided recommendations](#cluster-topology) allow the deployment of up to 28
-Webservice pods. Expand available resources using the ratio of 1 vCPU to 1.25 GB of memory
-_per each worker process_ for each additional Webservice pod.
-
-For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

@@ -8,19 +8,21 @@ const ENDLESS_SCROLL_BOTTOM_PX = 400;
 const ENDLESS_SCROLL_FIRE_DELAY_MS = 1000;
 
 export default {
-  init(
+  init({
     limit = 0,
     preload = false,
     disable = false,
     prepareData = $.noop,
-    callback = $.noop,
+    successCallback = $.noop,
+    errorCallback = $.noop,
     container = '',
-  ) {
+  } = {}) {
     this.limit = limit;
     this.offset = parseInt(getParameterByName('offset'), 10) || this.limit;
     this.disable = disable;
     this.prepareData = prepareData;
-    this.callback = callback;
+    this.successCallback = successCallback;
+    this.errorCallback = errorCallback;
     this.loading = $(`${container} .loading`).first();
     if (preload) {
       this.offset = 0;
@@ -42,7 +44,7 @@ export default {
       })
       .then(({ data }) => {
         this.append(data.count, this.prepareData(data.html));
-        this.callback();
+        this.successCallback();
 
         // keep loading until we've filled the viewport height
         if (!this.disable && !this.isScrollable()) {
@@ -51,7 +53,8 @@ export default {
           this.loading.hide();
         }
       })
-      .catch(() => this.loading.hide());
+      .catch((err) => this.errorCallback(err))
+      .finally(() => this.loading.hide());
   },
 
   append(count, html) {

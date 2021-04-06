@@ -319,7 +319,7 @@ application server, or a Gitaly node.
    WARNING:
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](#migrate-existing-repositories-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](#migrate-to-gitaly-cluster)
    afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
@@ -760,7 +760,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](#migrate-existing-repositories-to-gitaly-cluster)
+   you should [migrate the data your Gitaly Cluster storage](#migrate-to-gitaly-cluster)
    first.
 
    ```ruby
@@ -1294,7 +1294,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 - Replace the placeholder `<up-to-date-storage>` with the Gitaly storage name containing up to date repositories.
 - Replace the placeholder `<outdated-storage>` with the Gitaly storage name containing outdated repositories.
 
-## Migrate existing repositories to Gitaly Cluster
+## Migrate to Gitaly Cluster
 
 To migrate to Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be
 moved. There is no automatic migration but the moves can be scheduled with the GitLab API.
@@ -1308,8 +1308,8 @@ until the move has completed.
 
 After creating and configuring Gitaly Cluster:
 
-1. Ensure all storages are accessible to the GitLab instance. In this example, these
-are `<original_storage_name>` and `<cluster_storage_name>`.
+1. Ensure all storages are accessible to the GitLab instance. In this example, these are
+   `<original_storage_name>` and `<cluster_storage_name>`.
 1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
    so that the Gitaly Cluster receives all new projects. This stops new projects being created
    on existing Gitaly nodes while the migration is in progress.

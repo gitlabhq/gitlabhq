@@ -27,22 +27,33 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   pageUnloadTimer: 10,
 };
 
+const addExperimentContext = (opts) => {
+  const { experiment, ...options } = opts;
+  if (experiment) {
+    const data = getExperimentData(experiment);
+    if (data) {
+      const context = { schema: TRACKING_CONTEXT_SCHEMA, data };
+      return { ...options, context };
+    }
+  }
+  return options;
+};
+
 const createEventPayload = (el, { suffix = '' } = {}) => {
   const action = (el.dataset.trackAction || el.dataset.trackEvent) + (suffix || '');
   let value = el.dataset.trackValue || el.value || undefined;
   if (el.type === 'checkbox' && !el.checked) value = false;
 
-  let context = el.dataset.trackContext;
-  if (el.dataset.trackExperiment) {
-    const data = getExperimentData(el.dataset.trackExperiment);
-    if (data) context = { schema: TRACKING_CONTEXT_SCHEMA, data };
-  }
+  const context = addExperimentContext({
+    experiment: el.dataset.trackExperiment,
+    context: el.dataset.trackContext,
+  });
 
   const data = {
     label: el.dataset.trackLabel,
     property: el.dataset.trackProperty,
     value,
-    context,
+    ...context,
   };
 
   return {
@@ -150,7 +161,8 @@ export default class Tracking {
           return localCategory || opts.category;
         },
         trackingOptions() {
-          return { ...opts, ...this.tracking };
+          const options = addExperimentContext(opts);
+          return { ...options, ...this.tracking };
         },
       },
       methods: {

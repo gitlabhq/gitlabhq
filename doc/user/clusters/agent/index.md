@@ -179,17 +179,21 @@ For GitLab.com users, the KAS is available at `wss://kas.gitlab.com`.
 Replace the value of `agent-token` below with the token received from the previous step. Also, replace `kas-address` with the configured access of the Kubernetes Agent Server:
 
 ```shell
-docker run --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:latest generate --agent-token=your-agent-token --kas-address=wss://kas.gitlab.example.com --agent-version latest | kubectl apply -f -
+docker run --pull=always --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:stable generate --agent-token=your-agent-token --kas-address=wss://kas.gitlab.example.com --agent-version stable | kubectl apply -f -
 ```
 
-Set `agent-version` to the latest released patch version matching your
+Set `--agent-version` to the latest released patch version matching your
 GitLab installation's major and minor versions. For example, if you have
 GitLab v13.9.0, set `--agent-version=v13.9.1`.
+
+WARNING:
+Version `stable` can be used to refer to the latest stable release at the time when the command runs. It's fine for
+testing purposes but for production please make sure to specify a matching version explicitly.
 
 To find out the various options the above Docker container supports, run:
 
 ```shell
-docker run --rm -it registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:latest generate --help
+docker run --pull=always --rm registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/cli:stable generate --help
 ```
 
 #### Advanced installation
@@ -286,7 +290,8 @@ spec:
       serviceAccountName: gitlab-agent
       containers:
       - name: agent
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:latest"
+        # Make sure to specify a matching version for production
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:stable"
         args:
         - --token-file=/config/token
         - --kas-address
@@ -554,7 +559,7 @@ Then in `resources.yml`:
       serviceAccountName: gitlab-agent
       containers:
       - name: agent
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:latest"
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<version>"
         args:
         - --token-file=/config/token
         - --kas-address
@@ -584,7 +589,7 @@ Alternatively, you can mount the certificate file at a different location and in
 ```yaml
       containers:
       - name: agent
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:latest"
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:<version>"
         args:
         - --ca-cert-file=/tmp/myCA.pem
         - --token-file=/config/token

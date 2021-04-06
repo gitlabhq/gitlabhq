@@ -26,10 +26,6 @@ function install_api_client_dependencies_with_apk() {
   apk add --update openssl curl jq
 }
 
-function install_api_client_dependencies_with_apt() {
-  apt update && apt install jq -y
-}
-
 function install_gitlab_gem() {
   gem install httparty --no-document --version 0.18.1
   gem install gitlab --no-document --version 4.17.0

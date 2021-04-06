@@ -228,15 +228,7 @@ If you already have an open issue, you can link to it from the vulnerability.
 To link to an existing issue:
 
 1. Open the vulnerability.
-1. In the **Related Issues** section, select the plus (**{plus}**) icon.
-1. In the text box that appears, type an issue number or paste an issue link.
-   - Type `#` followed by a number to show an autocomplete menu.
-   - You can enter multiple issues at once. Press the space bar after each issue number or link to converts them to tags.
-1. Select **Add**.
-
-To remove an issue, to the right of the issue number, select **{close}**.
-
-![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
+1. [Add a linked issue](../project/issues/related_issues.md).
 
 ### Apply an automatic remediation for a vulnerability
 

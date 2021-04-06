@@ -15,13 +15,17 @@ module IssuableLinks
       return error(not_found_message, 404) unless permission_to_remove_relation?
 
       remove_relation
-      create_notes
-      track_event
+      after_destroy
 
       success(message: 'Relation was removed')
     end
 
     private
+
+    def after_destroy
+      create_notes
+      track_event
+    end
 
     def remove_relation
       link.destroy!

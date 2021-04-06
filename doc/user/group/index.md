@@ -141,7 +141,7 @@ To remove a member from a group:
 1. From the left menu, select **Members**.
 1. Next to the member you want to remove, select **Delete**.
 1. Optional. On the **Remove member** confirmation box, select the
-  **Also unassign this user from related issues and merge requests** checkbox.
+  **Also unassign this user from linked issues and merge requests** checkbox.
 1. Select **Remove member**.
 
 ## Filter and sort members in a group

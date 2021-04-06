@@ -14,7 +14,6 @@ RSpec.describe 'Pipelines', :js do
       sign_in(user)
       stub_feature_flags(graphql_pipeline_details: false)
       stub_feature_flags(graphql_pipeline_details_users: false)
-      stub_feature_flags(new_pipelines_table: false)
 
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })

@@ -10,6 +10,7 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/362) in GitLab 11.6.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/482) in GitLab 12.1.
 > - [Per-project](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/498) navigation added in GitLab 12.2.
+> - [Unified global navigation](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1482) added in GitLab 13.11.
 
 Global navigation (the left-most pane in our three pane documentation) provides:
 
@@ -19,23 +20,11 @@ Global navigation (the left-most pane in our three pane documentation) provides:
 - The ability to refine landing pages, so they don't have to do all the work of surfacing
   every page contained within the documentation.
 
-## Quick start
-
-To add a topic to the global nav, go to the directory that contains
-[navigation files](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/)
-and edit the `yaml` file for your product area. You can copy an existing nav entry and
-edit it to point to your topic.
-
-The files are:
-
-| File                  | Document                                                           | Location                                              |
-|-----------------------|--------------------------------------------------------------------|-------------------------------------------------------|
-| `charts-nav.yaml`     | GitLab cloud native Helm Chart                                     | `https://docs.gitlab.com/charts/`                     |
-| `default-nav.yaml`    | GitLab Docs                                                        | `https://docs.gitlab.com/ee/`              |
-| `omnibus-nav.yaml`    | Omnibus GitLab Docs                                                | `https://docs.gitlab.com/omnibus/`         |
-| `runner-nav.yaml`     | GitLab Runner Docs                                                 | `https://docs.gitlab.com/runner/`                     |
-
 ## Adding new items
+
+To add a topic to the global nav, edit
+[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/navigation.yaml)
+and add your item.
 
 All new pages need a new navigation item. Without a navigation, the page becomes "orphaned". That
 is:
@@ -84,12 +73,6 @@ mechanics of what is required is [documented below](#data-file) but, in principl
   - Avoid jargon or terms of art, unless ubiquitous. For example, **CI** is an acceptable
     substitution for **Continuous Integration**.
 - Navigation links must follow the rules documented in the [data file](#data-file).
-- EE badging is subject to the following:
-  - Required when linking to an EE-only page.
-  - Not required when linking to a page that is a mix of CE and EE-only content.
-  - Required when all sub-items are EE-only. In this case, no sub-items are EE badged.
-  - Not required when sub-items are a mix of CE and EE-only items. In this case, each item is
-    badged appropriately.
 
 ## How it works
 
@@ -101,14 +84,6 @@ The global nav has five levels:
       - Doc
         - Doc
 
-The available sections are described on the table below:
-
-| Section       | Description                          |
-| ------------- | ------------------------------------ |
-| User          | Documentation for the GitLab UI.     |
-| Administrator | Documentation for the Admin Area.    |
-| Contributor   | Documentation for developing GitLab. |
-
 The majority of the links available on the nav were added according to the UI.
 The match is not perfect, as for some UI nav items the documentation doesn't
 apply, and there are also other links to help the new users to discover the
@@ -116,7 +91,7 @@ documentation. The docs under **Administration** are ordered alphabetically
 for clarity.
 
 To see the improvements planned, check the
-[global nav epic](https://gitlab.com/groups/gitlab-com/-/epics/21).
+[global nav epic](https://gitlab.com/groups/gitlab-org/-/epics/1599).
 
 **Do not** [add items](#adding-new-items) to the global nav without
 the consent of one of the technical writers.
@@ -133,9 +108,9 @@ the data among the nav in containers properly [styled](#css-classes).
 
 ### Data file
 
-The data file describes the structure of the navigation for the applicable project. All data files
-are stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/> and comprise
-three components:
+The data file describes the structure of the navigation for the applicable project.
+It is stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/navigation.yaml>
+and comprises of three main components:
 
 - Sections
 - Categories
@@ -185,24 +160,6 @@ Example of section with two stand-alone categories:
 
 For clarity, **always** add a blank line between categories.
 
-If a category URL is not present in CE (it's an EE-only document), add the
-attribute `ee_only: true` below the category link. Example:
-
-```yaml
-- category_title: Category title
-  category_url: 'category-link'
-  ee_only: true
-```
-
-If the category links to an external URL, e.g., [GitLab Design System](https://design.gitlab.com),
-add the attribute `external_url: true` below the category title. Example:
-
-```yaml
-- category_title: GitLab Design System
-  category_url: 'https://design.gitlab.com'
-  external_url: true
-```
-
 #### Docs
 
 Each doc represents the third, fourth, and fifth level of nav links. They must be always
@@ -225,7 +182,8 @@ Example with three doc links, one at each level:
 ```
 
 A category supports as many docs as necessary, but, for clarity, try to not
-overpopulate a category. Also, do not use more than three levels of docs.
+overpopulate a category. Also, do not use more than three levels of docs, it
+is not supported.
 
 Example with multiple docs:
 
@@ -237,15 +195,6 @@ Example with multiple docs:
       doc_url: 'doc-1-link'
     - doc_title: Document 2 title
       doc_url: 'doc-2-link'
-```
-
-Whenever a document is only present in EE, add the attribute `ee-only: true`
-below the doc link. Example:
-
-```yaml
-- doc_title: Document 2 title
-  doc_url: 'doc-2-link'
-  ee_only: true
 ```
 
 If you need to add a document in an external URL, add the attribute `external_url`
@@ -266,12 +215,12 @@ Example:
 
 ```yaml
 - category_title: Operations
-  category_url: 'user/project/integrations/prometheus_library/'
+  category_url: 'ee/user/project/integrations/prometheus_library/'
   # until we have a link to operations, the first doc link is
   # repeated in the category link
   docs:
     - doc_title: Metrics
-      doc_url: 'user/project/integrations/prometheus_library/'
+      doc_url: 'ee/user/project/integrations/prometheus_library/'
 ```
 
 #### Syntax
@@ -282,43 +231,39 @@ and the following syntax rules.
 ##### Titles
 
 - Use sentence case, capitalizing feature names.
-- There's no need to wrap the titles, unless there's a special char in it. E.g.,
+- There's no need to wrap the titles, unless there's a special char in it. For example,
   in `GitLab CI/CD`, there's a `/` present, therefore, it must be wrapped in quotes.
   As convention, wrap the titles in double quotes: `category_title: "GitLab CI/CD"`.
 
 ##### URLs
 
+URLs can be either relative or external, and the following apply:
+
+- All links in the data file must end with `.html` (with the exception
+  of `index.html` files), and not `.md`.
+- For `index.html` files, use the clean (canonical) URL: `path/to/`. For example, `https://docs.gitlab.com/ee/install/index.html` becomes `ee/install/`.
+- Do not start any relative link with a forward slash `/`.
 - As convention, always wrap URLs in single quotes `'url'`.
-- Always use relative paths against the home of CE and EE. Examples:
-  - For `https://docs.gitlab.com/ee/README.html`, the relative URL is `README.html`.
-  - For `https://docs.gitlab.com/ee/user/analytics/value_stream_analytics.md`, the relative
-    URL is `user/analytics/value_stream_analytics.html`.
-- For `README.html` files, add the complete path `path/to/README.html`.
-- For `index.html` files, use the clean (canonical) URL: `path/to/`.
-- For EE-only docs, use the same relative path, but add the attribute `ee_only: true` below
-  the `doc_url` or `category_url`, as explained above. This displays
-  an "information" icon on the nav to make the user aware that the feature is
-  EE-only.
+- Always use the project prefix depending on which project the link you add
+  lives in. To find the global nav link, from the full URL remove `https://docs.gitlab.com/`.
+- If a URL links to an external URL, like the [GitLab Design System](https://design.gitlab.com),
+  add the attribute `external_url: true`, for example:
 
-WARNING:
-All links present on the data file must end in `.html`, not `.md`. Do not
-start any relative link with a forward slash `/`.
+  ```yaml
+  - category_title: GitLab Design System
+    category_url: 'https://design.gitlab.com'
+    external_url: true
+  ```
 
-Examples:
+Examples of relative URLs:
 
-```yaml
-- category_title: Issues
-  category_url: 'user/project/issues/'
-  # note that the above URL does not start with a slash and
-  # does not include index.html at the end
-
-  docs:
-    - doc_title: Container Scanning
-      doc_url: 'user/application_security/container_scanning/'
-      ee_only: true
-      # note that the URL above ends in html and, as the
-      # document is EE-only, the attribute ee_only is set to true.
-```
+| Full URL                                                       | Global nav URL                        |
+| -------------------------------------------------------------- | ------------------------------------- |
+| `https://docs.gitlab.com/ee/api/avatar.html`                   | `ee/api/avatar.html`                  |
+| `https://docs.gitlab.com/ee/install/index.html`                | `ee/install/`                         |
+| `https://docs.gitlab.com/omnibus/settings/database.html`       | `omnibus/settings/database.html`      |
+| `https://docs.gitlab.com/charts/installation/deployment.html`  | `charts/installation/deployment.html` |
+| `https://docs.gitlab.com/runner/install/docker.html`           | `runner/install/docker.html`          |
 
 ### Layout file (logic)
 
@@ -326,74 +271,15 @@ The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/globa
 is fed by the [data file](#data-file), builds the global nav, and is rendered by the
 [default](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/default.html) layout.
 
-There are three main considerations on the logic built for the nav:
+The global nav contains links from all [four upstream projects](index.md#architecture).
+The [global nav URL](#urls) has a different prefix depending on the documentation file you change.
 
-- [Path](#path): first-level directories underneath `docs.gitlab.com/`:
-  - `https://docs.gitlab.com/ce/`
-  - `https://docs.gitlab.com/ee/`
-  - `https://docs.gitlab.com/omnibus/`
-  - `https://docs.gitlab.com/runner/`
-  - `https://docs.gitlab.com/*`
-- [EE-only](#ee-only-docs): documentation only available in `/ee/`, not on `/ce/`, e.g.:
-  - `https://docs.gitlab.com/ee/user/group/epics/`
-  - `https://docs.gitlab.com/ee/user/application_security/security_dashboard/index.html`
-- [Default URL](#default-url): between CE and EE docs, the default is `ee`, therefore, all docs
-  should link to `/ee/` unless if on `/ce/` linking internally to `ce`.
-
-#### Path
-
-To use relative paths in the data file, we defined the variable `dir`
-from the root's first-child directory, which defines the path to build
-all the nav links to other pages:
-
-```html
-<% dir = @item.identifier.to_s[%r{(?<=/)[^/]+}] %>
-```
-
-For instance, for `https://docs.gitlab.com/ee/user/index.html`,
-`dir` == `ee`, and for `https://docs.gitlab.com/omnibus/README.html`,
-`dir` == `omnibus`.
-
-#### Default URL
-
-The default and canonical URL for GitLab documentation is
-`https://docs.gitlab.com/ee/`, thus, all links
-in the docs site should link to `/ee/` except when linking
-among `/ce/` docs themselves.
-
-Therefore, if the user is looking at `/ee/`, `/omnibus/`,
-`/runner/`, or any other highest-level dir, the nav should
-point to `/ee/` docs.
-
-On the other hand, if the user is looking at `/ce/` docs,
-all the links in the CE nav should link internally to `/ce/`
-files.
-
-```html
-<% if dir != 'ce' %>
-  <a href="/ee/<%= sec[:section_url] %>">...</a>
-  <% else %>
-    <a href="/<%= dir %>/<%= sec[:section_url] %>">...</a>
-  <% end %>
-  ...
-<% end %>
-```
-
-This also allows the nav to be displayed on other
-highest-level directories (`/omnibus/`, `/runner/`, etc),
-linking them back to `/ee/`.
-
-The same logic is applied to all sections (`sec[:section_url]`),
-categories (`cat[:category_url]`), and docs (`doc[:doc_url]`) URLs.
-
-#### `ee-only` docs
-
-Docs for features present only in GitLab EE are tagged
-in the data file by `ee-only` and an icon is displayed on the nav
-link indicating that the `ee-only` feature is not available in CE.
-
-The `ee-only` attribute is available for `categories` (`<% if cat[:ee_only] %>`)
-and `docs` (`<% if doc[:ee_only] %>`), but not for `sections`.
+| Repository                                                     | Link prefix | Final URL |
+|----------------------------------------------------------------|-------------|-----------|
+| <https://gitlab.com/gitlab-org/gitlab/tree/master/doc>         | `ee/`       |`https://docs.gitlab.com/ee/`      |
+| <https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc> | `omnibus/`  |`https://docs.gitlab.com/omnibus/` |
+| <https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs> | `runner/`   |`https://docs.gitlab.com/runner/`  |
+| <https://gitlab.com/charts/gitlab/tree/master/doc>             | `charts/`   |`https://docs.gitlab.com/charts/`  |
 
 ### CSS classes
 

@@ -673,7 +673,17 @@ RSpec.describe Projects::CreateService, '#execute' do
     expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end
 
+  it 'triggers PostCreationWorker' do
+    expect(Projects::PostCreationWorker).to receive(:perform_async).with(a_kind_of(Integer))
+
+    create_project(user, opts)
+  end
+
   context 'when project has access to shared service' do
+    before do
+      stub_feature_flags(projects_post_creation_worker: false)
+    end
+
     context 'Prometheus application is shared via group cluster' do
       let(:cluster) { create(:cluster, :group, groups: [group]) }
       let(:group) do

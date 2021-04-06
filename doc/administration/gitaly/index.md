@@ -393,8 +393,8 @@ Additional information:
 GitLab recommends:
 
 - Creating a [Gitaly Cluster](#gitaly-cluster) as soon as possible.
-- [Moving your projects](praefect.md#migrate-existing-repositories-to-gitaly-cluster) from NFS-based
-storage to the Gitaly Cluster.
+- [Moving your repositories](praefect.md#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
+  Cluster.
 
 We welcome your feedback on this process: raise a support ticket, or [comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
 

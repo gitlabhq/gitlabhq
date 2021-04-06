@@ -1,3 +1,5 @@
+import { reportToSentry } from '../utils';
+
 const unwrapGroups = (stages) => {
   return stages.map((stage) => {
     const {
@@ -8,6 +10,10 @@ const unwrapGroups = (stages) => {
 };
 
 const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
+  if (jobArray.length < 1) {
+    reportToSentry('unwrapping_utils', 'undefined_job_hunt, array empty from backend');
+  }
+
   return jobArray.map((job) => {
     return { ...job, [prop]: job[prop].nodes.map((item) => item[field] || '') };
   });

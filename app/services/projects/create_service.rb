@@ -110,7 +110,12 @@ module Projects
       setup_authorizations
 
       current_user.invalidate_personal_projects_count
-      create_prometheus_service
+
+      if Feature.enabled?(:projects_post_creation_worker, current_user, default_enabled: :yaml)
+        Projects::PostCreationWorker.perform_async(@project.id)
+      else
+        create_prometheus_service
+      end
 
       create_readme if @initialize_with_readme
     end
@@ -193,6 +198,7 @@ module Projects
       @project
     end
 
+    # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326665
     def create_prometheus_service
       service = @project.find_or_initialize_service(::PrometheusService.to_param)
 

@@ -1776,6 +1776,9 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Activity|An error occured while retrieving activity. Reload the page to try again."
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -5802,9 +5805,6 @@ msgstr ""
 msgid "Changing group URL can have unintended side effects."
 msgstr ""
 
-msgid "Channel handle (e.g. town-square)"
-msgstr ""
-
 msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
 msgstr ""
 
@@ -6438,10 +6438,22 @@ msgstr ""
 msgid "CloudLicense|Activate"
 msgstr ""
 
+msgid "CloudLicense|Activate subscription"
+msgstr ""
+
+msgid "CloudLicense|Activation code"
+msgstr ""
+
+msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
+msgstr ""
+
 msgid "CloudLicense|ID"
 msgstr ""
 
 msgid "CloudLicense|Last Sync"
+msgstr ""
+
+msgid "CloudLicense|Learn how to %{linkStart}activate your subscription%{linkEnd}."
 msgstr ""
 
 msgid "CloudLicense|Licensed to"
@@ -6451,9 +6463,6 @@ msgid "CloudLicense|Manage"
 msgstr ""
 
 msgid "CloudLicense|Paste your activation code"
-msgstr ""
-
-msgid "CloudLicense|Paste your activation code below"
 msgstr ""
 
 msgid "CloudLicense|Plan"
@@ -6472,6 +6481,9 @@ msgid "CloudLicense|Sync Subscription details"
 msgstr ""
 
 msgid "CloudLicense|This instance is currently using the %{planName} plan."
+msgstr ""
+
+msgid "CloudLicense|Your subscription"
 msgstr ""
 
 msgid "Cluster"
@@ -18999,6 +19011,9 @@ msgstr ""
 msgid "Mattermost URL:"
 msgstr ""
 
+msgid "Mattermost notifications"
+msgstr ""
+
 msgid "MattermostService|Add to Mattermost"
 msgstr ""
 
@@ -21675,6 +21690,12 @@ msgstr ""
 msgid "OnCallSchedules|Try adding a rotation"
 msgstr ""
 
+msgid "OnCallSchedules|View next timeframe"
+msgstr ""
+
+msgid "OnCallSchedules|View previous timeframe"
+msgstr ""
+
 msgid "OnCallSchedules|Your schedule has been successfully created and all alerts from this project will now be routed to this schedule. Currently, only one schedule can be created per project. More coming soon! To add individual users to this schedule, use the add a rotation button."
 msgstr ""
 
@@ -24164,42 +24185,6 @@ msgstr ""
 msgid "ProjectService|Enter new password"
 msgstr ""
 
-msgid "ProjectService|Event triggered when a commit is created or updated."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a confidential issue is created, updated, or closed."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a deployment starts or finishes."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a merge request is created, updated, or merged."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a new tag is pushed to the repository."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a new, unique alert is recorded."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a pipeline status changes."
-msgstr ""
-
-msgid "ProjectService|Event triggered when a wiki page is created or updated."
-msgstr ""
-
-msgid "ProjectService|Event triggered when an issue is created, updated, or closed."
-msgstr ""
-
-msgid "ProjectService|Event triggered when someone adds a comment on a confidential issue."
-msgstr ""
-
-msgid "ProjectService|Event triggered when someone adds a comment."
-msgstr ""
-
-msgid "ProjectService|Event triggered when someone pushes to the repository."
-msgstr ""
-
 msgid "ProjectService|Issue URL"
 msgstr ""
 
@@ -24225,6 +24210,42 @@ msgid "ProjectService|TeamCity URL"
 msgstr ""
 
 msgid "ProjectService|To configure this integration, you should:"
+msgstr ""
+
+msgid "ProjectService|Trigger event for new comments on confidential issues."
+msgstr ""
+
+msgid "ProjectService|Trigger event for new comments."
+msgstr ""
+
+msgid "ProjectService|Trigger event for new tags pushed to the repository."
+msgstr ""
+
+msgid "ProjectService|Trigger event for pushes to the repository."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a commit is created or updated."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a confidential issue is created, updated, or closed."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a deployment starts or finishes."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a merge request is created, updated, or merged."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a new, unique alert is recorded."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a pipeline status changes."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a wiki page is created or updated."
+msgstr ""
+
+msgid "ProjectService|Trigger event when an issue is created, updated, or closed."
 msgstr ""
 
 msgid "ProjectSettings|%{link_start}What are description templates?%{link_end}"
@@ -27816,6 +27837,12 @@ msgid "Send email notification"
 msgstr ""
 
 msgid "Send message"
+msgstr ""
+
+msgid "Send notifications about project events to Mattermost channels."
+msgstr ""
+
+msgid "Send notifications about project events to Mattermost channels. %{docs_link}"
 msgstr ""
 
 msgid "Send report"
@@ -36850,6 +36877,9 @@ msgid "must contain only valid frameworks"
 msgstr ""
 
 msgid "my-awesome-group"
+msgstr ""
+
+msgid "my-channel"
 msgstr ""
 
 msgid "n/a"

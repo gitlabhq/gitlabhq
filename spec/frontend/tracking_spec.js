@@ -254,7 +254,7 @@ describe('Tracking', () => {
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
     });
 
-    it('brings in experiment data if linked to an experiment', () => {
+    it('includes experiment data if linked to an experiment', () => {
       const mockExperimentData = {
         variant: 'candidate',
         experiment: 'repo_integrations_link',
@@ -325,6 +325,30 @@ describe('Tracking', () => {
         // The value of this in the Vue lifecyle is different, but this serves the test's purposes
         mixin.computed.tracking = { foo: 'baz', baz: 'bar' };
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'baz', baz: 'bar' });
+      });
+
+      it('includes experiment data if linked to an experiment', () => {
+        const mockExperimentData = {
+          variant: 'candidate',
+          experiment: 'darkMode',
+        };
+        getExperimentData.mockReturnValue(mockExperimentData);
+
+        const mixin = Tracking.mixin({ foo: 'bar', experiment: 'darkMode' });
+        expect(mixin.computed.trackingOptions()).toEqual({
+          foo: 'bar',
+          context: {
+            schema: TRACKING_CONTEXT_SCHEMA,
+            data: mockExperimentData,
+          },
+        });
+      });
+
+      it('does not include experiment data if experiment data does not exist', () => {
+        const mixin = Tracking.mixin({ foo: 'bar', experiment: 'lightMode' });
+        expect(mixin.computed.trackingOptions()).toEqual({
+          foo: 'bar',
+        });
       });
     });
 

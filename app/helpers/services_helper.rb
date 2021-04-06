@@ -4,29 +4,29 @@ module ServicesHelper
   def service_event_description(event)
     case event
     when "push", "push_events"
-      s_("ProjectService|Event triggered when someone pushes to the repository.")
+      s_("ProjectService|Trigger event for pushes to the repository.")
     when "tag_push", "tag_push_events"
-      s_("ProjectService|Event triggered when a new tag is pushed to the repository.")
+      s_("ProjectService|Trigger event for new tags pushed to the repository.")
     when "note", "note_events"
-      s_("ProjectService|Event triggered when someone adds a comment.")
+      s_("ProjectService|Trigger event for new comments.")
     when "confidential_note", "confidential_note_events"
-      s_("ProjectService|Event triggered when someone adds a comment on a confidential issue.")
+      s_("ProjectService|Trigger event for new comments on confidential issues.")
     when "issue", "issue_events"
-      s_("ProjectService|Event triggered when an issue is created, updated, or closed.")
+      s_("ProjectService|Trigger event when an issue is created, updated, or closed.")
     when "confidential_issue", "confidential_issue_events"
-      s_("ProjectService|Event triggered when a confidential issue is created, updated, or closed.")
+      s_("ProjectService|Trigger event when a confidential issue is created, updated, or closed.")
     when "merge_request", "merge_request_events"
-      s_("ProjectService|Event triggered when a merge request is created, updated, or merged.")
+      s_("ProjectService|Trigger event when a merge request is created, updated, or merged.")
     when "pipeline", "pipeline_events"
-      s_("ProjectService|Event triggered when a pipeline status changes.")
+      s_("ProjectService|Trigger event when a pipeline status changes.")
     when "wiki_page", "wiki_page_events"
-      s_("ProjectService|Event triggered when a wiki page is created or updated.")
+      s_("ProjectService|Trigger event when a wiki page is created or updated.")
     when "commit", "commit_events"
-      s_("ProjectService|Event triggered when a commit is created or updated.")
+      s_("ProjectService|Trigger event when a commit is created or updated.")
     when "deployment"
-      s_("ProjectService|Event triggered when a deployment starts or finishes.")
+      s_("ProjectService|Trigger event when a deployment starts or finishes.")
     when "alert"
-      s_("ProjectService|Event triggered when a new, unique alert is recorded.")
+      s_("ProjectService|Trigger event when a new, unique alert is recorded.")
     end
   end
 

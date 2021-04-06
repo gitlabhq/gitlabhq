@@ -104,12 +104,7 @@ export default {
       const firstJobDefined = Boolean(group.jobs?.[0]);
 
       if (!firstJobDefined) {
-        const currentGroup = this.groups.find((element) => element.name === group.name);
-        const serializedGroup = Object.entries(currentGroup).join(' ');
-        reportToSentry(
-          'stage_column_component',
-          `undefined_job_hunt, serialized group: ${serializedGroup}`,
-        );
+        reportToSentry('stage_column_component', 'undefined_job_hunt');
       }
 
       return group.size === 1 && firstJobDefined;

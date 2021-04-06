@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Linked issues **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1797) in GitLab 9.4.
-> - The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.4.
+> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Free](https://about.gitlab.com/pricing/) in 13.4.
 
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
 the issue description. Issues can be across groups and projects.
@@ -51,6 +50,9 @@ When you have finished adding all linked issues, you can see
 them categorized so their relationships can be better understood visually.
 
 ![Related issue block](img/related_issue_block_v12_8.png)
+
+You can also add a linked issue from a commit message or the description in another issue or MR.
+[Learn more about crosslinking issues](crosslinking_issues.md).
 
 ## Remove a linked issue
 
