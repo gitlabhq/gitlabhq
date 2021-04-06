@@ -2,25 +2,23 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Transient tests', :transient do
+    context 'Add batch suggestions to a Merge Request', :transient do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-transient-test'
+          project.name = 'suggestions_project'
         end
-      end
-
-      let(:code_for_merge) do
-        Pathname
-            .new(__dir__)
-            .join('../../../../../fixtures/metrics_dashboards/templating.yml')
       end
 
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |merge_request|
           merge_request.project = project
-          merge_request.title = 'Transient MR'
-          merge_request.description = 'detecting transient bugs'
-          merge_request.file_content = File.read(code_for_merge)
+          merge_request.title = 'Needs some suggestions'
+          merge_request.description = '... so please add them.'
+          merge_request.file_content = File.read(
+            Pathname
+              .new(__dir__)
+              .join('../../../../../../fixtures/metrics_dashboards/templating.yml')
+          )
         end
       end
 
@@ -30,6 +28,7 @@ module QA
 
       before do
         project.add_member(dev_user)
+
         Flow::Login.sign_in(as: dev_user, skip_page_validation: true)
 
         merge_request.visit!
@@ -38,7 +37,7 @@ module QA
 
         [4, 6, 10, 13].each do |line_number|
           Page::MergeRequest::Show.perform do |merge_request|
-            merge_request.add_suggestion_to_diff("This is the #{line_number} suggestion!", line_number)
+            merge_request.add_suggestion_to_diff("This is the suggestion for line number #{line_number}!", line_number)
           end
         end
 

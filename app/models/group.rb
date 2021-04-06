@@ -119,7 +119,6 @@ class Group < Namespace
   end
 
   delegate :default_branch_name, to: :namespace_settings
-  delegate :resource_access_token_creation_allowed, :resource_access_token_creation_allowed=, :resource_access_token_creation_allowed?, to: :namespace_settings
 
   class << self
     def sort_by_attribute(method)

@@ -337,7 +337,7 @@ RSpec.describe Issue do
     end
 
     it 'returns true for a user that is the author of an issue' do
-      issue.update(author: user)
+      issue.update!(author: user)
 
       expect(issue.assignee_or_author?(user)).to be_truthy
     end
@@ -675,7 +675,7 @@ RSpec.describe Issue do
       expect(user2.assigned_open_issues_count).to eq(0)
 
       issue.assignees = [user2]
-      issue.save
+      issue.save!
 
       expect(user1.assigned_open_issues_count).to eq(0)
       expect(user2.assigned_open_issues_count).to eq(1)
@@ -907,7 +907,7 @@ RSpec.describe Issue do
         let(:private_project) { build(:project, :private)}
 
         before do
-          issue.update(project: private_project) # move issue to private project
+          issue.update!(project: private_project) # move issue to private project
         end
 
         shared_examples 'issue visible if user has guest access' do
@@ -1044,7 +1044,7 @@ RSpec.describe Issue do
     with_them do
       it 'checks for spam on issues that can be seen anonymously' do
         project = reusable_project
-        project.update(visibility_level: visibility_level)
+        project.update!(visibility_level: visibility_level)
         issue = create(:issue, project: project, confidential: confidential, description: 'original description')
 
         issue.assign_attributes(new_attributes)
@@ -1058,7 +1058,7 @@ RSpec.describe Issue do
     it 'refreshes the number of open issues of the project' do
       project = subject.project
 
-      expect { subject.destroy }
+      expect { subject.destroy! }
         .to change { project.open_issues_count }.from(1).to(0)
     end
   end
@@ -1273,8 +1273,8 @@ RSpec.describe Issue do
     let_it_be(:issue) { create(:issue) }
 
     it 'returns a list of emails' do
-      participant1 = issue.issue_email_participants.create(email: 'a@gitlab.com')
-      participant2 = issue.issue_email_participants.create(email: 'b@gitlab.com')
+      participant1 = issue.issue_email_participants.create!(email: 'a@gitlab.com')
+      participant2 = issue.issue_email_participants.create!(email: 'b@gitlab.com')
 
       expect(issue.email_participants_emails).to contain_exactly(participant1.email, participant2.email)
     end

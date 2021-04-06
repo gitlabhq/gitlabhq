@@ -28,7 +28,7 @@
               = _("Overview")
               %span.badge.badge-pill= @merge_request.related_notes.user.count
           - if @merge_request.source_project
-            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab" do
+            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
                 %span.badge.badge-pill= @commits_count

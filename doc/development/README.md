@@ -176,6 +176,7 @@ In these cases, use the following workflow:
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
 - [Test Import Project](import_project.md)
+- [Group migration](bulk_import.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)
 - [Kubernetes integration guidelines](kubernetes.md)

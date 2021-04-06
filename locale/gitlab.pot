@@ -15137,6 +15137,9 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings|Allow project access token creation"
+msgstr ""
+
 msgid "GroupSettings|Apply integration settings to all Projects"
 msgstr ""
 
@@ -15249,6 +15252,9 @@ msgid "GroupSettings|This setting will prevent group members from forking projec
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|Users can create %{link_start}project access tokens%{link_end} for projects in this group."
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
@@ -23955,6 +23961,9 @@ msgid "Project URL"
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
+msgstr ""
+
+msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens."
 msgstr ""
 
 msgid "Project already deleted"
@@ -34977,6 +34986,9 @@ msgstr ""
 msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
+msgid "You can enable project access token creation in %{link_start}group settings%{link_end}."
+msgstr ""
+
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
 msgstr ""
 
@@ -35790,6 +35802,9 @@ msgid "cURL:"
 msgstr ""
 
 msgid "can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'"
+msgstr ""
+
+msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can't be enabled because signed commits are required for this project"

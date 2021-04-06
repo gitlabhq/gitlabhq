@@ -256,8 +256,6 @@ Rails/SaveBang:
     - 'spec/models/grafana_integration_spec.rb'
     - 'spec/models/group_spec.rb'
     - 'spec/models/identity_spec.rb'
-    - 'spec/models/issue/metrics_spec.rb'
-    - 'spec/models/issue_spec.rb'
     - 'spec/models/jira_import_state_spec.rb'
     - 'spec/models/key_spec.rb'
     - 'spec/models/lfs_objects_project_spec.rb'

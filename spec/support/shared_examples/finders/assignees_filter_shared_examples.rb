@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'assignee ID filter' do
-  context 'when optimize_issue_filter_assigned_to_self is disabled' do
-    before do
-      stub_feature_flags(optimize_issue_filter_assigned_to_self: false)
-    end
-
-    it 'returns issuables assigned to that user' do
-      expect(issuables).to contain_exactly(*expected_issuables)
-    end
-  end
-
   it 'returns issuables assigned to that user' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
@@ -23,16 +13,6 @@ RSpec.shared_examples 'assignee NOT ID filter' do
 end
 
 RSpec.shared_examples 'assignee username filter' do
-  context 'when optimize_issue_filter_assigned_to_self is disabled' do
-    before do
-      stub_feature_flags(optimize_issue_filter_assigned_to_self: false)
-    end
-
-    it 'returns issuables assigned to those users' do
-      expect(issuables).to contain_exactly(*expected_issuables)
-    end
-  end
-
   it 'returns issuables assigned to those users' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end

@@ -614,6 +614,43 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
+  context "updating :resource_access_token_creation_allowed" do
+    subject do
+      put :update,
+        params: {
+          id: group.to_param,
+          group: { resource_access_token_creation_allowed: false }
+        }
+    end
+
+    context 'when user is a group owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it "updates the attribute" do
+        expect { subject }
+            .to change { group.namespace_settings.reload.resource_access_token_creation_allowed }
+            .from(true)
+            .to(false)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when not a group owner' do
+      before do
+        group.add_developer(user)
+        sign_in(user)
+      end
+
+      it "does not update the attribute" do
+        expect { subject }.not_to change { group.namespace_settings.reload.resource_access_token_creation_allowed }
+      end
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)

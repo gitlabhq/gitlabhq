@@ -737,7 +737,7 @@ class ProjectPolicy < BasePolicy
 
     return true unless group # always enable for projects in personal namespaces
 
-    group.resource_access_token_creation_allowed
+    resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
   def project

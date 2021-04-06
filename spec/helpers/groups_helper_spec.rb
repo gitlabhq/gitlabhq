@@ -461,6 +461,26 @@ RSpec.describe GroupsHelper do
     end
   end
 
+  describe '#render_setting_to_allow_project_access_token_creation?' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+
+    before do
+      allow(helper).to receive(:current_user) { current_user }
+      parent.add_owner(current_user)
+      group.add_owner(current_user)
+    end
+
+    it 'returns true if group is root' do
+      expect(helper.render_setting_to_allow_project_access_token_creation?(parent)).to be_truthy
+    end
+
+    it 'returns false if group is subgroup' do
+      expect(helper.render_setting_to_allow_project_access_token_creation?(group)).to be_falsy
+    end
+  end
+
   describe '#group_open_issues_count' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group, :public) }

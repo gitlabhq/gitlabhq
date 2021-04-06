@@ -147,7 +147,7 @@ or higher [permissions](../../permissions.md).
 To enable this merge request approval rule:
 
 1. Navigate to your project's **Settings > General** and expand
-   **Merge request approvals**.
+   **Merge request (MR) approvals**.
 1. Locate **Any eligible user** and choose the number of approvals required.
 
 ![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v12_7.png)
@@ -178,7 +178,7 @@ To enable this access:
 1. [Share the project with your group](../members/share_project_with_groups.md#sharing-a-project-with-a-group-of-users),
    based on the Reporter role.
 1. Navigate to your project's **Settings > General**, and in the
-   **Merge request approvals** section, click **Expand**.
+   **Merge request (MR) approvals** section, click **Expand**.
 1. Select **Add approval rule** or **Update approval rule**.
 1. [Add the group](../../group/index.md#create-a-group) to the permission list.
 
@@ -188,7 +188,7 @@ To enable this access:
 
 To add or edit the default merge request approval rule:
 
-1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
+1. Navigate to your project's **Settings > General** and expand **Merge request (MR) approvals**.
 
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
@@ -268,7 +268,7 @@ reduces the number of approvals left for all rules that the approver belongs to.
 Approval rules are often only relevant to specific branches, like `master`.
 When configuring [**Default Approval Rules**](#adding--editing-a-default-approval-rule)
 these can be scoped to all the protected branches at once by navigating to your project's
-**Settings**, expanding **Merge request approvals**, and selecting **Any branch** from
+**Settings**, expanding **Merge request (MR) approvals**, and selecting **Any branch** from
 the **Target branch** dropdown.
 
 Alternatively, you can select a very specific protected branch from the **Target branch** dropdown:
@@ -313,8 +313,8 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 
 ### Approval settings
 
-The settings for Merge request approvals are found by going to
-**Settings > General** and expanding **Merge request approvals**.
+The settings for Merge Request Approvals are found by going to
+**Settings > General** and expanding **Merge request (MR) approvals**.
 
 #### Prevent overriding default approvals
 
@@ -347,7 +347,7 @@ from the UI. However, approvals are reset if the target branch is changed.
 By default, projects are configured to prevent merge requests from being approved by
 their own authors. To change this setting:
 
-1. Go to your project's **Settings > General**, expand **Merge request approvals**.
+1. Go to your project's **Settings > General**, expand **Merge request (MR) approvals**.
 1. Uncheck the **Prevent MR approval by the author.** checkbox.
 1. Click **Save changes**.
 

@@ -1,8 +1,0 @@
----
-name: optimize_issue_filter_assigned_to_self
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57073
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325470
-milestone: '13.11'
-type: development
-group: group::global search
-default_enabled: false

@@ -220,6 +220,10 @@ module GroupsHelper
       !multiple_members?(group)
   end
 
+  def render_setting_to_allow_project_access_token_creation?(group)
+    group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
+  end
+
   def show_thanks_for_purchase_banner?
     params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
   end

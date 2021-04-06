@@ -78,3 +78,9 @@ the following table.
 | `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |
 | `read_repository`  | Allows read-only access (pull) to the repository. |
 | `write_repository` | Allows read-write access (pull, push) to the repository. |
+
+## Enable or disable project access token creation
+
+You may enable or disable project access token creation for all projects in a group in **Group > Settings > General > Permissions, LFS, 2FA > Allow project access token creation**.
+Even when creation is disabled, you can still use and revoke existing project access tokens.
+This setting is only available on root-level groups.
