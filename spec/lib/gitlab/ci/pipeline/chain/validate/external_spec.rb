@@ -127,21 +127,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
       it 'passes token in X-Gitlab-Token header' do
         expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
-          expect(params[:headers]).to include({ 'X-Gitlab-Token' => '123' })
+          expect(params[:headers]).to eq({ 'X-Gitlab-Token' => '123' })
         end
 
         perform!
       end
-    end
-
-    it 'passes the correlation id in X-Request-ID header' do
-      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
-
-      expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
-        expect(params[:headers]).to include({ 'X-Request-ID' => 'correlation-id' })
-      end
-
-      perform!
     end
 
     context 'when validation returns 200 OK' do

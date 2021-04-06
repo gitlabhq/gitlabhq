@@ -145,7 +145,7 @@ To seamlessly navigate among commits in a merge request:
 1. Select a commit to open it in the single-commit view.
 1. Navigate through the commits by either:
 
-   - Selecting **Prev** and **Next** buttons right beneath the tab buttons.
+   - Selecting **Prev** and **Next** buttons below the tab buttons.
    - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
 ![Merge requests commit navigation](img/commit_nav_v13_11.png)
@@ -268,7 +268,7 @@ the **Merge** button is colored red.
 
 When a merge request is merged, you can see the post-merge pipeline status of
 the branch the merge request was merged into. For example, when a merge request
-is merged into the `master` branch and then triggers a deployment to the staging
+is merged into the [default branch](../repository/branches/default.md) and then triggers a deployment to the staging
 environment.
 
 Ongoing deployments are shown, and the state (deploying or deployed)

@@ -157,12 +157,13 @@ GET /projects/:id/repository/compare
 
 Supported attributes:
 
-| Attribute  | Type           | Required | Description |
-| :--------- | :------------- | :------- | :---------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `from`     | string         | yes      | The commit SHA or branch name. |
-| `to`       | string         | yes      | The commit SHA or branch name. |
-| `straight` | boolean        | no       | Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`. |
+| Attribute         | Type           | Required | Description |
+| :---------        | :------------- | :------- | :---------- |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `from`            | string         | yes      | The commit SHA or branch name. |
+| `to`              | string         | yes      | The commit SHA or branch name. |
+| `from_project_id` | integer        | no       | The ID to compare from |
+| `straight`        | boolean        | no       | Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`. |
 
 ```plaintext
 GET /projects/:id/repository/compare?from=master&to=feature

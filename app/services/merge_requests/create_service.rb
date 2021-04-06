@@ -14,6 +14,8 @@ module MergeRequests
     end
 
     def after_create(issuable)
+      issuable.mark_as_preparing
+
       # Add new items to MergeRequests::AfterCreateService if they can
       # be performed in Sidekiq
       NewMergeRequestWorker.perform_async(issuable.id, current_user.id)

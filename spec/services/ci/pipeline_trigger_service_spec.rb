@@ -11,7 +11,7 @@ RSpec.describe Ci::PipelineTriggerService do
     stub_ci_pipeline_to_return_yaml_file
   end
 
-  describe '#execute' do
+  describe '#execute', :context_aware do
     let_it_be(:user) { create(:user) }
     let(:result) { described_class.new(project, user, params).execute }
 

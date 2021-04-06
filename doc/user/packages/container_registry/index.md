@@ -35,7 +35,8 @@ You can view the Container Registry for a project or group.
 1. Go to your project or group.
 1. Go to **Packages & Registries > Container Registry**.
 
-You can search, sort, filter, and [delete](#delete-images-from-within-gitlab) containers on this page.
+You can search, sort, filter, and [delete](#delete-images-from-within-gitlab)
+containers on this page. You can share a filtered view by copying the URL from your browser.
 
 Only members of the project or group can access a private project's Container Registry.
 

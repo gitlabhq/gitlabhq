@@ -69,7 +69,7 @@ RSpec.describe ::SystemNotes::AlertManagementService do
     end
 
     it 'has the appropriate message' do
-      expect(subject.note).to eq('logged a resolving alert from **Some Service**')
+      expect(subject.note).to eq('logged a recovery alert from **Some Service**')
     end
   end
 end

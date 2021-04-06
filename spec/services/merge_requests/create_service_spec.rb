@@ -57,6 +57,10 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         expect(Event.where(attributes).count).to eq(1)
       end
 
+      it 'sets the merge_status to preparing' do
+        expect(merge_request.reload).to be_preparing
+      end
+
       describe 'when marked with /wip' do
         context 'in title and in description' do
           let(:opts) do
