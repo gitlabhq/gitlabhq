@@ -64,16 +64,12 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 **Initial Rollout**
 
-*Preperation Phase*
+*Preparation Phase*
 - [ ] Enable on staging (`/chatops run feature set feature_name true --staging`)
 
 - [ ] Test on staging
 
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default))
-
-- [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
-  - In `#production` by pinging `@sre-oncall`
-  - In `#g_delivery` by pinging `@release-managers`
 
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
 

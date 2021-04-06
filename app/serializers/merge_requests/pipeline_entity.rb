@@ -36,6 +36,8 @@ class MergeRequests::PipelineEntity < Grape::Entity
     end
 
     expose :stages, using: StageEntity
+
+    expose :finished_at
   end
 
   # Coverage isn't always necessary (e.g. when displaying project pipelines in

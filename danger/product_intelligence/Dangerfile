@@ -3,14 +3,12 @@
 
 CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html) and reach out to %<engineers_group>s group for a review.
+Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html).
 
 
 %<changed_files>s
 
 MSG
-
-ENGINEERS_GROUP = '@gitlab-org/growth/product-intelligence/engineers'
 
 UPDATE_DICTIONARY_MESSAGE = <<~MSG
   When adding, changing, or updating metrics, please update the [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
@@ -84,8 +82,7 @@ matching_changed_files = usage_data_changed_files +
 
 if matching_changed_files.any?
 
-  mention = "`#{ENGINEERS_GROUP}`"
-  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
+  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
 

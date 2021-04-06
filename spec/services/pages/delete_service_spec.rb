@@ -16,7 +16,10 @@ RSpec.describe Pages::DeleteService do
   it 'deletes published pages', :sidekiq_inline do
     expect(project.pages_deployed?).to be(true)
 
-    expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return true
+    expect_next_instance_of(Gitlab::PagesTransfer) do |pages_transfer|
+      expect(pages_transfer).to receive(:rename_project).and_return true
+    end
+
     expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, project.namespace.full_path, anything)
 
     service.execute
@@ -24,11 +27,10 @@ RSpec.describe Pages::DeleteService do
     expect(project.pages_deployed?).to be(false)
   end
 
-  it "doesn't remove anything from the legacy storage if updates on it are disabled", :sidekiq_inline do
-    stub_feature_flags(pages_update_legacy_storage: false)
+  it "doesn't remove anything from the legacy storage", :sidekiq_inline do
+    allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
     expect(project.pages_deployed?).to be(true)
-
     expect(PagesWorker).not_to receive(:perform_in)
 
     service.execute
@@ -69,7 +71,9 @@ RSpec.describe Pages::DeleteService do
     expect(project.pages_deployed?).to eq(false)
     expect(project.pages_domains.count).to eq(0)
 
-    expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return true
+    expect_next_instance_of(Gitlab::PagesTransfer) do |pages_transfer|
+      expect(pages_transfer).to receive(:rename_project).and_return true
+    end
 
     Sidekiq::Worker.drain_all
   end

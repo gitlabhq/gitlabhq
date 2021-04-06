@@ -56,7 +56,7 @@ RSpec.describe Projects::UpdatePagesService do
       end
 
       it "doesn't deploy to legacy storage if it's disabled" do
-        stub_feature_flags(pages_update_legacy_storage: false)
+        allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
         expect(execute).to eq(:success)
         expect(project.pages_deployed?).to be_truthy

@@ -12,7 +12,8 @@ However, it's important to know how to recover when problems do arise.
 ## Roll back to an earlier version and restore a backup
 
 In some cases after a failed upgrade, the fastest solution is to roll back to
-the previous version you were using.
+the previous version you were using. We recommend this path because the failed 
+upgrade will likely have made database changes that can not be readily reverted.
 
 First, roll back the code or package. For source installations this involves
 checking out the older version (branch or tag). For Omnibus installations this

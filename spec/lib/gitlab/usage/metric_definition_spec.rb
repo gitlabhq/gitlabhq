@@ -87,26 +87,21 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   describe 'statuses' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:status, :raise_exception) do
-      'deprecated'     | false
-      'removed'        | false
+    where(:status, :skip_validation?) do
+      'deprecated'     | true
+      'removed'        | true
       'data_available' | false
-      'random'         | true
+      'implemented'    | false
+      'not_used'       | false
     end
 
     with_them do
       subject(:validation) do
-        described_class.new(path, attributes.merge( { status: status } )).validate!
+        described_class.new(path, attributes.merge( { status: status } )).send(:skip_validation?)
       end
 
-      it "checks for valid/invalid statuses" do
-        if raise_exception
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
-        else
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-        end
-
-        validation
+      it 'returns true/false for skip_validation' do
+        expect(validation).to eq(skip_validation?)
       end
     end
   end

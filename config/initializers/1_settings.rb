@@ -310,6 +310,9 @@ Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 # this will allow us to easier migrate existing instances with NFS
 Settings.pages['storage_path']      = Settings.pages['path']
 Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'])
+Settings.pages['local_store'] ||= Settingslogic.new({})
+Settings.pages['local_store']['path'] = Settings.absolute(Settings.pages['local_store']['path'] || File.join(Settings.shared['path'], "pages"))
+Settings.pages['local_store']['enabled'] = true if Settings.pages['local_store']['enabled'].nil?
 
 #
 # GitLab documentation

@@ -4228,7 +4228,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does nothing if updates on legacy storage are disabled' do
-      stub_feature_flags(pages_update_legacy_storage: false)
+      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
       expect(Gitlab::PagesTransfer).not_to receive(:new)
       expect(PagesWorker).not_to receive(:perform_in)

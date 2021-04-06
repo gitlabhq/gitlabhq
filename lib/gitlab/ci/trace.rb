@@ -93,6 +93,10 @@ module Gitlab
         end
       end
 
+      def erase_trace_chunks!
+        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+      end
+
       def erase!
         ##
         # Erase the archived trace
@@ -100,7 +104,7 @@ module Gitlab
 
         ##
         # Erase the live trace
-        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+        erase_trace_chunks!
         FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
         job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
       ensure
@@ -180,8 +184,13 @@ module Gitlab
       end
 
       def unsafe_archive!
-        raise AlreadyArchivedError, 'Could not archive again' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
+
+        if trace_artifact
+          unsafe_trace_cleanup! if Feature.enabled?(:erase_traces_from_already_archived_jobs_when_archiving_again, job.project, default_enabled: :yaml)
+
+          raise AlreadyArchivedError, 'Could not archive again'
+        end
 
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
@@ -198,6 +207,18 @@ module Gitlab
             archive_stream!(stream)
             job.erase_old_trace!
           end
+        end
+      end
+
+      def unsafe_trace_cleanup!
+        return unless trace_artifact
+
+        if trace_artifact.archived_trace_exists?
+          # An archive already exists, so make sure to remove the trace chunks
+          erase_trace_chunks!
+        else
+          # An archive already exists, but its associated file does not, so remove it
+          trace_artifact.destroy!
         end
       end
 

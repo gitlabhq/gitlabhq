@@ -218,7 +218,7 @@ To add a redirect:
 
    If you don't want to use the Rake task, you can use the following template.
    However, the file paths must be relative to the `doc` or `docs` directory.
-   
+
    Replace the value of `redirect_to` with the new file path and `YYYY-MM-DD`
    with the date the file should be removed.
 
@@ -421,8 +421,6 @@ The live preview is currently enabled for the following projects:
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
-As the job creates a pipeline in `gitlab-org/gitlab-docs`, you need at least Maintainer
-permission in the `gitlab-org/gitlab-docs` project in order to successfully run the job.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
@@ -461,19 +459,11 @@ If you want to know the in-depth details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a merge request.
 1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build)
-   script with the `docs deploy` flag, which in turn:
-   1. Takes your branch name and applies the following:
-      - The `docs-preview-` prefix is added.
-      - The product slug is used to know the project the review app originated
-        from.
-      - The number of the merge request is added so that you can know by the
-        `gitlab-docs` branch name the merge request it originated from.
-   1. The remote branch is then created if it doesn't exist (meaning you can
-      re-run the manual job as many times as you want and this step is skipped).
-   1. A new cross-project pipeline is triggered in the docs project.
-   1. The preview URL is shown both at the job output and in the merge request
-      widget. You also get the link to the remote pipeline.
-1. In the docs project, the pipeline is created and it
+   script with the `docs deploy` flag, which triggers the "Triggered from `gitlab-org/gitlab` 'review-docs-deploy' job"
+   pipeline trigger in the `gitlab-org/gitlab-docs` project for the `$DOCS_BRANCH` (defaults to `master`).
+1. The preview URL is shown both at the job output and in the merge request
+   widget. You also get the link to the remote pipeline.
+1. In the `gitlab-org/gitlab-docs` project, the pipeline is created and it
    [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
    to lower the build time.
 1. Once the docs site is built, the HTML files are uploaded as artifacts.

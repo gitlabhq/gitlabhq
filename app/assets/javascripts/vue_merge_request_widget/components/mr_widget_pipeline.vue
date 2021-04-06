@@ -14,6 +14,7 @@ import { s__, n__ } from '~/locale';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { MT_MERGE_STRATEGY } from '../constants';
 
@@ -28,6 +29,7 @@ export default {
     GlTooltip,
     PipelineArtifacts,
     PipelineMiniGraph,
+    TimeAgoTooltip,
     TooltipOnTruncate,
     LinkedPipelinesMiniList: () =>
       import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
@@ -113,6 +115,9 @@ export default {
     },
     showSourceBranch() {
       return Boolean(this.pipeline.ref.branch);
+    },
+    finishedAt() {
+      return this.pipeline?.details?.finished_at;
     },
     coverageDeltaClass() {
       const delta = this.pipelineCoverageDelta;
@@ -224,6 +229,13 @@ export default {
                   :title="sourceBranch"
                   truncate-target="child"
                   class="label-branch label-truncate gl-font-weight-normal"
+                />
+              </template>
+              <template v-if="finishedAt">
+                <time-ago-tooltip
+                  :time="finishedAt"
+                  tooltip-placement="bottom"
+                  data-testid="finished-at"
                 />
               </template>
             </div>

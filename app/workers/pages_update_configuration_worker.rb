@@ -7,7 +7,7 @@ class PagesUpdateConfigurationWorker
   feature_category :pages
 
   def self.perform_async(*args)
-    return unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+    return unless ::Settings.pages.local_store.enabled
 
     super(*args)
   end

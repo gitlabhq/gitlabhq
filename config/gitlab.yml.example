@@ -408,6 +408,10 @@ production: &base
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
+    local_store:
+      enabled: true
+      # The location where pages are stored (default: shared/pages).
+      # path: shared/pages
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -1395,6 +1399,9 @@ test:
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
+    local_store:
+      enabled: true
+      path: tmp/tests/pages
   repositories:
     storages:
       default:

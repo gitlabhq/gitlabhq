@@ -192,6 +192,7 @@ RSpec.describe Gitlab::Utils do
       expect(to_boolean('YeS')).to be(true)
       expect(to_boolean('t')).to be(true)
       expect(to_boolean('1')).to be(true)
+      expect(to_boolean(1)).to be(true)
       expect(to_boolean('ON')).to be(true)
 
       expect(to_boolean('FaLse')).to be(false)
@@ -199,6 +200,7 @@ RSpec.describe Gitlab::Utils do
       expect(to_boolean('NO')).to be(false)
       expect(to_boolean('n')).to be(false)
       expect(to_boolean('0')).to be(false)
+      expect(to_boolean(0)).to be(false)
       expect(to_boolean('oFF')).to be(false)
     end
 

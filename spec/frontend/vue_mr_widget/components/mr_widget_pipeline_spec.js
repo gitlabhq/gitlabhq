@@ -27,6 +27,7 @@ describe('MRWidgetPipeline', () => {
   const findPipelineID = () => wrapper.findByTestId('pipeline-id');
   const findPipelineInfoContainer = () => wrapper.findByTestId('pipeline-info-container');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
+  const findPipelineFinishedAt = () => wrapper.findByTestId('finished-at');
   const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findAllPipelineStages = () => wrapper.findAllComponents(PipelineStage);
   const findPipelineCoverage = () => wrapper.findByTestId('pipeline-coverage');
@@ -89,6 +90,13 @@ describe('MRWidgetPipeline', () => {
       expect(findCommitLink().text().trim()).toBe(mockData.pipeline.commit.short_id);
 
       expect(findCommitLink().attributes('href')).toBe(mockData.pipeline.commit.commit_path);
+    });
+
+    it('should render pipeline finished timestamp', () => {
+      expect(findPipelineFinishedAt().attributes()).toMatchObject({
+        title: 'Apr 7, 2017 2:00pm GMT+0000',
+        datetime: mockData.pipeline.details.finished_at,
+      });
     });
 
     it('should render pipeline graph', () => {

@@ -1814,7 +1814,7 @@ class Project < ApplicationRecord
   # TODO: remove this method https://gitlab.com/gitlab-org/gitlab/-/issues/320775
   # rubocop: disable CodeReuse/ServiceClass
   def legacy_remove_pages
-    return unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+    return unless ::Settings.pages.local_store.enabled
 
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
