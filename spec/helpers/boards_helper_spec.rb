@@ -64,6 +64,7 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:current_user) { user }
         allow(helper).to receive(:can?).with(user, :create_non_backlog_issues, project_board).and_return(true)
         allow(helper).to receive(:can?).with(user, :admin_issue, project_board).and_return(true)
+        allow(helper).to receive(:can?).with(user, :admin_issue_board_list, project).and_return(false)
       end
 
       it 'returns a board_lists_path as lists_endpoint' do
@@ -86,6 +87,17 @@ RSpec.describe BoardsHelper do
       it 'returns the group id of a project' do
         expect(helper.board_data[:group_id]).to eq(project.group.id)
       end
+
+      context 'can_admin_list' do
+        it 'returns can_admin_list as false by default' do
+          expect(helper.board_data[:can_admin_list]).to eq('false')
+        end
+        it 'returns can_admin_list as true when user can admin the board' do
+          allow(helper).to receive(:can?).with(user, :admin_issue_board_list, project).and_return(true)
+
+          expect(helper.board_data[:can_admin_list]).to eq('true')
+        end
+      end
     end
 
     context 'group board' do
@@ -96,6 +108,7 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:current_user) { user }
         allow(helper).to receive(:can?).with(user, :create_non_backlog_issues, group_board).and_return(true)
         allow(helper).to receive(:can?).with(user, :admin_issue, group_board).and_return(true)
+        allow(helper).to receive(:can?).with(user, :admin_issue_board_list, base_group).and_return(false)
       end
 
       it 'returns correct path for base group' do
@@ -109,6 +122,17 @@ RSpec.describe BoardsHelper do
 
       it 'returns the group id' do
         expect(helper.board_data[:group_id]).to eq(base_group.id)
+      end
+
+      context 'can_admin_list' do
+        it 'returns can_admin_list as false by default' do
+          expect(helper.board_data[:can_admin_list]).to eq('false')
+        end
+        it 'returns can_admin_list as true when user can admin the board' do
+          allow(helper).to receive(:can?).with(user, :admin_issue_board_list, base_group).and_return(true)
+
+          expect(helper.board_data[:can_admin_list]).to eq('true')
+        end
       end
     end
   end

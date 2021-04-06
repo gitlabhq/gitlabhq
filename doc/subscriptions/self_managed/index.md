@@ -150,9 +150,9 @@ You purchase a license for 10 users.
 
 | Event                                              | Billable members | Maximum users |
 |:---------------------------------------------------|:-----------------|:--------------|
-| Ten people (users) occupy all 10 seats.            | 10               | 10            |
-| Two new people join.                               | 12               | 12            |
-| Three people leave and their accounts are removed. | 9                | 12            |
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are removed.  | 9                | 12            |
 
 Users over license = 12 - 10 (Maximum users - users in license)
 

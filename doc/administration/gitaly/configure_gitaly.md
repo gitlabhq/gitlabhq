@@ -941,3 +941,226 @@ result as you did at the start. For example:
 ```
 
 Note that `enforced="true"` means that authentication is being enforced.
+
+## Pack-objects cache **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/372) in GitLab 13.11.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+
+[Gitaly](index.md), the service that provides storage for Git
+repositories, can be configured to cache a short rolling window of Git
+fetch responses. This can reduce server load when your server receives
+lots of CI fetch traffic.
+
+### Overview
+
+The pack-objects cache wraps `git pack-objects`, an internal part of
+Git that gets invoked indirectly via the PostUploadPack and
+SSHUploadPack Gitaly RPCs. These are the RPCs that Gitaly runs when a
+user does a Git fetch via HTTP or SSH, respectively. When the cache is
+enabled, anything that uses PostUploadPack or SSHUploadPack can
+benefit from it. It is orthogonal to:
+
+- The transport (HTTP or SSH).
+- Git protocol version (v0 or v2).
+- The type of fetch (full clones, incremental fetches, shallow clones,
+  partial clones, and so on).
+
+The strength of this cache is its ability to deduplicate concurrent
+identical fetches. It:
+
+- Can benefit GitLab instances where your users run CI/CD pipelines with many concurrent jobs.
+  There should be a noticeable reduction in server CPU utilization.
+- Does not benefit unique fetches at all. For example, if you run a spot check by cloning a
+  repository to your local computer, you are unlikely to see a benefit from this cache because
+  your fetch is probably unique.
+
+The pack-objects cache is a local cache. It:
+
+- Stores its metadata in the memory of the Gitaly process it is enabled in.
+- Stores the actual Git data it is caching in files on local storage. 
+
+Using local files has the benefit that the operating system may
+automatically keep parts of the pack-objects cache files in RAM,
+making it faster.
+
+Because the pack-objects cache can lead to a significant increase in
+disk write IO, it is off by default.
+
+### Configure the cache
+
+These are the configuration settings for the pack-objects cache. Each
+setting is discussed in greater detail below.
+
+|Setting|Default|Description|
+|:---|:---|:---|
+|`enabled`|`false`|Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
+|`dir`|`<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache`|Local directory where cache files get stored.|
+|`max_age`|`5m` (5 minutes)|Cache entries older than this get evicted and removed from disk.|
+
+In `/etc/gitlab/gitlab.rb`, set:
+
+```ruby
+gitaly['pack_objects_cache_enabled'] = true
+## gitaly['pack_objects_cache_dir'] = '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache'
+## gitaly['pack_objects_cache_max_age'] = '5m'
+```
+
+#### `enabled` defaults to `false`
+
+The cache is disabled by default. This is because in some cases, it
+can create an [extreme
+increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
+in the number of bytes written to disk. On GitLab.com, we have verified
+that our repository storage disks can handle this extra workload, but
+we felt we cannot assume this is true everywhere.
+
+#### Cache storage directory `dir`
+
+The cache needs a directory to store its files in. This directory
+should be:
+
+- In a filesystem with enough space. If the cache filesystem runs out of space, all
+  fetches start failing.
+- On a disk with enough IO bandwidth. If the cache disk runs out of IO bandwidth, all
+  fetches, and probably the entire server, slows down.
+
+By default, the cache storage directory is set to a subdirectory of the first Gitaly storage
+defined in the configuration file.
+
+Multiple Gitaly processes can use the same directory for cache storage. Each Gitaly process
+uses a unique random string as part of the cache filenames it creates. This means:
+
+- They do not collide.
+- They do not reuse another process's files.
+
+While the default directory puts the cache files in the same
+filesystem as your repository data, this is not requirement. You can
+put the cache files on a different filesystem if that works better for
+your infrastructure.
+
+The amount of IO bandwidth required from the disk depends on:
+
+- The size and shape of the repositories on your Gitaly server.
+- The kind of traffic your users generate.
+
+You can use the `gitaly_pack_objects_generated_bytes_total` metric as a pessimistic estimate,
+pretending your cache hit ratio is 0%.
+
+The amount of space required depends on:
+
+- The bytes per second that your users pull from the cache.
+- The size of the `max_age` cache eviction window.
+
+If your users pull 100 MB/s and you use a 5 minute window, then on average you have
+`5*60*100MB = 30GB` of data in your cache directory. This is an expected average, not
+a guarantee. Peak size may exceed this average.
+
+#### Cache eviction window `max_age`
+
+The `max_age` configuration setting lets you control the chance of a
+cache hit and the average amount of storage used by cache files.
+Entries older than `max_age` get evicted from the in-memory metadata
+store, and deleted from disk.
+
+Note that eviction does not interfere with ongoing requests, so it is OK
+for `max_age` to be less than the time it takes to do a fetch over a
+slow connection. This is because Unix filesystems do not truly delete
+a file until all processes that are reading the deleted file have
+closed it.
+
+### Observe the cache
+
+The cache can be observed in logs and using metrics.
+
+#### Logs
+
+|Message|Fields|Description|
+|:---|:---|:---|
+|`generated bytes`|`bytes`, `cache_key`|Logged when an entry was added to the cache|
+|`served bytes`|`bytes`, `cache_key`|Logged when an entry was read from the cache|
+
+In the case of a:
+
+- Cache miss, Gitaly logs both a `generated bytes` and a `served bytes` message.
+- Cache hit, Gitaly logs only a `served bytes` message.
+
+Example:
+
+```json
+{
+  "bytes":26186490,
+  "cache_key":"1b586a2698ca93c2529962e85cda5eea8f0f2b0036592615718898368b462e19",
+  "correlation_id":"01F1MY8JXC3FZN14JBG1H42G9F",
+  "grpc.meta.deadline_type":"none",
+  "grpc.method":"PackObjectsHook",
+  "grpc.request.fullMethod":"/gitaly.HookService/PackObjectsHook",
+  "grpc.request.glProjectPath":"root/gitlab-workhorse",
+  "grpc.request.glRepository":"project-2",
+  "grpc.request.repoPath":"@hashed/d4/73/d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35.git",
+  "grpc.request.repoStorage":"default",
+  "grpc.request.topLevelGroup":"@hashed",
+  "grpc.service":"gitaly.HookService",
+  "grpc.start_time":"2021-03-25T14:57:52.747Z",
+  "level":"info",
+  "msg":"generated bytes",
+  "peer.address":"@",
+  "pid":20961,
+  "span.kind":"server",
+  "system":"grpc",
+  "time":"2021-03-25T14:57:53.543Z"
+}
+{
+  "bytes":26186490,
+  "cache_key":"1b586a2698ca93c2529962e85cda5eea8f0f2b0036592615718898368b462e19",
+  "correlation_id":"01F1MY8JXC3FZN14JBG1H42G9F",
+  "grpc.meta.deadline_type":"none",
+  "grpc.method":"PackObjectsHook",
+  "grpc.request.fullMethod":"/gitaly.HookService/PackObjectsHook",
+  "grpc.request.glProjectPath":"root/gitlab-workhorse",
+  "grpc.request.glRepository":"project-2",
+  "grpc.request.repoPath":"@hashed/d4/73/d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35.git",
+  "grpc.request.repoStorage":"default",
+  "grpc.request.topLevelGroup":"@hashed",
+  "grpc.service":"gitaly.HookService",
+  "grpc.start_time":"2021-03-25T14:57:52.747Z",
+  "level":"info",
+  "msg":"served bytes",
+  "peer.address":"@",
+  "pid":20961,
+  "span.kind":"server",
+  "system":"grpc",
+  "time":"2021-03-25T14:57:53.543Z"
+}
+```
+
+#### Metrics
+
+The following cache metrics are available.
+
+|Metric|Type|Labels|Description|
+|:---|:---|:---|:---|
+|`gitaly_pack_objects_cache_enabled`|gauge|`dir`,`max_age`|Set to `1` when the cache is enabled via the Gitaly config file|
+|`gitaly_pack_objects_cache_lookups_total`|counter|`result`|Hit/miss counter for cache lookups|
+|`gitaly_pack_objects_generated_bytes_total`|counter||Number of bytes written into the cache|
+|`gitaly_pack_objects_served_bytes_total`|counter||Number of bytes read from the cache|
+|`gitaly_streamcache_filestore_disk_usage_bytes`|gauge|`dir`|Total size of cache files|
+|`gitaly_streamcache_index_entries`|gauge|`dir`|Number of entries in the cache|
+
+Some of these metrics start with `gitaly_streamcache`
+because they are generated by the "streamcache" internal library
+package in Gitaly.
+
+Example:
+
+```plaintext
+gitaly_pack_objects_cache_enabled{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache",max_age="300"} 1
+gitaly_pack_objects_cache_lookups_total{result="hit"} 2
+gitaly_pack_objects_cache_lookups_total{result="miss"} 1
+gitaly_pack_objects_generated_bytes_total 2.618649e+07
+gitaly_pack_objects_served_bytes_total 7.855947e+07
+gitaly_streamcache_filestore_disk_usage_bytes{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 2.6200152e+07
+gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
+gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
+```

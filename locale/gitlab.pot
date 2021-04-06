@@ -18969,6 +18969,12 @@ msgstr ""
 msgid "Match not found; try refining your search query."
 msgstr ""
 
+msgid "Mattermost"
+msgstr ""
+
+msgid "Mattermost URL:"
+msgstr ""
+
 msgid "MattermostService|Add to Mattermost"
 msgstr ""
 
@@ -26244,6 +26250,9 @@ msgid "Require additional authentication for administrative tasks"
 msgstr ""
 
 msgid "Require admin approval for new sign-ups"
+msgstr ""
+
+msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users in this group to setup two-factor authentication"

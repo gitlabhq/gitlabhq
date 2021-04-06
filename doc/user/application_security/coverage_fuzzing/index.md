@@ -109,7 +109,7 @@ There are two types of jobs:
 Here's our current suggestion for configuring your fuzz target's timeout:
 
 - Set `COVFUZZ_BRANCH` to the branch where you want to run long-running (asynchronous) fuzzing
-  jobs. This is `master` by default.
+  jobs. This is normally the default branch.
 - Use regression or short-running fuzzing jobs for other branches or merge requests.
 
 This suggestion helps find new bugs on the development branch and catch old bugs in merge requests
@@ -121,10 +121,10 @@ any option available in the underlying fuzzing engine.
 
 ### Available CI/CD variables
 
-| CI/CD variable        | Description                                                        |
-|-----------------------|--------------------------------------------------------------------|
-| `COVFUZZ_BRANCH`      | The branch for long-running fuzzing jobs. The default is `master`. |
-| `COVFUZZ_SEED_CORPUS` | Path to a seed corpus directory. The default is empty.             |
+| CI/CD variable        | Description                                                                    |
+|-----------------------|--------------------------------------------------------------------------------|
+| `COVFUZZ_BRANCH`      | The branch for long-running fuzzing jobs. This is normally the default branch. |
+| `COVFUZZ_SEED_CORPUS` | Path to a seed corpus directory. The default is empty.                         |
 | `COVFUZZ_URL_PREFIX`  | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this when using an offline environment. The default value is `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
 
 The files in the seed corpus (`COVFUZZ_SEED_CORPUS`), if provided, aren't updated unless you commit new

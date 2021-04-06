@@ -31,6 +31,7 @@ RSpec.describe Groups::DependencyProxyAuthController do
 
     context 'with valid JWT' do
       let_it_be(:user) { create(:user) }
+
       let(:jwt) { build_jwt(user) }
       let(:token_header) { "Bearer #{jwt.encoded}" }
 
@@ -65,6 +66,7 @@ RSpec.describe Groups::DependencyProxyAuthController do
 
       context 'expired token' do
         let_it_be(:user) { create(:user) }
+
         let(:jwt) { build_jwt(user, expire_time: Time.zone.now - 1.hour) }
         let(:token_header) { "Bearer #{jwt.encoded}" }
 

@@ -1,8 +1,5 @@
 - board = local_assigns.fetch(:board, nil)
 - group = local_assigns.fetch(:group, false)
--# TODO: Move group_id and can_admin_list to the board store
-  See: https://gitlab.com/gitlab-org/gitlab/-/issues/213082
-- can_admin_list = can?(current_user, :admin_issue_board_list, current_board_parent) == true
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content js-focus-mode-board"
@@ -15,11 +12,6 @@
 
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  %board-content{ "v-cloak" => "true",
-    "ref" => "board_content",
-    ":lists" => "state.lists",
-    ":can-admin-list" => can_admin_list,
-    ":disabled" => "disabled",
-    data: { qa_selector: "boards_list" } }
+  %board-content{ ":lists" => "state.lists", ":disabled" => "disabled" }
   = render "shared/boards/components/sidebar", group: group
-  %board-settings-sidebar{ ":can-admin-list" => can_admin_list }
+  %board-settings-sidebar

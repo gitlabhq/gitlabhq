@@ -32,7 +32,7 @@ module QA
             element :labels_edit_button
           end
 
-          view 'app/views/shared/boards/_show.html.haml' do
+          view 'app/assets/javascripts/boards/components/board_content.vue' do
             element :boards_list
           end
 

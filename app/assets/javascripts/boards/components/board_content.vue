@@ -22,15 +22,12 @@ export default {
     GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['canAdminList'],
   props: {
     lists: {
       type: Array,
       required: false,
       default: () => [],
-    },
-    canAdminList: {
-      type: Boolean,
-      required: true,
     },
     disabled: {
       type: Boolean,
@@ -99,7 +96,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-cloak data-qa-selector="boards_list">
     <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
